@@ -29,11 +29,14 @@ public class DebugTuple(
  * Core of an iterator that merges the output of two strictly ascending iterators,
  * for instance a union or a symmetric difference.
  */
-internal open class MergeIterInner<I>(
+public open class MergeIterInner<I> internal constructor(
     public var a: I,
     public var b: I,
-    public var peeked: Peeked<I>?,
+    peekedCtorArg: Peeked<I>?,
 ) {
+    public var peeked: Peeked<I>? = peekedCtorArg
+        internal set
+
     public open fun clone(): MergeIterInner<I> = MergeIterInner(a = this.a.clone(), b = this.b.clone(), peeked = this.peeked)
 
     public open fun fmt(f: StringBuilder) {
@@ -49,7 +52,7 @@ internal open class MergeIterInner<I>(
      * contains a value, iteration has finished and subsequent calls will
      * return the same empty pair.
      */
-    internal open fun nexts(cmp: (I.Item, I.Item) -> Ordering): Pair<Item?, Item?> {
+    public open fun nexts(cmp: (I.Item, I.Item) -> Ordering): Pair<Item?, Item?> {
         var aNext: Any?
         var bNext: Any?
         when (val matchVal = this.peeked.also { this.peeked = null }) {
@@ -83,7 +86,7 @@ internal open class MergeIterInner<I>(
     /**
      * Returns a pair of upper bounds for the `sizeHint` of the final iterator.
      */
-    internal open fun lens(): Pair<Int, Int> =
+    public open fun lens(): Pair<Int, Int> =
         when (val matchVal = this.peeked) {
             is Peeked.A -> Pair(1 + this.a.len(), this.b.len())
             is Peeked.B -> Pair(this.a.len(), 1 + this.b.len())
@@ -91,10 +94,20 @@ internal open class MergeIterInner<I>(
         }
 
     public companion object {
+        public operator fun <I> invoke(
+            a: I,
+            b: I,
+            peeked: Peeked<I>?,
+        ): MergeIterInner<I> = MergeIterInner<I>(
+            a = a,
+            b = b,
+            peekedCtorArg = peeked,
+        )
+
         /**
          * Creates a new core for an iterator merging a pair of sources.
          */
-        internal fun <I> new(a: I, b: I): MergeIterInner<I> = MergeIterInner(a = a, b = b, peeked = null)
+        public fun <I> new(a: I, b: I): MergeIterInner<I> = MergeIterInner(a = a, b = b, peeked = null)
     }
 }
 

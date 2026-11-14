@@ -1,5 +1,7 @@
 package io.github.kotlinmania.rustlang.core.num
 
+import io.github.kotlinmania.rustlang.core.num.IntErrorKind.*
+
 /**
  * A classification of floating point numbers.
  *

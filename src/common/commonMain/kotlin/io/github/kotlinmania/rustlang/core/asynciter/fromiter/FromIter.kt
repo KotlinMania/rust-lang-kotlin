@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.core.asynciter.fromiter
 
 import io.github.kotlinmania.rustlang.core.asynciter.asynciter.AsyncIterator
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.task.poll.Poll
 import io.github.kotlinmania.rustlang.core.task.wake.Context
 
@@ -26,10 +27,10 @@ public open class FromIter<I>(
     public override fun sizeHint(): Pair<Int, Int?> = this.iter.sizeHint()
 
     public companion object {
-        public fun <I> typeLayout(typeLayoutI: io.github.kotlinmania.rustlang.core.mem.TypeLayout<I>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<FromIter<I>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<FromIter<I>> {
+        public fun <I> typeLayout(typeLayoutI: TypeLayout<I>): TypeLayout<FromIter<I>> =
+            object : TypeLayout<FromIter<I>> {
                 override val alignBytes: Long = listOf(1L, typeLayoutI.alignBytes).max()
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(typeLayoutI.sizeBytes, alignBytes)
+                override val sizeBytes: Long = alignUpBytes(typeLayoutI.sizeBytes, alignBytes)
                 override fun readNative(addr: Long): FromIter<I> =
                     FromIter(
                         (typeLayoutI).readNative(addr),

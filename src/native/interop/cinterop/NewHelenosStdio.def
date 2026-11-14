@@ -1,0 +1,6 @@
+package = io.github.kotlinmania.rustlang.libc.new.helenos.stdio.cinterop
+headers = new_helenos_stdio_wrapper.h
+headerFilter = new_helenos_stdio_wrapper.h
+compilerOpts = -Isrc/native/interop/cinterop
+staticLibraries = new_helenos_stdio_wrapper.a
+noStringConversion = libcNewHelenosStdioFputs libcNewHelenosStdioFopen

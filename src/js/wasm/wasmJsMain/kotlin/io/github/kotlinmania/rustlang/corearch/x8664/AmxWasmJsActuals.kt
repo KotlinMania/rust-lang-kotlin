@@ -1,4 +1,4 @@
-@file:OptIn(kotlin.ExperimentalUnsignedTypes::class, kotlin.js.ExperimentalWasmJsInterop::class)
+@file:OptIn(ExperimentalUnsignedTypes::class, ExperimentalWasmJsInterop::class)
 
 package io.github.kotlinmania.rustlang.corearch.x8664
 
@@ -9,72 +9,72 @@ import io.github.kotlinmania.rustlang.corearch.simd.F32x16
 import io.github.kotlinmania.rustlang.corearch.simd.I32x16
 import io.github.kotlinmania.rustlang.corearch.simd.U16x32
 
-@JsFun("() => { if (typeof globalThis.__km_napi_corearch !== 'undefined') return globalThis.__km_napi_corearch !== null; if (typeof process === 'undefined' || !process.versions || !process.versions.node) { globalThis.__km_napi_corearch = null; return false; } var mod = process.getBuiltinModule ? process.getBuiltinModule('module') : (process.mainModule && process.mainModule.constructor); var req = (mod && mod.createRequire) ? mod.createRequire((process.cwd ? process.cwd() : '.') + '/package.json') : (process.mainModule ? process.mainModule.require : null); if (!req) { globalThis.__km_napi_corearch = null; return false; } try { globalThis.__km_napi_corearch = req('@kotlinmania/corearch-native-bindings'); return true; } catch (_) {} var fs = req('fs'); var path = req('path'); var dir = process.cwd ? process.cwd() : '.'; var rels = ['corearch_native.node', 'build/node-ffi/corearch_native.node', 'build/node-ffi/release/corearch_native.node', 'build/node-ffi/debug/corearch_native.node', 'src/js/node-corearch/build/Release/corearch_native.node', 'src/js/node-corearch/build/Debug/corearch_native.node', 'src/js/node-corearch/dist/build/Release/corearch_native.node', 'src/js/node-corearch/dist/build/Debug/corearch_native.node']; for (var d = 0; d < 8; d++) { for (var i = 0; i < rels.length; i++) { var c = path.resolve(dir, rels[i]); if (fs.existsSync(c)) { globalThis.__km_napi_corearch = req(c); return true; } } var parent = path.dirname(dir); if (parent === dir) break; dir = parent; } globalThis.__km_napi_corearch = null; return false; }")
+@JsFun("() => { if (typeof globalThis.__km_napi_kmcore !== 'undefined') return globalThis.__km_napi_kmcore !== null; if (typeof process === 'undefined' || !process.versions || !process.versions.node) { globalThis.__km_napi_kmcore = null; return false; } var mod = process.getBuiltinModule ? process.getBuiltinModule('module') : (process.mainModule && process.mainModule.constructor); var req = (mod && mod.createRequire) ? mod.createRequire((process.cwd ? process.cwd() : '.') + '/package.json') : (process.mainModule ? process.mainModule.require : null); if (!req) { globalThis.__km_napi_kmcore = null; return false; } try { globalThis.__km_napi_kmcore = req('@kotlinmania/kmcore-native-bindings'); return true; } catch (_) {} var fs = req('fs'); var path = req('path'); var dir = process.cwd ? process.cwd() : '.'; var rels = ['kmcore_native.node', 'build/node-ffi/kmcore_native.node', 'build/node-ffi/release/kmcore_native.node', 'build/node-ffi/debug/kmcore_native.node', 'src/js/node-kmcore/build/Release/kmcore_native.node', 'src/js/node-kmcore/build/Debug/kmcore_native.node', 'src/js/node-kmcore/dist/build/Release/kmcore_native.node', 'src/js/node-kmcore/dist/build/Debug/kmcore_native.node']; for (var d = 0; d < 8; d++) { for (var i = 0; i < rels.length; i++) { var c = path.resolve(dir, rels[i]); if (fs.existsSync(c)) { globalThis.__km_napi_kmcore = req(c); return true; } } var parent = path.dirname(dir); if (parent === dir) break; dir = parent; } globalThis.__km_napi_kmcore = null; return false; }")
 private external fun initX8664AmxNapiAddon(): Boolean
 
 private val x8664AmxNapiAvailable: Boolean = initX8664AmxNapiAddon()
 
-@JsFun("(p0) => globalThis.__km_napi_corearch.corearchX8664AmxLdtilecfg(p0)")
+@JsFun("(p0) => globalThis.__km_napi_kmcore.corearchX8664AmxLdtilecfg(p0)")
 private external fun wasmCorearchX8664AmxLdtilecfg(p0: String)
 
-@JsFun("(p0) => globalThis.__km_napi_corearch.corearchX8664AmxSttilecfg(p0)")
+@JsFun("(p0) => globalThis.__km_napi_kmcore.corearchX8664AmxSttilecfg(p0)")
 private external fun wasmCorearchX8664AmxSttilecfg(p0: String)
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_corearch.corearchX8664AmxTileloadd64(p0, p1, p2)")
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.corearchX8664AmxTileloadd64(p0, p1, p2)")
 private external fun wasmCorearchX8664AmxTileloadd64(p0: Int, p1: String, p2: String)
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_corearch.corearchX8664AmxTileloaddt164(p0, p1, p2)")
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.corearchX8664AmxTileloaddt164(p0, p1, p2)")
 private external fun wasmCorearchX8664AmxTileloaddt164(p0: Int, p1: String, p2: String)
 
-@JsFun("() => globalThis.__km_napi_corearch.corearchX8664AmxTilerelease()")
+@JsFun("() => globalThis.__km_napi_kmcore.corearchX8664AmxTilerelease()")
 private external fun wasmCorearchX8664AmxTilerelease()
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_corearch.corearchX8664AmxTilestored64(p0, p1, p2)")
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.corearchX8664AmxTilestored64(p0, p1, p2)")
 private external fun wasmCorearchX8664AmxTilestored64(p0: Int, p1: String, p2: String)
 
-@JsFun("(p0) => globalThis.__km_napi_corearch.corearchX8664AmxTilezero(p0)")
+@JsFun("(p0) => globalThis.__km_napi_kmcore.corearchX8664AmxTilezero(p0)")
 private external fun wasmCorearchX8664AmxTilezero(p0: Int)
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_corearch.corearchX8664AmxTdpbf16ps(p0, p1, p2)")
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.corearchX8664AmxTdpbf16ps(p0, p1, p2)")
 private external fun wasmCorearchX8664AmxTdpbf16ps(p0: Int, p1: Int, p2: Int)
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_corearch.corearchX8664AmxTdpbuud(p0, p1, p2)")
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.corearchX8664AmxTdpbuud(p0, p1, p2)")
 private external fun wasmCorearchX8664AmxTdpbuud(p0: Int, p1: Int, p2: Int)
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_corearch.corearchX8664AmxTdpbusd(p0, p1, p2)")
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.corearchX8664AmxTdpbusd(p0, p1, p2)")
 private external fun wasmCorearchX8664AmxTdpbusd(p0: Int, p1: Int, p2: Int)
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_corearch.corearchX8664AmxTdpbsud(p0, p1, p2)")
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.corearchX8664AmxTdpbsud(p0, p1, p2)")
 private external fun wasmCorearchX8664AmxTdpbsud(p0: Int, p1: Int, p2: Int)
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_corearch.corearchX8664AmxTdpbssd(p0, p1, p2)")
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.corearchX8664AmxTdpbssd(p0, p1, p2)")
 private external fun wasmCorearchX8664AmxTdpbssd(p0: Int, p1: Int, p2: Int)
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_corearch.corearchX8664AmxTdpfp16ps(p0, p1, p2)")
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.corearchX8664AmxTdpfp16ps(p0, p1, p2)")
 private external fun wasmCorearchX8664AmxTdpfp16ps(p0: Int, p1: Int, p2: Int)
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_corearch.corearchX8664AmxTcmmimfp16ps(p0, p1, p2)")
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.corearchX8664AmxTcmmimfp16ps(p0, p1, p2)")
 private external fun wasmCorearchX8664AmxTcmmimfp16ps(p0: Int, p1: Int, p2: Int)
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_corearch.corearchX8664AmxTcmmrlfp16ps(p0, p1, p2)")
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.corearchX8664AmxTcmmrlfp16ps(p0, p1, p2)")
 private external fun wasmCorearchX8664AmxTcmmrlfp16ps(p0: Int, p1: Int, p2: Int)
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_corearch.corearchX8664AmxTdpbf8ps(p0, p1, p2)")
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.corearchX8664AmxTdpbf8ps(p0, p1, p2)")
 private external fun wasmCorearchX8664AmxTdpbf8ps(p0: Int, p1: Int, p2: Int)
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_corearch.corearchX8664AmxTdpbhf8ps(p0, p1, p2)")
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.corearchX8664AmxTdpbhf8ps(p0, p1, p2)")
 private external fun wasmCorearchX8664AmxTdpbhf8ps(p0: Int, p1: Int, p2: Int)
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_corearch.corearchX8664AmxTdphbf8ps(p0, p1, p2)")
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.corearchX8664AmxTdphbf8ps(p0, p1, p2)")
 private external fun wasmCorearchX8664AmxTdphbf8ps(p0: Int, p1: Int, p2: Int)
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_corearch.corearchX8664AmxTdphf8ps(p0, p1, p2)")
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.corearchX8664AmxTdphf8ps(p0, p1, p2)")
 private external fun wasmCorearchX8664AmxTdphf8ps(p0: Int, p1: Int, p2: Int)
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_corearch.corearchX8664AmxTileloaddrs64(p0, p1, p2)")
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.corearchX8664AmxTileloaddrs64(p0, p1, p2)")
 private external fun wasmCorearchX8664AmxTileloaddrs64(p0: Int, p1: String, p2: String)
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_corearch.corearchX8664AmxTileloaddrst164(p0, p1, p2)")
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.corearchX8664AmxTileloaddrst164(p0, p1, p2)")
 private external fun wasmCorearchX8664AmxTileloaddrst164(p0: Int, p1: String, p2: String)
 
 public actual fun ldtilecfg(memAddr: ConstPtr) {

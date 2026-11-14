@@ -1,10 +1,10 @@
-@file:OptIn(kotlin.ExperimentalUnsignedTypes::class)
+@file:OptIn(ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.corearch.wasm32
 
 private object Wasm32MemoryJniBridge {
     init {
-        System.loadLibrary("corearch_jni")
+        System.loadLibrary("kmcore_jni")
     }
 
     @JvmStatic

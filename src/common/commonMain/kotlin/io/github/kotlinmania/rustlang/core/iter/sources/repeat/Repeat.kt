@@ -1,8 +1,9 @@
 // port-lint: source iter/sources/repeat.rs
 package io.github.kotlinmania.rustlang.core.iter.sources.repeat
 
-import io.github.kotlinmania.rustlang.core.iter.TrustedLen
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.result.Result
 
@@ -31,6 +32,8 @@ import io.github.kotlinmania.rustlang.core.result.Result
  * Basic usage:
  *
  * ```kotlin
+ * import std.iter
+ *
  * // the number four 4ever:
  * var fours = iter.repeat(4)
  * check(4 == fours.next())
@@ -45,6 +48,8 @@ import io.github.kotlinmania.rustlang.core.result.Result
  * Going finite with [Iterator.take]:
  *
  * ```kotlin
+ * import std.iter
+ *
  * // that last example was too many fours. Let's only have four fours.
  * var fourFours = List(4) { 4 }
  * check(4 == fourFours.next())
@@ -65,7 +70,7 @@ public fun <T> repeat(elt: T): Repeat<T> = Repeat(element = elt)
 public open class Repeat<A>(
     public var element: A,
 ) : TrustedLen<Repeat<A>>, Iterable<A> {
-    override fun iterator(): kotlin.collections.Iterator<A> = object : AbstractIterator<A>() {
+    override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
         override fun computeNext() {
             when (val v = this@Repeat.next()) {
                 null -> done()
@@ -119,10 +124,10 @@ public open class Repeat<A>(
     public open fun nthBack(n: Int): A? = this.element.clone()
 
     public companion object {
-        public fun <A> typeLayout(typeLayoutA: io.github.kotlinmania.rustlang.core.mem.TypeLayout<A>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Repeat<A>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Repeat<A>> {
+        public fun <A> typeLayout(typeLayoutA: TypeLayout<A>): TypeLayout<Repeat<A>> =
+            object : TypeLayout<Repeat<A>> {
                 override val alignBytes: Long = listOf(1L, typeLayoutA.alignBytes).max()
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(typeLayoutA.sizeBytes, alignBytes)
+                override val sizeBytes: Long = alignUpBytes(typeLayoutA.sizeBytes, alignBytes)
                 override fun readNative(addr: Long): Repeat<A> =
                     Repeat(
                         (typeLayoutA).readNative(addr),

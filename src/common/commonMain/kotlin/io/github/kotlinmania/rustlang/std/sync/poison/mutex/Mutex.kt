@@ -5,8 +5,6 @@ import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.std.fmt
-import io.github.kotlinmania.rustlang.std.mem
 import io.github.kotlinmania.rustlang.std.sync.nonpoison.TryLockResult
 import io.github.kotlinmania.rustlang.std.sync.poison.Flag
 import io.github.kotlinmania.rustlang.std.sync.poison.Guard
@@ -121,6 +119,7 @@ public class DebugStruct(
  * ```kotlin
  * import std.sync.Mutex
  * import std.sync.mpsc.channel
+ * import std.thread
  *
  * val N: Int = 10
  * // Spawn a few threads to increment a shared variable (non-atomically), and
@@ -153,6 +152,7 @@ public class DebugStruct(
  *
  * ```kotlin
  * import std.sync.Mutex
+ * import std.thread
  *
  * val lock = Mutex.new(0u)
  * val lock2 = lock
@@ -184,6 +184,7 @@ public class DebugStruct(
  *
  * ```kotlin
  * import std.sync.Mutex
+ * import std.thread
  *
  * val N: Int = 3
  * val dataMutex = Mutex.new(mutableListOf(1, 2, 3, 4))
@@ -222,7 +223,7 @@ public class DebugStruct(
  * // be waiting forever for it, causing a deadlock.
  * // As in the threads, a block could have been used instead of calling the
  * // `drop` function.
- * drop(data)
+ * (data).let { }
  * // Here the mutex guard is not assigned to a variable and so, even if the
  * // scope does not end after this line, the mutex is still released: there is
  * // no deadlock.
@@ -234,7 +235,7 @@ public class DebugStruct(
  * ```
  */
 public open class Mutex<T>(
-    public var inner: io.github.kotlinmania.rustlang.std.sys.sync.mutex.fuchsia.Mutex,
+    public var inner: io.github.kotlinmania.rustlang.std.sys.sync.mutex.futex.Mutex,
     public var poison: Flag,
     public var data: UnsafeCell<T>,
 ) {
@@ -316,10 +317,10 @@ public open class Mutex<T>(
      * ```
      */
     public open fun set(value: T): Result<Unit, PoisonError<T>> =
-        if (mem.needsDrop<T>()) {
+        if (needsDrop<T>()) {
             // If the contained value has non-trivial destructor, we
             // call that destructor after the lock being released.
-            this.replace(value).map(drop)
+            this.replace(value).map({ Unit })
         } else {
             run {
                 val matchVal = this.lock()
@@ -359,7 +360,7 @@ public open class Mutex<T>(
             val matchVal = this.lock()
             when (matchVal) { is Result.Ok<*> -> {
                 val guard = matchVal.value
-                Result.Ok(mem.replace(guard, value))
+                Result.Ok(replace(guard, value))
             }; is Result.Err<*> -> {
                 Result.Err(PoisonError.new(value))
             } }
@@ -392,6 +393,7 @@ public open class Mutex<T>(
      *
      * ```kotlin
      * import std.sync.Mutex
+     * import std.thread
      *
      * val mutex = Mutex.new(0)
      * val cMutex = mutex
@@ -433,6 +435,7 @@ public open class Mutex<T>(
      *
      * ```kotlin
      * import std.sync.Mutex
+     * import std.thread
      *
      * val mutex = Mutex.new(0)
      * val cMutex = mutex
@@ -467,6 +470,7 @@ public open class Mutex<T>(
      *
      * ```kotlin
      * import std.sync.Mutex
+     * import std.thread
      *
      * val mutex = Mutex.new(0)
      * val cMutex = mutex
@@ -492,6 +496,7 @@ public open class Mutex<T>(
      *
      * ```kotlin
      * import std.sync.Mutex
+     * import std.thread
      *
      * val mutex = Mutex.new(0)
      * val cMutex = mutex
@@ -610,7 +615,7 @@ public open class Mutex<T>(
          * val mutex = Mutex.new(0)
          * ```
          */
-        public fun <T> new(t: T): Mutex<T> = Mutex(inner = io.github.kotlinmania.rustlang.std.sys.sync.mutex.fuchsia.Mutex.new(), poison = Flag.new(), data = UnsafeCell.new(t))
+        public fun <T> new(t: T): Mutex<T> = Mutex(inner = io.github.kotlinmania.rustlang.std.sys.sync.mutex.new(), poison = Flag.new(), data = UnsafeCell.new(t))
 
         /**
          * Creates a new mutex in an unlocked state ready for use.
@@ -752,7 +757,7 @@ public open class MappedMutexGuard<T>(
     // `NonNull` is covariant over `T`, so we add a `PhantomData<T>` field
     // below for the correct variance over `T` (invariance).
     public var data: NonNull,
-    public var inner: io.github.kotlinmania.rustlang.std.sys.sync.mutex.fuchsia.Mutex,
+    public var inner: io.github.kotlinmania.rustlang.std.sys.sync.mutex.futex.Mutex,
     public var poisonFlag: Flag,
     public var poison: Guard,
     public var variance: Unit,
@@ -829,9 +834,9 @@ public open class MappedMutexGuard<T>(
 /**
  * For use in [`nonpoison.condvar`](condvar).
  */
-internal fun <T> guardLock(guard: MutexGuard<T>): io.github.kotlinmania.rustlang.std.sys.sync.mutex.fuchsia.Mutex = guard.lock.inner
+public fun <T> guardLock(guard: MutexGuard<T>): io.github.kotlinmania.rustlang.std.sys.sync.mutex.futex.Mutex = guard.lock.inner
 
 /**
  * For use in [`nonpoison.condvar`](condvar).
  */
-internal fun <T> guardPoison(guard: MutexGuard<T>): Flag = guard.lock.poison
+public fun <T> guardPoison(guard: MutexGuard<T>): Flag = guard.lock.poison

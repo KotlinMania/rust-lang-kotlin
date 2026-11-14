@@ -1,9 +1,9 @@
-@file:OptIn(kotlin.ExperimentalUnsignedTypes::class, kotlin.wasm.ExperimentalWasmInterop::class)
+@file:OptIn(ExperimentalUnsignedTypes::class, ExperimentalWasmInterop::class)
 
 package io.github.kotlinmania.rustlang.corearch.x86
 
-// The host must provide the C companion wrapper exports in import module corearch.
-@kotlin.wasm.WasmImport("corearch", "corearchX86Bmi1X86BmiBextr32")
+// The host must provide the C companion wrapper exports in import module kmcore.
+@kotlin.wasm.WasmImport("kmcore", "corearchX86Bmi1X86BmiBextr32")
 private external fun wasiCorearchX86Bmi1X86BmiBextr32(x: Int, y: Int): Int
 
 public actual fun x86BmiBextr32(x: UInt, y: UInt): UInt =

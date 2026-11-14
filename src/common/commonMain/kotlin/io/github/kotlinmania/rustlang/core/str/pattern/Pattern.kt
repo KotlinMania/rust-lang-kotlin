@@ -3,21 +3,23 @@
 
 package io.github.kotlinmania.rustlang.core.str.pattern
 
+import io.github.kotlinmania.rustlang.core.cmp.Eq
+import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.num.rustSaturatingSub
 import io.github.kotlinmania.rustlang.core.option.Option
 import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
-import io.github.kotlinmania.rustlang.core.ptr.eq
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.memchr.memchr
 import io.github.kotlinmania.rustlang.core.str.iter.CharIndices
 import io.github.kotlinmania.rustlang.core.str.rustStrChars
-import io.github.kotlinmania.rustlang.core.simd.Mask8x16 as Mask
-import io.github.kotlinmania.rustlang.core.simd.U8x16 as Block
+import io.github.kotlinmania.rustlang.core.Mask8x16 as Mask
+import io.github.kotlinmania.rustlang.core.U8x16 as Block
 
 // The string Pattern API.
 //
@@ -190,7 +192,7 @@ public interface Pattern<Searcher> {
                             val leftVal = matchVal1.first
                             val rightVal = matchVal1.second
                             if (!(leftVal == rightVal)) {
-                                val kind = eq
+                                val kind = Eq
                                 assertFailed(kind, leftVal, rightVal, Option.Some("The first search step from Searcher must include the first character"))
                             }
                         }
@@ -218,7 +220,7 @@ public interface Pattern<Searcher> {
                             val leftVal = matchVal1.first
                             val rightVal = matchVal1.second
                             if (!(leftVal == rightVal)) {
-                                val kind = eq
+                                val kind = Eq
                                 assertFailed(kind, leftVal, rightVal, Option.Some("The first search step from ReverseSearcher must include the last character"))
                             }
                         }
@@ -555,6 +557,8 @@ public open class CharSearcher(
      */
     public var utf8Encoded: UByteArray,
 ) : Searcher, ReverseSearcher, DoubleEndedSearcher {
+    public open fun clone(): CharSearcher = CharSearcher(haystack, finger, fingerBack, needle, utf8Size, utf8Encoded)
+
     public open fun utf8Size(): Int = this.utf8Size.into()
 
     public override fun haystack(): String = this.haystack
@@ -782,10 +786,10 @@ public open class MultiCharEqPattern<C : MultiCharEq>(
     public override fun intoSearcher(haystack: String): MultiCharEqSearcher<C> = MultiCharEqSearcher(haystack = haystack, charEq = this.value, charIndices = haystack.charIndices())
 
     public companion object {
-        public fun <C : MultiCharEq> typeLayout(typeLayoutC: io.github.kotlinmania.rustlang.core.mem.TypeLayout<C>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<MultiCharEqPattern<C>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<MultiCharEqPattern<C>> {
+        public fun <C : MultiCharEq> typeLayout(typeLayoutC: TypeLayout<C>): TypeLayout<MultiCharEqPattern<C>> =
+            object : TypeLayout<MultiCharEqPattern<C>> {
                 override val alignBytes: Long = listOf(1L, typeLayoutC.alignBytes).max()
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(typeLayoutC.sizeBytes, alignBytes)
+                override val sizeBytes: Long = alignUpBytes(typeLayoutC.sizeBytes, alignBytes)
                 override fun readNative(addr: Long): MultiCharEqPattern<C> =
                     MultiCharEqPattern(
                         (typeLayoutC).readNative(addr),
@@ -870,6 +874,8 @@ public open class CharArraySearcher(
             value = v
         }
 
+    public open fun clone(): CharArraySearcher = CharArraySearcher(value)
+
     public override fun haystack(): String = this.value.haystack()
 
     public override fun next(): SearchStep = this.value.next()
@@ -896,6 +902,8 @@ public open class CharArrayRefSearcher(
         set(v) {
             value = v
         }
+
+    public open fun clone(): CharArrayRefSearcher = CharArrayRefSearcher(value)
 
     public override fun haystack(): String = this.value.haystack()
 
@@ -972,6 +980,8 @@ public open class CharSliceSearcher(
         set(v) {
             value = v
         }
+
+    public open fun clone(): CharSliceSearcher = CharSliceSearcher(value)
 
     public override fun haystack(): String = this.value.haystack()
 
@@ -1116,6 +1126,8 @@ public open class StrSearcher(
     public var needle: String,
     public var searcher: StrSearcherImpl,
 ) : Searcher, ReverseSearcher {
+    public open fun clone(): StrSearcher = StrSearcher(haystack, needle, searcher)
+
     public override fun haystack(): String = this.haystack
 
     public override fun next(): SearchStep {
@@ -1179,7 +1191,7 @@ public open class StrSearcher(
                         val (a, b) = matchVal2
                         // skip to next char boundary
                         val b1 = this.haystack.ceilCharBoundary(b)
-                        searcher2.position = cmp.max(b1, searcher2.position)
+                        searcher2.position = max(b1, searcher2.position)
                         SearchStep.Reject(a, b1)
                     }
                     else -> {
@@ -1371,40 +1383,42 @@ public open class EmptyNeedle(
     // Needed in case of an empty haystack, see #85462
     public var isFinished: Boolean,
 ) {
+    public open fun clone(): EmptyNeedle = EmptyNeedle(position, end, isMatchFw, isMatchBw, isFinished)
+
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<EmptyNeedle> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<EmptyNeedle> {
+        public fun typeLayout(): TypeLayout<EmptyNeedle> =
+            object : TypeLayout<EmptyNeedle> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 24L
                 override fun readNative(addr: Long): EmptyNeedle =
                     EmptyNeedle(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readNative(addr + 8L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 16L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 17L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 18L),
+                        (PrimitiveLayouts.USIZE64).readNative(addr),
+                        (PrimitiveLayouts.USIZE64).readNative(addr + 8L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 16L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 17L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 18L),
                     )
                 override fun writeNative(addr: Long, value: EmptyNeedle) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeNative(addr, value.position)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeNative(addr + 8L, value.end)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 16L, value.isMatchFw)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 17L, value.isMatchBw)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 18L, value.isFinished)
+                    (PrimitiveLayouts.USIZE64).writeNative(addr, value.position)
+                    (PrimitiveLayouts.USIZE64).writeNative(addr + 8L, value.end)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 16L, value.isMatchFw)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 17L, value.isMatchBw)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 18L, value.isFinished)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): EmptyNeedle =
                     EmptyNeedle(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readBytes(buf, offset + 8),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 16),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 17),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 18),
+                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset),
+                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset + 8),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 16),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 17),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 18),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: EmptyNeedle) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeBytes(buf, offset, value.position)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeBytes(buf, offset + 8, value.end)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 16, value.isMatchFw)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 17, value.isMatchBw)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 18, value.isFinished)
+                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset, value.position)
+                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset + 8, value.end)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 16, value.isMatchFw)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 17, value.isMatchBw)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 18, value.isFinished)
                 }
             }
     }
@@ -1424,32 +1438,34 @@ public open class ByteNeedle(
      */
     public var end: Int,
 ) {
+    public open fun clone(): ByteNeedle = ByteNeedle(b, position, end)
+
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<ByteNeedle> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<ByteNeedle> {
+        public fun typeLayout(): TypeLayout<ByteNeedle> =
+            object : TypeLayout<ByteNeedle> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 24L
                 override fun readNative(addr: Long): ByteNeedle =
                     ByteNeedle(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U8).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readNative(addr + 8L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readNative(addr + 16L),
+                        (PrimitiveLayouts.U8).readNative(addr),
+                        (PrimitiveLayouts.USIZE64).readNative(addr + 8L),
+                        (PrimitiveLayouts.USIZE64).readNative(addr + 16L),
                     )
                 override fun writeNative(addr: Long, value: ByteNeedle) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U8).writeNative(addr, value.b)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeNative(addr + 8L, value.position)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeNative(addr + 16L, value.end)
+                    (PrimitiveLayouts.U8).writeNative(addr, value.b)
+                    (PrimitiveLayouts.USIZE64).writeNative(addr + 8L, value.position)
+                    (PrimitiveLayouts.USIZE64).writeNative(addr + 16L, value.end)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): ByteNeedle =
                     ByteNeedle(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U8).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readBytes(buf, offset + 8),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readBytes(buf, offset + 16),
+                        (PrimitiveLayouts.U8).readBytes(buf, offset),
+                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset + 8),
+                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset + 16),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: ByteNeedle) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U8).writeBytes(buf, offset, value.b)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeBytes(buf, offset + 8, value.position)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeBytes(buf, offset + 16, value.end)
+                    (PrimitiveLayouts.U8).writeBytes(buf, offset, value.b)
+                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset + 8, value.position)
+                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset + 16, value.end)
                 }
             }
     }
@@ -1487,6 +1503,8 @@ public open class TwoWaySearcher(
      */
     public var memoryBack: Int,
 ) {
+    public open fun clone(): TwoWaySearcher = TwoWaySearcher(critPos, critPosBack, period, byteset, position, end, memory, memoryBack)
+
     //
     // This is the Two-Way search algorithm, which was introduced in the paper:
     // Crochemore, M., Perrin, D., 1991, Two-way string-matching, Journal of the ACM 38(3):651-675.
@@ -1602,7 +1620,7 @@ public open class TwoWaySearcher(
                 if (longPeriod) {
                     this.critPos
                 } else {
-                    cmp.max(this.critPos, this.memory)
+                    max(this.critPos, this.memory)
                 }
             for (i in start until needle.size) {
                 // SAFETY: on every iteration of `search`, the `haystack.get(self.position + needleLast)`
@@ -1752,51 +1770,51 @@ public open class TwoWaySearcher(
     }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<TwoWaySearcher> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<TwoWaySearcher> {
+        public fun typeLayout(): TypeLayout<TwoWaySearcher> =
+            object : TypeLayout<TwoWaySearcher> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 64L
                 override fun readNative(addr: Long): TwoWaySearcher =
                     TwoWaySearcher(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readNative(addr + 8L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readNative(addr + 16L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).readNative(addr + 24L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readNative(addr + 32L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readNative(addr + 40L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readNative(addr + 48L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readNative(addr + 56L),
+                        (PrimitiveLayouts.USIZE64).readNative(addr),
+                        (PrimitiveLayouts.USIZE64).readNative(addr + 8L),
+                        (PrimitiveLayouts.USIZE64).readNative(addr + 16L),
+                        (PrimitiveLayouts.U64).readNative(addr + 24L),
+                        (PrimitiveLayouts.USIZE64).readNative(addr + 32L),
+                        (PrimitiveLayouts.USIZE64).readNative(addr + 40L),
+                        (PrimitiveLayouts.USIZE64).readNative(addr + 48L),
+                        (PrimitiveLayouts.USIZE64).readNative(addr + 56L),
                     )
                 override fun writeNative(addr: Long, value: TwoWaySearcher) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeNative(addr, value.critPos)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeNative(addr + 8L, value.critPosBack)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeNative(addr + 16L, value.period)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).writeNative(addr + 24L, value.byteset)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeNative(addr + 32L, value.position)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeNative(addr + 40L, value.end)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeNative(addr + 48L, value.memory)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeNative(addr + 56L, value.memoryBack)
+                    (PrimitiveLayouts.USIZE64).writeNative(addr, value.critPos)
+                    (PrimitiveLayouts.USIZE64).writeNative(addr + 8L, value.critPosBack)
+                    (PrimitiveLayouts.USIZE64).writeNative(addr + 16L, value.period)
+                    (PrimitiveLayouts.U64).writeNative(addr + 24L, value.byteset)
+                    (PrimitiveLayouts.USIZE64).writeNative(addr + 32L, value.position)
+                    (PrimitiveLayouts.USIZE64).writeNative(addr + 40L, value.end)
+                    (PrimitiveLayouts.USIZE64).writeNative(addr + 48L, value.memory)
+                    (PrimitiveLayouts.USIZE64).writeNative(addr + 56L, value.memoryBack)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): TwoWaySearcher =
                     TwoWaySearcher(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readBytes(buf, offset + 8),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readBytes(buf, offset + 16),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).readBytes(buf, offset + 24),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readBytes(buf, offset + 32),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readBytes(buf, offset + 40),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readBytes(buf, offset + 48),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readBytes(buf, offset + 56),
+                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset),
+                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset + 8),
+                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset + 16),
+                        (PrimitiveLayouts.U64).readBytes(buf, offset + 24),
+                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset + 32),
+                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset + 40),
+                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset + 48),
+                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset + 56),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: TwoWaySearcher) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeBytes(buf, offset, value.critPos)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeBytes(buf, offset + 8, value.critPosBack)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeBytes(buf, offset + 16, value.period)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).writeBytes(buf, offset + 24, value.byteset)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeBytes(buf, offset + 32, value.position)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeBytes(buf, offset + 40, value.end)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeBytes(buf, offset + 48, value.memory)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeBytes(buf, offset + 56, value.memoryBack)
+                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset, value.critPos)
+                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset + 8, value.critPosBack)
+                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset + 16, value.period)
+                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 24, value.byteset)
+                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset + 32, value.position)
+                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset + 40, value.end)
+                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset + 48, value.memory)
+                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset + 56, value.memoryBack)
                 }
             }
 
@@ -1828,7 +1846,7 @@ public open class TwoWaySearcher(
                 // (critPos = 1, period = 3) while being factored with approximate
                 // period in reverse (critPos = 2, period = 2). We use the given
                 // reverse factorization but keep the exact period.
-                val critPosBack = needle.size - cmp.max(TwoWaySearcher.reverseMaximalSuffix(needle, period, false), TwoWaySearcher.reverseMaximalSuffix(needle, period, true))
+                val critPosBack = needle.size - max(TwoWaySearcher.reverseMaximalSuffix(needle, period, false), TwoWaySearcher.reverseMaximalSuffix(needle, period, true))
                 TwoWaySearcher(critPos = critPos, critPosBack = critPosBack, period = period, byteset = TwoWaySearcher.bytesetCreate(((needle).slice(0 until period))), position = 0, end = end, memory = 0, memoryBack = needle.size)
             } else {
                 // long period case -- we have an approximation to the actual period,
@@ -1837,7 +1855,7 @@ public open class TwoWaySearcher(
                 // Approximate the period by lower bound max(|u|, |v|) + 1.
                 // The critical factorization is efficient to use for both forward and
                 // reverse search.
-                TwoWaySearcher(critPos = critPos, critPosBack = critPos, period = cmp.max(critPos, needle.size - critPos) + 1, byteset = TwoWaySearcher.bytesetCreate(needle), position = 0, end = end, memory = Int.MAX_VALUE, memoryBack = Int.MAX_VALUE)
+                TwoWaySearcher(critPos = critPos, critPosBack = critPos, period = max(critPos, needle.size - critPos) + 1, byteset = TwoWaySearcher.bytesetCreate(needle), position = 0, end = end, memory = Int.MAX_VALUE, memoryBack = Int.MAX_VALUE)
             }
         }
 
@@ -2125,7 +2143,7 @@ public fun smallSliceEq(x: List<UByte>, y: List<UByte>): Boolean {
                 val leftVal = matchVal.first
                 val rightVal = matchVal.second
                 if (!(leftVal == rightVal)) {
-                    val kind = eq
+                    val kind = Eq
                     assertFailed(kind, leftVal, rightVal, Option.None)
                 }
             }

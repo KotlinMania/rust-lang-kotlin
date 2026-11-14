@@ -2,7 +2,7 @@
 package io.github.kotlinmania.rustlang.stddetect.detect.os.linux.powerpc
 
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.stddetect.detect.Feature
+import io.github.kotlinmania.rustlang.stddetect.detect.arch.Feature
 import io.github.kotlinmania.rustlang.stddetect.detect.cache.Cache
 import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.auxvec.auxv
 
@@ -28,7 +28,7 @@ public val PPC_FEATURE2_ARCH_3_00: Int = 0x00800000
 /**
  * Try to read the features from the auxiliary vector.
  */
-internal fun detectFeatures(): Initializer {
+public fun detectFeatures(): Initializer {
     val value = Cache.Initializer.default()
     val enableFeature =
         { value1: Initializer, f, enable ->

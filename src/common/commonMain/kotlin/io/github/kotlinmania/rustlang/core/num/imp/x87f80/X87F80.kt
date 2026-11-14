@@ -41,9 +41,11 @@ public class DebugTuple(
  * can handle it fine, but callconv calculation will likely panic.
  */
 public open class X87F80Raw {
+    public open fun clone(): X87F80Raw = X87F80Raw()
+
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<X87F80Raw> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<X87F80Raw> {
+        public fun typeLayout(): TypeLayout<X87F80Raw> =
+            object : TypeLayout<X87F80Raw> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): X87F80Raw =
@@ -76,11 +78,13 @@ public open class X87F80(
             value = v
         }
 
+    public open fun clone(): X87F80 = X87F80(value)
+
     public open fun fmt(f: Formatter): Result = DebugTuple(f, "x87_f80").finish()
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<X87F80> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<X87F80> {
+        public fun typeLayout(): TypeLayout<X87F80> =
+            object : TypeLayout<X87F80> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): X87F80 =

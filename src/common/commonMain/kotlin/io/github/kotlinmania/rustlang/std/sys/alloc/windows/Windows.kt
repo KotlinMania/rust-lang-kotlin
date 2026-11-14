@@ -7,11 +7,9 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.std.ptr
 import io.github.kotlinmania.rustlang.std.sys.alloc.MIN_ALIGN
 import io.github.kotlinmania.rustlang.std.sys.alloc.reallocFallback
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.Bool
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.handle.Handle
+import io.github.kotlinmania.rustlang.std.sys.c
 
 // Implements `System` on Windows.
 //
@@ -37,7 +35,7 @@ public val HEAP_ZERO_MEMORY: UInt = 0x00000008u
 // always return the same handle, which remains valid for the entire scope of the process.
 //
 // See https://docs.microsoft.com/windows/win32/api/heapapi/nf-heapapi-getprocessheap
-public expect fun getProcessHeap(): Handle
+public expect fun getProcessHeap(): c.Handle
 
 // Allocate a block of `dwBytes` bytes of memory from a given heap `hHeap`.
 // The allocated memory may be uninitialized, or zeroed if `dwFlags` is
@@ -53,7 +51,7 @@ public expect fun getProcessHeap(): Handle
 // Note that `dwBytes` is allowed to be zero, contrary to some other allocators.
 //
 // See https://docs.microsoft.com/windows/win32/api/heapapi/nf-heapapi-heapalloc
-public expect fun heapAlloc(hheap: Handle, dwflags: UInt, dwbytes: ULong): MutPtr
+public expect fun heapAlloc(hheap: c.Handle, dwflags: UInt, dwbytes: ULong): MutPtr
 
 // Reallocate a block of memory behind a given pointer `lpMem` from a given heap `hHeap`,
 // to a block of at least `dwBytes` bytes, either shrinking the block in place,
@@ -74,7 +72,7 @@ public expect fun heapAlloc(hheap: Handle, dwflags: UInt, dwbytes: ULong): MutPt
 // Note that `dwBytes` is allowed to be zero, contrary to some other allocators.
 //
 // See https://docs.microsoft.com/windows/win32/api/heapapi/nf-heapapi-heaprealloc
-public expect fun heapReAlloc(hheap: Handle, dwflags: UInt, lpmem: ConstPtr, dwbytes: ULong): MutPtr
+public expect fun heapReAlloc(hheap: c.Handle, dwflags: UInt, lpmem: ConstPtr, dwbytes: ULong): MutPtr
 
 // Free a block of memory behind a given pointer `lpMem` from a given heap `hHeap`.
 // Returns a nonzero value if the operation is successful, and zero if the operation fails.
@@ -90,14 +88,14 @@ public expect fun heapReAlloc(hheap: Handle, dwflags: UInt, lpmem: ConstPtr, dwb
 // Note that `lpMem` is allowed to be null, which will not cause the operation to fail.
 //
 // See https://docs.microsoft.com/windows/win32/api/heapapi/nf-heapapi-heapfree
-public expect fun heapFree(hheap: Handle, dwflags: UInt, lpmem: ConstPtr): Bool
+public expect fun heapFree(hheap: c.Handle, dwflags: UInt, lpmem: ConstPtr): c.Bool
 
 public fun getProcessHeap(): MutPtr {
     // SAFETY: GetProcessHeap simply returns a valid handle or NULL so is always safe to call.
     return GetProcessHeap()
 }
 
-public fun processHeapAlloc(heap: MaybeUninit<Handle>, flags: UInt, bytes: Int): MutPtr {
+public fun processHeapAlloc(heap: MaybeUninit<c.Handle>, flags: UInt, bytes: Int): MutPtr {
     val heap = getProcessHeap()
     if (((heap).rawAddress == 0L)) {
         return MutPtr(0L)
@@ -121,23 +119,23 @@ public open class Header internal constructor(
         }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Header> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Header> {
+        public fun typeLayout(): TypeLayout<Header> =
+            object : TypeLayout<Header> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 8L
                 override fun readNative(addr: Long): Header =
                     Header(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).readNative(addr),
+                        (PrimitiveLayouts.mutPtrLayout(64)).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: Header) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).writeNative(addr, value.value)
+                    (PrimitiveLayouts.mutPtrLayout(64)).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Header =
                     Header(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).readBytes(buf, offset),
+                        (PrimitiveLayouts.mutPtrLayout(64)).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Header) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).writeBytes(buf, offset, value.value)
+                    (PrimitiveLayouts.mutPtrLayout(64)).writeBytes(buf, offset, value.value)
                 }
             }
 
@@ -192,7 +190,7 @@ public fun allocate(layout: Layout, zeroed: Boolean): MutPtr {
         // SAFETY: Because the size and alignment of a header is <= `MIN_ALIGN` and `aligned`
         // is aligned to at least `MIN_ALIGN` and has at least `MIN_ALIGN` bytes of padding before
         // it, it is safe to write a header directly before it.
-        ptr.write(MutPtr(((MutPtr(aligned.rawAddress, aligned.rawMeta))).rawAddress - ((1).toLong() * (Header.typeLayout()).strideBytes)), Header(ptr), typeLayoutT = Header.typeLayout())
+        write(MutPtr(((MutPtr(aligned.rawAddress, aligned.rawMeta))).rawAddress - ((1).toLong() * (Header.typeLayout()).strideBytes)), Header(ptr), typeLayoutT = Header.typeLayout())
         // SAFETY: The returned pointer does not point to the start of an allocated block,
         // but there is a header readable directly before it containing the location of the start
         // of the block.
@@ -219,7 +217,7 @@ public fun dealloc(ptr: MutPtr, layout: Layout) {
         // The location of the start of the block is stored in the padding before `ptr`.
         // SAFETY: Because of the contract of `System`, `ptr` is guaranteed to be non-null
         // and have a header readable directly before it.
-        ptr.read(MutPtr(((MutPtr(ptr.rawAddress, ptr.rawMeta))).rawAddress - ((1).toLong() * (Header.typeLayout()).strideBytes)), typeLayoutT = Header.typeLayout()).first
+        read(MutPtr(((MutPtr(ptr.rawAddress, ptr.rawMeta))).rawAddress - ((1).toLong() * (Header.typeLayout()).strideBytes)), typeLayoutT = Header.typeLayout()).first
     }
     // because `ptr` has been successfully allocated with this allocator,
     // there must be a valid process heap.

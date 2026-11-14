@@ -15,28 +15,30 @@ public open class Neon128(
     public var low: ULong,
     public var high: Long,
 ) {
+    public open fun clone(): Neon128 = Neon128(low, high)
+
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Neon128> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Neon128> {
+        public fun typeLayout(): TypeLayout<Neon128> =
+            object : TypeLayout<Neon128> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): Neon128 =
                     Neon128(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I64).readNative(addr + 8L),
+                        (PrimitiveLayouts.U64).readNative(addr),
+                        (PrimitiveLayouts.I64).readNative(addr + 8L),
                     )
                 override fun writeNative(addr: Long, value: Neon128) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).writeNative(addr, value.low)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I64).writeNative(addr + 8L, value.high)
+                    (PrimitiveLayouts.U64).writeNative(addr, value.low)
+                    (PrimitiveLayouts.I64).writeNative(addr + 8L, value.high)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Neon128 =
                     Neon128(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I64).readBytes(buf, offset + 8),
+                        (PrimitiveLayouts.U64).readBytes(buf, offset),
+                        (PrimitiveLayouts.I64).readBytes(buf, offset + 8),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Neon128) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).writeBytes(buf, offset, value.low)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I64).writeBytes(buf, offset + 8, value.high)
+                    (PrimitiveLayouts.U64).writeBytes(buf, offset, value.low)
+                    (PrimitiveLayouts.I64).writeBytes(buf, offset + 8, value.high)
                 }
             }
     }
@@ -78,6 +80,8 @@ public open class Context(
     public var wvr: UIntArray,
     public var wcr: UIntArray,
     public var padding2: UIntArray,
-)
+) {
+    public open fun clone(): Context = Context(contextFlags, r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, sp, lr, pc, cpsr, fpsrc, padding, u, bvr, bcr, wvr, wcr, padding2)
+}
 
 public val IMAGE_FILE_MACHINE_ARMNT: ImageFileMachine = 0x01c4u

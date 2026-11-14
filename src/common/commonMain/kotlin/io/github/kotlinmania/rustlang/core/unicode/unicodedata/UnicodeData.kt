@@ -142,7 +142,7 @@ public fun skipSearch(needle: Char, shortOffsetRuns: List<ShortOffsetRunHeader>,
                 next.startIndex() - offsetIdx
             }
         }
-    val prev = (lastIdx.checkedSub(1)?.let({ prev -> shortOffsetRuns[prev].prefixSum() }) ?: 0)
+    val prev = (lastIdx.checkedSub(1)?.let({ prev -> shortOffsetRuns[prev].prefixSum() }) ?: 0u)
     val total = needle1 - prev
     var prefixSum = 0
     for (unused in 0 until (length - 1)) {

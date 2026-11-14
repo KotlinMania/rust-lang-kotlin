@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.core.iter.adapters.byrefsized
 
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
 
 /**
@@ -20,7 +21,7 @@ public open class ByRefSized<I>(
             value = v
         }
 
-    override fun iterator(): kotlin.collections.Iterator<Item> = object : AbstractIterator<Item>() {
+    override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
         override fun computeNext() {
             when (val v = this@ByRefSized.next()) {
                 null -> done()

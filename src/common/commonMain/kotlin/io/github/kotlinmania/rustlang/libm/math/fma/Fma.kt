@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.libm.math.fma
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.libm.math.generic.fma.fmaRound
 import io.github.kotlinmania.rustlang.libm.math.generic.fmawide.fmaWideRound
+import io.github.kotlinmania.rustlang.libm.math.support.env.Round
 
 // See `fmaf16.rs` for that implementation
 

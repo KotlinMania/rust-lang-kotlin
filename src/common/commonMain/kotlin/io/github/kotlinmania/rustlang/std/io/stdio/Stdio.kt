@@ -1,7 +1,6 @@
 // port-lint: source io/stdio.rs
 package io.github.kotlinmania.rustlang.std.io.stdio
 
-import io.github.kotlinmania.fmt.Arguments
 import io.github.kotlinmania.rustlang.alloc.io.buffered.bufreader.BufReader
 import io.github.kotlinmania.rustlang.alloc.io.buffered.linewriter.LineWriter
 import io.github.kotlinmania.rustlang.alloc.io.util.Lines
@@ -16,14 +15,15 @@ import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
-import io.github.kotlinmania.rustlang.std.fmt
 import io.github.kotlinmania.rustlang.std.fs.File
+import io.github.kotlinmania.rustlang.std.io.Write
+import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.sync.nonpoison.mutex.Mutex
 import io.github.kotlinmania.rustlang.std.sync.nonpoison.mutex.MutexGuard
 import io.github.kotlinmania.rustlang.std.sync.oncelock.OnceLock
 import io.github.kotlinmania.rustlang.std.sync.reentrantlock.ReentrantLock
 import io.github.kotlinmania.rustlang.std.sync.reentrantlock.ReentrantLockGuard
-import io.github.kotlinmania.rustlang.std.sys.process.motor.Stdio
+import io.github.kotlinmania.rustlang.std.sys.process.unsupported.Stdio
 import io.github.kotlinmania.rustlang.std.thread.AccessError
 import io.github.kotlinmania.rustlang.std.thread.LocalKey
 import io.github.kotlinmania.rustlang.std.thread.localimpl.threadLocalInner
@@ -95,31 +95,31 @@ public open class StdinRaw(
             value = v
         }
 
-    public open fun read(buf: MutableList<UByte>): Result<Int> = handleEbadf(this.value.read(buf), { Result.Ok(0) })
+    public open fun read(buf: MutableList<UByte>): Result<Int, Error> = handleEbadf(this.value.read(buf), { Result.Ok(0) })
 
-    public open fun readBuf(buf: BorrowedCursor<UByte>): Result<Unit> = handleEbadf(this.value.readBuf(buf), { Result.Ok(Unit) })
+    public open fun readBuf(buf: BorrowedCursor<UByte>): Result<Unit, Error> = handleEbadf(this.value.readBuf(buf), { Result.Ok(Unit) })
 
-    public open fun readVectored(bufs: MutableList<IoSliceMut>): Result<Int> = handleEbadf(this.value.readVectored(bufs), { Result.Ok(0) })
+    public open fun readVectored(bufs: MutableList<IoSliceMut>): Result<Int, Error> = handleEbadf(this.value.readVectored(bufs), { Result.Ok(0) })
 
     public open fun isReadVectored(): Boolean = this.value.isReadVectored()
 
-    public open fun readExact(buf: MutableList<UByte>): Result<Unit> {
+    public open fun readExact(buf: MutableList<UByte>): Result<Unit, Error> {
         if (buf.isEmpty()) {
             return Result.Ok(Unit)
         }
-        return handleEbadf(this.value.readExact(buf), { Result.Err(io.Error.READ_EXACT_EOF) })
+        return handleEbadf(this.value.readExact(buf), { Result.Err(io.github.kotlinmania.rustlang.std.io.Error.READ_EXACT_EOF) })
     }
 
-    public open fun readBufExact(buf: BorrowedCursor<UByte>): Result<Unit> {
+    public open fun readBufExact(buf: BorrowedCursor<UByte>): Result<Unit, Error> {
         if (buf.capacity() == 0) {
             return Result.Ok(Unit)
         }
-        return handleEbadf(this.value.readBufExact(buf), { Result.Err(io.Error.READ_EXACT_EOF) })
+        return handleEbadf(this.value.readBufExact(buf), { Result.Err(io.github.kotlinmania.rustlang.std.io.Error.READ_EXACT_EOF) })
     }
 
-    public open fun readToEnd(buf: List<UByte>): Result<Int> = handleEbadf(this.value.readToEnd(buf), { Result.Ok(0) })
+    public open fun readToEnd(buf: List<UByte>): Result<Int, Error> = handleEbadf(this.value.readToEnd(buf), { Result.Ok(0) })
 
-    public open fun readToString(buf: String): Result<Int> = handleEbadf(this.value.readToString(buf), { Result.Ok(0) })
+    public open fun readToString(buf: String): Result<Int, Error> = handleEbadf(this.value.readToString(buf), { Result.Ok(0) })
 }
 
 /**
@@ -137,22 +137,22 @@ public open class StdoutRaw(
             value = v
         }
 
-    public open fun write(buf: List<UByte>): Result<Int> = handleEbadf(this.value.write(buf), { Result.Ok(buf.size) })
+    public open fun write(buf: List<UByte>): Result<Int, Error> = handleEbadf(this.value.write(buf), { Result.Ok(buf.size) })
 
-    public open fun writeVectored(bufs: List<IoSlice>): Result<Int> {
+    public open fun writeVectored(bufs: List<IoSlice>): Result<Int, Error> {
         val total = { Result.Ok(bufs.map({ b -> b.len() }).sum()) }
         return handleEbadf(this.value.writeVectored(bufs), total)
     }
 
     public open fun isWriteVectored(): Boolean = this.value.isWriteVectored()
 
-    public open fun flush(): Result<Unit> = handleEbadf(this.value.flush(), { Result.Ok(Unit) })
+    public open fun flush(): Result<Unit, Error> = handleEbadf(this.value.flush(), { Result.Ok(Unit) })
 
-    public open fun writeAll(buf: List<UByte>): Result<Unit> = handleEbadf(this.value.writeAll(buf), { Result.Ok(Unit) })
+    public open fun writeAll(buf: List<UByte>): Result<Unit, Error> = handleEbadf(this.value.writeAll(buf), { Result.Ok(Unit) })
 
-    public open fun writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit> = handleEbadf(this.value.writeAllVectored(bufs), { Result.Ok(Unit) })
+    public open fun writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit, Error> = handleEbadf(this.value.writeAllVectored(bufs), { Result.Ok(Unit) })
 
-    public open fun writeFmt(fmt: Arguments): Result<Unit> = handleEbadf(this.value.writeFmt(fmt), { Result.Ok(Unit) })
+    public open fun writeFmt(fmt: Arguments): Result<Unit, Error> = handleEbadf(this.value.writeFmt(fmt), { Result.Ok(Unit) })
 }
 
 /**
@@ -170,22 +170,22 @@ public open class StderrRaw(
             value = v
         }
 
-    public open fun write(buf: List<UByte>): Result<Int> = handleEbadf(this.value.write(buf), { Result.Ok(buf.size) })
+    public open fun write(buf: List<UByte>): Result<Int, Error> = handleEbadf(this.value.write(buf), { Result.Ok(buf.size) })
 
-    public open fun writeVectored(bufs: List<IoSlice>): Result<Int> {
+    public open fun writeVectored(bufs: List<IoSlice>): Result<Int, Error> {
         val total = { Result.Ok(bufs.map({ b -> b.len() }).sum()) }
         return handleEbadf(this.value.writeVectored(bufs), total)
     }
 
     public open fun isWriteVectored(): Boolean = this.value.isWriteVectored()
 
-    public open fun flush(): Result<Unit> = handleEbadf(this.value.flush(), { Result.Ok(Unit) })
+    public open fun flush(): Result<Unit, Error> = handleEbadf(this.value.flush(), { Result.Ok(Unit) })
 
-    public open fun writeAll(buf: List<UByte>): Result<Unit> = handleEbadf(this.value.writeAll(buf), { Result.Ok(Unit) })
+    public open fun writeAll(buf: List<UByte>): Result<Unit, Error> = handleEbadf(this.value.writeAll(buf), { Result.Ok(Unit) })
 
-    public open fun writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit> = handleEbadf(this.value.writeAllVectored(bufs), { Result.Ok(Unit) })
+    public open fun writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit, Error> = handleEbadf(this.value.writeAllVectored(bufs), { Result.Ok(Unit) })
 
-    public open fun writeFmt(fmt: Arguments): Result<Unit> = handleEbadf(this.value.writeFmt(fmt), { Result.Ok(Unit) })
+    public open fun writeFmt(fmt: Arguments): Result<Unit, Error> = handleEbadf(this.value.writeFmt(fmt), { Result.Ok(Unit) })
 }
 
 /**
@@ -223,7 +223,7 @@ public fun stdoutRaw(): StdoutRaw = StdoutRaw(Stdio.Stdout.new())
  */
 public fun stderrRaw(): StderrRaw = StderrRaw(Stdio.Stderr.new())
 
-public fun <T> handleEbadf(r: Result<T>, default: () -> Result<T>): Result<T> =
+public fun <T> handleEbadf(r: Result<T, Error>, default: () -> Result<T, Error>): Result<T, Error> =
     when {
         r is Result.Err<*> && Stdio.isEbadf((r as Result.Err<*>).error) -> {
             val e = (r as Result.Err<*>).error
@@ -265,6 +265,8 @@ public fun <T> handleEbadf(r: Result<T>, default: () -> Result<T>): Result<T> =
  * # Examples
  *
  * ```kotlin
+ * import std.io
+ *
  * fun main(): io.Result<Unit> {
  *     var buffer = ""
  *     val stdin = io.stdin()
@@ -322,6 +324,8 @@ public open class Stdin internal constructor(
      * # Examples
      *
      * ```kotlin
+     * import std.io
+     *
      * var input = ""
      * run {
      *     val matchVal = io.stdin().readLine(input)
@@ -343,7 +347,7 @@ public open class Stdin internal constructor(
      *   in which case it will wait for the Enter key to be pressed before
      *   continuing
      */
-    public open fun readLine(buf: String): Result<Int> = this.lock().readLine(buf)
+    public open fun readLine(buf: String): Result<Int, Error> = this.lock().readLine(buf)
 
     /**
      * Consumes this handle and returns an iterator over input lines.
@@ -354,6 +358,8 @@ public open class Stdin internal constructor(
      * # Examples
      *
      * ```kotlin
+     * import std.io
+     *
      * val lines = io.stdin().lines()
      * for (line in lines) {
      *     println("got a line: ${line.unwrap()}")
@@ -366,23 +372,23 @@ public open class Stdin internal constructor(
         DebugStruct(f, "Stdin").finishNonExhaustive()
     }
 
-    public open fun read(buf: MutableList<UByte>): Result<Int> = this.lock().read(buf)
+    public open fun read(buf: MutableList<UByte>): Result<Int, Error> = this.lock().read(buf)
 
-    public open fun readBuf(buf: BorrowedCursor<UByte>): Result<Unit> = this.lock().readBuf(buf)
+    public open fun readBuf(buf: BorrowedCursor<UByte>): Result<Unit, Error> = this.lock().readBuf(buf)
 
-    public open fun readVectored(bufs: MutableList<IoSliceMut>): Result<Int> = this.lock().readVectored(bufs)
+    public open fun readVectored(bufs: MutableList<IoSliceMut>): Result<Int, Error> = this.lock().readVectored(bufs)
 
     public open fun isReadVectored(): Boolean = this.lock().isReadVectored()
 
-    public open fun readToEnd(buf: List<UByte>): Result<Int> = this.lock().readToEnd(buf)
+    public open fun readToEnd(buf: List<UByte>): Result<Int, Error> = this.lock().readToEnd(buf)
 
-    public open fun readToString(buf: String): Result<Int> = this.lock().readToString(buf)
+    public open fun readToString(buf: String): Result<Int, Error> = this.lock().readToString(buf)
 
-    public open fun readExact(buf: MutableList<UByte>): Result<Unit> = this.lock().readExact(buf)
+    public open fun readExact(buf: MutableList<UByte>): Result<Unit, Error> = this.lock().readExact(buf)
 
-    public open fun readBufExact(cursor: BorrowedCursor<UByte>): Result<Unit> = this.lock().readBufExact(cursor)
+    public open fun readBufExact(cursor: BorrowedCursor<UByte>): Result<Unit, Error> = this.lock().readBufExact(cursor)
 
-    public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.hermit.isTerminal(this)
+    public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.isatty.isTerminal(this)
 
     public companion object {
         public operator fun invoke(
@@ -437,43 +443,43 @@ public open class StdinLock internal constructor(
         internal set
 
     // only used by platform-dependent io.copy specializations, i.e. unused on some platforms
-    internal open fun asMutBuf(): kotlin.reflect.KMutableProperty0<MutexGuard<BufReader<StdinRaw>>> {
+    public open fun asMutBuf(): kotlin.reflect.KMutableProperty0<MutexGuard<BufReader<StdinRaw>>> {
         return this::inner
     }
 
-    public open fun read(buf: MutableList<UByte>): Result<Int> = this.inner.read(buf)
+    public open fun read(buf: MutableList<UByte>): Result<Int, Error> = this.inner.read(buf)
 
-    public open fun readBuf(buf: BorrowedCursor<UByte>): Result<Unit> = this.inner.readBuf(buf)
+    public open fun readBuf(buf: BorrowedCursor<UByte>): Result<Unit, Error> = this.inner.readBuf(buf)
 
-    public open fun readVectored(bufs: MutableList<IoSliceMut>): Result<Int> = this.inner.readVectored(bufs)
+    public open fun readVectored(bufs: MutableList<IoSliceMut>): Result<Int, Error> = this.inner.readVectored(bufs)
 
     public open fun isReadVectored(): Boolean = this.inner.isReadVectored()
 
-    public open fun readToEnd(buf: List<UByte>): Result<Int> = this.inner.readToEnd(buf)
+    public open fun readToEnd(buf: List<UByte>): Result<Int, Error> = this.inner.readToEnd(buf)
 
-    public open fun readToString(buf: String): Result<Int> = this.inner.readToString(buf)
+    public open fun readToString(buf: String): Result<Int, Error> = this.inner.readToString(buf)
 
-    public open fun readExact(buf: MutableList<UByte>): Result<Unit> = this.inner.readExact(buf)
+    public open fun readExact(buf: MutableList<UByte>): Result<Unit, Error> = this.inner.readExact(buf)
 
-    public open fun readBufExact(cursor: BorrowedCursor<UByte>): Result<Unit> = this.inner.readBufExact(cursor)
+    public open fun readBufExact(cursor: BorrowedCursor<UByte>): Result<Unit, Error> = this.inner.readBufExact(cursor)
 
-    public open fun specReadByte(): Result<UByte>? = BufReader.specReadByte(this.inner)
+    public open fun specReadByte(): Result<UByte, Error>? = BufReader.specReadByte(this.inner)
 
-    public open fun fillBuf(): Result<List<UByte>> = this.inner.fillBuf()
+    public open fun fillBuf(): Result<List<UByte>, Error> = this.inner.fillBuf()
 
     public open fun consume(n: Int) {
         this.inner.consume(n)
     }
 
-    public open fun readUntil(byte: UByte, buf: List<UByte>): Result<Int> = this.inner.readUntil(byte, buf)
+    public open fun readUntil(byte: UByte, buf: List<UByte>): Result<Int, Error> = this.inner.readUntil(byte, buf)
 
-    public open fun readLine(buf: String): Result<Int> = this.inner.readLine(buf)
+    public open fun readLine(buf: String): Result<Int, Error> = this.inner.readLine(buf)
 
     public open fun fmt(f: StringBuilder) {
         DebugStruct(f, "StdinLock").finishNonExhaustive()
     }
 
-    public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.hermit.isTerminal(this)
+    public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.isatty.isTerminal(this)
 
     public companion object {
         public operator fun invoke(
@@ -508,6 +514,8 @@ public open class StdinLock internal constructor(
  * Using implicit synchronization:
  *
  * ```kotlin
+ * import std.io
+ *
  * fun main(): io.Result<Unit> {
  *     var buffer = ""
  *     io.stdin().readLine(buffer).getOrElse { return Result.failure(it) }
@@ -604,21 +612,21 @@ public open class Stdout internal constructor(
         DebugStruct(f, "Stdout").finishNonExhaustive()
     }
 
-    public open fun write(buf: List<UByte>): Result<Int> = (this).write(buf)
+    public open fun write(buf: List<UByte>): Result<Int, Error> = (this).write(buf)
 
-    public open fun writeVectored(bufs: List<IoSlice>): Result<Int> = (this).writeVectored(bufs)
+    public open fun writeVectored(bufs: List<IoSlice>): Result<Int, Error> = (this).writeVectored(bufs)
 
-    public open fun isWriteVectored(): Boolean = io.Write.isWriteVectored(this)
+    public open fun isWriteVectored(): Boolean = Write.isWriteVectored(this)
 
-    public open fun flush(): Result<Unit> = (this).flush()
+    public open fun flush(): Result<Unit, Error> = (this).flush()
 
-    public open fun writeAll(buf: List<UByte>): Result<Unit> = (this).writeAll(buf)
+    public open fun writeAll(buf: List<UByte>): Result<Unit, Error> = (this).writeAll(buf)
 
-    public open fun writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit> = (this).writeAllVectored(bufs)
+    public open fun writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit, Error> = (this).writeAllVectored(bufs)
 
-    public open fun writeFmt(args: Arguments): Result<Unit> = (this).writeFmt(args)
+    public open fun writeFmt(args: Arguments): Result<Unit, Error> = (this).writeFmt(args)
 
-    public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.hermit.isTerminal(this)
+    public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.isatty.isTerminal(this)
 
     public companion object {
         public operator fun invoke(
@@ -659,23 +667,23 @@ public open class StdoutLock internal constructor(
     public var inner: ReentrantLockGuard<RefCell<LineWriter<StdoutRaw>>> = innerCtorArg
         internal set
 
-    public open fun write(buf: List<UByte>): Result<Int> = this.inner.borrowMut().write(buf)
+    public open fun write(buf: List<UByte>): Result<Int, Error> = this.inner.borrowMut().write(buf)
 
-    public open fun writeVectored(bufs: List<IoSlice>): Result<Int> = this.inner.borrowMut().writeVectored(bufs)
+    public open fun writeVectored(bufs: List<IoSlice>): Result<Int, Error> = this.inner.borrowMut().writeVectored(bufs)
 
     public open fun isWriteVectored(): Boolean = this.inner.borrowMut().isWriteVectored()
 
-    public open fun flush(): Result<Unit> = this.inner.borrowMut().flush()
+    public open fun flush(): Result<Unit, Error> = this.inner.borrowMut().flush()
 
-    public open fun writeAll(buf: List<UByte>): Result<Unit> = this.inner.borrowMut().writeAll(buf)
+    public open fun writeAll(buf: List<UByte>): Result<Unit, Error> = this.inner.borrowMut().writeAll(buf)
 
-    public open fun writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit> = this.inner.borrowMut().writeAllVectored(bufs)
+    public open fun writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit, Error> = this.inner.borrowMut().writeAllVectored(bufs)
 
     public open fun fmt(f: StringBuilder) {
         DebugStruct(f, "StdoutLock").finishNonExhaustive()
     }
 
-    public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.hermit.isTerminal(this)
+    public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.isatty.isTerminal(this)
 
     public companion object {
         public operator fun invoke(
@@ -760,7 +768,7 @@ public fun stdout(): Stdout = Stdout(inner = STDOUT.getOrInit({ ReentrantLock.ne
 // Flush the data and disable buffering during shutdown
 // by replacing the line writer by one with zero
 // buffering capacity.
-internal fun cleanup() {
+public fun cleanup() {
     var initialized = false
     val stdout =
         STDOUT.getOrInit({
@@ -837,21 +845,21 @@ public open class Stderr internal constructor(
         DebugStruct(f, "Stderr").finishNonExhaustive()
     }
 
-    public open fun write(buf: List<UByte>): Result<Int> = (this).write(buf)
+    public open fun write(buf: List<UByte>): Result<Int, Error> = (this).write(buf)
 
-    public open fun writeVectored(bufs: List<IoSlice>): Result<Int> = (this).writeVectored(bufs)
+    public open fun writeVectored(bufs: List<IoSlice>): Result<Int, Error> = (this).writeVectored(bufs)
 
-    public open fun isWriteVectored(): Boolean = io.Write.isWriteVectored(this)
+    public open fun isWriteVectored(): Boolean = Write.isWriteVectored(this)
 
-    public open fun flush(): Result<Unit> = (this).flush()
+    public open fun flush(): Result<Unit, Error> = (this).flush()
 
-    public open fun writeAll(buf: List<UByte>): Result<Unit> = (this).writeAll(buf)
+    public open fun writeAll(buf: List<UByte>): Result<Unit, Error> = (this).writeAll(buf)
 
-    public open fun writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit> = (this).writeAllVectored(bufs)
+    public open fun writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit, Error> = (this).writeAllVectored(bufs)
 
-    public open fun writeFmt(args: Arguments): Result<Unit> = (this).writeFmt(args)
+    public open fun writeFmt(args: Arguments): Result<Unit, Error> = (this).writeFmt(args)
 
-    public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.hermit.isTerminal(this)
+    public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.isatty.isTerminal(this)
 
     public companion object {
         public operator fun invoke(
@@ -885,23 +893,23 @@ public open class StderrLock internal constructor(
     public var inner: ReentrantLockGuard<RefCell<StderrRaw>> = innerCtorArg
         internal set
 
-    public open fun write(buf: List<UByte>): Result<Int> = this.inner.borrowMut().write(buf)
+    public open fun write(buf: List<UByte>): Result<Int, Error> = this.inner.borrowMut().write(buf)
 
-    public open fun writeVectored(bufs: List<IoSlice>): Result<Int> = this.inner.borrowMut().writeVectored(bufs)
+    public open fun writeVectored(bufs: List<IoSlice>): Result<Int, Error> = this.inner.borrowMut().writeVectored(bufs)
 
     public open fun isWriteVectored(): Boolean = this.inner.borrowMut().isWriteVectored()
 
-    public open fun flush(): Result<Unit> = this.inner.borrowMut().flush()
+    public open fun flush(): Result<Unit, Error> = this.inner.borrowMut().flush()
 
-    public open fun writeAll(buf: List<UByte>): Result<Unit> = this.inner.borrowMut().writeAll(buf)
+    public open fun writeAll(buf: List<UByte>): Result<Unit, Error> = this.inner.borrowMut().writeAll(buf)
 
-    public open fun writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit> = this.inner.borrowMut().writeAllVectored(bufs)
+    public open fun writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit, Error> = this.inner.borrowMut().writeAllVectored(bufs)
 
     public open fun fmt(f: StringBuilder) {
         DebugStruct(f, "StderrLock").finishNonExhaustive()
     }
 
-    public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.hermit.isTerminal(this)
+    public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.isatty.isTerminal(this)
 
     public companion object {
         public operator fun invoke(
@@ -1027,7 +1035,7 @@ public fun printToBufferIfCaptureUsed(args: Arguments): Boolean =
  * has returned. Should avoid panicking, although we can't help it if one of
  * the Display impls inside args decides to.
  */
-internal fun attemptPrintToStderr(args: Arguments) {
+public fun attemptPrintToStderr(args: Arguments) {
     if (printToBufferIfCaptureUsed(args)) {
         return
     }
@@ -1088,7 +1096,7 @@ public interface IsTerminal {
     public fun isTerminal(): Boolean
 }
 
-public fun File.isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.hermit.isTerminal(this)
+public fun File.isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.isatty.isTerminal(this)
 
 public fun print(args: Arguments) {
     printTo(args, ::stdout, "stdout")

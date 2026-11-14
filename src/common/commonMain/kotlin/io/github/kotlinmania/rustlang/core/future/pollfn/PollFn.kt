@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.core.future.pollfn
 
 import io.github.kotlinmania.rustlang.core.future.future.Future
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.task.poll.Poll
 import io.github.kotlinmania.rustlang.core.task.wake.Context
@@ -49,7 +50,7 @@ public class DebugStruct(
  * fun readLine(cx: Context): Poll<String> {
  *     return Poll.Ready("Hello, World!".into())
  * }
- * val readFuture = pollFn(readLine)
+ * val readFuture = pollFn(::readLine)
  * check(readFuture == "Hello, World!".toOwned())
  * ```
  *
@@ -166,10 +167,10 @@ public open class PollFn<F>(
     }
 
     public companion object {
-        public fun <F> typeLayout(typeLayoutF: io.github.kotlinmania.rustlang.core.mem.TypeLayout<F>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<PollFn<F>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<PollFn<F>> {
+        public fun <F> typeLayout(typeLayoutF: TypeLayout<F>): TypeLayout<PollFn<F>> =
+            object : TypeLayout<PollFn<F>> {
                 override val alignBytes: Long = listOf(1L, typeLayoutF.alignBytes).max()
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(typeLayoutF.sizeBytes, alignBytes)
+                override val sizeBytes: Long = alignUpBytes(typeLayoutF.sizeBytes, alignBytes)
                 override fun readNative(addr: Long): PollFn<F> =
                     PollFn(
                         (typeLayoutF).readNative(addr),

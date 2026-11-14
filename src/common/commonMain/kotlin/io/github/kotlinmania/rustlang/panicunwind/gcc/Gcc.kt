@@ -7,6 +7,7 @@ import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.eq
 import io.github.kotlinmania.rustlang.panicunwind.rustDropPanic
 import io.github.kotlinmania.rustlang.panicunwind.rustForeignException
 import io.github.kotlinmania.rustlang.unwind.types.UnwindException
@@ -83,16 +84,16 @@ public open class Exception internal constructor(
     }
 }
 
-internal fun panic(data: PanicPayload): UInt {
+public fun panic(data: PanicPayload): UInt {
     fun exceptionCleanup(unwindCode: UnwindReasonCode, exception: MutPtr) {
         rustDropPanic()
     }
-    val exception = Exception(uwe = UnwindException(exceptionClass = RUST_EXCEPTION_CLASS, exceptionCleanup = exceptionCleanup, private = List(_) { ConstPtr(0L) }), canary = CANARY, cause = data.takeBox())
+    val exception = Exception(uwe = UnwindException(exceptionClass = RUST_EXCEPTION_CLASS, exceptionCleanup = ::exceptionCleanup, private = List(_) { ConstPtr(0L) }), canary = CANARY, cause = data.takeBox())
     val exceptionParam = mutPtrFromRustCast(Box.intoRaw(exception))
     return unwindRaiseException(exceptionParam).toUInt()
 }
 
-internal fun cleanup(ptr: MutPtr): RustAny =
+public fun cleanup(ptr: MutPtr): RustAny =
     run {
         val exception = MutPtr(ptr.rawAddress, ptr.rawMeta)
         if ((ObjectSlotLayout<UnwindException>()).readNative((exception).rawAddress).exceptionClass != RUST_EXCEPTION_CLASS) {
@@ -103,7 +104,7 @@ internal fun cleanup(ptr: MutPtr): RustAny =
         // Just access the canary field, avoid accessing the entire `Exception` as
         // it can be a foreign Rust exception.
         val canary = (addrOf(exception1.canary)).read()
-        if (!ptr.eq(canary, CANARY)) {
+        if (!eq(canary, CANARY)) {
             // A foreign Rust exception, treat it slightly differently from other
             // foreign exceptions, because call into `_Unwind_DeleteException` will
             // call into `__rust_drop_panic` which produces a confusing

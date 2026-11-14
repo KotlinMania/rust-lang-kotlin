@@ -1,7 +1,6 @@
 package io.github.kotlinmania.rustlang.alloc.collections.vecdeque
 
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
-import io.github.kotlinmania.rustlang.core.iter.adapters.zip.index
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -26,7 +25,7 @@ public interface SpecExtendFromWithin {
 /**
  * Returns the index in the underlying buffer for a given logical element index.
  */
-internal fun wrapIndex(logicalIndex: Int, capacity: Int): WrappedIndex {
+public fun wrapIndex(logicalIndex: Int, capacity: Int): WrappedIndex {
     check((logicalIndex == 0 && capacity == 0) || logicalIndex < capacity || (logicalIndex - capacity) < capacity)
     return if (logicalIndex >= capacity) {
         WrappedIndex(logicalIndex - capacity, fieldLayout = PrimitiveLayouts.USIZE64)
@@ -43,7 +42,7 @@ internal fun wrapIndex(logicalIndex: Int, capacity: Int): WrappedIndex {
  * The invariant of this index is that it is always < VecDeque capacity, unless the VecDeque
  * is empty (in that case the index can be 0 when the capacity is 0).
  */
-internal open class WrappedIndex(
+public open class WrappedIndex internal constructor(
     public val fieldStorage: MutPtr,
     public val fieldLayout: TypeLayout<Int>,
 ) : Add<Int, Any?, Int> {
@@ -57,28 +56,30 @@ internal open class WrappedIndex(
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    public constructor(value: Int, fieldLayout: TypeLayout<Int>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(value: Int, fieldLayout: TypeLayout<Int>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<WrappedIndex> = TransparentTypeLayout(fieldLayout, { ptr, layout -> WrappedIndex(ptr, layout) }, { it.value })
 
-    /**
-     * Safety invariant: the newly constructed index must still be in-bounds for the VecDeque
-     */
-    internal open fun add(offset: Int): WrappedIndex = WrappedIndex(this.value + offset, fieldLayout = PrimitiveLayouts.USIZE64)
+    public open fun clone(): WrappedIndex = WrappedIndex(value, fieldLayout)
 
     /**
      * Safety invariant: the newly constructed index must still be in-bounds for the VecDeque
      */
-    internal open fun sub(offset: Int): WrappedIndex {
+    public open fun add(offset: Int): WrappedIndex = WrappedIndex(this.value + offset, fieldLayout = PrimitiveLayouts.USIZE64)
+
+    /**
+     * Safety invariant: the newly constructed index must still be in-bounds for the VecDeque
+     */
+    public open fun sub(offset: Int): WrappedIndex {
         check(this.value >= offset)
         return WrappedIndex(this.value - offset, fieldLayout = PrimitiveLayouts.USIZE64)
     }
 
-    internal open fun absDiff(other: WrappedIndex): Int = this.value.absDiff(other.value)
+    public open fun absDiff(other: WrappedIndex): Int = this.value.absDiff(other.value)
 
-    internal open fun asIndex(): Int = this.value
+    public open fun asIndex(): Int = this.value
 
-    internal open fun isZero(): Boolean = this.value == 0
+    public open fun isZero(): Boolean = this.value == 0
 
     public open fun addInt(rhs: Int): Int = this.value + rhs
 
@@ -91,12 +92,16 @@ internal open class WrappedIndex(
     public open fun partialCmp(other: Int): Ordering? = this.value.partialCmp(other)
 
     public companion object {
+        public operator fun invoke(value: Int, fieldLayout: TypeLayout<Int>): WrappedIndex = WrappedIndex(value, fieldLayout)
+
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Int>): WrappedIndex = WrappedIndex(fieldStorage, fieldLayout)
+
         /**
          * The newly constructed index has to be in-bounds for the VecDeque
          * that uses the index.
          */
-        internal fun fromArbitraryNumber(index: Int, fieldLayout: TypeLayout<Int>): WrappedIndex = WrappedIndex(index, fieldLayout = fieldLayout)
+        public fun fromArbitraryNumber(index: Int, fieldLayout: TypeLayout<Int>): WrappedIndex = WrappedIndex(index, fieldLayout = fieldLayout)
 
-        internal fun zero(fieldLayout: TypeLayout<Int>): WrappedIndex = WrappedIndex(0, fieldLayout = fieldLayout)
+        public fun zero(fieldLayout: TypeLayout<Int>): WrappedIndex = WrappedIndex(0, fieldLayout = fieldLayout)
     }
 }

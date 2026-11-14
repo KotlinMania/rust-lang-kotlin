@@ -53,15 +53,24 @@ private const val TRACE_MACROS_TEMPLATE_1: String = "{}"
  * the compiler would still emit an error, but the error's message would not mention the two
  * valid values.
  *
- * ```kotlin
- * compileError("This macro only accepts `foo` or `bar`")
+ * ```compile_fail
+ * macroRules giveMeFooOrBar {
+ *     (foo) => {};
+ *     (bar) => {};
+ *     ($x:ident) => {
+ *         compileError("This macro only accepts `foo` or `bar`");
+ *     }
+ * }
+ *
+ * giveMeFooOrBar(neither);
  * // ^ will fail at compile time with message "This macro only accepts `foo` or `bar`"
  * ```
  *
  * Emit a compiler error if one of a number of features isn't available.
  *
- * ```kotlin
- * compileError("Either feature \"foo\" or \"bar\" must be enabled for this crate.")
+ * ```compile_fail
+ * @cfg(not(any(feature = "foo", feature = "bar")))
+ * compileError("Either feature \"foo\" or \"bar\" must be enabled for this crate.");
  * ```
  */
 
@@ -111,6 +120,8 @@ public fun compileError(msg: String = ""): String =
  * # Examples
  *
  * ```kotlin
+ * import std.fmt
+ *
  * val s = fmt.format("hello " + ("world").toString())
  * check(s == "hello " + ("world").toString())
  * ```
@@ -185,8 +196,8 @@ public fun formatArgsNl(fmt: String = "", args: String = ""): String =
  * You can customize the error message by passing a string as the second
  * parameter:
  *
- * ```kotlin
- * val doc: String = env("documentation", "what's that?!")
+ * ```compile_fail
+ * let doc: &static str = env("documentation", "what's that?!");
  * ```
  *
  * If the `documentation` environment variable is not defined, you'll get
@@ -435,11 +446,11 @@ public fun stringify(t: String = ""): String =
  *
  * File main.rs':
  *
- * ```kotlin
- * fun main() {
- *     val myStr = includeStr("spanish.in")
- *     check(myStr == "adiós\n")
- *     print("$myStr")
+ * ```ignore (cannot-doctest-external-file-dependency)
+ * fn main() {
+ *     let myStr = includeStr("spanish.in");
+ *     assertEq(myStr, "adiós\n");
+ *     print("{myStr}");
  * }
  * ```
  *
@@ -477,11 +488,11 @@ public fun includeStr(file: String = ""): String =
  *
  * File main.rs':
  *
- * ```kotlin
- * fun main() {
- *     val bytes = includeBytes("spanish.in")
- *     check(bytes == "adiÃ³s\n".encodeToByteArray())
- *     print("${String.fromUtf8Lossy(bytes)}")
+ * ```ignore (cannot-doctest-external-file-dependency)
+ * fn main() {
+ *     let bytes = includeBytes("spanish.in");
+ *     assertEq(bytes, b"adi\xc3\xb3s\n");
+ *     print("{}", String.fromUtf8Lossy(bytes));
  * }
  * ```
  *
@@ -505,7 +516,7 @@ public fun includeBytes(file: String = ""): String =
  * # Examples
  *
  * ```kotlin
- * public fun foo() {
+ * fun foo() {
  *     check(modulePath().endsWith("test"))
  * }
  * foo()
@@ -585,17 +596,21 @@ public fun cfg(cfg: String = ""): String =
  *
  * File monkeys.in':
  *
- * ```kotlin
- * listOf(0x1f648, 0x1f64a, 0x1f649).iter().cycle().take(6).joinToString("")
+ * ```ignore (only-for-syntax-highlight)
+ * ['🙈', '🙊', '🙉']
+ *     .iter()
+ *     .cycle()
+ *     .take(6)
+ *     .collect::<String>()
  * ```
  *
  * File main.rs':
  *
- * ```kotlin
- * fun main() {
- *     val myString = include("monkeys.in")
- *     check("🙈🙊🙉🙈🙊🙉" == myString)
- *     println("$myString")
+ * ```ignore (cannot-doctest-external-file-dependency)
+ * fn main() {
+ *     let myString = include("monkeys.in");
+ *     assertEq("🙈🙊🙉🙈🙊🙉", myString);
+ *     println("{myString}");
  * }
  * ```
  *

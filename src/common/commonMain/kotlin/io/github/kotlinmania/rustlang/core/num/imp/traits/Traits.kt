@@ -5,14 +5,14 @@ import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.num.FpCategory
 import io.github.kotlinmania.rustlang.core.num.rustClassifyDouble
 import io.github.kotlinmania.rustlang.core.num.rustClassifyFloat
-import io.github.kotlinmania.rustlang.core.ops.Add
-import io.github.kotlinmania.rustlang.core.ops.BitAnd
-import io.github.kotlinmania.rustlang.core.ops.BitOr
-import io.github.kotlinmania.rustlang.core.ops.Div
-import io.github.kotlinmania.rustlang.core.ops.Mul
-import io.github.kotlinmania.rustlang.core.ops.Neg
-import io.github.kotlinmania.rustlang.core.ops.Shl
-import io.github.kotlinmania.rustlang.core.ops.Shr
+import io.github.kotlinmania.rustlang.core.ops.arith.Add
+import io.github.kotlinmania.rustlang.core.ops.arith.Div
+import io.github.kotlinmania.rustlang.core.ops.arith.Mul
+import io.github.kotlinmania.rustlang.core.ops.arith.Neg
+import io.github.kotlinmania.rustlang.core.ops.bit.BitAnd
+import io.github.kotlinmania.rustlang.core.ops.bit.BitOr
+import io.github.kotlinmania.rustlang.core.ops.bit.Shl
+import io.github.kotlinmania.rustlang.core.ops.bit.Shr
 
 // Numeric traits used for internal implementations.
 

@@ -2,7 +2,6 @@
 package io.github.kotlinmania.rustlang.core.cell.once
 
 import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
-import io.github.kotlinmania.rustlang.core.num.f128.consts.E
 import io.github.kotlinmania.rustlang.core.result.Result
 
 public class DebugTuple(
@@ -357,7 +356,7 @@ public open class OnceCell<T>(
      * check(cell1.get() == null)
      * ```
      */
-    public open fun take(): T? = mem.take(this).intoInner()
+    public open fun take(): T? = io.github.kotlinmania.rustlang.core.mem.take(this).intoInner()
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> {
         val d = DebugTuple(f, "OnceCell")

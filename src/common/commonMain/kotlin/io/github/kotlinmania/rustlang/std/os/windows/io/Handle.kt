@@ -10,9 +10,9 @@ import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.Rc
-import io.github.kotlinmania.rustlang.std.fmt
 import io.github.kotlinmania.rustlang.std.fs.File
 import io.github.kotlinmania.rustlang.std.io.IsTerminal
+import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.io.pipe.PipeReader
 import io.github.kotlinmania.rustlang.std.io.pipe.PipeWriter
 import io.github.kotlinmania.rustlang.std.io.stdio.Stderr
@@ -28,15 +28,9 @@ import io.github.kotlinmania.rustlang.std.os.windows.raw.RawHandle
 import io.github.kotlinmania.rustlang.std.process.ChildStderr
 import io.github.kotlinmania.rustlang.std.process.ChildStdin
 import io.github.kotlinmania.rustlang.std.process.ChildStdout
-import io.github.kotlinmania.rustlang.std.ptr
 import io.github.kotlinmania.rustlang.std.sync.Arc
 import io.github.kotlinmania.rustlang.std.sys.FromInner
-import io.github.kotlinmania.rustlang.std.sys.pal.hermit.cvt
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.DUPLICATE_SAME_ACCESS
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.INVALID_HANDLE_VALUE
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.closeHandle
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.duplicateHandle
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.getCurrentProcess
+import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
 import io.github.kotlinmania.rustlang.std.thread.joinhandle.JoinHandle
 
 // Owned and borrowed OS handles.
@@ -98,6 +92,8 @@ public open class BorrowedHandle internal constructor(
     public var handle: RawHandle = handleCtorArg
         internal set
 
+    public open fun clone(): BorrowedHandle = BorrowedHandle(handle, phantom)
+
     /**
      * Converts a `BorrowedHandle` into a reference to a file-like type.
      *
@@ -117,9 +113,9 @@ public open class BorrowedHandle internal constructor(
      * Creates a new `OwnedHandle` instance that shares the same underlying
      * object as the existing `BorrowedHandle` instance.
      */
-    public open fun tryCloneToOwned(): Result<OwnedHandle> = this.duplicate(0, false, DUPLICATE_SAME_ACCESS)
+    public open fun tryCloneToOwned(): Result<OwnedHandle, Error> = this.duplicate(0, false, C.DUPLICATE_SAME_ACCESS)
 
-    internal open fun duplicate(access: UInt, inherit: Boolean, options: UInt): Result<OwnedHandle> {
+    public open fun duplicate(access: UInt, inherit: Boolean, options: UInt): Result<OwnedHandle, Error> {
         val handle = this.asRawHandle()
         // `Stdin`, `Stdout`, and `Stderr` can all hold null handles, such as
         // in a process with a detached console. `DuplicateHandle` would fail
@@ -130,8 +126,8 @@ public open class BorrowedHandle internal constructor(
         }
         val ret = MutPtr(0L)
         when (val tryResult = cvt(run {
-            val curProc = getCurrentProcess()
-            duplicateHandle(curProc, handle, curProc, ret, access, inherit.toInt(), options)
+            val curProc = C.GetCurrentProcess()
+            C.DuplicateHandle(curProc, handle, curProc, ret, access, inherit.toInt(), options)
         })) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         return Result.Ok(OwnedHandle.fromRawHandle(ret, fieldLayout = ObjectSlotLayout<RawHandle>()))
     }
@@ -149,31 +145,31 @@ public open class BorrowedHandle internal constructor(
     public open fun asRef(): File {
         fun <T : AsHandle> typeCheck() {}
         run {
-            check(mem.sizeOf<RawHandle>(typeLayoutT = ObjectSlotLayout<RawHandle>()) == mem.sizeOf<File>(typeLayoutT = ObjectSlotLayout<File>()))
-            check(mem.sizeOf<RawHandle>(typeLayoutT = ObjectSlotLayout<RawHandle>()) == mem.sizeOf<BorrowedHandle>(typeLayoutT = ObjectSlotLayout<BorrowedHandle>()))
+            check(sizeOf<RawHandle>(typeLayoutT = ObjectSlotLayout<RawHandle>()) == sizeOf<File>(typeLayoutT = ObjectSlotLayout<File>()))
+            check(sizeOf<RawHandle>(typeLayoutT = ObjectSlotLayout<RawHandle>()) == sizeOf<BorrowedHandle>(typeLayoutT = ObjectSlotLayout<BorrowedHandle>()))
         }
         typeCheck<File>()
-        return mem.transmute<BorrowedHandle, File>(this)
+        return transmute<BorrowedHandle, File>(this)
     }
 
     public open fun asRefPipeWriter(): PipeWriter {
         fun <T : AsHandle> typeCheck() {}
         run {
-            check(mem.sizeOf<RawHandle>(typeLayoutT = ObjectSlotLayout<RawHandle>()) == mem.sizeOf<PipeWriter>(typeLayoutT = ObjectSlotLayout<PipeWriter>()))
-            check(mem.sizeOf<RawHandle>(typeLayoutT = ObjectSlotLayout<RawHandle>()) == mem.sizeOf<BorrowedHandle>(typeLayoutT = ObjectSlotLayout<BorrowedHandle>()))
+            check(sizeOf<RawHandle>(typeLayoutT = ObjectSlotLayout<RawHandle>()) == sizeOf<PipeWriter>(typeLayoutT = ObjectSlotLayout<PipeWriter>()))
+            check(sizeOf<RawHandle>(typeLayoutT = ObjectSlotLayout<RawHandle>()) == sizeOf<BorrowedHandle>(typeLayoutT = ObjectSlotLayout<BorrowedHandle>()))
         }
         typeCheck<PipeWriter>()
-        return mem.transmute<BorrowedHandle, PipeWriter>(this)
+        return transmute<BorrowedHandle, PipeWriter>(this)
     }
 
     public open fun asRefPipeReader(): PipeReader {
         fun <T : AsHandle> typeCheck() {}
         run {
-            check(mem.sizeOf<RawHandle>(typeLayoutT = ObjectSlotLayout<RawHandle>()) == mem.sizeOf<PipeReader>(typeLayoutT = ObjectSlotLayout<PipeReader>()))
-            check(mem.sizeOf<RawHandle>(typeLayoutT = ObjectSlotLayout<RawHandle>()) == mem.sizeOf<BorrowedHandle>(typeLayoutT = ObjectSlotLayout<BorrowedHandle>()))
+            check(sizeOf<RawHandle>(typeLayoutT = ObjectSlotLayout<RawHandle>()) == sizeOf<PipeReader>(typeLayoutT = ObjectSlotLayout<PipeReader>()))
+            check(sizeOf<RawHandle>(typeLayoutT = ObjectSlotLayout<RawHandle>()) == sizeOf<BorrowedHandle>(typeLayoutT = ObjectSlotLayout<BorrowedHandle>()))
         }
         typeCheck<PipeReader>()
-        return mem.transmute<BorrowedHandle, PipeReader>(this)
+        return transmute<BorrowedHandle, PipeReader>(this)
     }
 
     public companion object {
@@ -250,7 +246,7 @@ public open class OwnedHandle internal constructor(
      * Creates a new `OwnedHandle` instance that shares the same underlying
      * object as the existing `OwnedHandle` instance.
      */
-    public open fun tryClone(): Result<OwnedHandle> = this.asHandle().tryCloneToOwned()
+    public open fun tryClone(): Result<OwnedHandle, Error> = this.asHandle().tryCloneToOwned()
 
     public override fun asRawHandle(): RawHandle = this.handle
 
@@ -258,7 +254,7 @@ public open class OwnedHandle internal constructor(
 
     public open fun drop() {
         run {
-            closeHandle(this.handle)
+            C.CloseHandle(this.handle)
         }
     }
 
@@ -370,7 +366,7 @@ public open class HandleOrNull internal constructor(
     public open fun drop() {
         if (this.isValid()) {
             run {
-                closeHandle(this.value)
+                C.CloseHandle(this.value)
             }
         }
     }
@@ -439,12 +435,12 @@ public open class HandleOrInvalid internal constructor(
     public open fun drop() {
         if (this.isValid()) {
             run {
-                closeHandle(this.value)
+                C.CloseHandle(this.value)
             }
         }
     }
 
-    public open fun isValid(): Boolean = (this.value != INVALID_HANDLE_VALUE).toUByte()
+    public open fun isValid(): Boolean = (this.value != C.INVALID_HANDLE_VALUE).toUByte()
 
     public companion object {
         public operator fun invoke(value: RawHandle, fieldLayout: TypeLayout<RawHandle>): HandleOrInvalid = HandleOrInvalid(value, fieldLayout)
@@ -487,28 +483,30 @@ public open class NullHandleError(
             value = v
         }
 
+    public open fun clone(): NullHandleError = NullHandleError(value)
+
     public open fun fmt(fmt: StringBuilder) {
         "A HandleOrNull could not be converted to a handle because it was null".fmt(fmt)
     }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<NullHandleError> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<NullHandleError> {
+        public fun typeLayout(): TypeLayout<NullHandleError> =
+            object : TypeLayout<NullHandleError> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): NullHandleError =
                     NullHandleError(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.UNIT).readNative(addr),
+                        (PrimitiveLayouts.UNIT).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: NullHandleError) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.UNIT).writeNative(addr, value.value)
+                    (PrimitiveLayouts.UNIT).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): NullHandleError =
                     NullHandleError(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.UNIT).readBytes(buf, offset),
+                        (PrimitiveLayouts.UNIT).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: NullHandleError) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.UNIT).writeBytes(buf, offset, value.value)
+                    (PrimitiveLayouts.UNIT).writeBytes(buf, offset, value.value)
                 }
             }
     }
@@ -530,28 +528,30 @@ public open class InvalidHandleError(
             value = v
         }
 
+    public open fun clone(): InvalidHandleError = InvalidHandleError(value)
+
     public open fun fmt(fmt: StringBuilder) {
         "A HandleOrInvalid could not be converted to a handle because it was INVALID_HANDLE_VALUE".fmt(fmt)
     }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<InvalidHandleError> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<InvalidHandleError> {
+        public fun typeLayout(): TypeLayout<InvalidHandleError> =
+            object : TypeLayout<InvalidHandleError> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): InvalidHandleError =
                     InvalidHandleError(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.UNIT).readNative(addr),
+                        (PrimitiveLayouts.UNIT).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: InvalidHandleError) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.UNIT).writeNative(addr, value.value)
+                    (PrimitiveLayouts.UNIT).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): InvalidHandleError =
                     InvalidHandleError(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.UNIT).readBytes(buf, offset),
+                        (PrimitiveLayouts.UNIT).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: InvalidHandleError) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.UNIT).writeBytes(buf, offset, value.value)
+                    (PrimitiveLayouts.UNIT).writeBytes(buf, offset, value.value)
                 }
             }
     }

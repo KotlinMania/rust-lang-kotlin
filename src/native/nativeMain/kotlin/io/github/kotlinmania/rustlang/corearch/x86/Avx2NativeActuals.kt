@@ -1,4 +1,4 @@
-@file:OptIn(kotlinx.cinterop.ExperimentalForeignApi::class, kotlin.ExperimentalUnsignedTypes::class)
+@file:OptIn(ExperimentalForeignApi::class, ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.corearch.x86
 
@@ -14,6 +14,7 @@ import io.github.kotlinmania.rustlang.corearch.simd.U16x16
 import io.github.kotlinmania.rustlang.corearch.simd.U32x8
 import io.github.kotlinmania.rustlang.corearch.simd.U64x4
 import io.github.kotlinmania.rustlang.corearch.simd.U8x32
+import kotlinx.cinterop.ExperimentalForeignApi
 
 public actual fun pavgb(a: U8x32, b: U8x32): U8x32 =
     null as U8x32

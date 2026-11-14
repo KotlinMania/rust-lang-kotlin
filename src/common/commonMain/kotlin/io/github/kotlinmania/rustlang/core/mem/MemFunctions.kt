@@ -1,5 +1,6 @@
 package io.github.kotlinmania.rustlang.core.mem
 
+import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.intrinsics.discriminantValue
 import io.github.kotlinmania.rustlang.core.intrinsics.readViaCopy
 import io.github.kotlinmania.rustlang.core.intrinsics.transmuteUnchecked
@@ -8,8 +9,9 @@ import io.github.kotlinmania.rustlang.core.intrinsics.writeViaMove
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.panic.constAssert
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
+import io.github.kotlinmania.rustlang.core.ptr.read
+import io.github.kotlinmania.rustlang.core.ptr.readUnaligned
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
-import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 import io.github.kotlinmania.rustlang.core.ubchecks.assertUnsafePrecondition
 
 /**
@@ -52,6 +54,7 @@ import io.github.kotlinmania.rustlang.core.ubchecks.assertUnsafePrecondition
  *
  * ```kotlin
  * import std.fs.File
+ * import std.mem
  *
  * val file = File.open("foo.txt").unwrap()
  * mem.forget(file)
@@ -67,6 +70,8 @@ import io.github.kotlinmania.rustlang.core.ubchecks.assertUnsafePrecondition
  * [ManuallyDrop] should be used instead. Consider, for example, this code:
  *
  * ```kotlin
+ * import std.mem
+ *
  * var v = mutableListOf(65, 122)
  * // Build a `String` using the contents of `v`
  * val s = String.fromRawParts(v.asMutPtr(), v.size, v.capacity())
@@ -373,6 +378,8 @@ public fun <T> sizeOfVal(value: T): Int {
  * ```kotlin
  * @file:OptIn(ExperimentalUnsignedTypes.cls)
  *
+ * import std.mem
+ *
  * public fun doctestEntry() {
  *     check(4 == sizeOfVal(5))
  *     val x: UByteArray = UByteArray(13) { 0u.toUByte() }
@@ -398,6 +405,8 @@ public fun sizeOfValRaw(value: ConstPtr): Int {
  * # Examples
  *
  * ```kotlin
+ * import std.mem
+ *
  * check(4 == mem.minAlignOf<Int>())
  * ```
  */
@@ -414,6 +423,8 @@ public fun <T> minAlignOf(): Int = sizedTypePropertiesAlignT
  * # Examples
  *
  * ```kotlin
+ * import std.mem
+ *
  * check(4 == mem.minAlignOfVal(5))
  * ```
  */
@@ -523,6 +534,8 @@ public fun <T> alignOfVal(value: T): Int {
  * # Examples
  *
  * ```kotlin
+ * import std.mem
+ *
  * check(4 == mem.alignOfValRaw(5))
  * ```
  *
@@ -568,6 +581,7 @@ public fun alignOfValRaw(value: ConstPtr): Int {
  *
  * ```kotlin
  * import ptr
+ * import std.mem
  *
  * open class MyCollection<T> {
  *     public open fun drop() {
@@ -612,7 +626,7 @@ public fun <T> needsDrop(): Boolean = true
  * Correct usage of this function: initializing an integer with zero.
  *
  * ```kotlin
- * val x: Int? = null
+ * val x: Int = 0
  * check(0 == x)
  * ```
  *
@@ -624,9 +638,9 @@ public fun <T> needsDrop(): Boolean = true
  * }
  *
  * public fun doctestEntry() {
- *     val x: Int? = null
+ *     val x: Int = 0
  *     // Undefined behavior!
- *     val y: FnCallback? = null
+ *     val y: FnCallback = FnCallback {}
  *     // And again!
  * }
  * ```
@@ -688,6 +702,7 @@ public inline fun <reified T> uninitialized(): T {
  * import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
  * import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
  * import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
+ * import std.mem
  *
  * val localStorageL5C0 = AddressableLocal(5, PrimitiveLayouts.I32)
  * var x by localStorageL5C0
@@ -715,6 +730,8 @@ public fun <T> swap(x: T, y: T, typeLayoutT: TypeLayout<T>) {
  * A simple example:
  *
  * ```kotlin
+ * import std.mem
+ *
  * var v: List<Int> = mutableListOf(1, 2)
  * val oldV = mem.take(v)
  * check(mutableListOf(1, 2) == oldV)
@@ -724,13 +741,15 @@ public fun <T> swap(x: T, y: T, typeLayoutT: TypeLayout<T>) {
  * `take` allows taking ownership of a struct field by replacing it with an "empty" value.
  * Without `take` you can run into issues like these:
  *
- * ```kotlin
- * open class Buffer<T>(public var buf: List<T>) {
- *     public open fun getAndReset(): List<T> {
- *         // error: cannot move out of dereference of -pointer
- *         val buf = this.buf
- *         this.buf = mutableListOf()
- *         return buf
+ * ```compile_fail,E0507
+ * struct Buffer<T> { buf: Vec<T> }
+ *
+ * impl<T> Buffer<T> {
+ *     fn getAndReset(self) -> Vec<T> {
+ *         // error: cannot move out of dereference of `&mut`-pointer
+ *         let buf = self.buf;
+ *         self.buf = Vec.new();
+ *         buf
  *     }
  * }
  * ```
@@ -740,6 +759,8 @@ public fun <T> swap(x: T, y: T, typeLayoutT: TypeLayout<T>) {
  * `self`, allowing it to be returned:
  *
  * ```kotlin
+ * import std.mem
+ *
  * fun <T> Buffer<T>.getAndReset(): List<T> {
  *     return mem.take(this.buf)
  * }
@@ -764,6 +785,8 @@ public fun <T> take(dest: T, defaultTFn: () -> T): T = replace(dest, defaultTFn(
  * A simple example:
  *
  * ```kotlin
+ * import std.mem
+ *
  * var v: List<Int> = mutableListOf(1, 2)
  * val oldV = mem.replace(v, mutableListOf(3, 4, 5))
  * check(mutableListOf(1, 2) == oldV)
@@ -773,13 +796,15 @@ public fun <T> take(dest: T, defaultTFn: () -> T): T = replace(dest, defaultTFn(
  * `replace` allows consumption of a struct field by replacing it with another value.
  * Without `replace` you can run into issues like these:
  *
- * ```kotlin
- * open class Buffer<T>(public var buf: List<T>) {
- *     public open fun replaceIndex(i: Int, v: T): T {
- *         // error: cannot move out of dereference of -pointer
- *         val t = this.buf[i]
- *         this.buf[i] = v
- *         return t
+ * ```compile_fail,E0507
+ * struct Buffer<T> { buf: Vec<T> }
+ *
+ * impl<T> Buffer<T> {
+ *     fn replaceIndex(self, i: Int, v: T) -> T {
+ *         // error: cannot move out of dereference of `&mut`-pointer
+ *         let t = self.buf[i];
+ *         self.buf[i] = v;
+ *         t
  *     }
  * }
  * ```
@@ -789,6 +814,8 @@ public fun <T> take(dest: T, defaultTFn: () -> T): T = replace(dest, defaultTFn(
  * `self`, allowing it to be returned:
  *
  * ```kotlin
+ * import std.mem
+ *
  * fun <T> Buffer<T>.replaceIndex(i: Int, v: T): T {
  *     return mem.replace(this.buf[i], v)
  * }
@@ -862,12 +889,16 @@ public fun <T> replace(dest: T, src: T, typeLayoutT: TypeLayout<T>): T {
  * Integers and other types implementing [Copy] are unaffected by `drop`.
  *
  * ```kotlin
+ * import clone
+ *
  * open class Foo(public var value: UByte) {
  *     public var field0: UByte
  *         get() = value
  *         set(v) {
  *             value = v
  *         }
+ *
+ *     public open fun clone(): Foo = Foo(value)
  * }
  * val x = 1
  * val y = Foo(2)
@@ -945,6 +976,8 @@ public fun <T> copy(x: T): T = x
  *
  * ```kotlin
  * @file:OptIn(ExperimentalUnsignedTypes.cls)
+ *
+ * import std.mem
  *
  * public fun doctestEntry() {
  *     @repr(packed)
@@ -1076,11 +1109,11 @@ public fun <Src, Dst> transmutePrefix(src: Src, typeLayoutSrc: TypeLayout<Src>, 
  * }
  * ```
  *
- * ```kotlin
- * @feature(transmuteNeo)
- * public fun doctestEntry() {
- *     transmuteNeo<UInt, UShort>(123)
- * }
+ * ```compile_fail,E0080
+ * @file:feature(transmuteNeo)
+ * use std.mem.transmuteNeo;
+ *
+ * unchecked { transmuteNeo::<u32, u16>(123) };
  * ```
  */
 public fun <Src, Dst> transmuteNeo(src: Src, typeLayoutSrc: TypeLayout<Src>): Dst {
@@ -1119,6 +1152,8 @@ public fun <Src, Dst> transmuteNeo(src: Src, typeLayoutSrc: TypeLayout<Src>): Ds
  * the actual data:
  *
  * ```kotlin
+ * import std.mem
+ *
  * sealed class Foo {
  *     public data class A(public var value: String) : Foo()
  *     public data class B(public var value: Int) : Foo()
@@ -1199,6 +1234,7 @@ public fun <T> discriminant(v: T): Discriminant<T> = Discriminant(discriminantVa
  *
  * ```kotlin
  * import ptr
+ * import std.mem
  *
  * open class Void(public val handle: Long = -1L) {
  *     public val ptr: Long get() = handle

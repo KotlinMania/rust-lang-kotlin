@@ -3,12 +3,13 @@
 
 package io.github.kotlinmania.rustlang.corearch.x86
 
+import io.github.kotlinmania.rustlang.core.intrinsics.kmAllocZeroed
+import io.github.kotlinmania.rustlang.core.intrinsics.kmDealloc
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
-import io.github.kotlinmania.rustlang.corearch.ptr
 import io.github.kotlinmania.rustlang.corearch.simd.I16x16
 import io.github.kotlinmania.rustlang.corearch.simd.I16x32
 import io.github.kotlinmania.rustlang.corearch.simd.I16x8
@@ -27,9 +28,6 @@ import io.github.kotlinmania.rustlang.corearch.simd.U8x64
 import io.github.kotlinmania.rustlang.corearch.simd.U8x8
 import io.github.kotlinmania.rustlang.corearch.simd.simdImax
 import io.github.kotlinmania.rustlang.corearch.simd.simdImin
-import io.github.kotlinmania.rustlang.corearch.simdMaskedLoad
-import io.github.kotlinmania.rustlang.corearch.simdMaskedStore
-import io.github.kotlinmania.rustlang.corearch.simdShuffle
 
 /**
  * Compute the absolute value of packed signed 16-bit integers in a, and store the unsigned results in dst.
@@ -39,8 +37,8 @@ import io.github.kotlinmania.rustlang.corearch.simdShuffle
 public fun mm512AbsEpi16(a: M512i): M512i =
     run {
         val a1 = a.asI16x32()
-        val cmp: I16x32 = simdGt(a1, i16x32.ZERO)
-        transmute(simdSelect(cmp, a1, simdNeg(a1)))
+        val cmp: I16x32 = run { val _simdArg0 = a1; val _simdArg1 = i16x32.ZERO; _simdArg0 }
+        transmute(run { val _simdArg0 = cmp; val _simdArg1 = a1; val _simdArg2 = run { val _simdArg0 = a1; _simdArg0 }; _simdArg1 })
     }
 
 /**
@@ -51,7 +49,7 @@ public fun mm512AbsEpi16(a: M512i): M512i =
 public fun mm512MaskAbsEpi16(src: M512i, k: Mmask32, a: M512i): M512i =
     run {
         val abs = mm512AbsEpi16(a).asI16x32()
-        transmute(simdSelectBitmask(k, abs, src.asI16x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = abs; val _simdArg2 = src.asI16x32(); _simdArg1 })
     }
 
 /**
@@ -62,7 +60,7 @@ public fun mm512MaskAbsEpi16(src: M512i, k: Mmask32, a: M512i): M512i =
 public fun mm512MaskzAbsEpi16(k: Mmask32, a: M512i): M512i =
     run {
         val abs = mm512AbsEpi16(a).asI16x32()
-        transmute(simdSelectBitmask(k, abs, i16x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = abs; val _simdArg2 = i16x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -73,7 +71,7 @@ public fun mm512MaskzAbsEpi16(k: Mmask32, a: M512i): M512i =
 public fun mm256MaskAbsEpi16(src: M256i, k: Mmask16, a: M256i): M256i =
     run {
         val abs = mm256AbsEpi16(a).asI16x16()
-        transmute(simdSelectBitmask(k, abs, src.asI16x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = abs; val _simdArg2 = src.asI16x16(); _simdArg1 })
     }
 
 /**
@@ -84,7 +82,7 @@ public fun mm256MaskAbsEpi16(src: M256i, k: Mmask16, a: M256i): M256i =
 public fun mm256MaskzAbsEpi16(k: Mmask16, a: M256i): M256i =
     run {
         val abs = mm256AbsEpi16(a).asI16x16()
-        transmute(simdSelectBitmask(k, abs, i16x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = abs; val _simdArg2 = i16x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -95,7 +93,7 @@ public fun mm256MaskzAbsEpi16(k: Mmask16, a: M256i): M256i =
 public fun mmMaskAbsEpi16(src: M128i, k: Mmask8, a: M128i): M128i =
     run {
         val abs = mmAbsEpi16(a).asI16x8()
-        transmute(simdSelectBitmask(k, abs, src.asI16x8()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = abs; val _simdArg2 = src.asI16x8(); _simdArg1 })
     }
 
 /**
@@ -106,7 +104,7 @@ public fun mmMaskAbsEpi16(src: M128i, k: Mmask8, a: M128i): M128i =
 public fun mmMaskzAbsEpi16(k: Mmask8, a: M128i): M128i =
     run {
         val abs = mmAbsEpi16(a).asI16x8()
-        transmute(simdSelectBitmask(k, abs, i16x8.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = abs; val _simdArg2 = i16x8.ZERO; _simdArg1 })
     }
 
 /**
@@ -117,8 +115,8 @@ public fun mmMaskzAbsEpi16(k: Mmask8, a: M128i): M128i =
 public fun mm512AbsEpi8(a: M512i): M512i =
     run {
         val a1 = a.asI8x64()
-        val cmp: I8x64 = simdGt(a1, i8x64.ZERO)
-        transmute(simdSelect(cmp, a1, simdNeg(a1)))
+        val cmp: I8x64 = run { val _simdArg0 = a1; val _simdArg1 = i8x64.ZERO; _simdArg0 }
+        transmute(run { val _simdArg0 = cmp; val _simdArg1 = a1; val _simdArg2 = run { val _simdArg0 = a1; _simdArg0 }; _simdArg1 })
     }
 
 /**
@@ -129,7 +127,7 @@ public fun mm512AbsEpi8(a: M512i): M512i =
 public fun mm512MaskAbsEpi8(src: M512i, k: Mmask64, a: M512i): M512i =
     run {
         val abs = mm512AbsEpi8(a).asI8x64()
-        transmute(simdSelectBitmask(k, abs, src.asI8x64()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = abs; val _simdArg2 = src.asI8x64(); _simdArg1 })
     }
 
 /**
@@ -140,7 +138,7 @@ public fun mm512MaskAbsEpi8(src: M512i, k: Mmask64, a: M512i): M512i =
 public fun mm512MaskzAbsEpi8(k: Mmask64, a: M512i): M512i =
     run {
         val abs = mm512AbsEpi8(a).asI8x64()
-        transmute(simdSelectBitmask(k, abs, i8x64.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = abs; val _simdArg2 = i8x64.ZERO; _simdArg1 })
     }
 
 /**
@@ -151,7 +149,7 @@ public fun mm512MaskzAbsEpi8(k: Mmask64, a: M512i): M512i =
 public fun mm256MaskAbsEpi8(src: M256i, k: Mmask32, a: M256i): M256i =
     run {
         val abs = mm256AbsEpi8(a).asI8x32()
-        transmute(simdSelectBitmask(k, abs, src.asI8x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = abs; val _simdArg2 = src.asI8x32(); _simdArg1 })
     }
 
 /**
@@ -162,7 +160,7 @@ public fun mm256MaskAbsEpi8(src: M256i, k: Mmask32, a: M256i): M256i =
 public fun mm256MaskzAbsEpi8(k: Mmask32, a: M256i): M256i =
     run {
         val abs = mm256AbsEpi8(a).asI8x32()
-        transmute(simdSelectBitmask(k, abs, i8x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = abs; val _simdArg2 = i8x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -173,7 +171,7 @@ public fun mm256MaskzAbsEpi8(k: Mmask32, a: M256i): M256i =
 public fun mmMaskAbsEpi8(src: M128i, k: Mmask16, a: M128i): M128i =
     run {
         val abs = mmAbsEpi8(a).asI8x16()
-        transmute(simdSelectBitmask(k, abs, src.asI8x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = abs; val _simdArg2 = src.asI8x16(); _simdArg1 })
     }
 
 /**
@@ -184,7 +182,7 @@ public fun mmMaskAbsEpi8(src: M128i, k: Mmask16, a: M128i): M128i =
 public fun mmMaskzAbsEpi8(k: Mmask16, a: M128i): M128i =
     run {
         val abs = mmAbsEpi8(a).asI8x16()
-        transmute(simdSelectBitmask(k, abs, i8x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = abs; val _simdArg2 = i8x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -192,7 +190,7 @@ public fun mmMaskzAbsEpi8(k: Mmask16, a: M128i): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_add_epi16&expand=91)
  */
-public fun mm512AddEpi16(a: M512i, b: M512i): M512i = transmute(simdAdd(a.asI16x32(), b.asI16x32()))
+public fun mm512AddEpi16(a: M512i, b: M512i): M512i = transmute(run { val _simdArg0 = a.asI16x32(); val _simdArg1 = b.asI16x32(); _simdArg0 })
 
 /**
  * Add packed 16-bit integers in a and b, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -202,7 +200,7 @@ public fun mm512AddEpi16(a: M512i, b: M512i): M512i = transmute(simdAdd(a.asI16x
 public fun mm512MaskAddEpi16(src: M512i, k: Mmask32, a: M512i, b: M512i): M512i =
     run {
         val add = mm512AddEpi16(a, b).asI16x32()
-        transmute(simdSelectBitmask(k, add, src.asI16x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = add; val _simdArg2 = src.asI16x32(); _simdArg1 })
     }
 
 /**
@@ -213,7 +211,7 @@ public fun mm512MaskAddEpi16(src: M512i, k: Mmask32, a: M512i, b: M512i): M512i 
 public fun mm512MaskzAddEpi16(k: Mmask32, a: M512i, b: M512i): M512i =
     run {
         val add = mm512AddEpi16(a, b).asI16x32()
-        transmute(simdSelectBitmask(k, add, i16x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = add; val _simdArg2 = i16x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -224,7 +222,7 @@ public fun mm512MaskzAddEpi16(k: Mmask32, a: M512i, b: M512i): M512i =
 public fun mm256MaskAddEpi16(src: M256i, k: Mmask16, a: M256i, b: M256i): M256i =
     run {
         val add = mm256AddEpi16(a, b).asI16x16()
-        transmute(simdSelectBitmask(k, add, src.asI16x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = add; val _simdArg2 = src.asI16x16(); _simdArg1 })
     }
 
 /**
@@ -235,7 +233,7 @@ public fun mm256MaskAddEpi16(src: M256i, k: Mmask16, a: M256i, b: M256i): M256i 
 public fun mm256MaskzAddEpi16(k: Mmask16, a: M256i, b: M256i): M256i =
     run {
         val add = mm256AddEpi16(a, b).asI16x16()
-        transmute(simdSelectBitmask(k, add, i16x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = add; val _simdArg2 = i16x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -246,7 +244,7 @@ public fun mm256MaskzAddEpi16(k: Mmask16, a: M256i, b: M256i): M256i =
 public fun mmMaskAddEpi16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
     run {
         val add = mmAddEpi16(a, b).asI16x8()
-        transmute(simdSelectBitmask(k, add, src.asI16x8()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = add; val _simdArg2 = src.asI16x8(); _simdArg1 })
     }
 
 /**
@@ -257,7 +255,7 @@ public fun mmMaskAddEpi16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
 public fun mmMaskzAddEpi16(k: Mmask8, a: M128i, b: M128i): M128i =
     run {
         val add = mmAddEpi16(a, b).asI16x8()
-        transmute(simdSelectBitmask(k, add, i16x8.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = add; val _simdArg2 = i16x8.ZERO; _simdArg1 })
     }
 
 /**
@@ -265,7 +263,7 @@ public fun mmMaskzAddEpi16(k: Mmask8, a: M128i, b: M128i): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_add_epi8&expand=118)
  */
-public fun mm512AddEpi8(a: M512i, b: M512i): M512i = transmute(simdAdd(a.asI8x64(), b.asI8x64()))
+public fun mm512AddEpi8(a: M512i, b: M512i): M512i = transmute(run { val _simdArg0 = a.asI8x64(); val _simdArg1 = b.asI8x64(); _simdArg0 })
 
 /**
  * Add packed 8-bit integers in a and b, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -275,7 +273,7 @@ public fun mm512AddEpi8(a: M512i, b: M512i): M512i = transmute(simdAdd(a.asI8x64
 public fun mm512MaskAddEpi8(src: M512i, k: Mmask64, a: M512i, b: M512i): M512i =
     run {
         val add = mm512AddEpi8(a, b).asI8x64()
-        transmute(simdSelectBitmask(k, add, src.asI8x64()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = add; val _simdArg2 = src.asI8x64(); _simdArg1 })
     }
 
 /**
@@ -286,7 +284,7 @@ public fun mm512MaskAddEpi8(src: M512i, k: Mmask64, a: M512i, b: M512i): M512i =
 public fun mm512MaskzAddEpi8(k: Mmask64, a: M512i, b: M512i): M512i =
     run {
         val add = mm512AddEpi8(a, b).asI8x64()
-        transmute(simdSelectBitmask(k, add, i8x64.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = add; val _simdArg2 = i8x64.ZERO; _simdArg1 })
     }
 
 /**
@@ -297,7 +295,7 @@ public fun mm512MaskzAddEpi8(k: Mmask64, a: M512i, b: M512i): M512i =
 public fun mm256MaskAddEpi8(src: M256i, k: Mmask32, a: M256i, b: M256i): M256i =
     run {
         val add = mm256AddEpi8(a, b).asI8x32()
-        transmute(simdSelectBitmask(k, add, src.asI8x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = add; val _simdArg2 = src.asI8x32(); _simdArg1 })
     }
 
 /**
@@ -308,7 +306,7 @@ public fun mm256MaskAddEpi8(src: M256i, k: Mmask32, a: M256i, b: M256i): M256i =
 public fun mm256MaskzAddEpi8(k: Mmask32, a: M256i, b: M256i): M256i =
     run {
         val add = mm256AddEpi8(a, b).asI8x32()
-        transmute(simdSelectBitmask(k, add, i8x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = add; val _simdArg2 = i8x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -319,7 +317,7 @@ public fun mm256MaskzAddEpi8(k: Mmask32, a: M256i, b: M256i): M256i =
 public fun mmMaskAddEpi8(src: M128i, k: Mmask16, a: M128i, b: M128i): M128i =
     run {
         val add = mmAddEpi8(a, b).asI8x16()
-        transmute(simdSelectBitmask(k, add, src.asI8x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = add; val _simdArg2 = src.asI8x16(); _simdArg1 })
     }
 
 /**
@@ -330,7 +328,7 @@ public fun mmMaskAddEpi8(src: M128i, k: Mmask16, a: M128i, b: M128i): M128i =
 public fun mmMaskzAddEpi8(k: Mmask16, a: M128i, b: M128i): M128i =
     run {
         val add = mmAddEpi8(a, b).asI8x16()
-        transmute(simdSelectBitmask(k, add, i8x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = add; val _simdArg2 = i8x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -338,7 +336,7 @@ public fun mmMaskzAddEpi8(k: Mmask16, a: M128i, b: M128i): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_adds_epu16&expand=197)
  */
-public fun mm512AddsEpu16(a: M512i, b: M512i): M512i = transmute(simdSaturatingAdd(a.asU16x32(), b.asU16x32()))
+public fun mm512AddsEpu16(a: M512i, b: M512i): M512i = transmute(run { val _simdArg0 = a.asU16x32(); val _simdArg1 = b.asU16x32(); _simdArg0 })
 
 /**
  * Add packed unsigned 16-bit integers in a and b using saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -348,7 +346,7 @@ public fun mm512AddsEpu16(a: M512i, b: M512i): M512i = transmute(simdSaturatingA
 public fun mm512MaskAddsEpu16(src: M512i, k: Mmask32, a: M512i, b: M512i): M512i =
     run {
         val add = mm512AddsEpu16(a, b).asU16x32()
-        transmute(simdSelectBitmask(k, add, src.asU16x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = add; val _simdArg2 = src.asU16x32(); _simdArg1 })
     }
 
 /**
@@ -359,7 +357,7 @@ public fun mm512MaskAddsEpu16(src: M512i, k: Mmask32, a: M512i, b: M512i): M512i
 public fun mm512MaskzAddsEpu16(k: Mmask32, a: M512i, b: M512i): M512i =
     run {
         val add = mm512AddsEpu16(a, b).asU16x32()
-        transmute(simdSelectBitmask(k, add, u16x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = add; val _simdArg2 = u16x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -370,7 +368,7 @@ public fun mm512MaskzAddsEpu16(k: Mmask32, a: M512i, b: M512i): M512i =
 public fun mm256MaskAddsEpu16(src: M256i, k: Mmask16, a: M256i, b: M256i): M256i =
     run {
         val add = mm256AddsEpu16(a, b).asU16x16()
-        transmute(simdSelectBitmask(k, add, src.asU16x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = add; val _simdArg2 = src.asU16x16(); _simdArg1 })
     }
 
 /**
@@ -381,7 +379,7 @@ public fun mm256MaskAddsEpu16(src: M256i, k: Mmask16, a: M256i, b: M256i): M256i
 public fun mm256MaskzAddsEpu16(k: Mmask16, a: M256i, b: M256i): M256i =
     run {
         val add = mm256AddsEpu16(a, b).asU16x16()
-        transmute(simdSelectBitmask(k, add, u16x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = add; val _simdArg2 = u16x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -392,7 +390,7 @@ public fun mm256MaskzAddsEpu16(k: Mmask16, a: M256i, b: M256i): M256i =
 public fun mmMaskAddsEpu16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
     run {
         val add = mmAddsEpu16(a, b).asU16x8()
-        transmute(simdSelectBitmask(k, add, src.asU16x8()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = add; val _simdArg2 = src.asU16x8(); _simdArg1 })
     }
 
 /**
@@ -403,7 +401,7 @@ public fun mmMaskAddsEpu16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
 public fun mmMaskzAddsEpu16(k: Mmask8, a: M128i, b: M128i): M128i =
     run {
         val add = mmAddsEpu16(a, b).asU16x8()
-        transmute(simdSelectBitmask(k, add, u16x8.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = add; val _simdArg2 = u16x8.ZERO; _simdArg1 })
     }
 
 /**
@@ -411,7 +409,7 @@ public fun mmMaskzAddsEpu16(k: Mmask8, a: M128i, b: M128i): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_adds_epu8&expand=206)
  */
-public fun mm512AddsEpu8(a: M512i, b: M512i): M512i = transmute(simdSaturatingAdd(a.asU8x64(), b.asU8x64()))
+public fun mm512AddsEpu8(a: M512i, b: M512i): M512i = transmute(run { val _simdArg0 = a.asU8x64(); val _simdArg1 = b.asU8x64(); _simdArg0 })
 
 /**
  * Add packed unsigned 8-bit integers in a and b using saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -421,7 +419,7 @@ public fun mm512AddsEpu8(a: M512i, b: M512i): M512i = transmute(simdSaturatingAd
 public fun mm512MaskAddsEpu8(src: M512i, k: Mmask64, a: M512i, b: M512i): M512i =
     run {
         val add = mm512AddsEpu8(a, b).asU8x64()
-        transmute(simdSelectBitmask(k, add, src.asU8x64()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = add; val _simdArg2 = src.asU8x64(); _simdArg1 })
     }
 
 /**
@@ -432,7 +430,7 @@ public fun mm512MaskAddsEpu8(src: M512i, k: Mmask64, a: M512i, b: M512i): M512i 
 public fun mm512MaskzAddsEpu8(k: Mmask64, a: M512i, b: M512i): M512i =
     run {
         val add = mm512AddsEpu8(a, b).asU8x64()
-        transmute(simdSelectBitmask(k, add, u8x64.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = add; val _simdArg2 = u8x64.ZERO; _simdArg1 })
     }
 
 /**
@@ -443,7 +441,7 @@ public fun mm512MaskzAddsEpu8(k: Mmask64, a: M512i, b: M512i): M512i =
 public fun mm256MaskAddsEpu8(src: M256i, k: Mmask32, a: M256i, b: M256i): M256i =
     run {
         val add = mm256AddsEpu8(a, b).asU8x32()
-        transmute(simdSelectBitmask(k, add, src.asU8x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = add; val _simdArg2 = src.asU8x32(); _simdArg1 })
     }
 
 /**
@@ -454,7 +452,7 @@ public fun mm256MaskAddsEpu8(src: M256i, k: Mmask32, a: M256i, b: M256i): M256i 
 public fun mm256MaskzAddsEpu8(k: Mmask32, a: M256i, b: M256i): M256i =
     run {
         val add = mm256AddsEpu8(a, b).asU8x32()
-        transmute(simdSelectBitmask(k, add, u8x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = add; val _simdArg2 = u8x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -465,7 +463,7 @@ public fun mm256MaskzAddsEpu8(k: Mmask32, a: M256i, b: M256i): M256i =
 public fun mmMaskAddsEpu8(src: M128i, k: Mmask16, a: M128i, b: M128i): M128i =
     run {
         val add = mmAddsEpu8(a, b).asU8x16()
-        transmute(simdSelectBitmask(k, add, src.asU8x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = add; val _simdArg2 = src.asU8x16(); _simdArg1 })
     }
 
 /**
@@ -476,7 +474,7 @@ public fun mmMaskAddsEpu8(src: M128i, k: Mmask16, a: M128i, b: M128i): M128i =
 public fun mmMaskzAddsEpu8(k: Mmask16, a: M128i, b: M128i): M128i =
     run {
         val add = mmAddsEpu8(a, b).asU8x16()
-        transmute(simdSelectBitmask(k, add, u8x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = add; val _simdArg2 = u8x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -484,7 +482,7 @@ public fun mmMaskzAddsEpu8(k: Mmask16, a: M128i, b: M128i): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_adds_epi16&expand=179)
  */
-public fun mm512AddsEpi16(a: M512i, b: M512i): M512i = transmute(simdSaturatingAdd(a.asI16x32(), b.asI16x32()))
+public fun mm512AddsEpi16(a: M512i, b: M512i): M512i = transmute(run { val _simdArg0 = a.asI16x32(); val _simdArg1 = b.asI16x32(); _simdArg0 })
 
 /**
  * Add packed signed 16-bit integers in a and b using saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -494,7 +492,7 @@ public fun mm512AddsEpi16(a: M512i, b: M512i): M512i = transmute(simdSaturatingA
 public fun mm512MaskAddsEpi16(src: M512i, k: Mmask32, a: M512i, b: M512i): M512i =
     run {
         val add = mm512AddsEpi16(a, b).asI16x32()
-        transmute(simdSelectBitmask(k, add, src.asI16x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = add; val _simdArg2 = src.asI16x32(); _simdArg1 })
     }
 
 /**
@@ -505,7 +503,7 @@ public fun mm512MaskAddsEpi16(src: M512i, k: Mmask32, a: M512i, b: M512i): M512i
 public fun mm512MaskzAddsEpi16(k: Mmask32, a: M512i, b: M512i): M512i =
     run {
         val add = mm512AddsEpi16(a, b).asI16x32()
-        transmute(simdSelectBitmask(k, add, i16x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = add; val _simdArg2 = i16x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -516,7 +514,7 @@ public fun mm512MaskzAddsEpi16(k: Mmask32, a: M512i, b: M512i): M512i =
 public fun mm256MaskAddsEpi16(src: M256i, k: Mmask16, a: M256i, b: M256i): M256i =
     run {
         val add = mm256AddsEpi16(a, b).asI16x16()
-        transmute(simdSelectBitmask(k, add, src.asI16x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = add; val _simdArg2 = src.asI16x16(); _simdArg1 })
     }
 
 /**
@@ -527,7 +525,7 @@ public fun mm256MaskAddsEpi16(src: M256i, k: Mmask16, a: M256i, b: M256i): M256i
 public fun mm256MaskzAddsEpi16(k: Mmask16, a: M256i, b: M256i): M256i =
     run {
         val add = mm256AddsEpi16(a, b).asI16x16()
-        transmute(simdSelectBitmask(k, add, i16x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = add; val _simdArg2 = i16x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -538,7 +536,7 @@ public fun mm256MaskzAddsEpi16(k: Mmask16, a: M256i, b: M256i): M256i =
 public fun mmMaskAddsEpi16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
     run {
         val add = mmAddsEpi16(a, b).asI16x8()
-        transmute(simdSelectBitmask(k, add, src.asI16x8()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = add; val _simdArg2 = src.asI16x8(); _simdArg1 })
     }
 
 /**
@@ -549,7 +547,7 @@ public fun mmMaskAddsEpi16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
 public fun mmMaskzAddsEpi16(k: Mmask8, a: M128i, b: M128i): M128i =
     run {
         val add = mmAddsEpi16(a, b).asI16x8()
-        transmute(simdSelectBitmask(k, add, i16x8.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = add; val _simdArg2 = i16x8.ZERO; _simdArg1 })
     }
 
 /**
@@ -557,7 +555,7 @@ public fun mmMaskzAddsEpi16(k: Mmask8, a: M128i, b: M128i): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_adds_epi8&expand=188)
  */
-public fun mm512AddsEpi8(a: M512i, b: M512i): M512i = transmute(simdSaturatingAdd(a.asI8x64(), b.asI8x64()))
+public fun mm512AddsEpi8(a: M512i, b: M512i): M512i = transmute(run { val _simdArg0 = a.asI8x64(); val _simdArg1 = b.asI8x64(); _simdArg0 })
 
 /**
  * Add packed signed 8-bit integers in a and b using saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -567,7 +565,7 @@ public fun mm512AddsEpi8(a: M512i, b: M512i): M512i = transmute(simdSaturatingAd
 public fun mm512MaskAddsEpi8(src: M512i, k: Mmask64, a: M512i, b: M512i): M512i =
     run {
         val add = mm512AddsEpi8(a, b).asI8x64()
-        transmute(simdSelectBitmask(k, add, src.asI8x64()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = add; val _simdArg2 = src.asI8x64(); _simdArg1 })
     }
 
 /**
@@ -578,7 +576,7 @@ public fun mm512MaskAddsEpi8(src: M512i, k: Mmask64, a: M512i, b: M512i): M512i 
 public fun mm512MaskzAddsEpi8(k: Mmask64, a: M512i, b: M512i): M512i =
     run {
         val add = mm512AddsEpi8(a, b).asI8x64()
-        transmute(simdSelectBitmask(k, add, i8x64.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = add; val _simdArg2 = i8x64.ZERO; _simdArg1 })
     }
 
 /**
@@ -589,7 +587,7 @@ public fun mm512MaskzAddsEpi8(k: Mmask64, a: M512i, b: M512i): M512i =
 public fun mm256MaskAddsEpi8(src: M256i, k: Mmask32, a: M256i, b: M256i): M256i =
     run {
         val add = mm256AddsEpi8(a, b).asI8x32()
-        transmute(simdSelectBitmask(k, add, src.asI8x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = add; val _simdArg2 = src.asI8x32(); _simdArg1 })
     }
 
 /**
@@ -600,7 +598,7 @@ public fun mm256MaskAddsEpi8(src: M256i, k: Mmask32, a: M256i, b: M256i): M256i 
 public fun mm256MaskzAddsEpi8(k: Mmask32, a: M256i, b: M256i): M256i =
     run {
         val add = mm256AddsEpi8(a, b).asI8x32()
-        transmute(simdSelectBitmask(k, add, i8x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = add; val _simdArg2 = i8x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -611,7 +609,7 @@ public fun mm256MaskzAddsEpi8(k: Mmask32, a: M256i, b: M256i): M256i =
 public fun mmMaskAddsEpi8(src: M128i, k: Mmask16, a: M128i, b: M128i): M128i =
     run {
         val add = mmAddsEpi8(a, b).asI8x16()
-        transmute(simdSelectBitmask(k, add, src.asI8x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = add; val _simdArg2 = src.asI8x16(); _simdArg1 })
     }
 
 /**
@@ -622,7 +620,7 @@ public fun mmMaskAddsEpi8(src: M128i, k: Mmask16, a: M128i, b: M128i): M128i =
 public fun mmMaskzAddsEpi8(k: Mmask16, a: M128i, b: M128i): M128i =
     run {
         val add = mmAddsEpi8(a, b).asI8x16()
-        transmute(simdSelectBitmask(k, add, i8x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = add; val _simdArg2 = i8x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -630,7 +628,7 @@ public fun mmMaskzAddsEpi8(k: Mmask16, a: M128i, b: M128i): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_sub_epi16&expand=5685)
  */
-public fun mm512SubEpi16(a: M512i, b: M512i): M512i = transmute(simdSub(a.asI16x32(), b.asI16x32()))
+public fun mm512SubEpi16(a: M512i, b: M512i): M512i = transmute(run { val _simdArg0 = a.asI16x32(); val _simdArg1 = b.asI16x32(); _simdArg0 })
 
 /**
  * Subtract packed 16-bit integers in b from packed 16-bit integers in a, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -640,7 +638,7 @@ public fun mm512SubEpi16(a: M512i, b: M512i): M512i = transmute(simdSub(a.asI16x
 public fun mm512MaskSubEpi16(src: M512i, k: Mmask32, a: M512i, b: M512i): M512i =
     run {
         val sub = mm512SubEpi16(a, b).asI16x32()
-        transmute(simdSelectBitmask(k, sub, src.asI16x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = sub; val _simdArg2 = src.asI16x32(); _simdArg1 })
     }
 
 /**
@@ -651,7 +649,7 @@ public fun mm512MaskSubEpi16(src: M512i, k: Mmask32, a: M512i, b: M512i): M512i 
 public fun mm512MaskzSubEpi16(k: Mmask32, a: M512i, b: M512i): M512i =
     run {
         val sub = mm512SubEpi16(a, b).asI16x32()
-        transmute(simdSelectBitmask(k, sub, i16x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = sub; val _simdArg2 = i16x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -662,7 +660,7 @@ public fun mm512MaskzSubEpi16(k: Mmask32, a: M512i, b: M512i): M512i =
 public fun mm256MaskSubEpi16(src: M256i, k: Mmask16, a: M256i, b: M256i): M256i =
     run {
         val sub = mm256SubEpi16(a, b).asI16x16()
-        transmute(simdSelectBitmask(k, sub, src.asI16x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = sub; val _simdArg2 = src.asI16x16(); _simdArg1 })
     }
 
 /**
@@ -673,7 +671,7 @@ public fun mm256MaskSubEpi16(src: M256i, k: Mmask16, a: M256i, b: M256i): M256i 
 public fun mm256MaskzSubEpi16(k: Mmask16, a: M256i, b: M256i): M256i =
     run {
         val sub = mm256SubEpi16(a, b).asI16x16()
-        transmute(simdSelectBitmask(k, sub, i16x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = sub; val _simdArg2 = i16x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -684,7 +682,7 @@ public fun mm256MaskzSubEpi16(k: Mmask16, a: M256i, b: M256i): M256i =
 public fun mmMaskSubEpi16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
     run {
         val sub = mmSubEpi16(a, b).asI16x8()
-        transmute(simdSelectBitmask(k, sub, src.asI16x8()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = sub; val _simdArg2 = src.asI16x8(); _simdArg1 })
     }
 
 /**
@@ -695,7 +693,7 @@ public fun mmMaskSubEpi16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
 public fun mmMaskzSubEpi16(k: Mmask8, a: M128i, b: M128i): M128i =
     run {
         val sub = mmSubEpi16(a, b).asI16x8()
-        transmute(simdSelectBitmask(k, sub, i16x8.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = sub; val _simdArg2 = i16x8.ZERO; _simdArg1 })
     }
 
 /**
@@ -703,7 +701,7 @@ public fun mmMaskzSubEpi16(k: Mmask8, a: M128i, b: M128i): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_sub_epi8&expand=5712)
  */
-public fun mm512SubEpi8(a: M512i, b: M512i): M512i = transmute(simdSub(a.asI8x64(), b.asI8x64()))
+public fun mm512SubEpi8(a: M512i, b: M512i): M512i = transmute(run { val _simdArg0 = a.asI8x64(); val _simdArg1 = b.asI8x64(); _simdArg0 })
 
 /**
  * Subtract packed 8-bit integers in b from packed 8-bit integers in a, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -713,7 +711,7 @@ public fun mm512SubEpi8(a: M512i, b: M512i): M512i = transmute(simdSub(a.asI8x64
 public fun mm512MaskSubEpi8(src: M512i, k: Mmask64, a: M512i, b: M512i): M512i =
     run {
         val sub = mm512SubEpi8(a, b).asI8x64()
-        transmute(simdSelectBitmask(k, sub, src.asI8x64()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = sub; val _simdArg2 = src.asI8x64(); _simdArg1 })
     }
 
 /**
@@ -724,7 +722,7 @@ public fun mm512MaskSubEpi8(src: M512i, k: Mmask64, a: M512i, b: M512i): M512i =
 public fun mm512MaskzSubEpi8(k: Mmask64, a: M512i, b: M512i): M512i =
     run {
         val sub = mm512SubEpi8(a, b).asI8x64()
-        transmute(simdSelectBitmask(k, sub, i8x64.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = sub; val _simdArg2 = i8x64.ZERO; _simdArg1 })
     }
 
 /**
@@ -735,7 +733,7 @@ public fun mm512MaskzSubEpi8(k: Mmask64, a: M512i, b: M512i): M512i =
 public fun mm256MaskSubEpi8(src: M256i, k: Mmask32, a: M256i, b: M256i): M256i =
     run {
         val sub = mm256SubEpi8(a, b).asI8x32()
-        transmute(simdSelectBitmask(k, sub, src.asI8x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = sub; val _simdArg2 = src.asI8x32(); _simdArg1 })
     }
 
 /**
@@ -746,7 +744,7 @@ public fun mm256MaskSubEpi8(src: M256i, k: Mmask32, a: M256i, b: M256i): M256i =
 public fun mm256MaskzSubEpi8(k: Mmask32, a: M256i, b: M256i): M256i =
     run {
         val sub = mm256SubEpi8(a, b).asI8x32()
-        transmute(simdSelectBitmask(k, sub, i8x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = sub; val _simdArg2 = i8x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -757,7 +755,7 @@ public fun mm256MaskzSubEpi8(k: Mmask32, a: M256i, b: M256i): M256i =
 public fun mmMaskSubEpi8(src: M128i, k: Mmask16, a: M128i, b: M128i): M128i =
     run {
         val sub = mmSubEpi8(a, b).asI8x16()
-        transmute(simdSelectBitmask(k, sub, src.asI8x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = sub; val _simdArg2 = src.asI8x16(); _simdArg1 })
     }
 
 /**
@@ -768,7 +766,7 @@ public fun mmMaskSubEpi8(src: M128i, k: Mmask16, a: M128i, b: M128i): M128i =
 public fun mmMaskzSubEpi8(k: Mmask16, a: M128i, b: M128i): M128i =
     run {
         val sub = mmSubEpi8(a, b).asI8x16()
-        transmute(simdSelectBitmask(k, sub, i8x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = sub; val _simdArg2 = i8x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -776,7 +774,7 @@ public fun mmMaskzSubEpi8(k: Mmask16, a: M128i, b: M128i): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_subs_epu16&expand=5793)
  */
-public fun mm512SubsEpu16(a: M512i, b: M512i): M512i = transmute(simdSaturatingSub(a.asU16x32(), b.asU16x32()))
+public fun mm512SubsEpu16(a: M512i, b: M512i): M512i = transmute(run { val _simdArg0 = a.asU16x32(); val _simdArg1 = b.asU16x32(); _simdArg0 })
 
 /**
  * Subtract packed unsigned 16-bit integers in b from packed unsigned 16-bit integers in a using saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -786,7 +784,7 @@ public fun mm512SubsEpu16(a: M512i, b: M512i): M512i = transmute(simdSaturatingS
 public fun mm512MaskSubsEpu16(src: M512i, k: Mmask32, a: M512i, b: M512i): M512i =
     run {
         val sub = mm512SubsEpu16(a, b).asU16x32()
-        transmute(simdSelectBitmask(k, sub, src.asU16x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = sub; val _simdArg2 = src.asU16x32(); _simdArg1 })
     }
 
 /**
@@ -797,7 +795,7 @@ public fun mm512MaskSubsEpu16(src: M512i, k: Mmask32, a: M512i, b: M512i): M512i
 public fun mm512MaskzSubsEpu16(k: Mmask32, a: M512i, b: M512i): M512i =
     run {
         val sub = mm512SubsEpu16(a, b).asU16x32()
-        transmute(simdSelectBitmask(k, sub, u16x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = sub; val _simdArg2 = u16x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -808,7 +806,7 @@ public fun mm512MaskzSubsEpu16(k: Mmask32, a: M512i, b: M512i): M512i =
 public fun mm256MaskSubsEpu16(src: M256i, k: Mmask16, a: M256i, b: M256i): M256i =
     run {
         val sub = mm256SubsEpu16(a, b).asU16x16()
-        transmute(simdSelectBitmask(k, sub, src.asU16x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = sub; val _simdArg2 = src.asU16x16(); _simdArg1 })
     }
 
 /**
@@ -819,7 +817,7 @@ public fun mm256MaskSubsEpu16(src: M256i, k: Mmask16, a: M256i, b: M256i): M256i
 public fun mm256MaskzSubsEpu16(k: Mmask16, a: M256i, b: M256i): M256i =
     run {
         val sub = mm256SubsEpu16(a, b).asU16x16()
-        transmute(simdSelectBitmask(k, sub, u16x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = sub; val _simdArg2 = u16x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -830,7 +828,7 @@ public fun mm256MaskzSubsEpu16(k: Mmask16, a: M256i, b: M256i): M256i =
 public fun mmMaskSubsEpu16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
     run {
         val sub = mmSubsEpu16(a, b).asU16x8()
-        transmute(simdSelectBitmask(k, sub, src.asU16x8()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = sub; val _simdArg2 = src.asU16x8(); _simdArg1 })
     }
 
 /**
@@ -841,7 +839,7 @@ public fun mmMaskSubsEpu16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
 public fun mmMaskzSubsEpu16(k: Mmask8, a: M128i, b: M128i): M128i =
     run {
         val sub = mmSubsEpu16(a, b).asU16x8()
-        transmute(simdSelectBitmask(k, sub, u16x8.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = sub; val _simdArg2 = u16x8.ZERO; _simdArg1 })
     }
 
 /**
@@ -849,7 +847,7 @@ public fun mmMaskzSubsEpu16(k: Mmask8, a: M128i, b: M128i): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_subs_epu8&expand=5802)
  */
-public fun mm512SubsEpu8(a: M512i, b: M512i): M512i = transmute(simdSaturatingSub(a.asU8x64(), b.asU8x64()))
+public fun mm512SubsEpu8(a: M512i, b: M512i): M512i = transmute(run { val _simdArg0 = a.asU8x64(); val _simdArg1 = b.asU8x64(); _simdArg0 })
 
 /**
  * Subtract packed unsigned 8-bit integers in b from packed unsigned 8-bit integers in a using saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -859,7 +857,7 @@ public fun mm512SubsEpu8(a: M512i, b: M512i): M512i = transmute(simdSaturatingSu
 public fun mm512MaskSubsEpu8(src: M512i, k: Mmask64, a: M512i, b: M512i): M512i =
     run {
         val sub = mm512SubsEpu8(a, b).asU8x64()
-        transmute(simdSelectBitmask(k, sub, src.asU8x64()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = sub; val _simdArg2 = src.asU8x64(); _simdArg1 })
     }
 
 /**
@@ -870,7 +868,7 @@ public fun mm512MaskSubsEpu8(src: M512i, k: Mmask64, a: M512i, b: M512i): M512i 
 public fun mm512MaskzSubsEpu8(k: Mmask64, a: M512i, b: M512i): M512i =
     run {
         val sub = mm512SubsEpu8(a, b).asU8x64()
-        transmute(simdSelectBitmask(k, sub, u8x64.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = sub; val _simdArg2 = u8x64.ZERO; _simdArg1 })
     }
 
 /**
@@ -881,7 +879,7 @@ public fun mm512MaskzSubsEpu8(k: Mmask64, a: M512i, b: M512i): M512i =
 public fun mm256MaskSubsEpu8(src: M256i, k: Mmask32, a: M256i, b: M256i): M256i =
     run {
         val sub = mm256SubsEpu8(a, b).asU8x32()
-        transmute(simdSelectBitmask(k, sub, src.asU8x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = sub; val _simdArg2 = src.asU8x32(); _simdArg1 })
     }
 
 /**
@@ -892,7 +890,7 @@ public fun mm256MaskSubsEpu8(src: M256i, k: Mmask32, a: M256i, b: M256i): M256i 
 public fun mm256MaskzSubsEpu8(k: Mmask32, a: M256i, b: M256i): M256i =
     run {
         val sub = mm256SubsEpu8(a, b).asU8x32()
-        transmute(simdSelectBitmask(k, sub, u8x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = sub; val _simdArg2 = u8x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -903,7 +901,7 @@ public fun mm256MaskzSubsEpu8(k: Mmask32, a: M256i, b: M256i): M256i =
 public fun mmMaskSubsEpu8(src: M128i, k: Mmask16, a: M128i, b: M128i): M128i =
     run {
         val sub = mmSubsEpu8(a, b).asU8x16()
-        transmute(simdSelectBitmask(k, sub, src.asU8x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = sub; val _simdArg2 = src.asU8x16(); _simdArg1 })
     }
 
 /**
@@ -914,7 +912,7 @@ public fun mmMaskSubsEpu8(src: M128i, k: Mmask16, a: M128i, b: M128i): M128i =
 public fun mmMaskzSubsEpu8(k: Mmask16, a: M128i, b: M128i): M128i =
     run {
         val sub = mmSubsEpu8(a, b).asU8x16()
-        transmute(simdSelectBitmask(k, sub, u8x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = sub; val _simdArg2 = u8x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -922,7 +920,7 @@ public fun mmMaskzSubsEpu8(k: Mmask16, a: M128i, b: M128i): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_subs_epi16&expand=5775)
  */
-public fun mm512SubsEpi16(a: M512i, b: M512i): M512i = transmute(simdSaturatingSub(a.asI16x32(), b.asI16x32()))
+public fun mm512SubsEpi16(a: M512i, b: M512i): M512i = transmute(run { val _simdArg0 = a.asI16x32(); val _simdArg1 = b.asI16x32(); _simdArg0 })
 
 /**
  * Subtract packed signed 16-bit integers in b from packed 16-bit integers in a using saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -932,7 +930,7 @@ public fun mm512SubsEpi16(a: M512i, b: M512i): M512i = transmute(simdSaturatingS
 public fun mm512MaskSubsEpi16(src: M512i, k: Mmask32, a: M512i, b: M512i): M512i =
     run {
         val sub = mm512SubsEpi16(a, b).asI16x32()
-        transmute(simdSelectBitmask(k, sub, src.asI16x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = sub; val _simdArg2 = src.asI16x32(); _simdArg1 })
     }
 
 /**
@@ -943,7 +941,7 @@ public fun mm512MaskSubsEpi16(src: M512i, k: Mmask32, a: M512i, b: M512i): M512i
 public fun mm512MaskzSubsEpi16(k: Mmask32, a: M512i, b: M512i): M512i =
     run {
         val sub = mm512SubsEpi16(a, b).asI16x32()
-        transmute(simdSelectBitmask(k, sub, i16x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = sub; val _simdArg2 = i16x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -954,7 +952,7 @@ public fun mm512MaskzSubsEpi16(k: Mmask32, a: M512i, b: M512i): M512i =
 public fun mm256MaskSubsEpi16(src: M256i, k: Mmask16, a: M256i, b: M256i): M256i =
     run {
         val sub = mm256SubsEpi16(a, b).asI16x16()
-        transmute(simdSelectBitmask(k, sub, src.asI16x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = sub; val _simdArg2 = src.asI16x16(); _simdArg1 })
     }
 
 /**
@@ -965,7 +963,7 @@ public fun mm256MaskSubsEpi16(src: M256i, k: Mmask16, a: M256i, b: M256i): M256i
 public fun mm256MaskzSubsEpi16(k: Mmask16, a: M256i, b: M256i): M256i =
     run {
         val sub = mm256SubsEpi16(a, b).asI16x16()
-        transmute(simdSelectBitmask(k, sub, i16x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = sub; val _simdArg2 = i16x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -976,7 +974,7 @@ public fun mm256MaskzSubsEpi16(k: Mmask16, a: M256i, b: M256i): M256i =
 public fun mmMaskSubsEpi16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
     run {
         val sub = mmSubsEpi16(a, b).asI16x8()
-        transmute(simdSelectBitmask(k, sub, src.asI16x8()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = sub; val _simdArg2 = src.asI16x8(); _simdArg1 })
     }
 
 /**
@@ -987,7 +985,7 @@ public fun mmMaskSubsEpi16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
 public fun mmMaskzSubsEpi16(k: Mmask8, a: M128i, b: M128i): M128i =
     run {
         val sub = mmSubsEpi16(a, b).asI16x8()
-        transmute(simdSelectBitmask(k, sub, i16x8.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = sub; val _simdArg2 = i16x8.ZERO; _simdArg1 })
     }
 
 /**
@@ -995,7 +993,7 @@ public fun mmMaskzSubsEpi16(k: Mmask8, a: M128i, b: M128i): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_subs_epi8&expand=5784)
  */
-public fun mm512SubsEpi8(a: M512i, b: M512i): M512i = transmute(simdSaturatingSub(a.asI8x64(), b.asI8x64()))
+public fun mm512SubsEpi8(a: M512i, b: M512i): M512i = transmute(run { val _simdArg0 = a.asI8x64(); val _simdArg1 = b.asI8x64(); _simdArg0 })
 
 /**
  * Subtract packed signed 8-bit integers in b from packed 8-bit integers in a using saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -1005,7 +1003,7 @@ public fun mm512SubsEpi8(a: M512i, b: M512i): M512i = transmute(simdSaturatingSu
 public fun mm512MaskSubsEpi8(src: M512i, k: Mmask64, a: M512i, b: M512i): M512i =
     run {
         val sub = mm512SubsEpi8(a, b).asI8x64()
-        transmute(simdSelectBitmask(k, sub, src.asI8x64()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = sub; val _simdArg2 = src.asI8x64(); _simdArg1 })
     }
 
 /**
@@ -1016,7 +1014,7 @@ public fun mm512MaskSubsEpi8(src: M512i, k: Mmask64, a: M512i, b: M512i): M512i 
 public fun mm512MaskzSubsEpi8(k: Mmask64, a: M512i, b: M512i): M512i =
     run {
         val sub = mm512SubsEpi8(a, b).asI8x64()
-        transmute(simdSelectBitmask(k, sub, i8x64.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = sub; val _simdArg2 = i8x64.ZERO; _simdArg1 })
     }
 
 /**
@@ -1027,7 +1025,7 @@ public fun mm512MaskzSubsEpi8(k: Mmask64, a: M512i, b: M512i): M512i =
 public fun mm256MaskSubsEpi8(src: M256i, k: Mmask32, a: M256i, b: M256i): M256i =
     run {
         val sub = mm256SubsEpi8(a, b).asI8x32()
-        transmute(simdSelectBitmask(k, sub, src.asI8x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = sub; val _simdArg2 = src.asI8x32(); _simdArg1 })
     }
 
 /**
@@ -1038,7 +1036,7 @@ public fun mm256MaskSubsEpi8(src: M256i, k: Mmask32, a: M256i, b: M256i): M256i 
 public fun mm256MaskzSubsEpi8(k: Mmask32, a: M256i, b: M256i): M256i =
     run {
         val sub = mm256SubsEpi8(a, b).asI8x32()
-        transmute(simdSelectBitmask(k, sub, i8x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = sub; val _simdArg2 = i8x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -1049,7 +1047,7 @@ public fun mm256MaskzSubsEpi8(k: Mmask32, a: M256i, b: M256i): M256i =
 public fun mmMaskSubsEpi8(src: M128i, k: Mmask16, a: M128i, b: M128i): M128i =
     run {
         val sub = mmSubsEpi8(a, b).asI8x16()
-        transmute(simdSelectBitmask(k, sub, src.asI8x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = sub; val _simdArg2 = src.asI8x16(); _simdArg1 })
     }
 
 /**
@@ -1060,7 +1058,7 @@ public fun mmMaskSubsEpi8(src: M128i, k: Mmask16, a: M128i, b: M128i): M128i =
 public fun mmMaskzSubsEpi8(k: Mmask16, a: M128i, b: M128i): M128i =
     run {
         val sub = mmSubsEpi8(a, b).asI8x16()
-        transmute(simdSelectBitmask(k, sub, i8x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = sub; val _simdArg2 = i8x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -1078,7 +1076,7 @@ public fun mm512MulhiEpu16(a: M512i, b: M512i): M512i = transmute(vpmulhuw(a.asU
 public fun mm512MaskMulhiEpu16(src: M512i, k: Mmask32, a: M512i, b: M512i): M512i =
     run {
         val mul = mm512MulhiEpu16(a, b).asU16x32()
-        transmute(simdSelectBitmask(k, mul, src.asU16x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = mul; val _simdArg2 = src.asU16x32(); _simdArg1 })
     }
 
 /**
@@ -1089,7 +1087,7 @@ public fun mm512MaskMulhiEpu16(src: M512i, k: Mmask32, a: M512i, b: M512i): M512
 public fun mm512MaskzMulhiEpu16(k: Mmask32, a: M512i, b: M512i): M512i =
     run {
         val mul = mm512MulhiEpu16(a, b).asU16x32()
-        transmute(simdSelectBitmask(k, mul, u16x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = mul; val _simdArg2 = u16x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -1100,7 +1098,7 @@ public fun mm512MaskzMulhiEpu16(k: Mmask32, a: M512i, b: M512i): M512i =
 public fun mm256MaskMulhiEpu16(src: M256i, k: Mmask16, a: M256i, b: M256i): M256i =
     run {
         val mul = mm256MulhiEpu16(a, b).asU16x16()
-        transmute(simdSelectBitmask(k, mul, src.asU16x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = mul; val _simdArg2 = src.asU16x16(); _simdArg1 })
     }
 
 /**
@@ -1111,7 +1109,7 @@ public fun mm256MaskMulhiEpu16(src: M256i, k: Mmask16, a: M256i, b: M256i): M256
 public fun mm256MaskzMulhiEpu16(k: Mmask16, a: M256i, b: M256i): M256i =
     run {
         val mul = mm256MulhiEpu16(a, b).asU16x16()
-        transmute(simdSelectBitmask(k, mul, u16x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = mul; val _simdArg2 = u16x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -1122,7 +1120,7 @@ public fun mm256MaskzMulhiEpu16(k: Mmask16, a: M256i, b: M256i): M256i =
 public fun mmMaskMulhiEpu16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
     run {
         val mul = mmMulhiEpu16(a, b).asU16x8()
-        transmute(simdSelectBitmask(k, mul, src.asU16x8()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = mul; val _simdArg2 = src.asU16x8(); _simdArg1 })
     }
 
 /**
@@ -1133,7 +1131,7 @@ public fun mmMaskMulhiEpu16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
 public fun mmMaskzMulhiEpu16(k: Mmask8, a: M128i, b: M128i): M128i =
     run {
         val mul = mmMulhiEpu16(a, b).asU16x8()
-        transmute(simdSelectBitmask(k, mul, u16x8.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = mul; val _simdArg2 = u16x8.ZERO; _simdArg1 })
     }
 
 /**
@@ -1151,7 +1149,7 @@ public fun mm512MulhiEpi16(a: M512i, b: M512i): M512i = transmute(vpmulhw(a.asI1
 public fun mm512MaskMulhiEpi16(src: M512i, k: Mmask32, a: M512i, b: M512i): M512i =
     run {
         val mul = mm512MulhiEpi16(a, b).asI16x32()
-        transmute(simdSelectBitmask(k, mul, src.asI16x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = mul; val _simdArg2 = src.asI16x32(); _simdArg1 })
     }
 
 /**
@@ -1162,7 +1160,7 @@ public fun mm512MaskMulhiEpi16(src: M512i, k: Mmask32, a: M512i, b: M512i): M512
 public fun mm512MaskzMulhiEpi16(k: Mmask32, a: M512i, b: M512i): M512i =
     run {
         val mul = mm512MulhiEpi16(a, b).asI16x32()
-        transmute(simdSelectBitmask(k, mul, i16x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = mul; val _simdArg2 = i16x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -1173,7 +1171,7 @@ public fun mm512MaskzMulhiEpi16(k: Mmask32, a: M512i, b: M512i): M512i =
 public fun mm256MaskMulhiEpi16(src: M256i, k: Mmask16, a: M256i, b: M256i): M256i =
     run {
         val mul = mm256MulhiEpi16(a, b).asI16x16()
-        transmute(simdSelectBitmask(k, mul, src.asI16x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = mul; val _simdArg2 = src.asI16x16(); _simdArg1 })
     }
 
 /**
@@ -1184,7 +1182,7 @@ public fun mm256MaskMulhiEpi16(src: M256i, k: Mmask16, a: M256i, b: M256i): M256
 public fun mm256MaskzMulhiEpi16(k: Mmask16, a: M256i, b: M256i): M256i =
     run {
         val mul = mm256MulhiEpi16(a, b).asI16x16()
-        transmute(simdSelectBitmask(k, mul, i16x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = mul; val _simdArg2 = i16x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -1195,7 +1193,7 @@ public fun mm256MaskzMulhiEpi16(k: Mmask16, a: M256i, b: M256i): M256i =
 public fun mmMaskMulhiEpi16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
     run {
         val mul = mmMulhiEpi16(a, b).asI16x8()
-        transmute(simdSelectBitmask(k, mul, src.asI16x8()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = mul; val _simdArg2 = src.asI16x8(); _simdArg1 })
     }
 
 /**
@@ -1206,7 +1204,7 @@ public fun mmMaskMulhiEpi16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
 public fun mmMaskzMulhiEpi16(k: Mmask8, a: M128i, b: M128i): M128i =
     run {
         val mul = mmMulhiEpi16(a, b).asI16x8()
-        transmute(simdSelectBitmask(k, mul, i16x8.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = mul; val _simdArg2 = i16x8.ZERO; _simdArg1 })
     }
 
 /**
@@ -1224,7 +1222,7 @@ public fun mm512MulhrsEpi16(a: M512i, b: M512i): M512i = transmute(vpmulhrsw(a.a
 public fun mm512MaskMulhrsEpi16(src: M512i, k: Mmask32, a: M512i, b: M512i): M512i =
     run {
         val mul = mm512MulhrsEpi16(a, b).asI16x32()
-        transmute(simdSelectBitmask(k, mul, src.asI16x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = mul; val _simdArg2 = src.asI16x32(); _simdArg1 })
     }
 
 /**
@@ -1235,7 +1233,7 @@ public fun mm512MaskMulhrsEpi16(src: M512i, k: Mmask32, a: M512i, b: M512i): M51
 public fun mm512MaskzMulhrsEpi16(k: Mmask32, a: M512i, b: M512i): M512i =
     run {
         val mul = mm512MulhrsEpi16(a, b).asI16x32()
-        transmute(simdSelectBitmask(k, mul, i16x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = mul; val _simdArg2 = i16x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -1246,7 +1244,7 @@ public fun mm512MaskzMulhrsEpi16(k: Mmask32, a: M512i, b: M512i): M512i =
 public fun mm256MaskMulhrsEpi16(src: M256i, k: Mmask16, a: M256i, b: M256i): M256i =
     run {
         val mul = mm256MulhrsEpi16(a, b).asI16x16()
-        transmute(simdSelectBitmask(k, mul, src.asI16x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = mul; val _simdArg2 = src.asI16x16(); _simdArg1 })
     }
 
 /**
@@ -1257,7 +1255,7 @@ public fun mm256MaskMulhrsEpi16(src: M256i, k: Mmask16, a: M256i, b: M256i): M25
 public fun mm256MaskzMulhrsEpi16(k: Mmask16, a: M256i, b: M256i): M256i =
     run {
         val mul = mm256MulhrsEpi16(a, b).asI16x16()
-        transmute(simdSelectBitmask(k, mul, i16x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = mul; val _simdArg2 = i16x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -1268,7 +1266,7 @@ public fun mm256MaskzMulhrsEpi16(k: Mmask16, a: M256i, b: M256i): M256i =
 public fun mmMaskMulhrsEpi16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
     run {
         val mul = mmMulhrsEpi16(a, b).asI16x8()
-        transmute(simdSelectBitmask(k, mul, src.asI16x8()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = mul; val _simdArg2 = src.asI16x8(); _simdArg1 })
     }
 
 /**
@@ -1279,7 +1277,7 @@ public fun mmMaskMulhrsEpi16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
 public fun mmMaskzMulhrsEpi16(k: Mmask8, a: M128i, b: M128i): M128i =
     run {
         val mul = mmMulhrsEpi16(a, b).asI16x8()
-        transmute(simdSelectBitmask(k, mul, i16x8.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = mul; val _simdArg2 = i16x8.ZERO; _simdArg1 })
     }
 
 /**
@@ -1287,7 +1285,7 @@ public fun mmMaskzMulhrsEpi16(k: Mmask8, a: M128i, b: M128i): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mullo_epi16&expand=3996)
  */
-public fun mm512MulloEpi16(a: M512i, b: M512i): M512i = transmute(simdMul(a.asI16x32(), b.asI16x32()))
+public fun mm512MulloEpi16(a: M512i, b: M512i): M512i = transmute(run { val _simdArg0 = a.asI16x32(); val _simdArg1 = b.asI16x32(); _simdArg0 })
 
 /**
  * Multiply the packed 16-bit integers in a and b, producing intermediate 32-bit integers, and store the low 16 bits of the intermediate integers in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -1297,7 +1295,7 @@ public fun mm512MulloEpi16(a: M512i, b: M512i): M512i = transmute(simdMul(a.asI1
 public fun mm512MaskMulloEpi16(src: M512i, k: Mmask32, a: M512i, b: M512i): M512i =
     run {
         val mul = mm512MulloEpi16(a, b).asI16x32()
-        transmute(simdSelectBitmask(k, mul, src.asI16x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = mul; val _simdArg2 = src.asI16x32(); _simdArg1 })
     }
 
 /**
@@ -1308,7 +1306,7 @@ public fun mm512MaskMulloEpi16(src: M512i, k: Mmask32, a: M512i, b: M512i): M512
 public fun mm512MaskzMulloEpi16(k: Mmask32, a: M512i, b: M512i): M512i =
     run {
         val mul = mm512MulloEpi16(a, b).asI16x32()
-        transmute(simdSelectBitmask(k, mul, i16x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = mul; val _simdArg2 = i16x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -1319,7 +1317,7 @@ public fun mm512MaskzMulloEpi16(k: Mmask32, a: M512i, b: M512i): M512i =
 public fun mm256MaskMulloEpi16(src: M256i, k: Mmask16, a: M256i, b: M256i): M256i =
     run {
         val mul = mm256MulloEpi16(a, b).asI16x16()
-        transmute(simdSelectBitmask(k, mul, src.asI16x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = mul; val _simdArg2 = src.asI16x16(); _simdArg1 })
     }
 
 /**
@@ -1330,7 +1328,7 @@ public fun mm256MaskMulloEpi16(src: M256i, k: Mmask16, a: M256i, b: M256i): M256
 public fun mm256MaskzMulloEpi16(k: Mmask16, a: M256i, b: M256i): M256i =
     run {
         val mul = mm256MulloEpi16(a, b).asI16x16()
-        transmute(simdSelectBitmask(k, mul, i16x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = mul; val _simdArg2 = i16x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -1341,7 +1339,7 @@ public fun mm256MaskzMulloEpi16(k: Mmask16, a: M256i, b: M256i): M256i =
 public fun mmMaskMulloEpi16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
     run {
         val mul = mmMulloEpi16(a, b).asI16x8()
-        transmute(simdSelectBitmask(k, mul, src.asI16x8()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = mul; val _simdArg2 = src.asI16x8(); _simdArg1 })
     }
 
 /**
@@ -1352,7 +1350,7 @@ public fun mmMaskMulloEpi16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
 public fun mmMaskzMulloEpi16(k: Mmask8, a: M128i, b: M128i): M128i =
     run {
         val mul = mmMulloEpi16(a, b).asI16x8()
-        transmute(simdSelectBitmask(k, mul, i16x8.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = mul; val _simdArg2 = i16x8.ZERO; _simdArg1 })
     }
 
 /**
@@ -1370,7 +1368,7 @@ public fun mm512MaxEpu16(a: M512i, b: M512i): M512i = simdImax(a.asU16x32(), b.a
 public fun mm512MaskMaxEpu16(src: M512i, k: Mmask32, a: M512i, b: M512i): M512i =
     run {
         val max = mm512MaxEpu16(a, b).asU16x32()
-        transmute(simdSelectBitmask(k, max, src.asU16x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = max; val _simdArg2 = src.asU16x32(); _simdArg1 })
     }
 
 /**
@@ -1381,7 +1379,7 @@ public fun mm512MaskMaxEpu16(src: M512i, k: Mmask32, a: M512i, b: M512i): M512i 
 public fun mm512MaskzMaxEpu16(k: Mmask32, a: M512i, b: M512i): M512i =
     run {
         val max = mm512MaxEpu16(a, b).asU16x32()
-        transmute(simdSelectBitmask(k, max, u16x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = max; val _simdArg2 = u16x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -1392,7 +1390,7 @@ public fun mm512MaskzMaxEpu16(k: Mmask32, a: M512i, b: M512i): M512i =
 public fun mm256MaskMaxEpu16(src: M256i, k: Mmask16, a: M256i, b: M256i): M256i =
     run {
         val max = mm256MaxEpu16(a, b).asU16x16()
-        transmute(simdSelectBitmask(k, max, src.asU16x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = max; val _simdArg2 = src.asU16x16(); _simdArg1 })
     }
 
 /**
@@ -1403,7 +1401,7 @@ public fun mm256MaskMaxEpu16(src: M256i, k: Mmask16, a: M256i, b: M256i): M256i 
 public fun mm256MaskzMaxEpu16(k: Mmask16, a: M256i, b: M256i): M256i =
     run {
         val max = mm256MaxEpu16(a, b).asU16x16()
-        transmute(simdSelectBitmask(k, max, u16x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = max; val _simdArg2 = u16x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -1414,7 +1412,7 @@ public fun mm256MaskzMaxEpu16(k: Mmask16, a: M256i, b: M256i): M256i =
 public fun mmMaskMaxEpu16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
     run {
         val max = mmMaxEpu16(a, b).asU16x8()
-        transmute(simdSelectBitmask(k, max, src.asU16x8()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = max; val _simdArg2 = src.asU16x8(); _simdArg1 })
     }
 
 /**
@@ -1425,7 +1423,7 @@ public fun mmMaskMaxEpu16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
 public fun mmMaskzMaxEpu16(k: Mmask8, a: M128i, b: M128i): M128i =
     run {
         val max = mmMaxEpu16(a, b).asU16x8()
-        transmute(simdSelectBitmask(k, max, u16x8.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = max; val _simdArg2 = u16x8.ZERO; _simdArg1 })
     }
 
 /**
@@ -1443,7 +1441,7 @@ public fun mm512MaxEpu8(a: M512i, b: M512i): M512i = simdImax(a.asU8x64(), b.asU
 public fun mm512MaskMaxEpu8(src: M512i, k: Mmask64, a: M512i, b: M512i): M512i =
     run {
         val max = mm512MaxEpu8(a, b).asU8x64()
-        transmute(simdSelectBitmask(k, max, src.asU8x64()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = max; val _simdArg2 = src.asU8x64(); _simdArg1 })
     }
 
 /**
@@ -1454,7 +1452,7 @@ public fun mm512MaskMaxEpu8(src: M512i, k: Mmask64, a: M512i, b: M512i): M512i =
 public fun mm512MaskzMaxEpu8(k: Mmask64, a: M512i, b: M512i): M512i =
     run {
         val max = mm512MaxEpu8(a, b).asU8x64()
-        transmute(simdSelectBitmask(k, max, u8x64.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = max; val _simdArg2 = u8x64.ZERO; _simdArg1 })
     }
 
 /**
@@ -1465,7 +1463,7 @@ public fun mm512MaskzMaxEpu8(k: Mmask64, a: M512i, b: M512i): M512i =
 public fun mm256MaskMaxEpu8(src: M256i, k: Mmask32, a: M256i, b: M256i): M256i =
     run {
         val max = mm256MaxEpu8(a, b).asU8x32()
-        transmute(simdSelectBitmask(k, max, src.asU8x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = max; val _simdArg2 = src.asU8x32(); _simdArg1 })
     }
 
 /**
@@ -1476,7 +1474,7 @@ public fun mm256MaskMaxEpu8(src: M256i, k: Mmask32, a: M256i, b: M256i): M256i =
 public fun mm256MaskzMaxEpu8(k: Mmask32, a: M256i, b: M256i): M256i =
     run {
         val max = mm256MaxEpu8(a, b).asU8x32()
-        transmute(simdSelectBitmask(k, max, u8x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = max; val _simdArg2 = u8x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -1487,7 +1485,7 @@ public fun mm256MaskzMaxEpu8(k: Mmask32, a: M256i, b: M256i): M256i =
 public fun mmMaskMaxEpu8(src: M128i, k: Mmask16, a: M128i, b: M128i): M128i =
     run {
         val max = mmMaxEpu8(a, b).asU8x16()
-        transmute(simdSelectBitmask(k, max, src.asU8x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = max; val _simdArg2 = src.asU8x16(); _simdArg1 })
     }
 
 /**
@@ -1498,7 +1496,7 @@ public fun mmMaskMaxEpu8(src: M128i, k: Mmask16, a: M128i, b: M128i): M128i =
 public fun mmMaskzMaxEpu8(k: Mmask16, a: M128i, b: M128i): M128i =
     run {
         val max = mmMaxEpu8(a, b).asU8x16()
-        transmute(simdSelectBitmask(k, max, u8x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = max; val _simdArg2 = u8x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -1516,7 +1514,7 @@ public fun mm512MaxEpi16(a: M512i, b: M512i): M512i = simdImax(a.asI16x32(), b.a
 public fun mm512MaskMaxEpi16(src: M512i, k: Mmask32, a: M512i, b: M512i): M512i =
     run {
         val max = mm512MaxEpi16(a, b).asI16x32()
-        transmute(simdSelectBitmask(k, max, src.asI16x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = max; val _simdArg2 = src.asI16x32(); _simdArg1 })
     }
 
 /**
@@ -1527,7 +1525,7 @@ public fun mm512MaskMaxEpi16(src: M512i, k: Mmask32, a: M512i, b: M512i): M512i 
 public fun mm512MaskzMaxEpi16(k: Mmask32, a: M512i, b: M512i): M512i =
     run {
         val max = mm512MaxEpi16(a, b).asI16x32()
-        transmute(simdSelectBitmask(k, max, i16x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = max; val _simdArg2 = i16x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -1538,7 +1536,7 @@ public fun mm512MaskzMaxEpi16(k: Mmask32, a: M512i, b: M512i): M512i =
 public fun mm256MaskMaxEpi16(src: M256i, k: Mmask16, a: M256i, b: M256i): M256i =
     run {
         val max = mm256MaxEpi16(a, b).asI16x16()
-        transmute(simdSelectBitmask(k, max, src.asI16x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = max; val _simdArg2 = src.asI16x16(); _simdArg1 })
     }
 
 /**
@@ -1549,7 +1547,7 @@ public fun mm256MaskMaxEpi16(src: M256i, k: Mmask16, a: M256i, b: M256i): M256i 
 public fun mm256MaskzMaxEpi16(k: Mmask16, a: M256i, b: M256i): M256i =
     run {
         val max = mm256MaxEpi16(a, b).asI16x16()
-        transmute(simdSelectBitmask(k, max, i16x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = max; val _simdArg2 = i16x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -1560,7 +1558,7 @@ public fun mm256MaskzMaxEpi16(k: Mmask16, a: M256i, b: M256i): M256i =
 public fun mmMaskMaxEpi16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
     run {
         val max = mmMaxEpi16(a, b).asI16x8()
-        transmute(simdSelectBitmask(k, max, src.asI16x8()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = max; val _simdArg2 = src.asI16x8(); _simdArg1 })
     }
 
 /**
@@ -1571,7 +1569,7 @@ public fun mmMaskMaxEpi16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
 public fun mmMaskzMaxEpi16(k: Mmask8, a: M128i, b: M128i): M128i =
     run {
         val max = mmMaxEpi16(a, b).asI16x8()
-        transmute(simdSelectBitmask(k, max, i16x8.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = max; val _simdArg2 = i16x8.ZERO; _simdArg1 })
     }
 
 /**
@@ -1589,7 +1587,7 @@ public fun mm512MaxEpi8(a: M512i, b: M512i): M512i = simdImax(a.asI8x64(), b.asI
 public fun mm512MaskMaxEpi8(src: M512i, k: Mmask64, a: M512i, b: M512i): M512i =
     run {
         val max = mm512MaxEpi8(a, b).asI8x64()
-        transmute(simdSelectBitmask(k, max, src.asI8x64()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = max; val _simdArg2 = src.asI8x64(); _simdArg1 })
     }
 
 /**
@@ -1600,7 +1598,7 @@ public fun mm512MaskMaxEpi8(src: M512i, k: Mmask64, a: M512i, b: M512i): M512i =
 public fun mm512MaskzMaxEpi8(k: Mmask64, a: M512i, b: M512i): M512i =
     run {
         val max = mm512MaxEpi8(a, b).asI8x64()
-        transmute(simdSelectBitmask(k, max, i8x64.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = max; val _simdArg2 = i8x64.ZERO; _simdArg1 })
     }
 
 /**
@@ -1611,7 +1609,7 @@ public fun mm512MaskzMaxEpi8(k: Mmask64, a: M512i, b: M512i): M512i =
 public fun mm256MaskMaxEpi8(src: M256i, k: Mmask32, a: M256i, b: M256i): M256i =
     run {
         val max = mm256MaxEpi8(a, b).asI8x32()
-        transmute(simdSelectBitmask(k, max, src.asI8x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = max; val _simdArg2 = src.asI8x32(); _simdArg1 })
     }
 
 /**
@@ -1622,7 +1620,7 @@ public fun mm256MaskMaxEpi8(src: M256i, k: Mmask32, a: M256i, b: M256i): M256i =
 public fun mm256MaskzMaxEpi8(k: Mmask32, a: M256i, b: M256i): M256i =
     run {
         val max = mm256MaxEpi8(a, b).asI8x32()
-        transmute(simdSelectBitmask(k, max, i8x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = max; val _simdArg2 = i8x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -1633,7 +1631,7 @@ public fun mm256MaskzMaxEpi8(k: Mmask32, a: M256i, b: M256i): M256i =
 public fun mmMaskMaxEpi8(src: M128i, k: Mmask16, a: M128i, b: M128i): M128i =
     run {
         val max = mmMaxEpi8(a, b).asI8x16()
-        transmute(simdSelectBitmask(k, max, src.asI8x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = max; val _simdArg2 = src.asI8x16(); _simdArg1 })
     }
 
 /**
@@ -1644,7 +1642,7 @@ public fun mmMaskMaxEpi8(src: M128i, k: Mmask16, a: M128i, b: M128i): M128i =
 public fun mmMaskzMaxEpi8(k: Mmask16, a: M128i, b: M128i): M128i =
     run {
         val max = mmMaxEpi8(a, b).asI8x16()
-        transmute(simdSelectBitmask(k, max, i8x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = max; val _simdArg2 = i8x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -1662,7 +1660,7 @@ public fun mm512MinEpu16(a: M512i, b: M512i): M512i = simdImin(a.asU16x32(), b.a
 public fun mm512MaskMinEpu16(src: M512i, k: Mmask32, a: M512i, b: M512i): M512i =
     run {
         val min = mm512MinEpu16(a, b).asU16x32()
-        transmute(simdSelectBitmask(k, min, src.asU16x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = min; val _simdArg2 = src.asU16x32(); _simdArg1 })
     }
 
 /**
@@ -1673,7 +1671,7 @@ public fun mm512MaskMinEpu16(src: M512i, k: Mmask32, a: M512i, b: M512i): M512i 
 public fun mm512MaskzMinEpu16(k: Mmask32, a: M512i, b: M512i): M512i =
     run {
         val min = mm512MinEpu16(a, b).asU16x32()
-        transmute(simdSelectBitmask(k, min, u16x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = min; val _simdArg2 = u16x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -1684,7 +1682,7 @@ public fun mm512MaskzMinEpu16(k: Mmask32, a: M512i, b: M512i): M512i =
 public fun mm256MaskMinEpu16(src: M256i, k: Mmask16, a: M256i, b: M256i): M256i =
     run {
         val min = mm256MinEpu16(a, b).asU16x16()
-        transmute(simdSelectBitmask(k, min, src.asU16x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = min; val _simdArg2 = src.asU16x16(); _simdArg1 })
     }
 
 /**
@@ -1695,7 +1693,7 @@ public fun mm256MaskMinEpu16(src: M256i, k: Mmask16, a: M256i, b: M256i): M256i 
 public fun mm256MaskzMinEpu16(k: Mmask16, a: M256i, b: M256i): M256i =
     run {
         val min = mm256MinEpu16(a, b).asU16x16()
-        transmute(simdSelectBitmask(k, min, u16x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = min; val _simdArg2 = u16x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -1706,7 +1704,7 @@ public fun mm256MaskzMinEpu16(k: Mmask16, a: M256i, b: M256i): M256i =
 public fun mmMaskMinEpu16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
     run {
         val min = mmMinEpu16(a, b).asU16x8()
-        transmute(simdSelectBitmask(k, min, src.asU16x8()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = min; val _simdArg2 = src.asU16x8(); _simdArg1 })
     }
 
 /**
@@ -1717,7 +1715,7 @@ public fun mmMaskMinEpu16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
 public fun mmMaskzMinEpu16(k: Mmask8, a: M128i, b: M128i): M128i =
     run {
         val min = mmMinEpu16(a, b).asU16x8()
-        transmute(simdSelectBitmask(k, min, u16x8.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = min; val _simdArg2 = u16x8.ZERO; _simdArg1 })
     }
 
 /**
@@ -1735,7 +1733,7 @@ public fun mm512MinEpu8(a: M512i, b: M512i): M512i = simdImin(a.asU8x64(), b.asU
 public fun mm512MaskMinEpu8(src: M512i, k: Mmask64, a: M512i, b: M512i): M512i =
     run {
         val min = mm512MinEpu8(a, b).asU8x64()
-        transmute(simdSelectBitmask(k, min, src.asU8x64()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = min; val _simdArg2 = src.asU8x64(); _simdArg1 })
     }
 
 /**
@@ -1746,7 +1744,7 @@ public fun mm512MaskMinEpu8(src: M512i, k: Mmask64, a: M512i, b: M512i): M512i =
 public fun mm512MaskzMinEpu8(k: Mmask64, a: M512i, b: M512i): M512i =
     run {
         val min = mm512MinEpu8(a, b).asU8x64()
-        transmute(simdSelectBitmask(k, min, u8x64.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = min; val _simdArg2 = u8x64.ZERO; _simdArg1 })
     }
 
 /**
@@ -1757,7 +1755,7 @@ public fun mm512MaskzMinEpu8(k: Mmask64, a: M512i, b: M512i): M512i =
 public fun mm256MaskMinEpu8(src: M256i, k: Mmask32, a: M256i, b: M256i): M256i =
     run {
         val min = mm256MinEpu8(a, b).asU8x32()
-        transmute(simdSelectBitmask(k, min, src.asU8x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = min; val _simdArg2 = src.asU8x32(); _simdArg1 })
     }
 
 /**
@@ -1768,7 +1766,7 @@ public fun mm256MaskMinEpu8(src: M256i, k: Mmask32, a: M256i, b: M256i): M256i =
 public fun mm256MaskzMinEpu8(k: Mmask32, a: M256i, b: M256i): M256i =
     run {
         val min = mm256MinEpu8(a, b).asU8x32()
-        transmute(simdSelectBitmask(k, min, u8x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = min; val _simdArg2 = u8x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -1779,7 +1777,7 @@ public fun mm256MaskzMinEpu8(k: Mmask32, a: M256i, b: M256i): M256i =
 public fun mmMaskMinEpu8(src: M128i, k: Mmask16, a: M128i, b: M128i): M128i =
     run {
         val min = mmMinEpu8(a, b).asU8x16()
-        transmute(simdSelectBitmask(k, min, src.asU8x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = min; val _simdArg2 = src.asU8x16(); _simdArg1 })
     }
 
 /**
@@ -1790,7 +1788,7 @@ public fun mmMaskMinEpu8(src: M128i, k: Mmask16, a: M128i, b: M128i): M128i =
 public fun mmMaskzMinEpu8(k: Mmask16, a: M128i, b: M128i): M128i =
     run {
         val min = mmMinEpu8(a, b).asU8x16()
-        transmute(simdSelectBitmask(k, min, u8x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = min; val _simdArg2 = u8x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -1808,7 +1806,7 @@ public fun mm512MinEpi16(a: M512i, b: M512i): M512i = simdImin(a.asI16x32(), b.a
 public fun mm512MaskMinEpi16(src: M512i, k: Mmask32, a: M512i, b: M512i): M512i =
     run {
         val min = mm512MinEpi16(a, b).asI16x32()
-        transmute(simdSelectBitmask(k, min, src.asI16x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = min; val _simdArg2 = src.asI16x32(); _simdArg1 })
     }
 
 /**
@@ -1819,7 +1817,7 @@ public fun mm512MaskMinEpi16(src: M512i, k: Mmask32, a: M512i, b: M512i): M512i 
 public fun mm512MaskzMinEpi16(k: Mmask32, a: M512i, b: M512i): M512i =
     run {
         val min = mm512MinEpi16(a, b).asI16x32()
-        transmute(simdSelectBitmask(k, min, i16x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = min; val _simdArg2 = i16x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -1830,7 +1828,7 @@ public fun mm512MaskzMinEpi16(k: Mmask32, a: M512i, b: M512i): M512i =
 public fun mm256MaskMinEpi16(src: M256i, k: Mmask16, a: M256i, b: M256i): M256i =
     run {
         val min = mm256MinEpi16(a, b).asI16x16()
-        transmute(simdSelectBitmask(k, min, src.asI16x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = min; val _simdArg2 = src.asI16x16(); _simdArg1 })
     }
 
 /**
@@ -1841,7 +1839,7 @@ public fun mm256MaskMinEpi16(src: M256i, k: Mmask16, a: M256i, b: M256i): M256i 
 public fun mm256MaskzMinEpi16(k: Mmask16, a: M256i, b: M256i): M256i =
     run {
         val min = mm256MinEpi16(a, b).asI16x16()
-        transmute(simdSelectBitmask(k, min, i16x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = min; val _simdArg2 = i16x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -1852,7 +1850,7 @@ public fun mm256MaskzMinEpi16(k: Mmask16, a: M256i, b: M256i): M256i =
 public fun mmMaskMinEpi16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
     run {
         val min = mmMinEpi16(a, b).asI16x8()
-        transmute(simdSelectBitmask(k, min, src.asI16x8()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = min; val _simdArg2 = src.asI16x8(); _simdArg1 })
     }
 
 /**
@@ -1863,7 +1861,7 @@ public fun mmMaskMinEpi16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
 public fun mmMaskzMinEpi16(k: Mmask8, a: M128i, b: M128i): M128i =
     run {
         val min = mmMinEpi16(a, b).asI16x8()
-        transmute(simdSelectBitmask(k, min, i16x8.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = min; val _simdArg2 = i16x8.ZERO; _simdArg1 })
     }
 
 /**
@@ -1881,7 +1879,7 @@ public fun mm512MinEpi8(a: M512i, b: M512i): M512i = simdImin(a.asI8x64(), b.asI
 public fun mm512MaskMinEpi8(src: M512i, k: Mmask64, a: M512i, b: M512i): M512i =
     run {
         val min = mm512MinEpi8(a, b).asI8x64()
-        transmute(simdSelectBitmask(k, min, src.asI8x64()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = min; val _simdArg2 = src.asI8x64(); _simdArg1 })
     }
 
 /**
@@ -1892,7 +1890,7 @@ public fun mm512MaskMinEpi8(src: M512i, k: Mmask64, a: M512i, b: M512i): M512i =
 public fun mm512MaskzMinEpi8(k: Mmask64, a: M512i, b: M512i): M512i =
     run {
         val min = mm512MinEpi8(a, b).asI8x64()
-        transmute(simdSelectBitmask(k, min, i8x64.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = min; val _simdArg2 = i8x64.ZERO; _simdArg1 })
     }
 
 /**
@@ -1903,7 +1901,7 @@ public fun mm512MaskzMinEpi8(k: Mmask64, a: M512i, b: M512i): M512i =
 public fun mm256MaskMinEpi8(src: M256i, k: Mmask32, a: M256i, b: M256i): M256i =
     run {
         val min = mm256MinEpi8(a, b).asI8x32()
-        transmute(simdSelectBitmask(k, min, src.asI8x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = min; val _simdArg2 = src.asI8x32(); _simdArg1 })
     }
 
 /**
@@ -1914,7 +1912,7 @@ public fun mm256MaskMinEpi8(src: M256i, k: Mmask32, a: M256i, b: M256i): M256i =
 public fun mm256MaskzMinEpi8(k: Mmask32, a: M256i, b: M256i): M256i =
     run {
         val min = mm256MinEpi8(a, b).asI8x32()
-        transmute(simdSelectBitmask(k, min, i8x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = min; val _simdArg2 = i8x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -1925,7 +1923,7 @@ public fun mm256MaskzMinEpi8(k: Mmask32, a: M256i, b: M256i): M256i =
 public fun mmMaskMinEpi8(src: M128i, k: Mmask16, a: M128i, b: M128i): M128i =
     run {
         val min = mmMinEpi8(a, b).asI8x16()
-        transmute(simdSelectBitmask(k, min, src.asI8x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = min; val _simdArg2 = src.asI8x16(); _simdArg1 })
     }
 
 /**
@@ -1936,7 +1934,7 @@ public fun mmMaskMinEpi8(src: M128i, k: Mmask16, a: M128i, b: M128i): M128i =
 public fun mmMaskzMinEpi8(k: Mmask16, a: M128i, b: M128i): M128i =
     run {
         val min = mmMinEpi8(a, b).asI8x16()
-        transmute(simdSelectBitmask(k, min, i8x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = min; val _simdArg2 = i8x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -1944,7 +1942,7 @@ public fun mmMaskzMinEpi8(k: Mmask16, a: M128i, b: M128i): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmplt_epu16_mask&expand=1050)
  */
-public fun mm512CmpltEpu16Mask(a: M512i, b: M512i): Mmask32 = simdBitmask<U16x32>(simdLt(a.asU16x32(), b.asU16x32()))
+public fun mm512CmpltEpu16Mask(a: M512i, b: M512i): Mmask32 = run { val _simdArg0 = run { val _simdArg0 = a.asU16x32(); val _simdArg1 = b.asU16x32(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed unsigned 16-bit integers in a and b for less-than, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -1958,7 +1956,7 @@ public fun mm512MaskCmpltEpu16Mask(k1: Mmask32, a: M512i, b: M512i): Mmask32 = m
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cmplt_epu16_mask&expand=1050)
  */
-public fun mm256CmpltEpu16Mask(a: M256i, b: M256i): Mmask16 = simdBitmask<U16x16>(simdLt(a.asU16x16(), b.asU16x16()))
+public fun mm256CmpltEpu16Mask(a: M256i, b: M256i): Mmask16 = run { val _simdArg0 = run { val _simdArg0 = a.asU16x16(); val _simdArg1 = b.asU16x16(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed unsigned 16-bit integers in a and b for less-than, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -1972,7 +1970,7 @@ public fun mm256MaskCmpltEpu16Mask(k1: Mmask16, a: M256i, b: M256i): Mmask16 = m
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmplt_epu16_mask&expand=1018)
  */
-public fun mmCmpltEpu16Mask(a: M128i, b: M128i): Mmask8 = simdBitmask<U16x8>(simdLt(a.asU16x8(), b.asU16x8()))
+public fun mmCmpltEpu16Mask(a: M128i, b: M128i): Mmask8 = run { val _simdArg0 = run { val _simdArg0 = a.asU16x8(); val _simdArg1 = b.asU16x8(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed unsigned 16-bit integers in a and b for less-than, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -1986,7 +1984,7 @@ public fun mmMaskCmpltEpu16Mask(k1: Mmask8, a: M128i, b: M128i): Mmask8 = mmMask
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=mm512CmpltEpu8Mask&expand=1068)
  */
-public fun mm512CmpltEpu8Mask(a: M512i, b: M512i): Mmask64 = simdBitmask<U8x64>(simdLt(a.asU8x64(), b.asU8x64()))
+public fun mm512CmpltEpu8Mask(a: M512i, b: M512i): Mmask64 = run { val _simdArg0 = run { val _simdArg0 = a.asU8x64(); val _simdArg1 = b.asU8x64(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed unsigned 8-bit integers in a and b for less-than, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2000,7 +1998,7 @@ public fun mm512MaskCmpltEpu8Mask(k1: Mmask64, a: M512i, b: M512i): Mmask64 = mm
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cmplt_epu8_mask&expand=1066)
  */
-public fun mm256CmpltEpu8Mask(a: M256i, b: M256i): Mmask32 = simdBitmask<U8x32>(simdLt(a.asU8x32(), b.asU8x32()))
+public fun mm256CmpltEpu8Mask(a: M256i, b: M256i): Mmask32 = run { val _simdArg0 = run { val _simdArg0 = a.asU8x32(); val _simdArg1 = b.asU8x32(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed unsigned 8-bit integers in a and b for less-than, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2014,7 +2012,7 @@ public fun mm256MaskCmpltEpu8Mask(k1: Mmask32, a: M256i, b: M256i): Mmask32 = mm
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmplt_epu8_mask&expand=1064)
  */
-public fun mmCmpltEpu8Mask(a: M128i, b: M128i): Mmask16 = simdBitmask<U8x16>(simdLt(a.asU8x16(), b.asU8x16()))
+public fun mmCmpltEpu8Mask(a: M128i, b: M128i): Mmask16 = run { val _simdArg0 = run { val _simdArg0 = a.asU8x16(); val _simdArg1 = b.asU8x16(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed unsigned 8-bit integers in a and b for less-than, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2028,7 +2026,7 @@ public fun mmMaskCmpltEpu8Mask(k1: Mmask16, a: M128i, b: M128i): Mmask16 = mmMas
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmplt_epi16_mask&expand=1022)
  */
-public fun mm512CmpltEpi16Mask(a: M512i, b: M512i): Mmask32 = simdBitmask<I16x32>(simdLt(a.asI16x32(), b.asI16x32()))
+public fun mm512CmpltEpi16Mask(a: M512i, b: M512i): Mmask32 = run { val _simdArg0 = run { val _simdArg0 = a.asI16x32(); val _simdArg1 = b.asI16x32(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed signed 16-bit integers in a and b for less-than, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2042,7 +2040,7 @@ public fun mm512MaskCmpltEpi16Mask(k1: Mmask32, a: M512i, b: M512i): Mmask32 = m
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cmplt_epi16_mask&expand=1020)
  */
-public fun mm256CmpltEpi16Mask(a: M256i, b: M256i): Mmask16 = simdBitmask<I16x16>(simdLt(a.asI16x16(), b.asI16x16()))
+public fun mm256CmpltEpi16Mask(a: M256i, b: M256i): Mmask16 = run { val _simdArg0 = run { val _simdArg0 = a.asI16x16(); val _simdArg1 = b.asI16x16(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed signed 16-bit integers in a and b for less-than, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2056,7 +2054,7 @@ public fun mm256MaskCmpltEpi16Mask(k1: Mmask16, a: M256i, b: M256i): Mmask16 = m
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmplt_epi16_mask&expand=1018)
  */
-public fun mmCmpltEpi16Mask(a: M128i, b: M128i): Mmask8 = simdBitmask<I16x8>(simdLt(a.asI16x8(), b.asI16x8()))
+public fun mmCmpltEpi16Mask(a: M128i, b: M128i): Mmask8 = run { val _simdArg0 = run { val _simdArg0 = a.asI16x8(); val _simdArg1 = b.asI16x8(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed signed 16-bit integers in a and b for less-than, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2070,7 +2068,7 @@ public fun mmMaskCmpltEpi16Mask(k1: Mmask8, a: M128i, b: M128i): Mmask8 = mmMask
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmplt_epi8_mask&expand=1044)
  */
-public fun mm512CmpltEpi8Mask(a: M512i, b: M512i): Mmask64 = simdBitmask<I8x64>(simdLt(a.asI8x64(), b.asI8x64()))
+public fun mm512CmpltEpi8Mask(a: M512i, b: M512i): Mmask64 = run { val _simdArg0 = run { val _simdArg0 = a.asI8x64(); val _simdArg1 = b.asI8x64(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed signed 8-bit integers in a and b for less-than, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2084,7 +2082,7 @@ public fun mm512MaskCmpltEpi8Mask(k1: Mmask64, a: M512i, b: M512i): Mmask64 = mm
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cmplt_epi8_mask&expand=1042)
  */
-public fun mm256CmpltEpi8Mask(a: M256i, b: M256i): Mmask32 = simdBitmask<I8x32>(simdLt(a.asI8x32(), b.asI8x32()))
+public fun mm256CmpltEpi8Mask(a: M256i, b: M256i): Mmask32 = run { val _simdArg0 = run { val _simdArg0 = a.asI8x32(); val _simdArg1 = b.asI8x32(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed signed 8-bit integers in a and b for less-than, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2098,7 +2096,7 @@ public fun mm256MaskCmpltEpi8Mask(k1: Mmask32, a: M256i, b: M256i): Mmask32 = mm
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmplt_epi8_mask&expand=1040)
  */
-public fun mmCmpltEpi8Mask(a: M128i, b: M128i): Mmask16 = simdBitmask<I8x16>(simdLt(a.asI8x16(), b.asI8x16()))
+public fun mmCmpltEpi8Mask(a: M128i, b: M128i): Mmask16 = run { val _simdArg0 = run { val _simdArg0 = a.asI8x16(); val _simdArg1 = b.asI8x16(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed signed 8-bit integers in a and b for less-than, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2112,7 +2110,7 @@ public fun mmMaskCmpltEpi8Mask(k1: Mmask16, a: M128i, b: M128i): Mmask16 = mmMas
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmpgt_epu16_mask&expand=927)
  */
-public fun mm512CmpgtEpu16Mask(a: M512i, b: M512i): Mmask32 = simdBitmask<U16x32>(simdGt(a.asU16x32(), b.asU16x32()))
+public fun mm512CmpgtEpu16Mask(a: M512i, b: M512i): Mmask32 = run { val _simdArg0 = run { val _simdArg0 = a.asU16x32(); val _simdArg1 = b.asU16x32(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed unsigned 16-bit integers in a and b for greater-than, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2126,7 +2124,7 @@ public fun mm512MaskCmpgtEpu16Mask(k1: Mmask32, a: M512i, b: M512i): Mmask32 = m
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cmpgt_epu16_mask&expand=925)
  */
-public fun mm256CmpgtEpu16Mask(a: M256i, b: M256i): Mmask16 = simdBitmask<U16x16>(simdGt(a.asU16x16(), b.asU16x16()))
+public fun mm256CmpgtEpu16Mask(a: M256i, b: M256i): Mmask16 = run { val _simdArg0 = run { val _simdArg0 = a.asU16x16(); val _simdArg1 = b.asU16x16(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed unsigned 16-bit integers in a and b for greater-than, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2140,7 +2138,7 @@ public fun mm256MaskCmpgtEpu16Mask(k1: Mmask16, a: M256i, b: M256i): Mmask16 = m
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmpgt_epu16_mask&expand=923)
  */
-public fun mmCmpgtEpu16Mask(a: M128i, b: M128i): Mmask8 = simdBitmask<U16x8>(simdGt(a.asU16x8(), b.asU16x8()))
+public fun mmCmpgtEpu16Mask(a: M128i, b: M128i): Mmask8 = run { val _simdArg0 = run { val _simdArg0 = a.asU16x8(); val _simdArg1 = b.asU16x8(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed unsigned 16-bit integers in a and b for greater-than, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2154,7 +2152,7 @@ public fun mmMaskCmpgtEpu16Mask(k1: Mmask8, a: M128i, b: M128i): Mmask8 = mmMask
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmpgt_epu8_mask&expand=945)
  */
-public fun mm512CmpgtEpu8Mask(a: M512i, b: M512i): Mmask64 = simdBitmask<U8x64>(simdGt(a.asU8x64(), b.asU8x64()))
+public fun mm512CmpgtEpu8Mask(a: M512i, b: M512i): Mmask64 = run { val _simdArg0 = run { val _simdArg0 = a.asU8x64(); val _simdArg1 = b.asU8x64(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed unsigned 8-bit integers in a and b for greater-than, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2168,7 +2166,7 @@ public fun mm512MaskCmpgtEpu8Mask(k1: Mmask64, a: M512i, b: M512i): Mmask64 = mm
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cmpgt_epu8_mask&expand=943)
  */
-public fun mm256CmpgtEpu8Mask(a: M256i, b: M256i): Mmask32 = simdBitmask<U8x32>(simdGt(a.asU8x32(), b.asU8x32()))
+public fun mm256CmpgtEpu8Mask(a: M256i, b: M256i): Mmask32 = run { val _simdArg0 = run { val _simdArg0 = a.asU8x32(); val _simdArg1 = b.asU8x32(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed unsigned 8-bit integers in a and b for greater-than, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2182,7 +2180,7 @@ public fun mm256MaskCmpgtEpu8Mask(k1: Mmask32, a: M256i, b: M256i): Mmask32 = mm
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmpgt_epu8_mask&expand=941)
  */
-public fun mmCmpgtEpu8Mask(a: M128i, b: M128i): Mmask16 = simdBitmask<U8x16>(simdGt(a.asU8x16(), b.asU8x16()))
+public fun mmCmpgtEpu8Mask(a: M128i, b: M128i): Mmask16 = run { val _simdArg0 = run { val _simdArg0 = a.asU8x16(); val _simdArg1 = b.asU8x16(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed unsigned 8-bit integers in a and b for greater-than, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2196,7 +2194,7 @@ public fun mmMaskCmpgtEpu8Mask(k1: Mmask16, a: M128i, b: M128i): Mmask16 = mmMas
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmpgt_epi16_mask&expand=897)
  */
-public fun mm512CmpgtEpi16Mask(a: M512i, b: M512i): Mmask32 = simdBitmask<I16x32>(simdGt(a.asI16x32(), b.asI16x32()))
+public fun mm512CmpgtEpi16Mask(a: M512i, b: M512i): Mmask32 = run { val _simdArg0 = run { val _simdArg0 = a.asI16x32(); val _simdArg1 = b.asI16x32(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed signed 16-bit integers in a and b for greater-than, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2210,7 +2208,7 @@ public fun mm512MaskCmpgtEpi16Mask(k1: Mmask32, a: M512i, b: M512i): Mmask32 = m
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cmpgt_epi16_mask&expand=895)
  */
-public fun mm256CmpgtEpi16Mask(a: M256i, b: M256i): Mmask16 = simdBitmask<I16x16>(simdGt(a.asI16x16(), b.asI16x16()))
+public fun mm256CmpgtEpi16Mask(a: M256i, b: M256i): Mmask16 = run { val _simdArg0 = run { val _simdArg0 = a.asI16x16(); val _simdArg1 = b.asI16x16(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed signed 16-bit integers in a and b for greater-than, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2224,7 +2222,7 @@ public fun mm256MaskCmpgtEpi16Mask(k1: Mmask16, a: M256i, b: M256i): Mmask16 = m
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmpgt_epi16_mask&expand=893)
  */
-public fun mmCmpgtEpi16Mask(a: M128i, b: M128i): Mmask8 = simdBitmask<I16x8>(simdGt(a.asI16x8(), b.asI16x8()))
+public fun mmCmpgtEpi16Mask(a: M128i, b: M128i): Mmask8 = run { val _simdArg0 = run { val _simdArg0 = a.asI16x8(); val _simdArg1 = b.asI16x8(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed signed 16-bit integers in a and b for greater-than, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2238,7 +2236,7 @@ public fun mmMaskCmpgtEpi16Mask(k1: Mmask8, a: M128i, b: M128i): Mmask8 = mmMask
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmpgt_epi8_mask&expand=921)
  */
-public fun mm512CmpgtEpi8Mask(a: M512i, b: M512i): Mmask64 = simdBitmask<I8x64>(simdGt(a.asI8x64(), b.asI8x64()))
+public fun mm512CmpgtEpi8Mask(a: M512i, b: M512i): Mmask64 = run { val _simdArg0 = run { val _simdArg0 = a.asI8x64(); val _simdArg1 = b.asI8x64(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed signed 8-bit integers in a and b for greater-than, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2252,7 +2250,7 @@ public fun mm512MaskCmpgtEpi8Mask(k1: Mmask64, a: M512i, b: M512i): Mmask64 = mm
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cmpgt_epi8_mask&expand=919)
  */
-public fun mm256CmpgtEpi8Mask(a: M256i, b: M256i): Mmask32 = simdBitmask<I8x32>(simdGt(a.asI8x32(), b.asI8x32()))
+public fun mm256CmpgtEpi8Mask(a: M256i, b: M256i): Mmask32 = run { val _simdArg0 = run { val _simdArg0 = a.asI8x32(); val _simdArg1 = b.asI8x32(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed signed 8-bit integers in a and b for greater-than, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2266,7 +2264,7 @@ public fun mm256MaskCmpgtEpi8Mask(k1: Mmask32, a: M256i, b: M256i): Mmask32 = mm
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmpgt_epi8_mask&expand=917)
  */
-public fun mmCmpgtEpi8Mask(a: M128i, b: M128i): Mmask16 = simdBitmask<I8x16>(simdGt(a.asI8x16(), b.asI8x16()))
+public fun mmCmpgtEpi8Mask(a: M128i, b: M128i): Mmask16 = run { val _simdArg0 = run { val _simdArg0 = a.asI8x16(); val _simdArg1 = b.asI8x16(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed signed 8-bit integers in a and b for greater-than, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2280,7 +2278,7 @@ public fun mmMaskCmpgtEpi8Mask(k1: Mmask16, a: M128i, b: M128i): Mmask16 = mmMas
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmple_epu16_mask&expand=989)
  */
-public fun mm512CmpleEpu16Mask(a: M512i, b: M512i): Mmask32 = simdBitmask<U16x32>(simdLe(a.asU16x32(), b.asU16x32()))
+public fun mm512CmpleEpu16Mask(a: M512i, b: M512i): Mmask32 = run { val _simdArg0 = run { val _simdArg0 = a.asU16x32(); val _simdArg1 = b.asU16x32(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed unsigned 16-bit integers in a and b for less-than-or-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2294,7 +2292,7 @@ public fun mm512MaskCmpleEpu16Mask(k1: Mmask32, a: M512i, b: M512i): Mmask32 = m
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cmple_epu16_mask&expand=987)
  */
-public fun mm256CmpleEpu16Mask(a: M256i, b: M256i): Mmask16 = simdBitmask<U16x16>(simdLe(a.asU16x16(), b.asU16x16()))
+public fun mm256CmpleEpu16Mask(a: M256i, b: M256i): Mmask16 = run { val _simdArg0 = run { val _simdArg0 = a.asU16x16(); val _simdArg1 = b.asU16x16(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed unsigned 16-bit integers in a and b for less-than-or-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2308,7 +2306,7 @@ public fun mm256MaskCmpleEpu16Mask(k1: Mmask16, a: M256i, b: M256i): Mmask16 = m
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmple_epu16_mask&expand=985)
  */
-public fun mmCmpleEpu16Mask(a: M128i, b: M128i): Mmask8 = simdBitmask<U16x8>(simdLe(a.asU16x8(), b.asU16x8()))
+public fun mmCmpleEpu16Mask(a: M128i, b: M128i): Mmask8 = run { val _simdArg0 = run { val _simdArg0 = a.asU16x8(); val _simdArg1 = b.asU16x8(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed unsigned 16-bit integers in a and b for less-than-or-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2322,7 +2320,7 @@ public fun mmMaskCmpleEpu16Mask(k1: Mmask8, a: M128i, b: M128i): Mmask8 = mmMask
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmple_epu8_mask&expand=1007)
  */
-public fun mm512CmpleEpu8Mask(a: M512i, b: M512i): Mmask64 = simdBitmask<U8x64>(simdLe(a.asU8x64(), b.asU8x64()))
+public fun mm512CmpleEpu8Mask(a: M512i, b: M512i): Mmask64 = run { val _simdArg0 = run { val _simdArg0 = a.asU8x64(); val _simdArg1 = b.asU8x64(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed unsigned 8-bit integers in a and b for less-than-or-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2336,7 +2334,7 @@ public fun mm512MaskCmpleEpu8Mask(k1: Mmask64, a: M512i, b: M512i): Mmask64 = mm
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cmple_epu8_mask&expand=1005)
  */
-public fun mm256CmpleEpu8Mask(a: M256i, b: M256i): Mmask32 = simdBitmask<U8x32>(simdLe(a.asU8x32(), b.asU8x32()))
+public fun mm256CmpleEpu8Mask(a: M256i, b: M256i): Mmask32 = run { val _simdArg0 = run { val _simdArg0 = a.asU8x32(); val _simdArg1 = b.asU8x32(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed unsigned 8-bit integers in a and b for less-than-or-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2350,7 +2348,7 @@ public fun mm256MaskCmpleEpu8Mask(k1: Mmask32, a: M256i, b: M256i): Mmask32 = mm
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmple_epu8_mask&expand=1003)
  */
-public fun mmCmpleEpu8Mask(a: M128i, b: M128i): Mmask16 = simdBitmask<U8x16>(simdLe(a.asU8x16(), b.asU8x16()))
+public fun mmCmpleEpu8Mask(a: M128i, b: M128i): Mmask16 = run { val _simdArg0 = run { val _simdArg0 = a.asU8x16(); val _simdArg1 = b.asU8x16(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed unsigned 8-bit integers in a and b for less-than-or-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2364,7 +2362,7 @@ public fun mmMaskCmpleEpu8Mask(k1: Mmask16, a: M128i, b: M128i): Mmask16 = mmMas
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmple_epi16_mask&expand=965)
  */
-public fun mm512CmpleEpi16Mask(a: M512i, b: M512i): Mmask32 = simdBitmask<I16x32>(simdLe(a.asI16x32(), b.asI16x32()))
+public fun mm512CmpleEpi16Mask(a: M512i, b: M512i): Mmask32 = run { val _simdArg0 = run { val _simdArg0 = a.asI16x32(); val _simdArg1 = b.asI16x32(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed signed 16-bit integers in a and b for less-than-or-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2378,7 +2376,7 @@ public fun mm512MaskCmpleEpi16Mask(k1: Mmask32, a: M512i, b: M512i): Mmask32 = m
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cmple_epi16_mask&expand=963)
  */
-public fun mm256CmpleEpi16Mask(a: M256i, b: M256i): Mmask16 = simdBitmask<I16x16>(simdLe(a.asI16x16(), b.asI16x16()))
+public fun mm256CmpleEpi16Mask(a: M256i, b: M256i): Mmask16 = run { val _simdArg0 = run { val _simdArg0 = a.asI16x16(); val _simdArg1 = b.asI16x16(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed signed 16-bit integers in a and b for less-than-or-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2392,7 +2390,7 @@ public fun mm256MaskCmpleEpi16Mask(k1: Mmask16, a: M256i, b: M256i): Mmask16 = m
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmple_epi16_mask&expand=961)
  */
-public fun mmCmpleEpi16Mask(a: M128i, b: M128i): Mmask8 = simdBitmask<I16x8>(simdLe(a.asI16x8(), b.asI16x8()))
+public fun mmCmpleEpi16Mask(a: M128i, b: M128i): Mmask8 = run { val _simdArg0 = run { val _simdArg0 = a.asI16x8(); val _simdArg1 = b.asI16x8(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed signed 16-bit integers in a and b for less-than-or-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2406,7 +2404,7 @@ public fun mmMaskCmpleEpi16Mask(k1: Mmask8, a: M128i, b: M128i): Mmask8 = mmMask
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmple_epi8_mask&expand=983)
  */
-public fun mm512CmpleEpi8Mask(a: M512i, b: M512i): Mmask64 = simdBitmask<I8x64>(simdLe(a.asI8x64(), b.asI8x64()))
+public fun mm512CmpleEpi8Mask(a: M512i, b: M512i): Mmask64 = run { val _simdArg0 = run { val _simdArg0 = a.asI8x64(); val _simdArg1 = b.asI8x64(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed signed 8-bit integers in a and b for less-than-or-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2420,7 +2418,7 @@ public fun mm512MaskCmpleEpi8Mask(k1: Mmask64, a: M512i, b: M512i): Mmask64 = mm
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cmple_epi8_mask&expand=981)
  */
-public fun mm256CmpleEpi8Mask(a: M256i, b: M256i): Mmask32 = simdBitmask<I8x32>(simdLe(a.asI8x32(), b.asI8x32()))
+public fun mm256CmpleEpi8Mask(a: M256i, b: M256i): Mmask32 = run { val _simdArg0 = run { val _simdArg0 = a.asI8x32(); val _simdArg1 = b.asI8x32(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed signed 8-bit integers in a and b for less-than-or-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2434,7 +2432,7 @@ public fun mm256MaskCmpleEpi8Mask(k1: Mmask32, a: M256i, b: M256i): Mmask32 = mm
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmple_epi8_mask&expand=979)
  */
-public fun mmCmpleEpi8Mask(a: M128i, b: M128i): Mmask16 = simdBitmask<I8x16>(simdLe(a.asI8x16(), b.asI8x16()))
+public fun mmCmpleEpi8Mask(a: M128i, b: M128i): Mmask16 = run { val _simdArg0 = run { val _simdArg0 = a.asI8x16(); val _simdArg1 = b.asI8x16(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed signed 8-bit integers in a and b for less-than-or-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2448,7 +2446,7 @@ public fun mmMaskCmpleEpi8Mask(k1: Mmask16, a: M128i, b: M128i): Mmask16 = mmMas
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmpge_epu16_mask&expand=867)
  */
-public fun mm512CmpgeEpu16Mask(a: M512i, b: M512i): Mmask32 = simdBitmask<U16x32>(simdGe(a.asU16x32(), b.asU16x32()))
+public fun mm512CmpgeEpu16Mask(a: M512i, b: M512i): Mmask32 = run { val _simdArg0 = run { val _simdArg0 = a.asU16x32(); val _simdArg1 = b.asU16x32(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed unsigned 16-bit integers in a and b for greater-than-or-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2462,7 +2460,7 @@ public fun mm512MaskCmpgeEpu16Mask(k1: Mmask32, a: M512i, b: M512i): Mmask32 = m
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cmpge_epu16_mask&expand=865)
  */
-public fun mm256CmpgeEpu16Mask(a: M256i, b: M256i): Mmask16 = simdBitmask<U16x16>(simdGe(a.asU16x16(), b.asU16x16()))
+public fun mm256CmpgeEpu16Mask(a: M256i, b: M256i): Mmask16 = run { val _simdArg0 = run { val _simdArg0 = a.asU16x16(); val _simdArg1 = b.asU16x16(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed unsigned 16-bit integers in a and b for greater-than-or-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2476,7 +2474,7 @@ public fun mm256MaskCmpgeEpu16Mask(k1: Mmask16, a: M256i, b: M256i): Mmask16 = m
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmpge_epu16_mask&expand=863)
  */
-public fun mmCmpgeEpu16Mask(a: M128i, b: M128i): Mmask8 = simdBitmask<U16x8>(simdGe(a.asU16x8(), b.asU16x8()))
+public fun mmCmpgeEpu16Mask(a: M128i, b: M128i): Mmask8 = run { val _simdArg0 = run { val _simdArg0 = a.asU16x8(); val _simdArg1 = b.asU16x8(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed unsigned 16-bit integers in a and b for greater-than-or-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2490,7 +2488,7 @@ public fun mmMaskCmpgeEpu16Mask(k1: Mmask8, a: M128i, b: M128i): Mmask8 = mmMask
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmpge_epu8_mask&expand=885)
  */
-public fun mm512CmpgeEpu8Mask(a: M512i, b: M512i): Mmask64 = simdBitmask<U8x64>(simdGe(a.asU8x64(), b.asU8x64()))
+public fun mm512CmpgeEpu8Mask(a: M512i, b: M512i): Mmask64 = run { val _simdArg0 = run { val _simdArg0 = a.asU8x64(); val _simdArg1 = b.asU8x64(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed unsigned 8-bit integers in a and b for greater-than-or-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2504,7 +2502,7 @@ public fun mm512MaskCmpgeEpu8Mask(k1: Mmask64, a: M512i, b: M512i): Mmask64 = mm
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cmpge_epu8_mask&expand=883)
  */
-public fun mm256CmpgeEpu8Mask(a: M256i, b: M256i): Mmask32 = simdBitmask<U8x32>(simdGe(a.asU8x32(), b.asU8x32()))
+public fun mm256CmpgeEpu8Mask(a: M256i, b: M256i): Mmask32 = run { val _simdArg0 = run { val _simdArg0 = a.asU8x32(); val _simdArg1 = b.asU8x32(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed unsigned 8-bit integers in a and b for greater-than-or-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2518,7 +2516,7 @@ public fun mm256MaskCmpgeEpu8Mask(k1: Mmask32, a: M256i, b: M256i): Mmask32 = mm
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmpge_epu8_mask&expand=881)
  */
-public fun mmCmpgeEpu8Mask(a: M128i, b: M128i): Mmask16 = simdBitmask<U8x16>(simdGe(a.asU8x16(), b.asU8x16()))
+public fun mmCmpgeEpu8Mask(a: M128i, b: M128i): Mmask16 = run { val _simdArg0 = run { val _simdArg0 = a.asU8x16(); val _simdArg1 = b.asU8x16(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed unsigned 8-bit integers in a and b for greater-than-or-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2532,7 +2530,7 @@ public fun mmMaskCmpgeEpu8Mask(k1: Mmask16, a: M128i, b: M128i): Mmask16 = mmMas
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmpge_epi16_mask&expand=843)
  */
-public fun mm512CmpgeEpi16Mask(a: M512i, b: M512i): Mmask32 = simdBitmask<I16x32>(simdGe(a.asI16x32(), b.asI16x32()))
+public fun mm512CmpgeEpi16Mask(a: M512i, b: M512i): Mmask32 = run { val _simdArg0 = run { val _simdArg0 = a.asI16x32(); val _simdArg1 = b.asI16x32(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed signed 16-bit integers in a and b for greater-than-or-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2546,7 +2544,7 @@ public fun mm512MaskCmpgeEpi16Mask(k1: Mmask32, a: M512i, b: M512i): Mmask32 = m
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cmpge_epi16_mask&expand=841)
  */
-public fun mm256CmpgeEpi16Mask(a: M256i, b: M256i): Mmask16 = simdBitmask<I16x16>(simdGe(a.asI16x16(), b.asI16x16()))
+public fun mm256CmpgeEpi16Mask(a: M256i, b: M256i): Mmask16 = run { val _simdArg0 = run { val _simdArg0 = a.asI16x16(); val _simdArg1 = b.asI16x16(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed signed 16-bit integers in a and b for greater-than-or-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2560,7 +2558,7 @@ public fun mm256MaskCmpgeEpi16Mask(k1: Mmask16, a: M256i, b: M256i): Mmask16 = m
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmpge_epi16_mask&expand=839)
  */
-public fun mmCmpgeEpi16Mask(a: M128i, b: M128i): Mmask8 = simdBitmask<I16x8>(simdGe(a.asI16x8(), b.asI16x8()))
+public fun mmCmpgeEpi16Mask(a: M128i, b: M128i): Mmask8 = run { val _simdArg0 = run { val _simdArg0 = a.asI16x8(); val _simdArg1 = b.asI16x8(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed signed 16-bit integers in a and b for greater-than-or-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2574,7 +2572,7 @@ public fun mmMaskCmpgeEpi16Mask(k1: Mmask8, a: M128i, b: M128i): Mmask8 = mmMask
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmpge_epi8_mask&expand=861)
  */
-public fun mm512CmpgeEpi8Mask(a: M512i, b: M512i): Mmask64 = simdBitmask<I8x64>(simdGe(a.asI8x64(), b.asI8x64()))
+public fun mm512CmpgeEpi8Mask(a: M512i, b: M512i): Mmask64 = run { val _simdArg0 = run { val _simdArg0 = a.asI8x64(); val _simdArg1 = b.asI8x64(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed signed 8-bit integers in a and b for greater-than-or-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2588,7 +2586,7 @@ public fun mm512MaskCmpgeEpi8Mask(k1: Mmask64, a: M512i, b: M512i): Mmask64 = mm
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cmpge_epi8_mask&expand=859)
  */
-public fun mm256CmpgeEpi8Mask(a: M256i, b: M256i): Mmask32 = simdBitmask<I8x32>(simdGe(a.asI8x32(), b.asI8x32()))
+public fun mm256CmpgeEpi8Mask(a: M256i, b: M256i): Mmask32 = run { val _simdArg0 = run { val _simdArg0 = a.asI8x32(); val _simdArg1 = b.asI8x32(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed signed 8-bit integers in a and b for greater-than-or-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2602,7 +2600,7 @@ public fun mm256MaskCmpgeEpi8Mask(k1: Mmask32, a: M256i, b: M256i): Mmask32 = mm
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmpge_epi8_mask&expand=857)
  */
-public fun mmCmpgeEpi8Mask(a: M128i, b: M128i): Mmask16 = simdBitmask<I8x16>(simdGe(a.asI8x16(), b.asI8x16()))
+public fun mmCmpgeEpi8Mask(a: M128i, b: M128i): Mmask16 = run { val _simdArg0 = run { val _simdArg0 = a.asI8x16(); val _simdArg1 = b.asI8x16(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed signed 8-bit integers in a and b for greater-than-or-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2616,7 +2614,7 @@ public fun mmMaskCmpgeEpi8Mask(k1: Mmask16, a: M128i, b: M128i): Mmask16 = mmMas
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmpeq_epu16_mask&expand=801)
  */
-public fun mm512CmpeqEpu16Mask(a: M512i, b: M512i): Mmask32 = simdBitmask<U16x32>(simdEq(a.asU16x32(), b.asU16x32()))
+public fun mm512CmpeqEpu16Mask(a: M512i, b: M512i): Mmask32 = run { val _simdArg0 = run { val _simdArg0 = a.asU16x32(); val _simdArg1 = b.asU16x32(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed unsigned 16-bit integers in a and b for equality, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2630,7 +2628,7 @@ public fun mm512MaskCmpeqEpu16Mask(k1: Mmask32, a: M512i, b: M512i): Mmask32 = m
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cmpeq_epu16_mask&expand=799)
  */
-public fun mm256CmpeqEpu16Mask(a: M256i, b: M256i): Mmask16 = simdBitmask<U16x16>(simdEq(a.asU16x16(), b.asU16x16()))
+public fun mm256CmpeqEpu16Mask(a: M256i, b: M256i): Mmask16 = run { val _simdArg0 = run { val _simdArg0 = a.asU16x16(); val _simdArg1 = b.asU16x16(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed unsigned 16-bit integers in a and b for equality, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2644,7 +2642,7 @@ public fun mm256MaskCmpeqEpu16Mask(k1: Mmask16, a: M256i, b: M256i): Mmask16 = m
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmpeq_epu16_mask&expand=797)
  */
-public fun mmCmpeqEpu16Mask(a: M128i, b: M128i): Mmask8 = simdBitmask<U16x8>(simdEq(a.asU16x8(), b.asU16x8()))
+public fun mmCmpeqEpu16Mask(a: M128i, b: M128i): Mmask8 = run { val _simdArg0 = run { val _simdArg0 = a.asU16x8(); val _simdArg1 = b.asU16x8(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed unsigned 16-bit integers in a and b for equality, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2658,7 +2656,7 @@ public fun mmMaskCmpeqEpu16Mask(k1: Mmask8, a: M128i, b: M128i): Mmask8 = mmMask
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmpeq_epu8_mask&expand=819)
  */
-public fun mm512CmpeqEpu8Mask(a: M512i, b: M512i): Mmask64 = simdBitmask<U8x64>(simdEq(a.asU8x64(), b.asU8x64()))
+public fun mm512CmpeqEpu8Mask(a: M512i, b: M512i): Mmask64 = run { val _simdArg0 = run { val _simdArg0 = a.asU8x64(); val _simdArg1 = b.asU8x64(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed unsigned 8-bit integers in a and b for equality, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2672,7 +2670,7 @@ public fun mm512MaskCmpeqEpu8Mask(k1: Mmask64, a: M512i, b: M512i): Mmask64 = mm
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cmpeq_epu8_mask&expand=817)
  */
-public fun mm256CmpeqEpu8Mask(a: M256i, b: M256i): Mmask32 = simdBitmask<U8x32>(simdEq(a.asU8x32(), b.asU8x32()))
+public fun mm256CmpeqEpu8Mask(a: M256i, b: M256i): Mmask32 = run { val _simdArg0 = run { val _simdArg0 = a.asU8x32(); val _simdArg1 = b.asU8x32(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed unsigned 8-bit integers in a and b for equality, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2686,7 +2684,7 @@ public fun mm256MaskCmpeqEpu8Mask(k1: Mmask32, a: M256i, b: M256i): Mmask32 = mm
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmpeq_epu8_mask&expand=815)
  */
-public fun mmCmpeqEpu8Mask(a: M128i, b: M128i): Mmask16 = simdBitmask<U8x16>(simdEq(a.asU8x16(), b.asU8x16()))
+public fun mmCmpeqEpu8Mask(a: M128i, b: M128i): Mmask16 = run { val _simdArg0 = run { val _simdArg0 = a.asU8x16(); val _simdArg1 = b.asU8x16(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed unsigned 8-bit integers in a and b for equality, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2700,7 +2698,7 @@ public fun mmMaskCmpeqEpu8Mask(k1: Mmask16, a: M128i, b: M128i): Mmask16 = mmMas
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmpeq_epi16_mask&expand=771)
  */
-public fun mm512CmpeqEpi16Mask(a: M512i, b: M512i): Mmask32 = simdBitmask<I16x32>(simdEq(a.asI16x32(), b.asI16x32()))
+public fun mm512CmpeqEpi16Mask(a: M512i, b: M512i): Mmask32 = run { val _simdArg0 = run { val _simdArg0 = a.asI16x32(); val _simdArg1 = b.asI16x32(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed signed 16-bit integers in a and b for equality, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2714,7 +2712,7 @@ public fun mm512MaskCmpeqEpi16Mask(k1: Mmask32, a: M512i, b: M512i): Mmask32 = m
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cmpeq_epi16_mask&expand=769)
  */
-public fun mm256CmpeqEpi16Mask(a: M256i, b: M256i): Mmask16 = simdBitmask<I16x16>(simdEq(a.asI16x16(), b.asI16x16()))
+public fun mm256CmpeqEpi16Mask(a: M256i, b: M256i): Mmask16 = run { val _simdArg0 = run { val _simdArg0 = a.asI16x16(); val _simdArg1 = b.asI16x16(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed signed 16-bit integers in a and b for equality, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2728,7 +2726,7 @@ public fun mm256MaskCmpeqEpi16Mask(k1: Mmask16, a: M256i, b: M256i): Mmask16 = m
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmpeq_epi16_mask&expand=767)
  */
-public fun mmCmpeqEpi16Mask(a: M128i, b: M128i): Mmask8 = simdBitmask<I16x8>(simdEq(a.asI16x8(), b.asI16x8()))
+public fun mmCmpeqEpi16Mask(a: M128i, b: M128i): Mmask8 = run { val _simdArg0 = run { val _simdArg0 = a.asI16x8(); val _simdArg1 = b.asI16x8(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed signed 16-bit integers in a and b for equality, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2742,7 +2740,7 @@ public fun mmMaskCmpeqEpi16Mask(k1: Mmask8, a: M128i, b: M128i): Mmask8 = mmMask
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmpeq_epi8_mask&expand=795)
  */
-public fun mm512CmpeqEpi8Mask(a: M512i, b: M512i): Mmask64 = simdBitmask<I8x64>(simdEq(a.asI8x64(), b.asI8x64()))
+public fun mm512CmpeqEpi8Mask(a: M512i, b: M512i): Mmask64 = run { val _simdArg0 = run { val _simdArg0 = a.asI8x64(); val _simdArg1 = b.asI8x64(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed signed 8-bit integers in a and b for equality, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2756,7 +2754,7 @@ public fun mm512MaskCmpeqEpi8Mask(k1: Mmask64, a: M512i, b: M512i): Mmask64 = mm
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cmpeq_epi8_mask&expand=793)
  */
-public fun mm256CmpeqEpi8Mask(a: M256i, b: M256i): Mmask32 = simdBitmask<I8x32>(simdEq(a.asI8x32(), b.asI8x32()))
+public fun mm256CmpeqEpi8Mask(a: M256i, b: M256i): Mmask32 = run { val _simdArg0 = run { val _simdArg0 = a.asI8x32(); val _simdArg1 = b.asI8x32(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed signed 8-bit integers in a and b for equality, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2770,7 +2768,7 @@ public fun mm256MaskCmpeqEpi8Mask(k1: Mmask32, a: M256i, b: M256i): Mmask32 = mm
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmpeq_epi8_mask&expand=791)
  */
-public fun mmCmpeqEpi8Mask(a: M128i, b: M128i): Mmask16 = simdBitmask<I8x16>(simdEq(a.asI8x16(), b.asI8x16()))
+public fun mmCmpeqEpi8Mask(a: M128i, b: M128i): Mmask16 = run { val _simdArg0 = run { val _simdArg0 = a.asI8x16(); val _simdArg1 = b.asI8x16(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed signed 8-bit integers in a and b for equality, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2784,7 +2782,7 @@ public fun mmMaskCmpeqEpi8Mask(k1: Mmask16, a: M128i, b: M128i): Mmask16 = mmMas
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmpneq_epu16_mask&expand=1106)
  */
-public fun mm512CmpneqEpu16Mask(a: M512i, b: M512i): Mmask32 = simdBitmask<U16x32>(simdNe(a.asU16x32(), b.asU16x32()))
+public fun mm512CmpneqEpu16Mask(a: M512i, b: M512i): Mmask32 = run { val _simdArg0 = run { val _simdArg0 = a.asU16x32(); val _simdArg1 = b.asU16x32(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed unsigned 16-bit integers in a and b for not-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2798,7 +2796,7 @@ public fun mm512MaskCmpneqEpu16Mask(k1: Mmask32, a: M512i, b: M512i): Mmask32 = 
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cmpneq_epu16_mask&expand=1104)
  */
-public fun mm256CmpneqEpu16Mask(a: M256i, b: M256i): Mmask16 = simdBitmask<U16x16>(simdNe(a.asU16x16(), b.asU16x16()))
+public fun mm256CmpneqEpu16Mask(a: M256i, b: M256i): Mmask16 = run { val _simdArg0 = run { val _simdArg0 = a.asU16x16(); val _simdArg1 = b.asU16x16(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed unsigned 16-bit integers in a and b for not-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2812,7 +2810,7 @@ public fun mm256MaskCmpneqEpu16Mask(k1: Mmask16, a: M256i, b: M256i): Mmask16 = 
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmpneq_epu16_mask&expand=1102)
  */
-public fun mmCmpneqEpu16Mask(a: M128i, b: M128i): Mmask8 = simdBitmask<U16x8>(simdNe(a.asU16x8(), b.asU16x8()))
+public fun mmCmpneqEpu16Mask(a: M128i, b: M128i): Mmask8 = run { val _simdArg0 = run { val _simdArg0 = a.asU16x8(); val _simdArg1 = b.asU16x8(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed unsigned 16-bit integers in a and b for not-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2826,7 +2824,7 @@ public fun mmMaskCmpneqEpu16Mask(k1: Mmask8, a: M128i, b: M128i): Mmask8 = mmMas
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmpneq_epu8_mask&expand=1124)
  */
-public fun mm512CmpneqEpu8Mask(a: M512i, b: M512i): Mmask64 = simdBitmask<U8x64>(simdNe(a.asU8x64(), b.asU8x64()))
+public fun mm512CmpneqEpu8Mask(a: M512i, b: M512i): Mmask64 = run { val _simdArg0 = run { val _simdArg0 = a.asU8x64(); val _simdArg1 = b.asU8x64(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed unsigned 8-bit integers in a and b for not-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2840,7 +2838,7 @@ public fun mm512MaskCmpneqEpu8Mask(k1: Mmask64, a: M512i, b: M512i): Mmask64 = m
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cmpneq_epu8_mask&expand=1122)
  */
-public fun mm256CmpneqEpu8Mask(a: M256i, b: M256i): Mmask32 = simdBitmask<U8x32>(simdNe(a.asU8x32(), b.asU8x32()))
+public fun mm256CmpneqEpu8Mask(a: M256i, b: M256i): Mmask32 = run { val _simdArg0 = run { val _simdArg0 = a.asU8x32(); val _simdArg1 = b.asU8x32(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed unsigned 8-bit integers in a and b for not-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2854,7 +2852,7 @@ public fun mm256MaskCmpneqEpu8Mask(k1: Mmask32, a: M256i, b: M256i): Mmask32 = m
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmpneq_epu8_mask&expand=1120)
  */
-public fun mmCmpneqEpu8Mask(a: M128i, b: M128i): Mmask16 = simdBitmask<U8x16>(simdNe(a.asU8x16(), b.asU8x16()))
+public fun mmCmpneqEpu8Mask(a: M128i, b: M128i): Mmask16 = run { val _simdArg0 = run { val _simdArg0 = a.asU8x16(); val _simdArg1 = b.asU8x16(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed unsigned 8-bit integers in a and b for not-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2868,7 +2866,7 @@ public fun mmMaskCmpneqEpu8Mask(k1: Mmask16, a: M128i, b: M128i): Mmask16 = mmMa
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmpneq_epi16_mask&expand=1082)
  */
-public fun mm512CmpneqEpi16Mask(a: M512i, b: M512i): Mmask32 = simdBitmask<I16x32>(simdNe(a.asI16x32(), b.asI16x32()))
+public fun mm512CmpneqEpi16Mask(a: M512i, b: M512i): Mmask32 = run { val _simdArg0 = run { val _simdArg0 = a.asI16x32(); val _simdArg1 = b.asI16x32(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed signed 16-bit integers in a and b for not-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2882,7 +2880,7 @@ public fun mm512MaskCmpneqEpi16Mask(k1: Mmask32, a: M512i, b: M512i): Mmask32 = 
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cmpneq_epi16_mask&expand=1080)
  */
-public fun mm256CmpneqEpi16Mask(a: M256i, b: M256i): Mmask16 = simdBitmask<I16x16>(simdNe(a.asI16x16(), b.asI16x16()))
+public fun mm256CmpneqEpi16Mask(a: M256i, b: M256i): Mmask16 = run { val _simdArg0 = run { val _simdArg0 = a.asI16x16(); val _simdArg1 = b.asI16x16(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed signed 16-bit integers in a and b for not-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2896,7 +2894,7 @@ public fun mm256MaskCmpneqEpi16Mask(k1: Mmask16, a: M256i, b: M256i): Mmask16 = 
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmpneq_epi16_mask&expand=1078)
  */
-public fun mmCmpneqEpi16Mask(a: M128i, b: M128i): Mmask8 = simdBitmask<I16x8>(simdNe(a.asI16x8(), b.asI16x8()))
+public fun mmCmpneqEpi16Mask(a: M128i, b: M128i): Mmask8 = run { val _simdArg0 = run { val _simdArg0 = a.asI16x8(); val _simdArg1 = b.asI16x8(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed signed 16-bit integers in a and b for not-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2910,7 +2908,7 @@ public fun mmMaskCmpneqEpi16Mask(k1: Mmask8, a: M128i, b: M128i): Mmask8 = mmMas
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmpneq_epi8_mask&expand=1100)
  */
-public fun mm512CmpneqEpi8Mask(a: M512i, b: M512i): Mmask64 = simdBitmask<I8x64>(simdNe(a.asI8x64(), b.asI8x64()))
+public fun mm512CmpneqEpi8Mask(a: M512i, b: M512i): Mmask64 = run { val _simdArg0 = run { val _simdArg0 = a.asI8x64(); val _simdArg1 = b.asI8x64(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed signed 8-bit integers in a and b for not-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2924,7 +2922,7 @@ public fun mm512MaskCmpneqEpi8Mask(k1: Mmask64, a: M512i, b: M512i): Mmask64 = m
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cmpneq_epi8_mask&expand=1098)
  */
-public fun mm256CmpneqEpi8Mask(a: M256i, b: M256i): Mmask32 = simdBitmask<I8x32>(simdNe(a.asI8x32(), b.asI8x32()))
+public fun mm256CmpneqEpi8Mask(a: M256i, b: M256i): Mmask32 = run { val _simdArg0 = run { val _simdArg0 = a.asI8x32(); val _simdArg1 = b.asI8x32(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed signed 8-bit integers in a and b for not-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2938,7 +2936,7 @@ public fun mm256MaskCmpneqEpi8Mask(k1: Mmask32, a: M256i, b: M256i): Mmask32 = m
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmpneq_epi8_mask&expand=1096)
  */
-public fun mmCmpneqEpi8Mask(a: M128i, b: M128i): Mmask16 = simdBitmask<I8x16>(simdNe(a.asI8x16(), b.asI8x16()))
+public fun mmCmpneqEpi8Mask(a: M128i, b: M128i): Mmask16 = run { val _simdArg0 = run { val _simdArg0 = a.asI8x16(); val _simdArg1 = b.asI8x16(); _simdArg0 }; _simdArg0 }
 
 /**
  * Compare packed signed 8-bit integers in a and b for not-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
@@ -2961,16 +2959,16 @@ public fun mm512CmpEpu16Mask(a: M512i, b: M512i, imm8: Int): Mmask32 =
         val b1 = b.asU16x32()
         val r =
             when (imm8) {
-                0 -> simdEq(a1, b1)
-                1 -> simdLt(a1, b1)
-                2 -> simdLe(a1, b1)
+                0 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
+                1 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
+                2 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
                 3 -> i16x32.ZERO
-                4 -> simdNe(a1, b1)
-                5 -> simdGe(a1, b1)
-                6 -> simdGt(a1, b1)
+                4 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
+                5 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
+                6 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
                 else -> i16x32.splat(-1)
             }
-        simdBitmask(r)
+        run { val _simdArg0 = r; _simdArg0 }
     }
 
 /**
@@ -2985,19 +2983,19 @@ public fun mm512MaskCmpEpu16Mask(k1: Mmask32, a: M512i, b: M512i, imm8: Int): Mm
         }
         val a1 = a.asU16x32()
         val b1 = b.asU16x32()
-        val k11 = simdSelectBitmask(k1, i16x32.splat(-1), i16x32.ZERO)
+        val k11 = run { val _simdArg0 = k1; val _simdArg1 = i16x32.splat(-1); val _simdArg2 = i16x32.ZERO; _simdArg1 }
         val r =
             when (imm8) {
-                0 -> simdAnd(k11, simdEq(a1, b1))
-                1 -> simdAnd(k11, simdLt(a1, b1))
-                2 -> simdAnd(k11, simdLe(a1, b1))
+                0 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
+                1 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
+                2 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
                 3 -> i16x32.ZERO
-                4 -> simdAnd(k11, simdNe(a1, b1))
-                5 -> simdAnd(k11, simdGe(a1, b1))
-                6 -> simdAnd(k11, simdGt(a1, b1))
+                4 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
+                5 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
+                6 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
                 else -> k11
             }
-        simdBitmask(r)
+        run { val _simdArg0 = r; _simdArg0 }
     }
 
 /**
@@ -3014,16 +3012,16 @@ public fun mm256CmpEpu16Mask(a: M256i, b: M256i, imm8: Int): Mmask16 =
         val b1 = b.asU16x16()
         val r =
             when (imm8) {
-                0 -> simdEq(a1, b1)
-                1 -> simdLt(a1, b1)
-                2 -> simdLe(a1, b1)
+                0 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
+                1 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
+                2 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
                 3 -> i16x16.ZERO
-                4 -> simdNe(a1, b1)
-                5 -> simdGe(a1, b1)
-                6 -> simdGt(a1, b1)
+                4 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
+                5 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
+                6 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
                 else -> i16x16.splat(-1)
             }
-        simdBitmask(r)
+        run { val _simdArg0 = r; _simdArg0 }
     }
 
 /**
@@ -3038,19 +3036,19 @@ public fun mm256MaskCmpEpu16Mask(k1: Mmask16, a: M256i, b: M256i, imm8: Int): Mm
         }
         val a1 = a.asU16x16()
         val b1 = b.asU16x16()
-        val k11 = simdSelectBitmask(k1, i16x16.splat(-1), i16x16.ZERO)
+        val k11 = run { val _simdArg0 = k1; val _simdArg1 = i16x16.splat(-1); val _simdArg2 = i16x16.ZERO; _simdArg1 }
         val r =
             when (imm8) {
-                0 -> simdAnd(k11, simdEq(a1, b1))
-                1 -> simdAnd(k11, simdLt(a1, b1))
-                2 -> simdAnd(k11, simdLe(a1, b1))
+                0 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
+                1 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
+                2 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
                 3 -> i16x16.ZERO
-                4 -> simdAnd(k11, simdNe(a1, b1))
-                5 -> simdAnd(k11, simdGe(a1, b1))
-                6 -> simdAnd(k11, simdGt(a1, b1))
+                4 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
+                5 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
+                6 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
                 else -> k11
             }
-        simdBitmask(r)
+        run { val _simdArg0 = r; _simdArg0 }
     }
 
 /**
@@ -3067,16 +3065,16 @@ public fun mmCmpEpu16Mask(a: M128i, b: M128i, imm8: Int): Mmask8 =
         val b1 = b.asU16x8()
         val r =
             when (imm8) {
-                0 -> simdEq(a1, b1)
-                1 -> simdLt(a1, b1)
-                2 -> simdLe(a1, b1)
+                0 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
+                1 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
+                2 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
                 3 -> i16x8.ZERO
-                4 -> simdNe(a1, b1)
-                5 -> simdGe(a1, b1)
-                6 -> simdGt(a1, b1)
+                4 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
+                5 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
+                6 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
                 else -> i16x8.splat(-1)
             }
-        simdBitmask(r)
+        run { val _simdArg0 = r; _simdArg0 }
     }
 
 /**
@@ -3091,19 +3089,19 @@ public fun mmMaskCmpEpu16Mask(k1: Mmask8, a: M128i, b: M128i, imm8: Int): Mmask8
         }
         val a1 = a.asU16x8()
         val b1 = b.asU16x8()
-        val k11 = simdSelectBitmask(k1, i16x8.splat(-1), i16x8.ZERO)
+        val k11 = run { val _simdArg0 = k1; val _simdArg1 = i16x8.splat(-1); val _simdArg2 = i16x8.ZERO; _simdArg1 }
         val r =
             when (imm8) {
-                0 -> simdAnd(k11, simdEq(a1, b1))
-                1 -> simdAnd(k11, simdLt(a1, b1))
-                2 -> simdAnd(k11, simdLe(a1, b1))
+                0 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
+                1 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
+                2 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
                 3 -> i16x8.ZERO
-                4 -> simdAnd(k11, simdNe(a1, b1))
-                5 -> simdAnd(k11, simdGe(a1, b1))
-                6 -> simdAnd(k11, simdGt(a1, b1))
+                4 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
+                5 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
+                6 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
                 else -> k11
             }
-        simdBitmask(r)
+        run { val _simdArg0 = r; _simdArg0 }
     }
 
 /**
@@ -3120,16 +3118,16 @@ public fun mm512CmpEpu8Mask(a: M512i, b: M512i, imm8: Int): Mmask64 =
         val b1 = b.asU8x64()
         val r =
             when (imm8) {
-                0 -> simdEq(a1, b1)
-                1 -> simdLt(a1, b1)
-                2 -> simdLe(a1, b1)
+                0 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
+                1 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
+                2 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
                 3 -> i8x64.ZERO
-                4 -> simdNe(a1, b1)
-                5 -> simdGe(a1, b1)
-                6 -> simdGt(a1, b1)
+                4 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
+                5 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
+                6 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
                 else -> i8x64.splat(-1)
             }
-        simdBitmask(r)
+        run { val _simdArg0 = r; _simdArg0 }
     }
 
 /**
@@ -3144,19 +3142,19 @@ public fun mm512MaskCmpEpu8Mask(k1: Mmask64, a: M512i, b: M512i, imm8: Int): Mma
         }
         val a1 = a.asU8x64()
         val b1 = b.asU8x64()
-        val k11 = simdSelectBitmask(k1, i8x64.splat(-1), i8x64.ZERO)
+        val k11 = run { val _simdArg0 = k1; val _simdArg1 = i8x64.splat(-1); val _simdArg2 = i8x64.ZERO; _simdArg1 }
         val r =
             when (imm8) {
-                0 -> simdAnd(k11, simdEq(a1, b1))
-                1 -> simdAnd(k11, simdLt(a1, b1))
-                2 -> simdAnd(k11, simdLe(a1, b1))
+                0 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
+                1 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
+                2 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
                 3 -> i8x64.ZERO
-                4 -> simdAnd(k11, simdNe(a1, b1))
-                5 -> simdAnd(k11, simdGe(a1, b1))
-                6 -> simdAnd(k11, simdGt(a1, b1))
+                4 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
+                5 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
+                6 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
                 else -> k11
             }
-        simdBitmask(r)
+        run { val _simdArg0 = r; _simdArg0 }
     }
 
 /**
@@ -3173,16 +3171,16 @@ public fun mm256CmpEpu8Mask(a: M256i, b: M256i, imm8: Int): Mmask32 =
         val b1 = b.asU8x32()
         val r =
             when (imm8) {
-                0 -> simdEq(a1, b1)
-                1 -> simdLt(a1, b1)
-                2 -> simdLe(a1, b1)
+                0 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
+                1 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
+                2 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
                 3 -> i8x32.ZERO
-                4 -> simdNe(a1, b1)
-                5 -> simdGe(a1, b1)
-                6 -> simdGt(a1, b1)
+                4 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
+                5 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
+                6 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
                 else -> i8x32.splat(-1)
             }
-        simdBitmask(r)
+        run { val _simdArg0 = r; _simdArg0 }
     }
 
 /**
@@ -3197,19 +3195,19 @@ public fun mm256MaskCmpEpu8Mask(k1: Mmask32, a: M256i, b: M256i, imm8: Int): Mma
         }
         val a1 = a.asU8x32()
         val b1 = b.asU8x32()
-        val k11 = simdSelectBitmask(k1, i8x32.splat(-1), i8x32.ZERO)
+        val k11 = run { val _simdArg0 = k1; val _simdArg1 = i8x32.splat(-1); val _simdArg2 = i8x32.ZERO; _simdArg1 }
         val r =
             when (imm8) {
-                0 -> simdAnd(k11, simdEq(a1, b1))
-                1 -> simdAnd(k11, simdLt(a1, b1))
-                2 -> simdAnd(k11, simdLe(a1, b1))
+                0 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
+                1 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
+                2 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
                 3 -> i8x32.ZERO
-                4 -> simdAnd(k11, simdNe(a1, b1))
-                5 -> simdAnd(k11, simdGe(a1, b1))
-                6 -> simdAnd(k11, simdGt(a1, b1))
+                4 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
+                5 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
+                6 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
                 else -> k11
             }
-        simdBitmask(r)
+        run { val _simdArg0 = r; _simdArg0 }
     }
 
 /**
@@ -3226,16 +3224,16 @@ public fun mmCmpEpu8Mask(a: M128i, b: M128i, imm8: Int): Mmask16 =
         val b1 = b.asU8x16()
         val r =
             when (imm8) {
-                0 -> simdEq(a1, b1)
-                1 -> simdLt(a1, b1)
-                2 -> simdLe(a1, b1)
+                0 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
+                1 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
+                2 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
                 3 -> i8x16.ZERO
-                4 -> simdNe(a1, b1)
-                5 -> simdGe(a1, b1)
-                6 -> simdGt(a1, b1)
+                4 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
+                5 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
+                6 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
                 else -> i8x16.splat(-1)
             }
-        simdBitmask(r)
+        run { val _simdArg0 = r; _simdArg0 }
     }
 
 /**
@@ -3250,19 +3248,19 @@ public fun mmMaskCmpEpu8Mask(k1: Mmask16, a: M128i, b: M128i, imm8: Int): Mmask1
         }
         val a1 = a.asU8x16()
         val b1 = b.asU8x16()
-        val k11 = simdSelectBitmask(k1, i8x16.splat(-1), i8x16.ZERO)
+        val k11 = run { val _simdArg0 = k1; val _simdArg1 = i8x16.splat(-1); val _simdArg2 = i8x16.ZERO; _simdArg1 }
         val r =
             when (imm8) {
-                0 -> simdAnd(k11, simdEq(a1, b1))
-                1 -> simdAnd(k11, simdLt(a1, b1))
-                2 -> simdAnd(k11, simdLe(a1, b1))
+                0 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
+                1 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
+                2 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
                 3 -> i8x16.ZERO
-                4 -> simdAnd(k11, simdNe(a1, b1))
-                5 -> simdAnd(k11, simdGe(a1, b1))
-                6 -> simdAnd(k11, simdGt(a1, b1))
+                4 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
+                5 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
+                6 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
                 else -> k11
             }
-        simdBitmask(r)
+        run { val _simdArg0 = r; _simdArg0 }
     }
 
 /**
@@ -3279,16 +3277,16 @@ public fun mm512CmpEpi16Mask(a: M512i, b: M512i, imm8: Int): Mmask32 =
         val b1 = b.asI16x32()
         val r =
             when (imm8) {
-                0 -> simdEq(a1, b1)
-                1 -> simdLt(a1, b1)
-                2 -> simdLe(a1, b1)
+                0 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
+                1 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
+                2 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
                 3 -> i16x32.ZERO
-                4 -> simdNe(a1, b1)
-                5 -> simdGe(a1, b1)
-                6 -> simdGt(a1, b1)
+                4 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
+                5 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
+                6 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
                 else -> i16x32.splat(-1)
             }
-        simdBitmask(r)
+        run { val _simdArg0 = r; _simdArg0 }
     }
 
 /**
@@ -3303,19 +3301,19 @@ public fun mm512MaskCmpEpi16Mask(k1: Mmask32, a: M512i, b: M512i, imm8: Int): Mm
         }
         val a1 = a.asI16x32()
         val b1 = b.asI16x32()
-        val k11 = simdSelectBitmask(k1, i16x32.splat(-1), i16x32.ZERO)
+        val k11 = run { val _simdArg0 = k1; val _simdArg1 = i16x32.splat(-1); val _simdArg2 = i16x32.ZERO; _simdArg1 }
         val r =
             when (imm8) {
-                0 -> simdAnd(k11, simdEq(a1, b1))
-                1 -> simdAnd(k11, simdLt(a1, b1))
-                2 -> simdAnd(k11, simdLe(a1, b1))
+                0 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
+                1 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
+                2 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
                 3 -> i16x32.ZERO
-                4 -> simdAnd(k11, simdNe(a1, b1))
-                5 -> simdAnd(k11, simdGe(a1, b1))
-                6 -> simdAnd(k11, simdGt(a1, b1))
+                4 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
+                5 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
+                6 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
                 else -> k11
             }
-        simdBitmask(r)
+        run { val _simdArg0 = r; _simdArg0 }
     }
 
 /**
@@ -3332,16 +3330,16 @@ public fun mm256CmpEpi16Mask(a: M256i, b: M256i, imm8: Int): Mmask16 =
         val b1 = b.asI16x16()
         val r =
             when (imm8) {
-                0 -> simdEq(a1, b1)
-                1 -> simdLt(a1, b1)
-                2 -> simdLe(a1, b1)
+                0 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
+                1 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
+                2 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
                 3 -> i16x16.ZERO
-                4 -> simdNe(a1, b1)
-                5 -> simdGe(a1, b1)
-                6 -> simdGt(a1, b1)
+                4 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
+                5 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
+                6 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
                 else -> i16x16.splat(-1)
             }
-        simdBitmask(r)
+        run { val _simdArg0 = r; _simdArg0 }
     }
 
 /**
@@ -3356,19 +3354,19 @@ public fun mm256MaskCmpEpi16Mask(k1: Mmask16, a: M256i, b: M256i, imm8: Int): Mm
         }
         val a1 = a.asI16x16()
         val b1 = b.asI16x16()
-        val k11 = simdSelectBitmask(k1, i16x16.splat(-1), i16x16.ZERO)
+        val k11 = run { val _simdArg0 = k1; val _simdArg1 = i16x16.splat(-1); val _simdArg2 = i16x16.ZERO; _simdArg1 }
         val r =
             when (imm8) {
-                0 -> simdAnd(k11, simdEq(a1, b1))
-                1 -> simdAnd(k11, simdLt(a1, b1))
-                2 -> simdAnd(k11, simdLe(a1, b1))
+                0 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
+                1 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
+                2 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
                 3 -> i16x16.ZERO
-                4 -> simdAnd(k11, simdNe(a1, b1))
-                5 -> simdAnd(k11, simdGe(a1, b1))
-                6 -> simdAnd(k11, simdGt(a1, b1))
+                4 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
+                5 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
+                6 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
                 else -> k11
             }
-        simdBitmask(r)
+        run { val _simdArg0 = r; _simdArg0 }
     }
 
 /**
@@ -3385,16 +3383,16 @@ public fun mmCmpEpi16Mask(a: M128i, b: M128i, imm8: Int): Mmask8 =
         val b1 = b.asI16x8()
         val r =
             when (imm8) {
-                0 -> simdEq(a1, b1)
-                1 -> simdLt(a1, b1)
-                2 -> simdLe(a1, b1)
+                0 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
+                1 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
+                2 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
                 3 -> i16x8.ZERO
-                4 -> simdNe(a1, b1)
-                5 -> simdGe(a1, b1)
-                6 -> simdGt(a1, b1)
+                4 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
+                5 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
+                6 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
                 else -> i16x8.splat(-1)
             }
-        simdBitmask(r)
+        run { val _simdArg0 = r; _simdArg0 }
     }
 
 /**
@@ -3409,19 +3407,19 @@ public fun mmMaskCmpEpi16Mask(k1: Mmask8, a: M128i, b: M128i, imm8: Int): Mmask8
         }
         val a1 = a.asI16x8()
         val b1 = b.asI16x8()
-        val k11 = simdSelectBitmask(k1, i16x8.splat(-1), i16x8.ZERO)
+        val k11 = run { val _simdArg0 = k1; val _simdArg1 = i16x8.splat(-1); val _simdArg2 = i16x8.ZERO; _simdArg1 }
         val r =
             when (imm8) {
-                0 -> simdAnd(k11, simdEq(a1, b1))
-                1 -> simdAnd(k11, simdLt(a1, b1))
-                2 -> simdAnd(k11, simdLe(a1, b1))
+                0 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
+                1 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
+                2 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
                 3 -> i16x8.ZERO
-                4 -> simdAnd(k11, simdNe(a1, b1))
-                5 -> simdAnd(k11, simdGe(a1, b1))
-                6 -> simdAnd(k11, simdGt(a1, b1))
+                4 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
+                5 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
+                6 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
                 else -> k11
             }
-        simdBitmask(r)
+        run { val _simdArg0 = r; _simdArg0 }
     }
 
 /**
@@ -3438,16 +3436,16 @@ public fun mm512CmpEpi8Mask(a: M512i, b: M512i, imm8: Int): Mmask64 =
         val b1 = b.asI8x64()
         val r =
             when (imm8) {
-                0 -> simdEq(a1, b1)
-                1 -> simdLt(a1, b1)
-                2 -> simdLe(a1, b1)
+                0 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
+                1 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
+                2 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
                 3 -> i8x64.ZERO
-                4 -> simdNe(a1, b1)
-                5 -> simdGe(a1, b1)
-                6 -> simdGt(a1, b1)
+                4 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
+                5 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
+                6 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
                 else -> i8x64.splat(-1)
             }
-        simdBitmask(r)
+        run { val _simdArg0 = r; _simdArg0 }
     }
 
 /**
@@ -3462,19 +3460,19 @@ public fun mm512MaskCmpEpi8Mask(k1: Mmask64, a: M512i, b: M512i, imm8: Int): Mma
         }
         val a1 = a.asI8x64()
         val b1 = b.asI8x64()
-        val k11 = simdSelectBitmask(k1, i8x64.splat(-1), i8x64.ZERO)
+        val k11 = run { val _simdArg0 = k1; val _simdArg1 = i8x64.splat(-1); val _simdArg2 = i8x64.ZERO; _simdArg1 }
         val r =
             when (imm8) {
-                0 -> simdAnd(k11, simdEq(a1, b1))
-                1 -> simdAnd(k11, simdLt(a1, b1))
-                2 -> simdAnd(k11, simdLe(a1, b1))
+                0 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
+                1 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
+                2 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
                 3 -> i8x64.ZERO
-                4 -> simdAnd(k11, simdNe(a1, b1))
-                5 -> simdAnd(k11, simdGe(a1, b1))
-                6 -> simdAnd(k11, simdGt(a1, b1))
+                4 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
+                5 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
+                6 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
                 else -> k11
             }
-        simdBitmask(r)
+        run { val _simdArg0 = r; _simdArg0 }
     }
 
 /**
@@ -3491,16 +3489,16 @@ public fun mm256CmpEpi8Mask(a: M256i, b: M256i, imm8: Int): Mmask32 =
         val b1 = b.asI8x32()
         val r =
             when (imm8) {
-                0 -> simdEq(a1, b1)
-                1 -> simdLt(a1, b1)
-                2 -> simdLe(a1, b1)
+                0 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
+                1 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
+                2 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
                 3 -> i8x32.ZERO
-                4 -> simdNe(a1, b1)
-                5 -> simdGe(a1, b1)
-                6 -> simdGt(a1, b1)
+                4 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
+                5 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
+                6 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
                 else -> i8x32.splat(-1)
             }
-        simdBitmask(r)
+        run { val _simdArg0 = r; _simdArg0 }
     }
 
 /**
@@ -3515,19 +3513,19 @@ public fun mm256MaskCmpEpi8Mask(k1: Mmask32, a: M256i, b: M256i, imm8: Int): Mma
         }
         val a1 = a.asI8x32()
         val b1 = b.asI8x32()
-        val k11 = simdSelectBitmask(k1, i8x32.splat(-1), i8x32.ZERO)
+        val k11 = run { val _simdArg0 = k1; val _simdArg1 = i8x32.splat(-1); val _simdArg2 = i8x32.ZERO; _simdArg1 }
         val r =
             when (imm8) {
-                0 -> simdAnd(k11, simdEq(a1, b1))
-                1 -> simdAnd(k11, simdLt(a1, b1))
-                2 -> simdAnd(k11, simdLe(a1, b1))
+                0 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
+                1 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
+                2 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
                 3 -> i8x32.ZERO
-                4 -> simdAnd(k11, simdNe(a1, b1))
-                5 -> simdAnd(k11, simdGe(a1, b1))
-                6 -> simdAnd(k11, simdGt(a1, b1))
+                4 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
+                5 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
+                6 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
                 else -> k11
             }
-        simdBitmask(r)
+        run { val _simdArg0 = r; _simdArg0 }
     }
 
 /**
@@ -3544,16 +3542,16 @@ public fun mmCmpEpi8Mask(a: M128i, b: M128i, imm8: Int): Mmask16 =
         val b1 = b.asI8x16()
         val r =
             when (imm8) {
-                0 -> simdEq(a1, b1)
-                1 -> simdLt(a1, b1)
-                2 -> simdLe(a1, b1)
+                0 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
+                1 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
+                2 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
                 3 -> i8x16.ZERO
-                4 -> simdNe(a1, b1)
-                5 -> simdGe(a1, b1)
-                6 -> simdGt(a1, b1)
+                4 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
+                5 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
+                6 -> run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
                 else -> i8x16.splat(-1)
             }
-        simdBitmask(r)
+        run { val _simdArg0 = r; _simdArg0 }
     }
 
 /**
@@ -3568,19 +3566,19 @@ public fun mmMaskCmpEpi8Mask(k1: Mmask16, a: M128i, b: M128i, imm8: Int): Mmask1
         }
         val a1 = a.asI8x16()
         val b1 = b.asI8x16()
-        val k11 = simdSelectBitmask(k1, i8x16.splat(-1), i8x16.ZERO)
+        val k11 = run { val _simdArg0 = k1; val _simdArg1 = i8x16.splat(-1); val _simdArg2 = i8x16.ZERO; _simdArg1 }
         val r =
             when (imm8) {
-                0 -> simdAnd(k11, simdEq(a1, b1))
-                1 -> simdAnd(k11, simdLt(a1, b1))
-                2 -> simdAnd(k11, simdLe(a1, b1))
+                0 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
+                1 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
+                2 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
                 3 -> i8x16.ZERO
-                4 -> simdAnd(k11, simdNe(a1, b1))
-                5 -> simdAnd(k11, simdGe(a1, b1))
-                6 -> simdAnd(k11, simdGt(a1, b1))
+                4 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
+                5 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
+                6 -> run { val _simdArg0 = k11; val _simdArg1 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; _simdArg0 }
                 else -> k11
             }
-        simdBitmask(r)
+        run { val _simdArg0 = r; _simdArg0 }
     }
 
 /**
@@ -3588,448 +3586,448 @@ public fun mmMaskCmpEpi8Mask(k1: Mmask16, a: M128i, b: M128i, imm8: Int): Mmask1
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_reduce_add_epi16)
  */
-public fun mm256ReduceAddEpi16(a: M256i): Short = simdReduceAddOrdered(a.asI16x16(), 0)
+public fun mm256ReduceAddEpi16(a: M256i): Short = run { val _simdArg0 = a.asI16x16(); val _simdArg1 = 0; _simdArg1 }
 
 /**
  * Reduce the packed 16-bit integers in a by addition using mask k. Returns the sum of all active elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_reduce_add_epi16)
  */
-public fun mm256MaskReduceAddEpi16(k: Mmask16, a: M256i): Short = simdReduceAddOrdered(simdSelectBitmask(k, a.asI16x16(), i16x16.ZERO), 0)
+public fun mm256MaskReduceAddEpi16(k: Mmask16, a: M256i): Short = run { val _simdArg0 = run { val _simdArg0 = k; val _simdArg1 = a.asI16x16(); val _simdArg2 = i16x16.ZERO; _simdArg1 }; val _simdArg1 = 0; _simdArg1 }
 
 /**
  * Reduce the packed 16-bit integers in a by addition. Returns the sum of all elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_reduce_add_epi16)
  */
-public fun mmReduceAddEpi16(a: M128i): Short = simdReduceAddOrdered(a.asI16x8(), 0)
+public fun mmReduceAddEpi16(a: M128i): Short = run { val _simdArg0 = a.asI16x8(); val _simdArg1 = 0; _simdArg1 }
 
 /**
  * Reduce the packed 16-bit integers in a by addition using mask k. Returns the sum of all active elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_reduce_add_epi16)
  */
-public fun mmMaskReduceAddEpi16(k: Mmask8, a: M128i): Short = simdReduceAddOrdered(simdSelectBitmask(k, a.asI16x8(), i16x8.ZERO), 0)
+public fun mmMaskReduceAddEpi16(k: Mmask8, a: M128i): Short = run { val _simdArg0 = run { val _simdArg0 = k; val _simdArg1 = a.asI16x8(); val _simdArg2 = i16x8.ZERO; _simdArg1 }; val _simdArg1 = 0; _simdArg1 }
 
 /**
  * Reduce the packed 8-bit integers in a by addition. Returns the sum of all elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_reduce_add_epi8)
  */
-public fun mm256ReduceAddEpi8(a: M256i): Byte = simdReduceAddOrdered(a.asI8x32(), 0)
+public fun mm256ReduceAddEpi8(a: M256i): Byte = run { val _simdArg0 = a.asI8x32(); val _simdArg1 = 0; _simdArg1 }
 
 /**
  * Reduce the packed 8-bit integers in a by addition using mask k. Returns the sum of all active elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_reduce_add_epi8)
  */
-public fun mm256MaskReduceAddEpi8(k: Mmask32, a: M256i): Byte = simdReduceAddOrdered(simdSelectBitmask(k, a.asI8x32(), i8x32.ZERO), 0)
+public fun mm256MaskReduceAddEpi8(k: Mmask32, a: M256i): Byte = run { val _simdArg0 = run { val _simdArg0 = k; val _simdArg1 = a.asI8x32(); val _simdArg2 = i8x32.ZERO; _simdArg1 }; val _simdArg1 = 0; _simdArg1 }
 
 /**
  * Reduce the packed 8-bit integers in a by addition. Returns the sum of all elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_reduce_add_epi8)
  */
-public fun mmReduceAddEpi8(a: M128i): Byte = simdReduceAddOrdered(a.asI8x16(), 0)
+public fun mmReduceAddEpi8(a: M128i): Byte = run { val _simdArg0 = a.asI8x16(); val _simdArg1 = 0; _simdArg1 }
 
 /**
  * Reduce the packed 8-bit integers in a by addition using mask k. Returns the sum of all active elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_reduce_add_epi8)
  */
-public fun mmMaskReduceAddEpi8(k: Mmask16, a: M128i): Byte = simdReduceAddOrdered(simdSelectBitmask(k, a.asI8x16(), i8x16.ZERO), 0)
+public fun mmMaskReduceAddEpi8(k: Mmask16, a: M128i): Byte = run { val _simdArg0 = run { val _simdArg0 = k; val _simdArg1 = a.asI8x16(); val _simdArg2 = i8x16.ZERO; _simdArg1 }; val _simdArg1 = 0; _simdArg1 }
 
 /**
  * Reduce the packed 16-bit integers in a by bitwise AND. Returns the bitwise AND of all elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_reduce_and_epi16)
  */
-public fun mm256ReduceAndEpi16(a: M256i): Short = simdReduceAnd(a.asI16x16())
+public fun mm256ReduceAndEpi16(a: M256i): Short = run { val _simdArg0 = a.asI16x16(); _simdArg0 }
 
 /**
  * Reduce the packed 16-bit integers in a by bitwise AND using mask k. Returns the bitwise AND of all active elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_reduce_and_epi16)
  */
-public fun mm256MaskReduceAndEpi16(k: Mmask16, a: M256i): Short = simdReduceAnd(simdSelectBitmask(k, a.asI16x16(), mm256Set1Epi64x(-1L).asI16x16()))
+public fun mm256MaskReduceAndEpi16(k: Mmask16, a: M256i): Short = run { val _simdArg0 = run { val _simdArg0 = k; val _simdArg1 = a.asI16x16(); val _simdArg2 = mm256Set1Epi64x(-1L).asI16x16(); _simdArg1 }; _simdArg0 }
 
 /**
  * Reduce the packed 16-bit integers in a by bitwise AND. Returns the bitwise AND of all elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_reduce_and_epi16)
  */
-public fun mmReduceAndEpi16(a: M128i): Short = simdReduceAnd(a.asI16x8())
+public fun mmReduceAndEpi16(a: M128i): Short = run { val _simdArg0 = a.asI16x8(); _simdArg0 }
 
 /**
  * Reduce the packed 16-bit integers in a by bitwise AND using mask k. Returns the bitwise AND of all active elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_reduce_and_epi16)
  */
-public fun mmMaskReduceAndEpi16(k: Mmask8, a: M128i): Short = simdReduceAnd(simdSelectBitmask(k, a.asI16x8(), mmSet1Epi64x(-1L).asI16x8()))
+public fun mmMaskReduceAndEpi16(k: Mmask8, a: M128i): Short = run { val _simdArg0 = run { val _simdArg0 = k; val _simdArg1 = a.asI16x8(); val _simdArg2 = mmSet1Epi64x(-1L).asI16x8(); _simdArg1 }; _simdArg0 }
 
 /**
  * Reduce the packed 8-bit integers in a by bitwise AND. Returns the bitwise AND of all elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_reduce_and_epi8)
  */
-public fun mm256ReduceAndEpi8(a: M256i): Byte = simdReduceAnd(a.asI8x32())
+public fun mm256ReduceAndEpi8(a: M256i): Byte = run { val _simdArg0 = a.asI8x32(); _simdArg0 }
 
 /**
  * Reduce the packed 8-bit integers in a by bitwise AND using mask k. Returns the bitwise AND of all active elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_reduce_and_epi8)
  */
-public fun mm256MaskReduceAndEpi8(k: Mmask32, a: M256i): Byte = simdReduceAnd(simdSelectBitmask(k, a.asI8x32(), mm256Set1Epi64x(-1L).asI8x32()))
+public fun mm256MaskReduceAndEpi8(k: Mmask32, a: M256i): Byte = run { val _simdArg0 = run { val _simdArg0 = k; val _simdArg1 = a.asI8x32(); val _simdArg2 = mm256Set1Epi64x(-1L).asI8x32(); _simdArg1 }; _simdArg0 }
 
 /**
  * Reduce the packed 8-bit integers in a by bitwise AND. Returns the bitwise AND of all elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_reduce_and_epi8)
  */
-public fun mmReduceAndEpi8(a: M128i): Byte = simdReduceAnd(a.asI8x16())
+public fun mmReduceAndEpi8(a: M128i): Byte = run { val _simdArg0 = a.asI8x16(); _simdArg0 }
 
 /**
  * Reduce the packed 8-bit integers in a by bitwise AND using mask k. Returns the bitwise AND of all active elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_reduce_and_epi8)
  */
-public fun mmMaskReduceAndEpi8(k: Mmask16, a: M128i): Byte = simdReduceAnd(simdSelectBitmask(k, a.asI8x16(), mmSet1Epi64x(-1L).asI8x16()))
+public fun mmMaskReduceAndEpi8(k: Mmask16, a: M128i): Byte = run { val _simdArg0 = run { val _simdArg0 = k; val _simdArg1 = a.asI8x16(); val _simdArg2 = mmSet1Epi64x(-1L).asI8x16(); _simdArg1 }; _simdArg0 }
 
 /**
  * Reduce the packed 16-bit integers in a by maximum. Returns the maximum of all elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_reduce_max_epi16)
  */
-public fun mm256ReduceMaxEpi16(a: M256i): Short = simdReduceMax(a.asI16x16())
+public fun mm256ReduceMaxEpi16(a: M256i): Short = run { val _simdArg0 = a.asI16x16(); _simdArg0 }
 
 /**
  * Reduce the packed 16-bit integers in a by maximum using mask k. Returns the maximum of all active elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_reduce_max_epi16)
  */
-public fun mm256MaskReduceMaxEpi16(k: Mmask16, a: M256i): Short = simdReduceMax(simdSelectBitmask(k, a.asI16x16(), i16x16.splat(-32768)))
+public fun mm256MaskReduceMaxEpi16(k: Mmask16, a: M256i): Short = run { val _simdArg0 = run { val _simdArg0 = k; val _simdArg1 = a.asI16x16(); val _simdArg2 = i16x16.splat(-32768); _simdArg1 }; _simdArg0 }
 
 /**
  * Reduce the packed 16-bit integers in a by maximum. Returns the maximum of all elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_reduce_max_epi16)
  */
-public fun mmReduceMaxEpi16(a: M128i): Short = simdReduceMax(a.asI16x8())
+public fun mmReduceMaxEpi16(a: M128i): Short = run { val _simdArg0 = a.asI16x8(); _simdArg0 }
 
 /**
  * Reduce the packed 16-bit integers in a by maximum using mask k. Returns the maximum of all active elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_reduce_max_epi16)
  */
-public fun mmMaskReduceMaxEpi16(k: Mmask8, a: M128i): Short = simdReduceMax(simdSelectBitmask(k, a.asI16x8(), i16x8.splat(-32768)))
+public fun mmMaskReduceMaxEpi16(k: Mmask8, a: M128i): Short = run { val _simdArg0 = run { val _simdArg0 = k; val _simdArg1 = a.asI16x8(); val _simdArg2 = i16x8.splat(-32768); _simdArg1 }; _simdArg0 }
 
 /**
  * Reduce the packed 8-bit integers in a by maximum. Returns the maximum of all elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_reduce_max_epi8)
  */
-public fun mm256ReduceMaxEpi8(a: M256i): Byte = simdReduceMax(a.asI8x32())
+public fun mm256ReduceMaxEpi8(a: M256i): Byte = run { val _simdArg0 = a.asI8x32(); _simdArg0 }
 
 /**
  * Reduce the packed 8-bit integers in a by maximum using mask k. Returns the maximum of all active elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_reduce_max_epi8)
  */
-public fun mm256MaskReduceMaxEpi8(k: Mmask32, a: M256i): Byte = simdReduceMax(simdSelectBitmask(k, a.asI8x32(), i8x32.splat(-128)))
+public fun mm256MaskReduceMaxEpi8(k: Mmask32, a: M256i): Byte = run { val _simdArg0 = run { val _simdArg0 = k; val _simdArg1 = a.asI8x32(); val _simdArg2 = i8x32.splat(-128); _simdArg1 }; _simdArg0 }
 
 /**
  * Reduce the packed 8-bit integers in a by maximum. Returns the maximum of all elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_reduce_max_epi8)
  */
-public fun mmReduceMaxEpi8(a: M128i): Byte = simdReduceMax(a.asI8x16())
+public fun mmReduceMaxEpi8(a: M128i): Byte = run { val _simdArg0 = a.asI8x16(); _simdArg0 }
 
 /**
  * Reduce the packed 8-bit integers in a by maximum using mask k. Returns the maximum of all active elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_reduce_max_epi8)
  */
-public fun mmMaskReduceMaxEpi8(k: Mmask16, a: M128i): Byte = simdReduceMax(simdSelectBitmask(k, a.asI8x16(), i8x16.splat(-128)))
+public fun mmMaskReduceMaxEpi8(k: Mmask16, a: M128i): Byte = run { val _simdArg0 = run { val _simdArg0 = k; val _simdArg1 = a.asI8x16(); val _simdArg2 = i8x16.splat(-128); _simdArg1 }; _simdArg0 }
 
 /**
  * Reduce the packed unsigned 16-bit integers in a by maximum. Returns the maximum of all elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_reduce_max_epu16)
  */
-public fun mm256ReduceMaxEpu16(a: M256i): UShort = simdReduceMax(a.asU16x16())
+public fun mm256ReduceMaxEpu16(a: M256i): UShort = run { val _simdArg0 = a.asU16x16(); _simdArg0 }
 
 /**
  * Reduce the packed unsigned 16-bit integers in a by maximum using mask k. Returns the maximum of all active elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_reduce_max_epu16)
  */
-public fun mm256MaskReduceMaxEpu16(k: Mmask16, a: M256i): UShort = simdReduceMax(simdSelectBitmask(k, a.asU16x16(), u16x16.ZERO))
+public fun mm256MaskReduceMaxEpu16(k: Mmask16, a: M256i): UShort = run { val _simdArg0 = run { val _simdArg0 = k; val _simdArg1 = a.asU16x16(); val _simdArg2 = u16x16.ZERO; _simdArg1 }; _simdArg0 }
 
 /**
  * Reduce the packed unsigned 16-bit integers in a by maximum. Returns the maximum of all elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_reduce_max_epu16)
  */
-public fun mmReduceMaxEpu16(a: M128i): UShort = simdReduceMax(a.asU16x8())
+public fun mmReduceMaxEpu16(a: M128i): UShort = run { val _simdArg0 = a.asU16x8(); _simdArg0 }
 
 /**
  * Reduce the packed unsigned 16-bit integers in a by maximum using mask k. Returns the maximum of all active elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_reduce_max_epu16)
  */
-public fun mmMaskReduceMaxEpu16(k: Mmask8, a: M128i): UShort = simdReduceMax(simdSelectBitmask(k, a.asU16x8(), u16x8.ZERO))
+public fun mmMaskReduceMaxEpu16(k: Mmask8, a: M128i): UShort = run { val _simdArg0 = run { val _simdArg0 = k; val _simdArg1 = a.asU16x8(); val _simdArg2 = u16x8.ZERO; _simdArg1 }; _simdArg0 }
 
 /**
  * Reduce the packed unsigned 8-bit integers in a by maximum. Returns the maximum of all elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_reduce_max_epu8)
  */
-public fun mm256ReduceMaxEpu8(a: M256i): UByte = simdReduceMax(a.asU8x32())
+public fun mm256ReduceMaxEpu8(a: M256i): UByte = run { val _simdArg0 = a.asU8x32(); _simdArg0 }
 
 /**
  * Reduce the packed unsigned 8-bit integers in a by maximum using mask k. Returns the maximum of all active elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_reduce_max_epu8)
  */
-public fun mm256MaskReduceMaxEpu8(k: Mmask32, a: M256i): UByte = simdReduceMax(simdSelectBitmask(k, a.asU8x32(), u8x32.ZERO))
+public fun mm256MaskReduceMaxEpu8(k: Mmask32, a: M256i): UByte = run { val _simdArg0 = run { val _simdArg0 = k; val _simdArg1 = a.asU8x32(); val _simdArg2 = u8x32.ZERO; _simdArg1 }; _simdArg0 }
 
 /**
  * Reduce the packed unsigned 8-bit integers in a by maximum. Returns the maximum of all elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_reduce_max_epu8)
  */
-public fun mmReduceMaxEpu8(a: M128i): UByte = simdReduceMax(a.asU8x16())
+public fun mmReduceMaxEpu8(a: M128i): UByte = run { val _simdArg0 = a.asU8x16(); _simdArg0 }
 
 /**
  * Reduce the packed unsigned 8-bit integers in a by maximum using mask k. Returns the maximum of all active elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_reduce_max_epu8)
  */
-public fun mmMaskReduceMaxEpu8(k: Mmask16, a: M128i): UByte = simdReduceMax(simdSelectBitmask(k, a.asU8x16(), u8x16.ZERO))
+public fun mmMaskReduceMaxEpu8(k: Mmask16, a: M128i): UByte = run { val _simdArg0 = run { val _simdArg0 = k; val _simdArg1 = a.asU8x16(); val _simdArg2 = u8x16.ZERO; _simdArg1 }; _simdArg0 }
 
 /**
  * Reduce the packed 16-bit integers in a by minimum. Returns the minimum of all elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_reduce_min_epi16)
  */
-public fun mm256ReduceMinEpi16(a: M256i): Short = simdReduceMin(a.asI16x16())
+public fun mm256ReduceMinEpi16(a: M256i): Short = run { val _simdArg0 = a.asI16x16(); _simdArg0 }
 
 /**
  * Reduce the packed 16-bit integers in a by minimum using mask k. Returns the minimum of all active elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_reduce_min_epi16)
  */
-public fun mm256MaskReduceMinEpi16(k: Mmask16, a: M256i): Short = simdReduceMin(simdSelectBitmask(k, a.asI16x16(), i16x16.splat(0x7fff)))
+public fun mm256MaskReduceMinEpi16(k: Mmask16, a: M256i): Short = run { val _simdArg0 = run { val _simdArg0 = k; val _simdArg1 = a.asI16x16(); val _simdArg2 = i16x16.splat(0x7fff); _simdArg1 }; _simdArg0 }
 
 /**
  * Reduce the packed 16-bit integers in a by minimum. Returns the minimum of all elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_reduce_min_epi16)
  */
-public fun mmReduceMinEpi16(a: M128i): Short = simdReduceMin(a.asI16x8())
+public fun mmReduceMinEpi16(a: M128i): Short = run { val _simdArg0 = a.asI16x8(); _simdArg0 }
 
 /**
  * Reduce the packed 16-bit integers in a by minimum using mask k. Returns the minimum of all active elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_reduce_min_epi16)
  */
-public fun mmMaskReduceMinEpi16(k: Mmask8, a: M128i): Short = simdReduceMin(simdSelectBitmask(k, a.asI16x8(), i16x8.splat(0x7fff)))
+public fun mmMaskReduceMinEpi16(k: Mmask8, a: M128i): Short = run { val _simdArg0 = run { val _simdArg0 = k; val _simdArg1 = a.asI16x8(); val _simdArg2 = i16x8.splat(0x7fff); _simdArg1 }; _simdArg0 }
 
 /**
  * Reduce the packed 8-bit integers in a by minimum. Returns the minimum of all elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_reduce_min_epi8)
  */
-public fun mm256ReduceMinEpi8(a: M256i): Byte = simdReduceMin(a.asI8x32())
+public fun mm256ReduceMinEpi8(a: M256i): Byte = run { val _simdArg0 = a.asI8x32(); _simdArg0 }
 
 /**
  * Reduce the packed 8-bit integers in a by minimum using mask k. Returns the minimum of all active elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_reduce_min_epi8)
  */
-public fun mm256MaskReduceMinEpi8(k: Mmask32, a: M256i): Byte = simdReduceMin(simdSelectBitmask(k, a.asI8x32(), i8x32.splat(0x7f)))
+public fun mm256MaskReduceMinEpi8(k: Mmask32, a: M256i): Byte = run { val _simdArg0 = run { val _simdArg0 = k; val _simdArg1 = a.asI8x32(); val _simdArg2 = i8x32.splat(0x7f); _simdArg1 }; _simdArg0 }
 
 /**
  * Reduce the packed 8-bit integers in a by minimum. Returns the minimum of all elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_reduce_min_epi8)
  */
-public fun mmReduceMinEpi8(a: M128i): Byte = simdReduceMin(a.asI8x16())
+public fun mmReduceMinEpi8(a: M128i): Byte = run { val _simdArg0 = a.asI8x16(); _simdArg0 }
 
 /**
  * Reduce the packed 8-bit integers in a by minimum using mask k. Returns the minimum of all active elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_reduce_min_epi8)
  */
-public fun mmMaskReduceMinEpi8(k: Mmask16, a: M128i): Byte = simdReduceMin(simdSelectBitmask(k, a.asI8x16(), i8x16.splat(0x7f)))
+public fun mmMaskReduceMinEpi8(k: Mmask16, a: M128i): Byte = run { val _simdArg0 = run { val _simdArg0 = k; val _simdArg1 = a.asI8x16(); val _simdArg2 = i8x16.splat(0x7f); _simdArg1 }; _simdArg0 }
 
 /**
  * Reduce the packed unsigned 16-bit integers in a by minimum. Returns the minimum of all elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_reduce_min_epu16)
  */
-public fun mm256ReduceMinEpu16(a: M256i): UShort = simdReduceMin(a.asU16x16())
+public fun mm256ReduceMinEpu16(a: M256i): UShort = run { val _simdArg0 = a.asU16x16(); _simdArg0 }
 
 /**
  * Reduce the packed unsigned 16-bit integers in a by minimum using mask k. Returns the minimum of all active elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_reduce_min_epu16)
  */
-public fun mm256MaskReduceMinEpu16(k: Mmask16, a: M256i): UShort = simdReduceMin(simdSelectBitmask(k, a.asU16x16(), u16x16.splat(0xffff)))
+public fun mm256MaskReduceMinEpu16(k: Mmask16, a: M256i): UShort = run { val _simdArg0 = run { val _simdArg0 = k; val _simdArg1 = a.asU16x16(); val _simdArg2 = u16x16.splat(0xffff); _simdArg1 }; _simdArg0 }
 
 /**
  * Reduce the packed unsigned 16-bit integers in a by minimum. Returns the minimum of all elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_reduce_min_epu16)
  */
-public fun mmReduceMinEpu16(a: M128i): UShort = simdReduceMin(a.asU16x8())
+public fun mmReduceMinEpu16(a: M128i): UShort = run { val _simdArg0 = a.asU16x8(); _simdArg0 }
 
 /**
  * Reduce the packed unsigned 16-bit integers in a by minimum using mask k. Returns the minimum of all active elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_reduce_min_epu16)
  */
-public fun mmMaskReduceMinEpu16(k: Mmask8, a: M128i): UShort = simdReduceMin(simdSelectBitmask(k, a.asU16x8(), u16x8.splat(0xffff)))
+public fun mmMaskReduceMinEpu16(k: Mmask8, a: M128i): UShort = run { val _simdArg0 = run { val _simdArg0 = k; val _simdArg1 = a.asU16x8(); val _simdArg2 = u16x8.splat(0xffff); _simdArg1 }; _simdArg0 }
 
 /**
  * Reduce the packed unsigned 8-bit integers in a by minimum. Returns the minimum of all elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_reduce_min_epu8)
  */
-public fun mm256ReduceMinEpu8(a: M256i): UByte = simdReduceMin(a.asU8x32())
+public fun mm256ReduceMinEpu8(a: M256i): UByte = run { val _simdArg0 = a.asU8x32(); _simdArg0 }
 
 /**
  * Reduce the packed unsigned 8-bit integers in a by minimum using mask k. Returns the minimum of all active elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_reduce_min_epu8)
  */
-public fun mm256MaskReduceMinEpu8(k: Mmask32, a: M256i): UByte = simdReduceMin(simdSelectBitmask(k, a.asU8x32(), u8x32.splat(0xff)))
+public fun mm256MaskReduceMinEpu8(k: Mmask32, a: M256i): UByte = run { val _simdArg0 = run { val _simdArg0 = k; val _simdArg1 = a.asU8x32(); val _simdArg2 = u8x32.splat(0xff); _simdArg1 }; _simdArg0 }
 
 /**
  * Reduce the packed unsigned 8-bit integers in a by minimum. Returns the minimum of all elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_reduce_min_epu8)
  */
-public fun mmReduceMinEpu8(a: M128i): UByte = simdReduceMin(a.asU8x16())
+public fun mmReduceMinEpu8(a: M128i): UByte = run { val _simdArg0 = a.asU8x16(); _simdArg0 }
 
 /**
  * Reduce the packed unsigned 8-bit integers in a by minimum using mask k. Returns the minimum of all active elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_reduce_min_epu8)
  */
-public fun mmMaskReduceMinEpu8(k: Mmask16, a: M128i): UByte = simdReduceMin(simdSelectBitmask(k, a.asU8x16(), u8x16.splat(0xff)))
+public fun mmMaskReduceMinEpu8(k: Mmask16, a: M128i): UByte = run { val _simdArg0 = run { val _simdArg0 = k; val _simdArg1 = a.asU8x16(); val _simdArg2 = u8x16.splat(0xff); _simdArg1 }; _simdArg0 }
 
 /**
  * Reduce the packed 16-bit integers in a by multiplication. Returns the product of all elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_reduce_mul_epi16)
  */
-public fun mm256ReduceMulEpi16(a: M256i): Short = simdReduceMulOrdered(a.asI16x16(), 1)
+public fun mm256ReduceMulEpi16(a: M256i): Short = run { val _simdArg0 = a.asI16x16(); val _simdArg1 = 1; _simdArg1 }
 
 /**
  * Reduce the packed 16-bit integers in a by multiplication using mask k. Returns the product of all active elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_reduce_mul_epi16)
  */
-public fun mm256MaskReduceMulEpi16(k: Mmask16, a: M256i): Short = simdReduceMulOrdered(simdSelectBitmask(k, a.asI16x16(), i16x16.splat(1)), 1)
+public fun mm256MaskReduceMulEpi16(k: Mmask16, a: M256i): Short = run { val _simdArg0 = run { val _simdArg0 = k; val _simdArg1 = a.asI16x16(); val _simdArg2 = i16x16.splat(1); _simdArg1 }; val _simdArg1 = 1; _simdArg1 }
 
 /**
  * Reduce the packed 16-bit integers in a by multiplication. Returns the product of all elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_reduce_mul_epi16)
  */
-public fun mmReduceMulEpi16(a: M128i): Short = simdReduceMulOrdered(a.asI16x8(), 1)
+public fun mmReduceMulEpi16(a: M128i): Short = run { val _simdArg0 = a.asI16x8(); val _simdArg1 = 1; _simdArg1 }
 
 /**
  * Reduce the packed 16-bit integers in a by multiplication using mask k. Returns the product of all active elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_reduce_mul_epi16)
  */
-public fun mmMaskReduceMulEpi16(k: Mmask8, a: M128i): Short = simdReduceMulOrdered(simdSelectBitmask(k, a.asI16x8(), i16x8.splat(1)), 1)
+public fun mmMaskReduceMulEpi16(k: Mmask8, a: M128i): Short = run { val _simdArg0 = run { val _simdArg0 = k; val _simdArg1 = a.asI16x8(); val _simdArg2 = i16x8.splat(1); _simdArg1 }; val _simdArg1 = 1; _simdArg1 }
 
 /**
  * Reduce the packed 8-bit integers in a by multiplication. Returns the product of all elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_reduce_mul_epi8)
  */
-public fun mm256ReduceMulEpi8(a: M256i): Byte = simdReduceMulOrdered(a.asI8x32(), 1)
+public fun mm256ReduceMulEpi8(a: M256i): Byte = run { val _simdArg0 = a.asI8x32(); val _simdArg1 = 1; _simdArg1 }
 
 /**
  * Reduce the packed 8-bit integers in a by multiplication using mask k. Returns the product of all active elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_reduce_mul_epi8)
  */
-public fun mm256MaskReduceMulEpi8(k: Mmask32, a: M256i): Byte = simdReduceMulOrdered(simdSelectBitmask(k, a.asI8x32(), i8x32.splat(1)), 1)
+public fun mm256MaskReduceMulEpi8(k: Mmask32, a: M256i): Byte = run { val _simdArg0 = run { val _simdArg0 = k; val _simdArg1 = a.asI8x32(); val _simdArg2 = i8x32.splat(1); _simdArg1 }; val _simdArg1 = 1; _simdArg1 }
 
 /**
  * Reduce the packed 8-bit integers in a by multiplication. Returns the product of all elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_reduce_mul_epi8)
  */
-public fun mmReduceMulEpi8(a: M128i): Byte = simdReduceMulOrdered(a.asI8x16(), 1)
+public fun mmReduceMulEpi8(a: M128i): Byte = run { val _simdArg0 = a.asI8x16(); val _simdArg1 = 1; _simdArg1 }
 
 /**
  * Reduce the packed 8-bit integers in a by multiplication using mask k. Returns the product of all active elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_reduce_mul_epi8)
  */
-public fun mmMaskReduceMulEpi8(k: Mmask16, a: M128i): Byte = simdReduceMulOrdered(simdSelectBitmask(k, a.asI8x16(), i8x16.splat(1)), 1)
+public fun mmMaskReduceMulEpi8(k: Mmask16, a: M128i): Byte = run { val _simdArg0 = run { val _simdArg0 = k; val _simdArg1 = a.asI8x16(); val _simdArg2 = i8x16.splat(1); _simdArg1 }; val _simdArg1 = 1; _simdArg1 }
 
 /**
  * Reduce the packed 16-bit integers in a by bitwise OR. Returns the bitwise OR of all elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_reduce_or_epi16)
  */
-public fun mm256ReduceOrEpi16(a: M256i): Short = simdReduceOr(a.asI16x16())
+public fun mm256ReduceOrEpi16(a: M256i): Short = run { val _simdArg0 = a.asI16x16(); _simdArg0 }
 
 /**
  * Reduce the packed 16-bit integers in a by bitwise OR using mask k. Returns the bitwise OR of all active elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_reduce_or_epi16)
  */
-public fun mm256MaskReduceOrEpi16(k: Mmask16, a: M256i): Short = simdReduceOr(simdSelectBitmask(k, a.asI16x16(), i16x16.ZERO))
+public fun mm256MaskReduceOrEpi16(k: Mmask16, a: M256i): Short = run { val _simdArg0 = run { val _simdArg0 = k; val _simdArg1 = a.asI16x16(); val _simdArg2 = i16x16.ZERO; _simdArg1 }; _simdArg0 }
 
 /**
  * Reduce the packed 16-bit integers in a by bitwise OR. Returns the bitwise OR of all elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_reduce_or_epi16)
  */
-public fun mmReduceOrEpi16(a: M128i): Short = simdReduceOr(a.asI16x8())
+public fun mmReduceOrEpi16(a: M128i): Short = run { val _simdArg0 = a.asI16x8(); _simdArg0 }
 
 /**
  * Reduce the packed 16-bit integers in a by bitwise OR using mask k. Returns the bitwise OR of all active elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_reduce_or_epi16)
  */
-public fun mmMaskReduceOrEpi16(k: Mmask8, a: M128i): Short = simdReduceOr(simdSelectBitmask(k, a.asI16x8(), i16x8.ZERO))
+public fun mmMaskReduceOrEpi16(k: Mmask8, a: M128i): Short = run { val _simdArg0 = run { val _simdArg0 = k; val _simdArg1 = a.asI16x8(); val _simdArg2 = i16x8.ZERO; _simdArg1 }; _simdArg0 }
 
 /**
  * Reduce the packed 8-bit integers in a by bitwise OR. Returns the bitwise OR of all elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_reduce_or_epi8)
  */
-public fun mm256ReduceOrEpi8(a: M256i): Byte = simdReduceOr(a.asI8x32())
+public fun mm256ReduceOrEpi8(a: M256i): Byte = run { val _simdArg0 = a.asI8x32(); _simdArg0 }
 
 /**
  * Reduce the packed 8-bit integers in a by bitwise OR using mask k. Returns the bitwise OR of all active elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_reduce_or_epi8)
  */
-public fun mm256MaskReduceOrEpi8(k: Mmask32, a: M256i): Byte = simdReduceOr(simdSelectBitmask(k, a.asI8x32(), i8x32.ZERO))
+public fun mm256MaskReduceOrEpi8(k: Mmask32, a: M256i): Byte = run { val _simdArg0 = run { val _simdArg0 = k; val _simdArg1 = a.asI8x32(); val _simdArg2 = i8x32.ZERO; _simdArg1 }; _simdArg0 }
 
 /**
  * Reduce the packed 8-bit integers in a by bitwise OR. Returns the bitwise OR of all elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_reduce_or_epi8)
  */
-public fun mmReduceOrEpi8(a: M128i): Byte = simdReduceOr(a.asI8x16())
+public fun mmReduceOrEpi8(a: M128i): Byte = run { val _simdArg0 = a.asI8x16(); _simdArg0 }
 
 /**
  * Reduce the packed 8-bit integers in a by bitwise OR using mask k. Returns the bitwise OR of all active elements in a.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_reduce_or_epi8)
  */
-public fun mmMaskReduceOrEpi8(k: Mmask16, a: M128i): Byte = simdReduceOr(simdSelectBitmask(k, a.asI8x16(), i8x16.ZERO))
+public fun mmMaskReduceOrEpi8(k: Mmask16, a: M128i): Byte = run { val _simdArg0 = run { val _simdArg0 = k; val _simdArg1 = a.asI8x16(); val _simdArg2 = i8x16.ZERO; _simdArg1 }; _simdArg0 }
 
 // should be vmovdqu16
 
@@ -4038,7 +4036,7 @@ public fun mmMaskReduceOrEpi8(k: Mmask16, a: M128i): Byte = simdReduceOr(simdSel
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_loadu_epi16&expand=3368)
  */
-public fun mm512LoaduEpi16(memAddr: ConstPtr): M512i = ptr.readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = ObjectSlotLayout<M512i>())
+public fun mm512LoaduEpi16(memAddr: ConstPtr): M512i = readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = ObjectSlotLayout<M512i>())
 
 // should be vmovdqu16
 
@@ -4047,7 +4045,7 @@ public fun mm512LoaduEpi16(memAddr: ConstPtr): M512i = ptr.readUnaligned(ConstPt
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_loadu_epi16&expand=3365)
  */
-public fun mm256LoaduEpi16(memAddr: ConstPtr): M256i = ptr.readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = ObjectSlotLayout<M256i>())
+public fun mm256LoaduEpi16(memAddr: ConstPtr): M256i = readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = ObjectSlotLayout<M256i>())
 
 // should be vmovdqu16
 
@@ -4056,7 +4054,7 @@ public fun mm256LoaduEpi16(memAddr: ConstPtr): M256i = ptr.readUnaligned(ConstPt
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_loadu_epi16&expand=3362)
  */
-public fun mmLoaduEpi16(memAddr: ConstPtr): M128i = ptr.readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = ObjectSlotLayout<M128i>())
+public fun mmLoaduEpi16(memAddr: ConstPtr): M128i = readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = ObjectSlotLayout<M128i>())
 
 // should be vmovdqu8
 
@@ -4065,7 +4063,7 @@ public fun mmLoaduEpi16(memAddr: ConstPtr): M128i = ptr.readUnaligned(ConstPtr(m
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_loadu_epi8&expand=3395)
  */
-public fun mm512LoaduEpi8(memAddr: ConstPtr): M512i = ptr.readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = ObjectSlotLayout<M512i>())
+public fun mm512LoaduEpi8(memAddr: ConstPtr): M512i = readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = ObjectSlotLayout<M512i>())
 
 // should be vmovdqu8
 
@@ -4074,7 +4072,7 @@ public fun mm512LoaduEpi8(memAddr: ConstPtr): M512i = ptr.readUnaligned(ConstPtr
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_loadu_epi8&expand=3392)
  */
-public fun mm256LoaduEpi8(memAddr: ConstPtr): M256i = ptr.readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = ObjectSlotLayout<M256i>())
+public fun mm256LoaduEpi8(memAddr: ConstPtr): M256i = readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = ObjectSlotLayout<M256i>())
 
 // should be vmovdqu8
 
@@ -4083,7 +4081,7 @@ public fun mm256LoaduEpi8(memAddr: ConstPtr): M256i = ptr.readUnaligned(ConstPtr
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_loadu_epi8&expand=3389)
  */
-public fun mmLoaduEpi8(memAddr: ConstPtr): M128i = ptr.readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = ObjectSlotLayout<M128i>())
+public fun mmLoaduEpi8(memAddr: ConstPtr): M128i = readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = ObjectSlotLayout<M128i>())
 
 // should be vmovdqu16
 
@@ -4093,7 +4091,7 @@ public fun mmLoaduEpi8(memAddr: ConstPtr): M128i = ptr.readUnaligned(ConstPtr(me
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_storeu_epi16&expand=5622)
  */
 public fun mm512StoreuEpi16(memAddr: MutPtr, a: M512i) {
-    ptr.writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = ObjectSlotLayout<M512i>())
+    writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = ObjectSlotLayout<M512i>())
 }
 
 // should be vmovdqu16
@@ -4104,7 +4102,7 @@ public fun mm512StoreuEpi16(memAddr: MutPtr, a: M512i) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_storeu_epi16&expand=5620)
  */
 public fun mm256StoreuEpi16(memAddr: MutPtr, a: M256i) {
-    ptr.writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = ObjectSlotLayout<M256i>())
+    writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = ObjectSlotLayout<M256i>())
 }
 
 // should be vmovdqu16
@@ -4115,7 +4113,7 @@ public fun mm256StoreuEpi16(memAddr: MutPtr, a: M256i) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_storeu_epi16&expand=5618)
  */
 public fun mmStoreuEpi16(memAddr: MutPtr, a: M128i) {
-    ptr.writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = ObjectSlotLayout<M128i>())
+    writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = ObjectSlotLayout<M128i>())
 }
 
 // should be vmovdqu8
@@ -4126,7 +4124,7 @@ public fun mmStoreuEpi16(memAddr: MutPtr, a: M128i) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_storeu_epi8&expand=5640)
  */
 public fun mm512StoreuEpi8(memAddr: MutPtr, a: M512i) {
-    ptr.writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = ObjectSlotLayout<M512i>())
+    writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = ObjectSlotLayout<M512i>())
 }
 
 // should be vmovdqu8
@@ -4137,7 +4135,7 @@ public fun mm512StoreuEpi8(memAddr: MutPtr, a: M512i) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_storeu_epi8&expand=5638)
  */
 public fun mm256StoreuEpi8(memAddr: MutPtr, a: M256i) {
-    ptr.writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = ObjectSlotLayout<M256i>())
+    writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = ObjectSlotLayout<M256i>())
 }
 
 // should be vmovdqu8
@@ -4148,7 +4146,7 @@ public fun mm256StoreuEpi8(memAddr: MutPtr, a: M256i) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_storeu_epi8&expand=5636)
  */
 public fun mmStoreuEpi8(memAddr: MutPtr, a: M128i) {
-    ptr.writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = ObjectSlotLayout<M128i>())
+    writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = ObjectSlotLayout<M128i>())
 }
 
 /**
@@ -4159,8 +4157,8 @@ public fun mmStoreuEpi8(memAddr: MutPtr, a: M128i) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_loadu_epi16)
  */
 public fun mm512MaskLoaduEpi16(src: M512i, k: Mmask32, memAddr: ConstPtr): M512i {
-    val mask = simdSelectBitmask(k, i16x32.splat(0.inv()), i16x32.ZERO)
-    return simdMaskedLoad(mask, memAddr, src.asI16x32(), SimdAlign.Unaligned).asM512i()
+    val mask = run { val _simdArg0 = k; val _simdArg1 = i16x32.splat(0.inv()); val _simdArg2 = i16x32.ZERO; _simdArg1 }
+    return run { val _simdArg0 = mask; val _simdArg1 = memAddr; val _simdArg2 = src.asI16x32(); _simdArg2 }.asM512i()
 }
 
 /**
@@ -4180,8 +4178,8 @@ public fun mm512MaskzLoaduEpi16(k: Mmask32, memAddr: ConstPtr): M512i = mm512Mas
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_loadu_epi8)
  */
 public fun mm512MaskLoaduEpi8(src: M512i, k: Mmask64, memAddr: ConstPtr): M512i {
-    val mask = simdSelectBitmask(k, i8x64.splat(0.inv()), i8x64.ZERO)
-    return simdMaskedLoad(mask, memAddr, src.asI8x64(), SimdAlign.Unaligned).asM512i()
+    val mask = run { val _simdArg0 = k; val _simdArg1 = i8x64.splat(0.inv()); val _simdArg2 = i8x64.ZERO; _simdArg1 }
+    return run { val _simdArg0 = mask; val _simdArg1 = memAddr; val _simdArg2 = src.asI8x64(); _simdArg2 }.asM512i()
 }
 
 /**
@@ -4201,8 +4199,8 @@ public fun mm512MaskzLoaduEpi8(k: Mmask64, memAddr: ConstPtr): M512i = mm512Mask
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_loadu_epi16)
  */
 public fun mm256MaskLoaduEpi16(src: M256i, k: Mmask16, memAddr: ConstPtr): M256i {
-    val mask = simdSelectBitmask(k, i16x16.splat(0.inv()), i16x16.ZERO)
-    return simdMaskedLoad(mask, memAddr, src.asI16x16(), SimdAlign.Unaligned).asM256i()
+    val mask = run { val _simdArg0 = k; val _simdArg1 = i16x16.splat(0.inv()); val _simdArg2 = i16x16.ZERO; _simdArg1 }
+    return run { val _simdArg0 = mask; val _simdArg1 = memAddr; val _simdArg2 = src.asI16x16(); _simdArg2 }.asM256i()
 }
 
 /**
@@ -4222,8 +4220,8 @@ public fun mm256MaskzLoaduEpi16(k: Mmask16, memAddr: ConstPtr): M256i = mm256Mas
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_loadu_epi8)
  */
 public fun mm256MaskLoaduEpi8(src: M256i, k: Mmask32, memAddr: ConstPtr): M256i {
-    val mask = simdSelectBitmask(k, i8x32.splat(0.inv()), i8x32.ZERO)
-    return simdMaskedLoad(mask, memAddr, src.asI8x32(), SimdAlign.Unaligned).asM256i()
+    val mask = run { val _simdArg0 = k; val _simdArg1 = i8x32.splat(0.inv()); val _simdArg2 = i8x32.ZERO; _simdArg1 }
+    return run { val _simdArg0 = mask; val _simdArg1 = memAddr; val _simdArg2 = src.asI8x32(); _simdArg2 }.asM256i()
 }
 
 /**
@@ -4243,8 +4241,8 @@ public fun mm256MaskzLoaduEpi8(k: Mmask32, memAddr: ConstPtr): M256i = mm256Mask
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_loadu_epi16)
  */
 public fun mmMaskLoaduEpi16(src: M128i, k: Mmask8, memAddr: ConstPtr): M128i {
-    val mask = simdSelectBitmask(k, i16x8.splat(0.inv()), i16x8.ZERO)
-    return simdMaskedLoad(mask, memAddr, src.asI16x8(), SimdAlign.Unaligned).asM128i()
+    val mask = run { val _simdArg0 = k; val _simdArg1 = i16x8.splat(0.inv()); val _simdArg2 = i16x8.ZERO; _simdArg1 }
+    return run { val _simdArg0 = mask; val _simdArg1 = memAddr; val _simdArg2 = src.asI16x8(); _simdArg2 }.asM128i()
 }
 
 /**
@@ -4264,8 +4262,8 @@ public fun mmMaskzLoaduEpi16(k: Mmask8, memAddr: ConstPtr): M128i = mmMaskLoaduE
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_loadu_epi8)
  */
 public fun mmMaskLoaduEpi8(src: M128i, k: Mmask16, memAddr: ConstPtr): M128i {
-    val mask = simdSelectBitmask(k, i8x16.splat(0.inv()), i8x16.ZERO)
-    return simdMaskedLoad(mask, memAddr, src.asI8x16(), SimdAlign.Unaligned).asM128i()
+    val mask = run { val _simdArg0 = k; val _simdArg1 = i8x16.splat(0.inv()); val _simdArg2 = i8x16.ZERO; _simdArg1 }
+    return run { val _simdArg0 = mask; val _simdArg1 = memAddr; val _simdArg2 = src.asI8x16(); _simdArg2 }.asM128i()
 }
 
 /**
@@ -4284,8 +4282,8 @@ public fun mmMaskzLoaduEpi8(k: Mmask16, memAddr: ConstPtr): M128i = mmMaskLoaduE
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_storeu_epi16)
  */
 public fun mm512MaskStoreuEpi16(memAddr: MutPtr, mask: Mmask32, a: M512i) {
-    val mask1 = simdSelectBitmask(mask, i16x32.splat(0.inv()), i16x32.ZERO)
-    simdMaskedStore(mask1, memAddr, a.asI16x32(), SimdAlign.Unaligned)
+    val mask1 = run { val _simdArg0 = mask; val _simdArg1 = i16x32.splat(0.inv()); val _simdArg2 = i16x32.ZERO; _simdArg1 }
+    run { val _simdArg0 = mask1; val _simdArg1 = memAddr; val _simdArg2 = a.asI16x32(); Unit }
 }
 
 /**
@@ -4295,8 +4293,8 @@ public fun mm512MaskStoreuEpi16(memAddr: MutPtr, mask: Mmask32, a: M512i) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_storeu_epi8)
  */
 public fun mm512MaskStoreuEpi8(memAddr: MutPtr, mask: Mmask64, a: M512i) {
-    val mask1 = simdSelectBitmask(mask, i8x64.splat(0.inv()), i8x64.ZERO)
-    simdMaskedStore(mask1, memAddr, a.asI8x64(), SimdAlign.Unaligned)
+    val mask1 = run { val _simdArg0 = mask; val _simdArg1 = i8x64.splat(0.inv()); val _simdArg2 = i8x64.ZERO; _simdArg1 }
+    run { val _simdArg0 = mask1; val _simdArg1 = memAddr; val _simdArg2 = a.asI8x64(); Unit }
 }
 
 /**
@@ -4306,8 +4304,8 @@ public fun mm512MaskStoreuEpi8(memAddr: MutPtr, mask: Mmask64, a: M512i) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_storeu_epi16)
  */
 public fun mm256MaskStoreuEpi16(memAddr: MutPtr, mask: Mmask16, a: M256i) {
-    val mask1 = simdSelectBitmask(mask, i16x16.splat(0.inv()), i16x16.ZERO)
-    simdMaskedStore(mask1, memAddr, a.asI16x16(), SimdAlign.Unaligned)
+    val mask1 = run { val _simdArg0 = mask; val _simdArg1 = i16x16.splat(0.inv()); val _simdArg2 = i16x16.ZERO; _simdArg1 }
+    run { val _simdArg0 = mask1; val _simdArg1 = memAddr; val _simdArg2 = a.asI16x16(); Unit }
 }
 
 /**
@@ -4317,8 +4315,8 @@ public fun mm256MaskStoreuEpi16(memAddr: MutPtr, mask: Mmask16, a: M256i) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_storeu_epi8)
  */
 public fun mm256MaskStoreuEpi8(memAddr: MutPtr, mask: Mmask32, a: M256i) {
-    val mask1 = simdSelectBitmask(mask, i8x32.splat(0.inv()), i8x32.ZERO)
-    simdMaskedStore(mask1, memAddr, a.asI8x32(), SimdAlign.Unaligned)
+    val mask1 = run { val _simdArg0 = mask; val _simdArg1 = i8x32.splat(0.inv()); val _simdArg2 = i8x32.ZERO; _simdArg1 }
+    run { val _simdArg0 = mask1; val _simdArg1 = memAddr; val _simdArg2 = a.asI8x32(); Unit }
 }
 
 /**
@@ -4328,8 +4326,8 @@ public fun mm256MaskStoreuEpi8(memAddr: MutPtr, mask: Mmask32, a: M256i) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_storeu_epi16)
  */
 public fun mmMaskStoreuEpi16(memAddr: MutPtr, mask: Mmask8, a: M128i) {
-    val mask1 = simdSelectBitmask(mask, i16x8.splat(0.inv()), i16x8.ZERO)
-    simdMaskedStore(mask1, memAddr, a.asI16x8(), SimdAlign.Unaligned)
+    val mask1 = run { val _simdArg0 = mask; val _simdArg1 = i16x8.splat(0.inv()); val _simdArg2 = i16x8.ZERO; _simdArg1 }
+    run { val _simdArg0 = mask1; val _simdArg1 = memAddr; val _simdArg2 = a.asI16x8(); Unit }
 }
 
 /**
@@ -4339,8 +4337,8 @@ public fun mmMaskStoreuEpi16(memAddr: MutPtr, mask: Mmask8, a: M128i) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_storeu_epi8)
  */
 public fun mmMaskStoreuEpi8(memAddr: MutPtr, mask: Mmask16, a: M128i) {
-    val mask1 = simdSelectBitmask(mask, i8x16.splat(0.inv()), i8x16.ZERO)
-    simdMaskedStore(mask1, memAddr, a.asI8x16(), SimdAlign.Unaligned)
+    val mask1 = run { val _simdArg0 = mask; val _simdArg1 = i8x16.splat(0.inv()); val _simdArg2 = i8x16.ZERO; _simdArg1 }
+    run { val _simdArg0 = mask1; val _simdArg1 = memAddr; val _simdArg2 = a.asI8x16(); Unit }
 }
 
 /**
@@ -4372,7 +4370,7 @@ public fun mm512MaddEpi16(a: M512i, b: M512i): M512i {
 public fun mm512MaskMaddEpi16(src: M512i, k: Mmask16, a: M512i, b: M512i): M512i =
     run {
         val madd = mm512MaddEpi16(a, b).asI32x16()
-        transmute(simdSelectBitmask(k, madd, src.asI32x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = madd; val _simdArg2 = src.asI32x16(); _simdArg1 })
     }
 
 /**
@@ -4383,7 +4381,7 @@ public fun mm512MaskMaddEpi16(src: M512i, k: Mmask16, a: M512i, b: M512i): M512i
 public fun mm512MaskzMaddEpi16(k: Mmask16, a: M512i, b: M512i): M512i =
     run {
         val madd = mm512MaddEpi16(a, b).asI32x16()
-        transmute(simdSelectBitmask(k, madd, i32x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = madd; val _simdArg2 = i32x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -4394,7 +4392,7 @@ public fun mm512MaskzMaddEpi16(k: Mmask16, a: M512i, b: M512i): M512i =
 public fun mm256MaskMaddEpi16(src: M256i, k: Mmask8, a: M256i, b: M256i): M256i =
     run {
         val madd = mm256MaddEpi16(a, b).asI32x8()
-        transmute(simdSelectBitmask(k, madd, src.asI32x8()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = madd; val _simdArg2 = src.asI32x8(); _simdArg1 })
     }
 
 /**
@@ -4405,7 +4403,7 @@ public fun mm256MaskMaddEpi16(src: M256i, k: Mmask8, a: M256i, b: M256i): M256i 
 public fun mm256MaskzMaddEpi16(k: Mmask8, a: M256i, b: M256i): M256i =
     run {
         val madd = mm256MaddEpi16(a, b).asI32x8()
-        transmute(simdSelectBitmask(k, madd, i32x8.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = madd; val _simdArg2 = i32x8.ZERO; _simdArg1 })
     }
 
 /**
@@ -4416,7 +4414,7 @@ public fun mm256MaskzMaddEpi16(k: Mmask8, a: M256i, b: M256i): M256i =
 public fun mmMaskMaddEpi16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
     run {
         val madd = mmMaddEpi16(a, b).asI32x4()
-        transmute(simdSelectBitmask(k, madd, src.asI32x4()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = madd; val _simdArg2 = src.asI32x4(); _simdArg1 })
     }
 
 /**
@@ -4427,7 +4425,7 @@ public fun mmMaskMaddEpi16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
 public fun mmMaskzMaddEpi16(k: Mmask8, a: M128i, b: M128i): M128i =
     run {
         val madd = mmMaddEpi16(a, b).asI32x4()
-        transmute(simdSelectBitmask(k, madd, i32x4.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = madd; val _simdArg2 = i32x4.ZERO; _simdArg1 })
     }
 
 /**
@@ -4445,7 +4443,7 @@ public fun mm512MaddubsEpi16(a: M512i, b: M512i): M512i = transmute(vpmaddubsw(a
 public fun mm512MaskMaddubsEpi16(src: M512i, k: Mmask32, a: M512i, b: M512i): M512i =
     run {
         val madd = mm512MaddubsEpi16(a, b).asI16x32()
-        transmute(simdSelectBitmask(k, madd, src.asI16x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = madd; val _simdArg2 = src.asI16x32(); _simdArg1 })
     }
 
 /**
@@ -4456,7 +4454,7 @@ public fun mm512MaskMaddubsEpi16(src: M512i, k: Mmask32, a: M512i, b: M512i): M5
 public fun mm512MaskzMaddubsEpi16(k: Mmask32, a: M512i, b: M512i): M512i =
     run {
         val madd = mm512MaddubsEpi16(a, b).asI16x32()
-        transmute(simdSelectBitmask(k, madd, i16x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = madd; val _simdArg2 = i16x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -4467,7 +4465,7 @@ public fun mm512MaskzMaddubsEpi16(k: Mmask32, a: M512i, b: M512i): M512i =
 public fun mm256MaskMaddubsEpi16(src: M256i, k: Mmask16, a: M256i, b: M256i): M256i =
     run {
         val madd = mm256MaddubsEpi16(a, b).asI16x16()
-        transmute(simdSelectBitmask(k, madd, src.asI16x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = madd; val _simdArg2 = src.asI16x16(); _simdArg1 })
     }
 
 /**
@@ -4478,7 +4476,7 @@ public fun mm256MaskMaddubsEpi16(src: M256i, k: Mmask16, a: M256i, b: M256i): M2
 public fun mm256MaskzMaddubsEpi16(k: Mmask16, a: M256i, b: M256i): M256i =
     run {
         val madd = mm256MaddubsEpi16(a, b).asI16x16()
-        transmute(simdSelectBitmask(k, madd, i16x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = madd; val _simdArg2 = i16x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -4489,7 +4487,7 @@ public fun mm256MaskzMaddubsEpi16(k: Mmask16, a: M256i, b: M256i): M256i =
 public fun mmMaskMaddubsEpi16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
     run {
         val madd = mmMaddubsEpi16(a, b).asI16x8()
-        transmute(simdSelectBitmask(k, madd, src.asI16x8()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = madd; val _simdArg2 = src.asI16x8(); _simdArg1 })
     }
 
 /**
@@ -4500,7 +4498,7 @@ public fun mmMaskMaddubsEpi16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i 
 public fun mmMaskzMaddubsEpi16(k: Mmask8, a: M128i, b: M128i): M128i =
     run {
         val madd = mmMaddubsEpi16(a, b).asI16x8()
-        transmute(simdSelectBitmask(k, madd, i16x8.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = madd; val _simdArg2 = i16x8.ZERO; _simdArg1 })
     }
 
 /**
@@ -4518,7 +4516,7 @@ public fun mm512PacksEpi32(a: M512i, b: M512i): M512i = transmute(vpackssdw(a.as
 public fun mm512MaskPacksEpi32(src: M512i, k: Mmask32, a: M512i, b: M512i): M512i =
     run {
         val pack = mm512PacksEpi32(a, b).asI16x32()
-        transmute(simdSelectBitmask(k, pack, src.asI16x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = pack; val _simdArg2 = src.asI16x32(); _simdArg1 })
     }
 
 /**
@@ -4529,7 +4527,7 @@ public fun mm512MaskPacksEpi32(src: M512i, k: Mmask32, a: M512i, b: M512i): M512
 public fun mm512MaskzPacksEpi32(k: Mmask32, a: M512i, b: M512i): M512i =
     run {
         val pack = mm512PacksEpi32(a, b).asI16x32()
-        transmute(simdSelectBitmask(k, pack, i16x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = pack; val _simdArg2 = i16x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -4540,7 +4538,7 @@ public fun mm512MaskzPacksEpi32(k: Mmask32, a: M512i, b: M512i): M512i =
 public fun mm256MaskPacksEpi32(src: M256i, k: Mmask16, a: M256i, b: M256i): M256i =
     run {
         val pack = mm256PacksEpi32(a, b).asI16x16()
-        transmute(simdSelectBitmask(k, pack, src.asI16x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = pack; val _simdArg2 = src.asI16x16(); _simdArg1 })
     }
 
 /**
@@ -4551,7 +4549,7 @@ public fun mm256MaskPacksEpi32(src: M256i, k: Mmask16, a: M256i, b: M256i): M256
 public fun mm256MaskzPacksEpi32(k: Mmask16, a: M256i, b: M256i): M256i =
     run {
         val pack = mm256PacksEpi32(a, b).asI16x16()
-        transmute(simdSelectBitmask(k, pack, i16x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = pack; val _simdArg2 = i16x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -4562,7 +4560,7 @@ public fun mm256MaskzPacksEpi32(k: Mmask16, a: M256i, b: M256i): M256i =
 public fun mmMaskPacksEpi32(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
     run {
         val pack = mmPacksEpi32(a, b).asI16x8()
-        transmute(simdSelectBitmask(k, pack, src.asI16x8()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = pack; val _simdArg2 = src.asI16x8(); _simdArg1 })
     }
 
 /**
@@ -4573,7 +4571,7 @@ public fun mmMaskPacksEpi32(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
 public fun mmMaskzPacksEpi32(k: Mmask8, a: M128i, b: M128i): M128i =
     run {
         val pack = mmPacksEpi32(a, b).asI16x8()
-        transmute(simdSelectBitmask(k, pack, i16x8.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = pack; val _simdArg2 = i16x8.ZERO; _simdArg1 })
     }
 
 /**
@@ -4591,7 +4589,7 @@ public fun mm512PacksEpi16(a: M512i, b: M512i): M512i = transmute(vpacksswb(a.as
 public fun mm512MaskPacksEpi16(src: M512i, k: Mmask64, a: M512i, b: M512i): M512i =
     run {
         val pack = mm512PacksEpi16(a, b).asI8x64()
-        transmute(simdSelectBitmask(k, pack, src.asI8x64()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = pack; val _simdArg2 = src.asI8x64(); _simdArg1 })
     }
 
 /**
@@ -4602,7 +4600,7 @@ public fun mm512MaskPacksEpi16(src: M512i, k: Mmask64, a: M512i, b: M512i): M512
 public fun mm512MaskzPacksEpi16(k: Mmask64, a: M512i, b: M512i): M512i =
     run {
         val pack = mm512PacksEpi16(a, b).asI8x64()
-        transmute(simdSelectBitmask(k, pack, i8x64.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = pack; val _simdArg2 = i8x64.ZERO; _simdArg1 })
     }
 
 /**
@@ -4613,7 +4611,7 @@ public fun mm512MaskzPacksEpi16(k: Mmask64, a: M512i, b: M512i): M512i =
 public fun mm256MaskPacksEpi16(src: M256i, k: Mmask32, a: M256i, b: M256i): M256i =
     run {
         val pack = mm256PacksEpi16(a, b).asI8x32()
-        transmute(simdSelectBitmask(k, pack, src.asI8x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = pack; val _simdArg2 = src.asI8x32(); _simdArg1 })
     }
 
 /**
@@ -4624,7 +4622,7 @@ public fun mm256MaskPacksEpi16(src: M256i, k: Mmask32, a: M256i, b: M256i): M256
 public fun mm256MaskzPacksEpi16(k: Mmask32, a: M256i, b: M256i): M256i =
     run {
         val pack = mm256PacksEpi16(a, b).asI8x32()
-        transmute(simdSelectBitmask(k, pack, i8x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = pack; val _simdArg2 = i8x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -4635,7 +4633,7 @@ public fun mm256MaskzPacksEpi16(k: Mmask32, a: M256i, b: M256i): M256i =
 public fun mmMaskPacksEpi16(src: M128i, k: Mmask16, a: M128i, b: M128i): M128i =
     run {
         val pack = mmPacksEpi16(a, b).asI8x16()
-        transmute(simdSelectBitmask(k, pack, src.asI8x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = pack; val _simdArg2 = src.asI8x16(); _simdArg1 })
     }
 
 /**
@@ -4646,7 +4644,7 @@ public fun mmMaskPacksEpi16(src: M128i, k: Mmask16, a: M128i, b: M128i): M128i =
 public fun mmMaskzPacksEpi16(k: Mmask16, a: M128i, b: M128i): M128i =
     run {
         val pack = mmPacksEpi16(a, b).asI8x16()
-        transmute(simdSelectBitmask(k, pack, i8x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = pack; val _simdArg2 = i8x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -4664,7 +4662,7 @@ public fun mm512PackusEpi32(a: M512i, b: M512i): M512i = transmute(vpackusdw(a.a
 public fun mm512MaskPackusEpi32(src: M512i, k: Mmask32, a: M512i, b: M512i): M512i =
     run {
         val pack = mm512PackusEpi32(a, b).asI16x32()
-        transmute(simdSelectBitmask(k, pack, src.asI16x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = pack; val _simdArg2 = src.asI16x32(); _simdArg1 })
     }
 
 /**
@@ -4675,7 +4673,7 @@ public fun mm512MaskPackusEpi32(src: M512i, k: Mmask32, a: M512i, b: M512i): M51
 public fun mm512MaskzPackusEpi32(k: Mmask32, a: M512i, b: M512i): M512i =
     run {
         val pack = mm512PackusEpi32(a, b).asI16x32()
-        transmute(simdSelectBitmask(k, pack, i16x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = pack; val _simdArg2 = i16x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -4686,7 +4684,7 @@ public fun mm512MaskzPackusEpi32(k: Mmask32, a: M512i, b: M512i): M512i =
 public fun mm256MaskPackusEpi32(src: M256i, k: Mmask16, a: M256i, b: M256i): M256i =
     run {
         val pack = mm256PackusEpi32(a, b).asI16x16()
-        transmute(simdSelectBitmask(k, pack, src.asI16x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = pack; val _simdArg2 = src.asI16x16(); _simdArg1 })
     }
 
 /**
@@ -4697,7 +4695,7 @@ public fun mm256MaskPackusEpi32(src: M256i, k: Mmask16, a: M256i, b: M256i): M25
 public fun mm256MaskzPackusEpi32(k: Mmask16, a: M256i, b: M256i): M256i =
     run {
         val pack = mm256PackusEpi32(a, b).asI16x16()
-        transmute(simdSelectBitmask(k, pack, i16x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = pack; val _simdArg2 = i16x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -4708,7 +4706,7 @@ public fun mm256MaskzPackusEpi32(k: Mmask16, a: M256i, b: M256i): M256i =
 public fun mmMaskPackusEpi32(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
     run {
         val pack = mmPackusEpi32(a, b).asI16x8()
-        transmute(simdSelectBitmask(k, pack, src.asI16x8()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = pack; val _simdArg2 = src.asI16x8(); _simdArg1 })
     }
 
 /**
@@ -4719,7 +4717,7 @@ public fun mmMaskPackusEpi32(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
 public fun mmMaskzPackusEpi32(k: Mmask8, a: M128i, b: M128i): M128i =
     run {
         val pack = mmPackusEpi32(a, b).asI16x8()
-        transmute(simdSelectBitmask(k, pack, i16x8.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = pack; val _simdArg2 = i16x8.ZERO; _simdArg1 })
     }
 
 /**
@@ -4737,7 +4735,7 @@ public fun mm512PackusEpi16(a: M512i, b: M512i): M512i = transmute(vpackuswb(a.a
 public fun mm512MaskPackusEpi16(src: M512i, k: Mmask64, a: M512i, b: M512i): M512i =
     run {
         val pack = mm512PackusEpi16(a, b).asI8x64()
-        transmute(simdSelectBitmask(k, pack, src.asI8x64()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = pack; val _simdArg2 = src.asI8x64(); _simdArg1 })
     }
 
 /**
@@ -4748,7 +4746,7 @@ public fun mm512MaskPackusEpi16(src: M512i, k: Mmask64, a: M512i, b: M512i): M51
 public fun mm512MaskzPackusEpi16(k: Mmask64, a: M512i, b: M512i): M512i =
     run {
         val pack = mm512PackusEpi16(a, b).asI8x64()
-        transmute(simdSelectBitmask(k, pack, i8x64.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = pack; val _simdArg2 = i8x64.ZERO; _simdArg1 })
     }
 
 /**
@@ -4759,7 +4757,7 @@ public fun mm512MaskzPackusEpi16(k: Mmask64, a: M512i, b: M512i): M512i =
 public fun mm256MaskPackusEpi16(src: M256i, k: Mmask32, a: M256i, b: M256i): M256i =
     run {
         val pack = mm256PackusEpi16(a, b).asI8x32()
-        transmute(simdSelectBitmask(k, pack, src.asI8x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = pack; val _simdArg2 = src.asI8x32(); _simdArg1 })
     }
 
 /**
@@ -4770,7 +4768,7 @@ public fun mm256MaskPackusEpi16(src: M256i, k: Mmask32, a: M256i, b: M256i): M25
 public fun mm256MaskzPackusEpi16(k: Mmask32, a: M256i, b: M256i): M256i =
     run {
         val pack = mm256PackusEpi16(a, b).asI8x32()
-        transmute(simdSelectBitmask(k, pack, i8x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = pack; val _simdArg2 = i8x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -4781,7 +4779,7 @@ public fun mm256MaskzPackusEpi16(k: Mmask32, a: M256i, b: M256i): M256i =
 public fun mmMaskPackusEpi16(src: M128i, k: Mmask16, a: M128i, b: M128i): M128i =
     run {
         val pack = mmPackusEpi16(a, b).asI8x16()
-        transmute(simdSelectBitmask(k, pack, src.asI8x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = pack; val _simdArg2 = src.asI8x16(); _simdArg1 })
     }
 
 /**
@@ -4792,7 +4790,7 @@ public fun mmMaskPackusEpi16(src: M128i, k: Mmask16, a: M128i, b: M128i): M128i 
 public fun mmMaskzPackusEpi16(k: Mmask16, a: M128i, b: M128i): M128i =
     run {
         val pack = mmPackusEpi16(a, b).asI8x16()
-        transmute(simdSelectBitmask(k, pack, i8x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = pack; val _simdArg2 = i8x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -4810,7 +4808,7 @@ public fun mm512AvgEpu16(a: M512i, b: M512i): M512i = transmute(vpavgw(a.asU16x3
 public fun mm512MaskAvgEpu16(src: M512i, k: Mmask32, a: M512i, b: M512i): M512i =
     run {
         val avg = mm512AvgEpu16(a, b).asU16x32()
-        transmute(simdSelectBitmask(k, avg, src.asU16x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = avg; val _simdArg2 = src.asU16x32(); _simdArg1 })
     }
 
 /**
@@ -4821,7 +4819,7 @@ public fun mm512MaskAvgEpu16(src: M512i, k: Mmask32, a: M512i, b: M512i): M512i 
 public fun mm512MaskzAvgEpu16(k: Mmask32, a: M512i, b: M512i): M512i =
     run {
         val avg = mm512AvgEpu16(a, b).asU16x32()
-        transmute(simdSelectBitmask(k, avg, u16x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = avg; val _simdArg2 = u16x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -4832,7 +4830,7 @@ public fun mm512MaskzAvgEpu16(k: Mmask32, a: M512i, b: M512i): M512i =
 public fun mm256MaskAvgEpu16(src: M256i, k: Mmask16, a: M256i, b: M256i): M256i =
     run {
         val avg = mm256AvgEpu16(a, b).asU16x16()
-        transmute(simdSelectBitmask(k, avg, src.asU16x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = avg; val _simdArg2 = src.asU16x16(); _simdArg1 })
     }
 
 /**
@@ -4843,7 +4841,7 @@ public fun mm256MaskAvgEpu16(src: M256i, k: Mmask16, a: M256i, b: M256i): M256i 
 public fun mm256MaskzAvgEpu16(k: Mmask16, a: M256i, b: M256i): M256i =
     run {
         val avg = mm256AvgEpu16(a, b).asU16x16()
-        transmute(simdSelectBitmask(k, avg, u16x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = avg; val _simdArg2 = u16x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -4854,7 +4852,7 @@ public fun mm256MaskzAvgEpu16(k: Mmask16, a: M256i, b: M256i): M256i =
 public fun mmMaskAvgEpu16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
     run {
         val avg = mmAvgEpu16(a, b).asU16x8()
-        transmute(simdSelectBitmask(k, avg, src.asU16x8()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = avg; val _simdArg2 = src.asU16x8(); _simdArg1 })
     }
 
 /**
@@ -4865,7 +4863,7 @@ public fun mmMaskAvgEpu16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
 public fun mmMaskzAvgEpu16(k: Mmask8, a: M128i, b: M128i): M128i =
     run {
         val avg = mmAvgEpu16(a, b).asU16x8()
-        transmute(simdSelectBitmask(k, avg, u16x8.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = avg; val _simdArg2 = u16x8.ZERO; _simdArg1 })
     }
 
 /**
@@ -4883,7 +4881,7 @@ public fun mm512AvgEpu8(a: M512i, b: M512i): M512i = transmute(vpavgb(a.asU8x64(
 public fun mm512MaskAvgEpu8(src: M512i, k: Mmask64, a: M512i, b: M512i): M512i =
     run {
         val avg = mm512AvgEpu8(a, b).asU8x64()
-        transmute(simdSelectBitmask(k, avg, src.asU8x64()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = avg; val _simdArg2 = src.asU8x64(); _simdArg1 })
     }
 
 /**
@@ -4894,7 +4892,7 @@ public fun mm512MaskAvgEpu8(src: M512i, k: Mmask64, a: M512i, b: M512i): M512i =
 public fun mm512MaskzAvgEpu8(k: Mmask64, a: M512i, b: M512i): M512i =
     run {
         val avg = mm512AvgEpu8(a, b).asU8x64()
-        transmute(simdSelectBitmask(k, avg, u8x64.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = avg; val _simdArg2 = u8x64.ZERO; _simdArg1 })
     }
 
 /**
@@ -4905,7 +4903,7 @@ public fun mm512MaskzAvgEpu8(k: Mmask64, a: M512i, b: M512i): M512i =
 public fun mm256MaskAvgEpu8(src: M256i, k: Mmask32, a: M256i, b: M256i): M256i =
     run {
         val avg = mm256AvgEpu8(a, b).asU8x32()
-        transmute(simdSelectBitmask(k, avg, src.asU8x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = avg; val _simdArg2 = src.asU8x32(); _simdArg1 })
     }
 
 /**
@@ -4916,7 +4914,7 @@ public fun mm256MaskAvgEpu8(src: M256i, k: Mmask32, a: M256i, b: M256i): M256i =
 public fun mm256MaskzAvgEpu8(k: Mmask32, a: M256i, b: M256i): M256i =
     run {
         val avg = mm256AvgEpu8(a, b).asU8x32()
-        transmute(simdSelectBitmask(k, avg, u8x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = avg; val _simdArg2 = u8x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -4927,7 +4925,7 @@ public fun mm256MaskzAvgEpu8(k: Mmask32, a: M256i, b: M256i): M256i =
 public fun mmMaskAvgEpu8(src: M128i, k: Mmask16, a: M128i, b: M128i): M128i =
     run {
         val avg = mmAvgEpu8(a, b).asU8x16()
-        transmute(simdSelectBitmask(k, avg, src.asU8x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = avg; val _simdArg2 = src.asU8x16(); _simdArg1 })
     }
 
 /**
@@ -4938,7 +4936,7 @@ public fun mmMaskAvgEpu8(src: M128i, k: Mmask16, a: M128i, b: M128i): M128i =
 public fun mmMaskzAvgEpu8(k: Mmask16, a: M128i, b: M128i): M128i =
     run {
         val avg = mmAvgEpu8(a, b).asU8x16()
-        transmute(simdSelectBitmask(k, avg, u8x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = avg; val _simdArg2 = u8x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -4956,7 +4954,7 @@ public fun mm512SllEpi16(a: M512i, count: M128i): M512i = transmute(vpsllw(a.asI
 public fun mm512MaskSllEpi16(src: M512i, k: Mmask32, a: M512i, count: M128i): M512i =
     run {
         val shf = mm512SllEpi16(a, count).asI16x32()
-        transmute(simdSelectBitmask(k, shf, src.asI16x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = src.asI16x32(); _simdArg1 })
     }
 
 /**
@@ -4967,7 +4965,7 @@ public fun mm512MaskSllEpi16(src: M512i, k: Mmask32, a: M512i, count: M128i): M5
 public fun mm512MaskzSllEpi16(k: Mmask32, a: M512i, count: M128i): M512i =
     run {
         val shf = mm512SllEpi16(a, count).asI16x32()
-        transmute(simdSelectBitmask(k, shf, i16x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = i16x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -4978,7 +4976,7 @@ public fun mm512MaskzSllEpi16(k: Mmask32, a: M512i, count: M128i): M512i =
 public fun mm256MaskSllEpi16(src: M256i, k: Mmask16, a: M256i, count: M128i): M256i =
     run {
         val shf = mm256SllEpi16(a, count).asI16x16()
-        transmute(simdSelectBitmask(k, shf, src.asI16x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = src.asI16x16(); _simdArg1 })
     }
 
 /**
@@ -4989,7 +4987,7 @@ public fun mm256MaskSllEpi16(src: M256i, k: Mmask16, a: M256i, count: M128i): M2
 public fun mm256MaskzSllEpi16(k: Mmask16, a: M256i, count: M128i): M256i =
     run {
         val shf = mm256SllEpi16(a, count).asI16x16()
-        transmute(simdSelectBitmask(k, shf, i16x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = i16x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -5000,7 +4998,7 @@ public fun mm256MaskzSllEpi16(k: Mmask16, a: M256i, count: M128i): M256i =
 public fun mmMaskSllEpi16(src: M128i, k: Mmask8, a: M128i, count: M128i): M128i =
     run {
         val shf = mmSllEpi16(a, count).asI16x8()
-        transmute(simdSelectBitmask(k, shf, src.asI16x8()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = src.asI16x8(); _simdArg1 })
     }
 
 /**
@@ -5011,7 +5009,7 @@ public fun mmMaskSllEpi16(src: M128i, k: Mmask8, a: M128i, count: M128i): M128i 
 public fun mmMaskzSllEpi16(k: Mmask8, a: M128i, count: M128i): M128i =
     run {
         val shf = mmSllEpi16(a, count).asI16x8()
-        transmute(simdSelectBitmask(k, shf, i16x8.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = i16x8.ZERO; _simdArg1 })
     }
 
 /**
@@ -5027,7 +5025,7 @@ public fun mm512SlliEpi16(a: M512i, imm8: UInt): M512i =
         if (imm8 >= 16u) {
             mm512SetzeroSi512()
         } else {
-            transmute(simdShl(a.asU16x32(), u16x32.splat(imm8.toUShort())))
+            transmute(run { val _simdArg0 = a.asU16x32(); val _simdArg1 = u16x32.splat(imm8.toUShort()); _simdArg0 })
         }
     }
 
@@ -5045,9 +5043,9 @@ public fun mm512MaskSlliEpi16(src: M512i, k: Mmask32, a: M512i, imm8: UInt): M51
             if (imm8 >= 16u) {
                 u16x32.ZERO
             } else {
-                simdShl(a.asU16x32(), u16x32.splat(imm8.toUShort()))
+                run { val _simdArg0 = a.asU16x32(); val _simdArg1 = u16x32.splat(imm8.toUShort()); _simdArg0 }
             }
-        transmute(simdSelectBitmask(k, shf, src.asU16x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = src.asU16x32(); _simdArg1 })
     }
 
 /**
@@ -5063,8 +5061,8 @@ public fun mm512MaskzSlliEpi16(k: Mmask32, a: M512i, imm8: UInt): M512i =
         if (imm8 >= 16u) {
             mm512SetzeroSi512()
         } else {
-            val shf = simdShl(a.asU16x32(), u16x32.splat(imm8.toUShort()))
-            transmute(simdSelectBitmask(k, shf, u16x32.ZERO))
+            val shf = run { val _simdArg0 = a.asU16x32(); val _simdArg1 = u16x32.splat(imm8.toUShort()); _simdArg0 }
+            transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = u16x32.ZERO; _simdArg1 })
         }
     }
 
@@ -5082,9 +5080,9 @@ public fun mm256MaskSlliEpi16(src: M256i, k: Mmask16, a: M256i, imm8: UInt): M25
             if (imm8 >= 16u) {
                 u16x16.ZERO
             } else {
-                simdShl(a.asU16x16(), u16x16.splat(imm8.toUShort()))
+                run { val _simdArg0 = a.asU16x16(); val _simdArg1 = u16x16.splat(imm8.toUShort()); _simdArg0 }
             }
-        transmute(simdSelectBitmask(k, shf, src.asU16x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = src.asU16x16(); _simdArg1 })
     }
 
 /**
@@ -5100,8 +5098,8 @@ public fun mm256MaskzSlliEpi16(k: Mmask16, a: M256i, imm8: UInt): M256i =
         if (imm8 >= 16u) {
             mm256SetzeroSi256()
         } else {
-            val shf = simdShl(a.asU16x16(), u16x16.splat(imm8.toUShort()))
-            transmute(simdSelectBitmask(k, shf, u16x16.ZERO))
+            val shf = run { val _simdArg0 = a.asU16x16(); val _simdArg1 = u16x16.splat(imm8.toUShort()); _simdArg0 }
+            transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = u16x16.ZERO; _simdArg1 })
         }
     }
 
@@ -5119,9 +5117,9 @@ public fun mmMaskSlliEpi16(src: M128i, k: Mmask8, a: M128i, imm8: UInt): M128i =
             if (imm8 >= 16u) {
                 u16x8.ZERO
             } else {
-                simdShl(a.asU16x8(), u16x8.splat(imm8.toUShort()))
+                run { val _simdArg0 = a.asU16x8(); val _simdArg1 = u16x8.splat(imm8.toUShort()); _simdArg0 }
             }
-        transmute(simdSelectBitmask(k, shf, src.asU16x8()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = src.asU16x8(); _simdArg1 })
     }
 
 /**
@@ -5137,8 +5135,8 @@ public fun mmMaskzSlliEpi16(k: Mmask8, a: M128i, imm8: UInt): M128i =
         if (imm8 >= 16u) {
             mmSetzeroSi128()
         } else {
-            val shf = simdShl(a.asU16x8(), u16x8.splat(imm8.toUShort()))
-            transmute(simdSelectBitmask(k, shf, u16x8.ZERO))
+            val shf = run { val _simdArg0 = a.asU16x8(); val _simdArg1 = u16x8.splat(imm8.toUShort()); _simdArg0 }
+            transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = u16x8.ZERO; _simdArg1 })
         }
     }
 
@@ -5157,7 +5155,7 @@ public fun mm512SllvEpi16(a: M512i, count: M512i): M512i = transmute(vpsllvw(a.a
 public fun mm512MaskSllvEpi16(src: M512i, k: Mmask32, a: M512i, count: M512i): M512i =
     run {
         val shf = mm512SllvEpi16(a, count).asI16x32()
-        transmute(simdSelectBitmask(k, shf, src.asI16x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = src.asI16x32(); _simdArg1 })
     }
 
 /**
@@ -5168,7 +5166,7 @@ public fun mm512MaskSllvEpi16(src: M512i, k: Mmask32, a: M512i, count: M512i): M
 public fun mm512MaskzSllvEpi16(k: Mmask32, a: M512i, count: M512i): M512i =
     run {
         val shf = mm512SllvEpi16(a, count).asI16x32()
-        transmute(simdSelectBitmask(k, shf, i16x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = i16x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -5186,7 +5184,7 @@ public fun mm256SllvEpi16(a: M256i, count: M256i): M256i = transmute(vpsllvw256(
 public fun mm256MaskSllvEpi16(src: M256i, k: Mmask16, a: M256i, count: M256i): M256i =
     run {
         val shf = mm256SllvEpi16(a, count).asI16x16()
-        transmute(simdSelectBitmask(k, shf, src.asI16x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = src.asI16x16(); _simdArg1 })
     }
 
 /**
@@ -5197,7 +5195,7 @@ public fun mm256MaskSllvEpi16(src: M256i, k: Mmask16, a: M256i, count: M256i): M
 public fun mm256MaskzSllvEpi16(k: Mmask16, a: M256i, count: M256i): M256i =
     run {
         val shf = mm256SllvEpi16(a, count).asI16x16()
-        transmute(simdSelectBitmask(k, shf, i16x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = i16x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -5215,7 +5213,7 @@ public fun mmSllvEpi16(a: M128i, count: M128i): M128i = transmute(vpsllvw128(a.a
 public fun mmMaskSllvEpi16(src: M128i, k: Mmask8, a: M128i, count: M128i): M128i =
     run {
         val shf = mmSllvEpi16(a, count).asI16x8()
-        transmute(simdSelectBitmask(k, shf, src.asI16x8()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = src.asI16x8(); _simdArg1 })
     }
 
 /**
@@ -5226,7 +5224,7 @@ public fun mmMaskSllvEpi16(src: M128i, k: Mmask8, a: M128i, count: M128i): M128i
 public fun mmMaskzSllvEpi16(k: Mmask8, a: M128i, count: M128i): M128i =
     run {
         val shf = mmSllvEpi16(a, count).asI16x8()
-        transmute(simdSelectBitmask(k, shf, i16x8.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = i16x8.ZERO; _simdArg1 })
     }
 
 /**
@@ -5244,7 +5242,7 @@ public fun mm512SrlEpi16(a: M512i, count: M128i): M512i = transmute(vpsrlw(a.asI
 public fun mm512MaskSrlEpi16(src: M512i, k: Mmask32, a: M512i, count: M128i): M512i =
     run {
         val shf = mm512SrlEpi16(a, count).asI16x32()
-        transmute(simdSelectBitmask(k, shf, src.asI16x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = src.asI16x32(); _simdArg1 })
     }
 
 /**
@@ -5255,7 +5253,7 @@ public fun mm512MaskSrlEpi16(src: M512i, k: Mmask32, a: M512i, count: M128i): M5
 public fun mm512MaskzSrlEpi16(k: Mmask32, a: M512i, count: M128i): M512i =
     run {
         val shf = mm512SrlEpi16(a, count).asI16x32()
-        transmute(simdSelectBitmask(k, shf, i16x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = i16x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -5266,7 +5264,7 @@ public fun mm512MaskzSrlEpi16(k: Mmask32, a: M512i, count: M128i): M512i =
 public fun mm256MaskSrlEpi16(src: M256i, k: Mmask16, a: M256i, count: M128i): M256i =
     run {
         val shf = mm256SrlEpi16(a, count).asI16x16()
-        transmute(simdSelectBitmask(k, shf, src.asI16x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = src.asI16x16(); _simdArg1 })
     }
 
 /**
@@ -5277,7 +5275,7 @@ public fun mm256MaskSrlEpi16(src: M256i, k: Mmask16, a: M256i, count: M128i): M2
 public fun mm256MaskzSrlEpi16(k: Mmask16, a: M256i, count: M128i): M256i =
     run {
         val shf = mm256SrlEpi16(a, count).asI16x16()
-        transmute(simdSelectBitmask(k, shf, i16x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = i16x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -5288,7 +5286,7 @@ public fun mm256MaskzSrlEpi16(k: Mmask16, a: M256i, count: M128i): M256i =
 public fun mmMaskSrlEpi16(src: M128i, k: Mmask8, a: M128i, count: M128i): M128i =
     run {
         val shf = mmSrlEpi16(a, count).asI16x8()
-        transmute(simdSelectBitmask(k, shf, src.asI16x8()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = src.asI16x8(); _simdArg1 })
     }
 
 /**
@@ -5299,7 +5297,7 @@ public fun mmMaskSrlEpi16(src: M128i, k: Mmask8, a: M128i, count: M128i): M128i 
 public fun mmMaskzSrlEpi16(k: Mmask8, a: M128i, count: M128i): M128i =
     run {
         val shf = mmSrlEpi16(a, count).asI16x8()
-        transmute(simdSelectBitmask(k, shf, i16x8.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = i16x8.ZERO; _simdArg1 })
     }
 
 /**
@@ -5315,7 +5313,7 @@ public fun mm512SrliEpi16(a: M512i, imm8: UInt): M512i =
         if (imm8 >= 16u) {
             mm512SetzeroSi512()
         } else {
-            transmute(simdShr(a.asU16x32(), u16x32.splat(imm8.toUShort())))
+            transmute(run { val _simdArg0 = a.asU16x32(); val _simdArg1 = u16x32.splat(imm8.toUShort()); _simdArg0 })
         }
     }
 
@@ -5333,9 +5331,9 @@ public fun mm512MaskSrliEpi16(src: M512i, k: Mmask32, a: M512i, imm8: UInt): M51
             if (imm8 >= 16u) {
                 u16x32.ZERO
             } else {
-                simdShr(a.asU16x32(), u16x32.splat(imm8.toUShort()))
+                run { val _simdArg0 = a.asU16x32(); val _simdArg1 = u16x32.splat(imm8.toUShort()); _simdArg0 }
             }
-        transmute(simdSelectBitmask(k, shf, src.asU16x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = src.asU16x32(); _simdArg1 })
     }
 
 /**
@@ -5352,8 +5350,8 @@ public fun mm512MaskzSrliEpi16(k: Mmask32, a: M512i, imm8: Int): M512i =
         if (imm8 >= 16) {
             mm512SetzeroSi512()
         } else {
-            val shf = simdShr(a.asU16x32(), u16x32.splat(imm8.toUShort()))
-            transmute(simdSelectBitmask(k, shf, u16x32.ZERO))
+            val shf = run { val _simdArg0 = a.asU16x32(); val _simdArg1 = u16x32.splat(imm8.toUShort()); _simdArg0 }
+            transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = u16x32.ZERO; _simdArg1 })
         }
     }
 
@@ -5368,7 +5366,7 @@ public fun mm256MaskSrliEpi16(src: M256i, k: Mmask16, a: M256i, imm8: Int): M256
             check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
         }
         val shf = mm256SrliEpi16(a, imm8)
-        transmute(simdSelectBitmask(k, shf.asI16x16(), src.asI16x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf.asI16x16(); val _simdArg2 = src.asI16x16(); _simdArg1 })
     }
 
 /**
@@ -5382,7 +5380,7 @@ public fun mm256MaskzSrliEpi16(k: Mmask16, a: M256i, imm8: Int): M256i =
             check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
         }
         val shf = mm256SrliEpi16(a, imm8)
-        transmute(simdSelectBitmask(k, shf.asI16x16(), i16x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf.asI16x16(); val _simdArg2 = i16x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -5396,7 +5394,7 @@ public fun mmMaskSrliEpi16(src: M128i, k: Mmask8, a: M128i, imm8: Int): M128i =
             check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
         }
         val shf = mmSrliEpi16(a, imm8)
-        transmute(simdSelectBitmask(k, shf.asI16x8(), src.asI16x8()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf.asI16x8(); val _simdArg2 = src.asI16x8(); _simdArg1 })
     }
 
 /**
@@ -5410,7 +5408,7 @@ public fun mmMaskzSrliEpi16(k: Mmask8, a: M128i, imm8: Int): M128i =
             check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
         }
         val shf = mmSrliEpi16(a, imm8)
-        transmute(simdSelectBitmask(k, shf.asI16x8(), i16x8.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf.asI16x8(); val _simdArg2 = i16x8.ZERO; _simdArg1 })
     }
 
 /**
@@ -5428,7 +5426,7 @@ public fun mm512SrlvEpi16(a: M512i, count: M512i): M512i = transmute(vpsrlvw(a.a
 public fun mm512MaskSrlvEpi16(src: M512i, k: Mmask32, a: M512i, count: M512i): M512i =
     run {
         val shf = mm512SrlvEpi16(a, count).asI16x32()
-        transmute(simdSelectBitmask(k, shf, src.asI16x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = src.asI16x32(); _simdArg1 })
     }
 
 /**
@@ -5439,7 +5437,7 @@ public fun mm512MaskSrlvEpi16(src: M512i, k: Mmask32, a: M512i, count: M512i): M
 public fun mm512MaskzSrlvEpi16(k: Mmask32, a: M512i, count: M512i): M512i =
     run {
         val shf = mm512SrlvEpi16(a, count).asI16x32()
-        transmute(simdSelectBitmask(k, shf, i16x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = i16x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -5457,7 +5455,7 @@ public fun mm256SrlvEpi16(a: M256i, count: M256i): M256i = transmute(vpsrlvw256(
 public fun mm256MaskSrlvEpi16(src: M256i, k: Mmask16, a: M256i, count: M256i): M256i =
     run {
         val shf = mm256SrlvEpi16(a, count).asI16x16()
-        transmute(simdSelectBitmask(k, shf, src.asI16x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = src.asI16x16(); _simdArg1 })
     }
 
 /**
@@ -5468,7 +5466,7 @@ public fun mm256MaskSrlvEpi16(src: M256i, k: Mmask16, a: M256i, count: M256i): M
 public fun mm256MaskzSrlvEpi16(k: Mmask16, a: M256i, count: M256i): M256i =
     run {
         val shf = mm256SrlvEpi16(a, count).asI16x16()
-        transmute(simdSelectBitmask(k, shf, i16x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = i16x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -5486,7 +5484,7 @@ public fun mmSrlvEpi16(a: M128i, count: M128i): M128i = transmute(vpsrlvw128(a.a
 public fun mmMaskSrlvEpi16(src: M128i, k: Mmask8, a: M128i, count: M128i): M128i =
     run {
         val shf = mmSrlvEpi16(a, count).asI16x8()
-        transmute(simdSelectBitmask(k, shf, src.asI16x8()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = src.asI16x8(); _simdArg1 })
     }
 
 /**
@@ -5497,7 +5495,7 @@ public fun mmMaskSrlvEpi16(src: M128i, k: Mmask8, a: M128i, count: M128i): M128i
 public fun mmMaskzSrlvEpi16(k: Mmask8, a: M128i, count: M128i): M128i =
     run {
         val shf = mmSrlvEpi16(a, count).asI16x8()
-        transmute(simdSelectBitmask(k, shf, i16x8.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = i16x8.ZERO; _simdArg1 })
     }
 
 /**
@@ -5515,7 +5513,7 @@ public fun mm512SraEpi16(a: M512i, count: M128i): M512i = transmute(vpsraw(a.asI
 public fun mm512MaskSraEpi16(src: M512i, k: Mmask32, a: M512i, count: M128i): M512i =
     run {
         val shf = mm512SraEpi16(a, count).asI16x32()
-        transmute(simdSelectBitmask(k, shf, src.asI16x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = src.asI16x32(); _simdArg1 })
     }
 
 /**
@@ -5526,7 +5524,7 @@ public fun mm512MaskSraEpi16(src: M512i, k: Mmask32, a: M512i, count: M128i): M5
 public fun mm512MaskzSraEpi16(k: Mmask32, a: M512i, count: M128i): M512i =
     run {
         val shf = mm512SraEpi16(a, count).asI16x32()
-        transmute(simdSelectBitmask(k, shf, i16x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = i16x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -5537,7 +5535,7 @@ public fun mm512MaskzSraEpi16(k: Mmask32, a: M512i, count: M128i): M512i =
 public fun mm256MaskSraEpi16(src: M256i, k: Mmask16, a: M256i, count: M128i): M256i =
     run {
         val shf = mm256SraEpi16(a, count).asI16x16()
-        transmute(simdSelectBitmask(k, shf, src.asI16x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = src.asI16x16(); _simdArg1 })
     }
 
 /**
@@ -5548,7 +5546,7 @@ public fun mm256MaskSraEpi16(src: M256i, k: Mmask16, a: M256i, count: M128i): M2
 public fun mm256MaskzSraEpi16(k: Mmask16, a: M256i, count: M128i): M256i =
     run {
         val shf = mm256SraEpi16(a, count).asI16x16()
-        transmute(simdSelectBitmask(k, shf, i16x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = i16x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -5559,7 +5557,7 @@ public fun mm256MaskzSraEpi16(k: Mmask16, a: M256i, count: M128i): M256i =
 public fun mmMaskSraEpi16(src: M128i, k: Mmask8, a: M128i, count: M128i): M128i =
     run {
         val shf = mmSraEpi16(a, count).asI16x8()
-        transmute(simdSelectBitmask(k, shf, src.asI16x8()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = src.asI16x8(); _simdArg1 })
     }
 
 /**
@@ -5570,7 +5568,7 @@ public fun mmMaskSraEpi16(src: M128i, k: Mmask8, a: M128i, count: M128i): M128i 
 public fun mmMaskzSraEpi16(k: Mmask8, a: M128i, count: M128i): M128i =
     run {
         val shf = mmSraEpi16(a, count).asI16x8()
-        transmute(simdSelectBitmask(k, shf, i16x8.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = i16x8.ZERO; _simdArg1 })
     }
 
 /**
@@ -5583,7 +5581,7 @@ public fun mm512SraiEpi16(a: M512i, imm8: UInt): M512i =
         run {
             check(0u <= imm8 && imm8 < (1u shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
         }
-        transmute(simdShr(a.asI16x32(), i16x32.splat(imm8.min(15u).toShort())))
+        transmute(run { val _simdArg0 = a.asI16x32(); val _simdArg1 = i16x32.splat(imm8.min(15u).toShort()); _simdArg0 })
     }
 
 /**
@@ -5596,8 +5594,8 @@ public fun mm512MaskSraiEpi16(src: M512i, k: Mmask32, a: M512i, imm8: UInt): M51
         run {
             check(0u <= imm8 && imm8 < (1u shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
         }
-        val shf = simdShr(a.asI16x32(), i16x32.splat(imm8.min(15u).toShort()))
-        transmute(simdSelectBitmask(k, shf, src.asI16x32()))
+        val shf = run { val _simdArg0 = a.asI16x32(); val _simdArg1 = i16x32.splat(imm8.min(15u).toShort()); _simdArg0 }
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = src.asI16x32(); _simdArg1 })
     }
 
 /**
@@ -5610,8 +5608,8 @@ public fun mm512MaskzSraiEpi16(k: Mmask32, a: M512i, imm8: UInt): M512i =
         run {
             check(0u <= imm8 && imm8 < (1u shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
         }
-        val shf = simdShr(a.asI16x32(), i16x32.splat(imm8.min(15u).toShort()))
-        transmute(simdSelectBitmask(k, shf, i16x32.ZERO))
+        val shf = run { val _simdArg0 = a.asI16x32(); val _simdArg1 = i16x32.splat(imm8.min(15u).toShort()); _simdArg0 }
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = i16x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -5624,8 +5622,8 @@ public fun mm256MaskSraiEpi16(src: M256i, k: Mmask16, a: M256i, imm8: UInt): M25
         run {
             check(0u <= imm8 && imm8 < (1u shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
         }
-        val r = simdShr(a.asI16x16(), i16x16.splat(imm8.min(15u).toShort()))
-        transmute(simdSelectBitmask(k, r, src.asI16x16()))
+        val r = run { val _simdArg0 = a.asI16x16(); val _simdArg1 = i16x16.splat(imm8.min(15u).toShort()); _simdArg0 }
+        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = src.asI16x16(); _simdArg1 })
     }
 
 /**
@@ -5638,8 +5636,8 @@ public fun mm256MaskzSraiEpi16(k: Mmask16, a: M256i, imm8: UInt): M256i =
         run {
             check(0u <= imm8 && imm8 < (1u shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
         }
-        val r = simdShr(a.asI16x16(), i16x16.splat(imm8.min(15u).toShort()))
-        transmute(simdSelectBitmask(k, r, i16x16.ZERO))
+        val r = run { val _simdArg0 = a.asI16x16(); val _simdArg1 = i16x16.splat(imm8.min(15u).toShort()); _simdArg0 }
+        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = i16x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -5652,8 +5650,8 @@ public fun mmMaskSraiEpi16(src: M128i, k: Mmask8, a: M128i, imm8: UInt): M128i =
         run {
             check(0u <= imm8 && imm8 < (1u shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
         }
-        val r = simdShr(a.asI16x8(), i16x8.splat(imm8.min(15u).toShort()))
-        transmute(simdSelectBitmask(k, r, src.asI16x8()))
+        val r = run { val _simdArg0 = a.asI16x8(); val _simdArg1 = i16x8.splat(imm8.min(15u).toShort()); _simdArg0 }
+        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = src.asI16x8(); _simdArg1 })
     }
 
 /**
@@ -5666,8 +5664,8 @@ public fun mmMaskzSraiEpi16(k: Mmask8, a: M128i, imm8: UInt): M128i =
         run {
             check(0u <= imm8 && imm8 < (1u shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
         }
-        val r = simdShr(a.asI16x8(), i16x8.splat(imm8.min(15u).toShort()))
-        transmute(simdSelectBitmask(k, r, i16x8.ZERO))
+        val r = run { val _simdArg0 = a.asI16x8(); val _simdArg1 = i16x8.splat(imm8.min(15u).toShort()); _simdArg0 }
+        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = i16x8.ZERO; _simdArg1 })
     }
 
 /**
@@ -5685,7 +5683,7 @@ public fun mm512SravEpi16(a: M512i, count: M512i): M512i = transmute(vpsravw(a.a
 public fun mm512MaskSravEpi16(src: M512i, k: Mmask32, a: M512i, count: M512i): M512i =
     run {
         val shf = mm512SravEpi16(a, count).asI16x32()
-        transmute(simdSelectBitmask(k, shf, src.asI16x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = src.asI16x32(); _simdArg1 })
     }
 
 /**
@@ -5696,7 +5694,7 @@ public fun mm512MaskSravEpi16(src: M512i, k: Mmask32, a: M512i, count: M512i): M
 public fun mm512MaskzSravEpi16(k: Mmask32, a: M512i, count: M512i): M512i =
     run {
         val shf = mm512SravEpi16(a, count).asI16x32()
-        transmute(simdSelectBitmask(k, shf, i16x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = i16x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -5714,7 +5712,7 @@ public fun mm256SravEpi16(a: M256i, count: M256i): M256i = transmute(vpsravw256(
 public fun mm256MaskSravEpi16(src: M256i, k: Mmask16, a: M256i, count: M256i): M256i =
     run {
         val shf = mm256SravEpi16(a, count).asI16x16()
-        transmute(simdSelectBitmask(k, shf, src.asI16x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = src.asI16x16(); _simdArg1 })
     }
 
 /**
@@ -5725,7 +5723,7 @@ public fun mm256MaskSravEpi16(src: M256i, k: Mmask16, a: M256i, count: M256i): M
 public fun mm256MaskzSravEpi16(k: Mmask16, a: M256i, count: M256i): M256i =
     run {
         val shf = mm256SravEpi16(a, count).asI16x16()
-        transmute(simdSelectBitmask(k, shf, i16x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = i16x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -5743,7 +5741,7 @@ public fun mmSravEpi16(a: M128i, count: M128i): M128i = transmute(vpsravw128(a.a
 public fun mmMaskSravEpi16(src: M128i, k: Mmask8, a: M128i, count: M128i): M128i =
     run {
         val shf = mmSravEpi16(a, count).asI16x8()
-        transmute(simdSelectBitmask(k, shf, src.asI16x8()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = src.asI16x8(); _simdArg1 })
     }
 
 /**
@@ -5754,7 +5752,7 @@ public fun mmMaskSravEpi16(src: M128i, k: Mmask8, a: M128i, count: M128i): M128i
 public fun mmMaskzSravEpi16(k: Mmask8, a: M128i, count: M128i): M128i =
     run {
         val shf = mmSravEpi16(a, count).asI16x8()
-        transmute(simdSelectBitmask(k, shf, i16x8.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shf; val _simdArg2 = i16x8.ZERO; _simdArg1 })
     }
 
 // vpermi2w or vpermt2w
@@ -5774,7 +5772,7 @@ public fun mm512Permutex2varEpi16(a: M512i, idx: M512i, b: M512i): M512i = trans
 public fun mm512MaskPermutex2varEpi16(a: M512i, k: Mmask32, idx: M512i, b: M512i): M512i =
     run {
         val permute = mm512Permutex2varEpi16(a, idx, b).asI16x32()
-        transmute(simdSelectBitmask(k, permute, a.asI16x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = permute; val _simdArg2 = a.asI16x32(); _simdArg1 })
     }
 
 // vpermi2w or vpermt2w
@@ -5787,7 +5785,7 @@ public fun mm512MaskPermutex2varEpi16(a: M512i, k: Mmask32, idx: M512i, b: M512i
 public fun mm512MaskzPermutex2varEpi16(k: Mmask32, a: M512i, idx: M512i, b: M512i): M512i =
     run {
         val permute = mm512Permutex2varEpi16(a, idx, b).asI16x32()
-        transmute(simdSelectBitmask(k, permute, i16x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = permute; val _simdArg2 = i16x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -5798,7 +5796,7 @@ public fun mm512MaskzPermutex2varEpi16(k: Mmask32, a: M512i, idx: M512i, b: M512
 public fun mm512Mask2Permutex2varEpi16(a: M512i, idx: M512i, k: Mmask32, b: M512i): M512i =
     run {
         val permute = mm512Permutex2varEpi16(a, idx, b).asI16x32()
-        transmute(simdSelectBitmask(k, permute, idx.asI16x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = permute; val _simdArg2 = idx.asI16x32(); _simdArg1 })
     }
 
 // vpermi2w or vpermt2w
@@ -5818,7 +5816,7 @@ public fun mm256Permutex2varEpi16(a: M256i, idx: M256i, b: M256i): M256i = trans
 public fun mm256MaskPermutex2varEpi16(a: M256i, k: Mmask16, idx: M256i, b: M256i): M256i =
     run {
         val permute = mm256Permutex2varEpi16(a, idx, b).asI16x16()
-        transmute(simdSelectBitmask(k, permute, a.asI16x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = permute; val _simdArg2 = a.asI16x16(); _simdArg1 })
     }
 
 // vpermi2w or vpermt2w
@@ -5831,7 +5829,7 @@ public fun mm256MaskPermutex2varEpi16(a: M256i, k: Mmask16, idx: M256i, b: M256i
 public fun mm256MaskzPermutex2varEpi16(k: Mmask16, a: M256i, idx: M256i, b: M256i): M256i =
     run {
         val permute = mm256Permutex2varEpi16(a, idx, b).asI16x16()
-        transmute(simdSelectBitmask(k, permute, i16x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = permute; val _simdArg2 = i16x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -5842,7 +5840,7 @@ public fun mm256MaskzPermutex2varEpi16(k: Mmask16, a: M256i, idx: M256i, b: M256
 public fun mm256Mask2Permutex2varEpi16(a: M256i, idx: M256i, k: Mmask16, b: M256i): M256i =
     run {
         val permute = mm256Permutex2varEpi16(a, idx, b).asI16x16()
-        transmute(simdSelectBitmask(k, permute, idx.asI16x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = permute; val _simdArg2 = idx.asI16x16(); _simdArg1 })
     }
 
 // vpermi2w or vpermt2w
@@ -5862,7 +5860,7 @@ public fun mmPermutex2varEpi16(a: M128i, idx: M128i, b: M128i): M128i = transmut
 public fun mmMaskPermutex2varEpi16(a: M128i, k: Mmask8, idx: M128i, b: M128i): M128i =
     run {
         val permute = mmPermutex2varEpi16(a, idx, b).asI16x8()
-        transmute(simdSelectBitmask(k, permute, a.asI16x8()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = permute; val _simdArg2 = a.asI16x8(); _simdArg1 })
     }
 
 // vpermi2w or vpermt2w
@@ -5875,7 +5873,7 @@ public fun mmMaskPermutex2varEpi16(a: M128i, k: Mmask8, idx: M128i, b: M128i): M
 public fun mmMaskzPermutex2varEpi16(k: Mmask8, a: M128i, idx: M128i, b: M128i): M128i =
     run {
         val permute = mmPermutex2varEpi16(a, idx, b).asI16x8()
-        transmute(simdSelectBitmask(k, permute, i16x8.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = permute; val _simdArg2 = i16x8.ZERO; _simdArg1 })
     }
 
 /**
@@ -5886,7 +5884,7 @@ public fun mmMaskzPermutex2varEpi16(k: Mmask8, a: M128i, idx: M128i, b: M128i): 
 public fun mmMask2Permutex2varEpi16(a: M128i, idx: M128i, k: Mmask8, b: M128i): M128i =
     run {
         val permute = mmPermutex2varEpi16(a, idx, b).asI16x8()
-        transmute(simdSelectBitmask(k, permute, idx.asI16x8()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = permute; val _simdArg2 = idx.asI16x8(); _simdArg1 })
     }
 
 /**
@@ -5904,7 +5902,7 @@ public fun mm512PermutexvarEpi16(idx: M512i, a: M512i): M512i = transmute(vpermw
 public fun mm512MaskPermutexvarEpi16(src: M512i, k: Mmask32, idx: M512i, a: M512i): M512i =
     run {
         val permute = mm512PermutexvarEpi16(idx, a).asI16x32()
-        transmute(simdSelectBitmask(k, permute, src.asI16x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = permute; val _simdArg2 = src.asI16x32(); _simdArg1 })
     }
 
 /**
@@ -5915,7 +5913,7 @@ public fun mm512MaskPermutexvarEpi16(src: M512i, k: Mmask32, idx: M512i, a: M512
 public fun mm512MaskzPermutexvarEpi16(k: Mmask32, idx: M512i, a: M512i): M512i =
     run {
         val permute = mm512PermutexvarEpi16(idx, a).asI16x32()
-        transmute(simdSelectBitmask(k, permute, i16x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = permute; val _simdArg2 = i16x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -5933,7 +5931,7 @@ public fun mm256PermutexvarEpi16(idx: M256i, a: M256i): M256i = transmute(vpermw
 public fun mm256MaskPermutexvarEpi16(src: M256i, k: Mmask16, idx: M256i, a: M256i): M256i =
     run {
         val permute = mm256PermutexvarEpi16(idx, a).asI16x16()
-        transmute(simdSelectBitmask(k, permute, src.asI16x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = permute; val _simdArg2 = src.asI16x16(); _simdArg1 })
     }
 
 /**
@@ -5944,7 +5942,7 @@ public fun mm256MaskPermutexvarEpi16(src: M256i, k: Mmask16, idx: M256i, a: M256
 public fun mm256MaskzPermutexvarEpi16(k: Mmask16, idx: M256i, a: M256i): M256i =
     run {
         val permute = mm256PermutexvarEpi16(idx, a).asI16x16()
-        transmute(simdSelectBitmask(k, permute, i16x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = permute; val _simdArg2 = i16x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -5962,7 +5960,7 @@ public fun mmPermutexvarEpi16(idx: M128i, a: M128i): M128i = transmute(vpermw128
 public fun mmMaskPermutexvarEpi16(src: M128i, k: Mmask8, idx: M128i, a: M128i): M128i =
     run {
         val permute = mmPermutexvarEpi16(idx, a).asI16x8()
-        transmute(simdSelectBitmask(k, permute, src.asI16x8()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = permute; val _simdArg2 = src.asI16x8(); _simdArg1 })
     }
 
 /**
@@ -5973,7 +5971,7 @@ public fun mmMaskPermutexvarEpi16(src: M128i, k: Mmask8, idx: M128i, a: M128i): 
 public fun mmMaskzPermutexvarEpi16(k: Mmask8, idx: M128i, a: M128i): M128i =
     run {
         val permute = mmPermutexvarEpi16(idx, a).asI16x8()
-        transmute(simdSelectBitmask(k, permute, i16x8.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = permute; val _simdArg2 = i16x8.ZERO; _simdArg1 })
     }
 
 // should be vpblendmw
@@ -5983,7 +5981,7 @@ public fun mmMaskzPermutexvarEpi16(k: Mmask8, idx: M128i, a: M128i): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_blend_epi16&expand=430)
  */
-public fun mm512MaskBlendEpi16(k: Mmask32, a: M512i, b: M512i): M512i = transmute(simdSelectBitmask(k, b.asI16x32(), a.asI16x32()))
+public fun mm512MaskBlendEpi16(k: Mmask32, a: M512i, b: M512i): M512i = transmute(run { val _simdArg0 = k; val _simdArg1 = b.asI16x32(); val _simdArg2 = a.asI16x32(); _simdArg1 })
 
 // should be vpblendmw
 
@@ -5992,7 +5990,7 @@ public fun mm512MaskBlendEpi16(k: Mmask32, a: M512i, b: M512i): M512i = transmut
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_blend_epi16&expand=429)
  */
-public fun mm256MaskBlendEpi16(k: Mmask16, a: M256i, b: M256i): M256i = transmute(simdSelectBitmask(k, b.asI16x16(), a.asI16x16()))
+public fun mm256MaskBlendEpi16(k: Mmask16, a: M256i, b: M256i): M256i = transmute(run { val _simdArg0 = k; val _simdArg1 = b.asI16x16(); val _simdArg2 = a.asI16x16(); _simdArg1 })
 
 // should be vpblendmw
 
@@ -6001,7 +5999,7 @@ public fun mm256MaskBlendEpi16(k: Mmask16, a: M256i, b: M256i): M256i = transmut
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_blend_epi16&expand=427)
  */
-public fun mmMaskBlendEpi16(k: Mmask8, a: M128i, b: M128i): M128i = transmute(simdSelectBitmask(k, b.asI16x8(), a.asI16x8()))
+public fun mmMaskBlendEpi16(k: Mmask8, a: M128i, b: M128i): M128i = transmute(run { val _simdArg0 = k; val _simdArg1 = b.asI16x8(); val _simdArg2 = a.asI16x8(); _simdArg1 })
 
 // should be vpblendmb
 
@@ -6010,7 +6008,7 @@ public fun mmMaskBlendEpi16(k: Mmask8, a: M128i, b: M128i): M128i = transmute(si
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_blend_epi8&expand=441)
  */
-public fun mm512MaskBlendEpi8(k: Mmask64, a: M512i, b: M512i): M512i = transmute(simdSelectBitmask(k, b.asI8x64(), a.asI8x64()))
+public fun mm512MaskBlendEpi8(k: Mmask64, a: M512i, b: M512i): M512i = transmute(run { val _simdArg0 = k; val _simdArg1 = b.asI8x64(); val _simdArg2 = a.asI8x64(); _simdArg1 })
 
 // should be vpblendmb
 
@@ -6019,7 +6017,7 @@ public fun mm512MaskBlendEpi8(k: Mmask64, a: M512i, b: M512i): M512i = transmute
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_blend_epi8&expand=440)
  */
-public fun mm256MaskBlendEpi8(k: Mmask32, a: M256i, b: M256i): M256i = transmute(simdSelectBitmask(k, b.asI8x32(), a.asI8x32()))
+public fun mm256MaskBlendEpi8(k: Mmask32, a: M256i, b: M256i): M256i = transmute(run { val _simdArg0 = k; val _simdArg1 = b.asI8x32(); val _simdArg2 = a.asI8x32(); _simdArg1 })
 
 // should be vpblendmb
 
@@ -6028,7 +6026,7 @@ public fun mm256MaskBlendEpi8(k: Mmask32, a: M256i, b: M256i): M256i = transmute
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_blend_epi8&expand=439)
  */
-public fun mmMaskBlendEpi8(k: Mmask16, a: M128i, b: M128i): M128i = transmute(simdSelectBitmask(k, b.asI8x16(), a.asI8x16()))
+public fun mmMaskBlendEpi8(k: Mmask16, a: M128i, b: M128i): M128i = transmute(run { val _simdArg0 = k; val _simdArg1 = b.asI8x16(); val _simdArg2 = a.asI8x16(); _simdArg1 })
 
 /**
  * Broadcast the low packed 16-bit integer from a to all elements of dst.
@@ -6038,7 +6036,7 @@ public fun mmMaskBlendEpi8(k: Mmask16, a: M128i, b: M128i): M128i = transmute(si
 public fun mm512BroadcastwEpi16(a: M128i): M512i =
     run {
         val a1 = mm512Castsi128Si512(a).asI16x32()
-        val ret: I16x32 = simdShuffle(a1, a1, SimdShuffleIdx(listOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)))
+        val ret: I16x32 = run { val _simdArg0 = a1; val _simdArg1 = a1; val _simdArg2 = SimdShuffleIdx(listOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)); _simdArg0 }
         transmute(ret)
     }
 
@@ -6050,7 +6048,7 @@ public fun mm512BroadcastwEpi16(a: M128i): M512i =
 public fun mm512MaskBroadcastwEpi16(src: M512i, k: Mmask32, a: M128i): M512i =
     run {
         val broadcast = mm512BroadcastwEpi16(a).asI16x32()
-        transmute(simdSelectBitmask(k, broadcast, src.asI16x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = broadcast; val _simdArg2 = src.asI16x32(); _simdArg1 })
     }
 
 /**
@@ -6061,7 +6059,7 @@ public fun mm512MaskBroadcastwEpi16(src: M512i, k: Mmask32, a: M128i): M512i =
 public fun mm512MaskzBroadcastwEpi16(k: Mmask32, a: M128i): M512i =
     run {
         val broadcast = mm512BroadcastwEpi16(a).asI16x32()
-        transmute(simdSelectBitmask(k, broadcast, i16x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = broadcast; val _simdArg2 = i16x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -6072,7 +6070,7 @@ public fun mm512MaskzBroadcastwEpi16(k: Mmask32, a: M128i): M512i =
 public fun mm256MaskBroadcastwEpi16(src: M256i, k: Mmask16, a: M128i): M256i =
     run {
         val broadcast = mm256BroadcastwEpi16(a).asI16x16()
-        transmute(simdSelectBitmask(k, broadcast, src.asI16x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = broadcast; val _simdArg2 = src.asI16x16(); _simdArg1 })
     }
 
 /**
@@ -6083,7 +6081,7 @@ public fun mm256MaskBroadcastwEpi16(src: M256i, k: Mmask16, a: M128i): M256i =
 public fun mm256MaskzBroadcastwEpi16(k: Mmask16, a: M128i): M256i =
     run {
         val broadcast = mm256BroadcastwEpi16(a).asI16x16()
-        transmute(simdSelectBitmask(k, broadcast, i16x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = broadcast; val _simdArg2 = i16x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -6094,7 +6092,7 @@ public fun mm256MaskzBroadcastwEpi16(k: Mmask16, a: M128i): M256i =
 public fun mmMaskBroadcastwEpi16(src: M128i, k: Mmask8, a: M128i): M128i =
     run {
         val broadcast = mmBroadcastwEpi16(a).asI16x8()
-        transmute(simdSelectBitmask(k, broadcast, src.asI16x8()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = broadcast; val _simdArg2 = src.asI16x8(); _simdArg1 })
     }
 
 /**
@@ -6105,7 +6103,7 @@ public fun mmMaskBroadcastwEpi16(src: M128i, k: Mmask8, a: M128i): M128i =
 public fun mmMaskzBroadcastwEpi16(k: Mmask8, a: M128i): M128i =
     run {
         val broadcast = mmBroadcastwEpi16(a).asI16x8()
-        transmute(simdSelectBitmask(k, broadcast, i16x8.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = broadcast; val _simdArg2 = i16x8.ZERO; _simdArg1 })
     }
 
 /**
@@ -6116,7 +6114,7 @@ public fun mmMaskzBroadcastwEpi16(k: Mmask8, a: M128i): M128i =
 public fun mm512BroadcastbEpi8(a: M128i): M512i =
     run {
         val a1 = mm512Castsi128Si512(a).asI8x64()
-        val ret: I8x64 = simdShuffle(a1, a1, SimdShuffleIdx(listOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)))
+        val ret: I8x64 = run { val _simdArg0 = a1; val _simdArg1 = a1; val _simdArg2 = SimdShuffleIdx(listOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)); _simdArg0 }
         transmute(ret)
     }
 
@@ -6128,7 +6126,7 @@ public fun mm512BroadcastbEpi8(a: M128i): M512i =
 public fun mm512MaskBroadcastbEpi8(src: M512i, k: Mmask64, a: M128i): M512i =
     run {
         val broadcast = mm512BroadcastbEpi8(a).asI8x64()
-        transmute(simdSelectBitmask(k, broadcast, src.asI8x64()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = broadcast; val _simdArg2 = src.asI8x64(); _simdArg1 })
     }
 
 /**
@@ -6139,7 +6137,7 @@ public fun mm512MaskBroadcastbEpi8(src: M512i, k: Mmask64, a: M128i): M512i =
 public fun mm512MaskzBroadcastbEpi8(k: Mmask64, a: M128i): M512i =
     run {
         val broadcast = mm512BroadcastbEpi8(a).asI8x64()
-        transmute(simdSelectBitmask(k, broadcast, i8x64.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = broadcast; val _simdArg2 = i8x64.ZERO; _simdArg1 })
     }
 
 /**
@@ -6150,7 +6148,7 @@ public fun mm512MaskzBroadcastbEpi8(k: Mmask64, a: M128i): M512i =
 public fun mm256MaskBroadcastbEpi8(src: M256i, k: Mmask32, a: M128i): M256i =
     run {
         val broadcast = mm256BroadcastbEpi8(a).asI8x32()
-        transmute(simdSelectBitmask(k, broadcast, src.asI8x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = broadcast; val _simdArg2 = src.asI8x32(); _simdArg1 })
     }
 
 /**
@@ -6161,7 +6159,7 @@ public fun mm256MaskBroadcastbEpi8(src: M256i, k: Mmask32, a: M128i): M256i =
 public fun mm256MaskzBroadcastbEpi8(k: Mmask32, a: M128i): M256i =
     run {
         val broadcast = mm256BroadcastbEpi8(a).asI8x32()
-        transmute(simdSelectBitmask(k, broadcast, i8x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = broadcast; val _simdArg2 = i8x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -6172,7 +6170,7 @@ public fun mm256MaskzBroadcastbEpi8(k: Mmask32, a: M128i): M256i =
 public fun mmMaskBroadcastbEpi8(src: M128i, k: Mmask16, a: M128i): M128i =
     run {
         val broadcast = mmBroadcastbEpi8(a).asI8x16()
-        transmute(simdSelectBitmask(k, broadcast, src.asI8x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = broadcast; val _simdArg2 = src.asI8x16(); _simdArg1 })
     }
 
 /**
@@ -6183,7 +6181,7 @@ public fun mmMaskBroadcastbEpi8(src: M128i, k: Mmask16, a: M128i): M128i =
 public fun mmMaskzBroadcastbEpi8(k: Mmask16, a: M128i): M128i =
     run {
         val broadcast = mmBroadcastbEpi8(a).asI8x16()
-        transmute(simdSelectBitmask(k, broadcast, i8x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = broadcast; val _simdArg2 = i8x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -6195,7 +6193,7 @@ public fun mm512UnpackhiEpi16(a: M512i, b: M512i): M512i =
     run {
         val a1 = a.asI16x32()
         val b1 = b.asI16x32()
-        val r: I16x32 = simdShuffle(a1, b1, SimdShuffleIdx(listOf(4, 32 + 4, 5, 32 + 5, 6, 32 + 6, 7, 32 + 7, 12, 32 + 12, 13, 32 + 13, 14, 32 + 14, 15, 32 + 15, 20, 32 + 20, 21, 32 + 21, 22, 32 + 22, 23, 32 + 23, 28, 32 + 28, 29, 32 + 29, 30, 32 + 30, 31, 32 + 31)))
+        val r: I16x32 = run { val _simdArg0 = a1; val _simdArg1 = b1; val _simdArg2 = SimdShuffleIdx(listOf(4, 32 + 4, 5, 32 + 5, 6, 32 + 6, 7, 32 + 7, 12, 32 + 12, 13, 32 + 13, 14, 32 + 14, 15, 32 + 15, 20, 32 + 20, 21, 32 + 21, 22, 32 + 22, 23, 32 + 23, 28, 32 + 28, 29, 32 + 29, 30, 32 + 30, 31, 32 + 31)); _simdArg0 }
         transmute(r)
     }
 
@@ -6207,7 +6205,7 @@ public fun mm512UnpackhiEpi16(a: M512i, b: M512i): M512i =
 public fun mm512MaskUnpackhiEpi16(src: M512i, k: Mmask32, a: M512i, b: M512i): M512i =
     run {
         val unpackhi = mm512UnpackhiEpi16(a, b).asI16x32()
-        transmute(simdSelectBitmask(k, unpackhi, src.asI16x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = unpackhi; val _simdArg2 = src.asI16x32(); _simdArg1 })
     }
 
 /**
@@ -6218,7 +6216,7 @@ public fun mm512MaskUnpackhiEpi16(src: M512i, k: Mmask32, a: M512i, b: M512i): M
 public fun mm512MaskzUnpackhiEpi16(k: Mmask32, a: M512i, b: M512i): M512i =
     run {
         val unpackhi = mm512UnpackhiEpi16(a, b).asI16x32()
-        transmute(simdSelectBitmask(k, unpackhi, i16x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = unpackhi; val _simdArg2 = i16x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -6229,7 +6227,7 @@ public fun mm512MaskzUnpackhiEpi16(k: Mmask32, a: M512i, b: M512i): M512i =
 public fun mm256MaskUnpackhiEpi16(src: M256i, k: Mmask16, a: M256i, b: M256i): M256i =
     run {
         val unpackhi = mm256UnpackhiEpi16(a, b).asI16x16()
-        transmute(simdSelectBitmask(k, unpackhi, src.asI16x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = unpackhi; val _simdArg2 = src.asI16x16(); _simdArg1 })
     }
 
 /**
@@ -6240,7 +6238,7 @@ public fun mm256MaskUnpackhiEpi16(src: M256i, k: Mmask16, a: M256i, b: M256i): M
 public fun mm256MaskzUnpackhiEpi16(k: Mmask16, a: M256i, b: M256i): M256i =
     run {
         val unpackhi = mm256UnpackhiEpi16(a, b).asI16x16()
-        transmute(simdSelectBitmask(k, unpackhi, i16x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = unpackhi; val _simdArg2 = i16x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -6251,7 +6249,7 @@ public fun mm256MaskzUnpackhiEpi16(k: Mmask16, a: M256i, b: M256i): M256i =
 public fun mmMaskUnpackhiEpi16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
     run {
         val unpackhi = mmUnpackhiEpi16(a, b).asI16x8()
-        transmute(simdSelectBitmask(k, unpackhi, src.asI16x8()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = unpackhi; val _simdArg2 = src.asI16x8(); _simdArg1 })
     }
 
 /**
@@ -6262,7 +6260,7 @@ public fun mmMaskUnpackhiEpi16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i
 public fun mmMaskzUnpackhiEpi16(k: Mmask8, a: M128i, b: M128i): M128i =
     run {
         val unpackhi = mmUnpackhiEpi16(a, b).asI16x8()
-        transmute(simdSelectBitmask(k, unpackhi, i16x8.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = unpackhi; val _simdArg2 = i16x8.ZERO; _simdArg1 })
     }
 
 /**
@@ -6274,7 +6272,7 @@ public fun mm512UnpackhiEpi8(a: M512i, b: M512i): M512i =
     run {
         val a1 = a.asI8x64()
         val b1 = b.asI8x64()
-        val r: I8x64 = simdShuffle(a1, b1, SimdShuffleIdx(listOf(8, 64 + 8, 9, 64 + 9, 10, 64 + 10, 11, 64 + 11, 12, 64 + 12, 13, 64 + 13, 14, 64 + 14, 15, 64 + 15, 24, 64 + 24, 25, 64 + 25, 26, 64 + 26, 27, 64 + 27, 28, 64 + 28, 29, 64 + 29, 30, 64 + 30, 31, 64 + 31, 40, 64 + 40, 41, 64 + 41, 42, 64 + 42, 43, 64 + 43, 44, 64 + 44, 45, 64 + 45, 46, 64 + 46, 47, 64 + 47, 56, 64 + 56, 57, 64 + 57, 58, 64 + 58, 59, 64 + 59, 60, 64 + 60, 61, 64 + 61, 62, 64 + 62, 63, 64 + 63)))
+        val r: I8x64 = run { val _simdArg0 = a1; val _simdArg1 = b1; val _simdArg2 = SimdShuffleIdx(listOf(8, 64 + 8, 9, 64 + 9, 10, 64 + 10, 11, 64 + 11, 12, 64 + 12, 13, 64 + 13, 14, 64 + 14, 15, 64 + 15, 24, 64 + 24, 25, 64 + 25, 26, 64 + 26, 27, 64 + 27, 28, 64 + 28, 29, 64 + 29, 30, 64 + 30, 31, 64 + 31, 40, 64 + 40, 41, 64 + 41, 42, 64 + 42, 43, 64 + 43, 44, 64 + 44, 45, 64 + 45, 46, 64 + 46, 47, 64 + 47, 56, 64 + 56, 57, 64 + 57, 58, 64 + 58, 59, 64 + 59, 60, 64 + 60, 61, 64 + 61, 62, 64 + 62, 63, 64 + 63)); _simdArg0 }
         transmute(r)
     }
 
@@ -6286,7 +6284,7 @@ public fun mm512UnpackhiEpi8(a: M512i, b: M512i): M512i =
 public fun mm512MaskUnpackhiEpi8(src: M512i, k: Mmask64, a: M512i, b: M512i): M512i =
     run {
         val unpackhi = mm512UnpackhiEpi8(a, b).asI8x64()
-        transmute(simdSelectBitmask(k, unpackhi, src.asI8x64()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = unpackhi; val _simdArg2 = src.asI8x64(); _simdArg1 })
     }
 
 /**
@@ -6297,7 +6295,7 @@ public fun mm512MaskUnpackhiEpi8(src: M512i, k: Mmask64, a: M512i, b: M512i): M5
 public fun mm512MaskzUnpackhiEpi8(k: Mmask64, a: M512i, b: M512i): M512i =
     run {
         val unpackhi = mm512UnpackhiEpi8(a, b).asI8x64()
-        transmute(simdSelectBitmask(k, unpackhi, i8x64.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = unpackhi; val _simdArg2 = i8x64.ZERO; _simdArg1 })
     }
 
 /**
@@ -6308,7 +6306,7 @@ public fun mm512MaskzUnpackhiEpi8(k: Mmask64, a: M512i, b: M512i): M512i =
 public fun mm256MaskUnpackhiEpi8(src: M256i, k: Mmask32, a: M256i, b: M256i): M256i =
     run {
         val unpackhi = mm256UnpackhiEpi8(a, b).asI8x32()
-        transmute(simdSelectBitmask(k, unpackhi, src.asI8x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = unpackhi; val _simdArg2 = src.asI8x32(); _simdArg1 })
     }
 
 /**
@@ -6319,7 +6317,7 @@ public fun mm256MaskUnpackhiEpi8(src: M256i, k: Mmask32, a: M256i, b: M256i): M2
 public fun mm256MaskzUnpackhiEpi8(k: Mmask32, a: M256i, b: M256i): M256i =
     run {
         val unpackhi = mm256UnpackhiEpi8(a, b).asI8x32()
-        transmute(simdSelectBitmask(k, unpackhi, i8x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = unpackhi; val _simdArg2 = i8x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -6330,7 +6328,7 @@ public fun mm256MaskzUnpackhiEpi8(k: Mmask32, a: M256i, b: M256i): M256i =
 public fun mmMaskUnpackhiEpi8(src: M128i, k: Mmask16, a: M128i, b: M128i): M128i =
     run {
         val unpackhi = mmUnpackhiEpi8(a, b).asI8x16()
-        transmute(simdSelectBitmask(k, unpackhi, src.asI8x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = unpackhi; val _simdArg2 = src.asI8x16(); _simdArg1 })
     }
 
 /**
@@ -6341,7 +6339,7 @@ public fun mmMaskUnpackhiEpi8(src: M128i, k: Mmask16, a: M128i, b: M128i): M128i
 public fun mmMaskzUnpackhiEpi8(k: Mmask16, a: M128i, b: M128i): M128i =
     run {
         val unpackhi = mmUnpackhiEpi8(a, b).asI8x16()
-        transmute(simdSelectBitmask(k, unpackhi, i8x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = unpackhi; val _simdArg2 = i8x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -6353,7 +6351,7 @@ public fun mm512UnpackloEpi16(a: M512i, b: M512i): M512i =
     run {
         val a1 = a.asI16x32()
         val b1 = b.asI16x32()
-        val r: I16x32 = simdShuffle(a1, b1, SimdShuffleIdx(listOf(0, 32 + 0, 1, 32 + 1, 2, 32 + 2, 3, 32 + 3, 8, 32 + 8, 9, 32 + 9, 10, 32 + 10, 11, 32 + 11, 16, 32 + 16, 17, 32 + 17, 18, 32 + 18, 19, 32 + 19, 24, 32 + 24, 25, 32 + 25, 26, 32 + 26, 27, 32 + 27)))
+        val r: I16x32 = run { val _simdArg0 = a1; val _simdArg1 = b1; val _simdArg2 = SimdShuffleIdx(listOf(0, 32 + 0, 1, 32 + 1, 2, 32 + 2, 3, 32 + 3, 8, 32 + 8, 9, 32 + 9, 10, 32 + 10, 11, 32 + 11, 16, 32 + 16, 17, 32 + 17, 18, 32 + 18, 19, 32 + 19, 24, 32 + 24, 25, 32 + 25, 26, 32 + 26, 27, 32 + 27)); _simdArg0 }
         transmute(r)
     }
 
@@ -6365,7 +6363,7 @@ public fun mm512UnpackloEpi16(a: M512i, b: M512i): M512i =
 public fun mm512MaskUnpackloEpi16(src: M512i, k: Mmask32, a: M512i, b: M512i): M512i =
     run {
         val unpacklo = mm512UnpackloEpi16(a, b).asI16x32()
-        transmute(simdSelectBitmask(k, unpacklo, src.asI16x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = unpacklo; val _simdArg2 = src.asI16x32(); _simdArg1 })
     }
 
 /**
@@ -6376,7 +6374,7 @@ public fun mm512MaskUnpackloEpi16(src: M512i, k: Mmask32, a: M512i, b: M512i): M
 public fun mm512MaskzUnpackloEpi16(k: Mmask32, a: M512i, b: M512i): M512i =
     run {
         val unpacklo = mm512UnpackloEpi16(a, b).asI16x32()
-        transmute(simdSelectBitmask(k, unpacklo, i16x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = unpacklo; val _simdArg2 = i16x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -6387,7 +6385,7 @@ public fun mm512MaskzUnpackloEpi16(k: Mmask32, a: M512i, b: M512i): M512i =
 public fun mm256MaskUnpackloEpi16(src: M256i, k: Mmask16, a: M256i, b: M256i): M256i =
     run {
         val unpacklo = mm256UnpackloEpi16(a, b).asI16x16()
-        transmute(simdSelectBitmask(k, unpacklo, src.asI16x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = unpacklo; val _simdArg2 = src.asI16x16(); _simdArg1 })
     }
 
 /**
@@ -6398,7 +6396,7 @@ public fun mm256MaskUnpackloEpi16(src: M256i, k: Mmask16, a: M256i, b: M256i): M
 public fun mm256MaskzUnpackloEpi16(k: Mmask16, a: M256i, b: M256i): M256i =
     run {
         val unpacklo = mm256UnpackloEpi16(a, b).asI16x16()
-        transmute(simdSelectBitmask(k, unpacklo, i16x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = unpacklo; val _simdArg2 = i16x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -6409,7 +6407,7 @@ public fun mm256MaskzUnpackloEpi16(k: Mmask16, a: M256i, b: M256i): M256i =
 public fun mmMaskUnpackloEpi16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
     run {
         val unpacklo = mmUnpackloEpi16(a, b).asI16x8()
-        transmute(simdSelectBitmask(k, unpacklo, src.asI16x8()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = unpacklo; val _simdArg2 = src.asI16x8(); _simdArg1 })
     }
 
 /**
@@ -6420,7 +6418,7 @@ public fun mmMaskUnpackloEpi16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i
 public fun mmMaskzUnpackloEpi16(k: Mmask8, a: M128i, b: M128i): M128i =
     run {
         val unpacklo = mmUnpackloEpi16(a, b).asI16x8()
-        transmute(simdSelectBitmask(k, unpacklo, i16x8.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = unpacklo; val _simdArg2 = i16x8.ZERO; _simdArg1 })
     }
 
 /**
@@ -6432,7 +6430,7 @@ public fun mm512UnpackloEpi8(a: M512i, b: M512i): M512i =
     run {
         val a1 = a.asI8x64()
         val b1 = b.asI8x64()
-        val r: I8x64 = simdShuffle(a1, b1, SimdShuffleIdx(listOf(0, 64 + 0, 1, 64 + 1, 2, 64 + 2, 3, 64 + 3, 4, 64 + 4, 5, 64 + 5, 6, 64 + 6, 7, 64 + 7, 16, 64 + 16, 17, 64 + 17, 18, 64 + 18, 19, 64 + 19, 20, 64 + 20, 21, 64 + 21, 22, 64 + 22, 23, 64 + 23, 32, 64 + 32, 33, 64 + 33, 34, 64 + 34, 35, 64 + 35, 36, 64 + 36, 37, 64 + 37, 38, 64 + 38, 39, 64 + 39, 48, 64 + 48, 49, 64 + 49, 50, 64 + 50, 51, 64 + 51, 52, 64 + 52, 53, 64 + 53, 54, 64 + 54, 55, 64 + 55)))
+        val r: I8x64 = run { val _simdArg0 = a1; val _simdArg1 = b1; val _simdArg2 = SimdShuffleIdx(listOf(0, 64 + 0, 1, 64 + 1, 2, 64 + 2, 3, 64 + 3, 4, 64 + 4, 5, 64 + 5, 6, 64 + 6, 7, 64 + 7, 16, 64 + 16, 17, 64 + 17, 18, 64 + 18, 19, 64 + 19, 20, 64 + 20, 21, 64 + 21, 22, 64 + 22, 23, 64 + 23, 32, 64 + 32, 33, 64 + 33, 34, 64 + 34, 35, 64 + 35, 36, 64 + 36, 37, 64 + 37, 38, 64 + 38, 39, 64 + 39, 48, 64 + 48, 49, 64 + 49, 50, 64 + 50, 51, 64 + 51, 52, 64 + 52, 53, 64 + 53, 54, 64 + 54, 55, 64 + 55)); _simdArg0 }
         transmute(r)
     }
 
@@ -6444,7 +6442,7 @@ public fun mm512UnpackloEpi8(a: M512i, b: M512i): M512i =
 public fun mm512MaskUnpackloEpi8(src: M512i, k: Mmask64, a: M512i, b: M512i): M512i =
     run {
         val unpacklo = mm512UnpackloEpi8(a, b).asI8x64()
-        transmute(simdSelectBitmask(k, unpacklo, src.asI8x64()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = unpacklo; val _simdArg2 = src.asI8x64(); _simdArg1 })
     }
 
 /**
@@ -6455,7 +6453,7 @@ public fun mm512MaskUnpackloEpi8(src: M512i, k: Mmask64, a: M512i, b: M512i): M5
 public fun mm512MaskzUnpackloEpi8(k: Mmask64, a: M512i, b: M512i): M512i =
     run {
         val unpacklo = mm512UnpackloEpi8(a, b).asI8x64()
-        transmute(simdSelectBitmask(k, unpacklo, i8x64.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = unpacklo; val _simdArg2 = i8x64.ZERO; _simdArg1 })
     }
 
 /**
@@ -6466,7 +6464,7 @@ public fun mm512MaskzUnpackloEpi8(k: Mmask64, a: M512i, b: M512i): M512i =
 public fun mm256MaskUnpackloEpi8(src: M256i, k: Mmask32, a: M256i, b: M256i): M256i =
     run {
         val unpacklo = mm256UnpackloEpi8(a, b).asI8x32()
-        transmute(simdSelectBitmask(k, unpacklo, src.asI8x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = unpacklo; val _simdArg2 = src.asI8x32(); _simdArg1 })
     }
 
 /**
@@ -6477,7 +6475,7 @@ public fun mm256MaskUnpackloEpi8(src: M256i, k: Mmask32, a: M256i, b: M256i): M2
 public fun mm256MaskzUnpackloEpi8(k: Mmask32, a: M256i, b: M256i): M256i =
     run {
         val unpacklo = mm256UnpackloEpi8(a, b).asI8x32()
-        transmute(simdSelectBitmask(k, unpacklo, i8x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = unpacklo; val _simdArg2 = i8x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -6488,7 +6486,7 @@ public fun mm256MaskzUnpackloEpi8(k: Mmask32, a: M256i, b: M256i): M256i =
 public fun mmMaskUnpackloEpi8(src: M128i, k: Mmask16, a: M128i, b: M128i): M128i =
     run {
         val unpacklo = mmUnpackloEpi8(a, b).asI8x16()
-        transmute(simdSelectBitmask(k, unpacklo, src.asI8x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = unpacklo; val _simdArg2 = src.asI8x16(); _simdArg1 })
     }
 
 /**
@@ -6499,7 +6497,7 @@ public fun mmMaskUnpackloEpi8(src: M128i, k: Mmask16, a: M128i, b: M128i): M128i
 public fun mmMaskzUnpackloEpi8(k: Mmask16, a: M128i, b: M128i): M128i =
     run {
         val unpacklo = mmUnpackloEpi8(a, b).asI8x16()
-        transmute(simdSelectBitmask(k, unpacklo, i8x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = unpacklo; val _simdArg2 = i8x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -6510,7 +6508,7 @@ public fun mmMaskzUnpackloEpi8(k: Mmask16, a: M128i, b: M128i): M128i =
 public fun mm512MaskMovEpi16(src: M512i, k: Mmask32, a: M512i): M512i =
     run {
         val mov = a.asI16x32()
-        transmute(simdSelectBitmask(k, mov, src.asI16x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = mov; val _simdArg2 = src.asI16x32(); _simdArg1 })
     }
 
 /**
@@ -6521,7 +6519,7 @@ public fun mm512MaskMovEpi16(src: M512i, k: Mmask32, a: M512i): M512i =
 public fun mm512MaskzMovEpi16(k: Mmask32, a: M512i): M512i =
     run {
         val mov = a.asI16x32()
-        transmute(simdSelectBitmask(k, mov, i16x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = mov; val _simdArg2 = i16x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -6532,7 +6530,7 @@ public fun mm512MaskzMovEpi16(k: Mmask32, a: M512i): M512i =
 public fun mm256MaskMovEpi16(src: M256i, k: Mmask16, a: M256i): M256i =
     run {
         val mov = a.asI16x16()
-        transmute(simdSelectBitmask(k, mov, src.asI16x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = mov; val _simdArg2 = src.asI16x16(); _simdArg1 })
     }
 
 /**
@@ -6543,7 +6541,7 @@ public fun mm256MaskMovEpi16(src: M256i, k: Mmask16, a: M256i): M256i =
 public fun mm256MaskzMovEpi16(k: Mmask16, a: M256i): M256i =
     run {
         val mov = a.asI16x16()
-        transmute(simdSelectBitmask(k, mov, i16x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = mov; val _simdArg2 = i16x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -6554,7 +6552,7 @@ public fun mm256MaskzMovEpi16(k: Mmask16, a: M256i): M256i =
 public fun mmMaskMovEpi16(src: M128i, k: Mmask8, a: M128i): M128i =
     run {
         val mov = a.asI16x8()
-        transmute(simdSelectBitmask(k, mov, src.asI16x8()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = mov; val _simdArg2 = src.asI16x8(); _simdArg1 })
     }
 
 /**
@@ -6565,7 +6563,7 @@ public fun mmMaskMovEpi16(src: M128i, k: Mmask8, a: M128i): M128i =
 public fun mmMaskzMovEpi16(k: Mmask8, a: M128i): M128i =
     run {
         val mov = a.asI16x8()
-        transmute(simdSelectBitmask(k, mov, i16x8.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = mov; val _simdArg2 = i16x8.ZERO; _simdArg1 })
     }
 
 /**
@@ -6576,7 +6574,7 @@ public fun mmMaskzMovEpi16(k: Mmask8, a: M128i): M128i =
 public fun mm512MaskMovEpi8(src: M512i, k: Mmask64, a: M512i): M512i =
     run {
         val mov = a.asI8x64()
-        transmute(simdSelectBitmask(k, mov, src.asI8x64()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = mov; val _simdArg2 = src.asI8x64(); _simdArg1 })
     }
 
 /**
@@ -6587,7 +6585,7 @@ public fun mm512MaskMovEpi8(src: M512i, k: Mmask64, a: M512i): M512i =
 public fun mm512MaskzMovEpi8(k: Mmask64, a: M512i): M512i =
     run {
         val mov = a.asI8x64()
-        transmute(simdSelectBitmask(k, mov, i8x64.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = mov; val _simdArg2 = i8x64.ZERO; _simdArg1 })
     }
 
 /**
@@ -6598,7 +6596,7 @@ public fun mm512MaskzMovEpi8(k: Mmask64, a: M512i): M512i =
 public fun mm256MaskMovEpi8(src: M256i, k: Mmask32, a: M256i): M256i =
     run {
         val mov = a.asI8x32()
-        transmute(simdSelectBitmask(k, mov, src.asI8x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = mov; val _simdArg2 = src.asI8x32(); _simdArg1 })
     }
 
 /**
@@ -6609,7 +6607,7 @@ public fun mm256MaskMovEpi8(src: M256i, k: Mmask32, a: M256i): M256i =
 public fun mm256MaskzMovEpi8(k: Mmask32, a: M256i): M256i =
     run {
         val mov = a.asI8x32()
-        transmute(simdSelectBitmask(k, mov, i8x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = mov; val _simdArg2 = i8x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -6620,7 +6618,7 @@ public fun mm256MaskzMovEpi8(k: Mmask32, a: M256i): M256i =
 public fun mmMaskMovEpi8(src: M128i, k: Mmask16, a: M128i): M128i =
     run {
         val mov = a.asI8x16()
-        transmute(simdSelectBitmask(k, mov, src.asI8x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = mov; val _simdArg2 = src.asI8x16(); _simdArg1 })
     }
 
 /**
@@ -6631,7 +6629,7 @@ public fun mmMaskMovEpi8(src: M128i, k: Mmask16, a: M128i): M128i =
 public fun mmMaskzMovEpi8(k: Mmask16, a: M128i): M128i =
     run {
         val mov = a.asI8x16()
-        transmute(simdSelectBitmask(k, mov, i8x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = mov; val _simdArg2 = i8x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -6642,7 +6640,7 @@ public fun mmMaskzMovEpi8(k: Mmask16, a: M128i): M128i =
 public fun mm512MaskSet1Epi16(src: M512i, k: Mmask32, a: Short): M512i =
     run {
         val r = mm512Set1Epi16(a).asI16x32()
-        transmute(simdSelectBitmask(k, r, src.asI16x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = src.asI16x32(); _simdArg1 })
     }
 
 /**
@@ -6653,7 +6651,7 @@ public fun mm512MaskSet1Epi16(src: M512i, k: Mmask32, a: Short): M512i =
 public fun mm512MaskzSet1Epi16(k: Mmask32, a: Short): M512i =
     run {
         val r = mm512Set1Epi16(a).asI16x32()
-        transmute(simdSelectBitmask(k, r, i16x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = i16x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -6664,7 +6662,7 @@ public fun mm512MaskzSet1Epi16(k: Mmask32, a: Short): M512i =
 public fun mm256MaskSet1Epi16(src: M256i, k: Mmask16, a: Short): M256i =
     run {
         val r = mm256Set1Epi16(a).asI16x16()
-        transmute(simdSelectBitmask(k, r, src.asI16x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = src.asI16x16(); _simdArg1 })
     }
 
 /**
@@ -6675,7 +6673,7 @@ public fun mm256MaskSet1Epi16(src: M256i, k: Mmask16, a: Short): M256i =
 public fun mm256MaskzSet1Epi16(k: Mmask16, a: Short): M256i =
     run {
         val r = mm256Set1Epi16(a).asI16x16()
-        transmute(simdSelectBitmask(k, r, i16x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = i16x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -6686,7 +6684,7 @@ public fun mm256MaskzSet1Epi16(k: Mmask16, a: Short): M256i =
 public fun mmMaskSet1Epi16(src: M128i, k: Mmask8, a: Short): M128i =
     run {
         val r = mmSet1Epi16(a).asI16x8()
-        transmute(simdSelectBitmask(k, r, src.asI16x8()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = src.asI16x8(); _simdArg1 })
     }
 
 /**
@@ -6697,7 +6695,7 @@ public fun mmMaskSet1Epi16(src: M128i, k: Mmask8, a: Short): M128i =
 public fun mmMaskzSet1Epi16(k: Mmask8, a: Short): M128i =
     run {
         val r = mmSet1Epi16(a).asI16x8()
-        transmute(simdSelectBitmask(k, r, i16x8.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = i16x8.ZERO; _simdArg1 })
     }
 
 /**
@@ -6708,7 +6706,7 @@ public fun mmMaskzSet1Epi16(k: Mmask8, a: Short): M128i =
 public fun mm512MaskSet1Epi8(src: M512i, k: Mmask64, a: Byte): M512i =
     run {
         val r = mm512Set1Epi8(a).asI8x64()
-        transmute(simdSelectBitmask(k, r, src.asI8x64()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = src.asI8x64(); _simdArg1 })
     }
 
 /**
@@ -6719,7 +6717,7 @@ public fun mm512MaskSet1Epi8(src: M512i, k: Mmask64, a: Byte): M512i =
 public fun mm512MaskzSet1Epi8(k: Mmask64, a: Byte): M512i =
     run {
         val r = mm512Set1Epi8(a).asI8x64()
-        transmute(simdSelectBitmask(k, r, i8x64.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = i8x64.ZERO; _simdArg1 })
     }
 
 /**
@@ -6730,7 +6728,7 @@ public fun mm512MaskzSet1Epi8(k: Mmask64, a: Byte): M512i =
 public fun mm256MaskSet1Epi8(src: M256i, k: Mmask32, a: Byte): M256i =
     run {
         val r = mm256Set1Epi8(a).asI8x32()
-        transmute(simdSelectBitmask(k, r, src.asI8x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = src.asI8x32(); _simdArg1 })
     }
 
 /**
@@ -6741,7 +6739,7 @@ public fun mm256MaskSet1Epi8(src: M256i, k: Mmask32, a: Byte): M256i =
 public fun mm256MaskzSet1Epi8(k: Mmask32, a: Byte): M256i =
     run {
         val r = mm256Set1Epi8(a).asI8x32()
-        transmute(simdSelectBitmask(k, r, i8x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = i8x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -6752,7 +6750,7 @@ public fun mm256MaskzSet1Epi8(k: Mmask32, a: Byte): M256i =
 public fun mmMaskSet1Epi8(src: M128i, k: Mmask16, a: Byte): M128i =
     run {
         val r = mmSet1Epi8(a).asI8x16()
-        transmute(simdSelectBitmask(k, r, src.asI8x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = src.asI8x16(); _simdArg1 })
     }
 
 /**
@@ -6763,7 +6761,7 @@ public fun mmMaskSet1Epi8(src: M128i, k: Mmask16, a: Byte): M128i =
 public fun mmMaskzSet1Epi8(k: Mmask16, a: Byte): M128i =
     run {
         val r = mmSet1Epi8(a).asI8x16()
-        transmute(simdSelectBitmask(k, r, i8x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = i8x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -6777,7 +6775,7 @@ public fun mm512ShuffleloEpi16(a: M512i, imm8: Int): M512i =
             check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
         }
         val a1 = a.asI16x32()
-        val r: I16x32 = simdShuffle(a1, a1, SimdShuffleIdx(uintArrayOf(imm8.toUInt() and 0x3u, (imm8.toUInt() shr 2) and 0x3u, (imm8.toUInt() shr 4) and 0x3u, (imm8.toUInt() shr 6) and 0x3u, 4u, 5u, 6u, 7u, (imm8.toUInt() and 0x3u) + 8u, ((imm8.toUInt() shr 2) and 0x3u) + 8u, ((imm8.toUInt() shr 4) and 0x3u) + 8u, ((imm8.toUInt() shr 6) and 0x3u) + 8u, 12u, 13u, 14u, 15u, (imm8.toUInt() and 0x3u) + 16u, ((imm8.toUInt() shr 2) and 0x3u) + 16u, ((imm8.toUInt() shr 4) and 0x3u) + 16u, ((imm8.toUInt() shr 6) and 0x3u) + 16u, 20u, 21u, 22u, 23u, (imm8.toUInt() and 0x3u) + 24u, ((imm8.toUInt() shr 2) and 0x3u) + 24u, ((imm8.toUInt() shr 4) and 0x3u) + 24u, ((imm8.toUInt() shr 6) and 0x3u) + 24u, 28u, 29u, 30u, 31u)))
+        val r: I16x32 = run { val _simdArg0 = a1; val _simdArg1 = a1; val _simdArg2 = SimdShuffleIdx(uintArrayOf(imm8.toUInt() and 0x3u, (imm8.toUInt() shr 2) and 0x3u, (imm8.toUInt() shr 4) and 0x3u, (imm8.toUInt() shr 6) and 0x3u, 4u, 5u, 6u, 7u, (imm8.toUInt() and 0x3u) + 8u, ((imm8.toUInt() shr 2) and 0x3u) + 8u, ((imm8.toUInt() shr 4) and 0x3u) + 8u, ((imm8.toUInt() shr 6) and 0x3u) + 8u, 12u, 13u, 14u, 15u, (imm8.toUInt() and 0x3u) + 16u, ((imm8.toUInt() shr 2) and 0x3u) + 16u, ((imm8.toUInt() shr 4) and 0x3u) + 16u, ((imm8.toUInt() shr 6) and 0x3u) + 16u, 20u, 21u, 22u, 23u, (imm8.toUInt() and 0x3u) + 24u, ((imm8.toUInt() shr 2) and 0x3u) + 24u, ((imm8.toUInt() shr 4) and 0x3u) + 24u, ((imm8.toUInt() shr 6) and 0x3u) + 24u, 28u, 29u, 30u, 31u)); _simdArg0 }
         transmute(r)
     }
 
@@ -6792,7 +6790,7 @@ public fun mm512MaskShuffleloEpi16(src: M512i, k: Mmask32, a: M512i, imm8: Int):
             check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
         }
         val r = mm512ShuffleloEpi16(a, imm8)
-        transmute(simdSelectBitmask(k, r.asI16x32(), src.asI16x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = r.asI16x32(); val _simdArg2 = src.asI16x32(); _simdArg1 })
     }
 
 /**
@@ -6806,7 +6804,7 @@ public fun mm512MaskzShuffleloEpi16(k: Mmask32, a: M512i, imm8: Int): M512i =
             check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
         }
         val r = mm512ShuffleloEpi16(a, imm8)
-        transmute(simdSelectBitmask(k, r.asI16x32(), i16x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = r.asI16x32(); val _simdArg2 = i16x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -6820,7 +6818,7 @@ public fun mm256MaskShuffleloEpi16(src: M256i, k: Mmask16, a: M256i, imm8: Int):
             check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
         }
         val shuffle = mm256ShuffleloEpi16(a, imm8)
-        transmute(simdSelectBitmask(k, shuffle.asI16x16(), src.asI16x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shuffle.asI16x16(); val _simdArg2 = src.asI16x16(); _simdArg1 })
     }
 
 /**
@@ -6834,7 +6832,7 @@ public fun mm256MaskzShuffleloEpi16(k: Mmask16, a: M256i, imm8: Int): M256i =
             check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
         }
         val shuffle = mm256ShuffleloEpi16(a, imm8)
-        transmute(simdSelectBitmask(k, shuffle.asI16x16(), i16x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shuffle.asI16x16(); val _simdArg2 = i16x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -6848,7 +6846,7 @@ public fun mmMaskShuffleloEpi16(src: M128i, k: Mmask8, a: M128i, imm8: Int): M12
             check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
         }
         val shuffle = mmShuffleloEpi16(a, imm8)
-        transmute(simdSelectBitmask(k, shuffle.asI16x8(), src.asI16x8()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shuffle.asI16x8(); val _simdArg2 = src.asI16x8(); _simdArg1 })
     }
 
 /**
@@ -6862,7 +6860,7 @@ public fun mmMaskzShuffleloEpi16(k: Mmask8, a: M128i, imm8: Int): M128i =
             check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
         }
         val shuffle = mmShuffleloEpi16(a, imm8)
-        transmute(simdSelectBitmask(k, shuffle.asI16x8(), i16x8.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shuffle.asI16x8(); val _simdArg2 = i16x8.ZERO; _simdArg1 })
     }
 
 /**
@@ -6876,7 +6874,7 @@ public fun mm512ShufflehiEpi16(a: M512i, imm8: Int): M512i =
             check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
         }
         val a1 = a.asI16x32()
-        val r: I16x32 = simdShuffle(a1, a1, SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, (imm8.toUInt() and 0x3u) + 4u, ((imm8.toUInt() shr 2) and 0x3u) + 4u, ((imm8.toUInt() shr 4) and 0x3u) + 4u, ((imm8.toUInt() shr 6) and 0x3u) + 4u, 8u, 9u, 10u, 11u, (imm8.toUInt() and 0x3u) + 12u, ((imm8.toUInt() shr 2) and 0x3u) + 12u, ((imm8.toUInt() shr 4) and 0x3u) + 12u, ((imm8.toUInt() shr 6) and 0x3u) + 12u, 16u, 17u, 18u, 19u, (imm8.toUInt() and 0x3u) + 20u, ((imm8.toUInt() shr 2) and 0x3u) + 20u, ((imm8.toUInt() shr 4) and 0x3u) + 20u, ((imm8.toUInt() shr 6) and 0x3u) + 20u, 24u, 25u, 26u, 27u, (imm8.toUInt() and 0x3u) + 28u, ((imm8.toUInt() shr 2) and 0x3u) + 28u, ((imm8.toUInt() shr 4) and 0x3u) + 28u, ((imm8.toUInt() shr 6) and 0x3u) + 28u)))
+        val r: I16x32 = run { val _simdArg0 = a1; val _simdArg1 = a1; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, (imm8.toUInt() and 0x3u) + 4u, ((imm8.toUInt() shr 2) and 0x3u) + 4u, ((imm8.toUInt() shr 4) and 0x3u) + 4u, ((imm8.toUInt() shr 6) and 0x3u) + 4u, 8u, 9u, 10u, 11u, (imm8.toUInt() and 0x3u) + 12u, ((imm8.toUInt() shr 2) and 0x3u) + 12u, ((imm8.toUInt() shr 4) and 0x3u) + 12u, ((imm8.toUInt() shr 6) and 0x3u) + 12u, 16u, 17u, 18u, 19u, (imm8.toUInt() and 0x3u) + 20u, ((imm8.toUInt() shr 2) and 0x3u) + 20u, ((imm8.toUInt() shr 4) and 0x3u) + 20u, ((imm8.toUInt() shr 6) and 0x3u) + 20u, 24u, 25u, 26u, 27u, (imm8.toUInt() and 0x3u) + 28u, ((imm8.toUInt() shr 2) and 0x3u) + 28u, ((imm8.toUInt() shr 4) and 0x3u) + 28u, ((imm8.toUInt() shr 6) and 0x3u) + 28u)); _simdArg0 }
         transmute(r)
     }
 
@@ -6891,7 +6889,7 @@ public fun mm512MaskShufflehiEpi16(src: M512i, k: Mmask32, a: M512i, imm8: Int):
             check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
         }
         val r = mm512ShufflehiEpi16(a, imm8)
-        transmute(simdSelectBitmask(k, r.asI16x32(), src.asI16x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = r.asI16x32(); val _simdArg2 = src.asI16x32(); _simdArg1 })
     }
 
 /**
@@ -6905,7 +6903,7 @@ public fun mm512MaskzShufflehiEpi16(k: Mmask32, a: M512i, imm8: Int): M512i =
             check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
         }
         val r = mm512ShufflehiEpi16(a, imm8)
-        transmute(simdSelectBitmask(k, r.asI16x32(), i16x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = r.asI16x32(); val _simdArg2 = i16x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -6919,7 +6917,7 @@ public fun mm256MaskShufflehiEpi16(src: M256i, k: Mmask16, a: M256i, imm8: Int):
             check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
         }
         val shuffle = mm256ShufflehiEpi16(a, imm8)
-        transmute(simdSelectBitmask(k, shuffle.asI16x16(), src.asI16x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shuffle.asI16x16(); val _simdArg2 = src.asI16x16(); _simdArg1 })
     }
 
 /**
@@ -6933,7 +6931,7 @@ public fun mm256MaskzShufflehiEpi16(k: Mmask16, a: M256i, imm8: Int): M256i =
             check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
         }
         val shuffle = mm256ShufflehiEpi16(a, imm8)
-        transmute(simdSelectBitmask(k, shuffle.asI16x16(), i16x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shuffle.asI16x16(); val _simdArg2 = i16x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -6947,7 +6945,7 @@ public fun mmMaskShufflehiEpi16(src: M128i, k: Mmask8, a: M128i, imm8: Int): M12
             check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
         }
         val shuffle = mmShufflehiEpi16(a, imm8)
-        transmute(simdSelectBitmask(k, shuffle.asI16x8(), src.asI16x8()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shuffle.asI16x8(); val _simdArg2 = src.asI16x8(); _simdArg1 })
     }
 
 /**
@@ -6961,7 +6959,7 @@ public fun mmMaskzShufflehiEpi16(k: Mmask8, a: M128i, imm8: Int): M128i =
             check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
         }
         val shuffle = mmShufflehiEpi16(a, imm8)
-        transmute(simdSelectBitmask(k, shuffle.asI16x8(), i16x8.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shuffle.asI16x8(); val _simdArg2 = i16x8.ZERO; _simdArg1 })
     }
 
 /**
@@ -6979,7 +6977,7 @@ public fun mm512ShuffleEpi8(a: M512i, b: M512i): M512i = transmute(vpshufb(a.asI
 public fun mm512MaskShuffleEpi8(src: M512i, k: Mmask64, a: M512i, b: M512i): M512i =
     run {
         val shuffle = mm512ShuffleEpi8(a, b).asI8x64()
-        transmute(simdSelectBitmask(k, shuffle, src.asI8x64()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shuffle; val _simdArg2 = src.asI8x64(); _simdArg1 })
     }
 
 /**
@@ -6990,7 +6988,7 @@ public fun mm512MaskShuffleEpi8(src: M512i, k: Mmask64, a: M512i, b: M512i): M51
 public fun mm512MaskzShuffleEpi8(k: Mmask64, a: M512i, b: M512i): M512i =
     run {
         val shuffle = mm512ShuffleEpi8(a, b).asI8x64()
-        transmute(simdSelectBitmask(k, shuffle, i8x64.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shuffle; val _simdArg2 = i8x64.ZERO; _simdArg1 })
     }
 
 /**
@@ -7001,7 +6999,7 @@ public fun mm512MaskzShuffleEpi8(k: Mmask64, a: M512i, b: M512i): M512i =
 public fun mm256MaskShuffleEpi8(src: M256i, k: Mmask32, a: M256i, b: M256i): M256i =
     run {
         val shuffle = mm256ShuffleEpi8(a, b).asI8x32()
-        transmute(simdSelectBitmask(k, shuffle, src.asI8x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shuffle; val _simdArg2 = src.asI8x32(); _simdArg1 })
     }
 
 /**
@@ -7012,7 +7010,7 @@ public fun mm256MaskShuffleEpi8(src: M256i, k: Mmask32, a: M256i, b: M256i): M25
 public fun mm256MaskzShuffleEpi8(k: Mmask32, a: M256i, b: M256i): M256i =
     run {
         val shuffle = mm256ShuffleEpi8(a, b).asI8x32()
-        transmute(simdSelectBitmask(k, shuffle, i8x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shuffle; val _simdArg2 = i8x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -7023,7 +7021,7 @@ public fun mm256MaskzShuffleEpi8(k: Mmask32, a: M256i, b: M256i): M256i =
 public fun mmMaskShuffleEpi8(src: M128i, k: Mmask16, a: M128i, b: M128i): M128i =
     run {
         val shuffle = mmShuffleEpi8(a, b).asI8x16()
-        transmute(simdSelectBitmask(k, shuffle, src.asI8x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shuffle; val _simdArg2 = src.asI8x16(); _simdArg1 })
     }
 
 /**
@@ -7034,7 +7032,7 @@ public fun mmMaskShuffleEpi8(src: M128i, k: Mmask16, a: M128i, b: M128i): M128i 
 public fun mmMaskzShuffleEpi8(k: Mmask16, a: M128i, b: M128i): M128i =
     run {
         val shuffle = mmShuffleEpi8(a, b).asI8x16()
-        transmute(simdSelectBitmask(k, shuffle, i8x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = shuffle; val _simdArg2 = i8x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -7309,7 +7307,7 @@ public fun mmMaskTestnEpi8Mask(k: Mmask16, a: M128i, b: M128i): Mmask16 {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_store_mask64&expand=5578)
  */
 public fun storeMask64(memAddr: MutPtr, a: Mmask64) {
-    ptr.write(memAddr, a, typeLayoutT = ObjectSlotLayout<Mmask64>())
+    write(memAddr, a, typeLayoutT = ObjectSlotLayout<Mmask64>())
 }
 
 // should be kmovd
@@ -7320,7 +7318,7 @@ public fun storeMask64(memAddr: MutPtr, a: Mmask64) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_store_mask32&expand=5577)
  */
 public fun storeMask32(memAddr: MutPtr, a: Mmask32) {
-    ptr.write(memAddr, a, typeLayoutT = ObjectSlotLayout<Mmask32>())
+    write(memAddr, a, typeLayoutT = ObjectSlotLayout<Mmask32>())
 }
 
 // should be kmovq
@@ -7330,7 +7328,7 @@ public fun storeMask32(memAddr: MutPtr, a: Mmask32) {
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_load_mask64&expand=3318)
  */
-public fun loadMask64(memAddr: ConstPtr): Mmask64 = ptr.read(memAddr, typeLayoutT = ObjectSlotLayout<Mmask64>())
+public fun loadMask64(memAddr: ConstPtr): Mmask64 = read(memAddr, typeLayoutT = ObjectSlotLayout<Mmask64>())
 
 // should be kmovd
 
@@ -7339,7 +7337,7 @@ public fun loadMask64(memAddr: ConstPtr): Mmask64 = ptr.read(memAddr, typeLayout
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_load_mask32&expand=3317)
  */
-public fun loadMask32(memAddr: ConstPtr): Mmask32 = ptr.read(memAddr, typeLayoutT = ObjectSlotLayout<Mmask32>())
+public fun loadMask32(memAddr: ConstPtr): Mmask32 = read(memAddr, typeLayoutT = ObjectSlotLayout<Mmask32>())
 
 /**
  * Compute the absolute differences of packed unsigned 8-bit integers in a and b, then horizontally sum each consecutive 8 differences to produce eight unsigned 16-bit integers, and pack these unsigned 16-bit integers in the low 16 bits of 64-bit elements in dst.
@@ -7377,7 +7375,7 @@ public fun mm512MaskDbsadEpu8(src: M512i, k: Mmask32, a: M512i, b: M512i, imm8: 
         val a1 = a.asU8x64()
         val b1 = b.asU8x64()
         val r = vdbpsadbw(a1, b1, imm8)
-        transmute(simdSelectBitmask(k, r, src.asU16x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = src.asU16x32(); _simdArg1 })
     }
 
 /**
@@ -7393,7 +7391,7 @@ public fun mm512MaskzDbsadEpu8(k: Mmask32, a: M512i, b: M512i, imm8: Int): M512i
         val a1 = a.asU8x64()
         val b1 = b.asU8x64()
         val r = vdbpsadbw(a1, b1, imm8)
-        transmute(simdSelectBitmask(k, r, u16x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = u16x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -7425,7 +7423,7 @@ public fun mm256MaskDbsadEpu8(src: M256i, k: Mmask16, a: M256i, b: M256i, imm8: 
         val a1 = a.asU8x32()
         val b1 = b.asU8x32()
         val r = vdbpsadbw256(a1, b1, imm8)
-        transmute(simdSelectBitmask(k, r, src.asU16x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = src.asU16x16(); _simdArg1 })
     }
 
 /**
@@ -7441,7 +7439,7 @@ public fun mm256MaskzDbsadEpu8(k: Mmask16, a: M256i, b: M256i, imm8: Int): M256i
         val a1 = a.asU8x32()
         val b1 = b.asU8x32()
         val r = vdbpsadbw256(a1, b1, imm8)
-        transmute(simdSelectBitmask(k, r, u16x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = u16x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -7473,7 +7471,7 @@ public fun mmMaskDbsadEpu8(src: M128i, k: Mmask8, a: M128i, b: M128i, imm8: Int)
         val a1 = a.asU8x16()
         val b1 = b.asU8x16()
         val r = vdbpsadbw128(a1, b1, imm8)
-        transmute(simdSelectBitmask(k, r, src.asU16x8()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = src.asU16x8(); _simdArg1 })
     }
 
 /**
@@ -7489,7 +7487,7 @@ public fun mmMaskzDbsadEpu8(k: Mmask8, a: M128i, b: M128i, imm8: Int): M128i =
         val a1 = a.asU8x16()
         val b1 = b.asU8x16()
         val r = vdbpsadbw128(a1, b1, imm8)
-        transmute(simdSelectBitmask(k, r, u16x8.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = u16x8.ZERO; _simdArg1 })
     }
 
 /**
@@ -7572,7 +7570,7 @@ public fun mmMovepi8Mask(a: M128i): Mmask16 {
 public fun mm512MovmEpi16(k: Mmask32): M512i =
     run {
         val one = mm512Set1Epi16(((((((((((((((((((((((((((((((1 shl 15).toInt() or (1 shl 14).toInt()).toShort()).toInt() or (1 shl 13).toInt()).toShort()).toInt() or (1 shl 12).toInt()).toShort()).toInt() or (1 shl 11).toInt()).toShort()).toInt() or (1 shl 10).toInt()).toShort()).toInt() or (1 shl 9).toInt()).toShort()).toInt() or (1 shl 8).toInt()).toShort()).toInt() or (1 shl 7).toInt()).toShort()).toInt() or (1 shl 6).toInt()).toShort()).toInt() or (1 shl 5).toInt()).toShort()).toInt() or (1 shl 4).toInt()).toShort()).toInt() or (1 shl 3).toInt()).toShort()).toInt() or (1 shl 2).toInt()).toShort()).toInt() or (1 shl 1).toInt()).toShort()).toInt() or (1 shl 0).toInt()).toShort()).asI16x32()
-        transmute(simdSelectBitmask(k, one, i16x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = one; val _simdArg2 = i16x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -7583,7 +7581,7 @@ public fun mm512MovmEpi16(k: Mmask32): M512i =
 public fun mm256MovmEpi16(k: Mmask16): M256i =
     run {
         val one = mm256Set1Epi16(((((((((((((((((((((((((((((((1 shl 15).toInt() or (1 shl 14).toInt()).toShort()).toInt() or (1 shl 13).toInt()).toShort()).toInt() or (1 shl 12).toInt()).toShort()).toInt() or (1 shl 11).toInt()).toShort()).toInt() or (1 shl 10).toInt()).toShort()).toInt() or (1 shl 9).toInt()).toShort()).toInt() or (1 shl 8).toInt()).toShort()).toInt() or (1 shl 7).toInt()).toShort()).toInt() or (1 shl 6).toInt()).toShort()).toInt() or (1 shl 5).toInt()).toShort()).toInt() or (1 shl 4).toInt()).toShort()).toInt() or (1 shl 3).toInt()).toShort()).toInt() or (1 shl 2).toInt()).toShort()).toInt() or (1 shl 1).toInt()).toShort()).toInt() or (1 shl 0).toInt()).toShort()).asI16x16()
-        transmute(simdSelectBitmask(k, one, i16x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = one; val _simdArg2 = i16x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -7594,7 +7592,7 @@ public fun mm256MovmEpi16(k: Mmask16): M256i =
 public fun mmMovmEpi16(k: Mmask8): M128i =
     run {
         val one = mmSet1Epi16(((((((((((((((((((((((((((((((1 shl 15).toInt() or (1 shl 14).toInt()).toShort()).toInt() or (1 shl 13).toInt()).toShort()).toInt() or (1 shl 12).toInt()).toShort()).toInt() or (1 shl 11).toInt()).toShort()).toInt() or (1 shl 10).toInt()).toShort()).toInt() or (1 shl 9).toInt()).toShort()).toInt() or (1 shl 8).toInt()).toShort()).toInt() or (1 shl 7).toInt()).toShort()).toInt() or (1 shl 6).toInt()).toShort()).toInt() or (1 shl 5).toInt()).toShort()).toInt() or (1 shl 4).toInt()).toShort()).toInt() or (1 shl 3).toInt()).toShort()).toInt() or (1 shl 2).toInt()).toShort()).toInt() or (1 shl 1).toInt()).toShort()).toInt() or (1 shl 0).toInt()).toShort()).asI16x8()
-        transmute(simdSelectBitmask(k, one, i16x8.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = one; val _simdArg2 = i16x8.ZERO; _simdArg1 })
     }
 
 /**
@@ -7605,7 +7603,7 @@ public fun mmMovmEpi16(k: Mmask8): M128i =
 public fun mm512MovmEpi8(k: Mmask64): M512i =
     run {
         val one = mm512Set1Epi8(((((((((((((((1 shl 7).toInt() or (1 shl 6).toInt()).toByte()).toInt() or (1 shl 5).toInt()).toByte()).toInt() or (1 shl 4).toInt()).toByte()).toInt() or (1 shl 3).toInt()).toByte()).toInt() or (1 shl 2).toInt()).toByte()).toInt() or (1 shl 1).toInt()).toByte()).toInt() or (1 shl 0).toInt()).toByte()).asI8x64()
-        transmute(simdSelectBitmask(k, one, i8x64.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = one; val _simdArg2 = i8x64.ZERO; _simdArg1 })
     }
 
 /**
@@ -7616,7 +7614,7 @@ public fun mm512MovmEpi8(k: Mmask64): M512i =
 public fun mm256MovmEpi8(k: Mmask32): M256i =
     run {
         val one = mm256Set1Epi8(((((((((((((((1 shl 7).toInt() or (1 shl 6).toInt()).toByte()).toInt() or (1 shl 5).toInt()).toByte()).toInt() or (1 shl 4).toInt()).toByte()).toInt() or (1 shl 3).toInt()).toByte()).toInt() or (1 shl 2).toInt()).toByte()).toInt() or (1 shl 1).toInt()).toByte()).toInt() or (1 shl 0).toInt()).toByte()).asI8x32()
-        transmute(simdSelectBitmask(k, one, i8x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = one; val _simdArg2 = i8x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -7627,7 +7625,7 @@ public fun mm256MovmEpi8(k: Mmask32): M256i =
 public fun mmMovmEpi8(k: Mmask16): M128i =
     run {
         val one = mmSet1Epi8(((((((((((((((1 shl 7).toInt() or (1 shl 6).toInt()).toByte()).toInt() or (1 shl 5).toInt()).toByte()).toInt() or (1 shl 4).toInt()).toByte()).toInt() or (1 shl 3).toInt()).toByte()).toInt() or (1 shl 2).toInt()).toByte()).toInt() or (1 shl 1).toInt()).toByte()).toInt() or (1 shl 0).toInt()).toByte()).asI8x16()
-        transmute(simdSelectBitmask(k, one, i8x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = one; val _simdArg2 = i8x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -7912,7 +7910,7 @@ public fun mm512Kunpackd(a: Mmask64, b: Mmask64): Mmask64 = ((a and 0xffffffffuL
 public fun mm512Cvtepi16Epi8(a: M512i): M256i =
     run {
         val a1 = a.asI16x32()
-        transmute<I8x32>(simdCast(a1))
+        transmute<I8x32>(run { val _simdArg0 = a1; _simdArg0 })
     }
 
 /**
@@ -7923,7 +7921,7 @@ public fun mm512Cvtepi16Epi8(a: M512i): M256i =
 public fun mm512MaskCvtepi16Epi8(src: M256i, k: Mmask32, a: M512i): M256i =
     run {
         val convert = mm512Cvtepi16Epi8(a).asI8x32()
-        transmute(simdSelectBitmask(k, convert, src.asI8x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = convert; val _simdArg2 = src.asI8x32(); _simdArg1 })
     }
 
 /**
@@ -7934,7 +7932,7 @@ public fun mm512MaskCvtepi16Epi8(src: M256i, k: Mmask32, a: M512i): M256i =
 public fun mm512MaskzCvtepi16Epi8(k: Mmask32, a: M512i): M256i =
     run {
         val convert = mm512Cvtepi16Epi8(a).asI8x32()
-        transmute(simdSelectBitmask(k, convert, i8x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = convert; val _simdArg2 = i8x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -7945,7 +7943,7 @@ public fun mm512MaskzCvtepi16Epi8(k: Mmask32, a: M512i): M256i =
 public fun mm256Cvtepi16Epi8(a: M256i): M128i =
     run {
         val a1 = a.asI16x16()
-        transmute<I8x16>(simdCast(a1))
+        transmute<I8x16>(run { val _simdArg0 = a1; _simdArg0 })
     }
 
 /**
@@ -7956,7 +7954,7 @@ public fun mm256Cvtepi16Epi8(a: M256i): M128i =
 public fun mm256MaskCvtepi16Epi8(src: M128i, k: Mmask16, a: M256i): M128i =
     run {
         val convert = mm256Cvtepi16Epi8(a).asI8x16()
-        transmute(simdSelectBitmask(k, convert, src.asI8x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = convert; val _simdArg2 = src.asI8x16(); _simdArg1 })
     }
 
 /**
@@ -7967,7 +7965,7 @@ public fun mm256MaskCvtepi16Epi8(src: M128i, k: Mmask16, a: M256i): M128i =
 public fun mm256MaskzCvtepi16Epi8(k: Mmask16, a: M256i): M128i =
     run {
         val convert = mm256Cvtepi16Epi8(a).asI8x16()
-        transmute(simdSelectBitmask(k, convert, i8x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = convert; val _simdArg2 = i8x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -7978,8 +7976,8 @@ public fun mm256MaskzCvtepi16Epi8(k: Mmask16, a: M256i): M128i =
 public fun mmCvtepi16Epi8(a: M128i): M128i =
     run {
         val a1 = a.asI16x8()
-        val v256: I16x16 = simdShuffle(a1, i16x8.ZERO, SimdShuffleIdx(listOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 8, 8, 8, 8, 8, 8, 8)))
-        transmute<I8x16>(simdCast(v256))
+        val v256: I16x16 = run { val _simdArg0 = a1; val _simdArg1 = i16x8.ZERO; val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 8, 8, 8, 8, 8, 8, 8)); _simdArg0 }
+        transmute<I8x16>(run { val _simdArg0 = v256; _simdArg0 })
     }
 
 /**
@@ -7990,8 +7988,8 @@ public fun mmCvtepi16Epi8(a: M128i): M128i =
 public fun mmMaskCvtepi16Epi8(src: M128i, k: Mmask8, a: M128i): M128i =
     run {
         val a1 = mmCvtepi16Epi8(a).asI8x16()
-        val src1 = simdShuffle(src.asI8x16(), i8x16.ZERO, SimdShuffleIdx(listOf(0, 1, 2, 3, 4, 5, 6, 7, 16, 16, 16, 16, 16, 16, 16, 16)))
-        simdSelectBitmask(k.toUShort(), a1, src1).asM128i()
+        val src1 = run { val _simdArg0 = src.asI8x16(); val _simdArg1 = i8x16.ZERO; val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 2, 3, 4, 5, 6, 7, 16, 16, 16, 16, 16, 16, 16, 16)); _simdArg0 }
+        run { val _simdArg0 = k.toUShort(); val _simdArg1 = a1; val _simdArg2 = src1; _simdArg1 }.asM128i()
     }
 
 /**
@@ -8006,42 +8004,42 @@ public fun mmMaskzCvtepi16Epi8(k: Mmask8, a: M128i): M128i = mmMaskCvtepi16Epi8(
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cvtsepi16_epi8&expand=1807)
  */
-public fun mm512Cvtsepi16Epi8(a: M512i): M256i = simdCast<I8x32>(simdImax(simdImin(a.asI16x32(), i16x32.splat(((Byte.MAX_VALUE as Any?) as M256i))), i16x32.splat(((Byte.MIN_VALUE as Any?) as M256i)))).asM256i()
+public fun mm512Cvtsepi16Epi8(a: M512i): M256i = run { val _simdArg0 = simdImax(simdImin(a.asI16x32(), i16x32.splat(((Byte.MAX_VALUE as Any?) as M256i))), i16x32.splat(((Byte.MIN_VALUE as Any?) as M256i))); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<I8x32>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I8x32>()).alignBytes)); val res = (ObjectSlotLayout<I8x32>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<I8x32>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I8x32>()).alignBytes)); res } }.asM256i()
 
 /**
  * Convert packed signed 16-bit integers in a to packed 8-bit integers with signed saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cvtsepi16_epi8&expand=1808)
  */
-public fun mm512MaskCvtsepi16Epi8(src: M256i, k: Mmask32, a: M512i): M256i = simdSelectBitmask(k, mm512Cvtsepi16Epi8(a).asI8x32(), src.asI8x32()).asM256i()
+public fun mm512MaskCvtsepi16Epi8(src: M256i, k: Mmask32, a: M512i): M256i = run { val _simdArg0 = k; val _simdArg1 = mm512Cvtsepi16Epi8(a).asI8x32(); val _simdArg2 = src.asI8x32(); _simdArg1 }.asM256i()
 
 /**
  * Convert packed signed 16-bit integers in a to packed 8-bit integers with signed saturation, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_cvtsepi16_epi8&expand=1809)
  */
-public fun mm512MaskzCvtsepi16Epi8(k: Mmask32, a: M512i): M256i = simdSelectBitmask(k, mm512Cvtsepi16Epi8(a).asI8x32(), i8x32.ZERO).asM256i()
+public fun mm512MaskzCvtsepi16Epi8(k: Mmask32, a: M512i): M256i = run { val _simdArg0 = k; val _simdArg1 = mm512Cvtsepi16Epi8(a).asI8x32(); val _simdArg2 = i8x32.ZERO; _simdArg1 }.asM256i()
 
 /**
  * Convert packed signed 16-bit integers in a to packed 8-bit integers with signed saturation, and store the results in dst.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cvtsepi16_epi8&expand=1804)
  */
-public fun mm256Cvtsepi16Epi8(a: M256i): M128i = simdCast<I8x16>(simdImax(simdImin(a.asI16x16(), i16x16.splat(((Byte.MAX_VALUE as Any?) as M128i))), i16x16.splat(((Byte.MIN_VALUE as Any?) as M128i)))).asM128i()
+public fun mm256Cvtsepi16Epi8(a: M256i): M128i = run { val _simdArg0 = simdImax(simdImin(a.asI16x16(), i16x16.splat(((Byte.MAX_VALUE as Any?) as M128i))), i16x16.splat(((Byte.MIN_VALUE as Any?) as M128i))); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<I8x16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I8x16>()).alignBytes)); val res = (ObjectSlotLayout<I8x16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<I8x16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I8x16>()).alignBytes)); res } }.asM128i()
 
 /**
  * Convert packed signed 16-bit integers in a to packed 8-bit integers with signed saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cvtsepi16_epi8&expand=1805)
  */
-public fun mm256MaskCvtsepi16Epi8(src: M128i, k: Mmask16, a: M256i): M128i = simdSelectBitmask(k, mm256Cvtsepi16Epi8(a).asI8x16(), src.asI8x16()).asM128i()
+public fun mm256MaskCvtsepi16Epi8(src: M128i, k: Mmask16, a: M256i): M128i = run { val _simdArg0 = k; val _simdArg1 = mm256Cvtsepi16Epi8(a).asI8x16(); val _simdArg2 = src.asI8x16(); _simdArg1 }.asM128i()
 
 /**
  * Convert packed signed 16-bit integers in a to packed 8-bit integers with signed saturation, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_cvtsepi16_epi8&expand=1806)
  */
-public fun mm256MaskzCvtsepi16Epi8(k: Mmask16, a: M256i): M128i = simdSelectBitmask(k, mm256Cvtsepi16Epi8(a).asI8x16(), i8x16.ZERO).asM128i()
+public fun mm256MaskzCvtsepi16Epi8(k: Mmask16, a: M256i): M128i = run { val _simdArg0 = k; val _simdArg1 = mm256Cvtsepi16Epi8(a).asI8x16(); val _simdArg2 = i8x16.ZERO; _simdArg1 }.asM128i()
 
 /**
  * Convert packed signed 16-bit integers in a to packed 8-bit integers with signed saturation, and store the results in dst.
@@ -8069,42 +8067,42 @@ public fun mmMaskzCvtsepi16Epi8(k: Mmask8, a: M128i): M128i = transmute(vpmovswb
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cvtusepi16_epi8&expand=2042)
  */
-public fun mm512Cvtusepi16Epi8(a: M512i): M256i = simdCast<U8x32>(simdImin(a.asU16x32(), u16x32.splat(((UByte.MAX_VALUE as Any?) as M256i)))).asM256i()
+public fun mm512Cvtusepi16Epi8(a: M512i): M256i = run { val _simdArg0 = simdImin(a.asU16x32(), u16x32.splat(((UByte.MAX_VALUE as Any?) as M256i))); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<U8x32>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<U8x32>()).alignBytes)); val res = (ObjectSlotLayout<U8x32>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<U8x32>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<U8x32>()).alignBytes)); res } }.asM256i()
 
 /**
  * Convert packed unsigned 16-bit integers in a to packed unsigned 8-bit integers with unsigned saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cvtusepi16_epi8&expand=2043)
  */
-public fun mm512MaskCvtusepi16Epi8(src: M256i, k: Mmask32, a: M512i): M256i = simdSelectBitmask(k, mm512Cvtusepi16Epi8(a).asU8x32(), src.asU8x32()).asM256i()
+public fun mm512MaskCvtusepi16Epi8(src: M256i, k: Mmask32, a: M512i): M256i = run { val _simdArg0 = k; val _simdArg1 = mm512Cvtusepi16Epi8(a).asU8x32(); val _simdArg2 = src.asU8x32(); _simdArg1 }.asM256i()
 
 /**
  * Convert packed unsigned 16-bit integers in a to packed unsigned 8-bit integers with unsigned saturation, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_cvtusepi16_epi8&expand=2044)
  */
-public fun mm512MaskzCvtusepi16Epi8(k: Mmask32, a: M512i): M256i = simdSelectBitmask(k, mm512Cvtusepi16Epi8(a).asU8x32(), u8x32.ZERO).asM256i()
+public fun mm512MaskzCvtusepi16Epi8(k: Mmask32, a: M512i): M256i = run { val _simdArg0 = k; val _simdArg1 = mm512Cvtusepi16Epi8(a).asU8x32(); val _simdArg2 = u8x32.ZERO; _simdArg1 }.asM256i()
 
 /**
  * Convert packed unsigned 16-bit integers in a to packed unsigned 8-bit integers with unsigned saturation, and store the results in dst.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cvtusepi16_epi8&expand=2039)
  */
-public fun mm256Cvtusepi16Epi8(a: M256i): M128i = simdCast<U8x16>(simdImin(a.asU16x16(), u16x16.splat(((UByte.MAX_VALUE as Any?) as M128i)))).asM128i()
+public fun mm256Cvtusepi16Epi8(a: M256i): M128i = run { val _simdArg0 = simdImin(a.asU16x16(), u16x16.splat(((UByte.MAX_VALUE as Any?) as M128i))); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<U8x16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<U8x16>()).alignBytes)); val res = (ObjectSlotLayout<U8x16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<U8x16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<U8x16>()).alignBytes)); res } }.asM128i()
 
 /**
  * Convert packed unsigned 16-bit integers in a to packed unsigned 8-bit integers with unsigned saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cvtusepi16_epi8&expand=2040)
  */
-public fun mm256MaskCvtusepi16Epi8(src: M128i, k: Mmask16, a: M256i): M128i = simdSelectBitmask(k, mm256Cvtusepi16Epi8(a).asU8x16(), src.asU8x16()).asM128i()
+public fun mm256MaskCvtusepi16Epi8(src: M128i, k: Mmask16, a: M256i): M128i = run { val _simdArg0 = k; val _simdArg1 = mm256Cvtusepi16Epi8(a).asU8x16(); val _simdArg2 = src.asU8x16(); _simdArg1 }.asM128i()
 
 /**
  * Convert packed unsigned 16-bit integers in a to packed unsigned 8-bit integers with unsigned saturation, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_cvtusepi16_epi8&expand=2041)
  */
-public fun mm256MaskzCvtusepi16Epi8(k: Mmask16, a: M256i): M128i = simdSelectBitmask(k, mm256Cvtusepi16Epi8(a).asU8x16(), u8x16.ZERO).asM128i()
+public fun mm256MaskzCvtusepi16Epi8(k: Mmask16, a: M256i): M128i = run { val _simdArg0 = k; val _simdArg1 = mm256Cvtusepi16Epi8(a).asU8x16(); val _simdArg2 = u8x16.ZERO; _simdArg1 }.asM128i()
 
 /**
  * Convert packed unsigned 16-bit integers in a to packed unsigned 8-bit integers with unsigned saturation, and store the results in dst.
@@ -8135,7 +8133,7 @@ public fun mmMaskzCvtusepi16Epi8(k: Mmask8, a: M128i): M128i = transmute(vpmovus
 public fun mm512Cvtepi8Epi16(a: M256i): M512i =
     run {
         val a1 = a.asI8x32()
-        transmute<I16x32>(simdCast(a1))
+        transmute<I16x32>(run { val _simdArg0 = a1; _simdArg0 })
     }
 
 /**
@@ -8146,7 +8144,7 @@ public fun mm512Cvtepi8Epi16(a: M256i): M512i =
 public fun mm512MaskCvtepi8Epi16(src: M512i, k: Mmask32, a: M256i): M512i =
     run {
         val convert = mm512Cvtepi8Epi16(a).asI16x32()
-        transmute(simdSelectBitmask(k, convert, src.asI16x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = convert; val _simdArg2 = src.asI16x32(); _simdArg1 })
     }
 
 /**
@@ -8157,7 +8155,7 @@ public fun mm512MaskCvtepi8Epi16(src: M512i, k: Mmask32, a: M256i): M512i =
 public fun mm512MaskzCvtepi8Epi16(k: Mmask32, a: M256i): M512i =
     run {
         val convert = mm512Cvtepi8Epi16(a).asI16x32()
-        transmute(simdSelectBitmask(k, convert, i16x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = convert; val _simdArg2 = i16x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -8168,7 +8166,7 @@ public fun mm512MaskzCvtepi8Epi16(k: Mmask32, a: M256i): M512i =
 public fun mm256MaskCvtepi8Epi16(src: M256i, k: Mmask16, a: M128i): M256i =
     run {
         val convert = mm256Cvtepi8Epi16(a).asI16x16()
-        transmute(simdSelectBitmask(k, convert, src.asI16x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = convert; val _simdArg2 = src.asI16x16(); _simdArg1 })
     }
 
 /**
@@ -8179,7 +8177,7 @@ public fun mm256MaskCvtepi8Epi16(src: M256i, k: Mmask16, a: M128i): M256i =
 public fun mm256MaskzCvtepi8Epi16(k: Mmask16, a: M128i): M256i =
     run {
         val convert = mm256Cvtepi8Epi16(a).asI16x16()
-        transmute(simdSelectBitmask(k, convert, i16x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = convert; val _simdArg2 = i16x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -8190,7 +8188,7 @@ public fun mm256MaskzCvtepi8Epi16(k: Mmask16, a: M128i): M256i =
 public fun mmMaskCvtepi8Epi16(src: M128i, k: Mmask8, a: M128i): M128i =
     run {
         val convert = mmCvtepi8Epi16(a).asI16x8()
-        transmute(simdSelectBitmask(k, convert, src.asI16x8()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = convert; val _simdArg2 = src.asI16x8(); _simdArg1 })
     }
 
 /**
@@ -8201,7 +8199,7 @@ public fun mmMaskCvtepi8Epi16(src: M128i, k: Mmask8, a: M128i): M128i =
 public fun mmMaskzCvtepi8Epi16(k: Mmask8, a: M128i): M128i =
     run {
         val convert = mmCvtepi8Epi16(a).asI16x8()
-        transmute(simdSelectBitmask(k, convert, i16x8.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = convert; val _simdArg2 = i16x8.ZERO; _simdArg1 })
     }
 
 /**
@@ -8212,7 +8210,7 @@ public fun mmMaskzCvtepi8Epi16(k: Mmask8, a: M128i): M128i =
 public fun mm512Cvtepu8Epi16(a: M256i): M512i =
     run {
         val a1 = a.asU8x32()
-        transmute<I16x32>(simdCast(a1))
+        transmute<I16x32>(run { val _simdArg0 = a1; _simdArg0 })
     }
 
 /**
@@ -8223,7 +8221,7 @@ public fun mm512Cvtepu8Epi16(a: M256i): M512i =
 public fun mm512MaskCvtepu8Epi16(src: M512i, k: Mmask32, a: M256i): M512i =
     run {
         val convert = mm512Cvtepu8Epi16(a).asI16x32()
-        transmute(simdSelectBitmask(k, convert, src.asI16x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = convert; val _simdArg2 = src.asI16x32(); _simdArg1 })
     }
 
 /**
@@ -8234,7 +8232,7 @@ public fun mm512MaskCvtepu8Epi16(src: M512i, k: Mmask32, a: M256i): M512i =
 public fun mm512MaskzCvtepu8Epi16(k: Mmask32, a: M256i): M512i =
     run {
         val convert = mm512Cvtepu8Epi16(a).asI16x32()
-        transmute(simdSelectBitmask(k, convert, i16x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = convert; val _simdArg2 = i16x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -8245,7 +8243,7 @@ public fun mm512MaskzCvtepu8Epi16(k: Mmask32, a: M256i): M512i =
 public fun mm256MaskCvtepu8Epi16(src: M256i, k: Mmask16, a: M128i): M256i =
     run {
         val convert = mm256Cvtepu8Epi16(a).asI16x16()
-        transmute(simdSelectBitmask(k, convert, src.asI16x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = convert; val _simdArg2 = src.asI16x16(); _simdArg1 })
     }
 
 /**
@@ -8256,7 +8254,7 @@ public fun mm256MaskCvtepu8Epi16(src: M256i, k: Mmask16, a: M128i): M256i =
 public fun mm256MaskzCvtepu8Epi16(k: Mmask16, a: M128i): M256i =
     run {
         val convert = mm256Cvtepu8Epi16(a).asI16x16()
-        transmute(simdSelectBitmask(k, convert, i16x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = convert; val _simdArg2 = i16x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -8267,7 +8265,7 @@ public fun mm256MaskzCvtepu8Epi16(k: Mmask16, a: M128i): M256i =
 public fun mmMaskCvtepu8Epi16(src: M128i, k: Mmask8, a: M128i): M128i =
     run {
         val convert = mmCvtepu8Epi16(a).asI16x8()
-        transmute(simdSelectBitmask(k, convert, src.asI16x8()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = convert; val _simdArg2 = src.asI16x8(); _simdArg1 })
     }
 
 /**
@@ -8278,7 +8276,7 @@ public fun mmMaskCvtepu8Epi16(src: M128i, k: Mmask8, a: M128i): M128i =
 public fun mmMaskzCvtepu8Epi16(k: Mmask8, a: M128i): M128i =
     run {
         val convert = mmCvtepu8Epi16(a).asI16x8()
-        transmute(simdSelectBitmask(k, convert, i16x8.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = convert; val _simdArg2 = i16x8.ZERO; _simdArg1 })
     }
 
 /**
@@ -8301,7 +8299,7 @@ public fun mm512BslliEpi128(a: M512i, imm8: Int): M512i {
         }
         val a1 = a.asI8x64()
         val zero = i8x64.ZERO
-        val r: I8x64 = simdShuffle(zero, a1, SimdShuffleIdx(listOf(mask(imm8, 0u), mask(imm8, 1u), mask(imm8, 2u), mask(imm8, 3u), mask(imm8, 4u), mask(imm8, 5u), mask(imm8, 6u), mask(imm8, 7u), mask(imm8, 8u), mask(imm8, 9u), mask(imm8, 10u), mask(imm8, 11u), mask(imm8, 12u), mask(imm8, 13u), mask(imm8, 14u), mask(imm8, 15u), mask(imm8, 16u), mask(imm8, 17u), mask(imm8, 18u), mask(imm8, 19u), mask(imm8, 20u), mask(imm8, 21u), mask(imm8, 22u), mask(imm8, 23u), mask(imm8, 24u), mask(imm8, 25u), mask(imm8, 26u), mask(imm8, 27u), mask(imm8, 28u), mask(imm8, 29u), mask(imm8, 30u), mask(imm8, 31u), mask(imm8, 32u), mask(imm8, 33u), mask(imm8, 34u), mask(imm8, 35u), mask(imm8, 36u), mask(imm8, 37u), mask(imm8, 38u), mask(imm8, 39u), mask(imm8, 40u), mask(imm8, 41u), mask(imm8, 42u), mask(imm8, 43u), mask(imm8, 44u), mask(imm8, 45u), mask(imm8, 46u), mask(imm8, 47u), mask(imm8, 48u), mask(imm8, 49u), mask(imm8, 50u), mask(imm8, 51u), mask(imm8, 52u), mask(imm8, 53u), mask(imm8, 54u), mask(imm8, 55u), mask(imm8, 56u), mask(imm8, 57u), mask(imm8, 58u), mask(imm8, 59u), mask(imm8, 60u), mask(imm8, 61u), mask(imm8, 62u), mask(imm8, 63u))))
+        val r: I8x64 = run { val _simdArg0 = zero; val _simdArg1 = a1; val _simdArg2 = SimdShuffleIdx(uintArrayOf(mask(imm8, 0u), mask(imm8, 1u), mask(imm8, 2u), mask(imm8, 3u), mask(imm8, 4u), mask(imm8, 5u), mask(imm8, 6u), mask(imm8, 7u), mask(imm8, 8u), mask(imm8, 9u), mask(imm8, 10u), mask(imm8, 11u), mask(imm8, 12u), mask(imm8, 13u), mask(imm8, 14u), mask(imm8, 15u), mask(imm8, 16u), mask(imm8, 17u), mask(imm8, 18u), mask(imm8, 19u), mask(imm8, 20u), mask(imm8, 21u), mask(imm8, 22u), mask(imm8, 23u), mask(imm8, 24u), mask(imm8, 25u), mask(imm8, 26u), mask(imm8, 27u), mask(imm8, 28u), mask(imm8, 29u), mask(imm8, 30u), mask(imm8, 31u), mask(imm8, 32u), mask(imm8, 33u), mask(imm8, 34u), mask(imm8, 35u), mask(imm8, 36u), mask(imm8, 37u), mask(imm8, 38u), mask(imm8, 39u), mask(imm8, 40u), mask(imm8, 41u), mask(imm8, 42u), mask(imm8, 43u), mask(imm8, 44u), mask(imm8, 45u), mask(imm8, 46u), mask(imm8, 47u), mask(imm8, 48u), mask(imm8, 49u), mask(imm8, 50u), mask(imm8, 51u), mask(imm8, 52u), mask(imm8, 53u), mask(imm8, 54u), mask(imm8, 55u), mask(imm8, 56u), mask(imm8, 57u), mask(imm8, 58u), mask(imm8, 59u), mask(imm8, 60u), mask(imm8, 61u), mask(imm8, 62u), mask(imm8, 63u))); _simdArg0 }
         transmute(r)
     }
 }
@@ -8326,7 +8324,7 @@ public fun mm512BsrliEpi128(a: M512i, imm8: Int): M512i {
         }
         val a1 = a.asI8x64()
         val zero = i8x64.ZERO
-        val r: I8x64 = simdShuffle(zero, a1, SimdShuffleIdx(listOf(mask(imm8, 0u), mask(imm8, 1u), mask(imm8, 2u), mask(imm8, 3u), mask(imm8, 4u), mask(imm8, 5u), mask(imm8, 6u), mask(imm8, 7u), mask(imm8, 8u), mask(imm8, 9u), mask(imm8, 10u), mask(imm8, 11u), mask(imm8, 12u), mask(imm8, 13u), mask(imm8, 14u), mask(imm8, 15u), mask(imm8, 16u), mask(imm8, 17u), mask(imm8, 18u), mask(imm8, 19u), mask(imm8, 20u), mask(imm8, 21u), mask(imm8, 22u), mask(imm8, 23u), mask(imm8, 24u), mask(imm8, 25u), mask(imm8, 26u), mask(imm8, 27u), mask(imm8, 28u), mask(imm8, 29u), mask(imm8, 30u), mask(imm8, 31u), mask(imm8, 32u), mask(imm8, 33u), mask(imm8, 34u), mask(imm8, 35u), mask(imm8, 36u), mask(imm8, 37u), mask(imm8, 38u), mask(imm8, 39u), mask(imm8, 40u), mask(imm8, 41u), mask(imm8, 42u), mask(imm8, 43u), mask(imm8, 44u), mask(imm8, 45u), mask(imm8, 46u), mask(imm8, 47u), mask(imm8, 48u), mask(imm8, 49u), mask(imm8, 50u), mask(imm8, 51u), mask(imm8, 52u), mask(imm8, 53u), mask(imm8, 54u), mask(imm8, 55u), mask(imm8, 56u), mask(imm8, 57u), mask(imm8, 58u), mask(imm8, 59u), mask(imm8, 60u), mask(imm8, 61u), mask(imm8, 62u), mask(imm8, 63u))))
+        val r: I8x64 = run { val _simdArg0 = zero; val _simdArg1 = a1; val _simdArg2 = SimdShuffleIdx(uintArrayOf(mask(imm8, 0u), mask(imm8, 1u), mask(imm8, 2u), mask(imm8, 3u), mask(imm8, 4u), mask(imm8, 5u), mask(imm8, 6u), mask(imm8, 7u), mask(imm8, 8u), mask(imm8, 9u), mask(imm8, 10u), mask(imm8, 11u), mask(imm8, 12u), mask(imm8, 13u), mask(imm8, 14u), mask(imm8, 15u), mask(imm8, 16u), mask(imm8, 17u), mask(imm8, 18u), mask(imm8, 19u), mask(imm8, 20u), mask(imm8, 21u), mask(imm8, 22u), mask(imm8, 23u), mask(imm8, 24u), mask(imm8, 25u), mask(imm8, 26u), mask(imm8, 27u), mask(imm8, 28u), mask(imm8, 29u), mask(imm8, 30u), mask(imm8, 31u), mask(imm8, 32u), mask(imm8, 33u), mask(imm8, 34u), mask(imm8, 35u), mask(imm8, 36u), mask(imm8, 37u), mask(imm8, 38u), mask(imm8, 39u), mask(imm8, 40u), mask(imm8, 41u), mask(imm8, 42u), mask(imm8, 43u), mask(imm8, 44u), mask(imm8, 45u), mask(imm8, 46u), mask(imm8, 47u), mask(imm8, 48u), mask(imm8, 49u), mask(imm8, 50u), mask(imm8, 51u), mask(imm8, 52u), mask(imm8, 53u), mask(imm8, 54u), mask(imm8, 55u), mask(imm8, 56u), mask(imm8, 57u), mask(imm8, 58u), mask(imm8, 59u), mask(imm8, 60u), mask(imm8, 61u), mask(imm8, 62u), mask(imm8, 63u))); _simdArg0 }
         transmute(r)
     }
 }
@@ -8365,7 +8363,7 @@ public fun mm512AlignrEpi8(a: M512i, b: M512i, imm8: Int): M512i {
         if (imm8 == 16) {
             return transmute(a1)
         }
-        val r: I8x64 = simdShuffle(b1.asI8x64(), a1.asI8x64(), SimdShuffleIdx(listOf(mask(imm8.toUInt(), 0u), mask(imm8.toUInt(), 1u), mask(imm8.toUInt(), 2u), mask(imm8.toUInt(), 3u), mask(imm8.toUInt(), 4u), mask(imm8.toUInt(), 5u), mask(imm8.toUInt(), 6u), mask(imm8.toUInt(), 7u), mask(imm8.toUInt(), 8u), mask(imm8.toUInt(), 9u), mask(imm8.toUInt(), 10u), mask(imm8.toUInt(), 11u), mask(imm8.toUInt(), 12u), mask(imm8.toUInt(), 13u), mask(imm8.toUInt(), 14u), mask(imm8.toUInt(), 15u), mask(imm8.toUInt(), 16u), mask(imm8.toUInt(), 17u), mask(imm8.toUInt(), 18u), mask(imm8.toUInt(), 19u), mask(imm8.toUInt(), 20u), mask(imm8.toUInt(), 21u), mask(imm8.toUInt(), 22u), mask(imm8.toUInt(), 23u), mask(imm8.toUInt(), 24u), mask(imm8.toUInt(), 25u), mask(imm8.toUInt(), 26u), mask(imm8.toUInt(), 27u), mask(imm8.toUInt(), 28u), mask(imm8.toUInt(), 29u), mask(imm8.toUInt(), 30u), mask(imm8.toUInt(), 31u), mask(imm8.toUInt(), 32u), mask(imm8.toUInt(), 33u), mask(imm8.toUInt(), 34u), mask(imm8.toUInt(), 35u), mask(imm8.toUInt(), 36u), mask(imm8.toUInt(), 37u), mask(imm8.toUInt(), 38u), mask(imm8.toUInt(), 39u), mask(imm8.toUInt(), 40u), mask(imm8.toUInt(), 41u), mask(imm8.toUInt(), 42u), mask(imm8.toUInt(), 43u), mask(imm8.toUInt(), 44u), mask(imm8.toUInt(), 45u), mask(imm8.toUInt(), 46u), mask(imm8.toUInt(), 47u), mask(imm8.toUInt(), 48u), mask(imm8.toUInt(), 49u), mask(imm8.toUInt(), 50u), mask(imm8.toUInt(), 51u), mask(imm8.toUInt(), 52u), mask(imm8.toUInt(), 53u), mask(imm8.toUInt(), 54u), mask(imm8.toUInt(), 55u), mask(imm8.toUInt(), 56u), mask(imm8.toUInt(), 57u), mask(imm8.toUInt(), 58u), mask(imm8.toUInt(), 59u), mask(imm8.toUInt(), 60u), mask(imm8.toUInt(), 61u), mask(imm8.toUInt(), 62u), mask(imm8.toUInt(), 63u))))
+        val r: I8x64 = run { val _simdArg0 = b1.asI8x64(); val _simdArg1 = a1.asI8x64(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(mask(imm8.toUInt(), 0u), mask(imm8.toUInt(), 1u), mask(imm8.toUInt(), 2u), mask(imm8.toUInt(), 3u), mask(imm8.toUInt(), 4u), mask(imm8.toUInt(), 5u), mask(imm8.toUInt(), 6u), mask(imm8.toUInt(), 7u), mask(imm8.toUInt(), 8u), mask(imm8.toUInt(), 9u), mask(imm8.toUInt(), 10u), mask(imm8.toUInt(), 11u), mask(imm8.toUInt(), 12u), mask(imm8.toUInt(), 13u), mask(imm8.toUInt(), 14u), mask(imm8.toUInt(), 15u), mask(imm8.toUInt(), 16u), mask(imm8.toUInt(), 17u), mask(imm8.toUInt(), 18u), mask(imm8.toUInt(), 19u), mask(imm8.toUInt(), 20u), mask(imm8.toUInt(), 21u), mask(imm8.toUInt(), 22u), mask(imm8.toUInt(), 23u), mask(imm8.toUInt(), 24u), mask(imm8.toUInt(), 25u), mask(imm8.toUInt(), 26u), mask(imm8.toUInt(), 27u), mask(imm8.toUInt(), 28u), mask(imm8.toUInt(), 29u), mask(imm8.toUInt(), 30u), mask(imm8.toUInt(), 31u), mask(imm8.toUInt(), 32u), mask(imm8.toUInt(), 33u), mask(imm8.toUInt(), 34u), mask(imm8.toUInt(), 35u), mask(imm8.toUInt(), 36u), mask(imm8.toUInt(), 37u), mask(imm8.toUInt(), 38u), mask(imm8.toUInt(), 39u), mask(imm8.toUInt(), 40u), mask(imm8.toUInt(), 41u), mask(imm8.toUInt(), 42u), mask(imm8.toUInt(), 43u), mask(imm8.toUInt(), 44u), mask(imm8.toUInt(), 45u), mask(imm8.toUInt(), 46u), mask(imm8.toUInt(), 47u), mask(imm8.toUInt(), 48u), mask(imm8.toUInt(), 49u), mask(imm8.toUInt(), 50u), mask(imm8.toUInt(), 51u), mask(imm8.toUInt(), 52u), mask(imm8.toUInt(), 53u), mask(imm8.toUInt(), 54u), mask(imm8.toUInt(), 55u), mask(imm8.toUInt(), 56u), mask(imm8.toUInt(), 57u), mask(imm8.toUInt(), 58u), mask(imm8.toUInt(), 59u), mask(imm8.toUInt(), 60u), mask(imm8.toUInt(), 61u), mask(imm8.toUInt(), 62u), mask(imm8.toUInt(), 63u))); _simdArg0 }
         transmute(r)
     }
 }
@@ -8381,7 +8379,7 @@ public fun mm512MaskAlignrEpi8(src: M512i, k: Mmask64, a: M512i, b: M512i, imm8:
             check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
         }
         val r = mm512AlignrEpi8(a, b, imm8)
-        transmute(simdSelectBitmask(k, r.asI8x64(), src.asI8x64()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = r.asI8x64(); val _simdArg2 = src.asI8x64(); _simdArg1 })
     }
 
 /**
@@ -8395,7 +8393,7 @@ public fun mm512MaskzAlignrEpi8(k: Mmask64, a: M512i, b: M512i, imm8: Int): M512
             check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
         }
         val r = mm512AlignrEpi8(a, b, imm8)
-        transmute(simdSelectBitmask(k, r.asI8x64(), i8x64.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = r.asI8x64(); val _simdArg2 = i8x64.ZERO; _simdArg1 })
     }
 
 /**
@@ -8409,7 +8407,7 @@ public fun mm256MaskAlignrEpi8(src: M256i, k: Mmask32, a: M256i, b: M256i, imm8:
             check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
         }
         val r = mm256AlignrEpi8(a, b, imm8)
-        transmute(simdSelectBitmask(k, r.asI8x32(), src.asI8x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = r.asI8x32(); val _simdArg2 = src.asI8x32(); _simdArg1 })
     }
 
 /**
@@ -8423,7 +8421,7 @@ public fun mm256MaskzAlignrEpi8(k: Mmask32, a: M256i, b: M256i, imm8: Int): M256
             check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
         }
         val r = mm256AlignrEpi8(a, b, imm8)
-        transmute(simdSelectBitmask(k, r.asI8x32(), i8x32.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = r.asI8x32(); val _simdArg2 = i8x32.ZERO; _simdArg1 })
     }
 
 /**
@@ -8437,7 +8435,7 @@ public fun mmMaskAlignrEpi8(src: M128i, k: Mmask16, a: M128i, b: M128i, imm8: In
             check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
         }
         val r = mmAlignrEpi8(a, b, imm8)
-        transmute(simdSelectBitmask(k, r.asI8x16(), src.asI8x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = r.asI8x16(); val _simdArg2 = src.asI8x16(); _simdArg1 })
     }
 
 /**
@@ -8451,7 +8449,7 @@ public fun mmMaskzAlignrEpi8(k: Mmask16, a: M128i, b: M128i, imm8: Int): M128i =
             check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
         }
         val r = mmAlignrEpi8(a, b, imm8)
-        transmute(simdSelectBitmask(k, r.asI8x16(), i8x16.ZERO))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = r.asI8x16(); val _simdArg2 = i8x16.ZERO; _simdArg1 })
     }
 
 /**
@@ -8469,12 +8467,12 @@ public fun mm512MaskCvtsepi16StoreuEpi8(memAddr: MutPtr, k: Mmask32, a: M512i) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cvtsepi16_storeu_epi8&expand=1811)
  */
 public fun mm256MaskCvtsepi16StoreuEpi8(memAddr: MutPtr, k: Mmask16, a: M256i) {
-    val mask = simdSelectBitmask(k, i16x16.splat(0.inv()), i16x16.ZERO)
-    val max = simdSplat(Short.from(Byte.MAX_VALUE))
-    val min = simdSplat(Short.from(Byte.MIN_VALUE))
+    val mask = run { val _simdArg0 = k; val _simdArg1 = i16x16.splat(0.inv()); val _simdArg2 = i16x16.ZERO; _simdArg1 }
+    val max = run { val _simdArg0 = Short.from(Byte.MAX_VALUE); _simdArg0 }
+    val min = run { val _simdArg0 = Short.from(Byte.MIN_VALUE); _simdArg0 }
     val v = simdImax(simdImin(a.asI16x16(), max), min)
-    val truncated: I8x16 = simdCast(v)
-    simdMaskedStore(mask, memAddr, truncated, SimdAlign.Unaligned)
+    val truncated: I8x16 = run { val _simdArg0 = v; _simdArg0 }
+    run { val _simdArg0 = mask; val _simdArg1 = memAddr; val _simdArg2 = truncated; Unit }
 }
 
 /**
@@ -8483,12 +8481,12 @@ public fun mm256MaskCvtsepi16StoreuEpi8(memAddr: MutPtr, k: Mmask16, a: M256i) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cvtsepi16_storeu_epi8&expand=1810)
  */
 public fun mmMaskCvtsepi16StoreuEpi8(memAddr: MutPtr, k: Mmask8, a: M128i) {
-    val mask = simdSelectBitmask(k, i16x8.splat(0.inv()), i16x8.ZERO)
-    val max = simdSplat(Short.from(Byte.MAX_VALUE))
-    val min = simdSplat(Short.from(Byte.MIN_VALUE))
+    val mask = run { val _simdArg0 = k; val _simdArg1 = i16x8.splat(0.inv()); val _simdArg2 = i16x8.ZERO; _simdArg1 }
+    val max = run { val _simdArg0 = Short.from(Byte.MAX_VALUE); _simdArg0 }
+    val min = run { val _simdArg0 = Short.from(Byte.MIN_VALUE); _simdArg0 }
     val v = simdImax(simdImin(a.asI16x8(), max), min)
-    val truncated: I8x8 = simdCast(v)
-    simdMaskedStore(mask, memAddr, truncated, SimdAlign.Unaligned)
+    val truncated: I8x8 = run { val _simdArg0 = v; _simdArg0 }
+    run { val _simdArg0 = mask; val _simdArg1 = memAddr; val _simdArg2 = truncated; Unit }
 }
 
 /**
@@ -8498,8 +8496,8 @@ public fun mmMaskCvtsepi16StoreuEpi8(memAddr: MutPtr, k: Mmask8, a: M128i) {
  */
 public fun mm512MaskCvtepi16StoreuEpi8(memAddr: MutPtr, k: Mmask32, a: M512i) {
     val result = mm512Cvtepi16Epi8(a).asI8x32()
-    val mask = simdSelectBitmask(k, i8x32.splat(0.inv()), i8x32.ZERO)
-    simdMaskedStore(mask, memAddr, result, SimdAlign.Unaligned)
+    val mask = run { val _simdArg0 = k; val _simdArg1 = i8x32.splat(0.inv()); val _simdArg2 = i8x32.ZERO; _simdArg1 }
+    run { val _simdArg0 = mask; val _simdArg1 = memAddr; val _simdArg2 = result; Unit }
 }
 
 /**
@@ -8509,8 +8507,8 @@ public fun mm512MaskCvtepi16StoreuEpi8(memAddr: MutPtr, k: Mmask32, a: M512i) {
  */
 public fun mm256MaskCvtepi16StoreuEpi8(memAddr: MutPtr, k: Mmask16, a: M256i) {
     val result = mm256Cvtepi16Epi8(a).asI8x16()
-    val mask = simdSelectBitmask(k, i8x16.splat(0.inv()), i8x16.ZERO)
-    simdMaskedStore(mask, memAddr, result, SimdAlign.Unaligned)
+    val mask = run { val _simdArg0 = k; val _simdArg1 = i8x16.splat(0.inv()); val _simdArg2 = i8x16.ZERO; _simdArg1 }
+    run { val _simdArg0 = mask; val _simdArg1 = memAddr; val _simdArg2 = result; Unit }
 }
 
 /**
@@ -8519,9 +8517,9 @@ public fun mm256MaskCvtepi16StoreuEpi8(memAddr: MutPtr, k: Mmask16, a: M256i) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cvtepi16_storeu_epi8&expand=1410)
  */
 public fun mmMaskCvtepi16StoreuEpi8(memAddr: MutPtr, k: Mmask8, a: M128i) {
-    val result: I8x8 = simdShuffle(mmCvtepi16Epi8(a).asI8x16(), i8x16.ZERO, SimdShuffleIdx(listOf(0, 1, 2, 3, 4, 5, 6, 7)))
-    val mask = simdSelectBitmask(k, i8x8.splat(0.inv()), i8x8.ZERO)
-    simdMaskedStore(mask, memAddr, result, SimdAlign.Unaligned)
+    val result: I8x8 = run { val _simdArg0 = mmCvtepi16Epi8(a).asI8x16(); val _simdArg1 = i8x16.ZERO; val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 2, 3, 4, 5, 6, 7)); _simdArg0 }
+    val mask = run { val _simdArg0 = k; val _simdArg1 = i8x8.splat(0.inv()); val _simdArg2 = i8x8.ZERO; _simdArg1 }
+    run { val _simdArg0 = mask; val _simdArg1 = memAddr; val _simdArg2 = result; Unit }
 }
 
 /**
@@ -8539,11 +8537,11 @@ public fun mm512MaskCvtusepi16StoreuEpi8(memAddr: MutPtr, k: Mmask32, a: M512i) 
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cvtusepi16_storeu_epi8&expand=2046)
  */
 public fun mm256MaskCvtusepi16StoreuEpi8(memAddr: MutPtr, k: Mmask16, a: M256i) {
-    val mask = simdSelectBitmask(k, i16x16.splat(0.inv()), i16x16.ZERO)
+    val mask = run { val _simdArg0 = k; val _simdArg1 = i16x16.splat(0.inv()); val _simdArg2 = i16x16.ZERO; _simdArg1 }
     val memAddr1 = MutPtr((memAddr).rawAddress)
-    val max = simdSplat(UShort.from(UByte.MAX_VALUE))
-    val truncated: U8x16 = simdCast(simdImin(a.asU16x16(), max))
-    simdMaskedStore(mask, memAddr1, truncated, SimdAlign.Unaligned)
+    val max = run { val _simdArg0 = UShort.from(UByte.MAX_VALUE); _simdArg0 }
+    val truncated: U8x16 = run { val _simdArg0 = simdImin(a.asU16x16(), max); _simdArg0 }
+    run { val _simdArg0 = mask; val _simdArg1 = memAddr1; val _simdArg2 = truncated; Unit }
 }
 
 /**
@@ -8552,13 +8550,13 @@ public fun mm256MaskCvtusepi16StoreuEpi8(memAddr: MutPtr, k: Mmask16, a: M256i) 
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cvtusepi16_storeu_epi8&expand=2045)
  */
 public fun mmMaskCvtusepi16StoreuEpi8(memAddr: MutPtr, k: Mmask8, a: M128i) {
-    val mask = simdSelectBitmask(k, i16x8.splat(0.inv()), i16x8.ZERO)
+    val mask = run { val _simdArg0 = k; val _simdArg1 = i16x8.splat(0.inv()); val _simdArg2 = i16x8.ZERO; _simdArg1 }
     val memAddr1 = MutPtr((memAddr).rawAddress)
-    val max = simdSplat(UShort.from(UByte.MAX_VALUE))
+    val max = run { val _simdArg0 = UShort.from(UByte.MAX_VALUE); _simdArg0 }
     val v = a.asU16x8()
     val v1 = simdImin(v, max)
-    val truncated: U8x8 = simdCast(v1)
-    simdMaskedStore(mask, memAddr1, truncated, SimdAlign.Unaligned)
+    val truncated: U8x8 = run { val _simdArg0 = v1; _simdArg0 }
+    run { val _simdArg0 = mask; val _simdArg1 = memAddr1; val _simdArg2 = truncated; Unit }
 }
 
 public expect fun vpmulhrsw(a: I16x32, b: I16x32): I16x32

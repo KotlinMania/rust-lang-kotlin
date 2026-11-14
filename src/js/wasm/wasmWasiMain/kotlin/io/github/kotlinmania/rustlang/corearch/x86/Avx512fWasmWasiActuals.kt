@@ -1,10 +1,9 @@
-@file:OptIn(kotlin.ExperimentalUnsignedTypes::class, kotlin.wasm.ExperimentalWasmInterop::class)
+@file:OptIn(ExperimentalUnsignedTypes::class, ExperimentalWasmInterop::class)
 
 package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.corearch.mem
 import io.github.kotlinmania.rustlang.corearch.simd.F32x16
 import io.github.kotlinmania.rustlang.corearch.simd.F32x4
 import io.github.kotlinmania.rustlang.corearch.simd.F32x8
@@ -30,7 +29,7 @@ import io.github.kotlinmania.rustlang.corearch.simd.U64x4
 import io.github.kotlinmania.rustlang.corearch.simd.U64x8
 import io.github.kotlinmania.rustlang.corearch.simd.U8x16
 
-// The host must provide the C companion wrapper exports in import module corearch.
+// The host must provide the C companion wrapper exports in import module kmcore.
 public actual fun vsqrtps(a: F32x16, rounding: Int): F32x16 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVsqrtps")
 
@@ -1123,13 +1122,13 @@ public actual fun vscalefss(a: F32x4, b: F32x4, src: F32x4, mask: UByte, roundin
 public actual fun vscalefsd(a: F64x2, b: F64x2, src: F64x2, mask: UByte, rounding: Int): F64x2 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVscalefsd")
 
-@kotlin.wasm.WasmImport("corearch", "corearchX86Avx512fVfmaddssround")
+@kotlin.wasm.WasmImport("kmcore", "corearchX86Avx512fVfmaddssround")
 private external fun wasiCorearchX86Avx512fVfmaddssround(a: Float, b: Float, c: Float, rounding: Int): Float
 
 public actual fun vfmaddssround(a: Float, b: Float, c: Float, rounding: Int): Float =
     wasiCorearchX86Avx512fVfmaddssround(a, b, c, rounding).toFloat()
 
-@kotlin.wasm.WasmImport("corearch", "corearchX86Avx512fVfmaddsdround")
+@kotlin.wasm.WasmImport("kmcore", "corearchX86Avx512fVfmaddsdround")
 private external fun wasiCorearchX86Avx512fVfmaddsdround(a: Double, b: Double, c: Double, rounding: Int): Double
 
 public actual fun vfmaddsdround(a: Double, b: Double, c: Double, rounding: Int): Double =

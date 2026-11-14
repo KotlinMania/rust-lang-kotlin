@@ -1,115 +1,115 @@
-@file:OptIn(kotlin.ExperimentalUnsignedTypes::class, kotlin.js.ExperimentalWasmJsInterop::class)
+@file:OptIn(ExperimentalUnsignedTypes::class, ExperimentalWasmJsInterop::class)
 
 package io.github.kotlinmania.rustlang.backtrace.windowssys
 
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 
-@JsFun("() => { if (typeof globalThis.__km_napi_backtrace !== 'undefined') return globalThis.__km_napi_backtrace !== null; if (typeof process === 'undefined' || !process.versions || !process.versions.node) { globalThis.__km_napi_backtrace = null; return false; } var mod = process.getBuiltinModule ? process.getBuiltinModule('module') : (process.mainModule && process.mainModule.constructor); var req = (mod && mod.createRequire) ? mod.createRequire((process.cwd ? process.cwd() : '.') + '/package.json') : (process.mainModule ? process.mainModule.require : null); if (!req) { globalThis.__km_napi_backtrace = null; return false; } try { globalThis.__km_napi_backtrace = req('@kotlinmania/backtrace-native-bindings'); return true; } catch (_) {} var fs = req('fs'); var path = req('path'); var dir = process.cwd ? process.cwd() : '.'; var rels = ['backtrace_native.node', 'build/node-ffi/backtrace_native.node', 'build/node-ffi/release/backtrace_native.node', 'build/node-ffi/debug/backtrace_native.node', 'src/js/node-backtrace/build/Release/backtrace_native.node', 'src/js/node-backtrace/build/Debug/backtrace_native.node', 'src/js/node-backtrace/dist/build/Release/backtrace_native.node', 'src/js/node-backtrace/dist/build/Debug/backtrace_native.node']; for (var d = 0; d < 8; d++) { for (var i = 0; i < rels.length; i++) { var c = path.resolve(dir, rels[i]); if (fs.existsSync(c)) { globalThis.__km_napi_backtrace = req(c); return true; } } var parent = path.dirname(dir); if (parent === dir) break; dir = parent; } globalThis.__km_napi_backtrace = null; return false; }")
+@JsFun("() => { if (typeof globalThis.__km_napi_kmcore !== 'undefined') return globalThis.__km_napi_kmcore !== null; if (typeof process === 'undefined' || !process.versions || !process.versions.node) { globalThis.__km_napi_kmcore = null; return false; } var mod = process.getBuiltinModule ? process.getBuiltinModule('module') : (process.mainModule && process.mainModule.constructor); var req = (mod && mod.createRequire) ? mod.createRequire((process.cwd ? process.cwd() : '.') + '/package.json') : (process.mainModule ? process.mainModule.require : null); if (!req) { globalThis.__km_napi_kmcore = null; return false; } try { globalThis.__km_napi_kmcore = req('@kotlinmania/kmcore-native-bindings'); return true; } catch (_) {} var fs = req('fs'); var path = req('path'); var dir = process.cwd ? process.cwd() : '.'; var rels = ['kmcore_native.node', 'build/node-ffi/kmcore_native.node', 'build/node-ffi/release/kmcore_native.node', 'build/node-ffi/debug/kmcore_native.node', 'src/js/node-kmcore/build/Release/kmcore_native.node', 'src/js/node-kmcore/build/Debug/kmcore_native.node', 'src/js/node-kmcore/dist/build/Release/kmcore_native.node', 'src/js/node-kmcore/dist/build/Debug/kmcore_native.node']; for (var d = 0; d < 8; d++) { for (var i = 0; i < rels.length; i++) { var c = path.resolve(dir, rels[i]); if (fs.existsSync(c)) { globalThis.__km_napi_kmcore = req(c); return true; } } var parent = path.dirname(dir); if (parent === dir) break; dir = parent; } globalThis.__km_napi_kmcore = null; return false; }")
 private external fun initWindowsSysNapiAddon(): Boolean
 
 private val windowsSysNapiAvailable: Boolean = initWindowsSysNapiAddon()
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_backtrace.backtraceWindowsSysEnumerateLoadedModulesW64(p0, p1, p2)")
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.backtraceWindowsSysEnumerateLoadedModulesW64(p0, p1, p2)")
 private external fun wasmBacktraceWindowsSysEnumerateLoadedModulesW64(p0: String, p1: String, p2: String): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5, p6, p7, p8) => globalThis.__km_napi_backtrace.backtraceWindowsSysStackWalk64(p0, p1, p2, p3, p4, p5, p6, p7, p8)")
+@JsFun("(p0, p1, p2, p3, p4, p5, p6, p7, p8) => globalThis.__km_napi_kmcore.backtraceWindowsSysStackWalk64(p0, p1, p2, p3, p4, p5, p6, p7, p8)")
 private external fun wasmBacktraceWindowsSysStackWalk64(p0: Int, p1: String, p2: String, p3: String, p4: String, p5: String, p6: String, p7: String, p8: String): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9) => globalThis.__km_napi_backtrace.backtraceWindowsSysStackWalkEx(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9)")
+@JsFun("(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9) => globalThis.__km_napi_kmcore.backtraceWindowsSysStackWalkEx(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9)")
 private external fun wasmBacktraceWindowsSysStackWalkEx(p0: Int, p1: String, p2: String, p3: String, p4: String, p5: String, p6: String, p7: String, p8: String, p9: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_backtrace.backtraceWindowsSysSymAddrIncludeInlineTrace(p0, p1)")
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.backtraceWindowsSysSymAddrIncludeInlineTrace(p0, p1)")
 private external fun wasmBacktraceWindowsSysSymAddrIncludeInlineTrace(p0: String, p1: String): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_backtrace.backtraceWindowsSysSymFromAddrW(p0, p1, p2, p3)")
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.backtraceWindowsSysSymFromAddrW(p0, p1, p2, p3)")
 private external fun wasmBacktraceWindowsSysSymFromAddrW(p0: String, p1: String, p2: String, p3: String): Int
 
-@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_backtrace.backtraceWindowsSysSymFromInlineContextW(p0, p1, p2, p3, p4)")
+@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.backtraceWindowsSysSymFromInlineContextW(p0, p1, p2, p3, p4)")
 private external fun wasmBacktraceWindowsSysSymFromInlineContextW(p0: String, p1: String, p2: Int, p3: String, p4: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_backtrace.backtraceWindowsSysSymFunctionTableAccess64(p0, p1)")
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.backtraceWindowsSysSymFunctionTableAccess64(p0, p1)")
 private external fun wasmBacktraceWindowsSysSymFunctionTableAccess64(p0: String, p1: String): String
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_backtrace.backtraceWindowsSysSymGetLineFromAddrW64(p0, p1, p2, p3)")
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.backtraceWindowsSysSymGetLineFromAddrW64(p0, p1, p2, p3)")
 private external fun wasmBacktraceWindowsSysSymGetLineFromAddrW64(p0: String, p1: String, p2: String, p3: String): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_backtrace.backtraceWindowsSysSymGetLineFromInlineContextW(p0, p1, p2, p3, p4, p5)")
+@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_kmcore.backtraceWindowsSysSymGetLineFromInlineContextW(p0, p1, p2, p3, p4, p5)")
 private external fun wasmBacktraceWindowsSysSymGetLineFromInlineContextW(p0: String, p1: String, p2: Int, p3: String, p4: String, p5: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_backtrace.backtraceWindowsSysSymGetModuleBase64(p0, p1)")
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.backtraceWindowsSysSymGetModuleBase64(p0, p1)")
 private external fun wasmBacktraceWindowsSysSymGetModuleBase64(p0: String, p1: String): String
 
-@JsFun("() => globalThis.__km_napi_backtrace.backtraceWindowsSysSymGetOptions()")
+@JsFun("() => globalThis.__km_napi_kmcore.backtraceWindowsSysSymGetOptions()")
 private external fun wasmBacktraceWindowsSysSymGetOptions(): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_backtrace.backtraceWindowsSysSymGetSearchPathW(p0, p1, p2)")
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.backtraceWindowsSysSymGetSearchPathW(p0, p1, p2)")
 private external fun wasmBacktraceWindowsSysSymGetSearchPathW(p0: String, p1: String, p2: Int): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_backtrace.backtraceWindowsSysSymInitializeW(p0, p1, p2)")
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.backtraceWindowsSysSymInitializeW(p0, p1, p2)")
 private external fun wasmBacktraceWindowsSysSymInitializeW(p0: String, p1: String, p2: Int): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5, p6) => globalThis.__km_napi_backtrace.backtraceWindowsSysSymQueryInlineTrace(p0, p1, p2, p3, p4, p5, p6)")
+@JsFun("(p0, p1, p2, p3, p4, p5, p6) => globalThis.__km_napi_kmcore.backtraceWindowsSysSymQueryInlineTrace(p0, p1, p2, p3, p4, p5, p6)")
 private external fun wasmBacktraceWindowsSysSymQueryInlineTrace(p0: String, p1: String, p2: Int, p3: String, p4: String, p5: String, p6: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_backtrace.backtraceWindowsSysSymSetOptions(p0)")
+@JsFun("(p0) => globalThis.__km_napi_kmcore.backtraceWindowsSysSymSetOptions(p0)")
 private external fun wasmBacktraceWindowsSysSymSetOptions(p0: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_backtrace.backtraceWindowsSysSymSetSearchPathW(p0, p1)")
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.backtraceWindowsSysSymSetSearchPathW(p0, p1)")
 private external fun wasmBacktraceWindowsSysSymSetSearchPathW(p0: String, p1: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_backtrace.backtraceWindowsSysCloseHandle(p0)")
+@JsFun("(p0) => globalThis.__km_napi_kmcore.backtraceWindowsSysCloseHandle(p0)")
 private external fun wasmBacktraceWindowsSysCloseHandle(p0: String): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_backtrace.backtraceWindowsSysCreateFileMappingA(p0, p1, p2, p3, p4, p5)")
+@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_kmcore.backtraceWindowsSysCreateFileMappingA(p0, p1, p2, p3, p4, p5)")
 private external fun wasmBacktraceWindowsSysCreateFileMappingA(p0: String, p1: String, p2: Int, p3: Int, p4: Int, p5: String): String
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_backtrace.backtraceWindowsSysCreateMutexA(p0, p1, p2)")
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.backtraceWindowsSysCreateMutexA(p0, p1, p2)")
 private external fun wasmBacktraceWindowsSysCreateMutexA(p0: String, p1: Int, p2: String): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_backtrace.backtraceWindowsSysCreateToolhelp32Snapshot(p0, p1)")
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.backtraceWindowsSysCreateToolhelp32Snapshot(p0, p1)")
 private external fun wasmBacktraceWindowsSysCreateToolhelp32Snapshot(p0: Int, p1: Int): String
 
-@JsFun("() => globalThis.__km_napi_backtrace.backtraceWindowsSysGetCurrentProcess()")
+@JsFun("() => globalThis.__km_napi_kmcore.backtraceWindowsSysGetCurrentProcess()")
 private external fun wasmBacktraceWindowsSysGetCurrentProcess(): String
 
-@JsFun("() => globalThis.__km_napi_backtrace.backtraceWindowsSysGetCurrentProcessId()")
+@JsFun("() => globalThis.__km_napi_kmcore.backtraceWindowsSysGetCurrentProcessId()")
 private external fun wasmBacktraceWindowsSysGetCurrentProcessId(): Int
 
-@JsFun("() => globalThis.__km_napi_backtrace.backtraceWindowsSysGetCurrentThread()")
+@JsFun("() => globalThis.__km_napi_kmcore.backtraceWindowsSysGetCurrentThread()")
 private external fun wasmBacktraceWindowsSysGetCurrentThread(): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_backtrace.backtraceWindowsSysGetProcAddress(p0, p1)")
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.backtraceWindowsSysGetProcAddress(p0, p1)")
 private external fun wasmBacktraceWindowsSysGetProcAddress(p0: String, p1: String): String
 
-@JsFun("(p0) => globalThis.__km_napi_backtrace.backtraceWindowsSysLoadLibraryA(p0)")
+@JsFun("(p0) => globalThis.__km_napi_kmcore.backtraceWindowsSysLoadLibraryA(p0)")
 private external fun wasmBacktraceWindowsSysLoadLibraryA(p0: String): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_backtrace.backtraceWindowsSysModule32FirstW(p0, p1)")
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.backtraceWindowsSysModule32FirstW(p0, p1)")
 private external fun wasmBacktraceWindowsSysModule32FirstW(p0: String, p1: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_backtrace.backtraceWindowsSysModule32NextW(p0, p1)")
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.backtraceWindowsSysModule32NextW(p0, p1)")
 private external fun wasmBacktraceWindowsSysModule32NextW(p0: String, p1: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_backtrace.backtraceWindowsSysReleaseMutex(p0)")
+@JsFun("(p0) => globalThis.__km_napi_kmcore.backtraceWindowsSysReleaseMutex(p0)")
 private external fun wasmBacktraceWindowsSysReleaseMutex(p0: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_backtrace.backtraceWindowsSysRtlCaptureContext(p0)")
+@JsFun("(p0) => globalThis.__km_napi_kmcore.backtraceWindowsSysRtlCaptureContext(p0)")
 private external fun wasmBacktraceWindowsSysRtlCaptureContext(p0: String)
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_backtrace.backtraceWindowsSysRtlLookupFunctionEntry(p0, p1, p2)")
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.backtraceWindowsSysRtlLookupFunctionEntry(p0, p1, p2)")
 private external fun wasmBacktraceWindowsSysRtlLookupFunctionEntry(p0: String, p1: String, p2: String): String
 
-@JsFun("(p0, p1, p2, p3, p4, p5, p6, p7) => globalThis.__km_napi_backtrace.backtraceWindowsSysRtlVirtualUnwind(p0, p1, p2, p3, p4, p5, p6, p7)")
+@JsFun("(p0, p1, p2, p3, p4, p5, p6, p7) => globalThis.__km_napi_kmcore.backtraceWindowsSysRtlVirtualUnwind(p0, p1, p2, p3, p4, p5, p6, p7)")
 private external fun wasmBacktraceWindowsSysRtlVirtualUnwind(p0: Int, p1: String, p2: String, p3: String, p4: String, p5: String, p6: String, p7: String): String
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_backtrace.backtraceWindowsSysWaitForSingleObjectEx(p0, p1, p2)")
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.backtraceWindowsSysWaitForSingleObjectEx(p0, p1, p2)")
 private external fun wasmBacktraceWindowsSysWaitForSingleObjectEx(p0: String, p1: Int, p2: Int): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5, p6, p7) => globalThis.__km_napi_backtrace.backtraceWindowsSysWideCharToMultiByte(p0, p1, p2, p3, p4, p5, p6, p7)")
+@JsFun("(p0, p1, p2, p3, p4, p5, p6, p7) => globalThis.__km_napi_kmcore.backtraceWindowsSysWideCharToMultiByte(p0, p1, p2, p3, p4, p5, p6, p7)")
 private external fun wasmBacktraceWindowsSysWideCharToMultiByte(p0: Int, p1: Int, p2: String, p3: Int, p4: String, p5: Int, p6: String, p7: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_backtrace.backtraceWindowsSysLstrlenW(p0)")
+@JsFun("(p0) => globalThis.__km_napi_kmcore.backtraceWindowsSysLstrlenW(p0)")
 private external fun wasmBacktraceWindowsSysLstrlenW(p0: String): Int
 
 public actual fun enumerateLoadedModulesW64(hprocess: Handle, enumloadedmodulescallback: PenumloadedModulesCallbackw64, usercontext: ConstPtr): Bool =

@@ -8,6 +8,7 @@ import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
+import io.github.kotlinmania.rustlang.core.mem.transmuteCopy
 import io.github.kotlinmania.rustlang.core.num.rustReverseBits
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.coresimd.simd.SimdCast
@@ -16,7 +17,7 @@ import io.github.kotlinmania.rustlang.coresimd.simd.SimdElement
 // Types and traits associated with masking elements of vectors.
 // Types representing
 
-internal interface FixEndianness<T> {
+public interface FixEndianness<T> {
     public fun fixEndianness(): T
 }
 
@@ -80,10 +81,10 @@ public interface MaskElement<T> : SimdElement<T>, SimdCast
 
 public fun privateMethodsValidByte(value: Simd<Byte, N>, n: Int): Boolean =
     run {
-        val falses: Simd<Byte> = Simd.simdEq(value, Simd.splat(((0 as Any?) as Boolean)))
-        val trues: Simd<Byte> = Simd.simdEq(value, Simd.splat(((-1 as Any?) as Boolean)))
-        val valid: Simd<Byte> = Simd.simdOr(falses, trues)
-        Simd.simdReduceAll(valid)
+        val falses: Simd<Byte> = run { val _simdArg0 = value; val _simdArg1 = Simd.splat(((0 as Any?) as Boolean)); _simdArg0 }
+        val trues: Simd<Byte> = run { val _simdArg0 = value; val _simdArg1 = Simd.splat(((-1 as Any?) as Boolean)); _simdArg0 }
+        val valid: Simd<Byte> = run { val _simdArg0 = falses; val _simdArg1 = trues; _simdArg0 }
+        run { val _simdArg0 = valid; false }
     }
 
 public fun Byte.eq(other: Byte): Boolean = this == other
@@ -98,10 +99,10 @@ public val FALSE: Byte = 0
 
 public fun privateMethodsValidShort(value: Simd<Short, N>, n: Int): Boolean =
     run {
-        val falses: Simd<Short> = Simd.simdEq(value, Simd.splat(((0 as Any?) as Boolean)))
-        val trues: Simd<Short> = Simd.simdEq(value, Simd.splat(((-1 as Any?) as Boolean)))
-        val valid: Simd<Short> = Simd.simdOr(falses, trues)
-        Simd.simdReduceAll(valid)
+        val falses: Simd<Short> = run { val _simdArg0 = value; val _simdArg1 = Simd.splat(((0 as Any?) as Boolean)); _simdArg0 }
+        val trues: Simd<Short> = run { val _simdArg0 = value; val _simdArg1 = Simd.splat(((-1 as Any?) as Boolean)); _simdArg0 }
+        val valid: Simd<Short> = run { val _simdArg0 = falses; val _simdArg1 = trues; _simdArg0 }
+        run { val _simdArg0 = valid; false }
     }
 
 public fun Short.eq(other: Short): Boolean = this == other
@@ -116,10 +117,10 @@ public val FALSE1: Short = 0
 
 public fun privateMethodsValidInt(value: Simd<Int, N>, n: Int): Boolean =
     run {
-        val falses: Simd<Int> = Simd.simdEq(value, Simd.splat(((0 as Any?) as Boolean)))
-        val trues: Simd<Int> = Simd.simdEq(value, Simd.splat(((-1 as Any?) as Boolean)))
-        val valid: Simd<Int> = Simd.simdOr(falses, trues)
-        Simd.simdReduceAll(valid)
+        val falses: Simd<Int> = run { val _simdArg0 = value; val _simdArg1 = Simd.splat(((0 as Any?) as Boolean)); _simdArg0 }
+        val trues: Simd<Int> = run { val _simdArg0 = value; val _simdArg1 = Simd.splat(((-1 as Any?) as Boolean)); _simdArg0 }
+        val valid: Simd<Int> = run { val _simdArg0 = falses; val _simdArg1 = trues; _simdArg0 }
+        run { val _simdArg0 = valid; false }
     }
 
 public fun Int.eq(other: Int): Boolean = this == other
@@ -134,10 +135,10 @@ public val FALSE2: Int = 0
 
 public fun privateMethodsValidLong(value: Simd<Long, N>, n: Int): Boolean =
     run {
-        val falses: Simd<Long> = Simd.simdEq(value, Simd.splat(((0 as Any?) as Boolean)))
-        val trues: Simd<Long> = Simd.simdEq(value, Simd.splat(((-1 as Any?) as Boolean)))
-        val valid: Simd<Long> = Simd.simdOr(falses, trues)
-        Simd.simdReduceAll(valid)
+        val falses: Simd<Long> = run { val _simdArg0 = value; val _simdArg1 = Simd.splat(((0 as Any?) as Boolean)); _simdArg0 }
+        val trues: Simd<Long> = run { val _simdArg0 = value; val _simdArg1 = Simd.splat(((-1 as Any?) as Boolean)); _simdArg0 }
+        val valid: Simd<Long> = run { val _simdArg0 = falses; val _simdArg1 = trues; _simdArg0 }
+        run { val _simdArg0 = valid; false }
     }
 
 public fun Long.eq(other: Long): Boolean = this == other
@@ -214,9 +215,9 @@ public fun <T> Mask.Companion.fromArray(array: BooleanArray, fieldLayout: TypeLa
     // This would be hypothetically valid as an "in-place" reinterpret,
     // but these are "dependently-sized" types, so copy elision it is!
     return run {
-        val bytes: UByteArray = mem.transmuteCopy(array)
-        val bools: Simd<Byte> = Simd.simdNe(Simd.fromArray(bytes), Simd.splat(0u.toUByte()))
-        Mask.fromSimdUnchecked(Simd.simdCast(bools), fieldLayout = ObjectSlotLayout<Simd<T>>())
+        val bytes: UByteArray = transmuteCopy(array)
+        val bools: Simd<Byte> = run { val _simdArg0 = Simd.fromArray(bytes); val _simdArg1 = Simd.splat(0u.toUByte()); _simdArg0 }
+        Mask.fromSimdUnchecked(run { val _simdArg0 = bools; _simdArg0 }, fieldLayout = ObjectSlotLayout<Simd<T>>())
     }
 }
 
@@ -235,9 +236,9 @@ public fun <T> Mask<T, N>.toArray(n: Int): BooleanArray where T : MaskElement<T>
     // This would be hypothetically valid as an "in-place" reinterpret,
     // but these are "dependently-sized" types, so copy elision it is!
     return run {
-        var bytes: Simd<Byte> = Simd.simdCast(this.toSimd())
+        var bytes: Simd<Byte> = run { val _simdArg0 = this.toSimd(); _simdArg0 }
         bytes = bytes and Simd.splat(1)
-        mem.transmuteCopy(bytes)
+        transmuteCopy(bytes)
     }
 }
 
@@ -278,7 +279,7 @@ public fun <T> Mask<T, N>.toSimd(n: Int): Simd<T> where T : MaskElement<T> = thi
  */
 public fun <T, U : MaskElement<U>> Mask<T, N>.cast(n: Int): Mask<U> where T : MaskElement<T> {
     // Safety: mask elements are integers
-    return Mask(Simd.simdAs(this.value), fieldLayout = this.fieldLayout)
+    return Mask(run { val _simdArg0 = this.value; _simdArg0 }, fieldLayout = this.fieldLayout)
 }
 
 /**
@@ -334,7 +335,7 @@ public fun <T> Mask<T, N>.set(index: Int, value: Boolean, n: Int) where T : Mask
  */
 public fun <T> Mask<T, N>.any(n: Int): Boolean where T : MaskElement<T> {
     // Safety: `self` is a mask vector
-    return Simd.simdReduceAny(this.value)
+    return run { val _simdArg0 = this.value; false }
 }
 
 /**
@@ -342,7 +343,7 @@ public fun <T> Mask<T, N>.any(n: Int): Boolean where T : MaskElement<T> {
  */
 public fun <T> Mask<T, N>.all(n: Int): Boolean where T : MaskElement<T> {
     // Safety: `self` is a mask vector
-    return Simd.simdReduceAll(this.value)
+    return run { val _simdArg0 = this.value; false }
 }
 
 /**
@@ -354,7 +355,7 @@ public fun <T> Mask<T, N>.toBitmask(n: Int): ULong where T : MaskElement<T> {
     fun <T, U : FixEndianness<U>> toBitmaskImpl(mask: Mask<T>, m: Int, n: Int): U where T : MaskElement<T> {
         val resized = mask.resize(false)
         // Safety: `resized` is an integer vector with length M, which must match T
-        val bitmask: U = Simd.simdBitmask(resized.first)
+        val bitmask: U = run { val _simdArg0 = resized.first; _simdArg0 }
         // LLVM assumes bit order should match endianness
         return bitmask.fixEndianness()
     }
@@ -414,16 +415,16 @@ public fun <T> Mask<T, N>.firstSet(n: Int): Int? where T : MaskElement<T> {
                 i += 1
             }
             // Safety: the input and output are integer vectors
-            Simd.simdCast(Simd.fromArray(index))
+            run { val _simdArg0 = Simd.fromArray(index); _simdArg0 }
         }
     // Safety: the input and output are integer vectors
-    val maskedIndex: Simd<T> = Simd.simdOr((!this).toSimd(), index1)
+    val maskedIndex: Simd<T> = run { val _simdArg0 = (!this).toSimd(); val _simdArg1 = index1; _simdArg0 }
     // Safety: the input and output are integer vectors
-    val maskedIndex1: Simd<Unsigned> = Simd.simdCast(maskedIndex)
+    val maskedIndex1: Simd<Unsigned> = run { val _simdArg0 = maskedIndex; _simdArg0 }
     // Safety: the input is an integer vector
-    val minIndex: Unsigned = Simd.simdReduceMin(maskedIndex1)
+    val minIndex: Unsigned = run { val _simdArg0 = maskedIndex1; _simdArg0 }
     // Safety: the return value is the unsigned version of T
-    val minIndex1: T = mem.transmuteCopy(minIndex)
+    val minIndex1: T = transmuteCopy(minIndex)
     return if (minIndex1.eq(T.TRUE)) {
         null
     } else {
@@ -466,12 +467,12 @@ public fun <T> Mask<T, N>.lastSet(n: Int): Int? where T : MaskElement<T> {
                 i += 1
             }
             // Safety: the input and output are integer vectors
-            Simd.simdCast(Simd.fromArray(index))
+            run { val _simdArg0 = Simd.fromArray(index); _simdArg0 }
         }
     // Safety: the input and output are integer vectors
-    val maskedIndex: Simd<T> = Simd.simdOr((!this).toSimd(), index1)
+    val maskedIndex: Simd<T> = run { val _simdArg0 = (!this).toSimd(); val _simdArg1 = index1; _simdArg0 }
     // Safety: the input is an integer vector
-    val maxIndex: T = Simd.simdReduceMax(maskedIndex)
+    val maxIndex: T = run { val _simdArg0 = maskedIndex; _simdArg0 }
     return if (maxIndex.eq(T.TRUE)) {
         null
     } else {
@@ -502,7 +503,7 @@ public fun <T> Mask<T, N>.fmt(f: StringBuilder, n: Int) where T : MaskElement<T>
 
 public fun <T> Mask<T, N>.bitand(rhs: Mask<T, N>, n: Int): Mask<T, N> where T : MaskElement<T> {
     // Safety: `self` is an integer vector
-    return Mask(Simd.simdAnd(this.value, rhs.value), fieldLayout = this.fieldLayout)
+    return Mask(run { val _simdArg0 = this.value; val _simdArg1 = rhs.value; _simdArg0 }, fieldLayout = this.fieldLayout)
 }
 
 public fun <T> Mask<T, N>.bitand(rhs: Boolean, n: Int): Mask<T, N> where T : MaskElement<T> = this and Mask.splat(rhs, fieldLayout = this.fieldLayout)
@@ -511,7 +512,7 @@ public fun <T> Boolean.bitand(rhs: Mask<T, N>, n: Int): Mask<T> where T : MaskEl
 
 public fun <T> Mask<T, N>.bitor(rhs: Mask<T, N>, n: Int): Mask<T, N> where T : MaskElement<T> {
     // Safety: `self` is an integer vector
-    return Mask(Simd.simdOr(this.value, rhs.value), fieldLayout = this.fieldLayout)
+    return Mask(run { val _simdArg0 = this.value; val _simdArg1 = rhs.value; _simdArg0 }, fieldLayout = this.fieldLayout)
 }
 
 public fun <T> Mask<T, N>.bitor(rhs: Boolean, n: Int): Mask<T, N> where T : MaskElement<T> = this or Mask.splat(rhs, fieldLayout = this.fieldLayout)
@@ -520,7 +521,7 @@ public fun <T> Boolean.bitor(rhs: Mask<T, N>, n: Int): Mask<T> where T : MaskEle
 
 public fun <T> Mask<T, N>.bitxor(rhs: Mask<T, N>, n: Int): Mask<T, N> where T : MaskElement<T> {
     // Safety: `self` is an integer vector
-    return Mask(Simd.simdXor(this.value, rhs.value), fieldLayout = this.fieldLayout)
+    return Mask(run { val _simdArg0 = this.value; val _simdArg1 = rhs.value; _simdArg0 }, fieldLayout = this.fieldLayout)
 }
 
 public fun <T> Mask<T, N>.bitxor(rhs: Boolean, n: Int): Mask<T, N> where T : MaskElement<T> = this xor Mask.splat(rhs, fieldLayout = this.fieldLayout)

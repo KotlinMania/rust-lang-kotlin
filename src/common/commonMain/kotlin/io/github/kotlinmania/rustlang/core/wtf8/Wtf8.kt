@@ -5,7 +5,7 @@ import io.github.kotlinmania.rustlang.core.char.isAscii
 import io.github.kotlinmania.rustlang.core.char.methods.EscapeDebugExtArgs
 import io.github.kotlinmania.rustlang.core.char.methods.encodeUtf16Raw
 import io.github.kotlinmania.rustlang.core.clone.CloneToUninit
-import io.github.kotlinmania.rustlang.core.fmt.write
+import io.github.kotlinmania.rustlang.core.convert.AsRef
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
@@ -79,6 +79,8 @@ public open class CodePoint(
         set(v) {
             value = v
         }
+
+    public open fun clone(): CodePoint = CodePoint(value)
 
     /**
      * Format the code point as `U +` followed by four to six hexadecimal digits.
@@ -219,12 +221,12 @@ public open class Wtf8 internal constructor(
             val surrogatePos = matchVal.first
             val surrogate = matchVal.second
             // SAFETY: nextSurrogate provides an index for a range of valid UTF-8 bytes.
-            when (val tryResult = writeStrEscaped(formatter, String.fromUtf8Unchecked(((this.bytes).slice(pos until surrogatePos))))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            writeStrEscaped(formatter, String.fromUtf8Unchecked(((this.bytes).slice(pos until surrogatePos))))
             when (val tryResult = formatter.writeFmt("\\u{$surrogate}")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
             pos = surrogatePos + 3
         }
         // SAFETY: after nextSurrogate returns None, the remainder is valid UTF-8.
-        when (val tryResult = writeStrEscaped(formatter, String.fromUtf8Unchecked(((this.bytes).slice(pos until this.bytes.size))))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        writeStrEscaped(formatter, String.fromUtf8Unchecked(((this.bytes).slice(pos until this.bytes.size))))
         return run { formatter.append('"'); Result.Ok(Unit) }
     }
 
@@ -298,7 +300,7 @@ public open class Wtf8 internal constructor(
      *
      * This does not copy the data.
      */
-    public open fun asStr(): Result<String, str.Utf8Error> = String.fromUtf8(this.bytes)
+    public open fun asStr(): Result<String, Utf8Error> = String.fromUtf8(this.bytes)
 
     /**
      * Converts the WTF-8 string to potentially ill-formed UTF-16
@@ -599,7 +601,7 @@ public fun sliceErrorFail(s: Wtf8, begin: Int, end: Int): Nothing {
 public open class Wtf8CodePoints(
     public var bytes: ArrayDeque<UByte>,
 ) : Iterable<CodePoint> {
-    override fun iterator(): kotlin.collections.Iterator<CodePoint> = object : AbstractIterator<CodePoint>() {
+    override fun iterator(): Iterator<CodePoint> = object : AbstractIterator<CodePoint>() {
         override fun computeNext() {
             when (val v = this@Wtf8CodePoints.next()) {
                 null -> done()
@@ -607,6 +609,8 @@ public open class Wtf8CodePoints(
             }
         }
     }
+
+    public open fun clone(): Wtf8CodePoints = Wtf8CodePoints(bytes)
 
     public open fun next(): CodePoint? {
         // SAFETY: `self.bytes` has been created from a WTF-8 string
@@ -618,7 +622,7 @@ public open class Wtf8CodePoints(
         return Pair(rustSaturatingAdd(len, 3) / 4, len)
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugTuple(f, "Wtf8CodePoints").field(Wtf8.fromBytesUnchecked(this.bytes.asSlice())).finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugTuple(f, "Wtf8CodePoints").field(Wtf8.fromBytesUnchecked(this.bytes.toList())).finish()
 }
 
 /**
@@ -628,7 +632,7 @@ public open class EncodeWide(
     public var codePoints: Wtf8CodePoints,
     public var extra: UShort,
 ) : Iterable<UShort> {
-    override fun iterator(): kotlin.collections.Iterator<UShort> = object : AbstractIterator<UShort>() {
+    override fun iterator(): Iterator<UShort> = object : AbstractIterator<UShort>() {
         override fun computeNext() {
             when (val v = this@EncodeWide.next()) {
                 null -> done()
@@ -636,6 +640,8 @@ public open class EncodeWide(
             }
         }
     }
+
+    public open fun clone(): EncodeWide = EncodeWide(codePoints, extra)
 
     // Copied from libunicode/uStr.rs
     public open fun next(): UShort? {

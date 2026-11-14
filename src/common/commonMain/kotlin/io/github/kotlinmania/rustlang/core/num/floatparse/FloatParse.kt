@@ -184,8 +184,10 @@ public fun fromStrDouble(src: String): Result<Double, ParseFloatError> = dec2flt
  * ```
  */
 public open class ParseFloatError(
-    internal var kind: FloatErrorKind,
+    public var kind: FloatErrorKind,
 ) {
+    public open fun clone(): ParseFloatError = ParseFloatError(kind)
+
     /**
      * Outputs the detailed cause of parsing a float failing.
      */

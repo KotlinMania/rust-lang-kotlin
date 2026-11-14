@@ -1,10 +1,10 @@
 // port-lint: source collections/vec_deque/iter_mut.rs
 package io.github.kotlinmania.rustlang.alloc.collections.vecdeque.itermut
 
-import io.github.kotlinmania.rustlang.alloc.collections.btree.node.B
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccess
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccessNoCoerce
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
+import io.github.kotlinmania.rustlang.core.mem.swap
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -42,7 +42,7 @@ public open class IterMut<T>(
     public var i1: ArrayDeque<T>,
     public var i2: ArrayDeque<T>,
 ) : TrustedLen, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<T> {
-    override fun iterator(): kotlin.collections.Iterator<T> = object : AbstractIterator<T>() {
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@IterMut.next()) {
                 null -> done()
@@ -112,7 +112,7 @@ public open class IterMut<T>(
      * }
      * ```
      */
-    public open fun asSlices(): Pair<List<T>, List<T>> = Pair(this.i1.asSlice(), this.i2.asSlice())
+    public open fun asSlices(): Pair<List<T>, List<T>> = Pair(this.i1.toList(), this.i2.toList())
 
     /**
      * Views the underlying data as a pair of subslices of the original data.
@@ -147,7 +147,7 @@ public open class IterMut<T>(
     public open fun asMutSlices(): Pair<MutableList<T>, MutableList<T>> = Pair(this.i1.asMutSlice(), this.i2.asMutSlice())
 
     public open fun fmt(f: StringBuilder) {
-        DebugTuple(f, "IterMut").field(this.i1.asSlice()).field(this.i2.asSlice()).finish()
+        DebugTuple(f, "IterMut").field(this.i1.toList()).field(this.i2.toList()).finish()
     }
 
     public open fun next(): T? =
@@ -158,7 +158,7 @@ public open class IterMut<T>(
                 // the iterators once the first one is empty, we ensure
                 // that the first branch is taken as often as possible,
                 // without sacrificing correctness, as i1 is empty anyways
-                mem.swap(this.i1, this.i2)
+                swap(this.i1, this.i2)
                 this.i1.removeFirstOrNull()
             }
             else -> {
@@ -174,7 +174,7 @@ public open class IterMut<T>(
                 Result.Ok(Unit)
             }; is Result.Err<*> -> {
                 val remaining = matchVal.error
-                mem.swap(this.i1, this.i2)
+                swap(this.i1, this.i2)
                 this.i1.advanceBy(remaining.get())
             } }
         }
@@ -217,7 +217,7 @@ public open class IterMut<T>(
                 // the iterators once the first one is empty, we ensure
                 // that the first branch is taken as often as possible,
                 // without sacrificing correctness, as i2 is empty anyways
-                mem.swap(this.i1, this.i2)
+                swap(this.i1, this.i2)
                 this.i2.removeLastOrNull()
             }
             else -> {
@@ -233,7 +233,7 @@ public open class IterMut<T>(
                 Result.Ok(Unit)
             }; is Result.Err<*> -> {
                 val remaining = matchVal.error
-                mem.swap(this.i1, this.i2)
+                swap(this.i1, this.i2)
                 this.i2.advanceBackBy(remaining.get())
             } }
         }
@@ -253,7 +253,7 @@ public open class IterMut<T>(
     public open fun isEmpty(): Boolean = this.i1.isEmpty() && this.i2.isEmpty()
 
     public companion object {
-        internal fun <T> new(i1: ArrayDeque<T>, i2: ArrayDeque<T>): IterMut<T> = IterMut(i1 = i1, i2 = i2)
+        public fun <T> new(i1: ArrayDeque<T>, i2: ArrayDeque<T>): IterMut<T> = IterMut(i1 = i1, i2 = i2)
 
         /**
          * Creates an empty `vecDeque.IterMut`.

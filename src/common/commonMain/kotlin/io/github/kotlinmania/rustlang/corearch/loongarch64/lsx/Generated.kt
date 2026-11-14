@@ -3,7 +3,6 @@ package io.github.kotlinmania.rustlang.corearch.loongarch64.lsx
 
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.corearch.mem.transmute
 
 public expect fun lsxVsrarB(a: V16i8, b: V16i8): V16i8
 

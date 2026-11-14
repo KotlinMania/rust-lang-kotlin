@@ -7,7 +7,9 @@ import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
 import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
+import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 
@@ -132,12 +134,10 @@ import io.github.kotlinmania.rustlang.core.slice.asPtr
  * the need for an allocation. More concretely, the following code example is unsound, irrespective
  * of whether your custom allocator allows counting how many allocations have happened.
  *
- * ```kotlin
- * drop(42)
- * val numberOfHeapAllocs = placeholderValue
- * run {
- *     assertUnchecked(numberOfHeapAllocs > 0)
- * }
+ * ```rust,ignore (unsound and has placeholders)
+ * drop(Box.new(42));
+ * let numberOfHeapAllocs = / * call private allocator API * /;
+ * unchecked { std.hint.assertUnchecked(numberOfHeapAllocs > 0); }
  * ```
  *
  * Note that the optimizations mentioned above are not the only
@@ -268,7 +268,7 @@ public interface GlobalAlloc {
         if (!ptr.isNull()) {
             // SAFETY: as allocation succeeded, the region from `ptr`
             // of size `size` is guaranteed to be valid for writes.
-            ptr.writeBytes(ptr, 0, size)
+            writeBytes(ptr, 0u, size)
         }
         return ptr
     }
@@ -343,7 +343,7 @@ public interface GlobalAlloc {
             // SAFETY: the previously allocated block cannot overlap the newly allocated block.
             // The safety contract for `dealloc` must be upheld by the caller.
             run {
-                ptr.copyNonoverlapping(ptr, newPtr, minOf(layout.size(), newSize), typeLayoutT = PrimitiveLayouts.U8)
+                copyNonoverlapping(ptr, newPtr, minOf(layout.size(), newSize), typeLayoutT = PrimitiveLayouts.U8)
                 this.dealloc(ptr, layout)
             }
         }

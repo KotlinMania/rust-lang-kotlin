@@ -1,4 +1,4 @@
-@file:OptIn(kotlin.ExperimentalUnsignedTypes::class, kotlin.wasm.ExperimentalWasmInterop::class)
+@file:OptIn(ExperimentalUnsignedTypes::class, ExperimentalWasmInterop::class)
 
 package io.github.kotlinmania.rustlang.core.ffi
 
@@ -6,7 +6,7 @@ import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 
-// The host must provide the C companion wrapper exports in import module core.
+// The host must provide the C companion wrapper exports in import module kmcore.
 public actual fun memcpy(dest: MutPtr, src: ConstPtr, n: ULong): MutPtr =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreFfiMemcpy")
 

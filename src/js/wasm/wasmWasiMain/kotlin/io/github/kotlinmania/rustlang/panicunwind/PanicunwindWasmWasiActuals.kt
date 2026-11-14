@@ -1,9 +1,9 @@
-@file:OptIn(kotlin.ExperimentalUnsignedTypes::class, kotlin.wasm.ExperimentalWasmInterop::class)
+@file:OptIn(ExperimentalUnsignedTypes::class, ExperimentalWasmInterop::class)
 
 package io.github.kotlinmania.rustlang.panicunwind
 
-// The host must provide the C companion wrapper exports in import module panicunwind.
-@kotlin.wasm.WasmImport("panicunwind", "panicunwindRustDropPanic")
+// The host must provide the C companion wrapper exports in import module kmcore.
+@kotlin.wasm.WasmImport("kmcore", "panicunwindRustDropPanic")
 private external fun wasiPanicunwindRustDropPanic(): Unit
 
 public actual fun rustDropPanic(): Nothing {
@@ -11,7 +11,7 @@ public actual fun rustDropPanic(): Nothing {
     error("C noreturn function panicunwindRustDropPanic returned")
 }
 
-@kotlin.wasm.WasmImport("panicunwind", "panicunwindRustForeignException")
+@kotlin.wasm.WasmImport("kmcore", "panicunwindRustForeignException")
 private external fun wasiPanicunwindRustForeignException(): Unit
 
 public actual fun rustForeignException(): Nothing {

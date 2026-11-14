@@ -4,7 +4,6 @@ package io.github.kotlinmania.rustlang.corearch.x86
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.corearch.ptr
 
 // AES Key Locker Intrinsics
 //
@@ -109,8 +108,12 @@ public fun mmLoadiwkey(control: UInt, integrityKey: M128i, keyLo: M128i, keyHi: 
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_encodekey128_u32)
  */
 public fun mmEncodekey128U32(keyParams: UInt, key: M128i, handle: MutPtr): UInt {
-    val (control, key0, key1, key2) = encodekey128(keyParams, key)
-    ptr.writeUnaligned(handle, listOf(key0, key1, key2))
+    val tupleStructVal = encodekey128(keyParams, key)
+    val control = tupleStructVal.field0
+    val key0 = tupleStructVal.field1
+    val key1 = tupleStructVal.field2
+    val key2 = tupleStructVal.field3
+    writeUnaligned(handle, listOf(key0, key1, key2))
     return control
 }
 
@@ -130,8 +133,13 @@ public fun mmEncodekey128U32(keyParams: UInt, key: M128i, handle: MutPtr): UInt 
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_encodekey256_u32)
  */
 public fun mmEncodekey256U32(keyParams: UInt, keyLo: M128i, keyHi: M128i, handle: MutPtr): UInt {
-    val (control, key0, key1, key2, key3) = encodekey256(keyParams, keyLo, keyHi)
-    ptr.writeUnaligned(handle, listOf(key0, key1, key2, key3))
+    val tupleStructVal = encodekey256(keyParams, keyLo, keyHi)
+    val control = tupleStructVal.field0
+    val key0 = tupleStructVal.field1
+    val key1 = tupleStructVal.field2
+    val key2 = tupleStructVal.field3
+    val key3 = tupleStructVal.field4
+    writeUnaligned(handle, listOf(key0, key1, key2, key3))
     return control
 }
 
@@ -145,7 +153,9 @@ public fun mmEncodekey256U32(keyParams: UInt, keyLo: M128i, keyHi: M128i, handle
  */
 public fun mmAesenc128klU8(output: MutPtr, input: M128i, handle: ConstPtr): UByte {
     val output1 = output
-    val (status, result) = aesenc128kl(input, handle)
+    val tupleStructVal = aesenc128kl(input, handle)
+    val status = tupleStructVal.field0
+    val result = tupleStructVal.field1
     (ObjectSlotLayout<M128i>()).writeNative((output1).rawAddress, result)
     return status
 }
@@ -160,7 +170,9 @@ public fun mmAesenc128klU8(output: MutPtr, input: M128i, handle: ConstPtr): UByt
  */
 public fun mmAesdec128klU8(output: MutPtr, input: M128i, handle: ConstPtr): UByte {
     val output1 = output
-    val (status, result) = aesdec128kl(input, handle)
+    val tupleStructVal = aesdec128kl(input, handle)
+    val status = tupleStructVal.field0
+    val result = tupleStructVal.field1
     (ObjectSlotLayout<M128i>()).writeNative((output1).rawAddress, result)
     return status
 }
@@ -175,7 +187,9 @@ public fun mmAesdec128klU8(output: MutPtr, input: M128i, handle: ConstPtr): UByt
  */
 public fun mmAesenc256klU8(output: MutPtr, input: M128i, handle: ConstPtr): UByte {
     val output1 = output
-    val (status, result) = aesenc256kl(input, handle)
+    val tupleStructVal = aesenc256kl(input, handle)
+    val status = tupleStructVal.field0
+    val result = tupleStructVal.field1
     (ObjectSlotLayout<M128i>()).writeNative((output1).rawAddress, result)
     return status
 }
@@ -190,7 +204,9 @@ public fun mmAesenc256klU8(output: MutPtr, input: M128i, handle: ConstPtr): UByt
  */
 public fun mmAesdec256klU8(output: MutPtr, input: M128i, handle: ConstPtr): UByte {
     val output1 = output
-    val (status, result) = aesdec256kl(input, handle)
+    val tupleStructVal = aesdec256kl(input, handle)
+    val status = tupleStructVal.field0
+    val result = tupleStructVal.field1
     (ObjectSlotLayout<M128i>()).writeNative((output1).rawAddress, result)
     return status
 }
@@ -204,8 +220,17 @@ public fun mmAesdec256klU8(output: MutPtr, input: M128i, handle: ConstPtr): UByt
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_aesencwide128kl_u8)
  */
 public fun mmAesencwide128klU8(output: MutPtr, input: ConstPtr, handle: ConstPtr): UByte {
-    val input1 = ptr.sliceFromRawParts(input, 8)
-    val (status, out0, out1, out2, out3, out4, out5, out6, out7) = aesencwide128kl(handle, input1[0], input1[1], input1[2], input1[3], input1[4], input1[5], input1[6], input1[7])
+    val input1 = sliceFromRawParts(input, 8)
+    val tupleStructVal = aesencwide128kl(handle, input1[0], input1[1], input1[2], input1[3], input1[4], input1[5], input1[6], input1[7])
+    val status = tupleStructVal.field0
+    val out0 = tupleStructVal.field1
+    val out1 = tupleStructVal.field2
+    val out2 = tupleStructVal.field3
+    val out3 = tupleStructVal.field4
+    val out4 = tupleStructVal.field5
+    val out5 = tupleStructVal.field6
+    val out6 = tupleStructVal.field7
+    val out7 = tupleStructVal.field8
     output = listOf(out0, out1, out2, out3, out4, out5, out6, out7)
     return status
 }
@@ -219,8 +244,17 @@ public fun mmAesencwide128klU8(output: MutPtr, input: ConstPtr, handle: ConstPtr
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_aesdecwide128kl_u8)
  */
 public fun mmAesdecwide128klU8(output: MutPtr, input: ConstPtr, handle: ConstPtr): UByte {
-    val input1 = ptr.sliceFromRawParts(input, 8)
-    val (status, out0, out1, out2, out3, out4, out5, out6, out7) = aesdecwide128kl(handle, input1[0], input1[1], input1[2], input1[3], input1[4], input1[5], input1[6], input1[7])
+    val input1 = sliceFromRawParts(input, 8)
+    val tupleStructVal = aesdecwide128kl(handle, input1[0], input1[1], input1[2], input1[3], input1[4], input1[5], input1[6], input1[7])
+    val status = tupleStructVal.field0
+    val out0 = tupleStructVal.field1
+    val out1 = tupleStructVal.field2
+    val out2 = tupleStructVal.field3
+    val out3 = tupleStructVal.field4
+    val out4 = tupleStructVal.field5
+    val out5 = tupleStructVal.field6
+    val out6 = tupleStructVal.field7
+    val out7 = tupleStructVal.field8
     output = listOf(out0, out1, out2, out3, out4, out5, out6, out7)
     return status
 }
@@ -234,8 +268,17 @@ public fun mmAesdecwide128klU8(output: MutPtr, input: ConstPtr, handle: ConstPtr
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_aesencwide256kl_u8)
  */
 public fun mmAesencwide256klU8(output: MutPtr, input: ConstPtr, handle: ConstPtr): UByte {
-    val input1 = ptr.sliceFromRawParts(input, 8)
-    val (status, out0, out1, out2, out3, out4, out5, out6, out7) = aesencwide256kl(handle, input1[0], input1[1], input1[2], input1[3], input1[4], input1[5], input1[6], input1[7])
+    val input1 = sliceFromRawParts(input, 8)
+    val tupleStructVal = aesencwide256kl(handle, input1[0], input1[1], input1[2], input1[3], input1[4], input1[5], input1[6], input1[7])
+    val status = tupleStructVal.field0
+    val out0 = tupleStructVal.field1
+    val out1 = tupleStructVal.field2
+    val out2 = tupleStructVal.field3
+    val out3 = tupleStructVal.field4
+    val out4 = tupleStructVal.field5
+    val out5 = tupleStructVal.field6
+    val out6 = tupleStructVal.field7
+    val out7 = tupleStructVal.field8
     output = listOf(out0, out1, out2, out3, out4, out5, out6, out7)
     return status
 }
@@ -249,8 +292,17 @@ public fun mmAesencwide256klU8(output: MutPtr, input: ConstPtr, handle: ConstPtr
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_aesdecwide256kl_u8)
  */
 public fun mmAesdecwide256klU8(output: MutPtr, input: ConstPtr, handle: ConstPtr): UByte {
-    val input1 = ptr.sliceFromRawParts(input, 8)
-    val (status, out0, out1, out2, out3, out4, out5, out6, out7) = aesdecwide256kl(handle, input1[0], input1[1], input1[2], input1[3], input1[4], input1[5], input1[6], input1[7])
+    val input1 = sliceFromRawParts(input, 8)
+    val tupleStructVal = aesdecwide256kl(handle, input1[0], input1[1], input1[2], input1[3], input1[4], input1[5], input1[6], input1[7])
+    val status = tupleStructVal.field0
+    val out0 = tupleStructVal.field1
+    val out1 = tupleStructVal.field2
+    val out2 = tupleStructVal.field3
+    val out3 = tupleStructVal.field4
+    val out4 = tupleStructVal.field5
+    val out5 = tupleStructVal.field6
+    val out6 = tupleStructVal.field7
+    val out7 = tupleStructVal.field8
     output = listOf(out0, out1, out2, out3, out4, out5, out6, out7)
     return status
 }

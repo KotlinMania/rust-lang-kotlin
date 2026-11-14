@@ -1,0 +1,5 @@
+package = io.github.kotlinmania.rustlang.wasip1.cinterop
+headers = lib_generated_wrapper.h
+headerFilter = lib_generated_wrapper.h
+compilerOpts = -Isrc/native/interop/cinterop
+staticLibraries = lib_generated_wrapper.a

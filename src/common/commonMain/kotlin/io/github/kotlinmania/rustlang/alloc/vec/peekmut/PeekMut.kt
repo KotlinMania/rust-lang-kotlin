@@ -54,7 +54,7 @@ public open class PeekMut<T, A : Allocator>(
     }
 
     public companion object {
-        internal fun <T, A : Allocator> new(vec: List<T>): PeekMut<T, A>? =
+        public fun <T, A : Allocator> new(vec: List<T>): PeekMut<T, A>? =
             if (vec.isEmpty()) {
                 null
             } else {

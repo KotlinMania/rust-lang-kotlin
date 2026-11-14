@@ -4,13 +4,12 @@ package io.github.kotlinmania.rustlang.std.net.tcp
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
+import io.github.kotlinmania.rustlang.core.net.socketaddr.SocketAddr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.time.Duration
-import io.github.kotlinmania.rustlang.std.fmt
+import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.net.Shutdown
 import io.github.kotlinmania.rustlang.std.net.socketaddr.ToSocketAddrs
-import io.github.kotlinmania.rustlang.std.os.unix.net.SocketAddr
-import io.github.kotlinmania.rustlang.std.os.xous.ffi.definitions.Error
 import io.github.kotlinmania.rustlang.std.sys.AsInner
 import io.github.kotlinmania.rustlang.std.sys.FromInner
 import io.github.kotlinmania.rustlang.std.sys.IntoInner
@@ -57,9 +56,9 @@ import io.github.kotlinmania.rustlang.std.sys.IntoInner
  * to disconnected socket. In some cases, getting a `SIGPIPE` would trigger process termination.
  */
 public open class TcpStream(
-    public var value: io.github.kotlinmania.netimp.TcpStream,
-) : Read, Write, AsInner<io.github.kotlinmania.netimp.TcpStream>, FromInner<io.github.kotlinmania.netimp.TcpStream, TcpStream>, IntoInner<io.github.kotlinmania.netimp.TcpStream> {
-    public var field0: io.github.kotlinmania.netimp.TcpStream
+    public var value: io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpStream,
+) : Read, Write, AsInner<io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpStream>, FromInner<io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpStream, TcpStream>, IntoInner<io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpStream> {
+    public var field0: io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpStream
         get() = value
         set(v) {
             value = v
@@ -80,7 +79,7 @@ public open class TcpStream(
      * check(stream.peerAddr().unwrap() == SocketAddr.v4(SocketAddrV4.new(Ipv4Addr.new(127, 0, 0, 1), 8080)))
      * ```
      */
-    public open fun peerAddr(): Result<SocketAddr> = this.value.peerAddr()
+    public open fun peerAddr(): Result<SocketAddr, Error> = this.value.peerAddr()
 
     /**
      * Returns the socket address of the local half of this TCP connection.
@@ -96,7 +95,7 @@ public open class TcpStream(
      * check(stream.localAddr().unwrap().ip() == IpAddr.v4(Ipv4Addr.new(127, 0, 0, 1)))
      * ```
      */
-    public open fun localAddr(): Result<SocketAddr> = this.value.socketAddr()
+    public open fun localAddr(): Result<SocketAddr, Error> = this.value.socketAddr()
 
     /**
      * Shuts down the read, write, or both halves of this connection.
@@ -122,7 +121,7 @@ public open class TcpStream(
      * stream.shutdown(Shutdown.Both).expect("shutdown should succeed")
      * ```
      */
-    public open fun shutdown(how: Shutdown): Result<Unit> = this.value.shutdown(how)
+    public open fun shutdown(how: Shutdown): Result<Unit, Error> = this.value.shutdown(how)
 
     /**
      * Creates a new independently owned handle to the underlying socket.
@@ -141,7 +140,7 @@ public open class TcpStream(
      * val streamClone = stream.tryClone().expect("clone should succeed")
      * ```
      */
-    public open fun tryClone(): Result<TcpStream> = this.value.duplicate().map({ TcpStream(it) })
+    public open fun tryClone(): Result<TcpStream, Error> = this.value.duplicate().map({ TcpStream(it) })
 
     /**
      * Sets the read timeout to the timeout specified.
@@ -173,6 +172,7 @@ public open class TcpStream(
      * method:
      *
      * ```kotlin
+     * import std.io
      * import std.net.TcpStream
      * import std.time.Duration
      *
@@ -182,7 +182,7 @@ public open class TcpStream(
      * check(err.kind() == io.ErrorKind.InvalidInput)
      * ```
      */
-    public open fun setReadTimeout(dur: Duration?): Result<Unit> = this.value.setReadTimeout(dur)
+    public open fun setReadTimeout(dur: Duration?): Result<Unit, Error> = this.value.setReadTimeout(dur)
 
     /**
      * Sets the write timeout to the timeout specified.
@@ -214,6 +214,7 @@ public open class TcpStream(
      * method:
      *
      * ```kotlin
+     * import std.io
      * import std.net.TcpStream
      * import std.time.Duration
      *
@@ -223,7 +224,7 @@ public open class TcpStream(
      * check(err.kind() == io.ErrorKind.InvalidInput)
      * ```
      */
-    public open fun setWriteTimeout(dur: Duration?): Result<Unit> = this.value.setWriteTimeout(dur)
+    public open fun setWriteTimeout(dur: Duration?): Result<Unit, Error> = this.value.setWriteTimeout(dur)
 
     /**
      * Returns the read timeout of this socket.
@@ -246,7 +247,7 @@ public open class TcpStream(
      * check(stream.readTimeout().unwrap() == null)
      * ```
      */
-    public open fun readTimeout(): Result<Duration?> = this.value.readTimeout()
+    public open fun readTimeout(): Result<Duration?, Error> = this.value.readTimeout()
 
     /**
      * Returns the write timeout of this socket.
@@ -269,7 +270,7 @@ public open class TcpStream(
      * check(stream.writeTimeout().unwrap() == null)
      * ```
      */
-    public open fun writeTimeout(): Result<Duration?> = this.value.writeTimeout()
+    public open fun writeTimeout(): Result<Duration?, Error> = this.value.writeTimeout()
 
     /**
      * Receives data on the socket from the remote address to which it is
@@ -289,7 +290,7 @@ public open class TcpStream(
      * val len = stream.peek(buf).expect("peek should succeed")
      * ```
      */
-    public open fun peek(buf: MutableList<UByte>): Result<Int> = this.value.peek(buf)
+    public open fun peek(buf: MutableList<UByte>): Result<Int, Error> = this.value.peek(buf)
 
     /**
      * Sets the value of the `SO_LINGER` option on this socket.
@@ -313,7 +314,7 @@ public open class TcpStream(
      * }
      * ```
      */
-    public open fun setLinger(linger: Duration?): Result<Unit> = this.value.setLinger(linger)
+    public open fun setLinger(linger: Duration?): Result<Unit, Error> = this.value.setLinger(linger)
 
     /**
      * Gets the value of the `SO_LINGER` option on this socket.
@@ -334,7 +335,7 @@ public open class TcpStream(
      * }
      * ```
      */
-    public open fun linger(): Result<Duration?> = this.value.linger()
+    public open fun linger(): Result<Duration?, Error> = this.value.linger()
 
     /**
      * Sets the value of the `SO_KEEPALIVE` option on this socket.
@@ -364,7 +365,7 @@ public open class TcpStream(
      * }
      * ```
      */
-    public open fun setKeepalive(keepalive: Boolean): Result<Unit> = this.value.setKeepalive(keepalive)
+    public open fun setKeepalive(keepalive: Boolean): Result<Unit, Error> = this.value.setKeepalive(keepalive)
 
     /**
      * Gets the value of the `SO_KEEPALIVE` option on this socket.
@@ -384,7 +385,7 @@ public open class TcpStream(
      * }
      * ```
      */
-    public open fun keepalive(): Result<Boolean> = this.value.keepalive()
+    public open fun keepalive(): Result<Boolean, Error> = this.value.keepalive()
 
     /**
      * Sets the value of the `TCP_NODELAY` option on this socket.
@@ -404,7 +405,7 @@ public open class TcpStream(
      * stream.setNodelay(true).expect("setNodelay should succeed")
      * ```
      */
-    public open fun setNodelay(nodelay: Boolean): Result<Unit> = this.value.setNodelay(nodelay)
+    public open fun setNodelay(nodelay: Boolean): Result<Unit, Error> = this.value.setNodelay(nodelay)
 
     /**
      * Gets the value of the `TCP_NODELAY` option on this socket.
@@ -421,7 +422,7 @@ public open class TcpStream(
      * check(stream.nodelay().unwrapOr(false) == true)
      * ```
      */
-    public open fun nodelay(): Result<Boolean> = this.value.nodelay()
+    public open fun nodelay(): Result<Boolean, Error> = this.value.nodelay()
 
     /**
      * Sets the value for the `IP_TTL` option on this socket.
@@ -438,7 +439,7 @@ public open class TcpStream(
      * stream.setTtl(100).expect("setTtl should succeed")
      * ```
      */
-    public open fun setTtl(ttl: UInt): Result<Unit> = this.value.setTtl(ttl)
+    public open fun setTtl(ttl: UInt): Result<Unit, Error> = this.value.setTtl(ttl)
 
     /**
      * Gets the value of the `IP_TTL` option for this socket.
@@ -455,7 +456,7 @@ public open class TcpStream(
      * check(stream.ttl().unwrapOr(0) == 100)
      * ```
      */
-    public open fun ttl(): Result<UInt> = this.value.ttl()
+    public open fun ttl(): Result<UInt, Error> = this.value.ttl()
 
     /**
      * Sets the value for the `IPV6_UNICAST_HOPS` option on this socket.
@@ -475,7 +476,7 @@ public open class TcpStream(
      * }
      * ```
      */
-    public open fun setHopLimitV6(limit: UByte): Result<Unit> = this.value.setHopLimitV6(limit)
+    public open fun setHopLimitV6(limit: UByte): Result<Unit, Error> = this.value.setHopLimitV6(limit)
 
     /**
      * Gets the value of the `IPV6_UNICAST_HOPS` option on this socket.
@@ -495,7 +496,7 @@ public open class TcpStream(
      * }
      * ```
      */
-    public open fun hopLimitV6(): Result<UByte> = this.value.hopLimitV6()
+    public open fun hopLimitV6(): Result<UByte, Error> = this.value.hopLimitV6()
 
     /**
      * Gets the value of the `SO_ERROR` option on this socket.
@@ -513,7 +514,7 @@ public open class TcpStream(
      * stream.takeError().expect("No error was expected...")
      * ```
      */
-    public open fun takeError(): Result<Error?> = this.value.takeError()
+    public open fun takeError(): Result<io.github.kotlinmania.rustlang.std.io.Error?, Error> = this.value.takeError()
 
     /**
      * Moves this TCP stream into or out of nonblocking mode.
@@ -561,32 +562,32 @@ public open class TcpStream(
      * println("bytes: $buf")
      * ```
      */
-    public open fun setNonblocking(nonblocking: Boolean): Result<Unit> = this.value.setNonblocking(nonblocking)
+    public open fun setNonblocking(nonblocking: Boolean): Result<Unit, Error> = this.value.setNonblocking(nonblocking)
 
     // In addition to the `implementation`s here, `TcpStream` also has `implementation`s for
     // `AsFd`/`From<OwnedFd>`/`Into<OwnedFd>` and
     // `AsRawFd`/`IntoRawFd`/`FromRawFd`, on Unix and WASI, and
     // `AsSocket`/`From<OwnedSocket>`/`Into<OwnedSocket>` and
     // `AsRawSocket`/`IntoRawSocket`/`FromRawSocket` on Windows.
-    public open fun read(buf: MutableList<UByte>): Result<Int> = this.value.read(buf)
+    public open fun read(buf: MutableList<UByte>): Result<Int, Error> = this.value.read(buf)
 
-    public open fun readBuf(buf: BorrowedCursor<UByte>): Result<Unit> = this.value.readBuf(buf)
+    public open fun readBuf(buf: BorrowedCursor<UByte>): Result<Unit, Error> = this.value.readBuf(buf)
 
-    public open fun readVectored(bufs: MutableList<IoSliceMut>): Result<Int> = this.value.readVectored(bufs)
+    public open fun readVectored(bufs: MutableList<IoSliceMut>): Result<Int, Error> = this.value.readVectored(bufs)
 
     public open fun isReadVectored(): Boolean = this.value.isReadVectored()
 
-    public open fun write(buf: List<UByte>): Result<Int> = this.value.write(buf)
+    public open fun write(buf: List<UByte>): Result<Int, Error> = this.value.write(buf)
 
-    public open fun writeVectored(bufs: List<IoSlice>): Result<Int> = this.value.writeVectored(bufs)
+    public open fun writeVectored(bufs: List<IoSlice>): Result<Int, Error> = this.value.writeVectored(bufs)
 
     public open fun isWriteVectored(): Boolean = this.value.isWriteVectored()
 
-    public open fun flush(): Result<Unit> = Result.Ok(Unit)
+    public open fun flush(): Result<Unit, Error> = Result.Ok(Unit)
 
-    public override fun asInner(): io.github.kotlinmania.netimp.TcpStream = this.value
+    public override fun asInner(): io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpStream = this.value
 
-    public override fun intoInner(): io.github.kotlinmania.netimp.TcpStream = this.value
+    public override fun intoInner(): io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpStream = this.value
 
     public open fun fmt(f: StringBuilder) {
         this.value.fmt(f)
@@ -642,7 +643,7 @@ public open class TcpStream(
          * }
          * ```
          */
-        public fun <Iter, A : ToSocketAddrs<Any?>> connect(addr: A): Result<TcpStream> = io.github.kotlinmania.netimp.TcpStream.connect(addr).map({ TcpStream(it) })
+        public fun <Iter, A : ToSocketAddrs<Any?>> connect(addr: A): Result<TcpStream, Error> = io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpStream.connect(addr).map({ TcpStream(it) })
 
         /**
          * Opens a TCP connection to a remote host with a timeout.
@@ -657,9 +658,9 @@ public open class TcpStream(
          * then uses an OS-specific mechanism to await the completion of the
          * connection request.
          */
-        public fun connectTimeout(addr: SocketAddr, timeout: Duration): Result<TcpStream> = io.github.kotlinmania.netimp.TcpStream.connectTimeout(addr, timeout).map({ TcpStream(it) })
+        public fun connectTimeout(addr: SocketAddr, timeout: Duration): Result<TcpStream, Error> = io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpStream.connectTimeout(addr, timeout).map({ TcpStream(it) })
 
-        public fun fromInner(inner: io.github.kotlinmania.netimp.TcpStream): TcpStream = TcpStream(inner)
+        public fun fromInner(inner: io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpStream): TcpStream = TcpStream(inner)
     }
 }
 
@@ -698,9 +699,9 @@ public open class TcpStream(
  * ```
  */
 public open class TcpListener(
-    public var value: io.github.kotlinmania.netimp.TcpListener,
-) : AsInner<io.github.kotlinmania.netimp.TcpListener>, FromInner<io.github.kotlinmania.netimp.TcpListener, TcpListener>, IntoInner<io.github.kotlinmania.netimp.TcpListener> {
-    public var field0: io.github.kotlinmania.netimp.TcpListener
+    public var value: io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpListener,
+) : AsInner<io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpListener>, FromInner<io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpListener, TcpListener>, IntoInner<io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpListener> {
+    public var field0: io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpListener
         get() = value
         set(v) {
             value = v
@@ -721,7 +722,7 @@ public open class TcpListener(
      * check(listener.localAddr().unwrap() == SocketAddr.v4(SocketAddrV4.new(Ipv4Addr.new(127, 0, 0, 1), 8080)))
      * ```
      */
-    public open fun localAddr(): Result<SocketAddr> = this.value.socketAddr()
+    public open fun localAddr(): Result<SocketAddr, Error> = this.value.socketAddr()
 
     /**
      * Creates a new independently owned handle to the underlying socket.
@@ -739,7 +740,7 @@ public open class TcpListener(
      * val listenerClone = listener.tryClone().unwrap()
      * ```
      */
-    public open fun tryClone(): Result<TcpListener> = this.value.duplicate().map({ TcpListener(it) })
+    public open fun tryClone(): Result<TcpListener, Error> = this.value.duplicate().map({ TcpListener(it) })
 
     /**
      * Accept a new incoming connection from this listener.
@@ -791,7 +792,7 @@ public open class TcpListener(
      * }
      * ```
      */
-    public open fun accept(): Result<Pair<TcpStream, SocketAddr>> {
+    public open fun accept(): Result<Pair<TcpStream, SocketAddr>, Error> {
         // On wasm*-unknown-unknown, `TcpStream` is uninhabited (as it's
         // unsupported) and so the `a` variable here is technically unused.
         return this.value.accept().map({ (a, b) -> Pair(TcpStream(a), b) })
@@ -887,7 +888,7 @@ public open class TcpListener(
      * listener.setTtl(100).expect("setTtl should succeed")
      * ```
      */
-    public open fun setTtl(ttl: UInt): Result<Unit> = this.value.setTtl(ttl)
+    public open fun setTtl(ttl: UInt): Result<Unit, Error> = this.value.setTtl(ttl)
 
     /**
      * Gets the value of the `IP_TTL` option for this socket.
@@ -904,7 +905,7 @@ public open class TcpListener(
      * check(listener.ttl().unwrapOr(0) == 100)
      * ```
      */
-    public open fun ttl(): Result<UInt> = this.value.ttl()
+    public open fun ttl(): Result<UInt, Error> = this.value.ttl()
 
     /**
      * Sets the value for the `IPV6_UNICAST_HOPS` option on this socket.
@@ -924,7 +925,7 @@ public open class TcpListener(
      * }
      * ```
      */
-    public open fun setHopLimitV6(limit: UByte): Result<Unit> = this.value.setHopLimitV6(limit)
+    public open fun setHopLimitV6(limit: UByte): Result<Unit, Error> = this.value.setHopLimitV6(limit)
 
     /**
      * Gets the value of the `IPV6_UNICAST_HOPS` option on this socket.
@@ -944,11 +945,11 @@ public open class TcpListener(
      * }
      * ```
      */
-    public open fun hopLimitV6(): Result<UByte> = this.value.hopLimitV6()
+    public open fun hopLimitV6(): Result<UByte, Error> = this.value.hopLimitV6()
 
-    public open fun setOnlyV6(onlyV6: Boolean): Result<Unit> = this.value.setOnlyV6(onlyV6)
+    public open fun setOnlyV6(onlyV6: Boolean): Result<Unit, Error> = this.value.setOnlyV6(onlyV6)
 
-    public open fun onlyV6(): Result<Boolean> = this.value.onlyV6()
+    public open fun onlyV6(): Result<Boolean, Error> = this.value.onlyV6()
 
     /**
      * Gets the value of the `SO_ERROR` option on this socket.
@@ -966,7 +967,7 @@ public open class TcpListener(
      * listener.takeError().expect("`takeError` should succeed")
      * ```
      */
-    public open fun takeError(): Result<Error?> = this.value.takeError()
+    public open fun takeError(): Result<io.github.kotlinmania.rustlang.std.io.Error?, Error> = this.value.takeError()
 
     /**
      * Moves this TCP stream into or out of nonblocking mode.
@@ -987,6 +988,7 @@ public open class TcpListener(
      * bytes in nonblocking mode:
      *
      * ```kotlin
+     * import std.io
      * import std.net.TcpListener
      *
      * val listener = TcpListener.bind("127.0.0.1:7878").unwrap()
@@ -1013,11 +1015,11 @@ public open class TcpListener(
      * }
      * ```
      */
-    public open fun setNonblocking(nonblocking: Boolean): Result<Unit> = this.value.setNonblocking(nonblocking)
+    public open fun setNonblocking(nonblocking: Boolean): Result<Unit, Error> = this.value.setNonblocking(nonblocking)
 
-    public override fun asInner(): io.github.kotlinmania.netimp.TcpListener = this.value
+    public override fun asInner(): io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpListener = this.value
 
-    public override fun intoInner(): io.github.kotlinmania.netimp.TcpListener = this.value
+    public override fun intoInner(): io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpListener = this.value
 
     public open fun fmt(f: StringBuilder) {
         this.value.fmt(f)
@@ -1072,9 +1074,9 @@ public open class TcpListener(
          * val socket = TcpListener.bind("127.0.0.1:0").unwrap()
          * ```
          */
-        public fun <Iter, A : ToSocketAddrs<Any?>> bind(addr: A): Result<TcpListener> = io.github.kotlinmania.netimp.TcpListener.bind(addr).map({ TcpListener(it) })
+        public fun <Iter, A : ToSocketAddrs<Any?>> bind(addr: A): Result<TcpListener, Error> = io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpListener.bind(addr).map({ TcpListener(it) })
 
-        public fun fromInner(inner: io.github.kotlinmania.netimp.TcpListener): TcpListener = TcpListener(inner)
+        public fun fromInner(inner: io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpListener): TcpListener = TcpListener(inner)
     }
 }
 
@@ -1088,8 +1090,8 @@ public open class TcpListener(
  */
 public open class Incoming(
     public var listener: TcpListener,
-) : Iterable<Result<TcpStream>> {
-    override fun iterator(): kotlin.collections.Iterator<Result<TcpStream>> = object : AbstractIterator<Result<TcpStream>>() {
+) : Iterable<Result<TcpStream, Error>> {
+    override fun iterator(): Iterator<Result<TcpStream, Error>> = object : AbstractIterator<Result<TcpStream, Error>>() {
         override fun computeNext() {
             when (val v = this@Incoming.next()) {
                 null -> done()
@@ -1103,7 +1105,7 @@ public open class Incoming(
     // `AsRawFd`/`IntoRawFd`/`FromRawFd`, on Unix and WASI, and
     // `AsSocket`/`From<OwnedSocket>`/`Into<OwnedSocket>` and
     // `AsRawSocket`/`IntoRawSocket`/`FromRawSocket` on Windows.
-    public open fun next(): Result<TcpStream>? = this.listener.accept().map({ p -> p.first })
+    public open fun next(): Result<TcpStream, Error>? = this.listener.accept().map({ p -> p.first })
 }
 
 /**
@@ -1116,8 +1118,8 @@ public open class Incoming(
  */
 public open class IntoIncoming(
     public var listener: TcpListener,
-) : Iterable<Result<TcpStream>> {
-    override fun iterator(): kotlin.collections.Iterator<Result<TcpStream>> = object : AbstractIterator<Result<TcpStream>>() {
+) : Iterable<Result<TcpStream, Error>> {
+    override fun iterator(): Iterator<Result<TcpStream, Error>> = object : AbstractIterator<Result<TcpStream, Error>>() {
         override fun computeNext() {
             when (val v = this@IntoIncoming.next()) {
                 null -> done()
@@ -1126,5 +1128,5 @@ public open class IntoIncoming(
         }
     }
 
-    public open fun next(): Result<TcpStream>? = this.listener.accept().map({ p -> p.first })
+    public open fun next(): Result<TcpStream, Error>? = this.listener.accept().map({ p -> p.first })
 }

@@ -25,7 +25,7 @@ public fun prepare(sparse: ULong): ULongArray {
     return masks
 }
 
-internal fun extractImpl(x: ULong, sparse: ULong): ULong {
+public fun extractImpl(x: ULong, sparse: ULong): ULong {
     var x1 = x
     val masks = prepare(sparse)
     x1 = x1 and sparse
@@ -44,7 +44,7 @@ internal fun extractImpl(x: ULong, sparse: ULong): ULong {
     return x1
 }
 
-internal fun depositImpl(x: ULong, sparse: ULong): ULong {
+public fun depositImpl(x: ULong, sparse: ULong): ULong {
     var x1 = x
     val masks = prepare(sparse)
     var stage = STAGES

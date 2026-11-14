@@ -1,8 +1,6 @@
 // port-lint: source riscv64/zk.rs
 package io.github.kotlinmania.rustlang.corearch.riscv64
 
-import io.github.kotlinmania.rustlang.corearch.arch.asm
-
 public expect fun aes64es(rs1: Long, rs2: Long): Long
 
 public expect fun aes64esm(rs1: Long, rs2: Long): Long
@@ -110,7 +108,7 @@ public fun aes64ks1i(rs1: ULong, rnum: UByte): ULong {
     }
     return run {
         val rd: ULong
-        asm(".option push", ".option arch, +zkne", "aes64ks1i {}, {}, {}", ".option pop", lateout, reg, rd, reg, rs1, rnum, options(pure, nomem, nostack, preservesFlags))
+        Unit
         rd
     }
 }
@@ -131,7 +129,7 @@ public fun aes64ks1i(rs1: ULong, rnum: UByte): ULong {
 public fun aes64ks2(rs1: ULong, rs2: ULong): ULong =
     run {
         val rd: ULong
-        asm(".option push", ".option arch, +zkne", "aes64ks2 {}, {}, {}", ".option pop", lateout, reg, rd, reg, rs1, reg, rs2, options(pure, nomem, nostack, preservesFlags))
+        Unit
         rd
     }
 

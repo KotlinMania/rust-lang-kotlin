@@ -56,11 +56,25 @@ public final class CentralPortalSupport {
                 pom.getDescription().set(prop(project, "project.pom.description", ""));
                 pom.getInceptionYear().set("2026");
                 pom.getUrl().set("https://github.com/KotlinMania/" + publishProjectName);
-                pom.licenses(licenses -> licenses.license(license -> {
-                    license.getName().set(prop(project, "project.pom.licenseName", "MIT"));
-                    license.getUrl().set(prop(project, "project.pom.licenseUrl", "https://opensource.org/licenses/MIT"));
-                    license.getDistribution().set("repo");
-                }));
+                // Comma-separated lists declare a multi-license (for example dual MIT / Apache-2.0) POM.
+                String[] licenseNames = prop(project, "project.pom.licenseName", "MIT").split("\\s*,\\s*");
+                String[] licenseUrls =
+                    prop(project, "project.pom.licenseUrl", "https://opensource.org/licenses/MIT").split("\\s*,\\s*");
+                if (licenseNames.length != licenseUrls.length) {
+                    throw new GradleException(
+                        "project.pom.licenseName and project.pom.licenseUrl must list the same number of entries");
+                }
+                pom.licenses(licenses -> {
+                    for (int i = 0; i < licenseNames.length; i++) {
+                        String licenseName = licenseNames[i];
+                        String licenseUrl = licenseUrls[i];
+                        licenses.license(license -> {
+                            license.getName().set(licenseName);
+                            license.getUrl().set(licenseUrl);
+                            license.getDistribution().set("repo");
+                        });
+                    }
+                });
                 pom.developers(developers -> developers.developer(dev -> {
                     dev.getId().set("sydneyrenee");
                     dev.getName().set("Sydney Renee");

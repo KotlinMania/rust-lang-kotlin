@@ -3,7 +3,6 @@ package io.github.kotlinmania.rustlang.std.sync.barrier
 
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.std.fmt
 import io.github.kotlinmania.rustlang.std.sync.nonpoison.condvar.Condvar
 import io.github.kotlinmania.rustlang.std.sync.nonpoison.mutex.Mutex
 
@@ -40,6 +39,7 @@ public class DebugStruct(
  *
  * ```kotlin
  * import std.sync.Barrier
+ * import std.thread
  *
  * val n = 10
  * val barrier = Barrier.new(n)
@@ -83,6 +83,7 @@ public open class Barrier internal constructor(
      *
      * ```kotlin
      * import std.sync.Barrier
+     * import std.thread
      *
      * val n = 10
      * val barrier = Barrier.new(n)
@@ -151,27 +152,27 @@ public open class BarrierState(
     public var generationId: Int,
 ) {
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<BarrierState> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<BarrierState> {
+        public fun typeLayout(): TypeLayout<BarrierState> =
+            object : TypeLayout<BarrierState> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): BarrierState =
                     BarrierState(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readNative(addr + 8L),
+                        (PrimitiveLayouts.USIZE64).readNative(addr),
+                        (PrimitiveLayouts.USIZE64).readNative(addr + 8L),
                     )
                 override fun writeNative(addr: Long, value: BarrierState) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeNative(addr, value.count)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeNative(addr + 8L, value.generationId)
+                    (PrimitiveLayouts.USIZE64).writeNative(addr, value.count)
+                    (PrimitiveLayouts.USIZE64).writeNative(addr + 8L, value.generationId)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): BarrierState =
                     BarrierState(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readBytes(buf, offset + 8),
+                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset),
+                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset + 8),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: BarrierState) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeBytes(buf, offset, value.count)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeBytes(buf, offset + 8, value.generationId)
+                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset, value.count)
+                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset + 8, value.generationId)
                 }
             }
     }
@@ -223,23 +224,23 @@ public open class BarrierWaitResult(
     public open fun isLeader(): Boolean = this.value
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<BarrierWaitResult> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<BarrierWaitResult> {
+        public fun typeLayout(): TypeLayout<BarrierWaitResult> =
+            object : TypeLayout<BarrierWaitResult> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 1L
                 override fun readNative(addr: Long): BarrierWaitResult =
                     BarrierWaitResult(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr),
+                        (PrimitiveLayouts.BOOL).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: BarrierWaitResult) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr, value.value)
+                    (PrimitiveLayouts.BOOL).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): BarrierWaitResult =
                     BarrierWaitResult(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: BarrierWaitResult) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset, value.value)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset, value.value)
                 }
             }
     }

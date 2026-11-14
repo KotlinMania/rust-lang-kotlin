@@ -1,6 +1,7 @@
 // port-lint: source panic/location.rs
 package io.github.kotlinmania.rustlang.core.panic.location
 
+import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.intrinsics.callerLocation
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
@@ -8,7 +9,6 @@ import io.github.kotlinmania.rustlang.core.mem.sizeOfValRaw
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.rawSliceList
-import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -45,6 +45,8 @@ public class DebugStruct(
  * # Examples
  *
  * ```kotlin
+ * import std.panic
+ *
  * panic.setHook({ panicInfo ->
  *     when (val matchVal = panicInfo.location()) {
  *         null -> {
@@ -75,6 +77,8 @@ public open class Location internal constructor(
     // `Location.fileAsCStr`.
     public var filename: NonNull = filenameCtorArg
         internal set
+
+    public open fun clone(): Location = Location(filename, line, col)
 
     public open fun eq(other: Location): Boolean {
         // Compare col / line first as they're cheaper to compare and more likely to differ,
@@ -118,6 +122,8 @@ public open class Location internal constructor(
      * # Examples
      *
      * ```kotlin
+     * import std.panic
+     *
      * panic.setHook({ panicInfo ->
      *     when (val matchVal = panicInfo.location()) {
      *         null -> {
@@ -160,6 +166,8 @@ public open class Location internal constructor(
      * # Examples
      *
      * ```kotlin
+     * import std.panic
+     *
      * panic.setHook({ panicInfo ->
      *     when (val matchVal = panicInfo.location()) {
      *         null -> {
@@ -182,6 +190,8 @@ public open class Location internal constructor(
      * # Examples
      *
      * ```kotlin
+     * import std.panic
+     *
      * panic.setHook({ panicInfo ->
      *     when (val matchVal = panicInfo.location()) {
      *         null -> {

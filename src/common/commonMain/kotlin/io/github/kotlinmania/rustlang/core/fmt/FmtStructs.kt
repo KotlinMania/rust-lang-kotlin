@@ -2,7 +2,6 @@
 
 package io.github.kotlinmania.rustlang.core.fmt
 
-import io.github.kotlinmania.numfmt.Formatted
 import io.github.kotlinmania.rustlang.core.fmt.builders.DebugList
 import io.github.kotlinmania.rustlang.core.fmt.builders.DebugMap
 import io.github.kotlinmania.rustlang.core.fmt.builders.DebugSet
@@ -15,9 +14,11 @@ import io.github.kotlinmania.rustlang.core.fmt.builders.debugStructNew
 import io.github.kotlinmania.rustlang.core.fmt.builders.debugTupleNew
 import io.github.kotlinmania.rustlang.core.fmt.rt.Argument
 import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
-import io.github.kotlinmania.rustlang.core.intrinsics.writeBytes
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.num.imp.fmt.Formatted
+import io.github.kotlinmania.rustlang.core.num.imp.fmt.Part
 import io.github.kotlinmania.rustlang.core.num.rustSaturatingSub
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.slice.rawSliceList
@@ -61,11 +62,13 @@ import io.github.kotlinmania.rustlang.core.result.Result as RustResult
  * ```
  */
 public open class Error : Display {
+    public open fun clone(): Error = Error()
+
     public override fun fmt(f: Formatter): Result = f.append(("an error occurred when formatting an argument").toString())
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Error> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Error> {
+        public fun typeLayout(): TypeLayout<Error> =
+            object : TypeLayout<Error> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): Error =
@@ -119,6 +122,8 @@ public open class FormattingOptions(
      */
     public var precision: UShort,
 ) {
+    public open fun clone(): FormattingOptions = FormattingOptions(flags, width, precision)
+
     /**
      * Sets or removes the sign (the `+` or the `-` flag).
      *
@@ -343,31 +348,31 @@ public open class FormattingOptions(
     public open fun createFormatter(write: Write): Formatter = Formatter(options = this, buf = write)
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<FormattingOptions> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<FormattingOptions> {
+        public fun typeLayout(): TypeLayout<FormattingOptions> =
+            object : TypeLayout<FormattingOptions> {
                 override val alignBytes: Long = 4L
                 override val sizeBytes: Long = 8L
                 override fun readNative(addr: Long): FormattingOptions =
                     FormattingOptions(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U16).readNative(addr + 4L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U16).readNative(addr + 6L),
+                        (PrimitiveLayouts.U32).readNative(addr),
+                        (PrimitiveLayouts.U16).readNative(addr + 4L),
+                        (PrimitiveLayouts.U16).readNative(addr + 6L),
                     )
                 override fun writeNative(addr: Long, value: FormattingOptions) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).writeNative(addr, value.flags)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U16).writeNative(addr + 4L, value.width)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U16).writeNative(addr + 6L, value.precision)
+                    (PrimitiveLayouts.U32).writeNative(addr, value.flags)
+                    (PrimitiveLayouts.U16).writeNative(addr + 4L, value.width)
+                    (PrimitiveLayouts.U16).writeNative(addr + 6L, value.precision)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): FormattingOptions =
                     FormattingOptions(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U16).readBytes(buf, offset + 4),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U16).readBytes(buf, offset + 6),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset),
+                        (PrimitiveLayouts.U16).readBytes(buf, offset + 4),
+                        (PrimitiveLayouts.U16).readBytes(buf, offset + 6),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: FormattingOptions) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).writeBytes(buf, offset, value.flags)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U16).writeBytes(buf, offset + 4, value.width)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U16).writeBytes(buf, offset + 6, value.precision)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset, value.flags)
+                    (PrimitiveLayouts.U16).writeBytes(buf, offset + 4, value.width)
+                    (PrimitiveLayouts.U16).writeBytes(buf, offset + 6, value.precision)
                 }
             }
 
@@ -436,6 +441,8 @@ public open class Formatter(
      * # Examples
      *
      * ```kotlin
+     * import std.fmt
+     *
      * open class Foo(public var nb: Int) {
      *     public open fun new(nb: Int): Foo {
      *         return Foo(nb = nb)
@@ -527,6 +534,8 @@ public open class Formatter(
      * # Examples
      *
      * ```kotlin
+     * import std.fmt
+     *
      * open class Foo {
      *     public open fun fmt(formatter: StringBuilder): Result<Unit> {
      *         return run { formatter.append("Foo"); Result.success(Unit) }
@@ -588,7 +597,7 @@ public open class Formatter(
      * Callers are responsible for ensuring post-padding is written after the
      * thing that is being padded.
      */
-    internal open fun padding(padding: UShort, default: Alignment): Result<PostPadding, Error> {
+    public open fun padding(padding: UShort, default: Alignment): io.github.kotlinmania.rustlang.core.result.Result<PostPadding, Error> {
         val align = (this.options.getAlign() ?: default)
         val fill = this.options.getFill()
         val paddingLeft =
@@ -704,14 +713,14 @@ public open class Formatter(
                     }
                     // SAFETY: Per the precondition.
                     run {
-                        writeBytes(this.buf, s[0 until len])
+                        when (val tryResult = writeBytes(this.buf, s[0 until len])) { is RustResult.Ok<*> -> tryResult.value; is RustResult.Err<*> -> return RustResult.Err(tryResult.error) }
                     }
                 }
                 // SAFETY: Per the precondition.
                 is Part.Copy -> {
                     val (buf) = part
                     run {
-                        writeBytes(this.buf, buf)
+                        when (val tryResult = writeBytes(this.buf, buf)) { is RustResult.Ok<*> -> tryResult.value; is RustResult.Err<*> -> return RustResult.Err(tryResult.error) }
                     }
                 }
             }
@@ -726,6 +735,8 @@ public open class Formatter(
      * # Examples
      *
      * ```kotlin
+     * import std.fmt
+     *
      * open class Foo {
      *     public open fun fmt(formatter: StringBuilder): Result<Unit> {
      *         return run { formatter.append("Foo"); Result.success(Unit) }
@@ -754,6 +765,8 @@ public open class Formatter(
      * # Examples
      *
      * ```kotlin
+     * import std.fmt
+     *
      * open class Foo(public var value: Int) {
      *     public var field0: Int
      *         get() = value
@@ -774,6 +787,7 @@ public open class Formatter(
      *
      * ```kotlin
      * import String
+     * import std.fmt
      *
      * open class Hello {
      *     public open fun fmt(formatter: StringBuilder): Result<Unit> {
@@ -831,6 +845,8 @@ public open class Formatter(
      * # Examples
      *
      * ```kotlin
+     * import std.fmt
+     *
      * open class Foo {
      *     public open fun fmt(formatter: StringBuilder): Result<Unit> {
      *         val c = formatter.fill()
@@ -893,6 +909,8 @@ public open class Formatter(
      * # Examples
      *
      * ```kotlin
+     * import std.fmt
+     *
      * open class Foo(public var value: Int) {
      *     public var field0: Int
      *         get() = value
@@ -932,6 +950,8 @@ public open class Formatter(
      * # Examples
      *
      * ```kotlin
+     * import std.fmt
+     *
      * open class Foo(public var value: Float) {
      *     public var field0: Float
      *         get() = value
@@ -970,6 +990,8 @@ public open class Formatter(
      * # Examples
      *
      * ```kotlin
+     * import std.fmt
+     *
      * public fun doctestEntry() {
      *     open class Foo(public var value: Int) {
      *         public var field0: Int
@@ -1007,6 +1029,8 @@ public open class Formatter(
      * # Examples
      *
      * ```kotlin
+     * import std.fmt
+     *
      * open class Foo(public var value: Int) {
      *     public var field0: Int
      *         get() = value
@@ -1035,6 +1059,8 @@ public open class Formatter(
      * # Examples
      *
      * ```kotlin
+     * import std.fmt
+     *
      * open class Foo(public var value: Int) {
      *     public var field0: Int
      *         get() = value
@@ -1062,6 +1088,8 @@ public open class Formatter(
      * # Examples
      *
      * ```kotlin
+     * import std.fmt
+     *
      * open class Foo(public var value: Int) {
      *     public var field0: Int
      *         get() = value
@@ -1095,6 +1123,7 @@ public open class Formatter(
      *
      * ```kotlin
      * import String
+     * import std.fmt
      * import std.net.Ipv4Addr
      *
      * open class Foo(
@@ -1193,6 +1222,7 @@ public open class Formatter(
      *
      * ```kotlin
      * import String
+     * import std.fmt
      *
      * public class DebugTuple(
      *     private val out: StringBuilder,
@@ -1239,6 +1269,8 @@ public open class Formatter(
      * # Examples
      *
      * ```kotlin
+     * import std.fmt
+     *
      * open class Foo(public var value: List<Int>) {
      *     public var field0: List<Int>
      *         get() = value
@@ -1262,6 +1294,8 @@ public open class Formatter(
      * # Examples
      *
      * ```kotlin
+     * import std.fmt
+     *
      * open class Foo(public var value: List<Int>) {
      *     public var field0: List<Int>
      *         get() = value
@@ -1280,6 +1314,8 @@ public open class Formatter(
      * to build a list of match arms:
      *
      * ```kotlin
+     * import std.fmt
+     *
      * open class Arm<L, R>(public var value: Pair<L, R>) {
      *     public var field0: Pair<L, R>
      *         get() = value
@@ -1310,6 +1346,7 @@ public open class Formatter(
      *
      * ```kotlin
      * import String
+     * import std.fmt
      *
      * open class Foo(public var value: List<Pair<String, Int>>) {
      *     public var field0: List<Pair<String, Int>>
@@ -1505,6 +1542,8 @@ public open class Arguments internal constructor(
     public var args: NonNull = argsCtorArg
         internal set
 
+    public open fun clone(): Arguments = Arguments(template, args)
+
     /**
      * Estimates the length of the formatted text.
      *
@@ -1687,14 +1726,14 @@ public open class Arguments internal constructor(
 /**
  * Padding after the end of something. Returned by `Formatter.padding`.
  */
-internal open class PostPadding(
+public open class PostPadding(
     public var fill: Char,
     public var padding: UShort,
 ) {
     /**
      * Writes this post padding.
      */
-    internal open fun write(f: Formatter): Result {
+    public open fun write(f: Formatter): Result {
         for (unused in 0 until this.padding) {
             f.buf.append(this.fill)
         }
@@ -1702,27 +1741,27 @@ internal open class PostPadding(
     }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<PostPadding> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<PostPadding> {
+        public fun typeLayout(): TypeLayout<PostPadding> =
+            object : TypeLayout<PostPadding> {
                 override val alignBytes: Long = 4L
                 override val sizeBytes: Long = 8L
                 override fun readNative(addr: Long): PostPadding =
                     PostPadding(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.CHAR).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U16).readNative(addr + 4L),
+                        (PrimitiveLayouts.CHAR).readNative(addr),
+                        (PrimitiveLayouts.U16).readNative(addr + 4L),
                     )
                 override fun writeNative(addr: Long, value: PostPadding) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.CHAR).writeNative(addr, value.fill)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U16).writeNative(addr + 4L, value.padding)
+                    (PrimitiveLayouts.CHAR).writeNative(addr, value.fill)
+                    (PrimitiveLayouts.U16).writeNative(addr + 4L, value.padding)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): PostPadding =
                     PostPadding(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.CHAR).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U16).readBytes(buf, offset + 4),
+                        (PrimitiveLayouts.CHAR).readBytes(buf, offset),
+                        (PrimitiveLayouts.U16).readBytes(buf, offset + 4),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: PostPadding) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.CHAR).writeBytes(buf, offset, value.fill)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U16).writeBytes(buf, offset + 4, value.padding)
+                    (PrimitiveLayouts.CHAR).writeBytes(buf, offset, value.fill)
+                    (PrimitiveLayouts.U16).writeBytes(buf, offset + 4, value.padding)
                 }
             }
 

@@ -6,7 +6,7 @@ package io.github.kotlinmania.rustlang.core.slice.sort.shared
  * Returns the length of the run, and a bool that is false when the run
  * is ascending, and true if the run strictly descending.
  */
-internal fun <T> findExistingRun(v: List<T>, isLess: (T, T) -> Boolean): Pair<Int, Boolean> {
+public fun <T> findExistingRun(v: List<T>, isLess: (T, T) -> Boolean): Pair<Int, Boolean> {
     val len = v.size
     if (len < 2) {
         return Pair(len, false)

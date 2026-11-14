@@ -16,28 +16,30 @@ public open class Iovec internal constructor(
     public var iovBase: MutPtr = iovBaseCtorArg
         internal set
 
+    public open fun clone(): Iovec = Iovec(iovBase, iovLen)
+
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Iovec> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Iovec> {
+        public fun typeLayout(): TypeLayout<Iovec> =
+            object : TypeLayout<Iovec> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): Iovec =
                     Iovec(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readNative(addr + 8L),
+                        (PrimitiveLayouts.mutPtrLayout(64)).readNative(addr),
+                        (PrimitiveLayouts.USIZE64).readNative(addr + 8L),
                     )
                 override fun writeNative(addr: Long, value: Iovec) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).writeNative(addr, value.iovBase)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeNative(addr + 8L, value.iovLen)
+                    (PrimitiveLayouts.mutPtrLayout(64)).writeNative(addr, value.iovBase)
+                    (PrimitiveLayouts.USIZE64).writeNative(addr + 8L, value.iovLen)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Iovec =
                     Iovec(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readBytes(buf, offset + 8),
+                        (PrimitiveLayouts.mutPtrLayout(64)).readBytes(buf, offset),
+                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset + 8),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Iovec) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).writeBytes(buf, offset, value.iovBase)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeBytes(buf, offset + 8, value.iovLen)
+                    (PrimitiveLayouts.mutPtrLayout(64)).writeBytes(buf, offset, value.iovBase)
+                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset + 8, value.iovLen)
                 }
             }
 
@@ -51,11 +53,13 @@ public open class Iovec internal constructor(
     }
 }
 
-internal open class IoSlice(
+public open class IoSlice(
     public var vec: Iovec,
     public var p: Unit,
 ) {
-    internal open fun advance(n: Int) {
+    public open fun clone(): IoSlice = IoSlice(vec, p)
+
+    public open fun advance(n: Int) {
         check(n <= this.vec.iovLen) { "advancing IoSlice beyond its length" }
         // SAFETY:
         // * `n <= iovLen` as asserted above.
@@ -66,22 +70,22 @@ internal open class IoSlice(
         }
     }
 
-    internal open fun asSlice(): List<UByte> {
+    public open fun asSlice(): List<UByte> {
         // SAFETY:
         // * `iovBase` and `iovLen` come from a prior decomposition of a valid slice.
         return rawSliceList((this.vec.iovBase).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, this.vec.iovLen.toInt(), PrimitiveLayouts.U8)
     }
 
     public companion object {
-        internal fun new(buf: List<UByte>): IoSlice = IoSlice(vec = Iovec(iovBase = ((buf.asPtr()).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, iovLen = buf.size), p = Unit)
+        public fun new(buf: List<UByte>): IoSlice = IoSlice(vec = Iovec(iovBase = ((buf.asPtr()).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, iovLen = buf.size), p = Unit)
     }
 }
 
-internal open class IoSliceMut(
+public open class IoSliceMut(
     public var vec: Iovec,
     public var p: Unit,
 ) {
-    internal open fun advance(n: Int) {
+    public open fun advance(n: Int) {
         check(n <= this.vec.iovLen) { "advancing IoSliceMut beyond its length" }
         // SAFETY:
         // * `n <= iovLen` as asserted above.
@@ -92,25 +96,25 @@ internal open class IoSliceMut(
         }
     }
 
-    internal open fun asSlice(): List<UByte> {
+    public open fun asSlice(): List<UByte> {
         // SAFETY:
         // * `iovBase` and `iovLen` come from a prior decomposition of a valid slice.
         return rawSliceList((this.vec.iovBase).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, this.vec.iovLen.toInt(), PrimitiveLayouts.U8)
     }
 
-    internal open fun intoSlice(): MutableList<UByte> {
+    public open fun intoSlice(): MutableList<UByte> {
         // SAFETY:
         // * `iovBase` and `iovLen` come from a prior decomposition of a valid slice.
         return rawMutSliceList((this.vec.iovBase).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, this.vec.iovLen.toInt(), PrimitiveLayouts.U8)
     }
 
-    internal open fun asMutSlice(): MutableList<UByte> {
+    public open fun asMutSlice(): MutableList<UByte> {
         // SAFETY:
         // * `iovBase` and `iovLen` come from a prior decomposition of a valid slice.
         return rawMutSliceList((this.vec.iovBase).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, this.vec.iovLen.toInt(), PrimitiveLayouts.U8)
     }
 
     public companion object {
-        internal fun new(buf: MutableList<UByte>): IoSliceMut = IoSliceMut(vec = Iovec(iovBase = (buf.asMutPtr()).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, iovLen = buf.size), p = Unit)
+        public fun new(buf: MutableList<UByte>): IoSliceMut = IoSliceMut(vec = Iovec(iovBase = (buf.asMutPtr()).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, iovLen = buf.size), p = Unit)
     }
 }

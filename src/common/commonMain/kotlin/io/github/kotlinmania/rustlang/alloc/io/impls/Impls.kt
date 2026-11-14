@@ -2,16 +2,18 @@
 package io.github.kotlinmania.rustlang.alloc.io.impls
 
 import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.VecDeque
-import io.github.kotlinmania.rustlang.alloc.io.write
+import io.github.kotlinmania.rustlang.alloc.fmt.Arguments
+import io.github.kotlinmania.rustlang.alloc.io.Error
+import io.github.kotlinmania.rustlang.alloc.io.read.appendToString
 import io.github.kotlinmania.rustlang.alloc.string.String
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
-import io.github.kotlinmania.rustlang.core.fmt.Arguments
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
 import io.github.kotlinmania.rustlang.core.io.seek.Seek
 import io.github.kotlinmania.rustlang.core.io.seek.SeekFrom
 import io.github.kotlinmania.rustlang.core.io.sizehint.SizeHint
+import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.result.Result
 
 public fun <T> T.lowerBound(): Int = SizeHint.lowerBound(this)
@@ -92,7 +94,7 @@ public fun List<UByte>.readExact(buf: MutableList<UByte>): Result<Unit> {
         // `readExact` makes no promise about the content of `buf` if it
         // fails so don't bother about that.
         this = ((this).slice(this.size until this.size))
-        return Result.Err(io.Error.READ_EXACT_EOF)
+        return Result.Err(Error.READ_EXACT_EOF)
     }
     val (a, b) = this.splitAt(buf.size)
     // First check if the amount of bytes we want to read is small:
@@ -112,7 +114,7 @@ public fun List<UByte>.readBufExact(cursor: BorrowedCursor<UByte>): Result<Unit>
         // Append everything we can to the cursor.
         cursor.append(this)
         this = ((this).slice(this.size until this.size))
-        return Result.Err(io.Error.READ_EXACT_EOF)
+        return Result.Err(Error.READ_EXACT_EOF)
     }
     val (a, b) = this.splitAt(cursor.capacity())
     cursor.append(a)
@@ -123,15 +125,19 @@ public fun List<UByte>.readBufExact(cursor: BorrowedCursor<UByte>): Result<Unit>
 public fun List<UByte>.readToEnd(buf: List<UByte>): Result<Int> {
     val len = this.size
     when (val tryResult = buf.tryReserve(len)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-    cfgSelect(noGlobalOomHandling, buf, tryExtendFromSliceOfBytes, this, buf, extendFromSlice, this) * this = ((this).slice(len until this.size))
+    run {
+        when (val tryResult = buf.tryExtendFromSliceOfBytes(this)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    } * this = ((this).slice(len until this.size))
     return Result.Ok(len)
 }
 
 public fun List<UByte>.readToString(buf: String): Result<Int> {
-    val content = when (val tryResult = String.fromUtf8(this).mapErr({ io.Error.INVALID_UTF8 })) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    val content = when (val tryResult = String.fromUtf8(this).mapErr({ Error.INVALID_UTF8 })) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
     val len = this.size
     when (val tryResult = buf.tryReserve(len)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-    cfgSelect(noGlobalOomHandling, buf, tryPushStr, content, buf, pushStr, content) * this = ((this).slice(len until this.size))
+    run {
+        when (val tryResult = buf.tryPushStr(content)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    } * this = ((this).slice(len until this.size))
     return Result.Ok(len)
 }
 
@@ -152,7 +158,7 @@ public fun <A : Allocator> List<UByte>.write(buf: List<UByte>): Result<Int> {
 
 public fun <A : Allocator> List<UByte>.writeVectored(bufs: List<IoSlice>): Result<Int> {
     val len = bufs.map({ b -> b.len() }).sum()
-    cfgSelect(noGlobalOomHandling, this, tryReserve, len, this, reserve, len)
+    when (val tryResult = this.tryReserve(len)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
     for (buf in bufs) {
         when (val tryResult = List.writeAll(this, buf)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
     }
@@ -162,7 +168,7 @@ public fun <A : Allocator> List<UByte>.writeVectored(bufs: List<IoSlice>): Resul
 public fun <A : Allocator> List<UByte>.isWriteVectored(): Boolean = true
 
 public fun <A : Allocator> List<UByte>.writeAll(buf: List<UByte>): Result<Unit> {
-    cfgSelect(noGlobalOomHandling, this, tryExtendFromSliceOfBytes, buf, this, extendFromSlice, buf)
+    when (val tryResult = this.tryExtendFromSliceOfBytes(buf)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
     return Result.Ok(Unit)
 }
 
@@ -200,7 +206,7 @@ public fun <A : Allocator> VecDeque<UByte, A>.readExact(buf: MutableList<UByte>)
             when (val matchVal1 = back.splitAtChecked(bufBack.len())) {
                 null -> {
                     this.clear()
-                    return Result.Err(io.Error.READ_EXACT_EOF)
+                    return Result.Err(Error.READ_EXACT_EOF)
                 }
                 else -> {
                     val back1 = matchVal1.first
@@ -232,7 +238,7 @@ public fun <A : Allocator> VecDeque<UByte, A>.readBufExact(cursor: BorrowedCurso
                 null -> {
                     cursor.append(back)
                     this.clear()
-                    return Result.Err(io.Error.READ_EXACT_EOF)
+                    return Result.Err(Error.READ_EXACT_EOF)
                 }
                 else -> {
                     val back1 = matchVal1.first
@@ -262,7 +268,7 @@ public fun <A : Allocator> VecDeque<UByte, A>.readToEnd(buf: List<UByte>): Resul
 
 public fun <A : Allocator> VecDeque<UByte, A>.readToString(buf: String): Result<Int> {
     // SAFETY: We only append to the buffer
-    return io.appendToString(buf, { buf1 -> this.readToEnd(buf1) })
+    return appendToString(buf, { buf1 -> this.readToEnd(buf1) })
 }
 
 /**

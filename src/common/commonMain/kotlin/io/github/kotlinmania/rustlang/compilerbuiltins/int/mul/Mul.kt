@@ -12,7 +12,7 @@ public interface Mul<T> : DInt, Int {
     public fun mul(rhs: T): T
 }
 
-internal interface UMulo<T> : DInt, Int {
+public interface UMulo<T> : DInt, Int {
     public fun mulo(rhs: T): Pair<T, Boolean> =
         run {
             val matchVal = Pair(this.hi().isZero(), rhs.hi().isZero())
@@ -163,13 +163,6 @@ public fun mulodi4(a: Long, b: Long, oflow: RustMutableReference<Int>): Long {
 public fun muloti4(a: I128, b: I128, oflow: RustMutableReference<Int>): I128 {
     val oflow1 = oflow
     val (mul, o) = i128OverflowingMul(a, b)
-    (oflow1).write(o.toInt())
-    return mul
-}
-
-public fun muloti4(aLo: ULong, aHi: ULong, bLo: ULong, bHi: ULong, oflow: RustMutableReference<Int>): I128 {
-    val oflow1 = oflow
-    val (mul, o) = i128OverflowingMul((I128.from(aHi) shl 64) or I128.from(aLo), (I128.from(bHi) shl 64) or I128.from(bLo))
     (oflow1).write(o.toInt())
     return mul
 }

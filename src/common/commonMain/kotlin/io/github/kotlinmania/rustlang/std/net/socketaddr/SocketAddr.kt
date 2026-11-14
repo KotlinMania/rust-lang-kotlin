@@ -2,12 +2,15 @@
 package io.github.kotlinmania.rustlang.std.net.socketaddr
 
 import io.github.kotlinmania.rustlang.core.net.ipaddr.IpAddr
+import io.github.kotlinmania.rustlang.core.net.ipaddr.Ipv4Addr
+import io.github.kotlinmania.rustlang.core.net.ipaddr.Ipv6Addr
 import io.github.kotlinmania.rustlang.core.net.socketaddr.SocketAddr
 import io.github.kotlinmania.rustlang.core.net.socketaddr.SocketAddrV4
 import io.github.kotlinmania.rustlang.core.net.socketaddr.SocketAddrV6
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.std.path.Iter
+import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.sys.net.connection.lookupHostString
+import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.lookupHost
 
 /**
  * A trait for objects which can be converted or resolved to one or more
@@ -93,6 +96,7 @@ import io.github.kotlinmania.rustlang.std.sys.net.connection.lookupHostString
  * socket address `String` (missing the port):
  *
  * ```kotlin
+ * import std.io
  * import std.net.ToSocketAddrs
  *
  * val err = "127.0.0.1".toSocketAddrs().unwrapErr()
@@ -124,16 +128,16 @@ public interface ToSocketAddrs<out Iter> {
      * Note that this function may block the current thread while resolution is
      * performed.
      */
-    public fun toSocketAddrs(): Result<Iter>
+    public fun toSocketAddrs(): Result<Iter, Error>
 }
 
-public fun SocketAddr.toSocketAddrs(): Result<ArrayDeque<SocketAddr>> = Result.Ok(this.intoIter())
+public fun SocketAddr.toSocketAddrs(): Result<ArrayDeque<SocketAddr>, Error> = Result.Ok(this.intoIter())
 
-public fun SocketAddrV4.toSocketAddrs(): Result<ArrayDeque<SocketAddr>> = SocketAddr.v4(this).toSocketAddrs()
+public fun SocketAddrV4.toSocketAddrs(): Result<ArrayDeque<SocketAddr>, Error> = SocketAddr.v4(this).toSocketAddrs()
 
-public fun SocketAddrV6.toSocketAddrs(): Result<ArrayDeque<SocketAddr>> = SocketAddr.v6(this).toSocketAddrs()
+public fun SocketAddrV6.toSocketAddrs(): Result<ArrayDeque<SocketAddr>, Error> = SocketAddr.v6(this).toSocketAddrs()
 
-public fun Pair<IpAddr, UShort>.toSocketAddrs(): Result<ArrayDeque<SocketAddr>> {
+public fun Pair<IpAddr, UShort>.toSocketAddrs(): Result<ArrayDeque<SocketAddr>, Error> {
     val (ip, port) = this
     return when (ip) {
         is IpAddr.V4 -> {
@@ -147,8 +151,33 @@ public fun Pair<IpAddr, UShort>.toSocketAddrs(): Result<ArrayDeque<SocketAddr>> 
     }
 }
 
+public fun Pair<Ipv4Addr, UShort>.toSocketAddrsFromIpv4AddrUShort(): Result<ArrayDeque<SocketAddr>, Error> {
+    val (ip, port) = this
+    return SocketAddrV4.new(ip, port).toSocketAddrs()
+}
+
+public fun Pair<Ipv6Addr, UShort>.toSocketAddrsFromIpv6AddrUShort(): Result<ArrayDeque<SocketAddr>, Error> {
+    val (ip, port) = this
+    return SocketAddrV6.new(ip, port, 0, 0).toSocketAddrs()
+}
+
+public fun Pair<String, UShort>.toSocketAddrsFromStringUShort(): Result<ArrayDeque<SocketAddr>, Error> {
+    val (host, port) = this
+    // Try to parse the host as a regular IP address first
+    when (val matchVal = host.parse<IpAddr>()) {
+        is Ok -> {
+            val addr = matchVal.value
+            val addr1 = SocketAddr.new(addr, port)
+            return Result.Ok(mutableListOf(addr1).intoIter())
+        }
+        else -> {}
+    }
+    // Otherwise, make the system look it up.
+    return lookupHost(host, port).map({ addrs -> Vec.fromIter(addrs).intoIter() })
+}
+
 // accepts strings like localhost:12345'
-public fun String.toSocketAddrs(): Result<ArrayDeque<SocketAddr>> {
+public fun String.toSocketAddrs(): Result<ArrayDeque<SocketAddr>, Error> {
     // Try to parse as a regular SocketAddr first
     when (val matchVal = this.parse()) {
         is Ok -> {
@@ -161,4 +190,4 @@ public fun String.toSocketAddrs(): Result<ArrayDeque<SocketAddr>> {
     return lookupHostString(this).map({ addrs -> Vec.fromIter(addrs).intoIter() })
 }
 
-public fun List<SocketAddr>.toSocketAddrs(): Result<Cloned<ArrayDeque<SocketAddr>>> = Result.Ok(this.iter().cloned())
+public fun List<SocketAddr>.toSocketAddrs(): Result<Cloned<ArrayDeque<SocketAddr>>, Error> = Result.Ok(this.iter().cloned())

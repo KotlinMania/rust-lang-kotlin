@@ -4,8 +4,6 @@ package io.github.kotlinmania.rustlang.std.sync.lazylock
 import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
 import io.github.kotlinmania.rustlang.core.mem.manuallydrop.ManuallyDrop
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.std.fmt
-import io.github.kotlinmania.rustlang.std.ptr
 import io.github.kotlinmania.rustlang.std.sync.once.Once
 import io.github.kotlinmania.rustlang.std.sync.once.OnceExclusiveState
 
@@ -207,7 +205,7 @@ public open class LazyLock<T, F> internal constructor(
                 else -> {
                     val state1 = state
                     val thisRef1 = thisRef
-                    val data = ptr.read(thisRef1.data).intoInner()
+                    val data = read(thisRef1.data).intoInner()
                     when (state1) {
                         OnceExclusiveState.Incomplete -> {
                             Result.Err(ManuallyDrop.intoInner(data.f))

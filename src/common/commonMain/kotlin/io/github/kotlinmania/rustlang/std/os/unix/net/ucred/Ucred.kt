@@ -1,9 +1,9 @@
 // port-lint: source os/unix/net/ucred.rs
 package io.github.kotlinmania.rustlang.std.os.unix.net.ucred
 
-import io.github.kotlinmania.libc.fuchsia.GidT
-import io.github.kotlinmania.libc.fuchsia.PidT
-import io.github.kotlinmania.libc.fuchsia.UidT
+import io.github.kotlinmania.rustlang.libc.helenos.PidT
+import io.github.kotlinmania.rustlang.libc.unix.GidT
+import io.github.kotlinmania.rustlang.libc.unix.UidT
 
 /**
  * Credentials for a UNIX process for credentials passing.
@@ -26,4 +26,6 @@ public open class UCred(
      * domain socket's endpoint. Otherwise, it will be set to None.
      */
     public var pid: PidT?,
-)
+) {
+    public open fun clone(): UCred = UCred(uid, gid, pid)
+}

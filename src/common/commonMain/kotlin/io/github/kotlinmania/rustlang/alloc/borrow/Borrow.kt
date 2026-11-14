@@ -2,12 +2,9 @@
 package io.github.kotlinmania.rustlang.alloc.borrow
 
 import io.github.kotlinmania.rustlang.alloc.borrow.Cow.*
-import io.github.kotlinmania.rustlang.alloc.collections.btree.node.B
-import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.Owned
 import io.github.kotlinmania.rustlang.alloc.string.String
 import io.github.kotlinmania.rustlang.core.borrow.Borrow
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
-import io.github.kotlinmania.rustlang.core.ptr.hash
 
 // A module for working with borrowed data.
 

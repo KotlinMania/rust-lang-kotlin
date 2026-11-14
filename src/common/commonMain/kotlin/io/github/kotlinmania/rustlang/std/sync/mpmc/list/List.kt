@@ -1,7 +1,6 @@
 // port-lint: source sync/mpmc/list.rs
 package io.github.kotlinmania.rustlang.std.sync.mpmc.list
 
-import io.github.kotlinmania.atomic.fence
 import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
@@ -164,7 +163,7 @@ public open class Block<T> internal constructor(
                 }
             }
             // No thread is using the block, now it is safe to destroy it.
-            drop(Box.fromRaw(thisRef))
+            (Box.fromRaw(thisRef)).let { }
         }
     }
 }
@@ -202,40 +201,51 @@ public open class Position<T> internal constructor(
 /**
  * The token type for the list flavor.
  */
-internal open class ListToken(
-    /**
-     * The block of slots.
-     */
-    public var block: ConstPtr,
+public open class ListToken internal constructor(
+    blockCtorArg: ConstPtr,
     /**
      * The offset into the block.
      */
     public var offset: Int,
 ) {
+    /**
+     * The block of slots.
+     */
+    public var block: ConstPtr = blockCtorArg
+        internal set
+
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<ListToken> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<ListToken> {
+        public fun typeLayout(): TypeLayout<ListToken> =
+            object : TypeLayout<ListToken> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): ListToken =
                     ListToken(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.constPtrLayout(64)).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readNative(addr + 8L),
+                        (PrimitiveLayouts.constPtrLayout(64)).readNative(addr),
+                        (PrimitiveLayouts.USIZE64).readNative(addr + 8L),
                     )
                 override fun writeNative(addr: Long, value: ListToken) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.constPtrLayout(64)).writeNative(addr, value.block)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeNative(addr + 8L, value.offset)
+                    (PrimitiveLayouts.constPtrLayout(64)).writeNative(addr, value.block)
+                    (PrimitiveLayouts.USIZE64).writeNative(addr + 8L, value.offset)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): ListToken =
                     ListToken(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.constPtrLayout(64)).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readBytes(buf, offset + 8),
+                        (PrimitiveLayouts.constPtrLayout(64)).readBytes(buf, offset),
+                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset + 8),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: ListToken) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.constPtrLayout(64)).writeBytes(buf, offset, value.block)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeBytes(buf, offset + 8, value.offset)
+                    (PrimitiveLayouts.constPtrLayout(64)).writeBytes(buf, offset, value.block)
+                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset + 8, value.offset)
                 }
             }
+
+        public operator fun invoke(
+            block: ConstPtr,
+            offset: Int,
+        ): ListToken = ListToken(
+            blockCtorArg = block,
+            offset = offset,
+        )
 
         public fun default(): ListToken = ListToken(block = ConstPtr(0L), offset = 0)
     }
@@ -250,15 +260,9 @@ internal open class ListToken(
  * Consecutive messages are grouped into blocks in order to put less pressure on the allocator and
  * improve cache efficiency.
  */
-internal open class Channel<T>(
-    /**
-     * The head of the channel.
-     */
-    public var head: CachePadded<Position<T>>,
-    /**
-     * The tail of the channel.
-     */
-    public var tail: CachePadded<Position<T>>,
+public open class Channel<T> internal constructor(
+    headCtorArg: CachePadded<Position<T>>,
+    tailCtorArg: CachePadded<Position<T>>,
     /**
      * Receivers waiting while the channel is empty and not disconnected.
      */
@@ -268,6 +272,18 @@ internal open class Channel<T>(
      */
     public var marker: Unit,
 ) {
+    /**
+     * The head of the channel.
+     */
+    public var head: CachePadded<Position<T>> = headCtorArg
+        internal set
+
+    /**
+     * The tail of the channel.
+     */
+    public var tail: CachePadded<Position<T>> = tailCtorArg
+        internal set
+
     /**
      * Attempts to reserve a slot for sending a message.
      */
@@ -339,7 +355,7 @@ internal open class Channel<T>(
     /**
      * Writes a message into the channel.
      */
-    internal open fun write(token: Token, msg: T): Result<Unit, T> {
+    public open fun write(token: Token, msg: T): Result<Unit, T> {
         // If there is no slot, the channel is disconnected.
         if (((token.list.block).rawAddress == 0L)) {
             return Result.Err(msg)
@@ -376,7 +392,7 @@ internal open class Channel<T>(
             }
             var newHead = head + (1 shl SHIFT)
             if (newHead and MARK_BIT == 0) {
-                fence(Ordering.SeqCst)
+                atomic.fence(Ordering.SeqCst)
                 val tail = this.tail.index.load(Ordering.Relaxed)
                 // If the tail equals the head, that means the channel is empty.
                 if (head shr SHIFT == tail shr SHIFT) {
@@ -434,7 +450,7 @@ internal open class Channel<T>(
     /**
      * Reads a message from the channel.
      */
-    internal open fun read(token: Token): Result<T, Unit> {
+    public open fun read(token: Token): Result<T, Unit> {
         if (((token.list.block).rawAddress == 0L)) {
             // The channel is disconnected.
             return Result.Err(Unit)
@@ -460,7 +476,7 @@ internal open class Channel<T>(
     /**
      * Attempts to send a message into the channel.
      */
-    internal open fun trySend(msg: T): Result<Unit, TrySendError<T>> =
+    public open fun trySend(msg: T): Result<Unit, TrySendError<T>> =
         this.send(msg, null).mapErr({ err -> when (err) {
             is SendTimeoutError.Disconnected -> {
                 val (msg1) = err
@@ -472,7 +488,7 @@ internal open class Channel<T>(
     /**
      * Sends a message into the channel.
      */
-    internal open fun send(msg: T, deadline: Instant?): Result<Unit, SendTimeoutError<T>> {
+    public open fun send(msg: T, deadline: Instant?): Result<Unit, SendTimeoutError<T>> {
         val token = Token.default()
         check(this.startSend(token))
         return this.write(token, msg).mapErr({ SendTimeoutError.Disconnected(it) })
@@ -481,7 +497,7 @@ internal open class Channel<T>(
     /**
      * Attempts to receive a message without blocking.
      */
-    internal open fun tryRecv(): Result<T, TryRecvError> {
+    public open fun tryRecv(): Result<T, TryRecvError> {
         val token = Token.default()
         return if (this.startRecv(token)) {
             this.read(token).mapErr({ TryRecvError.Disconnected })
@@ -493,7 +509,7 @@ internal open class Channel<T>(
     /**
      * Receives a message from the channel.
      */
-    internal open fun recv(deadline: Instant?): Result<T, RecvTimeoutError> {
+    public open fun recv(deadline: Instant?): Result<T, RecvTimeoutError> {
         val token = Token.default()
         while (true) {
             if (this.startRecv(token)) {
@@ -534,7 +550,7 @@ internal open class Channel<T>(
     /**
      * Returns the current number of messages inside the channel.
      */
-    internal open fun len(): Int {
+    public open fun len(): Int {
         while (true) {
             // Load the tail index, then load the head index.
             var tail = this.tail.index.load(Ordering.SeqCst)
@@ -567,14 +583,14 @@ internal open class Channel<T>(
     /**
      * Returns the capacity of the channel.
      */
-    internal open fun capacity(): Int? = null
+    public open fun capacity(): Int? = null
 
     /**
      * Disconnects senders and wakes up all blocked receivers.
      *
      * Returns `true` if this call disconnected the channel.
      */
-    internal open fun disconnectSenders(): Boolean {
+    public open fun disconnectSenders(): Boolean {
         val tail = this.tail.index.fetchOr(MARK_BIT, Ordering.SeqCst)
         return if (tail and MARK_BIT == 0) {
             this.receivers.disconnect()
@@ -589,7 +605,7 @@ internal open class Channel<T>(
      *
      * Returns `true` if this call disconnected the channel.
      */
-    internal open fun disconnectReceivers(): Boolean {
+    public open fun disconnectReceivers(): Boolean {
         val tail = this.tail.index.fetchOr(MARK_BIT, Ordering.SeqCst)
         return if (tail and MARK_BIT == 0) {
             // If receivers are dropped first, discard all messages to free
@@ -656,14 +672,14 @@ internal open class Channel<T>(
                     block.waitNext()
                     // Deallocate the block and move to the next one.
                     val next = block.next.load(Ordering.Acquire)
-                    drop(Box.fromRaw(block))
+                    (Box.fromRaw(block)).let { }
                     block = next
                 }
                 head = head.wrappingAdd(1 shl SHIFT)
             }
             // Deallocate the last remaining block.
             if (!block.isNull()) {
-                drop(Box.fromRaw(block))
+                (Box.fromRaw(block)).let { }
             }
         }
         head = head and MARK_BIT.inv()
@@ -673,12 +689,12 @@ internal open class Channel<T>(
     /**
      * Returns `true` if the channel is disconnected.
      */
-    internal open fun isDisconnected(): Boolean = (this.tail.index.load(Ordering.SeqCst) and MARK_BIT != 0).toUByte()
+    public open fun isDisconnected(): Boolean = (this.tail.index.load(Ordering.SeqCst) and MARK_BIT != 0).toUByte()
 
     /**
      * Returns `true` if the channel is empty.
      */
-    internal open fun isEmpty(): Boolean {
+    public open fun isEmpty(): Boolean {
         val head = this.head.index.load(Ordering.SeqCst)
         val tail = this.tail.index.load(Ordering.SeqCst)
         return (head shr SHIFT == tail shr SHIFT).toUByte()
@@ -687,7 +703,7 @@ internal open class Channel<T>(
     /**
      * Returns `true` if the channel is full.
      */
-    internal open fun isFull(): Boolean = false
+    public open fun isFull(): Boolean = false
 
     public open fun drop() {
         var head = this.head.index.load(Ordering.Relaxed)
@@ -708,22 +724,34 @@ internal open class Channel<T>(
                 } else {
                     // Deallocate the block and move to the next one.
                     val next = block.next.load(Ordering.Relaxed)
-                    drop(Box.fromRaw(block))
+                    (Box.fromRaw(block)).let { }
                     block = next
                 }
                 head = head.wrappingAdd(1 shl SHIFT)
             }
             // Deallocate the last remaining block.
             if (!block.isNull()) {
-                drop(Box.fromRaw(block))
+                (Box.fromRaw(block)).let { }
             }
         }
     }
 
     public companion object {
+        public operator fun <T> invoke(
+            head: CachePadded<Position<T>>,
+            tail: CachePadded<Position<T>>,
+            receivers: SyncWaker,
+            marker: Unit,
+        ): Channel<T> = Channel<T>(
+            headCtorArg = head,
+            tailCtorArg = tail,
+            receivers = receivers,
+            marker = marker,
+        )
+
         /**
          * Creates a new unbounded channel.
          */
-        internal fun <T> new(): Channel<T> = Channel(head = CachePadded.new(Position(block = AtomicPtr.new(MutPtr(0L)), index = AtomicUsize.new(0))), tail = CachePadded.new(Position(block = AtomicPtr.new(MutPtr(0L)), index = AtomicUsize.new(0))), receivers = SyncWaker.new(), marker = Unit)
+        public fun <T> new(): Channel<T> = Channel(head = CachePadded.new(Position(block = AtomicPtr.new(MutPtr(0L)), index = AtomicUsize.new(0))), tail = CachePadded.new(Position(block = AtomicPtr.new(MutPtr(0L)), index = AtomicUsize.new(0))), receivers = SyncWaker.new(), marker = Unit)
     }
 }

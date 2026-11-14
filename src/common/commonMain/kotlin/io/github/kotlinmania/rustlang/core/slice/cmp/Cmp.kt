@@ -1,7 +1,8 @@
 // port-lint: source slice/cmp.rs
 package io.github.kotlinmania.rustlang.core.slice.cmp
 
-import io.github.kotlinmania.rustlang.core.cmp.BytewiseEq
+import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.cmp.bytewise.BytewiseEq
 import io.github.kotlinmania.rustlang.core.intrinsics.compareBytes
 import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
 import io.github.kotlinmania.rustlang.core.intrinsics.transmute
@@ -16,7 +17,6 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.memchr.memchr
 import io.github.kotlinmania.rustlang.core.slice.rawSliceList
-import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 
 // Comparison traits for `[T]`.
 
@@ -133,7 +133,8 @@ public fun <A> slicePartialOrdPartialCompareA(left: List<A>, right: List<A>): Or
             }
         } }
     val lenChain = { a: Any?, b: Any? -> ControlFlow.Break(Int.partialCmp(a, b)) }
-    val b = chainingImpl(left, right, elemChain, lenChain)
+    val tupleStructVal = chainingImpl(left, right, elemChain, lenChain)
+    val b = tupleStructVal.value
     return b
 }
 
@@ -182,7 +183,8 @@ public fun <A> sliceOrdCompareA(left: List<A>, right: List<A>): Ordering {
             }
         } }
     val lenChain = { a: Any?, b: Any? -> ControlFlow.Break(Int.cmp(a, b)) }
-    val b = chainingImpl(left, right, elemChain, lenChain)
+    val tupleStructVal = chainingImpl(left, right, elemChain, lenChain)
+    val b = tupleStructVal.value
     return b
 }
 
@@ -202,7 +204,7 @@ public interface UnsignedBytewiseOrd<T>
 
 // Don't generate our own chaining loops for `memcmp`-able things either.
 
-internal interface SliceContains<T> {
+public interface SliceContains<T> {
     public fun sliceContains(x: List<T>): Boolean
 }
 

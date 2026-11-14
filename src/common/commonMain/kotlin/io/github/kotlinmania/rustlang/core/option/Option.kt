@@ -3,20 +3,24 @@ package io.github.kotlinmania.rustlang.core.option
 
 import io.github.kotlinmania.rustlang.core.clone.TrivialClone
 import io.github.kotlinmania.rustlang.core.clone.UseCloned
+import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.hint.unreachableUnchecked
 import io.github.kotlinmania.rustlang.core.intrinsics.discriminantValue
-import io.github.kotlinmania.rustlang.core.iter.TrustedLen
+import io.github.kotlinmania.rustlang.core.iter.adapters.tryProcess
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.marker.StructuralPartialEq
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.num.f128.consts.E
+import io.github.kotlinmania.rustlang.core.mem.replace
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
-import io.github.kotlinmania.rustlang.core.ops.Deref
-import io.github.kotlinmania.rustlang.core.ops.DerefMut
-import io.github.kotlinmania.rustlang.core.ops.FromResidual
-import io.github.kotlinmania.rustlang.core.ops.Try
-import io.github.kotlinmania.rustlang.core.ops.Yeet
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
+import io.github.kotlinmania.rustlang.core.ops.deref.Deref
+import io.github.kotlinmania.rustlang.core.ops.deref.DerefMut
+import io.github.kotlinmania.rustlang.core.ops.trytrait.FromResidual
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Yeet
 import io.github.kotlinmania.rustlang.core.panicking.panic
 import io.github.kotlinmania.rustlang.core.panicking.panicDisplay
 import io.github.kotlinmania.rustlang.core.pin.Pin
@@ -25,7 +29,6 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.rawMutSliceList
 import io.github.kotlinmania.rustlang.core.slice.rawSliceList
-import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 
 // Optional values.
 //
@@ -461,14 +464,15 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 // we can't return `implementation Iterator` anymore because the concrete types of
 // the return values differ.
 //
-// ```kotlin
+// ```compile_fail,E0308
+// # use std.iter::{empty, once};
 // // This won't compile because all possible returns from the function
 // // must have the same concrete type.
-// fun makeIter(doInsert: Boolean): Any {
+// fn makeIter(doInsert: bool) -> impl Iterator<Item = i32> {
 //     // Explicit returns to illustrate return types not matching
-//     return when (doInsert) {
-//         true -> { return (0 until 4).chain(listOf(42)).chain(4 until 8) }
-//         false -> { return (0 until 4).chain(ArrayDeque()).chain(4 until 8) }
+//     match doInsert {
+//         true => return (0..4).chain(once(42)).chain(4..8),
+//         false => return (0..4).chain(empty()).chain(4..8),
 //     }
 // }
 // ```
@@ -1085,7 +1089,7 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
                 value
             }
             // SAFETY: the safety contract must be upheld by the caller.
-            null -> hint.unreachableUnchecked()
+            null -> unreachableUnchecked()
         }
 
     // ////////////////////////////////////////////////////////////////////
@@ -1303,7 +1307,7 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
      * check(x1 == null)
      * ```
      */
-    public open fun <Target> asDeref(): Option<Target> = this.asRef().map(Deref::deref)
+    public open fun <Target> asDeref(): Option<Target> = this.asRef().map({ Deref.deref(it) })
 
     /**
      * Converts from `Option<T>` (or `Option<T>`) to `Option<T.Target>`.
@@ -1321,7 +1325,7 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
      * }) == "HEY".toOwned().asMutStr())
      * ```
      */
-    public open fun asDerefMut(): Option<Target> = this.asMut().map(DerefMut::derefMut)
+    public open fun asDerefMut(): Option<Target> = this.asMut().map({ DerefMut.derefMut(it) })
 
     // ////////////////////////////////////////////////////////////////////
     // Iterator constructors
@@ -1410,10 +1414,10 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
      * fun sqThenToString(x: UInt): String? {
      *     return x.checkedMul(x)?.let({ sq -> sq.toString() })
      * }
-     * check(2.andThen(sqThenToString) == 4.toString())
-     * check(1000000.andThen(sqThenToString) == null)
+     * check(2.andThen(::sqThenToString) == 4.toString())
+     * check(1000000.andThen(::sqThenToString) == null)
      * // overflowed!
-     * check(null.andThen(sqThenToString) == null)
+     * check(null.andThen(::sqThenToString) == null)
      * ```
      *
      * Often used to chain fallible operations that may return [None].
@@ -1453,9 +1457,9 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
      * fun isEven(n: Int): Boolean {
      *     return n % 2 == 0
      * }
-     * check(null.filter(isEven) == null)
-     * check(3.filter(isEven) == null)
-     * check(4.filter(isEven) == 4)
+     * check(null.filter(::isEven) == null)
+     * check(3.filter(::isEven) == null)
+     * check(4.filter(::isEven) == 4)
      * ```
      *
      * [Some]: Some
@@ -1518,9 +1522,9 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
      * fun vikings(): String? {
      *     return "vikings"
      * }
-     * check("barbarians".orElse(vikings) == "barbarians")
-     * check(null.orElse(vikings) == "vikings")
-     * check(null.orElse(nobody) == null)
+     * check("barbarians".orElse(::vikings) == "barbarians")
+     * check(null.orElse(::vikings) == "vikings")
+     * check(null.orElse(::nobody) == null)
      * ```
      */
     public open fun orElse(f: () -> Option<T>): Option<T> =
@@ -1677,7 +1681,7 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
             //
             // It could also be expressed as `unchecked { core.ptr.write(self, Some(f())) }`, but
             // no reason is currently known to use additional unchecked code here.
-            mem.forget(this.replace(f()))
+            forget(this.replace(f()))
         }
         // SAFETY: a `None` variant for `self` would have been replaced by a `Some`
         // variant in the code above.
@@ -1741,7 +1745,7 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
      */
     public open fun take(): Option<T> {
         // Note(const-Note) replace `mem.replace` by `mem.take` when the latter is const ready
-        return mem.replace(this, None)
+        return replace(this, None)
     }
 
     /**
@@ -1793,7 +1797,7 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
      * check(old1 == null)
      * ```
      */
-    public open fun replace(value: T): Option<T> = mem.replace(this, Some(value))
+    public open fun replace(value: T): Option<T> = io.github.kotlinmania.rustlang.core.mem.replace(this, Some(value))
 
     /**
      * Makes a tuple of the value in `self` and the value in another `Option`.
@@ -2009,9 +2013,9 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
                     val (r) = matchVal.second as Some<T>
                     l.partialCmp(r)
                 }
-                matchVal.first is Some && matchVal.second == null -> Some(cmp.Ordering.Greater)
-                matchVal.first == null && matchVal.second is Some -> Some(cmp.Ordering.Less)
-                else -> Some(cmp.Ordering.Equal)
+                matchVal.first is Some && matchVal.second == null -> Some(Ordering.Greater)
+                matchVal.first == null && matchVal.second is Some -> Some(Ordering.Less)
+                else -> Some(Ordering.Equal)
             }
         }
 
@@ -2024,9 +2028,9 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
                     val (r) = matchVal.second as Some<T>
                     l.cmp(r)
                 }
-                matchVal.first is Some && matchVal.second == null -> cmp.Ordering.Greater
-                matchVal.first == null && matchVal.second is Some -> cmp.Ordering.Less
-                else -> cmp.Ordering.Equal
+                matchVal.first is Some && matchVal.second == null -> Ordering.Greater
+                matchVal.first == null && matchVal.second is Some -> Ordering.Less
+                else -> Ordering.Equal
             }
         }
 
@@ -2225,7 +2229,7 @@ public fun <T> fromOptionT(o: Option<T>): Option<T> = o.asRef()
 public open class Item<A>(
     public var opt: Option<A>,
 ) : TrustedLen<Item<A>>, Iterable<A> {
-    override fun iterator(): kotlin.collections.Iterator<A> = object : AbstractIterator<A>() {
+    override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
         override fun computeNext() {
             when (val v = this@Item.next()) {
                 null -> done()
@@ -2258,7 +2262,7 @@ public open class Item<A>(
 public open class Iter<A>(
     public var inner: Item<A>,
 ) : TrustedLen<Iter<A>>, Iterable<A> {
-    override fun iterator(): kotlin.collections.Iterator<A> = object : AbstractIterator<A>() {
+    override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
         override fun computeNext() {
             when (val v = this@Iter.next()) {
                 null -> done()
@@ -2286,7 +2290,7 @@ public open class Iter<A>(
 public open class IterMut<A>(
     public var inner: Item<A>,
 ) : TrustedLen<IterMut<A>>, Iterable<A> {
-    override fun iterator(): kotlin.collections.Iterator<A> = object : AbstractIterator<A>() {
+    override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
         override fun computeNext() {
             when (val v = this@IterMut.next()) {
                 null -> done()
@@ -2312,7 +2316,7 @@ public open class IterMut<A>(
 public open class IntoIter<A>(
     public var inner: Item<A>,
 ) : TrustedLen<IntoIter<A>>, Iterable<A> {
-    override fun iterator(): kotlin.collections.Iterator<A> = object : AbstractIterator<A>() {
+    override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
         override fun computeNext() {
             when (val v = this@IntoIter.next()) {
                 null -> done()
@@ -2336,7 +2340,7 @@ public open class IntoIter<A>(
 public open class OptionFlatten<A>(
     public var iter: Option<A>,
 ) : TrustedLen<OptionFlatten<A>>, Iterable<Item> {
-    override fun iterator(): kotlin.collections.Iterator<Item> = object : AbstractIterator<Item>() {
+    override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
         override fun computeNext() {
             when (val v = this@OptionFlatten.next()) {
                 null -> done()
@@ -2518,7 +2522,7 @@ public open class OptionFlatten<A>(
  * Since the third element caused an underflow, no further elements were taken,
  * so the final value of `shared` is 6 (= `3 + 2 + 1`), not 16.
  */
-public fun <T, V, I : Iterable<Option<T>>> fromIteratorFromIterOptionV(iter: I): Option<V> = Iter.tryProcess(iter.iterator(), { i -> i.collect() })
+public fun <T, V, I : Iterable<Option<T>>> fromIteratorFromIterOptionV(iter: I): Option<V> = tryProcess(iter.iterator(), { i -> i.collect() })
 
 /**
  * Converts from `Option<Option<T>>` to `Option<T>`.
@@ -2529,19 +2533,19 @@ public fun <T, V, I : Iterable<Option<T>>> fromIteratorFromIterOptionV(iter: I):
  *
  * ```kotlin
  * val x: UInt? = 6u
- * check(6 == x.flatten())
+ * check(6u == x)
  * val x1: UInt? = null
- * check(null == x1.flatten())
+ * check(null == x1)
  * val x2: UInt? = null
- * check(null == x2.flatten())
+ * check(null == x2)
  * ```
  *
  * Flattening only removes one level of nesting at a time:
  *
  * ```kotlin
  * val x: UInt? = 6u
- * check(6 == x.flatten())
- * check(6 == x.flatten().flatten())
+ * check(6u == x)
+ * check(6u == x)
  * ```
  */
 public fun <T> Option<Option<T>>.flatten(): Option<T> {

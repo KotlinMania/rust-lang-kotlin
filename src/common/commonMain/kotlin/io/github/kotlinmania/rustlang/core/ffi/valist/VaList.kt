@@ -7,7 +7,11 @@ import io.github.kotlinmania.rustlang.core.intrinsics.vaCopy
 import io.github.kotlinmania.rustlang.core.intrinsics.vaEnd
 import io.github.kotlinmania.rustlang.core.marker.variance.PhantomCovariantLifetime
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
+import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
+import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 
 // C's "variable arguments"
@@ -33,6 +37,118 @@ public class DebugTuple(
         } else {
             out.append("$name(${fields.joinToString(", ")})")
         }
+    }
+}
+
+// There are currently three flavors of how a C `vaList` is implemented for
+// targets that Rust supports:
+//
+// - `vaList` is an opaque pointer
+// - `vaList` is a struct
+// - `vaList` is a single-element array, containing a struct
+//
+// The opaque pointer approach is the simplest to implement: the pointer just
+// points to an array of arguments on the caller's stack.
+//
+// The struct and single-element array variants are more complex, but
+// potentially more efficient because the additional state makes it
+// possible to pass variadic arguments via registers.
+//
+// The Rust `VaList` type is ABI-compatible with the C `vaList`.
+// The struct and pointer cases straightforwardly map to their Rust equivalents,
+// but the single-element array case is special: in C, this type is subject to
+// array-to-pointer decay.
+//
+// The `@rustcPassIndirectlyInNonRusticAbis` attribute is used to match
+// the pointer decay behavior in Rust, while otherwise matching Rust semantics.
+// This attribute ensures that the compiler uses the correct ABI for functions
+// like `extern "C" fun takesVaList(va: VaList<>)` by passing `va` indirectly.
+//
+// The Clang `BuiltinVaListKind` enumerates the `vaList` variations that Clang supports,
+// and we mirror these here.
+//
+// For all current LLVM targets, `vaCopy` lowers to `memcpy`. Hence the inner structs below all
+// derive `Copy`. However, in the future we might want to support a target where `vaCopy`
+// allocates, or otherwise violates the requirements of `Copy`. Therefore `VaList` is only `Clone`.
+
+/**
+ * AArch64 ABI implementation of a `vaList`.
+ *
+ * See the [AArch64 Procedure Call Standard] for more details.
+ *
+ * `vaCopy` is `memcpy`: <https://github.com/llvm/llvm-project/blob/5aee01a3df011e660f26660bc30a8c94a1651d8e/llvm/lib/Target/AArch64/AArch64ISelLowering.cpp#L12682-L12700>
+ *
+ * [AArch64 Procedure Call Standard]:
+ * http://infocenter.arm.com/help/topic/com.arm.doc.ihi0055b/Ihi0055bAapcs64.pdf
+ */
+public open class VaListInner internal constructor(
+    stackCtorArg: ConstPtr,
+    grTopCtorArg: ConstPtr,
+    vrTopCtorArg: ConstPtr,
+    public var grOffs: Int,
+    public var vrOffs: Int,
+) {
+    public var stack: ConstPtr = stackCtorArg
+        internal set
+
+    public var grTop: ConstPtr = grTopCtorArg
+        internal set
+
+    public var vrTop: ConstPtr = vrTopCtorArg
+        internal set
+
+    public open fun clone(): VaListInner = VaListInner(stack, grTop, vrTop, grOffs, vrOffs)
+
+    public companion object {
+        public fun typeLayout(): TypeLayout<VaListInner> =
+            object : TypeLayout<VaListInner> {
+                override val alignBytes: Long = 8L
+                override val sizeBytes: Long = 32L
+                override fun readNative(addr: Long): VaListInner =
+                    VaListInner(
+                        (PrimitiveLayouts.constPtrLayout(64)).readNative(addr),
+                        (PrimitiveLayouts.constPtrLayout(64)).readNative(addr + 8L),
+                        (PrimitiveLayouts.constPtrLayout(64)).readNative(addr + 16L),
+                        (PrimitiveLayouts.I32).readNative(addr + 24L),
+                        (PrimitiveLayouts.I32).readNative(addr + 28L),
+                    )
+                override fun writeNative(addr: Long, value: VaListInner) {
+                    (PrimitiveLayouts.constPtrLayout(64)).writeNative(addr, value.stack)
+                    (PrimitiveLayouts.constPtrLayout(64)).writeNative(addr + 8L, value.grTop)
+                    (PrimitiveLayouts.constPtrLayout(64)).writeNative(addr + 16L, value.vrTop)
+                    (PrimitiveLayouts.I32).writeNative(addr + 24L, value.grOffs)
+                    (PrimitiveLayouts.I32).writeNative(addr + 28L, value.vrOffs)
+                }
+                override fun readBytes(buf: ByteArray, offset: Int): VaListInner =
+                    VaListInner(
+                        (PrimitiveLayouts.constPtrLayout(64)).readBytes(buf, offset),
+                        (PrimitiveLayouts.constPtrLayout(64)).readBytes(buf, offset + 8),
+                        (PrimitiveLayouts.constPtrLayout(64)).readBytes(buf, offset + 16),
+                        (PrimitiveLayouts.I32).readBytes(buf, offset + 24),
+                        (PrimitiveLayouts.I32).readBytes(buf, offset + 28),
+                    )
+                override fun writeBytes(buf: ByteArray, offset: Int, value: VaListInner) {
+                    (PrimitiveLayouts.constPtrLayout(64)).writeBytes(buf, offset, value.stack)
+                    (PrimitiveLayouts.constPtrLayout(64)).writeBytes(buf, offset + 8, value.grTop)
+                    (PrimitiveLayouts.constPtrLayout(64)).writeBytes(buf, offset + 16, value.vrTop)
+                    (PrimitiveLayouts.I32).writeBytes(buf, offset + 24, value.grOffs)
+                    (PrimitiveLayouts.I32).writeBytes(buf, offset + 28, value.vrOffs)
+                }
+            }
+
+        public operator fun invoke(
+            stack: ConstPtr,
+            grTop: ConstPtr,
+            vrTop: ConstPtr,
+            grOffs: Int,
+            vrOffs: Int,
+        ): VaListInner = VaListInner(
+            stackCtorArg = stack,
+            grTopCtorArg = grTop,
+            vrTopCtorArg = vrTop,
+            grOffs = grOffs,
+            vrOffs = vrOffs,
+        )
     }
 }
 
@@ -87,7 +203,7 @@ public open class VaList(
     }
 
     // Helper used in the implementation of the `vaCopy` intrinsic.
-    internal open fun duplicate(): VaList = VaList(inner = this.inner, marker = this.marker)
+    public open fun duplicate(): VaList = VaList(inner = this.inner, marker = this.marker)
 
     /**
      * Clone the [VaList], producing a second independent cursor into the variable argument list.
@@ -179,6 +295,68 @@ public open class VaList(
  */
 public interface VaArgSafe
 
+// Implement `VaArgSafe` for 128-bit integers on targets where clang provides `__int128`.
+//
+// GCC does not implement `__int128` for any 16-bit/32-bit target:
+//
+// https://gcc.gnu.org/onlinedocs/gcc-15.2.0/gcc/_005f_005fint128.html
+//
+// > There is no support in GCC for expressing an integer constant of type __int128 for targets
+// > with long long integer less than 128 bits wide.
+//
+// Per https://learn.microsoft.com/en-us/cpp/cpp/data-type-ranges?view=msvc-170, MSVC does not
+// define `__int128`.
+//
+// Clang is slightly more permissive: it defines `__int128` on wasm32 (a 32-bit target) and also
+// does provide `__int128` on 64-bit `* - pc - windows - msvc`, and we follow suit.
+
+// When there are no actual implementations on i128, declare the cVariadicInt128 feature
+// on a private type so that the feature is defined on all targets.
+public open class S internal constructor(
+    public val fieldStorage: MutPtr,
+    public val fieldLayout: TypeLayout<Int>,
+) {
+    public var field0: Int
+        get() = value
+        set(v) {
+            value = v
+        }
+
+    public var value: Int
+        get() = fieldLayout.readNative(fieldStorage.rawAddress)
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+
+    internal constructor(value: Int, fieldLayout: TypeLayout<Int>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+
+    public fun pointerLayout(): TypeLayout<S> = TransparentTypeLayout(fieldLayout, { ptr, layout -> S(ptr, layout) }, { it.value })
+
+    public open fun clone(): S = S(value, fieldLayout)
+
+    public companion object {
+        public operator fun invoke(value: Int, fieldLayout: TypeLayout<Int>): S = S(value, fieldLayout)
+
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Int>): S = S(fieldStorage, fieldLayout)
+    }
+}
+
+// Implement `VaArgSafe` for f128 on targets where either:
+//
+// - clang provides `__float128`
+// - `long double` is IEEE f128 on the platform.
+//
+// When updating this cfg, also update the tests to match. Currently this condition
+// is duplicated in:
+//
+// - tests/ui/c-variadic/roundtrip.rs
+// - tests/run-make/c-link-to-rust-va-list-fn/checkrust.rs
+//
+// # Known incompatibilities
+//
+// Testing versus clang exposed bugs in clang. GCC has no known incompatibilities.
+//
+// - Clang <= 23 on sparc, see https://github.com/llvm/llvm-project/pull/214981.
+// - Clang <= 23 on x86, see https://github.com/llvm/llvm-project/issues/217747.
+
 public fun <T : VaArgSafe> vaArgSafeCheck() {}
 
 public open class Type(
@@ -191,23 +369,23 @@ public open class Type(
         }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Type> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Type> {
+        public fun typeLayout(): TypeLayout<Type> =
+            object : TypeLayout<Type> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 8L
                 override fun readNative(addr: Long): Type =
                     Type(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readNative(addr),
+                        (PrimitiveLayouts.USIZE64).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: Type) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeNative(addr, value.value)
+                    (PrimitiveLayouts.USIZE64).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Type =
                     Type(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readBytes(buf, offset),
+                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Type) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeBytes(buf, offset, value.value)
+                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset, value.value)
                 }
             }
     }

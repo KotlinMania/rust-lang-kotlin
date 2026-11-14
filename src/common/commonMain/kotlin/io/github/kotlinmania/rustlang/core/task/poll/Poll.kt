@@ -1,7 +1,6 @@
 // port-lint: source task/poll.rs
 package io.github.kotlinmania.rustlang.core.task.poll
 
-import io.github.kotlinmania.rustlang.core.num.f128.consts.E
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.result.Result
 

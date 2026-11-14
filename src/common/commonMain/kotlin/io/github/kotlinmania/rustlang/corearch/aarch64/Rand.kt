@@ -18,27 +18,27 @@ public open class Tuple(
     public var status: Boolean,
 ) {
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Tuple> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Tuple> {
+        public fun typeLayout(): TypeLayout<Tuple> =
+            object : TypeLayout<Tuple> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): Tuple =
                     Tuple(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 8L),
+                        (PrimitiveLayouts.U64).readNative(addr),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 8L),
                     )
                 override fun writeNative(addr: Long, value: Tuple) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).writeNative(addr, value.bits)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 8L, value.status)
+                    (PrimitiveLayouts.U64).writeNative(addr, value.bits)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 8L, value.status)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Tuple =
                     Tuple(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 8),
+                        (PrimitiveLayouts.U64).readBytes(buf, offset),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 8),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Tuple) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).writeBytes(buf, offset, value.bits)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 8, value.status)
+                    (PrimitiveLayouts.U64).writeBytes(buf, offset, value.bits)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 8, value.status)
                 }
             }
     }

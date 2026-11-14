@@ -9,6 +9,8 @@ import io.github.kotlinmania.rustlang.std.fs.FileType
 import io.github.kotlinmania.rustlang.std.fs.Metadata
 import io.github.kotlinmania.rustlang.std.fs.OpenOptions
 import io.github.kotlinmania.rustlang.std.fs.Permissions
+import io.github.kotlinmania.rustlang.std.io.defaultReadBuf
+import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.sys.FromInner
 import io.github.kotlinmania.rustlang.std.sys.fs.windows.symlinkInner
@@ -53,7 +55,7 @@ public interface FileExt {
      * }
      * ```kotlin
      */
-    public fun seekRead(buf: MutableList<UByte>, offset: ULong): Result<Int>
+    public fun seekRead(buf: MutableList<UByte>, offset: ULong): Result<Int, Error>
 
     /**
      * Seeks to a given position and reads the exact number of bytes required to fill `buf`.
@@ -98,7 +100,7 @@ public interface FileExt {
      * }
      * ```kotlin
      */
-    public fun seekReadExact(buf: MutableList<UByte>, offset: ULong): Result<Unit> {
+    public fun seekReadExact(buf: MutableList<UByte>, offset: ULong): Result<Unit, Error> {
         var buf1 = buf
         var offset1 = offset
         while (!buf1.isEmpty()) {
@@ -119,7 +121,7 @@ public interface FileExt {
             }
         }
         return if (!buf1.isEmpty()) {
-            Result.Err(io.Error.READ_EXACT_EOF)
+            Result.Err(io.github.kotlinmania.rustlang.std.io.Error.READ_EXACT_EOF)
         } else {
             Result.Ok(Unit)
         }
@@ -159,7 +161,7 @@ public interface FileExt {
      * }
      * ```kotlin
      */
-    public fun seekReadBuf(buf: BorrowedCursor<UByte>, offset: ULong): Result<Unit> = io.defaultReadBuf({ b -> this.seekRead(b, offset) }, buf)
+    public fun seekReadBuf(buf: BorrowedCursor<UByte>, offset: ULong): Result<Unit, Error> = defaultReadBuf({ b -> this.seekRead(b, offset) }, buf)
 
     /**
      * Seeks to a given position and reads the exact number of bytes required to fill `buf`.
@@ -195,7 +197,7 @@ public interface FileExt {
      * }
      * ```kotlin
      */
-    public fun seekReadBufExact(buf: BorrowedCursor<UByte>, offset: ULong): Result<Unit> {
+    public fun seekReadBufExact(buf: BorrowedCursor<UByte>, offset: ULong): Result<Unit, Error> {
         var offset1 = offset
         while (buf.capacity() > 0) {
             val prevWritten = buf.written()
@@ -209,7 +211,7 @@ public interface FileExt {
             val n = buf.written() - prevWritten
             offset1 += n.toULong()
             if (n == 0) {
-                return Result.Err(io.Error.READ_EXACT_EOF)
+                return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.READ_EXACT_EOF)
             }
         }
         return Result.Ok(Unit)
@@ -246,7 +248,7 @@ public interface FileExt {
      * }
      * ```kotlin
      */
-    public fun seekWrite(buf: List<UByte>, offset: ULong): Result<Int>
+    public fun seekWrite(buf: List<UByte>, offset: ULong): Result<Int, Error>
 
     /**
      * Seeks to a given position and attempts to write an entire buffer.
@@ -285,7 +287,7 @@ public interface FileExt {
      * }
      * ```kotlin
      */
-    public fun seekWriteAll(buf: List<UByte>, offset: ULong): Result<Unit> {
+    public fun seekWriteAll(buf: List<UByte>, offset: ULong): Result<Unit, Error> {
         var buf1 = buf
         var offset1 = offset
         while (!buf1.isEmpty()) {
@@ -293,7 +295,7 @@ public interface FileExt {
                 val matchVal = this.seekWrite(buf1, offset1)
                 when {
                     matchVal is Result.Ok<*> && matchVal.value == 0 -> {
-                        return Result.Err(io.Error.WRITE_ALL_EOF)
+                        return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.WRITE_ALL_EOF)
                     }
                     matchVal is Result.Ok<*> -> {
                         val n = (matchVal as Result.Ok<*>).value
@@ -311,11 +313,11 @@ public interface FileExt {
     }
 }
 
-public fun File.seekRead(buf: MutableList<UByte>, offset: ULong): Result<Int> = this.asInner().readAt(buf, offset)
+public fun File.seekRead(buf: MutableList<UByte>, offset: ULong): Result<Int, Error> = this.asInner().readAt(buf, offset)
 
-public fun File.seekReadBuf(buf: BorrowedCursor<UByte>, offset: ULong): Result<Unit> = this.asInner().readBufAt(buf, offset)
+public fun File.seekReadBuf(buf: BorrowedCursor<UByte>, offset: ULong): Result<Unit, Error> = this.asInner().readBufAt(buf, offset)
 
-public fun File.seekWrite(buf: List<UByte>, offset: ULong): Result<Int> = this.asInner().writeAt(buf, offset)
+public fun File.seekWrite(buf: List<UByte>, offset: ULong): Result<Int, Error> = this.asInner().writeAt(buf, offset)
 
 // WARNING: This trait is not sealed. DON'T add any new methods!
 // Add them to OpenOptionsExt2 instead.
@@ -584,6 +586,13 @@ public interface PermissionsExt<T> {
      * Creates a new instance from the given file attribute bits.
      */
     public fun fromFileAttributes(mask: UInt): T
+
+    public companion object {
+        /**
+         * Creates a new instance from the given file attribute bits.
+         */
+        public fun fromFileAttributes(mask: UInt): Permissions = permissionsExtFromFileAttributesPermissions(mask)
+    }
 }
 
 public fun Permissions.fileAttributes(): UInt = this.asInner().fileAttributes()
@@ -880,7 +889,7 @@ public fun FileTimes.setCreated(t: SystemTime): FileTimes {
  * [symlink - security]: https:
  * ```
  */
-public fun symlinkFile(original: Path, link: Path): Result<Unit> = symlinkInner(original, link, false)
+public fun symlinkFile(original: Path, link: Path): Result<Unit, Error> = symlinkInner(original, link, false)
 
 /**
  * Creates a new symlink to a directory on the filesystem.
@@ -916,7 +925,7 @@ public fun symlinkFile(original: Path, link: Path): Result<Unit> = symlinkInner(
  * [symlink - security]: https:
  * ```
  */
-public fun symlinkDir(original: Path, link: Path): Result<Unit> = symlinkInner(original, link, true)
+public fun symlinkDir(original: Path, link: Path): Result<Unit, Error> = symlinkInner(original, link, true)
 
 /**
  * Creates a junction point.
@@ -927,4 +936,4 @@ public fun symlinkDir(original: Path, link: Path): Result<Unit> = symlinkInner(o
  *
  * If either path is not a local file path then this will fail.
  */
-public fun junctionPoint(original: Path, link: Path): Result<Unit> = io.github.kotlinmania.rustlang.std.sys.fs.windows.junctionPoint(original, link)
+public fun junctionPoint(original: Path, link: Path): Result<Unit, Error> = io.github.kotlinmania.rustlang.std.sys.fs.windows.junctionPoint(original, link)

@@ -76,12 +76,13 @@ private const val OFFLOAD_TEMPLATE_23: String = "offload(@ munch[\$(\$tt)*]; ker
  *
  * # Examples
  *
- * ```kotlin
- * import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
- * import offload
- *
- * var x = DoubleArray(256) { 0.0 }
- * offload(kernel = kernel, workgroupDim = listOf(256, 1, 1), args = mutPtrFromRustCast(x))
+ * ```rust,ignore (offload requires a -Z flag)
+ * let mut x = [0.0f64; 256];
+ * core.offload.offload {
+ *     kernel = kernel,
+ *     workgroupDim = [256, 1, 1],
+ *     args = (x as *mut [f64; 256],),
+ * }
  * ```
  */
 

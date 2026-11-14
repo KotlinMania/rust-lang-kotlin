@@ -1,8 +1,9 @@
 // port-lint: source iter/sources/repeat_n.rs
 package io.github.kotlinmania.rustlang.core.iter.sources.repeatn
 
-import io.github.kotlinmania.rustlang.core.iter.TrustedLen
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
 
@@ -44,6 +45,8 @@ public class DebugStruct(
  * Basic usage:
  *
  * ```kotlin
+ * import std.iter
+ *
  * // four of the number four:
  * var fourFours = iter.repeatN(4, 4)
  * check(4 == fourFours.next())
@@ -57,6 +60,8 @@ public class DebugStruct(
  * For non-`Copy` types,
  *
  * ```kotlin
+ * import std.iter
+ *
  * val v: List<Int> = ArrayList(123)
  * var it = iter.repeatN(v, 5)
  * for (i in 0 until 4) {
@@ -109,7 +114,7 @@ public open class RepeatNInner<T> internal constructor(
 public open class RepeatN<A>(
     public var inner: RepeatNInner<A>?,
 ) : TrustedLen<RepeatN<A>>, Iterable<A> {
-    override fun iterator(): kotlin.collections.Iterator<A> = object : AbstractIterator<A>() {
+    override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
         override fun computeNext() {
             when (val v = this@RepeatN.next()) {
                 null -> done()
@@ -160,7 +165,7 @@ public open class RepeatN<A>(
 
     public override fun advanceBy(skip: Int): Result<Unit, NonZero<Int>> {
         val inner = this.inner ?: return NonZero.new(skip).map({ Result.Err(it) }).unwrapOr(Result.Ok(Unit))
-        val len = inner.count.get()
+        val len = inner!!.count.get()
         when (val matchVal = len.checkedSub(skip)?.let(NonZero::new)) {
             null -> {}
             else -> {

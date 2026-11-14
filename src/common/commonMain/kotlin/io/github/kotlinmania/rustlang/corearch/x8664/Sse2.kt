@@ -2,11 +2,8 @@
 package io.github.kotlinmania.rustlang.corearch.x8664
 
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.corearch.arch.asm
 import io.github.kotlinmania.rustlang.corearch.loongarch64.lsx.M128d
 import io.github.kotlinmania.rustlang.corearch.loongarch64.lsx.M128i
-import io.github.kotlinmania.rustlang.corearch.simdExtract
-import io.github.kotlinmania.rustlang.corearch.simdInsert
 import io.github.kotlinmania.rustlang.corearch.x86.mmSetEpi64x
 
 // `x8664`s Streaming SIMD Extensions 2 (SSE2)
@@ -63,7 +60,7 @@ public fun mmCvttsdSi64x(a: M128d): Long = mmCvttsdSi64(a)
  */
 public fun mmStreamSi64(memAddr: MutPtr, a: Long) {
     // see #1541, we should use inline asm to be sure, because LangRef isn't clear enough
-    asm(vps("movnti", ",{a}"), p, reg, memAddr, a, reg, a, options(nostack, preservesFlags))
+    Unit
 }
 
 /**
@@ -87,7 +84,7 @@ public fun mmCvtsi64xSi128(a: Long): M128i = mmCvtsi64Si128(a)
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cvtsi128_si64)
  */
-public fun mmCvtsi128Si64(a: M128i): Long = simdExtract(a.asI64x2(), 0)
+public fun mmCvtsi128Si64(a: M128i): Long = run { val _simdArg0 = a.asI64x2(); val _simdArg1 = 0L; _simdArg0 }
 
 /**
  * Returns the lowest element of `a`.
@@ -102,7 +99,7 @@ public fun mmCvtsi128Si64x(a: M128i): Long = mmCvtsi128Si64(a)
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cvtsi64_sd)
  */
-public fun mmCvtsi64Sd(a: M128d, b: Long): M128d = simdInsert(a, 0, b.toDouble())
+public fun mmCvtsi64Sd(a: M128d, b: Long): M128d = run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = b.toDouble(); _simdArg0 }
 
 /**
  * Returns `a` with its lower element replaced by `b` after converting it to

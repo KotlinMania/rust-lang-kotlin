@@ -1,7 +1,6 @@
 // port-lint: source float/conv.rs
 package io.github.kotlinmania.rustlang.compilerbuiltins.float.conv
 
-import io.github.kotlinmania.f128.fromBits
 import io.github.kotlinmania.rustlang.compilerbuiltins.float.conv.inttofloat.signed
 import io.github.kotlinmania.rustlang.compilerbuiltins.float.conv.inttofloat.u128ToF128Bits
 import io.github.kotlinmania.rustlang.compilerbuiltins.float.conv.inttofloat.u128ToF32Bits
@@ -27,29 +26,25 @@ public fun floatunsisf(i: UInt): Float = Float.fromBits(u32ToF32Bits(i).toInt())
 
 public fun floatunsidf(i: UInt): Double = Double.fromBits(u32ToF64Bits(i).toLong())
 
-public fun floatunsitf(i: UInt): F128 = fromBits(u32ToF128Bits(i))
+public fun floatunsitf(i: UInt): F128 = F128.fromBits(u32ToF128Bits(i))
 
-public fun floatunsikf(i: UInt): F128 = fromBits(u32ToF128Bits(i))
+public fun floatunsikf(i: UInt): F128 = F128.fromBits(u32ToF128Bits(i))
 
 public fun floatundisf(i: ULong): Float = Float.fromBits(u64ToF32Bits(i).toInt())
 
 public fun floatundidf(i: ULong): Double = Double.fromBits(u64ToF64Bits(i).toLong())
 
-public fun floatunditf(i: ULong): F128 = fromBits(u64ToF128Bits(i))
+public fun floatunditf(i: ULong): F128 = F128.fromBits(u64ToF128Bits(i))
 
-public fun floatundikf(i: ULong): F128 = fromBits(u64ToF128Bits(i))
+public fun floatundikf(i: ULong): F128 = F128.fromBits(u64ToF128Bits(i))
 
 public fun floatuntisf(i: U128): Float = Float.fromBits(u128ToF32Bits(i).toInt())
 
-public fun floatuntisf(lo: ULong, hi: ULong): Float = Float.fromBits(u128ToF32Bits((U128.from(hi) shl 64) or U128.from(lo)).toInt())
-
 public fun floatuntidf(i: U128): Double = Double.fromBits(u128ToF64Bits(i).toLong())
 
-public fun floatuntidf(lo: ULong, hi: ULong): Double = Double.fromBits(u128ToF64Bits((U128.from(hi) shl 64) or U128.from(lo)).toLong())
+public fun floatuntitf(i: U128): F128 = F128.fromBits(u128ToF128Bits(i))
 
-public fun floatuntitf(i: U128): F128 = fromBits(u128ToF128Bits(i))
-
-public fun floatuntikf(i: U128): F128 = fromBits(u128ToF128Bits(i))
+public fun floatuntikf(i: U128): F128 = F128.fromBits(u128ToF128Bits(i))
 
 public fun floatsisf(i: Int): Float = signed(i, u32ToF32Bits)
 
@@ -69,11 +64,7 @@ public fun floatdikf(i: Long): F128 = signed(i, u64ToF128Bits)
 
 public fun floattisf(i: I128): Float = signed(i, u128ToF32Bits)
 
-public fun floattisf(lo: ULong, hi: ULong): Float = signed((I128.from(hi) shl 64) or I128.from(lo), u128ToF32Bits)
-
 public fun floattidf(i: I128): Double = signed(i, u128ToF64Bits)
-
-public fun floattidf(lo: ULong, hi: ULong): Double = signed((I128.from(hi) shl 64) or I128.from(lo), u128ToF64Bits)
 
 public fun floattitf(i: I128): F128 = signed(i, u128ToF128Bits)
 

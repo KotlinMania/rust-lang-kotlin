@@ -3,9 +3,10 @@ package io.github.kotlinmania.rustlang.std.sync.reentrantlock
 
 import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
-import io.github.kotlinmania.rustlang.std.fmt
-import io.github.kotlinmania.rustlang.std.sys.sync.mutex.fuchsia.Mutex
-import io.github.kotlinmania.rustlang.std.sys.thread.hermit.Tid
+import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
+import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU64
+import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Relaxed
+import io.github.kotlinmania.rustlang.std.sys.sync.mutex.futex.Mutex
 import io.github.kotlinmania.rustlang.std.thread.current.currentId
 
 public class DebugStruct(
@@ -143,6 +144,7 @@ public open class ReentrantLock<T> internal constructor(
      * ```kotlin
      * import std.cell.Cell
      * import std.sync.ReentrantLock
+     * import std.thread
      *
      * @feature(reentrantLock)
      * public fun doctestEntry() {
@@ -279,11 +281,42 @@ public open class ReentrantLock<T> internal constructor(
          * }
          * ```
          */
-        public fun <T> new(t: T): ReentrantLock<T> = ReentrantLock(mutex = Mutex.new(), owner = Tid.new(), lockCount = UnsafeCell.new(0), data = t)
+        public fun <T> new(t: T): ReentrantLock<T> = ReentrantLock(mutex = io.github.kotlinmania.rustlang.std.sys.sync.mutex.new(), owner = Tid.new(), lockCount = UnsafeCell.new(0), data = t)
 
         public fun <T> default(defaultTFn: () -> T): ReentrantLock<T> = ReentrantLock.new(defaultTFn())
 
         public fun <T> from(t: T): ReentrantLock<T> = ReentrantLock.new(t)
+    }
+}
+
+public open class Tid internal constructor(
+    valueCtorArg: Atomic<ULong>,
+) {
+    public var value: Atomic<ULong> = valueCtorArg
+        internal set
+
+    public var field0: Atomic<ULong>
+        get() = value
+        set(v) {
+            value = v
+        }
+
+    public open fun contains(owner: Any): Boolean = (owner.asU64().get() == this.value.load(Relaxed)).toUByte()
+
+    // This is just unchecked to match the API of the Tid type below.
+    public open fun set(tid: Any?) {
+        val value = (tid?.let({ tid1 -> tid1.asU64().get() }) ?: 0)
+        this.value.store(value, Relaxed)
+    }
+
+    public companion object {
+        public operator fun invoke(
+            value: Atomic<ULong>,
+        ): Tid = Tid(
+            valueCtorArg = value,
+        )
+
+        public fun new(): Tid = Tid(AtomicU64.new(0))
     }
 }
 

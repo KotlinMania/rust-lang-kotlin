@@ -238,6 +238,7 @@ public inline fun <A : Allocator, reified T> RustAny.downcastUnchecked(): T {
  * ```kotlin
  * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
  * import std.error.Error
+ * import std.fmt
  *
  * open class AnError {
  *     public open fun fmt(f: StringBuilder) {

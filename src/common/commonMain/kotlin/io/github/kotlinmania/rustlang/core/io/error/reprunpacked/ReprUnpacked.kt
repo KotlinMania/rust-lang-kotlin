@@ -14,18 +14,21 @@ import io.github.kotlinmania.rustlang.core.io.error.SimpleMessage
 
 public typealias Inner = ErrorData<CustomOwner>
 
-internal open class Repr(
-    public var value: Inner,
+public open class Repr internal constructor(
+    valueCtorArg: Inner,
 ) {
+    public var value: Inner = valueCtorArg
+        internal set
+
     public var field0: Inner
         get() = value
         set(v) {
             value = v
         }
 
-    internal open fun intoData(): ErrorData<CustomOwner> = this.value
+    public open fun intoData(): ErrorData<CustomOwner> = this.value
 
-    internal open fun data(): ErrorData<Custom> =
+    public open fun data(): ErrorData<Custom> =
         when (val matchVal = this.value) {
             is Inner.Os -> {
                 val (c) = matchVal
@@ -45,7 +48,7 @@ internal open class Repr(
             }
         }
 
-    internal open fun dataMut(): ErrorData<Custom> =
+    public open fun dataMut(): ErrorData<Custom> =
         when (val matchVal = this.value) {
             is Inner.Os -> {
                 val (c) = matchVal
@@ -66,12 +69,18 @@ internal open class Repr(
         }
 
     public companion object {
-        internal fun newCustom(b: CustomOwner): Repr = Repr(Inner.Custom(b))
+        public operator fun invoke(
+            value: Inner,
+        ): Repr = Repr(
+            valueCtorArg = value,
+        )
 
-        internal fun newOs(code: RawOsError): Repr = Repr(Inner.Os(code))
+        public fun newCustom(b: CustomOwner): Repr = Repr(Inner.Custom(b))
 
-        internal fun newSimple(kind: ErrorKind): Repr = Repr(Inner.Simple(kind))
+        public fun newOs(code: RawOsError): Repr = Repr(Inner.Os(code))
 
-        internal fun newSimpleMessage(m: SimpleMessage): Repr = Repr(Inner.SimpleMessage(m))
+        public fun newSimple(kind: ErrorKind): Repr = Repr(Inner.Simple(kind))
+
+        public fun newSimpleMessage(m: SimpleMessage): Repr = Repr(Inner.SimpleMessage(m))
     }
 }

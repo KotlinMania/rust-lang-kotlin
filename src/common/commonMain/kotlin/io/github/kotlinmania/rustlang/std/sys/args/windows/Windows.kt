@@ -12,20 +12,19 @@ import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
-import io.github.kotlinmania.rustlang.std.os.xous.ffi.definitions.Error
+import io.github.kotlinmania.rustlang.std.io.ErrorKind
+import io.github.kotlinmania.rustlang.std.io.constError
+import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.path.PathBuf
 import io.github.kotlinmania.rustlang.std.sys.args.common.Args
 import io.github.kotlinmania.rustlang.std.sys.c
 import io.github.kotlinmania.rustlang.std.sys.helpers.wstr.WStrUnits
-import io.github.kotlinmania.rustlang.std.sys.pal.sgx.abi.usercalls.alloc.Iter
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.getCommandLineW
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.getFullPathNameW
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.ensureNoNuls
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.fillUtf16Buf
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.toU16s
 import io.github.kotlinmania.rustlang.std.sys.path.windows.getLongPath
-import io.github.kotlinmania.rustlang.std.sys.paths.motor.currentExe
+import io.github.kotlinmania.rustlang.std.sys.paths.unix.currentExe
 
 // The Windows command line is just a string
 // <https://docs.microsoft.com/en-us/archive/blogs/larryosterman/the-windows-command-line-is-just-a-string>
@@ -36,7 +35,7 @@ public fun args(): Args {
     // SAFETY: `GetCommandLineW` returns a pointer to a null terminated UTF-16
     // string so it's safe for `WStrUnits` to use.
     return run {
-        val lpCmdLine = getCommandLineW()
+        val lpCmdLine = c.GetCommandLineW()
         val parsedArgsList =
             parseLpCmdLine(WStrUnits.new(lpCmdLine), {
                 currentExe().map(PathBuf::intoOsString).unwrapOrElse({ OsString.new() })
@@ -168,7 +167,7 @@ public fun parseLpCmdLine(lpCmdLine: WStrUnits?, exeName: () -> OsString): List<
     return retVal
 }
 
-internal sealed class Arg {
+public sealed class Arg {
     /**
      * Add quotes (if needed)
      */
@@ -188,7 +187,7 @@ public sealed class Quote {
     public data object Never : Quote()
 }
 
-internal fun appendArg(cmd: List<UShort>, arg: Arg, forceQuotes: Boolean): Result<Unit> {
+public fun appendArg(cmd: List<UShort>, arg: Arg, forceQuotes: Boolean): Result<Unit, Error> {
     val (arg3, quote) =
         when (arg) {
             is Arg.Regular -> {
@@ -243,7 +242,7 @@ internal fun appendArg(cmd: List<UShort>, arg: Arg, forceQuotes: Boolean): Resul
     return Result.Ok(Unit)
 }
 
-public fun appendBatArg(cmd: List<UShort>, arg: OsStr, quote: Boolean): Result<Unit> {
+public fun appendBatArg(cmd: List<UShort>, arg: OsStr, quote: Boolean): Result<Unit, Error> {
     var quote1 = quote
     when (val tryResult = ensureNoNuls(arg)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
     // If an argument has 0 characters then we need to quote it to ensure
@@ -316,8 +315,8 @@ public fun appendBatArg(cmd: List<UShort>, arg: OsStr, quote: Boolean): Result<U
     return Result.Ok(Unit)
 }
 
-internal fun makeBatCommandLine(script: List<UShort>, args: List<Arg>, forceQuotes: Boolean): Result<List<UShort>> {
-    val INVALID_ARGUMENT_ERROR: Error = io.constError(io.ErrorKind.InvalidInput, "batch file arguments are invalid")
+public fun makeBatCommandLine(script: List<UShort>, args: List<Arg>, forceQuotes: Boolean): Result<List<UShort>, Error> {
+    val INVALID_ARGUMENT_ERROR: io.github.kotlinmania.rustlang.std.io.Error = constError(ErrorKind.InvalidInput, "batch file arguments are invalid")
     // Windows file names cannot contain a `"` character or end with `\\`.
     // If the script name does then return an error.
     // Also we disallow `^` and `%` to prevent escaping or environment variable substitution.
@@ -331,7 +330,7 @@ internal fun makeBatCommandLine(script: List<UShort>, args: List<Arg>, forceQuot
     // Push the script name surrounded by its quote pair.
     cmd.add(34u.toUShort())
     if (script.any({ c -> INVALID.contains(c) }) || script.last() == (92u.toUShort())) {
-        return Result.Err(io.constError(io.ErrorKind.InvalidInput, "`Command` rejects batch scripts that contain contain `\"`, `^` or `%` or end with `\\`"))
+        return Result.Err(constError(ErrorKind.InvalidInput, "`Command` rejects batch scripts that contain contain `\"`, `^` or `%` or end with `\\`"))
     }
     cmd.addAll((script.stripSuffix(listOf(0)) ?: script))
     cmd.add(34u.toUShort())
@@ -368,11 +367,11 @@ internal fun makeBatCommandLine(script: List<UShort>, args: List<Arg>, forceQuot
  *
  * This is necessary because cmd.exe does not support verbatim paths.
  */
-internal fun toUserPath(path: Path): Result<List<UShort>> {
+public fun toUserPath(path: Path): Result<List<UShort>, Error> {
     return fromWideToUserPath(when (val tryResult = toU16s(path)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) })
 }
 
-internal fun fromWideToUserPath(path: List<UShort>): Result<List<UShort>> {
+public fun fromWideToUserPath(path: List<UShort>): Result<List<UShort>, Error> {
     // UTF-16 encoded code points, used in parsing and building UTF-16 paths.
     // All of these are in the ASCII range so they can be cast directly to `UShort`.
     val SEP: UShort = 92u.toUShort()
@@ -390,7 +389,7 @@ internal fun fromWideToUserPath(path: List<UShort>): Result<List<UShort>> {
         // `\\?\C:\...` => `C:\...`
         path.size >= 7 && path[0] == SEP && path[1] == SEP && path[2] == QUERY && path[3] == SEP && path[5] == COLON && path[6] == SEP -> run {
             val lpfilename = ((path).slice(4 until path.size)).asPtr()
-            fillUtf16Buf({ buffer, size -> getFullPathNameW(lpfilename, size, buffer, MutPtr(0L)) }, { fullPath: List<UShort> ->
+            fillUtf16Buf({ buffer, size -> c.GetFullPathNameW(lpfilename, size, buffer, MutPtr(0L)) }, { fullPath: List<UShort> ->
                 if (fullPath == ((path).slice(4 until path.size - 1))) {
                     val path1: List<UShort>  = fullPath.into()
                     path1.push(0)
@@ -405,7 +404,7 @@ internal fun fromWideToUserPath(path: List<UShort>): Result<List<UShort>> {
             // Change the `C` in `UNC\` to `\` so we can get a slice that starts with `\\`.
             path[6] = 92u.toUShort()
             val lpfilename1 = ((path).slice(6 until path.size)).asPtr()
-            fillUtf16Buf({ buffer, size -> getFullPathNameW(lpfilename1, size, buffer, MutPtr(0L)) }, { fullPath: List<UShort> ->
+            fillUtf16Buf({ buffer, size -> c.GetFullPathNameW(lpfilename1, size, buffer, MutPtr(0L)) }, { fullPath: List<UShort> ->
                 if (fullPath == ((path).slice(6 until path.size - 1))) {
                     val path1: List<UShort>  = fullPath.into()
                     path1.push(0)

@@ -1,4 +1,4 @@
-@file:OptIn(kotlin.ExperimentalUnsignedTypes::class)
+@file:OptIn(ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.core.ffi
 
@@ -8,7 +8,7 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 
 private object FfiJniBridge {
     init {
-        System.loadLibrary("core_jni")
+        System.loadLibrary("kmcore_jni")
     }
 
     @JvmStatic

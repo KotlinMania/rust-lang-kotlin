@@ -1,10 +1,9 @@
-@file:OptIn(kotlin.ExperimentalUnsignedTypes::class, kotlin.js.ExperimentalWasmJsInterop::class)
+@file:OptIn(ExperimentalUnsignedTypes::class, ExperimentalWasmJsInterop::class)
 
 package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.corearch.mem
 import io.github.kotlinmania.rustlang.corearch.simd.F32x16
 import io.github.kotlinmania.rustlang.corearch.simd.F32x4
 import io.github.kotlinmania.rustlang.corearch.simd.F32x8
@@ -30,15 +29,15 @@ import io.github.kotlinmania.rustlang.corearch.simd.U64x4
 import io.github.kotlinmania.rustlang.corearch.simd.U64x8
 import io.github.kotlinmania.rustlang.corearch.simd.U8x16
 
-@JsFun("() => { if (typeof globalThis.__km_napi_corearch !== 'undefined') return globalThis.__km_napi_corearch !== null; if (typeof process === 'undefined' || !process.versions || !process.versions.node) { globalThis.__km_napi_corearch = null; return false; } var mod = process.getBuiltinModule ? process.getBuiltinModule('module') : (process.mainModule && process.mainModule.constructor); var req = (mod && mod.createRequire) ? mod.createRequire((process.cwd ? process.cwd() : '.') + '/package.json') : (process.mainModule ? process.mainModule.require : null); if (!req) { globalThis.__km_napi_corearch = null; return false; } try { globalThis.__km_napi_corearch = req('@kotlinmania/corearch-native-bindings'); return true; } catch (_) {} var fs = req('fs'); var path = req('path'); var dir = process.cwd ? process.cwd() : '.'; var rels = ['corearch_native.node', 'build/node-ffi/corearch_native.node', 'build/node-ffi/release/corearch_native.node', 'build/node-ffi/debug/corearch_native.node', 'src/js/node-corearch/build/Release/corearch_native.node', 'src/js/node-corearch/build/Debug/corearch_native.node', 'src/js/node-corearch/dist/build/Release/corearch_native.node', 'src/js/node-corearch/dist/build/Debug/corearch_native.node']; for (var d = 0; d < 8; d++) { for (var i = 0; i < rels.length; i++) { var c = path.resolve(dir, rels[i]); if (fs.existsSync(c)) { globalThis.__km_napi_corearch = req(c); return true; } } var parent = path.dirname(dir); if (parent === dir) break; dir = parent; } globalThis.__km_napi_corearch = null; return false; }")
+@JsFun("() => { if (typeof globalThis.__km_napi_kmcore !== 'undefined') return globalThis.__km_napi_kmcore !== null; if (typeof process === 'undefined' || !process.versions || !process.versions.node) { globalThis.__km_napi_kmcore = null; return false; } var mod = process.getBuiltinModule ? process.getBuiltinModule('module') : (process.mainModule && process.mainModule.constructor); var req = (mod && mod.createRequire) ? mod.createRequire((process.cwd ? process.cwd() : '.') + '/package.json') : (process.mainModule ? process.mainModule.require : null); if (!req) { globalThis.__km_napi_kmcore = null; return false; } try { globalThis.__km_napi_kmcore = req('@kotlinmania/kmcore-native-bindings'); return true; } catch (_) {} var fs = req('fs'); var path = req('path'); var dir = process.cwd ? process.cwd() : '.'; var rels = ['kmcore_native.node', 'build/node-ffi/kmcore_native.node', 'build/node-ffi/release/kmcore_native.node', 'build/node-ffi/debug/kmcore_native.node', 'src/js/node-kmcore/build/Release/kmcore_native.node', 'src/js/node-kmcore/build/Debug/kmcore_native.node', 'src/js/node-kmcore/dist/build/Release/kmcore_native.node', 'src/js/node-kmcore/dist/build/Debug/kmcore_native.node']; for (var d = 0; d < 8; d++) { for (var i = 0; i < rels.length; i++) { var c = path.resolve(dir, rels[i]); if (fs.existsSync(c)) { globalThis.__km_napi_kmcore = req(c); return true; } } var parent = path.dirname(dir); if (parent === dir) break; dir = parent; } globalThis.__km_napi_kmcore = null; return false; }")
 private external fun initX86Avx512fNapiAddon(): Boolean
 
 private val x86Avx512fNapiAvailable: Boolean = initX86Avx512fNapiAddon()
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_corearch.corearchX86Avx512fVfmaddssround(p0, p1, p2, p3)")
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.corearchX86Avx512fVfmaddssround(p0, p1, p2, p3)")
 private external fun wasmCorearchX86Avx512fVfmaddssround(p0: Double, p1: Double, p2: Double, p3: Int): Double
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_corearch.corearchX86Avx512fVfmaddsdround(p0, p1, p2, p3)")
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.corearchX86Avx512fVfmaddsdround(p0, p1, p2, p3)")
 private external fun wasmCorearchX86Avx512fVfmaddsdround(p0: Double, p1: Double, p2: Double, p3: Int): Double
 
 public actual fun vsqrtps(a: F32x16, rounding: Int): F32x16 =

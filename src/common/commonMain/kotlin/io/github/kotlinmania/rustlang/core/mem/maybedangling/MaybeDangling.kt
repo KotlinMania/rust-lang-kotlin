@@ -4,7 +4,9 @@ package io.github.kotlinmania.rustlang.core.mem.maybedangling
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
+import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.read
 
 // Note: remove `noRun` once the semantics are actually implemented
 
@@ -111,8 +113,8 @@ public open class MaybeDangling<P>(
     public open fun intoInner(): P {
         // Note: replace this with `self.0` when const checker can figure out that `self` isn't actually dropped
         // SAFETY: this is equivalent to `self.0`
-        val x = ptr.read(this.value)
-        mem.forget(this)
+        val x = read(this.value)
+        forget(this)
         return x
     }
 

@@ -1,10 +1,10 @@
 // port-lint: source to_tokens.rs
 package io.github.kotlinmania.rustlang.procmacro.totokens
 
-import io.github.kotlinmania.rustlang.alloc.ffi.CString
+import io.github.kotlinmania.rustlang.alloc.ffi.cstr.CString
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
-import io.github.kotlinmania.rustlang.core.ffi.CStr
+import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.procmacro.ConcatTreesHelper
 import io.github.kotlinmania.rustlang.procmacro.Group
 import io.github.kotlinmania.rustlang.procmacro.Ident
@@ -32,6 +32,7 @@ public interface ToTokens {
      * import procmacro.ToTokens
      * import procmacro.TokenStream
      * import procmacro.TokenTree
+     * import std.iter
      *
      * @feature(procMacroTotokens)
      * public fun doctestEntry() {

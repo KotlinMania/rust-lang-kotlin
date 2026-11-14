@@ -3,13 +3,11 @@
 
 package io.github.kotlinmania.rustlang.alloc.rcs.arc
 
-import io.github.kotlinmania.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.alloc.alloc.Global
+import io.github.kotlinmania.rustlang.alloc.alloc.handleAllocError
 import io.github.kotlinmania.rustlang.alloc.borrow.Cow
 import io.github.kotlinmania.rustlang.alloc.borrow.ToOwned
 import io.github.kotlinmania.rustlang.alloc.boxed.Box
-import io.github.kotlinmania.rustlang.alloc.collections.btree.node.B
-import io.github.kotlinmania.rustlang.alloc.handleAllocError
 import io.github.kotlinmania.rustlang.alloc.rcs.rc.isDangling
 import io.github.kotlinmania.rustlang.alloc.string.String
 import io.github.kotlinmania.rustlang.alloc.vec.Vec
@@ -25,7 +23,7 @@ import io.github.kotlinmania.rustlang.core.clone.CloneToUninit
 import io.github.kotlinmania.rustlang.core.clone.Share
 import io.github.kotlinmania.rustlang.core.clone.UseCloned
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
-import io.github.kotlinmania.rustlang.core.ffi.CStr
+import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.fmt.Pointer
 import io.github.kotlinmania.rustlang.core.intrinsics.kmSpinLoopHint
 import io.github.kotlinmania.rustlang.core.mem.AlignedTypeLayout
@@ -37,7 +35,7 @@ import io.github.kotlinmania.rustlang.core.mem.alignOf
 import io.github.kotlinmania.rustlang.core.mem.alignment.Alignment
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.mem.manuallydrop.ManuallyDrop
+import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
@@ -48,12 +46,18 @@ import io.github.kotlinmania.rustlang.core.pin.Pin
 import io.github.kotlinmania.rustlang.core.pin.PinSafePointer
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.addrEq
+import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
+import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
+import io.github.kotlinmania.rustlang.core.ptr.eq
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
+import io.github.kotlinmania.rustlang.core.ptr.write
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.rawMutSliceList
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
+import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 
 /**
  * A soft limit on the amount of references that may be made to an `Arc`.
@@ -206,29 +210,37 @@ public fun panicArcOverflow(): Nothing {
  *
  * Sharing some immutable data between threads:
  *
- * ```kotlin
- * val five = 5
- * for (unused in 0 until 10) {
- *     val five1 = five
- *     thread.spawn({
- *         println("$five")
- *     })
+ * ```ignore-wasm
+ * use std.sync.Arc;
+ * use std.thread;
+ *
+ * let five = Arc.new(5);
+ *
+ * for _ in 0..10 {
+ *     let five = Arc.clone(&five);
+ *
+ *     thread.spawn(move || {
+ *         println("{five:?}");
+ *     });
  * }
  * ```
  *
  * Sharing a mutable [AtomicUsize]:
  *
- * ```kotlin
- * import std.sync.atomic.AtomicUsize
- * import std.sync.atomic.Ordering
+ * ```ignore-wasm
+ * use std.sync.Arc;
+ * use std.sync.atomic::{AtomicUsize, Ordering};
+ * use std.thread;
  *
- * val value = AtomicUsize.new(5)
- * for (unused in 0 until 10) {
- *     val value1 = value
- *     thread.spawn({
- *         val v = value1.fetchAdd(1, Ordering.Relaxed)
- *         println("$v")
- *     })
+ * let val = Arc.new(AtomicUsize.new(5));
+ *
+ * for _ in 0..10 {
+ *     let val = Arc.clone(&val);
+ *
+ *     thread.spawn(move || {
+ *         let v = val.fetchAdd(1, Ordering.Relaxed);
+ *         println("{v:?}");
+ *     });
  * }
  * ```
  *
@@ -264,7 +276,7 @@ public open class Arc<T, A : Allocator> internal constructor(
         // allocation itself (there might still be weak pointers lying around).
         // We cannot use `getMutUnchecked` here, because `self.alloc` is borrowed.
         // ignore-tidy-undocumented-unchecked
-        ptr.dropInPlace(this.ptr.asPtr().data)
+        dropInPlace(this.ptr.asPtr().data)
     }
 
     /**
@@ -309,7 +321,7 @@ public open class Arc<T, A : Allocator> internal constructor(
         // Otherwise, the counter could be brought to an almost-overflow using a compare-exchange loop,
         // and then overflow using a few `fetchAdd`s.
         if (oldSize > MAX_REFCOUNT) {
-            intrinsics.abortImmediate()
+            abortImmediate()
         }
         // SAFETY: Pointer is valid & allocator corresponds to the one used to allocate it.
         return Arc.fromInnerIn(this.ptr, this.alloc.clone())
@@ -343,9 +355,9 @@ public open class Arc<T, A : Allocator> internal constructor(
      * }
      * val foo = Foo()
      * val foo2 = foo
-     * drop(foo)
+     * (foo).let { }
      * // Doesn't print anything
-     * drop(foo2)
+     * (foo2).let { }
      * // Prints "dropped!"
      * ```
      */
@@ -359,7 +371,7 @@ public open class Arc<T, A : Allocator> internal constructor(
         this.inner().strong.load(Acquire)
         // Make sure we aren't trying to "drop" the shared static for empty slices
         // used by Default.default.
-        check(!ptr.addrEq(this.ptr.asPtr(), STATIC_INNER_SLICE.inner)) { "Arcs backed by a static should never reach a strong count of 0. Likely decrement_strong_count or from_raw were called too many times." }
+        check(!addrEq(this.ptr.asPtr(), STATIC_INNER_SLICE.inner)) { "Arcs backed by a static should never reach a strong count of 0. Likely decrement_strong_count or from_raw were called too many times." }
         // ignore-tidy-undocumented-unchecked
         run {
             this.dropSlow()
@@ -379,9 +391,9 @@ public open class Arc<T, A : Allocator> internal constructor(
      *
      * We can only do this when `T: Eq` as a `PartialEq` might be deliberately irreflexive.
      */
-    public open fun eqTA(other: Arc<T, A>): Boolean = ptr.eq(this.ptr.asPtr(), other.ptr.asPtr()) || this == other
+    public open fun eqTA(other: Arc<T, A>): Boolean = io.github.kotlinmania.rustlang.core.ptr.eq(this.ptr.asPtr(), other.ptr.asPtr()) || this == other
 
-    public open fun neTA(other: Arc<T, A>): Boolean = !ptr.eq(this.ptr.asPtr(), other.ptr.asPtr()) && this != other
+    public open fun neTA(other: Arc<T, A>): Boolean = !eq(this.ptr.asPtr(), other.ptr.asPtr()) && this != other
 
     /**
      * Equality for two `Arc`s.
@@ -515,7 +527,7 @@ public open class Arc<T, A : Allocator> internal constructor(
     }
 
     public open fun fmtPointer(f: StringBuilder) {
-        fmt.Pointer.fmt((this), f)
+        Pointer.fmt((this), f)
     }
 
     public override fun hashCode(): Int {
@@ -568,9 +580,9 @@ public open class Arc<T, A : Allocator> internal constructor(
         )
 
         public fun <T, A : Allocator> intoInnerWithAllocator(thisRef: Arc<T, A>): Pair<NonNull, A> {
-            val thisRef1 = mem.ManuallyDrop.new(thisRef)
+            val thisRef1 = thisRef
             // SAFETY: Pointer is valid for reads.
-            return Pair(thisRef1.ptr, ptr.read(thisRef1.alloc))
+            return Pair(thisRef1.ptr, read(thisRef1.alloc))
         }
 
         public fun <T, A : Allocator> fromInnerIn(ptr: NonNull, alloc: A): Arc<T, A> = Arc(ptr = ptr, phantom = Unit, alloc = alloc)
@@ -705,7 +717,7 @@ public open class Arc<T, A : Allocator> internal constructor(
             val inner = initPtr.asPtr()
             // ignore-tidy-undocumented-unchecked
             return run {
-                ptr.write(addrOfMut(inner.data), data)
+                write(addrOfMut(inner.data), data)
                 // The above write to the data field must be visible to any threads which
                 // observe a non-zero strong count. Therefore we need at least "Release" ordering
                 // in order to synchronize with the `compareExchangeWeak` in `Weak.upgrade`.
@@ -868,7 +880,7 @@ public open class Arc<T, A : Allocator> internal constructor(
             val thisRef1 = thisRef
             // SAFETY: Pointer is valid for reads, contains initialised memory,
             // and not dropped multiple times (we return it).
-            val elem: T = ptr.read(thisRef1.ptr.asRef().data)
+            val elem: T = read(thisRef1.ptr.asRef().data)
             // SAFETY: As above, but we explicitly drop the allocator only once
             // upon creating and dropping a weak pointer.
             // copy the allocator
@@ -898,82 +910,85 @@ public open class Arc<T, A : Allocator> internal constructor(
          * # Examples
          *
          * Minimal example demonstrating the guarantee that `Arc.intoInner` gives.
-         * ```kotlin
-         * val x = 3
-         * val y = x
+         * ```ignore-wasm
+         * use std.sync.Arc;
+         *
+         * let x = Arc.new(3);
+         * let y = Arc.clone(&x);
+         *
          * // Two threads calling `Arc.intoInner` on both clones of an `Arc`:
-         * val xThread = spawn({ Arc.intoInner(x) })
-         * val yThread = spawn({ Arc.intoInner(y) })
-         * val xInnerValue = xThread.join().unwrap()
-         * val yInnerValue = yThread.join().unwrap()
+         * let xThread = std.thread.spawn(|| Arc.intoInner(x));
+         * let yThread = std.thread.spawn(|| Arc.intoInner(y));
+         *
+         * let xInnerValue = xThread.join().unwrap();
+         * let yInnerValue = yThread.join().unwrap();
+         *
          * // One of the threads is guaranteed to receive the inner value:
-         * check(run {
-         *     val matchVal = Pair(xInnerValue, yInnerValue)
-         *     when {
-         *         matchVal.first == null && matchVal.second != null && matchVal.second == 3 -> true
-         *         matchVal.first != null && matchVal.first == 3 && matchVal.second == null -> true
-         *         else -> false
-         *     }
-         * })
+         * assert(matches(
+         *     (xInnerValue, yInnerValue),
+         *     (None, Some(3)) | (Some(3), None)
+         * ));
          * // The result could also be `(None, None)` if the threads called
          * // `Arc.tryUnwrap(x).ok()` and `Arc.tryUnwrap(y).ok()` instead.
          * ```
          *
          * A more practical example demonstrating the need for `Arc.intoInner`:
-         * ```kotlin
-         * open class Node<T>(public var field0: T, public var field1: Node<T>?)
+         * ```ignore-wasm
+         * use std.sync.Arc;
+         *
          * // Definition of a simple singly linked list using `Arc`:
-         * open class LinkedList<T>(public var value: Node<T>?) {
-         *     public var field0: Node<T>?
-         *         get() = value
-         *         set(v) {
-         *             value = v
-         *         }
+         * @derive(Clone)
+         * struct LinkedList<T>(Option<Arc<Node<T>>>);
+         * struct Node<T>(T, Option<Arc<Node<T>>>);
          *
-         *     public open fun clone(): LinkedList<T> = LinkedList(value)
-         *
-         *     // Dropping a long `LinkedList<T>` relying on the destructor of `Arc`
-         *     // can cause a stack overflow. To prevent this, we can provide a
-         *     // manual `Drop` implementation that does the destruction in a loop:
-         *     public open fun drop() {
-         *         var link = this.value.also { this.value = null }
-         *         while (true) {
-         *             val matchVal = link.also { link = null }
-         *             if (matchVal == null) break
-         *             val arcNode = matchVal
-         *             when (val matchVal1 = Arc.intoInner(arcNode)) {
-         *                 is Some -> {
-         *                     val (_, next) = matchVal1 as Node
-         *                     link = next
-         *                 }
-         *                 else -> {}
+         * // Dropping a long `LinkedList<T>` relying on the destructor of `Arc`
+         * // can cause a stack overflow. To prevent this, we can provide a
+         * // manual `Drop` implementation that does the destruction in a loop:
+         * impl<T> Drop for LinkedList<T> {
+         *     fn drop(self) {
+         *         let mut link = self.0.take();
+         *         while let Some(arcNode) = link.take() {
+         *             if let Some(Node(_value, next)) = Arc.intoInner(arcNode) {
+         *                 link = next;
          *             }
          *         }
          *     }
-         *
-         *     // Implementation of `new` and `push` omitted
          * }
+         *
+         * // Implementation of `new` and `push` omitted
+         * impl<T> LinkedList<T> {
+         *     / * ... * /
+         * #   fn new() -> Self {
+         * #       LinkedList(None)
+         * #   }
+         * #   fn push(self, x: T) {
+         * #       self.0 = Some(Arc.new(Node(x, self.0.take())));
+         * #   }
+         * }
+         *
          * // The following code could have still caused a stack overflow
          * // despite the manual `Drop` impl if that `Drop` impl had used
          * // `Arc.tryUnwrap(arc).ok()` instead of `Arc.intoInner(arc)`.
+         *
          * // Create a long list and clone it
-         * var x = LinkedList.new()
-         * val size = 100000
-         * for (i in 0 until size) {
-         *     x.push(i)
-         *     // Adds i to the front of x
+         * let mut x = LinkedList.new();
+         * let size = 100000;
+         * # let size = if cfg(miri) { 100 } else { size };
+         * for i in 0..size {
+         *     x.push(i); // Adds i to the front of x
          * }
-         * val y = x.clone()
+         * let y = x.clone();
+         *
          * // Drop the clones in parallel
-         * val xThread = spawn({ drop(x) })
-         * val yThread = spawn({ drop(y) })
-         * xThread.join().unwrap()
-         * yThread.join().unwrap()
+         * let xThread = std.thread.spawn(|| drop(x));
+         * let yThread = std.thread.spawn(|| drop(y));
+         * xThread.join().unwrap();
+         * yThread.join().unwrap();
          * ```
          */
         public fun <T, A : Allocator> intoInner(thisRef: Arc<T, A>): T? {
             // Make sure that the ordinary `Drop` implementation isn’t called as well
-            val thisRef1 = mem.ManuallyDrop.new(thisRef)
+            val thisRef1 = thisRef
             // Following the implementation of `drop` and `dropSlow`
             if (thisRef1.inner().strong.fetchSub(1, Release) != 1) {
                 return null
@@ -986,10 +1001,10 @@ public open class Arc<T, A : Allocator> internal constructor(
             // in `dropSlow`. Instead of dropping the value behind the pointer,
             // it is read and eventually returned; `ptr.read` has the same
             // safety conditions as `ptr.dropInPlace`.
-            val inner = ptr.read(Arc.getMutUnchecked(thisRef1))
+            val inner = read(Arc.getMutUnchecked(thisRef1))
             // SAFETY: Pointer is valid for reads.
-            val alloc = ptr.read(thisRef1.alloc)
-            drop(Weak(ptr = thisRef1.ptr, alloc = alloc))
+            val alloc = read(thisRef1.alloc)
+            (Weak(ptr = thisRef1.ptr, alloc = alloc)).let { }
             return inner
         }
 
@@ -1163,10 +1178,10 @@ public open class Arc<T, A : Allocator> internal constructor(
          * ```
          */
         public fun <T, A : Allocator> intoRawWithAllocator(thisRef: Arc<T, A>): Pair<ConstPtr, A> {
-            val thisRef1 = mem.ManuallyDrop.new(thisRef)
+            val thisRef1 = thisRef
             val ptr = Arc.asPtr(thisRef1)
             // SAFETY: `this` is ManuallyDrop so the allocator will not be double-dropped
-            val alloc = ptr.read(thisRef1.alloc)
+            val alloc = read(thisRef1.alloc)
             return Pair(ptr, alloc)
         }
 
@@ -1448,7 +1463,7 @@ public open class Arc<T, A : Allocator> internal constructor(
          */
         public fun <A : Allocator> decrementStrongCountIn(ptr: ConstPtr, alloc: A) {
             // SAFETY: Upheld by caller.
-            drop(Arc.fromRawIn(ptr, alloc))
+            (Arc.fromRawIn(ptr, alloc)).let { }
         }
 
         /**
@@ -1465,7 +1480,7 @@ public open class Arc<T, A : Allocator> internal constructor(
          * check(!Arc.ptrEq(five, otherFive))
          * ```
          */
-        public fun <T, A : Allocator> ptrEq(thisRef: Arc<T, A>, other: Arc<T, A>): Boolean = ptr.addrEq(thisRef.ptr.asPtr(), other.ptr.asPtr())
+        public fun <T, A : Allocator> ptrEq(thisRef: Arc<T, A>, other: Arc<T, A>): Boolean = addrEq(thisRef.ptr.asPtr(), other.ptr.asPtr())
 
         /**
          * Allocates an `ArcInner<T>` with sufficient space for an unsized inner value.
@@ -1482,11 +1497,11 @@ public open class Arc<T, A : Allocator> internal constructor(
                 val valueSize = sizeOfVal(src)
                 val ptr = Arc.allocateForPtrIn(src, Box.allocator(src))
                 // Copy value as bytes
-                ptr.copyNonoverlapping(((src)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, ((addrOfMut((ObjectSlotLayout<ArcInner<T>>()).readNative((ptr).rawAddress).data))).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, valueSize, typeLayoutT = PrimitiveLayouts.U8)
+                copyNonoverlapping(((src)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, ((addrOfMut((ObjectSlotLayout<ArcInner<T>>()).readNative((ptr).rawAddress).data))).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, valueSize, typeLayoutT = PrimitiveLayouts.U8)
                 // Free the allocation without dropping its contents
                 val (bptr, alloc) = Box.intoRawWithAllocator(src)
                 val src1 = Box.fromRawIn(mutPtrFromRustCast(bptr), alloc)
-                drop(src1)
+                (src1).let { }
                 Arc.fromPtrIn(ptr, alloc)
             }
         }
@@ -1585,14 +1600,14 @@ public open class Arc<T, A : Allocator> internal constructor(
                     // Initialize `inProgress` with move of **this.
                     // We have to express this in terms of bytes because `T: ? Sized`; there is no
                     // operation that just copies a value based on its `sizeOfVal()`.
-                    ptr.copyNonoverlapping(thisRef1.cast(), inProgress.dataPtr().cast(), sizeOfVal)
+                    copyNonoverlapping(thisRef1.cast(), inProgress.dataPtr().cast(), sizeOfVal)
                     // We are now safe from panics.
-                    mem.forget(guard)
+                    forget(guard)
                     // Materialize our own implicit weak pointer, so that it can clean
                     // up the ArcInner as needed.
                     // Make sure the allocator is not leaked when the Arc is overwritten.
                     // Only drop at the end of the scope to avoid panics.
-                    ptr.write(thisRef1, inProgress.intoArc())
+                    write(thisRef1, inProgress.intoArc())
                 }
             } else {
                 // We were the sole reference of either kind; bump back up the
@@ -1755,7 +1770,7 @@ public open class Arc<T, A : Allocator> internal constructor(
          * check(Arc.isUnique(x))
          * val y = x
          * check(!Arc.isUnique(x))
-         * drop(y)
+         * (y).let { }
          * // Weak references also count, because they could be upgraded at any time.
          * val z = Arc.downgrade(x)
          * check(!Arc.isUnique(x))
@@ -1900,13 +1915,15 @@ public open class Weak<T, A : Allocator> internal constructor(
      * # Examples
      *
      * ```kotlin
+     * import std.ptr
+     *
      * val strong = "hello".toOwned()
      * val weak = Arc.downgrade(strong)
      * // Both point to the same object
      * check(ptr.eq(strong, weak.asPtr()))
      * // The strong here keeps it alive, so we can still access the object.
      * check("hello" == weak.asPtr())
-     * drop(strong)
+     * (strong).let { }
      * // But not any more. We can do weak.asPtr(), but accessing the pointer would lead to
      * // undefined behavior.
      * // assertEq("hello", unchecked { &*weak.asPtr() });
@@ -1949,7 +1966,7 @@ public open class Weak<T, A : Allocator> internal constructor(
      *     val (raw, alloc) = weak.intoRawWithAllocator()
      *     check(1 == Arc.weakCount(strong))
      *     check("hello" == raw)
-     *     drop(Weak.fromRawIn(raw, alloc))
+     *     (Weak.fromRawIn(raw, alloc)).let { }
      *     check(0 == Arc.weakCount(strong))
      * }
      * ```
@@ -1958,10 +1975,10 @@ public open class Weak<T, A : Allocator> internal constructor(
      * [asPtr]: Weak.asPtr
      */
     public open fun intoRawWithAllocator(): Pair<ConstPtr, A> {
-        val thisRef = mem.ManuallyDrop.new(this)
+        val thisRef = this
         val result = thisRef.asPtr()
         // SAFETY: `this` is ManuallyDrop so the allocator will not be double-dropped
-        val alloc = ptr.read(thisRef.alloc)
+        val alloc = read(thisRef.alloc)
         return Pair(result, alloc)
     }
 
@@ -1985,8 +2002,8 @@ public open class Weak<T, A : Allocator> internal constructor(
      * val strongFive: Arc? = weakFive.upgrade()
      * check(strongFive != null)
      * // Destroy all strong pointers.
-     * drop(strongFive)
-     * drop(five)
+     * (strongFive).let { }
+     * (five).let { }
      * check(weakFive.upgrade() == null)
      * ```
      */
@@ -2010,7 +2027,7 @@ public open class Weak<T, A : Allocator> internal constructor(
         // Acquire is necessary for the success case to synchronise with `Arc.newCyclic`, when the inner
         // value can be initialized after `Weak` references have already been created. In that case, we
         // expect to observe the fully initialized value.
-        return if ((this.inner() ?: return null).strong.tryUpdate(Acquire, Relaxed, checkedIncrement).isOk()) {
+        return if ((this.inner() ?: return null).strong.tryUpdate(Acquire, Relaxed, ::checkedIncrement).isOk()) {
             // SAFETY: pointer is not null, verified in checkedIncrement
             Arc.fromInnerIn(this.ptr, this.alloc.clone())
         } else {
@@ -2121,7 +2138,7 @@ public open class Weak<T, A : Allocator> internal constructor(
      * check(!first.ptrEq(third))
      * ```
      */
-    public open fun ptrEq(other: Weak<T, A>): Boolean = ptr.addrEq(this.ptr.asPtr(), other.ptr.asPtr())
+    public open fun ptrEq(other: Weak<T, A>): Boolean = addrEq(this.ptr.asPtr(), other.ptr.asPtr())
 
     /**
      * Makes a clone of the `Weak` pointer that points to the same allocation.
@@ -2147,7 +2164,7 @@ public open class Weak<T, A : Allocator> internal constructor(
                 val oldSize = inner.weak.fetchAdd(1, Relaxed)
                 // See comments in Arc.clone() for why we do this (for mem.forget).
                 if (oldSize > MAX_REFCOUNT) {
-                    intrinsics.abortImmediate()
+                    abortImmediate()
                 }
             }
         }
@@ -2170,9 +2187,9 @@ public open class Weak<T, A : Allocator> internal constructor(
      * val foo = Foo()
      * val weakFoo = Arc.downgrade(foo)
      * val otherWeakFoo = Weak.clone(weakFoo)
-     * drop(weakFoo)
+     * (weakFoo).let { }
      * // Doesn't print anything
-     * drop(foo)
+     * (foo).let { }
      * // Prints "dropped!"
      * check(otherWeakFoo.upgrade() == null)
      * ```
@@ -2200,7 +2217,7 @@ public open class Weak<T, A : Allocator> internal constructor(
             inner1.weak.load(Acquire)
             // Make sure we aren't trying to "deallocate" the shared static for empty slices
             // used by Default.default.
-            check(!ptr.addrEq(this.ptr.asPtr(), STATIC_INNER_SLICE.inner)) { "Arc/Weaks backed by a static should never be deallocated. Likely decrement_strong_count or from_raw were called too many times." }
+            check(!addrEq(this.ptr.asPtr(), STATIC_INNER_SLICE.inner)) { "Arc/Weaks backed by a static should never be deallocated. Likely decrement_strong_count or from_raw were called too many times." }
             // ignore-tidy-undocumented-unchecked
             this.alloc.deallocate(this.ptr.cast(), Layout.forValueRaw(this.ptr.asPtr()))
         }
@@ -2267,7 +2284,7 @@ public open class Weak<T, A : Allocator> internal constructor(
          * check(2 == Arc.weakCount(strong))
          * check("hello" == Weak.fromRaw(raw1).upgrade().unwrap())
          * check(1 == Arc.weakCount(strong))
-         * drop(strong)
+         * (strong).let { }
          * // Decrement the last weak count.
          * check(Weak.fromRaw(raw2).upgrade() == null)
          * ```
@@ -2998,7 +3015,7 @@ public fun <T> Arc.Companion.copyFromSlice(v: List<T>): Arc<List<T>> {
     // ignore-tidy-undocumented-unchecked
     return run {
         val ptr = Arc.allocateForSlice(v.size)
-        ptr.copyNonoverlapping(v.asPtr(), mutPtrFromRustCast((addrOfMut(ptr.data))), v.size)
+        copyNonoverlapping(v.asPtr(), mutPtrFromRustCast((addrOfMut(ptr.data))), v.size)
         Arc.fromPtr(ptr)
     }
 }
@@ -3022,7 +3039,7 @@ public fun <T> Arc.Companion.fromIterExact(iter: Any, len: Int): Arc<List<T>> {
             // ignore-tidy-undocumented-unchecked
             run {
                 val slice = rawMutSliceList(this.elems, this.nElems.toInt(), PrimitiveLayouts.U8)
-                ptr.dropInPlace(slice)
+                dropInPlace(slice)
                 Global.deallocate(this.mem, this.layout)
             }
         }
@@ -3036,11 +3053,11 @@ public fun <T> Arc.Companion.fromIterExact(iter: Any, len: Int): Arc<List<T>> {
         val elems = mutPtrFromRustCast((addrOfMut(ptr.data)))
         val guard = Guard(mem = NonNull.newUnchecked(mem), elems = elems, layout = layout, nElems = 0)
         for ((i, item) in iter.mapIndexed { index, item -> Pair(index, item) }) {
-            ptr.write(MutPtr((elems).rawAddress + ((i).toLong() * (ObjectSlotLayout<T>()).strideBytes)), item, typeLayoutT = ObjectSlotLayout<T>())
+            write(MutPtr((elems).rawAddress + ((i).toLong() * (ObjectSlotLayout<T>()).strideBytes)), item, typeLayoutT = ObjectSlotLayout<T>())
             guard.nElems += 1
         }
         // All clear. Forget the guard so it doesn't free the new ArcInner.
-        mem.forget(guard)
+        forget(guard)
         Arc.fromPtr(ptr)
     }
 }
@@ -3199,7 +3216,7 @@ public open class WeakInner internal constructor(
  * check(2 == Arc.weakCount(strong))
  * check("hello" == Weak.fromRaw(raw1).upgrade().unwrap())
  * check(1 == Arc.weakCount(strong))
- * drop(strong)
+ * (strong).let { }
  * // Decrement the last weak count.
  * check(Weak.fromRaw(raw2).upgrade() == null)
  * ```
@@ -3233,7 +3250,7 @@ public fun <T> Weak.Companion.fromRaw(ptr: ConstPtr): Weak<T> {
  * val raw = weak.intoRaw()
  * check(1 == Arc.weakCount(strong))
  * check("hello" == raw)
- * drop(Weak.fromRaw(raw))
+ * (Weak.fromRaw(raw)).let { }
  * check(0 == Arc.weakCount(strong))
  * ```
  *
@@ -3335,7 +3352,7 @@ public fun defaultArcCStr(): Arc<CStr> {
     val inner: NonNull = NonNull.from(STATIC_INNER_SLICE.inner)
     val inner1: NonNull = NonNull.new(mutPtrFromRustCast(inner.asPtr())).unwrap()
     // `this` semantically is the Arc "owned" by the static, so make sure not to drop it.
-    val thisRef: Arc<CStr> = mem.ManuallyDrop.new(Arc.fromInner(inner1))
+    val thisRef: Arc<CStr> = Arc.fromInner(inner1)
     return thisRef.clone()
 }
 
@@ -3353,7 +3370,7 @@ public fun <T> defaultArcTSlice(typeLayoutT: TypeLayout<T>): Arc<List<T>> {
         val inner: NonNull = NonNull.from(STATIC_INNER_SLICE)
         val inner1: NonNull = inner.cast()
         // `this` semantically is the Arc "owned" by the static, so make sure not to drop it.
-        val thisRef: Arc<List<T>> = mem.ManuallyDrop.new(Arc.fromInner(inner1))
+        val thisRef: Arc<List<T>> = Arc.fromInner(inner1)
         return thisRef.clone()
     }
     // If T's alignment is too large for the static, make a new unique allocation.
@@ -3456,7 +3473,7 @@ public fun <T, A : AllocatorNightly> fromArcTSliceA(v: List<T>): Arc<List<T>, A>
     return run {
         val (vecPtr, len, cap, alloc) = v.intoRawPartsWithAllocator()
         val rcPtr = Arc.allocateForSliceIn(len, alloc)
-        ptr.copyNonoverlapping(vecPtr, mutPtrFromRustCast((addrOfMut(rcPtr.data))), len)
+        copyNonoverlapping(vecPtr, mutPtrFromRustCast((addrOfMut(rcPtr.data))), len)
         // Create a `List<T, A>` with length 0, to deallocate the buffer
         // without dropping its contents or the allocator
         Vec.fromRawPartsIn(vecPtr, 0, cap, alloc)
@@ -3715,7 +3732,7 @@ public fun <T> Arc<T>.provide(req: Request) {
  *         rc.me = UniqueArc.downgrade(rc)
  *         return UniqueArc.intoArc(rc)
  *     }
- *     createGadget().unwrap()
+ *     createGadget()!!
  * }
  * ```
  *
@@ -3747,7 +3764,7 @@ public open class UniqueArc<T, A : Allocator> internal constructor(
     }
 
     public open fun fmtPointer(f: StringBuilder) {
-        fmt.Pointer.fmt((this), f)
+        Pointer.fmt((this), f)
     }
 
     public open fun borrow(): T = this
@@ -3927,7 +3944,7 @@ public open class UniqueArc<T, A : Allocator> internal constructor(
         // See `Arc.dropSlow` which drops an `Arc` with a strong count of 0.
         // SAFETY: This pointer was allocated at creation time so we know it is valid.
         // ignore-tidy-undocumented-unchecked
-        ptr.dropInPlace(this.ptr.asPtr().data)
+        dropInPlace(this.ptr.asPtr().data)
     }
 
     public companion object {
@@ -3981,7 +3998,7 @@ public open class UniqueArc<T, A : Allocator> internal constructor(
             // We do not use the data inside ever again.
             val value = dataPtr.read()
             // Drop the strong-weak ref
-            drop(Weak(ptr = innerPtr, alloc = alloc))
+            (Weak(ptr = innerPtr, alloc = alloc)).let { }
             return Pair(value, alloc)
         }
 
@@ -4078,7 +4095,7 @@ public open class UniqueArc<T, A : Allocator> internal constructor(
         public fun <T, A : Allocator> intoRawWithAllocator(thisRef: UniqueArc<T, A>): Pair<ConstPtr, A> {
             val thisRef1 = thisRef
             // SAFETY: The copy of the allocator stored in `this` is forgotten
-            return Pair(UniqueArc.asPtr(thisRef1), ptr.read(thisRef1.alloc))
+            return Pair(UniqueArc.asPtr(thisRef1), read(thisRef1.alloc))
         }
 
         /**
@@ -4095,7 +4112,7 @@ public open class UniqueArc<T, A : Allocator> internal constructor(
             // Move the allocator out.
             // SAFETY: `this.alloc` will not be accessed again, nor dropped because it is in
             // a `ManuallyDrop`.
-            val alloc: A = ptr.read(thisRef1.alloc)
+            val alloc: A = read(thisRef1.alloc)
             // SAFETY: This pointer was allocated at creation time so we know it is valid.
             return run {
                 // Convert our weak reference into a strong reference
@@ -4115,9 +4132,9 @@ public open class UniqueArc<T, A : Allocator> internal constructor(
         }
 
         public fun <T, A : Allocator> intoInnerWithAllocator(thisRef: UniqueArc<T, A>): Pair<NonNull, A> {
-            val thisRef1 = mem.ManuallyDrop.new(thisRef)
+            val thisRef1 = thisRef
             // SAFETY: Pointer is valid for reads and only read once.
-            return Pair(thisRef1.ptr, ptr.read(thisRef1.alloc))
+            return Pair(thisRef1.ptr, read(thisRef1.alloc))
         }
 
         public fun <T, A : Allocator> fromInnerIn(ptr: NonNull, alloc: A): UniqueArc<T, A> = UniqueArc(ptr = ptr, marker = Unit, marker2 = Unit, alloc = alloc)
@@ -4141,7 +4158,7 @@ public open class UniqueArc<T, A : Allocator> internal constructor(
             val oldSize = thisRef.ptr.asPtr().weak.fetchAdd(1, Relaxed)
             // See comments in Arc.clone() for why we do this (for mem.forget).
             if (oldSize > MAX_REFCOUNT) {
-                intrinsics.abortImmediate()
+                abortImmediate()
             }
             return Weak(ptr = thisRef.ptr, alloc = thisRef.alloc.clone())
         }

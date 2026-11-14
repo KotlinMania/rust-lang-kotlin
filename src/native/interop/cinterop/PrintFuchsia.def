@@ -1,5 +1,0 @@
-package = io.github.kotlinmania.rustlang.backtrace.print.fuchsia.cinterop
-headers = print_fuchsia_wrapper.h
-headerFilter = print_fuchsia_wrapper.h
-compilerOpts = -Isrc/native/interop/cinterop
-staticLibraries = print_fuchsia_wrapper.a

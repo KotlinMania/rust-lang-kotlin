@@ -1,4 +1,4 @@
-@file:OptIn(kotlin.ExperimentalUnsignedTypes::class)
+@file:OptIn(ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.core.ffi
 
@@ -28,9 +28,9 @@ private object FfiJniBridge {
             }
         val libFileName =
             when (hostPlatform) {
-                "windows" -> "core_jni.dll"
-                "macos" -> "libcore_jni.dylib"
-                else -> "libcore_jni.so"
+                "windows" -> "kmcore_jni.dll"
+                "macos" -> "libkmcore_jni.dylib"
+                else -> "libkmcore_jni.so"
             }
         val pathSep = System.getProperty("path.separator", ":")
         val libPathProp = System.getProperty("java.library.path", "")
@@ -46,7 +46,7 @@ private object FfiJniBridge {
         val stream = FfiJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
-            val extracted = java.nio.file.Files.createTempFile("core_jni-", suffix).toFile()
+            val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
             extracted.deleteOnExit()
             stream.use { input ->
                 extracted.outputStream().use { output ->
@@ -56,7 +56,7 @@ private object FfiJniBridge {
             System.load(extracted.absolutePath)
             return
         }
-        System.loadLibrary("core_jni")
+        System.loadLibrary("kmcore_jni")
     }
 
     @JvmStatic

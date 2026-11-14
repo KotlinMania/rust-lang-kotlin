@@ -104,7 +104,7 @@ public val PIO2: DoubleArray = doubleArrayOf(1.57079625129699707031e00, 7.549789
  * more accurately, = 0 mod 8 ). Thus the number of operations are
  * independent of the exponent of the input.
  */
-internal fun remPio2Large(x: List<Double>, y: MutableList<Double>, e0: Int, prec: Int): Int {
+public fun remPio2Large(x: List<Double>, y: MutableList<Double>, e0: Int, prec: Int): Int {
     val x1p24 = Double.fromBits(0x4170000000000000uL.toLong())
     // 0x1p24 === 2 ^ 24
     val x1p24 = Double.fromBits(0x3e70000000000000uL.toLong())

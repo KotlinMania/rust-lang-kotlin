@@ -1,12 +1,11 @@
 // port-lint: source os/linux/fs.rs
 package io.github.kotlinmania.rustlang.std.os.linux.fs
 
-import io.github.kotlinmania.libc.hermit.Stat
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.std.fs.Metadata
-import io.github.kotlinmania.rustlang.std.sys.sync.mutex.windows7.raw
+import io.github.kotlinmania.rustlang.std.os.linux.raw.arch.Stat
 
 // Linux-specific extensions to primitives in the [std.fs] module.
 
@@ -37,7 +36,7 @@ public interface MetadataExt {
      * }
      * ```kotlin
      */
-    public fun asRawStat(): raw.Stat
+    public fun asRawStat(): Stat
 
     /**
      * Returns the device ID on which this file resides.
@@ -337,7 +336,7 @@ public interface MetadataExt {
     public fun stBlocks(): ULong
 }
 
-public fun Metadata.asRawStat(): raw.Stat = (ObjectSlotLayout<raw.Stat>()).readNative((((constPtrFromRustCast(this.asInner().asInner())).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
+public fun Metadata.asRawStat(): Stat = (ObjectSlotLayout<Stat>()).readNative((((constPtrFromRustCast(this.asInner().asInner())).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
 
 public fun Metadata.stDev(): ULong = (this.asInner().asInner().stDev).toULong()
 

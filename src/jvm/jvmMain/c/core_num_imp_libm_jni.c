@@ -1,8 +1,44 @@
 #ifndef _GNU_SOURCE
 #define _GNU_SOURCE
 #endif
-#include <jni.h>
 #include <stdbool.h>
+#include <stdint.h>
+#if defined(__has_include)
+#  if __has_include(<jni.h>)
+#    include <jni.h>
+#    define KM_HAS_JNI_H 1
+#  endif
+#endif
+#ifndef KM_HAS_JNI_H
+typedef uint8_t jboolean;
+typedef int8_t jbyte;
+typedef uint16_t jchar;
+typedef int16_t jshort;
+typedef int32_t jint;
+typedef int64_t jlong;
+typedef float jfloat;
+typedef double jdouble;
+typedef jint jsize;
+typedef void* jobject;
+typedef jobject jclass;
+typedef jobject jstring;
+typedef jobject jthrowable;
+typedef jobject jarray;
+typedef jarray jbyteArray;
+struct JNINativeInterface_;
+typedef const struct JNINativeInterface_* JNIEnv;
+struct JNINativeInterface_ {
+    const char* (*GetStringUTFChars)(JNIEnv*, jstring, jboolean*);
+    void (*ReleaseStringUTFChars)(JNIEnv*, jstring, const char*);
+};
+#ifdef _WIN32
+#  define JNIEXPORT __declspec(dllexport)
+#  define JNICALL __stdcall
+#else
+#  define JNIEXPORT __attribute__((visibility("default")))
+#  define JNICALL
+#endif
+#endif
 #include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -1191,6 +1227,765 @@ JNIEXPORT jfloat JNICALL Java_io_github_kotlinmania_rustlang_core_num_imp_libm_N
 #else
     if (km_fn_ptr == NULL) {
         km_fn_ptr = (km_fn_t)dlsym(RTLD_DEFAULT, "truncf");
+    }
+#endif
+    float km_res;
+    if (km_fn_ptr != NULL) {
+        km_res = km_fn_ptr((float)x);
+    } else {
+        errno = ENOSYS;
+        km_res = 0.0f;
+    }
+    return (jfloat)km_res;
+}
+
+JNIEXPORT jfloat JNICALL Java_io_github_kotlinmania_rustlang_core_num_imp_libm_NumImpLibmJniBridge_coreNumImpLibmAcosf(JNIEnv* km_env, jclass km_clazz, jfloat n) {
+    (void)km_env;
+    (void)km_clazz;
+    typedef float (*km_fn_t)(float);
+    static km_fn_t km_fn_ptr = NULL;
+#ifdef _WIN32
+    if (km_fn_ptr == NULL) {
+        HMODULE km_h_ucrt = GetModuleHandleA("ucrtbase.dll");
+        if (km_h_ucrt == NULL) km_h_ucrt = LoadLibraryA("ucrtbase.dll");
+        if (km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "acosf");
+        if (km_fn_ptr == NULL && km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "_acosf");
+        if (km_fn_ptr == NULL) {
+            HMODULE km_h_msvcrt = GetModuleHandleA("msvcrt.dll");
+            if (km_h_msvcrt == NULL) km_h_msvcrt = LoadLibraryA("msvcrt.dll");
+            if (km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "acosf");
+            if (km_fn_ptr == NULL && km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "_acosf");
+        }
+    }
+#else
+    if (km_fn_ptr == NULL) {
+        km_fn_ptr = (km_fn_t)dlsym(RTLD_DEFAULT, "acosf");
+    }
+#endif
+    float km_res;
+    if (km_fn_ptr != NULL) {
+        km_res = km_fn_ptr((float)n);
+    } else {
+        errno = ENOSYS;
+        km_res = 0.0f;
+    }
+    return (jfloat)km_res;
+}
+
+JNIEXPORT jfloat JNICALL Java_io_github_kotlinmania_rustlang_core_num_imp_libm_NumImpLibmJniBridge_coreNumImpLibmAsinf(JNIEnv* km_env, jclass km_clazz, jfloat n) {
+    (void)km_env;
+    (void)km_clazz;
+    typedef float (*km_fn_t)(float);
+    static km_fn_t km_fn_ptr = NULL;
+#ifdef _WIN32
+    if (km_fn_ptr == NULL) {
+        HMODULE km_h_ucrt = GetModuleHandleA("ucrtbase.dll");
+        if (km_h_ucrt == NULL) km_h_ucrt = LoadLibraryA("ucrtbase.dll");
+        if (km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "asinf");
+        if (km_fn_ptr == NULL && km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "_asinf");
+        if (km_fn_ptr == NULL) {
+            HMODULE km_h_msvcrt = GetModuleHandleA("msvcrt.dll");
+            if (km_h_msvcrt == NULL) km_h_msvcrt = LoadLibraryA("msvcrt.dll");
+            if (km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "asinf");
+            if (km_fn_ptr == NULL && km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "_asinf");
+        }
+    }
+#else
+    if (km_fn_ptr == NULL) {
+        km_fn_ptr = (km_fn_t)dlsym(RTLD_DEFAULT, "asinf");
+    }
+#endif
+    float km_res;
+    if (km_fn_ptr != NULL) {
+        km_res = km_fn_ptr((float)n);
+    } else {
+        errno = ENOSYS;
+        km_res = 0.0f;
+    }
+    return (jfloat)km_res;
+}
+
+JNIEXPORT jfloat JNICALL Java_io_github_kotlinmania_rustlang_core_num_imp_libm_NumImpLibmJniBridge_coreNumImpLibmAtan2f(JNIEnv* km_env, jclass km_clazz, jfloat a, jfloat b) {
+    (void)km_env;
+    (void)km_clazz;
+    typedef float (*km_fn_t)(float, float);
+    static km_fn_t km_fn_ptr = NULL;
+#ifdef _WIN32
+    if (km_fn_ptr == NULL) {
+        HMODULE km_h_ucrt = GetModuleHandleA("ucrtbase.dll");
+        if (km_h_ucrt == NULL) km_h_ucrt = LoadLibraryA("ucrtbase.dll");
+        if (km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "atan2f");
+        if (km_fn_ptr == NULL && km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "_atan2f");
+        if (km_fn_ptr == NULL) {
+            HMODULE km_h_msvcrt = GetModuleHandleA("msvcrt.dll");
+            if (km_h_msvcrt == NULL) km_h_msvcrt = LoadLibraryA("msvcrt.dll");
+            if (km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "atan2f");
+            if (km_fn_ptr == NULL && km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "_atan2f");
+        }
+    }
+#else
+    if (km_fn_ptr == NULL) {
+        km_fn_ptr = (km_fn_t)dlsym(RTLD_DEFAULT, "atan2f");
+    }
+#endif
+    float km_res;
+    if (km_fn_ptr != NULL) {
+        km_res = km_fn_ptr((float)a, (float)b);
+    } else {
+        errno = ENOSYS;
+        km_res = 0.0f;
+    }
+    return (jfloat)km_res;
+}
+
+JNIEXPORT jfloat JNICALL Java_io_github_kotlinmania_rustlang_core_num_imp_libm_NumImpLibmJniBridge_coreNumImpLibmAtanf(JNIEnv* km_env, jclass km_clazz, jfloat n) {
+    (void)km_env;
+    (void)km_clazz;
+    typedef float (*km_fn_t)(float);
+    static km_fn_t km_fn_ptr = NULL;
+#ifdef _WIN32
+    if (km_fn_ptr == NULL) {
+        HMODULE km_h_ucrt = GetModuleHandleA("ucrtbase.dll");
+        if (km_h_ucrt == NULL) km_h_ucrt = LoadLibraryA("ucrtbase.dll");
+        if (km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "atanf");
+        if (km_fn_ptr == NULL && km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "_atanf");
+        if (km_fn_ptr == NULL) {
+            HMODULE km_h_msvcrt = GetModuleHandleA("msvcrt.dll");
+            if (km_h_msvcrt == NULL) km_h_msvcrt = LoadLibraryA("msvcrt.dll");
+            if (km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "atanf");
+            if (km_fn_ptr == NULL && km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "_atanf");
+        }
+    }
+#else
+    if (km_fn_ptr == NULL) {
+        km_fn_ptr = (km_fn_t)dlsym(RTLD_DEFAULT, "atanf");
+    }
+#endif
+    float km_res;
+    if (km_fn_ptr != NULL) {
+        km_res = km_fn_ptr((float)n);
+    } else {
+        errno = ENOSYS;
+        km_res = 0.0f;
+    }
+    return (jfloat)km_res;
+}
+
+JNIEXPORT jfloat JNICALL Java_io_github_kotlinmania_rustlang_core_num_imp_libm_NumImpLibmJniBridge_coreNumImpLibmCosf(JNIEnv* km_env, jclass km_clazz, jfloat x) {
+    (void)km_env;
+    (void)km_clazz;
+    typedef float (*km_fn_t)(float);
+    static km_fn_t km_fn_ptr = NULL;
+#ifdef _WIN32
+    if (km_fn_ptr == NULL) {
+        HMODULE km_h_ucrt = GetModuleHandleA("ucrtbase.dll");
+        if (km_h_ucrt == NULL) km_h_ucrt = LoadLibraryA("ucrtbase.dll");
+        if (km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "cosf");
+        if (km_fn_ptr == NULL && km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "_cosf");
+        if (km_fn_ptr == NULL) {
+            HMODULE km_h_msvcrt = GetModuleHandleA("msvcrt.dll");
+            if (km_h_msvcrt == NULL) km_h_msvcrt = LoadLibraryA("msvcrt.dll");
+            if (km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "cosf");
+            if (km_fn_ptr == NULL && km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "_cosf");
+        }
+    }
+#else
+    if (km_fn_ptr == NULL) {
+        km_fn_ptr = (km_fn_t)dlsym(RTLD_DEFAULT, "cosf");
+    }
+#endif
+    float km_res;
+    if (km_fn_ptr != NULL) {
+        km_res = km_fn_ptr((float)x);
+    } else {
+        errno = ENOSYS;
+        km_res = 0.0f;
+    }
+    return (jfloat)km_res;
+}
+
+JNIEXPORT jfloat JNICALL Java_io_github_kotlinmania_rustlang_core_num_imp_libm_NumImpLibmJniBridge_coreNumImpLibmCoshf(JNIEnv* km_env, jclass km_clazz, jfloat n) {
+    (void)km_env;
+    (void)km_clazz;
+    typedef float (*km_fn_t)(float);
+    static km_fn_t km_fn_ptr = NULL;
+#ifdef _WIN32
+    if (km_fn_ptr == NULL) {
+        HMODULE km_h_ucrt = GetModuleHandleA("ucrtbase.dll");
+        if (km_h_ucrt == NULL) km_h_ucrt = LoadLibraryA("ucrtbase.dll");
+        if (km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "coshf");
+        if (km_fn_ptr == NULL && km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "_coshf");
+        if (km_fn_ptr == NULL) {
+            HMODULE km_h_msvcrt = GetModuleHandleA("msvcrt.dll");
+            if (km_h_msvcrt == NULL) km_h_msvcrt = LoadLibraryA("msvcrt.dll");
+            if (km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "coshf");
+            if (km_fn_ptr == NULL && km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "_coshf");
+        }
+    }
+#else
+    if (km_fn_ptr == NULL) {
+        km_fn_ptr = (km_fn_t)dlsym(RTLD_DEFAULT, "coshf");
+    }
+#endif
+    float km_res;
+    if (km_fn_ptr != NULL) {
+        km_res = km_fn_ptr((float)n);
+    } else {
+        errno = ENOSYS;
+        km_res = 0.0f;
+    }
+    return (jfloat)km_res;
+}
+
+JNIEXPORT jfloat JNICALL Java_io_github_kotlinmania_rustlang_core_num_imp_libm_NumImpLibmJniBridge_coreNumImpLibmErfcf(JNIEnv* km_env, jclass km_clazz, jfloat x) {
+    (void)km_env;
+    (void)km_clazz;
+    typedef float (*km_fn_t)(float);
+    static km_fn_t km_fn_ptr = NULL;
+#ifdef _WIN32
+    if (km_fn_ptr == NULL) {
+        HMODULE km_h_ucrt = GetModuleHandleA("ucrtbase.dll");
+        if (km_h_ucrt == NULL) km_h_ucrt = LoadLibraryA("ucrtbase.dll");
+        if (km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "erfcf");
+        if (km_fn_ptr == NULL && km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "_erfcf");
+        if (km_fn_ptr == NULL) {
+            HMODULE km_h_msvcrt = GetModuleHandleA("msvcrt.dll");
+            if (km_h_msvcrt == NULL) km_h_msvcrt = LoadLibraryA("msvcrt.dll");
+            if (km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "erfcf");
+            if (km_fn_ptr == NULL && km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "_erfcf");
+        }
+    }
+#else
+    if (km_fn_ptr == NULL) {
+        km_fn_ptr = (km_fn_t)dlsym(RTLD_DEFAULT, "erfcf");
+    }
+#endif
+    float km_res;
+    if (km_fn_ptr != NULL) {
+        km_res = km_fn_ptr((float)x);
+    } else {
+        errno = ENOSYS;
+        km_res = 0.0f;
+    }
+    return (jfloat)km_res;
+}
+
+JNIEXPORT jfloat JNICALL Java_io_github_kotlinmania_rustlang_core_num_imp_libm_NumImpLibmJniBridge_coreNumImpLibmErff(JNIEnv* km_env, jclass km_clazz, jfloat x) {
+    (void)km_env;
+    (void)km_clazz;
+    typedef float (*km_fn_t)(float);
+    static km_fn_t km_fn_ptr = NULL;
+#ifdef _WIN32
+    if (km_fn_ptr == NULL) {
+        HMODULE km_h_ucrt = GetModuleHandleA("ucrtbase.dll");
+        if (km_h_ucrt == NULL) km_h_ucrt = LoadLibraryA("ucrtbase.dll");
+        if (km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "erff");
+        if (km_fn_ptr == NULL && km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "_erff");
+        if (km_fn_ptr == NULL) {
+            HMODULE km_h_msvcrt = GetModuleHandleA("msvcrt.dll");
+            if (km_h_msvcrt == NULL) km_h_msvcrt = LoadLibraryA("msvcrt.dll");
+            if (km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "erff");
+            if (km_fn_ptr == NULL && km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "_erff");
+        }
+    }
+#else
+    if (km_fn_ptr == NULL) {
+        km_fn_ptr = (km_fn_t)dlsym(RTLD_DEFAULT, "erff");
+    }
+#endif
+    float km_res;
+    if (km_fn_ptr != NULL) {
+        km_res = km_fn_ptr((float)x);
+    } else {
+        errno = ENOSYS;
+        km_res = 0.0f;
+    }
+    return (jfloat)km_res;
+}
+
+JNIEXPORT jfloat JNICALL Java_io_github_kotlinmania_rustlang_core_num_imp_libm_NumImpLibmJniBridge_coreNumImpLibmExp2f(JNIEnv* km_env, jclass km_clazz, jfloat x) {
+    (void)km_env;
+    (void)km_clazz;
+    typedef float (*km_fn_t)(float);
+    static km_fn_t km_fn_ptr = NULL;
+#ifdef _WIN32
+    if (km_fn_ptr == NULL) {
+        HMODULE km_h_ucrt = GetModuleHandleA("ucrtbase.dll");
+        if (km_h_ucrt == NULL) km_h_ucrt = LoadLibraryA("ucrtbase.dll");
+        if (km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "exp2f");
+        if (km_fn_ptr == NULL && km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "_exp2f");
+        if (km_fn_ptr == NULL) {
+            HMODULE km_h_msvcrt = GetModuleHandleA("msvcrt.dll");
+            if (km_h_msvcrt == NULL) km_h_msvcrt = LoadLibraryA("msvcrt.dll");
+            if (km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "exp2f");
+            if (km_fn_ptr == NULL && km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "_exp2f");
+        }
+    }
+#else
+    if (km_fn_ptr == NULL) {
+        km_fn_ptr = (km_fn_t)dlsym(RTLD_DEFAULT, "exp2f");
+    }
+#endif
+    float km_res;
+    if (km_fn_ptr != NULL) {
+        km_res = km_fn_ptr((float)x);
+    } else {
+        errno = ENOSYS;
+        km_res = 0.0f;
+    }
+    return (jfloat)km_res;
+}
+
+JNIEXPORT jfloat JNICALL Java_io_github_kotlinmania_rustlang_core_num_imp_libm_NumImpLibmJniBridge_coreNumImpLibmExpf(JNIEnv* km_env, jclass km_clazz, jfloat x) {
+    (void)km_env;
+    (void)km_clazz;
+    typedef float (*km_fn_t)(float);
+    static km_fn_t km_fn_ptr = NULL;
+#ifdef _WIN32
+    if (km_fn_ptr == NULL) {
+        HMODULE km_h_ucrt = GetModuleHandleA("ucrtbase.dll");
+        if (km_h_ucrt == NULL) km_h_ucrt = LoadLibraryA("ucrtbase.dll");
+        if (km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "expf");
+        if (km_fn_ptr == NULL && km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "_expf");
+        if (km_fn_ptr == NULL) {
+            HMODULE km_h_msvcrt = GetModuleHandleA("msvcrt.dll");
+            if (km_h_msvcrt == NULL) km_h_msvcrt = LoadLibraryA("msvcrt.dll");
+            if (km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "expf");
+            if (km_fn_ptr == NULL && km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "_expf");
+        }
+    }
+#else
+    if (km_fn_ptr == NULL) {
+        km_fn_ptr = (km_fn_t)dlsym(RTLD_DEFAULT, "expf");
+    }
+#endif
+    float km_res;
+    if (km_fn_ptr != NULL) {
+        km_res = km_fn_ptr((float)x);
+    } else {
+        errno = ENOSYS;
+        km_res = 0.0f;
+    }
+    return (jfloat)km_res;
+}
+
+JNIEXPORT jfloat JNICALL Java_io_github_kotlinmania_rustlang_core_num_imp_libm_NumImpLibmJniBridge_coreNumImpLibmExpm1f(JNIEnv* km_env, jclass km_clazz, jfloat n) {
+    (void)km_env;
+    (void)km_clazz;
+    typedef float (*km_fn_t)(float);
+    static km_fn_t km_fn_ptr = NULL;
+#ifdef _WIN32
+    if (km_fn_ptr == NULL) {
+        HMODULE km_h_ucrt = GetModuleHandleA("ucrtbase.dll");
+        if (km_h_ucrt == NULL) km_h_ucrt = LoadLibraryA("ucrtbase.dll");
+        if (km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "expm1f");
+        if (km_fn_ptr == NULL && km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "_expm1f");
+        if (km_fn_ptr == NULL) {
+            HMODULE km_h_msvcrt = GetModuleHandleA("msvcrt.dll");
+            if (km_h_msvcrt == NULL) km_h_msvcrt = LoadLibraryA("msvcrt.dll");
+            if (km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "expm1f");
+            if (km_fn_ptr == NULL && km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "_expm1f");
+        }
+    }
+#else
+    if (km_fn_ptr == NULL) {
+        km_fn_ptr = (km_fn_t)dlsym(RTLD_DEFAULT, "expm1f");
+    }
+#endif
+    float km_res;
+    if (km_fn_ptr != NULL) {
+        km_res = km_fn_ptr((float)n);
+    } else {
+        errno = ENOSYS;
+        km_res = 0.0f;
+    }
+    return (jfloat)km_res;
+}
+
+JNIEXPORT jfloat JNICALL Java_io_github_kotlinmania_rustlang_core_num_imp_libm_NumImpLibmJniBridge_coreNumImpLibmHypotf(JNIEnv* km_env, jclass km_clazz, jfloat x, jfloat y) {
+    (void)km_env;
+    (void)km_clazz;
+    typedef float (*km_fn_t)(float, float);
+    static km_fn_t km_fn_ptr = NULL;
+#ifdef _WIN32
+    if (km_fn_ptr == NULL) {
+        HMODULE km_h_ucrt = GetModuleHandleA("ucrtbase.dll");
+        if (km_h_ucrt == NULL) km_h_ucrt = LoadLibraryA("ucrtbase.dll");
+        if (km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "hypotf");
+        if (km_fn_ptr == NULL && km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "_hypotf");
+        if (km_fn_ptr == NULL) {
+            HMODULE km_h_msvcrt = GetModuleHandleA("msvcrt.dll");
+            if (km_h_msvcrt == NULL) km_h_msvcrt = LoadLibraryA("msvcrt.dll");
+            if (km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "hypotf");
+            if (km_fn_ptr == NULL && km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "_hypotf");
+        }
+    }
+#else
+    if (km_fn_ptr == NULL) {
+        km_fn_ptr = (km_fn_t)dlsym(RTLD_DEFAULT, "hypotf");
+    }
+#endif
+    float km_res;
+    if (km_fn_ptr != NULL) {
+        km_res = km_fn_ptr((float)x, (float)y);
+    } else {
+        errno = ENOSYS;
+        km_res = 0.0f;
+    }
+    return (jfloat)km_res;
+}
+
+JNIEXPORT jfloat JNICALL Java_io_github_kotlinmania_rustlang_core_num_imp_libm_NumImpLibmJniBridge_coreNumImpLibmLdexpf(JNIEnv* km_env, jclass km_clazz, jfloat f, jint n) {
+    (void)km_env;
+    (void)km_clazz;
+    typedef float (*km_fn_t)(float, int32_t);
+    static km_fn_t km_fn_ptr = NULL;
+#ifdef _WIN32
+    if (km_fn_ptr == NULL) {
+        HMODULE km_h_ucrt = GetModuleHandleA("ucrtbase.dll");
+        if (km_h_ucrt == NULL) km_h_ucrt = LoadLibraryA("ucrtbase.dll");
+        if (km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "ldexpf");
+        if (km_fn_ptr == NULL && km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "_ldexpf");
+        if (km_fn_ptr == NULL) {
+            HMODULE km_h_msvcrt = GetModuleHandleA("msvcrt.dll");
+            if (km_h_msvcrt == NULL) km_h_msvcrt = LoadLibraryA("msvcrt.dll");
+            if (km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "ldexpf");
+            if (km_fn_ptr == NULL && km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "_ldexpf");
+        }
+    }
+#else
+    if (km_fn_ptr == NULL) {
+        km_fn_ptr = (km_fn_t)dlsym(RTLD_DEFAULT, "ldexpf");
+    }
+#endif
+    float km_res;
+    if (km_fn_ptr != NULL) {
+        km_res = km_fn_ptr((float)f, (int32_t)n);
+    } else {
+        errno = ENOSYS;
+        km_res = 0.0f;
+    }
+    return (jfloat)km_res;
+}
+
+JNIEXPORT jfloat JNICALL Java_io_github_kotlinmania_rustlang_core_num_imp_libm_NumImpLibmJniBridge_coreNumImpLibmLog10f(JNIEnv* km_env, jclass km_clazz, jfloat x) {
+    (void)km_env;
+    (void)km_clazz;
+    typedef float (*km_fn_t)(float);
+    static km_fn_t km_fn_ptr = NULL;
+#ifdef _WIN32
+    if (km_fn_ptr == NULL) {
+        HMODULE km_h_ucrt = GetModuleHandleA("ucrtbase.dll");
+        if (km_h_ucrt == NULL) km_h_ucrt = LoadLibraryA("ucrtbase.dll");
+        if (km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "log10f");
+        if (km_fn_ptr == NULL && km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "_log10f");
+        if (km_fn_ptr == NULL) {
+            HMODULE km_h_msvcrt = GetModuleHandleA("msvcrt.dll");
+            if (km_h_msvcrt == NULL) km_h_msvcrt = LoadLibraryA("msvcrt.dll");
+            if (km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "log10f");
+            if (km_fn_ptr == NULL && km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "_log10f");
+        }
+    }
+#else
+    if (km_fn_ptr == NULL) {
+        km_fn_ptr = (km_fn_t)dlsym(RTLD_DEFAULT, "log10f");
+    }
+#endif
+    float km_res;
+    if (km_fn_ptr != NULL) {
+        km_res = km_fn_ptr((float)x);
+    } else {
+        errno = ENOSYS;
+        km_res = 0.0f;
+    }
+    return (jfloat)km_res;
+}
+
+JNIEXPORT jfloat JNICALL Java_io_github_kotlinmania_rustlang_core_num_imp_libm_NumImpLibmJniBridge_coreNumImpLibmLog1pf(JNIEnv* km_env, jclass km_clazz, jfloat n) {
+    (void)km_env;
+    (void)km_clazz;
+    typedef float (*km_fn_t)(float);
+    static km_fn_t km_fn_ptr = NULL;
+#ifdef _WIN32
+    if (km_fn_ptr == NULL) {
+        HMODULE km_h_ucrt = GetModuleHandleA("ucrtbase.dll");
+        if (km_h_ucrt == NULL) km_h_ucrt = LoadLibraryA("ucrtbase.dll");
+        if (km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "log1pf");
+        if (km_fn_ptr == NULL && km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "_log1pf");
+        if (km_fn_ptr == NULL) {
+            HMODULE km_h_msvcrt = GetModuleHandleA("msvcrt.dll");
+            if (km_h_msvcrt == NULL) km_h_msvcrt = LoadLibraryA("msvcrt.dll");
+            if (km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "log1pf");
+            if (km_fn_ptr == NULL && km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "_log1pf");
+        }
+    }
+#else
+    if (km_fn_ptr == NULL) {
+        km_fn_ptr = (km_fn_t)dlsym(RTLD_DEFAULT, "log1pf");
+    }
+#endif
+    float km_res;
+    if (km_fn_ptr != NULL) {
+        km_res = km_fn_ptr((float)n);
+    } else {
+        errno = ENOSYS;
+        km_res = 0.0f;
+    }
+    return (jfloat)km_res;
+}
+
+JNIEXPORT jfloat JNICALL Java_io_github_kotlinmania_rustlang_core_num_imp_libm_NumImpLibmJniBridge_coreNumImpLibmLog2f(JNIEnv* km_env, jclass km_clazz, jfloat x) {
+    (void)km_env;
+    (void)km_clazz;
+    typedef float (*km_fn_t)(float);
+    static km_fn_t km_fn_ptr = NULL;
+#ifdef _WIN32
+    if (km_fn_ptr == NULL) {
+        HMODULE km_h_ucrt = GetModuleHandleA("ucrtbase.dll");
+        if (km_h_ucrt == NULL) km_h_ucrt = LoadLibraryA("ucrtbase.dll");
+        if (km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "log2f");
+        if (km_fn_ptr == NULL && km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "_log2f");
+        if (km_fn_ptr == NULL) {
+            HMODULE km_h_msvcrt = GetModuleHandleA("msvcrt.dll");
+            if (km_h_msvcrt == NULL) km_h_msvcrt = LoadLibraryA("msvcrt.dll");
+            if (km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "log2f");
+            if (km_fn_ptr == NULL && km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "_log2f");
+        }
+    }
+#else
+    if (km_fn_ptr == NULL) {
+        km_fn_ptr = (km_fn_t)dlsym(RTLD_DEFAULT, "log2f");
+    }
+#endif
+    float km_res;
+    if (km_fn_ptr != NULL) {
+        km_res = km_fn_ptr((float)x);
+    } else {
+        errno = ENOSYS;
+        km_res = 0.0f;
+    }
+    return (jfloat)km_res;
+}
+
+JNIEXPORT jfloat JNICALL Java_io_github_kotlinmania_rustlang_core_num_imp_libm_NumImpLibmJniBridge_coreNumImpLibmLogf(JNIEnv* km_env, jclass km_clazz, jfloat x) {
+    (void)km_env;
+    (void)km_clazz;
+    typedef float (*km_fn_t)(float);
+    static km_fn_t km_fn_ptr = NULL;
+#ifdef _WIN32
+    if (km_fn_ptr == NULL) {
+        HMODULE km_h_ucrt = GetModuleHandleA("ucrtbase.dll");
+        if (km_h_ucrt == NULL) km_h_ucrt = LoadLibraryA("ucrtbase.dll");
+        if (km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "logf");
+        if (km_fn_ptr == NULL && km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "_logf");
+        if (km_fn_ptr == NULL) {
+            HMODULE km_h_msvcrt = GetModuleHandleA("msvcrt.dll");
+            if (km_h_msvcrt == NULL) km_h_msvcrt = LoadLibraryA("msvcrt.dll");
+            if (km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "logf");
+            if (km_fn_ptr == NULL && km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "_logf");
+        }
+    }
+#else
+    if (km_fn_ptr == NULL) {
+        km_fn_ptr = (km_fn_t)dlsym(RTLD_DEFAULT, "logf");
+    }
+#endif
+    float km_res;
+    if (km_fn_ptr != NULL) {
+        km_res = km_fn_ptr((float)x);
+    } else {
+        errno = ENOSYS;
+        km_res = 0.0f;
+    }
+    return (jfloat)km_res;
+}
+
+JNIEXPORT jfloat JNICALL Java_io_github_kotlinmania_rustlang_core_num_imp_libm_NumImpLibmJniBridge_coreNumImpLibmPowf(JNIEnv* km_env, jclass km_clazz, jfloat x, jfloat y) {
+    (void)km_env;
+    (void)km_clazz;
+    typedef float (*km_fn_t)(float, float);
+    static km_fn_t km_fn_ptr = NULL;
+#ifdef _WIN32
+    if (km_fn_ptr == NULL) {
+        HMODULE km_h_ucrt = GetModuleHandleA("ucrtbase.dll");
+        if (km_h_ucrt == NULL) km_h_ucrt = LoadLibraryA("ucrtbase.dll");
+        if (km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "powf");
+        if (km_fn_ptr == NULL && km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "_powf");
+        if (km_fn_ptr == NULL) {
+            HMODULE km_h_msvcrt = GetModuleHandleA("msvcrt.dll");
+            if (km_h_msvcrt == NULL) km_h_msvcrt = LoadLibraryA("msvcrt.dll");
+            if (km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "powf");
+            if (km_fn_ptr == NULL && km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "_powf");
+        }
+    }
+#else
+    if (km_fn_ptr == NULL) {
+        km_fn_ptr = (km_fn_t)dlsym(RTLD_DEFAULT, "powf");
+    }
+#endif
+    float km_res;
+    if (km_fn_ptr != NULL) {
+        km_res = km_fn_ptr((float)x, (float)y);
+    } else {
+        errno = ENOSYS;
+        km_res = 0.0f;
+    }
+    return (jfloat)km_res;
+}
+
+JNIEXPORT jfloat JNICALL Java_io_github_kotlinmania_rustlang_core_num_imp_libm_NumImpLibmJniBridge_coreNumImpLibmSinf(JNIEnv* km_env, jclass km_clazz, jfloat x) {
+    (void)km_env;
+    (void)km_clazz;
+    typedef float (*km_fn_t)(float);
+    static km_fn_t km_fn_ptr = NULL;
+#ifdef _WIN32
+    if (km_fn_ptr == NULL) {
+        HMODULE km_h_ucrt = GetModuleHandleA("ucrtbase.dll");
+        if (km_h_ucrt == NULL) km_h_ucrt = LoadLibraryA("ucrtbase.dll");
+        if (km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "sinf");
+        if (km_fn_ptr == NULL && km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "_sinf");
+        if (km_fn_ptr == NULL) {
+            HMODULE km_h_msvcrt = GetModuleHandleA("msvcrt.dll");
+            if (km_h_msvcrt == NULL) km_h_msvcrt = LoadLibraryA("msvcrt.dll");
+            if (km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "sinf");
+            if (km_fn_ptr == NULL && km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "_sinf");
+        }
+    }
+#else
+    if (km_fn_ptr == NULL) {
+        km_fn_ptr = (km_fn_t)dlsym(RTLD_DEFAULT, "sinf");
+    }
+#endif
+    float km_res;
+    if (km_fn_ptr != NULL) {
+        km_res = km_fn_ptr((float)x);
+    } else {
+        errno = ENOSYS;
+        km_res = 0.0f;
+    }
+    return (jfloat)km_res;
+}
+
+JNIEXPORT jfloat JNICALL Java_io_github_kotlinmania_rustlang_core_num_imp_libm_NumImpLibmJniBridge_coreNumImpLibmSinhf(JNIEnv* km_env, jclass km_clazz, jfloat n) {
+    (void)km_env;
+    (void)km_clazz;
+    typedef float (*km_fn_t)(float);
+    static km_fn_t km_fn_ptr = NULL;
+#ifdef _WIN32
+    if (km_fn_ptr == NULL) {
+        HMODULE km_h_ucrt = GetModuleHandleA("ucrtbase.dll");
+        if (km_h_ucrt == NULL) km_h_ucrt = LoadLibraryA("ucrtbase.dll");
+        if (km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "sinhf");
+        if (km_fn_ptr == NULL && km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "_sinhf");
+        if (km_fn_ptr == NULL) {
+            HMODULE km_h_msvcrt = GetModuleHandleA("msvcrt.dll");
+            if (km_h_msvcrt == NULL) km_h_msvcrt = LoadLibraryA("msvcrt.dll");
+            if (km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "sinhf");
+            if (km_fn_ptr == NULL && km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "_sinhf");
+        }
+    }
+#else
+    if (km_fn_ptr == NULL) {
+        km_fn_ptr = (km_fn_t)dlsym(RTLD_DEFAULT, "sinhf");
+    }
+#endif
+    float km_res;
+    if (km_fn_ptr != NULL) {
+        km_res = km_fn_ptr((float)n);
+    } else {
+        errno = ENOSYS;
+        km_res = 0.0f;
+    }
+    return (jfloat)km_res;
+}
+
+JNIEXPORT jfloat JNICALL Java_io_github_kotlinmania_rustlang_core_num_imp_libm_NumImpLibmJniBridge_coreNumImpLibmTanf(JNIEnv* km_env, jclass km_clazz, jfloat n) {
+    (void)km_env;
+    (void)km_clazz;
+    typedef float (*km_fn_t)(float);
+    static km_fn_t km_fn_ptr = NULL;
+#ifdef _WIN32
+    if (km_fn_ptr == NULL) {
+        HMODULE km_h_ucrt = GetModuleHandleA("ucrtbase.dll");
+        if (km_h_ucrt == NULL) km_h_ucrt = LoadLibraryA("ucrtbase.dll");
+        if (km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "tanf");
+        if (km_fn_ptr == NULL && km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "_tanf");
+        if (km_fn_ptr == NULL) {
+            HMODULE km_h_msvcrt = GetModuleHandleA("msvcrt.dll");
+            if (km_h_msvcrt == NULL) km_h_msvcrt = LoadLibraryA("msvcrt.dll");
+            if (km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "tanf");
+            if (km_fn_ptr == NULL && km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "_tanf");
+        }
+    }
+#else
+    if (km_fn_ptr == NULL) {
+        km_fn_ptr = (km_fn_t)dlsym(RTLD_DEFAULT, "tanf");
+    }
+#endif
+    float km_res;
+    if (km_fn_ptr != NULL) {
+        km_res = km_fn_ptr((float)n);
+    } else {
+        errno = ENOSYS;
+        km_res = 0.0f;
+    }
+    return (jfloat)km_res;
+}
+
+JNIEXPORT jfloat JNICALL Java_io_github_kotlinmania_rustlang_core_num_imp_libm_NumImpLibmJniBridge_coreNumImpLibmTanhf(JNIEnv* km_env, jclass km_clazz, jfloat n) {
+    (void)km_env;
+    (void)km_clazz;
+    typedef float (*km_fn_t)(float);
+    static km_fn_t km_fn_ptr = NULL;
+#ifdef _WIN32
+    if (km_fn_ptr == NULL) {
+        HMODULE km_h_ucrt = GetModuleHandleA("ucrtbase.dll");
+        if (km_h_ucrt == NULL) km_h_ucrt = LoadLibraryA("ucrtbase.dll");
+        if (km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "tanhf");
+        if (km_fn_ptr == NULL && km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "_tanhf");
+        if (km_fn_ptr == NULL) {
+            HMODULE km_h_msvcrt = GetModuleHandleA("msvcrt.dll");
+            if (km_h_msvcrt == NULL) km_h_msvcrt = LoadLibraryA("msvcrt.dll");
+            if (km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "tanhf");
+            if (km_fn_ptr == NULL && km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "_tanhf");
+        }
+    }
+#else
+    if (km_fn_ptr == NULL) {
+        km_fn_ptr = (km_fn_t)dlsym(RTLD_DEFAULT, "tanhf");
+    }
+#endif
+    float km_res;
+    if (km_fn_ptr != NULL) {
+        km_res = km_fn_ptr((float)n);
+    } else {
+        errno = ENOSYS;
+        km_res = 0.0f;
+    }
+    return (jfloat)km_res;
+}
+
+JNIEXPORT jfloat JNICALL Java_io_github_kotlinmania_rustlang_core_num_imp_libm_NumImpLibmJniBridge_coreNumImpLibmTgammaf(JNIEnv* km_env, jclass km_clazz, jfloat x) {
+    (void)km_env;
+    (void)km_clazz;
+    typedef float (*km_fn_t)(float);
+    static km_fn_t km_fn_ptr = NULL;
+#ifdef _WIN32
+    if (km_fn_ptr == NULL) {
+        HMODULE km_h_ucrt = GetModuleHandleA("ucrtbase.dll");
+        if (km_h_ucrt == NULL) km_h_ucrt = LoadLibraryA("ucrtbase.dll");
+        if (km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "tgammaf");
+        if (km_fn_ptr == NULL && km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "_tgammaf");
+        if (km_fn_ptr == NULL) {
+            HMODULE km_h_msvcrt = GetModuleHandleA("msvcrt.dll");
+            if (km_h_msvcrt == NULL) km_h_msvcrt = LoadLibraryA("msvcrt.dll");
+            if (km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "tgammaf");
+            if (km_fn_ptr == NULL && km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "_tgammaf");
+        }
+    }
+#else
+    if (km_fn_ptr == NULL) {
+        km_fn_ptr = (km_fn_t)dlsym(RTLD_DEFAULT, "tgammaf");
     }
 #endif
     float km_res;

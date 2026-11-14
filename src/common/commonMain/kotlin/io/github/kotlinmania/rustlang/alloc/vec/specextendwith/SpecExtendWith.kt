@@ -3,13 +3,15 @@ package io.github.kotlinmania.rustlang.alloc.vec.specextendwith
 
 import io.github.kotlinmania.rustlang.alloc.vec.setlenondrop.SetLenOnDrop
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
+import io.github.kotlinmania.rustlang.core.array.write
 import io.github.kotlinmania.rustlang.core.clone.TrivialClone
 import io.github.kotlinmania.rustlang.core.intrinsics.kmCopyNonoverlapping
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 
-internal interface SpecExtendWith<T> {
+public interface SpecExtendWith<T> {
     /**
      * Extend the vector by `n` clones of value.
      */
@@ -38,7 +40,7 @@ public fun <T, A : Allocator> List<T>.specExtendWith(n: Int, value: T, cloneTFn:
         // - the length will be set by SetLenOnDrop, to the amount of initialized elements
         // - later, when the Vec is dropped, only initialized elements are dropped.
         // SAFETY: According to the diagram above, this write is within bounds.
-        ptr.write(ptr, cloneTFn(value))
+        write(ptr, cloneTFn(value))
         // SAFETY: According to the diagram above, this increment is within bounds of the
         // allocation and won't wrap around
         ptr = MutPtr((ptr).rawAddress + ((1).toLong() * (ObjectSlotLayout<T>()).strideBytes))
@@ -50,7 +52,7 @@ public fun <T, A : Allocator> List<T>.specExtendWith(n: Int, value: T, cloneTFn:
         // We can write the last element directly without cloning needlessly
         // SAFETY: According to the diagram above, the last element is not yet written,
         // so this write is within bounds.
-        ptr.write(ptr, value)
+        write(ptr, value)
         localLen.incrementLen(1)
     }
     // len set by scope guard
@@ -96,5 +98,5 @@ public fun <T : TrivialClone, A : Allocator> List<T>.specExtendWith(n: Int, valu
     // by manually writing since it can be vectorized.
     // Then, `value` was never semantically moved into the vec, only copied from,
     // so we forget it here to prevent the Drop.
-    mem.forget(value)
+    forget(value)
 }

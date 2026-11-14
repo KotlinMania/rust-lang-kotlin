@@ -22,7 +22,7 @@ public interface Swizzle {
      */
     public fun <Mask, T> swizzle(vector: Simd<T, M>, m: Int): Simd<T, N> where T : SimdElement<Any?> {
         // Safety: `vector` is a vector, and the index is a const vector of u32.
-        return simd.simdShuffle(vector, vector, run {
+        return run { val _simdArg0 = vector; val _simdArg1 = vector; val _simdArg2 = run {
             // The index list needs to be returned as a vector.
             open class SimdShuffleIdx(
                 public var value: UIntArray,
@@ -43,7 +43,7 @@ public interface Swizzle {
                 i += 1
             }
             SimdShuffleIdx(output)
-        })
+        }; _simdArg0 }
     }
 
     /**
@@ -54,7 +54,7 @@ public interface Swizzle {
      */
     public fun <Mask, T> concatSwizzle(first: Simd<T, M>, second: Simd<T, M>, m: Int): Simd<T, N> where T : SimdElement<Any?> {
         // Safety: `first` and `second` are vectors, and the index is a const vector of u32.
-        return simd.simdShuffle(first, second, run {
+        return run { val _simdArg0 = first; val _simdArg1 = second; val _simdArg2 = run {
             // The index list needs to be returned as a vector.
             open class SimdShuffleIdx(
                 public var value: UIntArray,
@@ -75,7 +75,7 @@ public interface Swizzle {
                 i += 1
             }
             SimdShuffleIdx(output)
-        })
+        }; _simdArg0 }
     }
 
     /**

@@ -1,16 +1,19 @@
 // port-lint: source mem/alignment.rs
 package io.github.kotlinmania.rustlang.core.mem.alignment
 
+import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.alignOfVal
+import io.github.kotlinmania.rustlang.core.mem.alignOfValRaw
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
-import io.github.kotlinmania.rustlang.core.num.IntErrorKind
+import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.num.error.IntErrorKind
 import io.github.kotlinmania.rustlang.core.num.error.TryFromIntError
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 import io.github.kotlinmania.rustlang.core.ubchecks.assertUnsafePrecondition
 import io.github.kotlinmania.rustlang.core.ubchecks.checkLanguageUb
 
@@ -33,6 +36,8 @@ public open class Alignment internal constructor(
 
     public fun pointerLayout(): TypeLayout<Alignment> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Alignment(ptr, layout) }, { it.innerReprTrick })
 
+    public open fun clone(): Alignment = Alignment(innerReprTrick, fieldLayout)
+
     /**
      * Returns the alignment as a [usize].
      */
@@ -51,7 +56,7 @@ public open class Alignment internal constructor(
         // validity invariant of the type would have to have been broken earlier --
         // and emitting it in an otherwise simple method is bad for compile time.
         // SAFETY: All the discriminants are non-zero.
-        return mem.transmute<Alignment, NonZero<Int>>(this)
+        return transmute<Alignment, NonZero<Int>>(this)
     }
 
     /**
@@ -235,7 +240,7 @@ public open class Alignment internal constructor(
          * [type-layout]: ../../reference/type-layout.html#r-layout.primitive
          */
         public fun <T> ofVal(value: T): Alignment {
-            val align = mem.alignOfVal(value)
+            val align = alignOfVal(value)
             // SAFETY: `alignOfVal` returns valid alignment
             return Alignment.newUnchecked(align)
         }
@@ -290,7 +295,7 @@ public open class Alignment internal constructor(
          */
         public fun ofValRaw(value: ConstPtr): Alignment {
             // SAFETY: precondition propagated to the caller
-            val align = mem.alignOfValRaw(value)
+            val align = alignOfValRaw(value)
             // SAFETY: `alignOfValRaw` returns valid alignment
             return Alignment.newUnchecked(align)
         }
@@ -323,11 +328,11 @@ public open class Alignment internal constructor(
             assertUnsafePrecondition(checkLanguageUb, "Alignment::new_unchecked requires a power of two", align, align, align, isPowerOfTwo)
             // SAFETY: By precondition, this must be a power of two, and
             // our variants encompass all possible powers of two.
-            return mem.transmute<Int, Alignment>(align)
+            return transmute<Int, Alignment>(align)
         }
 
         // Note(const-Note) Remove me once `Ord.max` is usable in const
-        internal fun max(a: Alignment, b: Alignment): Alignment =
+        public fun max(a: Alignment, b: Alignment): Alignment =
             if (a.asUsize() > b.asUsize()) {
                 a
             } else {
@@ -336,7 +341,7 @@ public open class Alignment internal constructor(
 
         public fun tryFrom(align: NonZero<Int>): Result<Alignment, TryFromIntError> = align.get().tryInto()
 
-        public fun tryFrom(align: Int): Result<Alignment, TryFromIntError> = (Alignment.new(align)?.let { Result.Ok(it) } ?: Result.Err(num.TryFromIntError(num.IntErrorKind.NotAPowerOfTwo)))
+        public fun tryFrom(align: Int): Result<Alignment, TryFromIntError> = (Alignment.new(align)?.let { Result.Ok(it) } ?: Result.Err(TryFromIntError(IntErrorKind.NotAPowerOfTwo)))
 
         /**
          * Returns [Alignment.Min], which is valid for any type.

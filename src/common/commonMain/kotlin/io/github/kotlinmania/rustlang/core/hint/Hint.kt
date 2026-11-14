@@ -1,14 +1,14 @@
 // port-lint: source hint.rs
 package io.github.kotlinmania.rustlang.core.hint
 
-import io.github.kotlinmania.rustlang.core.cfgSelect
+import io.github.kotlinmania.rustlang.core.X8664
+import io.github.kotlinmania.rustlang.core.intrinsics.ubChecks
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
-import io.github.kotlinmania.rustlang.core.ubchecks.assertUnsafePrecondition
 import io.github.kotlinmania.rustlang.core.ubchecks.checkLanguageUb
 
 // Hints to compiler that affects how code should be emitted or optimized.
@@ -76,7 +76,7 @@ import io.github.kotlinmania.rustlang.core.ubchecks.checkLanguageUb
  * var divisors = mutableListOf(2, 0, 4)
  * prepareInputs(divisors)
  * val result = doComputation(100u, divisors)
- * check(result == 12)
+ * check(result == 12u)
  * ```
  *
  * While using `unreachableUnchecked()` is perfectly sound in the following
@@ -94,13 +94,13 @@ import io.github.kotlinmania.rustlang.core.ubchecks.checkLanguageUb
  *     // Therefore, the else branch is unreachable.
  *     return (a.checkedDiv(b.saturatingAdd(1u)) ?: unreachableUnchecked())
  * }
- * check(div1(7u, 0u) == 7)
- * check(div1(9u, 1u) == 4)
- * check(div1(11u, UInt.MAX_VALUE) == 0)
+ * check(div1(7u, 0u) == 7u)
+ * check(div1(9u, 1u) == 4u)
+ * check(div1(11u, UInt.MAX_VALUE) == 0u)
  * ```
  */
 public fun unreachableUnchecked(): Nothing {
-    assertUnsafePrecondition(checkLanguageUb, "hint::unreachable_unchecked must never be reached", false)
+    ubChecks.assertUnsafePrecondition(checkLanguageUb, "hint::unreachable_unchecked must never be reached", false)
     // SAFETY: the safety contract for `intrinsics.unreachable` must
     // be upheld by the caller.
     error("Entered Rust intrinsics::unreachable")
@@ -144,6 +144,7 @@ public fun unreachableUnchecked(): Nothing {
  * # Example
  *
  * ```kotlin
+ * import core.hint
  * import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
  * import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
  *
@@ -185,7 +186,7 @@ public fun unreachableUnchecked(): Nothing {
 public fun assertUnchecked(cond: Boolean) {
     // SAFETY: The caller promised `cond` is true.
     run {
-        assertUnsafePrecondition(checkLanguageUb, "hint::assert_unchecked must never be called when the condition is false", cond, cond, cond)
+        ubChecks.assertUnsafePrecondition(checkLanguageUb, "hint::assert_unchecked must never be called when the condition is false", cond, cond, cond)
     }
 }
 
@@ -211,37 +212,43 @@ public fun assertUnchecked(cond: Boolean) {
  *
  * # Examples
  *
- * ```kotlin
- * import io.github.kotlinmania.rustlang.core.intrinsics.kmSpinLoopHint
- * import std.sync.atomic.AtomicBool
- * import std.sync.atomic.Ordering
+ * ```ignore-wasm
+ * use std.sync.atomic::{AtomicBool, Ordering};
+ * use std.sync.Arc;
+ * use std::{hint, thread};
  *
  * // A shared atomic value that threads will use to coordinate
- * val live = AtomicBool.new(false)
+ * let live = Arc.new(AtomicBool.new(false));
+ *
  * // In a background thread we'll eventually set the value
- * val bgWork = run {
- *     val live1 = live.clone()
- *     thread.spawn({
+ * let bgWork = {
+ *     let live = live.clone();
+ *     thread.spawn(move || {
  *         // Do some work, then make the value live
- *         doSomeWork()
- *         live1.store(true, Ordering.Release)
+ *         doSomeWork();
+ *         live.store(true, Ordering.Release);
  *     })
- * }
+ * };
+ *
  * // Back on our current thread, we wait for the value to be set
- * while (!live.load(Ordering.Acquire)) {
+ * while !live.load(Ordering.Acquire) {
  *     // The spin loop is a hint to the CPU that we're waiting, but probably
  *     // not for very long
- *     kmSpinLoopHint()
+ *     hint.spinLoop();
  * }
+ *
  * // The value is now set
- * doSomeWork()
- * bgWork.join().getOrElse { return Result.failure(it) }
+ * # fn doSomeWork() {}
+ * doSomeWork();
+ * bgWork.join()?;
+ * # Ok::<(), Holder<dynamic core.any.Any + Send + static>>(())
  * ```
  *
  * [thread.yieldNow]: ../../std/thread/fn.yieldNow.html
  */
 public fun spinLoop() {
-    cfgSelect(miri, extern, "Rust", safe, miriSpinLoop, miriSpinLoop, targetArch, "x86", arch, x86, mmPause, targetArch, "x86_64", arch, x8664, mmPause, targetArch, "riscv32", arch, riscv32, pause, targetArch, "riscv64", arch, riscv64, pause, any, targetArch, "aarch64", targetArch, "arm64ec", arch, aarch64, isb, arch, aarch64, SY, all, targetArch, "arm", any, all, targetFeature, "v6k", not, targetFeature, "thumb-mode", targetFeature, "v6t2", all, targetFeature, "v6", targetFeature, "mclass", arch, arm, yield, targetArch, "loongarch32", arch, loongarch32, ibar, 0, targetArch, "loongarch64", arch, loongarch64, ibar, 0)
+    // SAFETY: the `cfg` attr ensures that we only execute this on x8664 targets.
+    X8664.mmPause()
 }
 
 /**
@@ -423,6 +430,7 @@ public fun <T> blackBox(dummy: T): T = dummy
  * # Example
  *
  * ```kotlin
+ * import core.fmt
  * import fmt.Arguments
  *
  * @feature(hintMustUse)
@@ -662,13 +670,9 @@ public fun coldPath() {}
  * correctly predicted by a CPU’s branch predictor.
  *
  * This method is functionally equivalent to
- * ```kotlin
- * fun <T> selectUnpredictable(b: Boolean, trueVal: T, falseVal: T): T {
- *     return if (b) {
- *         trueVal
- *     } else {
- *         falseVal
- *     }
+ * ```ignore (this is just for illustrative purposes)
+ * fn selectUnpredictable<T>(b: bool, trueVal: T, falseVal: T) -> T {
+ *     if b { trueVal } else { falseVal }
  * }
  * ```
  * but might generate different assembly. In particular, on platforms with
@@ -689,6 +693,7 @@ public fun coldPath() {}
  * Distribute values evenly between two buckets:
  * ```kotlin
  * import std.hash.BuildHasher
+ * import std.hint
  *
  * fun <H : BuildHasher> append(hasher: H, v: Int, bucketOne: List<Int>, bucketTwo: List<Int>) {
  *     val hash = hasher.hashOne(v)

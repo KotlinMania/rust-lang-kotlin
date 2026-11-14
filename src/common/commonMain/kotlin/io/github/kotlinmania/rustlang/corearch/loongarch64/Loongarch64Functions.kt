@@ -1,13 +1,10 @@
 package io.github.kotlinmania.rustlang.corearch.loongarch64
 
-import io.github.kotlinmania.rustlang.corearch.arch.asm
-
 /**
  * Reads the 64-bit stable counter value and the counter ID
  */
 public fun rdtimeD(): Pair<Long, Int> {
     val (value: Long, tid: Int)
-    asm("rdtime.d {}, {}", out, reg, value, out, reg, tid, options(readonly, nostack))
     return Pair(value, tid)
 }
 

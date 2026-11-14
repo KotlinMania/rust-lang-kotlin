@@ -1,10 +1,10 @@
-@file:OptIn(kotlin.ExperimentalUnsignedTypes::class)
+@file:OptIn(ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.corearch.x8664
 
 private object X8664Sse42JniBridge {
     init {
-        System.loadLibrary("corearch_jni")
+        System.loadLibrary("kmcore_jni")
     }
 
     @JvmStatic

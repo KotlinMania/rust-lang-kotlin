@@ -1,5 +1,0 @@
-package = io.github.kotlinmania.rustlang.std.sys.pal.itron.abi.cinterop
-headers = sys_pal_itron_abi_wrapper.h
-headerFilter = sys_pal_itron_abi_wrapper.h
-compilerOpts = -Isrc/native/interop/cinterop
-staticLibraries = sys_pal_itron_abi_wrapper.a

@@ -2,7 +2,6 @@
 package io.github.kotlinmania.rustlang.alloc.fmt
 
 import io.github.kotlinmania.rustlang.alloc.borrow.ToOwned
-import io.github.kotlinmania.rustlang.alloc.string.String
 import io.github.kotlinmania.rustlang.core.fmt.Arguments
 
 // Utilities for formatting and printing `String`s.
@@ -413,6 +412,8 @@ import io.github.kotlinmania.rustlang.core.fmt.Arguments
 // implement a method of the signature:
 //
 // ```kotlin
+// import std.fmt
+//
 // open class Foo {
 //     // our custom type
 //     public open fun fmt(f: StringBuilder) {
@@ -443,6 +444,8 @@ import io.github.kotlinmania.rustlang.core.fmt.Arguments
 // like:
 //
 // ```kotlin
+// import std.fmt
+//
 // open class Vector2D(public var x: Int, public var y: Int) {
 //     public open fun fmt(f: StringBuilder) {
 //         // The `f` value implements the `Write` trait, which is what the
@@ -501,8 +504,15 @@ import io.github.kotlinmania.rustlang.core.fmt.Arguments
 // There are a number of related macros in the [format] family. The ones that
 // are currently implemented are:
 //
-// ```kotlin
-// format write writeln print println eprint eprintln formatArgs
+// ```ignore (only-for-syntax-highlight)
+// format      // described above
+// write       // first argument is either a io.Write or a fmt.Write, the destination
+// writeln     // same as write but appends a newline
+// print       // the format string is printed to the standard output
+// println     // same as print but appends a newline
+// eprint      // the format string is printed to the standard error
+// eprintln    // same as eprint but appends a newline
+// formatArgs // described below.
 // ```
 //
 // ### `write`
@@ -546,6 +556,7 @@ import io.github.kotlinmania.rustlang.core.fmt.Arguments
 // off, some example usage is:
 //
 // ```kotlin
+// import std.fmt
 // import std.io.Write
 //
 // fun myFmtFn(args: fmt.Arguments) {
@@ -590,6 +601,8 @@ import io.github.kotlinmania.rustlang.core.fmt.Arguments
  * Basic usage:
  *
  * ```kotlin
+ * import std.fmt
+ *
  * val s = fmt.format("Hello, " + ("world").toString() + "!")
  * check(s == "Hello, world!")
  * ```
@@ -602,10 +615,10 @@ import io.github.kotlinmania.rustlang.core.fmt.Arguments
  * check(s == "Hello, world!")
  * ```
  */
-public fun format(args: Arguments): String {
-    fun formatInner(args1: Arguments): String {
+public fun format(args: Arguments): io.github.kotlinmania.rustlang.alloc.string.String {
+    fun formatInner(args1: Arguments): io.github.kotlinmania.rustlang.alloc.string.String {
         val capacity = args1.estimatedCapacity()
-        val output = String.String.withCapacity(capacity)
+        val output = io.github.kotlinmania.rustlang.alloc.string.String.withCapacity(capacity)
         output.writeFmt(args1).expect("a formatting trait implementation returned an error when the underlying stream did not")
         return output
     }

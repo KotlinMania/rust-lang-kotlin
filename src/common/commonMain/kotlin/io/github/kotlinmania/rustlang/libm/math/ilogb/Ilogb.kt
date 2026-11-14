@@ -7,7 +7,7 @@ import io.github.kotlinmania.rustlang.core.F16
 /**
  * Extract the binary exponent of `x`.
  */
-public fun ilogbf16(x: F16): Int = io.github.kotlinmania.rustlang.libm.math.generic.ilogb(x)
+public fun ilogbf16(x: F16): Int = io.github.kotlinmania.rustlang.libm.math.generic.ilogb(x.toDouble())
 
 /**
  * Extract the binary exponent of `x`.
@@ -22,4 +22,4 @@ public fun ilogb(x: Double): Int = io.github.kotlinmania.rustlang.libm.math.gene
 /**
  * Extract the binary exponent of `x`.
  */
-public fun ilogbf128(x: F128): Int = io.github.kotlinmania.rustlang.libm.math.generic.ilogb(x)
+public fun ilogbf128(x: F128): Int = io.github.kotlinmania.rustlang.libm.math.generic.ilogb(x.toDouble())

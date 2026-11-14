@@ -10,7 +10,6 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.num.f128.consts.E
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -72,6 +71,7 @@ public class DebugStruct(
  *
  * ```kotlin
  * import std.error.Error
+ * import std.fmt
  * import std.path.PathBuf
  *
  * open class ReadConfigError(public var path: PathBuf) {
@@ -90,6 +90,7 @@ public interface Error {
      *
      * ```kotlin
      * import std.error.Error
+     * import std.fmt
      *
      * open class SuperErrorSideKick {
      *     public open fun fmt(f: StringBuilder) {
@@ -154,6 +155,7 @@ public interface Error {
      * ```kotlin
      * import core.error.Request
      * import core.error.requestRef
+     * import core.fmt
      *
      * @feature(errorGenericMemberAccess)
      * public fun doctestEntry() {
@@ -222,8 +224,8 @@ public interface Error {
 // implementations, since that can enable unsound downcasting.
 public open class Internal {
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Internal> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Internal> {
+        public fun typeLayout(): TypeLayout<Internal> =
+            object : TypeLayout<Internal> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): Internal =
@@ -299,6 +301,7 @@ public inline fun <reified T : Error> Error.downcastMut(): T? = Error.downcastMu
  *
  * ```kotlin
  * import std.error.Error
+ * import std.fmt
  *
  * @feature(errorIter)
  * public fun doctestEntry() {
@@ -447,6 +450,7 @@ public fun <I> requestByTypeTag(err: Error): Reified? where I : Type<Any?> {
  * ```kotlin
  * import core.error.Request
  * import core.error.requestRef
+ * import core.fmt
  *
  * @feature(errorGenericMemberAccess)
  * public fun doctestEntry() {
@@ -827,18 +831,18 @@ public open class Request internal constructor(
  * module, although crates may also implement their own tags for more
  * complex types with internal scopes.
  */
-internal interface Type<out Reified>
+public interface Type<out Reified>
 
 /**
  * Similar to the [Type] trait, but represents a type which may be unsized (i.e., has a
  * `? Sized` bound). E.g., `String`.
  */
-internal interface MaybeSizedType<out Reified>
+public interface MaybeSizedType<out Reified>
 
 /**
  * Type-based tag for types bounded by `static`, i.e., with no borrowed elements.
  */
-internal open class Value<T>(
+public open class Value<T>(
     public var value: Unit,
 ) : Type<Any?, T> {
     public var field0: Unit
@@ -851,7 +855,7 @@ internal open class Value<T>(
 /**
  * Type-based tag similar to [Value] but which may be unsized (i.e., has a `? Sized` bound).
  */
-internal open class MaybeSizedValue<T>(
+public open class MaybeSizedValue<T>(
     public var value: Unit,
 ) : MaybeSizedType<Any?, T> {
     public var field0: Unit
@@ -865,7 +869,7 @@ internal open class MaybeSizedValue<T>(
  * Type-based tag for reference types (`T`, where T is represented by
  * `<I as MaybeSizedType<>>.Reified`.
  */
-internal open class Ref<I>(
+public open class Ref<I>(
     public var value: Unit,
 ) : Type<Any?, Reified> {
     public var field0: Unit
@@ -882,7 +886,7 @@ internal open class Ref<I>(
  * option. The type can be checked dynamically using `Tagged.tagId` and since this is statically
  * checked for the concrete type, there is some degree of type safety.
  */
-internal open class TaggedOption<I : Type<Any?>, Reified>(
+public open class TaggedOption<I : Type<Any?>, Reified> internal constructor(
     public val fieldStorage: MutPtr,
     public val fieldLayout: TypeLayout<Reified?>,
 ) : Erased {
@@ -896,12 +900,18 @@ internal open class TaggedOption<I : Type<Any?>, Reified>(
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    public constructor(value: Reified?, fieldLayout: TypeLayout<Reified?>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(value: Reified?, fieldLayout: TypeLayout<Reified?>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<TaggedOption<I, Reified>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> TaggedOption<I, Reified>(ptr, layout) }, { it.value })
+
+    public companion object {
+        public operator fun <I : Type<Any?>, Reified> invoke(value: Reified?, fieldLayout: TypeLayout<Reified?>): TaggedOption<I, Reified> = TaggedOption<I, Reified>(value, fieldLayout)
+
+        public fun <I : Type<Any?>, Reified> fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Reified?>): TaggedOption<I, Reified> = TaggedOption<I, Reified>(fieldStorage, fieldLayout)
+    }
 }
 
-internal fun <I : Type<Any?>> Tagged<TaggedOption<I, Reified>>.asRequest(): RustMutableReference<Request> {
+public fun <I : Type<Any?>> Tagged<TaggedOption<I, Reified>>.asRequest(): RustMutableReference<Request> {
     val erased = ((this as Any?) as Tagged<Erased>)
     // SAFETY: transmuting `Tagged<dynamic Erased<> + >` to `Request<>` is safe since
     // `Request` is repr(transparent).
@@ -952,7 +962,7 @@ public fun <I> Tagged<Erased>.downcastMut(): RustMutableReference<TaggedOption<I
 public open class Source(
     public var current: Error?,
 ) : Iterable<Error> {
-    override fun iterator(): kotlin.collections.Iterator<Error> = object : AbstractIterator<Error>() {
+    override fun iterator(): Iterator<Error> = object : AbstractIterator<Error>() {
         override fun computeNext() {
             when (val v = this@Source.next()) {
                 null -> done()
@@ -961,9 +971,11 @@ public open class Source(
         }
     }
 
+    public open fun clone(): Source = Source(current)
+
     public open fun next(): Error? {
         val current = this.current
-        this.current = this.current?.let(Error::source)
+        this.current = this.current?.let({ Error.source(it) })
         return current
     }
 

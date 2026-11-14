@@ -3,7 +3,6 @@ package io.github.kotlinmania.rustlang.alloc.collections.vecdeque
 import io.github.kotlinmania.rustlang.alloc.alloc.Global
 import io.github.kotlinmania.rustlang.alloc.collections.TryReserveError
 import io.github.kotlinmania.rustlang.alloc.collections.TryReserveErrorKind
-import io.github.kotlinmania.rustlang.alloc.collections.btree.node.B
 import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.drain.Drain
 import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.extractif.ExtractIf
 import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.intoiter.IntoIter
@@ -13,19 +12,24 @@ import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.specfromiter.Sp
 import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.splice.Splice
 import io.github.kotlinmania.rustlang.alloc.rawvec.RawVec
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
+import io.github.kotlinmania.rustlang.core.array.write
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.iter.adapters.byrefsized.ByRefSized
-import io.github.kotlinmania.rustlang.core.iter.adapters.zip.index
 import io.github.kotlinmania.rustlang.core.iter.sources.repeatn.repeatN
 import io.github.kotlinmania.rustlang.core.iter.sources.repeatwith.repeatWith
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.num.rustCheckedAdd
+import io.github.kotlinmania.rustlang.core.ops.range.Range
 import io.github.kotlinmania.rustlang.core.ops.range.RangeBounds
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
+import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
+import io.github.kotlinmania.rustlang.core.ptr.sliceFromRawPartsMut
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
@@ -70,7 +74,7 @@ public open class VecDeque<T, A : Allocator> internal constructor(
     public var buf: RawVec<T, A> = bufCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<T> = this.intoIter().iterator()
+    override fun iterator(): Iterator<T> = this.intoIter().iterator()
 
     public open fun clone(): VecDeque<T, A> {
         val deq = VecDeque.withCapacityIn(this.len(), this.allocator().clone())
@@ -140,7 +144,7 @@ public open class VecDeque<T, A : Allocator> internal constructor(
      */
     public open fun bufferRead(off: WrappedIndex): T {
         // SAFETY: Upheld by caller.
-        return read(this.ptr().add(off.asIndex()))
+        return ptr.read(this.ptr().add(off.asIndex()))
     }
 
     /**
@@ -235,7 +239,7 @@ public open class VecDeque<T, A : Allocator> internal constructor(
         check(src + len <= this.capacity()) { "cpy dst=$dst src=$src len=$len cap=${this.capacity()}" }
         // SAFETY: Upheld by caller.
         run {
-            copy(this.ptr().add(src.asIndex()), this.ptr().add(dst.asIndex()), len)
+            io.github.kotlinmania.rustlang.core.mem.copy(this.ptr().add(src.asIndex()), this.ptr().add(dst.asIndex()), len)
         }
     }
 
@@ -247,7 +251,7 @@ public open class VecDeque<T, A : Allocator> internal constructor(
         check(src + len <= this.capacity()) { "cno dst=$dst src=$src len=$len cap=${this.capacity()}" }
         // SAFETY: Upheld by caller.
         run {
-            copyNonoverlapping(this.ptr().add(src.asIndex()), this.ptr().add(dst.asIndex()), len)
+            io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping(this.ptr().add(src.asIndex()), this.ptr().add(dst.asIndex()), len)
         }
     }
 
@@ -704,7 +708,7 @@ public open class VecDeque<T, A : Allocator> internal constructor(
         val ri = this.toWrappedIndex(i)
         val rj = this.toWrappedIndex(j)
         // ignore-tidy-undocumented-unchecked
-        swap(this.ptr().add(ri.asIndex()), this.ptr().add(rj.asIndex()))
+        io.github.kotlinmania.rustlang.core.mem.swap(this.ptr().add(ri.asIndex()), this.ptr().add(rj.asIndex()))
     }
 
     /**
@@ -1154,7 +1158,7 @@ public open class VecDeque<T, A : Allocator> internal constructor(
      * ```
      */
     public open fun <R> truncateToRange(range: R) where R : RangeBounds<Int> {
-        val structVal = range(range, 0 until this.len)
+        val structVal = Range(range, 0 until this.len)
         val start = structVal.start
         val end = structVal.end
         if (start == 0 && end == this.len) {
@@ -1392,7 +1396,7 @@ public open class VecDeque<T, A : Allocator> internal constructor(
      * logical buffer, and that all elements in that range are initialized.
      */
     public open fun <R> sliceRanges(range: R, len: Int): Pair<IntRange, IntRange> where R : RangeBounds<Int> {
-        val structVal = range(range, 0 until len)
+        val structVal = Range(range, 0 until len)
         val start = structVal.start
         val end = structVal.end
         val len1 = end - start
@@ -1518,7 +1522,7 @@ public open class VecDeque<T, A : Allocator> internal constructor(
         // When finished, the remaining data will be copied back to cover the hole,
         // and the head/tail values will be restored correctly.
         //
-        val structVal = range(range, 0 until this.len)
+        val structVal = Range(range, 0 until this.len)
         val start = structVal.start
         val end = structVal.end
         val drainStart = start
@@ -2413,6 +2417,8 @@ public open class VecDeque<T, A : Allocator> internal constructor(
      * Getting immutable access to the contiguous slice.
      *
      * ```kotlin
+     * import core.slice
+     *
      * var buf = VecDeque.new()
      * buf.addLast(2)
      * buf.addLast(1)
@@ -2909,7 +2915,7 @@ public open class VecDeque<T, A : Allocator> internal constructor(
      * ```
      */
     public open fun <R> extendFromWithin(src: R) where R : RangeBounds<Int> {
-        val range = range(src, 0 until this.len())
+        val range = Range(src, 0 until this.len())
         this.reserve(range.len())
         // SAFETY:
         // - `slice.range` guarantees that the given range is valid for indexing self
@@ -2945,7 +2951,7 @@ public open class VecDeque<T, A : Allocator> internal constructor(
      * ```
      */
     public open fun <R> prependFromWithin(src: R) where R : RangeBounds<Int> {
-        val range = range(src, 0 until this.len())
+        val range = Range(src, 0 until this.len())
         this.reserve(range.len())
         // SAFETY:
         // - `slice.range` guarantees that the given range is valid for indexing self
@@ -3248,7 +3254,7 @@ public open class VecDeque<T, A : Allocator> internal constructor(
          * `initialized.start` ≤ `initialized.end` ≤ `capacity`.
          * Also, `initialized.start` < `capacity`, unless both are 0.
          */
-        internal fun <T, A : Allocator> fromContiguousRawPartsIn(ptr: MutPtr, initialized: IntRange, capacity: Int, alloc: A): VecDeque<T, A> {
+        public fun <T, A : Allocator> fromContiguousRawPartsIn(ptr: MutPtr, initialized: IntRange, capacity: Int, alloc: A): VecDeque<T, A> {
             check(initialized.start <= initialized.end)
             check(initialized.end <= capacity)
             check(initialized.start == 0 && capacity == 0 || initialized.start < capacity)

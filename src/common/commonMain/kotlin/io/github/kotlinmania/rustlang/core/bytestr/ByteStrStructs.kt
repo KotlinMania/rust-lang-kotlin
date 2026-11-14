@@ -1,7 +1,9 @@
 package io.github.kotlinmania.rustlang.core.bytestr
 
-import io.github.kotlinmania.rustlang.core.Borrow
-import io.github.kotlinmania.rustlang.core.BorrowMut
+import io.github.kotlinmania.rustlang.core.borrow.Borrow
+import io.github.kotlinmania.rustlang.core.borrow.BorrowMut
+import io.github.kotlinmania.rustlang.core.convert.AsMut
+import io.github.kotlinmania.rustlang.core.convert.AsRef
 import io.github.kotlinmania.rustlang.core.fmt.Alignment
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
@@ -10,7 +12,7 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.ops.DerefPure
+import io.github.kotlinmania.rustlang.core.ops.deref.DerefPure
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -123,7 +125,7 @@ public open class ByteStr internal constructor(
         if (requestedWidth == 0 && f.precision() == null) {
             // Avoid counting the characters if no truncation or padding was
             // requested.
-            return emit(this, f)
+            return run { emit(this, f); Result.Ok(Unit) }
         }
         val (truncated, actualWidth1) =
             run {
@@ -181,7 +183,7 @@ public open class ByteStr internal constructor(
         // The width is originally stored as a 16-bit number, so this cannot fail.
         val padding = UShort.tryFrom(requestedWidth.saturatingSub(actualWidth1)).unwrap()
         val postPadding = when (val tryResult = f.padding(padding, Alignment.Left)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-        when (val tryResult = emit(truncated, f)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        emit(truncated, f)
         return postPadding.write(f)
     }
 

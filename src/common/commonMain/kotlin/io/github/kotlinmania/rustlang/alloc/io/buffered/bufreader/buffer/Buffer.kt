@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.alloc.io.buffered.bufreader.buffer
 
 import io.github.kotlinmania.rustlang.alloc.boxed.Box
+import io.github.kotlinmania.rustlang.alloc.io.constError
 import io.github.kotlinmania.rustlang.alloc.io.read.Read
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedBuf
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
@@ -20,9 +21,8 @@ import io.github.kotlinmania.rustlang.core.result.Result
 // that user code which wants to do reads from a `BufReader` via `buffer` + `consume` can do so
 // without encountering any runtime bounds checks.
 
-internal open class Buffer(
-    // The buffer.
-    public var buf: List<MaybeUninit<UByte>>,
+public open class Buffer internal constructor(
+    bufCtorArg: List<MaybeUninit<UByte>>,
     // The current seek offset into `buf`, must always be <= `filled`.
     public var pos: Int,
     // Each call to `fillBuf` sets `filled` to indicate how many bytes at the start of `buf` are
@@ -34,27 +34,31 @@ internal open class Buffer(
     // and omitting this is a huge perf regression for `Read` impls that do not.
     public var initialized: Boolean,
 ) {
-    internal open fun buffer(): List<UByte> {
+    // The buffer.
+    public var buf: List<MaybeUninit<UByte>> = bufCtorArg
+        internal set
+
+    public open fun buffer(): List<UByte> {
         // SAFETY: self.pos and self.filled are valid, and self.filled >= self.pos, and
         // that region is initialized because those are all invariants of this type.
         return this.buf.getUnchecked(this.pos until this.filled).assumeInitRef()
     }
 
-    internal open fun capacity(): Int = this.buf.size
+    public open fun capacity(): Int = this.buf.size
 
-    internal open fun filled(): Int = this.filled
+    public open fun filled(): Int = this.filled
 
-    internal open fun pos(): Int = this.pos
+    public open fun pos(): Int = this.pos
 
     // This is only used by a test which asserts that the initialization-tracking is correct.
-    internal open fun initialized(): Boolean = this.initialized
+    public open fun initialized(): Boolean = this.initialized
 
-    internal open fun discardBuffer() {
+    public open fun discardBuffer() {
         this.pos = 0
         this.filled = 0
     }
 
-    internal open fun consume(amt: Int) {
+    public open fun consume(amt: Int) {
         this.pos = minOf(this.pos + amt, this.filled)
     }
 
@@ -62,7 +66,7 @@ internal open class Buffer(
      * If there are `amt` bytes available in the buffer, pass a slice containing those bytes to
      * `visitor` and return true. If there are not enough bytes available, return false.
      */
-    internal open fun consumeWith(amt: Int, visitor: (List<UByte>) -> Unit): Boolean =
+    public open fun consumeWith(amt: Int, visitor: (List<UByte>) -> Unit): Boolean =
         when (val matchVal = this.buffer().get(0 until amt)) {
             null -> {
                 false
@@ -76,14 +80,14 @@ internal open class Buffer(
             }
         }
 
-    internal open fun unconsume(amt: Int) {
+    public open fun unconsume(amt: Int) {
         this.pos = rustSaturatingSub(this.pos, amt)
     }
 
     /**
      * Read more bytes into the buffer without discarding any of its contents
      */
-    internal open fun readMore(reader: Read): Result<Int> {
+    public open fun readMore(reader: Read): Result<Int> {
         val buf = BorrowedBuf.from(((this.buf).slice(this.filled until this.buf.size)))
         if (this.initialized) {
             // SAFETY: `self.initialized` is only set after `self.buf` was
@@ -100,13 +104,13 @@ internal open class Buffer(
     /**
      * Remove bytes that have already been read from the buffer.
      */
-    internal open fun backshift() {
+    public open fun backshift() {
         this.buf.copyWithin(this.pos until this.filled, 0)
         this.filled -= this.pos
         this.pos = 0
     }
 
-    internal open fun fillBuf(reader: Read): Result<List<UByte>> {
+    public open fun fillBuf(reader: Read): Result<List<UByte>> {
         // If we've reached the end of our internal buffer then we need to fetch
         // some more data from the reader.
         // Branch using `>=` instead of the more correct `==`
@@ -130,19 +134,31 @@ internal open class Buffer(
     }
 
     public companion object {
-        internal fun withCapacity(capacity: Int): Buffer {
+        public operator fun invoke(
+            buf: List<MaybeUninit<UByte>>,
+            pos: Int,
+            filled: Int,
+            initialized: Boolean,
+        ): Buffer = Buffer(
+            bufCtorArg = buf,
+            pos = pos,
+            filled = filled,
+            initialized = initialized,
+        )
+
+        public fun withCapacity(capacity: Int): Buffer {
             val buf = Box.newUninitSlice(capacity)
             return Buffer(buf = buf, pos = 0, filled = 0, initialized = false)
         }
 
-        internal fun tryWithCapacity(capacity: Int): Result<Buffer> =
+        public fun tryWithCapacity(capacity: Int): Result<Buffer> =
             run {
                 val matchVal = Box.tryNewUninitSlice(capacity)
                 when (matchVal) { is Result.Ok<*> -> {
                     val buf = matchVal.value
                     Result.Ok(Buffer(buf = buf, pos = 0, filled = 0, initialized = false))
                 }; is Result.Err<*> -> {
-                    Result.Err(io.constError(ErrorKind.OutOfMemory, "failed to allocate read buffer"))
+                    Result.Err(constError(ErrorKind.OutOfMemory, "failed to allocate read buffer"))
                 } }
             }
     }

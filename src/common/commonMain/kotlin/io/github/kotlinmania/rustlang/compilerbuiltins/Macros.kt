@@ -48,8 +48,17 @@ private const val INTRINSICS_TEMPLATE_13: String = "\$()* public\$(unsafe\$(\$em
  *
  * This macro is structured to be invoked with a bunch of functions that looks
  * like:
- * ```kotlin
- * intrinsics(extern, "C", foo, a, nonstandardAttribute, extern, "C", bar, a)
+ * ```ignore
+ *     intrinsics! {
+ *         pub extern "C" fn foo(a: i32) -> u32 {
+ *             // ...
+ *         }
+ *
+ *         @nonstandardAttribute
+ *         pub extern "C" fn bar(a: i32) -> u32 {
+ *             // ...
+ *         }
+ *     }
  * ```
  *
  * Each function is defined in a manner that looks like a normal Rust function.

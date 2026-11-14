@@ -1,0 +1,61 @@
+// port-lint: source sys/pal/wasi/cabi_realloc.rs
+package io.github.kotlinmania.rustlang.std.sys.pal.wasi.cabirealloc
+
+import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
+import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.std.sys.pal.wasi.abortInternal
+
+// This module contains a canonical definition of the `cabiRealloc` function
+// for the component model.
+//
+// The component model's canonical ABI for representing datatypes in memory
+// makes use of this function when transferring lists and strings, for example.
+// This function behaves like C's `realloc` but also takes alignment into
+// account.
+//
+// Components are notably not required to export this function, but nearly
+// all components end up doing so currently. This definition in the standard
+// library removes the need for all compilations to define this themselves.
+//
+// More information about the canonical ABI can be found at
+// <https://github.com/WebAssembly/component-model/blob/main/design/mvp/CanonicalABI.md>
+//
+// Note that the name of this function is not standardized in the canonical ABI
+// at this time. Instead it's a convention of the "componentization process"
+// where a core wasm module is converted to a component to use this name.
+// Additionally this is not the only possible definition of this function, so
+// this is defined as a "weak" symbol. This means that other definitions are
+// allowed to overwrite it if they are present in a compilation.
+
+public fun interface FnCallback {
+    public operator fun invoke(arg0: MutPtr, arg1: ULong, arg2: ULong, arg3: ULong): MutPtr
+}
+
+public var FORCE_CODEGEN_OF_CABI_REALLOC: FnCallback = ::cabiRealloc
+
+public fun cabiRealloc(oldPtr: MutPtr, oldLen: Int, align: Int, newLen: Int): MutPtr {
+    val layout: Any?
+    val ptr =
+        if (oldLen == 0) {
+            if (newLen == 0) {
+                return withoutProvenanceMut(align)
+            }
+            layout = Layout.fromSizeAlignUnchecked(newLen, align)
+            alloc(layout)
+        } else {
+            check(newLen != 0)
+            layout = Layout.fromSizeAlignUnchecked(oldLen, align)
+            realloc(oldPtr, layout, newLen)
+        }
+    if (ptr.isNull()) {
+        // Print a nice message in debug mode, but in release mode don't
+        // pull in so many dependencies related to printing so just emit an
+        // `unreachable` instruction.
+        if (false) {
+            handleAllocError(layout)
+        } else {
+            abortInternal()
+        }
+    }
+    return ptr
+}

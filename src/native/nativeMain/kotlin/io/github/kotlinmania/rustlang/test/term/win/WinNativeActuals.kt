@@ -1,4 +1,4 @@
-@file:OptIn(kotlinx.cinterop.ExperimentalForeignApi::class, kotlin.ExperimentalUnsignedTypes::class)
+@file:OptIn(ExperimentalForeignApi::class, ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.test.term.win
 
@@ -7,6 +7,7 @@ import io.github.kotlinmania.rustlang.test.term.win.cinterop.testTermWinGetConso
 import io.github.kotlinmania.rustlang.test.term.win.cinterop.testTermWinGetStdHandle
 import io.github.kotlinmania.rustlang.test.term.win.cinterop.testTermWinSetConsoleTextAttribute
 import kotlinx.cinterop.ByteVar
+import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.toCPointer
 import kotlinx.cinterop.toLong
 

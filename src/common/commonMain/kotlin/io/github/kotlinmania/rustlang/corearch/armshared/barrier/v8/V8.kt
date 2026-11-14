@@ -18,8 +18,8 @@ public open class LD : Sealed.Dmb, Sealed.Dsb {
     }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<LD> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<LD> {
+        public fun typeLayout(): TypeLayout<LD> =
+            object : TypeLayout<LD> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): LD =
@@ -48,8 +48,8 @@ public open class Ishld : Sealed.Dmb, Sealed.Dsb {
     }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Ishld> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Ishld> {
+        public fun typeLayout(): TypeLayout<Ishld> =
+            object : TypeLayout<Ishld> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): Ishld =
@@ -78,8 +78,8 @@ public open class Nshld : Sealed.Dmb, Sealed.Dsb {
     }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Nshld> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Nshld> {
+        public fun typeLayout(): TypeLayout<Nshld> =
+            object : TypeLayout<Nshld> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): Nshld =
@@ -108,8 +108,8 @@ public open class Oshld : Sealed.Dmb, Sealed.Dsb {
     }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Oshld> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Oshld> {
+        public fun typeLayout(): TypeLayout<Oshld> =
+            object : TypeLayout<Oshld> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): Oshld =

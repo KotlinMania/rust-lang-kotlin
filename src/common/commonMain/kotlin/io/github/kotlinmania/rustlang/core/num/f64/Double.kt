@@ -3,7 +3,8 @@
 
 package io.github.kotlinmania.rustlang.core.num.f64
 
-import io.github.kotlinmania.rustlang.core.cmp.ClampBounds
+import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.cmp.clamp.ClampBounds
 import io.github.kotlinmania.rustlang.core.intrinsics.copysignf64
 import io.github.kotlinmania.rustlang.core.intrinsics.fabs
 import io.github.kotlinmania.rustlang.core.intrinsics.faddAlgebraic
@@ -18,13 +19,13 @@ import io.github.kotlinmania.rustlang.core.intrinsics.maximumf64
 import io.github.kotlinmania.rustlang.core.intrinsics.minimumNumberNszF64
 import io.github.kotlinmania.rustlang.core.intrinsics.minimumf64
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.FpCategory
+import io.github.kotlinmania.rustlang.core.num.imp.libm.fdim
 import io.github.kotlinmania.rustlang.core.num.rustClassifyDouble
 import io.github.kotlinmania.rustlang.core.num.rustIsSignNegative
 import io.github.kotlinmania.rustlang.core.panic.constAssert
-import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
-import io.github.kotlinmania.rustlang.libm.fdim
 import kotlin.math.abs
 
 // Constants for the `Double` double-precision floating point type.
@@ -967,7 +968,7 @@ public inline fun <reified Int> Double.toIntStrict(): Int = (this.toIntChecked<I
  */
 public fun Double.toBits(): ULong {
     // SAFETY: `ULong` is a plain old datatype so we can always reinterpret to it.
-    return mem.transmute(this)
+    return transmute(this)
 }
 
 /**
@@ -1833,4 +1834,4 @@ public fun absSub(x: Double, other: Double): Double = fdim(x, other)
  *
  * [f64.cbrt]: ../../../std/primitive.f64.html#method.cbrt
  */
-public fun cbrt(x: Double): Double = io.github.kotlinmania.rustlang.libm.cbrt(x)
+public fun cbrt(x: Double): Double = io.github.kotlinmania.rustlang.core.num.imp.libm.cbrt(x)

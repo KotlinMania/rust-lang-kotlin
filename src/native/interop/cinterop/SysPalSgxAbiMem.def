@@ -1,5 +1,0 @@
-package = io.github.kotlinmania.rustlang.std.sys.pal.sgx.abi.mem.cinterop
-headers = sys_pal_sgx_abi_mem_wrapper.h
-headerFilter = sys_pal_sgx_abi_mem_wrapper.h
-compilerOpts = -Isrc/native/interop/cinterop
-staticLibraries = sys_pal_sgx_abi_mem_wrapper.a

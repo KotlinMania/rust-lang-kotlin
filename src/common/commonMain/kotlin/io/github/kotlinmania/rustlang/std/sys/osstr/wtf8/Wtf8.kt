@@ -17,8 +17,6 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.str.error.Utf8Error
 import io.github.kotlinmania.rustlang.core.wtf8.Wtf8
-import io.github.kotlinmania.rustlang.std.fmt
-import io.github.kotlinmania.rustlang.std.mem
 import io.github.kotlinmania.rustlang.std.rc.Rc
 import io.github.kotlinmania.rustlang.std.sync.Arc
 import io.github.kotlinmania.rustlang.std.sys.AsInner
@@ -28,7 +26,7 @@ import io.github.kotlinmania.rustlang.std.sys.IntoInner
 // The underlying OsString/OsStr implementation on Windows is a
 // wrapper around the "WTF-8" encoding; see the `wtf8` module for more.
 
-internal open class Buf(
+public open class Buf internal constructor(
     public val fieldStorage: MutPtr,
     public val fieldLayout: TypeLayout<Wtf8Buf>,
 ) : IntoInner<Wtf8Buf>, FromInner<Wtf8Buf, Buf>, AsInner<Wtf8> {
@@ -36,7 +34,7 @@ internal open class Buf(
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    public constructor(inner: Wtf8Buf, fieldLayout: TypeLayout<Wtf8Buf>) : this(allocateNativeCell(inner, fieldLayout), fieldLayout)
+    internal constructor(inner: Wtf8Buf, fieldLayout: TypeLayout<Wtf8Buf>) : this(allocateNativeCell(inner, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<Buf> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Buf(ptr, layout) }, { it.inner })
 
@@ -100,7 +98,7 @@ internal open class Buf(
         // SAFETY: Slice is just a wrapper for Wtf8,
         // and self.inner.asSlice() returns &Wtf8.
         // Therefore, transmuting &Wtf8 to &Slice is safe.
-        return mem.transmute(this.inner.asSlice())
+        return transmute(this.inner.asSlice())
     }
 
     public open fun asMutSlice(): RustMutableReference<Slice> {
@@ -109,12 +107,12 @@ internal open class Buf(
         // Therefore, transmuting Wtf8 to Slice is safe.
         // Additionally, care should be taken to ensure the slice
         // is always valid Wtf8.
-        return mem.transmute(this.inner.asMutSlice())
+        return transmute(this.inner.asMutSlice())
     }
 
-    public open fun leak(): RustMutableReference<Slice> = mem.transmute(this.inner.leak())
+    public open fun leak(): RustMutableReference<Slice> = transmute(this.inner.leak())
 
-    public open fun intoBox(): Slice = mem.transmute(this.inner.intoBox())
+    public open fun intoBox(): Slice = transmute(this.inner.intoBox())
 
     public open fun intoArc(): Slice = this.asSlice().intoArc()
 
@@ -154,6 +152,10 @@ internal open class Buf(
     }
 
     public companion object {
+        public operator fun invoke(inner: Wtf8Buf, fieldLayout: TypeLayout<Wtf8Buf>): Buf = Buf(inner, fieldLayout)
+
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Wtf8Buf>): Buf = Buf(fieldStorage, fieldLayout)
+
         public fun fromInner(inner: Wtf8Buf, fieldLayout: TypeLayout<Wtf8Buf>): Buf = Buf(inner = inner, fieldLayout = fieldLayout)
 
         public fun fromEncodedBytesUnchecked(s: List<UByte>, fieldLayout: TypeLayout<Wtf8Buf>): Buf = Buf(inner = Wtf8Buf.fromBytesUnchecked(s), fieldLayout = fieldLayout)
@@ -163,13 +165,13 @@ internal open class Buf(
         public fun withCapacity(capacity: Int, fieldLayout: TypeLayout<Wtf8Buf>): Buf = Buf(inner = Wtf8Buf.withCapacity(capacity), fieldLayout = fieldLayout)
 
         public fun fromBox(boxed: Slice, fieldLayout: TypeLayout<Wtf8Buf>): Buf {
-            val inner: Wtf8 = mem.transmute(boxed)
+            val inner: Wtf8 = transmute(boxed)
             return Buf(inner = Wtf8Buf.fromBox(inner), fieldLayout = fieldLayout)
         }
     }
 }
 
-internal open class Slice(
+public open class Slice internal constructor(
     public val fieldStorage: MutPtr,
     public val fieldLayout: TypeLayout<Wtf8>,
 ) : CloneToUninit {
@@ -177,7 +179,7 @@ internal open class Slice(
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    public constructor(inner: Wtf8, fieldLayout: TypeLayout<Wtf8>) : this(allocateNativeCell(inner, fieldLayout), fieldLayout)
+    internal constructor(inner: Wtf8, fieldLayout: TypeLayout<Wtf8>) : this(allocateNativeCell(inner, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<Slice> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Slice(ptr, layout) }, { it.inner })
 
@@ -239,10 +241,14 @@ internal open class Slice(
     }
 
     public companion object {
-        public fun fromEncodedBytesUnchecked(s: List<UByte>): Slice = mem.transmute(Wtf8.fromBytesUnchecked(s))
+        public operator fun invoke(inner: Wtf8, fieldLayout: TypeLayout<Wtf8>): Slice = Slice(inner, fieldLayout)
 
-        public fun fromStr(s: String): Slice = mem.transmute(Wtf8.fromStr(s))
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Wtf8>): Slice = Slice(fieldStorage, fieldLayout)
 
-        public fun emptyBox(): Slice = mem.transmute(Wtf8.emptyBox())
+        public fun fromEncodedBytesUnchecked(s: List<UByte>): Slice = transmute(Wtf8.fromBytesUnchecked(s))
+
+        public fun fromStr(s: String): Slice = transmute(Wtf8.fromStr(s))
+
+        public fun emptyBox(): Slice = transmute(Wtf8.emptyBox())
     }
 }

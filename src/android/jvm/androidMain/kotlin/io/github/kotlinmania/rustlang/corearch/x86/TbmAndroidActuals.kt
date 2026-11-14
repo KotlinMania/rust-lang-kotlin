@@ -1,10 +1,10 @@
-@file:OptIn(kotlin.ExperimentalUnsignedTypes::class)
+@file:OptIn(ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.corearch.x86
 
 private object X86TbmJniBridge {
     init {
-        System.loadLibrary("corearch_jni")
+        System.loadLibrary("kmcore_jni")
     }
 
     @JvmStatic

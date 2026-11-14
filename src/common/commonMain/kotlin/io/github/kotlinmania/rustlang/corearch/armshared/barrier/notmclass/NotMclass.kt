@@ -20,8 +20,8 @@ public open class ST : Sealed.Dmb, Sealed.Dsb {
     }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<ST> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<ST> {
+        public fun typeLayout(): TypeLayout<ST> =
+            object : TypeLayout<ST> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): ST =
@@ -50,8 +50,8 @@ public open class Ish : Sealed.Dmb, Sealed.Dsb {
     }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Ish> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Ish> {
+        public fun typeLayout(): TypeLayout<Ish> =
+            object : TypeLayout<Ish> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): Ish =
@@ -80,8 +80,8 @@ public open class Ishst : Sealed.Dmb, Sealed.Dsb {
     }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Ishst> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Ishst> {
+        public fun typeLayout(): TypeLayout<Ishst> =
+            object : TypeLayout<Ishst> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): Ishst =
@@ -110,8 +110,8 @@ public open class Nsh : Sealed.Dmb, Sealed.Dsb {
     }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Nsh> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Nsh> {
+        public fun typeLayout(): TypeLayout<Nsh> =
+            object : TypeLayout<Nsh> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): Nsh =
@@ -140,8 +140,8 @@ public open class Nshst : Sealed.Dmb, Sealed.Dsb {
     }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Nshst> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Nshst> {
+        public fun typeLayout(): TypeLayout<Nshst> =
+            object : TypeLayout<Nshst> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): Nshst =
@@ -170,8 +170,8 @@ public open class Osh : Sealed.Dmb, Sealed.Dsb {
     }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Osh> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Osh> {
+        public fun typeLayout(): TypeLayout<Osh> =
+            object : TypeLayout<Osh> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): Osh =
@@ -200,8 +200,8 @@ public open class Oshst : Sealed.Dmb, Sealed.Dsb {
     }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Oshst> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Oshst> {
+        public fun typeLayout(): TypeLayout<Oshst> =
+            object : TypeLayout<Oshst> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): Oshst =

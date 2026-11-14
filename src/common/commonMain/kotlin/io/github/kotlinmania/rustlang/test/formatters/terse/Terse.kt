@@ -9,19 +9,20 @@ import io.github.kotlinmania.rustlang.test.console.ConsoleTestDiscoveryState
 import io.github.kotlinmania.rustlang.test.console.ConsoleTestState
 import io.github.kotlinmania.rustlang.test.console.OutputLocation
 import io.github.kotlinmania.rustlang.test.formatters.OutputFormatter
+import io.github.kotlinmania.rustlang.test.term.color.CYAN
 import io.github.kotlinmania.rustlang.test.term.color.Color
-import io.github.kotlinmania.rustlang.test.term.color.cyan
-import io.github.kotlinmania.rustlang.test.term.color.green
-import io.github.kotlinmania.rustlang.test.term.color.red
-import io.github.kotlinmania.rustlang.test.term.color.yellow
+import io.github.kotlinmania.rustlang.test.term.color.GREEN
+import io.github.kotlinmania.rustlang.test.term.color.RED
+import io.github.kotlinmania.rustlang.test.term.color.YELLOW
 import io.github.kotlinmania.rustlang.test.testresult.TestResult
+import io.github.kotlinmania.rustlang.test.time.TEST_WARN_TIMEOUT_S
 import io.github.kotlinmania.rustlang.test.time.TestExecTime
 
 // We insert a '\n' when the output hits 100 columns in quiet mode. 88 test
 // result chars leaves 12 chars for a progress count like " 11704/12853".
 public val QUIET_MODE_MAX_COLUMN: Int = 88
 
-internal open class TerseFormatter<T>(
+public open class TerseFormatter<T>(
     public var out: OutputLocation<T>,
     public var useColor: Boolean,
     public var isMultithreaded: Boolean,
@@ -33,9 +34,9 @@ internal open class TerseFormatter<T>(
     public var testColumn: Int,
     public var totalTestCount: Int,
 ) : OutputFormatter {
-    internal open fun writeOk(): io.Result<Unit> = this.writeShortResult(".", green)
+    public open fun writeOk(): Result<Unit> = this.writeShortResult(".", GREEN)
 
-    internal open fun writeFailed(name: String): io.Result<Unit> {
+    public open fun writeFailed(name: String): Result<Unit> {
         // Put failed tests on their own line and include the test name, so that it's faster
         // to see which test failed without having to wait for them all to run.
         // normally, we write the progress unconditionally, even if the previous line was cut short.
@@ -46,15 +47,15 @@ internal open class TerseFormatter<T>(
         }
         this.testCount += 1
         when (val tryResult = this.writePlain("$name --- ")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-        when (val tryResult = this.writePretty("FAILED", red)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = this.writePretty("FAILED", RED)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         return this.writePlain("\n")
     }
 
-    internal open fun writeIgnored(): io.Result<Unit> = this.writeShortResult("i", yellow)
+    public open fun writeIgnored(): Result<Unit> = this.writeShortResult("i", YELLOW)
 
-    internal open fun writeBench(): io.Result<Unit> = this.writePretty("bench", cyan)
+    public open fun writeBench(): Result<Unit> = this.writePretty("bench", CYAN)
 
-    internal open fun writeShortResult(result: String, color: Color): io.Result<Unit> {
+    public open fun writeShortResult(result: String, color: Color): Result<Unit> {
         when (val tryResult = this.writePretty(result, color)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         this.testCount += 1
         this.testColumn += 1
@@ -67,14 +68,14 @@ internal open class TerseFormatter<T>(
         return Result.Ok(Unit)
     }
 
-    public open fun writeProgress(): io.Result<Unit> {
+    public open fun writeProgress(): Result<Unit> {
         val out = " ${this.testCount}/${this.totalTestCount}\n"
         when (val tryResult = this.writePlain(out)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         this.testColumn = 0
         return Result.Ok(Unit)
     }
 
-    internal open fun writePretty(word: String, color: Color): io.Result<Unit> {
+    public open fun writePretty(word: String, color: Color): Result<Unit> {
         return when (val matchVal = this.out) {
             is OutputLocation.Pretty -> {
                 val (term) = matchVal
@@ -95,13 +96,13 @@ internal open class TerseFormatter<T>(
         }
     }
 
-    internal open fun writePlain(s: String): io.Result<Unit> {
+    public open fun writePlain(s: String): Result<Unit> {
         val s1 = s
         when (val tryResult = this.out.writeAll(s1.encodeToByteArray().map { it.toUByte() })) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         return this.out.flush()
     }
 
-    internal open fun writeOutputs(state: ConsoleTestState): io.Result<Unit> {
+    public open fun writeOutputs(state: ConsoleTestState): Result<Unit> {
         when (val tryResult = this.writePlain("\nsuccesses:\n")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         val successes = mutableListOf()
         var stdouts = ""
@@ -126,7 +127,7 @@ internal open class TerseFormatter<T>(
         return Result.Ok(Unit)
     }
 
-    internal open fun writeFailures(state: ConsoleTestState): io.Result<Unit> {
+    public open fun writeFailures(state: ConsoleTestState): Result<Unit> {
         when (val tryResult = this.writePlain("\nfailures:\n")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         val failures = mutableListOf()
         var failOut = ""
@@ -151,7 +152,7 @@ internal open class TerseFormatter<T>(
         return Result.Ok(Unit)
     }
 
-    public open fun writeTestName(desc: TestDesc): io.Result<Unit> {
+    public open fun writeTestName(desc: TestDesc): Result<Unit> {
         val name = desc.paddedName(this.maxNameLen, desc.name.padding())
         when (val matchVal = desc.testMode()) {
             null -> {
@@ -165,13 +166,13 @@ internal open class TerseFormatter<T>(
         return Result.Ok(Unit)
     }
 
-    public override fun writeDiscoveryStart(): io.Result<Unit> = Result.Ok(Unit)
+    public override fun writeDiscoveryStart(): Result<Unit> = Result.Ok(Unit)
 
-    public override fun writeTestDiscovered(desc: TestDesc, testType: String): io.Result<Unit> = this.writePlain("${desc.name}: $testType\n")
+    public override fun writeTestDiscovered(desc: TestDesc, testType: String): Result<Unit> = this.writePlain("${desc.name}: $testType\n")
 
-    public override fun writeDiscoveryFinish(state: ConsoleTestDiscoveryState): io.Result<Unit> = Result.Ok(Unit)
+    public override fun writeDiscoveryFinish(state: ConsoleTestDiscoveryState): Result<Unit> = Result.Ok(Unit)
 
-    public override fun writeRunStart(testCount: Int, shuffleSeed: ULong?): io.Result<Unit> {
+    public override fun writeRunStart(testCount: Int, shuffleSeed: ULong?): Result<Unit> {
         this.totalTestCount = testCount
         val noun =
             if (testCount != 1) {
@@ -188,7 +189,7 @@ internal open class TerseFormatter<T>(
         return this.writePlain("\nrunning $testCount $noun$shuffleSeedMsg\n")
     }
 
-    public override fun writeTestStart(desc: TestDesc): io.Result<Unit> {
+    public override fun writeTestStart(desc: TestDesc): Result<Unit> {
         // Remnants from old libtest code that used the padding value
         // in order to indicate benchmarks.
         // When running benchmarks, terse-mode should still print their name as if
@@ -199,7 +200,7 @@ internal open class TerseFormatter<T>(
         return Result.Ok(Unit)
     }
 
-    public override fun writeResult(desc: TestDesc, result: TestResult, arg2: TestExecTime?, arg3: List<UByte>, arg4: ConsoleTestState): io.Result<Unit> {
+    public override fun writeResult(desc: TestDesc, result: TestResult, arg2: TestExecTime?, arg3: List<UByte>, arg4: ConsoleTestState): Result<Unit> {
         return when (result) {
             TestResult.TrOk -> this.writeOk()
             TestResult.TrFailed -> {
@@ -223,9 +224,9 @@ internal open class TerseFormatter<T>(
         }
     }
 
-    public override fun writeTimeout(desc: TestDesc): io.Result<Unit> = this.writePlain("test ${desc.name} has been running for over ${time.TEST_WARN_TIMEOUT_S} seconds\n")
+    public override fun writeTimeout(desc: TestDesc): Result<Unit> = this.writePlain("test ${desc.name} has been running for over $TEST_WARN_TIMEOUT_S seconds\n")
 
-    public override fun writeRunFinish(state: ConsoleTestState): io.Result<Boolean> {
+    public override fun writeRunFinish(state: ConsoleTestState): Result<Boolean> {
         if (state.options.displayOutput) {
             when (val tryResult = this.writeOutputs(state)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         }
@@ -236,9 +237,9 @@ internal open class TerseFormatter<T>(
         when (val tryResult = this.writePlain("\ntest result: ")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         if (success) {
             // There's no parallelism at this point so it's safe to use color
-            when (val tryResult = this.writePretty("ok", green)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            when (val tryResult = this.writePretty("ok", GREEN)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         } else {
-            when (val tryResult = this.writePretty("FAILED", red)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            when (val tryResult = this.writePretty("FAILED", RED)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         }
         val s = ". ${state.passed} passed; ${state.failed} failed; ${state.ignored} ignored; ${state.measured} measured; ${state.filteredOut} filtered out"
         when (val tryResult = this.writePlain(s)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
@@ -266,9 +267,9 @@ internal open class TerseFormatter<T>(
         return Result.Ok(success)
     }
 
-    public override fun writeMergedDoctestsTimes(totalTime: Double, compilationTime: Double): io.Result<Unit> = this.writePlain("all doctests ran in ${totalTime}s; merged doctests compilation took ${compilationTime}s\n")
+    public override fun writeMergedDoctestsTimes(totalTime: Double, compilationTime: Double): Result<Unit> = this.writePlain("all doctests ran in ${totalTime}s; merged doctests compilation took ${compilationTime}s\n")
 
     public companion object {
-        internal fun <T> new(out: OutputLocation<T>, useColor: Boolean, maxNameLen: Int, isMultithreaded: Boolean): TerseFormatter<T> = TerseFormatter(out = out, useColor = useColor, maxNameLen = maxNameLen, isMultithreaded = isMultithreaded, testCount = 0, testColumn = 0, totalTestCount = 0)
+        public fun <T> new(out: OutputLocation<T>, useColor: Boolean, maxNameLen: Int, isMultithreaded: Boolean): TerseFormatter<T> = TerseFormatter(out = out, useColor = useColor, maxNameLen = maxNameLen, isMultithreaded = isMultithreaded, testCount = 0, testColumn = 0, totalTestCount = 0)
     }
 }

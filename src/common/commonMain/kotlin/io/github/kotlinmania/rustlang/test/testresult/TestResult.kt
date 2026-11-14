@@ -1,10 +1,10 @@
 // port-lint: source test_result.rs
 package io.github.kotlinmania.rustlang.test.testresult
 
-import io.github.kotlinmania.libc.fuchsia.SIGABRT
 import io.github.kotlinmania.rustlang.core.RustAny
 import io.github.kotlinmania.rustlang.core.result.orElse
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
+import io.github.kotlinmania.rustlang.libc.windows.SIGABRT
 import io.github.kotlinmania.rustlang.std.process.ExitStatus
 import io.github.kotlinmania.rustlang.test.bench.BenchSamples
 import io.github.kotlinmania.rustlang.test.options.ShouldPanic
@@ -15,18 +15,11 @@ import io.github.kotlinmania.rustlang.test.types.TestDesc
 // Return code for secondary process.
 // Start somewhere other than 0 so we know the return code means what we think
 // it means.
-internal val TR_OK: Int = 50
+public val TR_OK: Int = 50
 
 // On Windows we use __fastfail to abort, which is documented to use this
 // exception code.
 public val STATUS_FAIL_FAST_EXCEPTION: Int = 0xC0000409u.toInt()
-
-// On Zircon (the Fuchsia kernel), an abort from userspace calls the
-// LLVM implementation of __builtin_trap(), e.g., ud2 on x86, which
-// raises a kernel exception. If a userspace process does not
-// otherwise arrange exception handling, the kernel kills the process
-// with this return code.
-public val ZX_TASK_RETCODE_EXCEPTION_KILL: Int = -1028
 
 public sealed class TestResult {
     public data object TrOk : TestResult()
@@ -43,7 +36,7 @@ public sealed class TestResult {
  * Creates a `TestResult` depending on the raw result of test execution
  * and associated data.
  */
-internal fun calcResult(desc: TestDesc, panicPayload: RustAny?, timeOpts: TestTimeOptions?, execTime: TestExecTime?): TestResult {
+public fun calcResult(desc: TestDesc, panicPayload: RustAny?, timeOpts: TestTimeOptions?, execTime: TestExecTime?): TestResult {
     val result =
         run {
             val matchVal = Pair(desc.shouldPanic, panicPayload)
@@ -106,7 +99,7 @@ internal fun calcResult(desc: TestDesc, panicPayload: RustAny?, timeOpts: TestTi
 /**
  * Creates a `TestResult` depending on the exit code of test subprocess.
  */
-internal fun getResultFromExitCode(desc: TestDesc, status: ExitStatus, timeOpts: TestTimeOptions?, execTime: TestExecTime?): TestResult {
+public fun getResultFromExitCode(desc: TestDesc, status: ExitStatus, timeOpts: TestTimeOptions?, execTime: TestExecTime?): TestResult {
     val result =
         when (val matchVal = status.code()) {
             TR_OK -> TestResult.TrOk
@@ -122,8 +115,6 @@ internal fun getResultFromExitCode(desc: TestDesc, status: ExitStatus, timeOpts:
                     else -> error("status.code() returned None but status.signal() was None")
                 }
             }
-            // Upon an abort, Fuchsia returns the status code ZX_TASK_RETCODE_EXCEPTION_KILL.
-            ZX_TASK_RETCODE_EXCEPTION_KILL -> TestResult.TrFailed
             null -> TestResult.TrFailedMsg("unknown return code")
             else -> {
                 val code = matchVal

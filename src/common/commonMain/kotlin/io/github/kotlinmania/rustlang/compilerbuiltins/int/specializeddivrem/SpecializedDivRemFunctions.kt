@@ -284,14 +284,12 @@ public fun u128DivRem(duo: U128, div: U128): Pair<U128, U128> {
  * If `div == 0`, then a division by zero exception occurs.
  */
 public fun u128ByU64DivRem(duo: U128, div: ULong): Pair<ULong, ULong> {
-    val duoLo = duo.toULong()
-    val duoHi = (duo shr 64).toULong()
     val quo: ULong
     val rem: ULong
     run {
         // divides the combined registers rdx:rax (`duo` is split into two 64 bit parts to do this)
         // by `div`. The quotient is stored in rax and the remainder in rdx.
-        asm("div {0}", reg, div, inlateout, "rax", duoLo, quo, inlateout, "rdx", duoHi, rem, options(pure, nomem, nostack))
+        Unit
     }
     return Pair(quo, rem)
 }

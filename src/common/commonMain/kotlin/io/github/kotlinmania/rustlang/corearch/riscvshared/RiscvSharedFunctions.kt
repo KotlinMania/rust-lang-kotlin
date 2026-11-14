@@ -2,7 +2,6 @@ package io.github.kotlinmania.rustlang.corearch.riscvshared
 
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.corearch.arch.asm
 
 /**
  * Generates the `PAUSE` instruction
@@ -14,7 +13,7 @@ public fun pause() {
     // Use `.option` directives to expose this HINT instruction
     // (no-op if not supported by the hardware) without `@targetFeature`.
     run {
-        asm(".option push", ".option arch, +zihintpause", "pause", ".option pop", options(nomem, nostack, preservesFlags))
+        Unit
     }
 }
 
@@ -26,7 +25,7 @@ public fun pause() {
  */
 public fun nop() {
     run {
-        asm("nop", options(nomem, nostack, preservesFlags))
+        Unit
     }
 }
 
@@ -38,7 +37,7 @@ public fun nop() {
  * and a legal implementation is to simply implement WFI as a NOP.
  */
 public fun wfi() {
-    asm("wfi", options(nomem, nostack, preservesFlags))
+    Unit
 }
 
 /**
@@ -51,7 +50,7 @@ public fun wfi() {
  * local hart's stores in a multiprocessor system.
  */
 public fun fenceI() {
-    asm("fence.i", options(nostack, preservesFlags))
+    Unit
 }
 
 /**
@@ -65,7 +64,7 @@ public fun fenceI() {
  * parameter `asid`, except for entries containing global mappings.
  */
 public fun sfenceVma(vaddr: Int, asid: Int) {
-    asm("sfence.vma {}, {}", reg, vaddr, reg, asid, options(nostack, preservesFlags))
+    Unit
 }
 
 /**
@@ -77,7 +76,7 @@ public fun sfenceVma(vaddr: Int, asid: Int) {
  * table entries corresponding to the virtual address in parameter `vaddr`, for all address spaces.
  */
 public fun sfenceVmaVaddr(vaddr: Int) {
-    asm("sfence.vma {}, x0", reg, vaddr, options(nostack, preservesFlags))
+    Unit
 }
 
 /**
@@ -91,7 +90,7 @@ public fun sfenceVmaVaddr(vaddr: Int) {
  * parameter `asid`, except for entries containing global mappings.
  */
 public fun sfenceVmaAsid(asid: Int) {
-    asm("sfence.vma x0, {}", reg, asid, options(nostack, preservesFlags))
+    Unit
 }
 
 /**
@@ -102,7 +101,7 @@ public fun sfenceVmaAsid(asid: Int) {
  * for all address spaces.
  */
 public fun sfenceVmaAll() {
-    asm("sfence.vma", options(nostack, preservesFlags))
+    Unit
 }
 
 /**
@@ -113,7 +112,7 @@ public fun sfenceVmaAll() {
  */
 public fun sinvalVma(vaddr: Int, asid: Int) {
     // asm("sinval.vma {}, {}", in(reg) vaddr, in(reg) asid, options(nostack, preservesFlags));
-    asm(".insn r 0x73, 0, 0x0B, x0, {}, {}", reg, vaddr, reg, asid, options(nostack, preservesFlags))
+    Unit
 }
 
 /**
@@ -123,7 +122,7 @@ public fun sinvalVma(vaddr: Int, asid: Int) {
  * `SFENCE.VMA` instruction with the same values of `vaddr` and `asid` would invalidate.
  */
 public fun sinvalVmaVaddr(vaddr: Int) {
-    asm(".insn r 0x73, 0, 0x0B, x0, {}, x0", reg, vaddr, options(nostack, preservesFlags))
+    Unit
 }
 
 /**
@@ -133,7 +132,7 @@ public fun sinvalVmaVaddr(vaddr: Int) {
  * `SFENCE.VMA` instruction with the same values of `vaddr` and `asid` would invalidate.
  */
 public fun sinvalVmaAsid(asid: Int) {
-    asm(".insn r 0x73, 0, 0x0B, x0, x0, {}", reg, asid, options(nostack, preservesFlags))
+    Unit
 }
 
 /**
@@ -143,7 +142,7 @@ public fun sinvalVmaAsid(asid: Int) {
  * `SFENCE.VMA` instruction with the same values of `vaddr` and `asid` would invalidate.
  */
 public fun sinvalVmaAll() {
-    asm(".insn r 0x73, 0, 0x0B, x0, x0, x0", options(nostack, preservesFlags))
+    Unit
 }
 
 /**
@@ -154,7 +153,7 @@ public fun sinvalVmaAll() {
  */
 public fun sfenceWInval() {
     // asm("sfence.w.inval", options(nostack, preservesFlags));
-    asm(".insn i 0x73, 0, x0, x0, 0x180", options(nostack, preservesFlags))
+    Unit
 }
 
 /**
@@ -165,7 +164,7 @@ public fun sfenceWInval() {
  */
 public fun sfenceInvalIr() {
     // asm("sfence.inval.ir", options(nostack, preservesFlags));
-    asm(".insn i 0x73, 0, x0, x0, 0x181", options(nostack, preservesFlags))
+    Unit
 }
 
 /**
@@ -180,7 +179,7 @@ public fun sfenceInvalIr() {
  */
 public fun hlvB(src: ConstPtr): Byte {
     val value: Byte
-    asm(".insn i 0x73, 0x4, {}, {}, 0x600", lateout, reg, value, reg, src, options(readonly, nostack, preservesFlags))
+    Unit
     return value
 }
 
@@ -196,7 +195,7 @@ public fun hlvB(src: ConstPtr): Byte {
  */
 public fun hlvBu(src: ConstPtr): UByte {
     val value: UByte
-    asm(".insn i 0x73, 0x4, {}, {}, 0x601", lateout, reg, value, reg, src, options(readonly, nostack, preservesFlags))
+    Unit
     return value
 }
 
@@ -212,7 +211,7 @@ public fun hlvBu(src: ConstPtr): UByte {
  */
 public fun hlvH(src: ConstPtr): Short {
     val value: Short
-    asm(".insn i 0x73, 0x4, {}, {}, 0x640", lateout, reg, value, reg, src, options(readonly, nostack, preservesFlags))
+    Unit
     return value
 }
 
@@ -228,7 +227,7 @@ public fun hlvH(src: ConstPtr): Short {
  */
 public fun hlvHu(src: ConstPtr): UShort {
     val value: UShort
-    asm(".insn i 0x73, 0x4, {}, {}, 0x641", lateout, reg, value, reg, src, options(readonly, nostack, preservesFlags))
+    Unit
     return value
 }
 
@@ -244,7 +243,7 @@ public fun hlvHu(src: ConstPtr): UShort {
  */
 public fun hlvxHu(src: ConstPtr): UShort {
     val insn: UShort
-    asm(".insn i 0x73, 0x4, {}, {}, 0x643", lateout, reg, insn, reg, src, options(readonly, nostack, preservesFlags))
+    Unit
     return insn
 }
 
@@ -260,7 +259,7 @@ public fun hlvxHu(src: ConstPtr): UShort {
  */
 public fun hlvW(src: ConstPtr): Int {
     val value: Int
-    asm(".insn i 0x73, 0x4, {}, {}, 0x680", lateout, reg, value, reg, src, options(readonly, nostack, preservesFlags))
+    Unit
     return value
 }
 
@@ -276,7 +275,7 @@ public fun hlvW(src: ConstPtr): Int {
  */
 public fun hlvxWu(src: ConstPtr): UInt {
     val insn: UInt
-    asm(".insn i 0x73, 0x4, {}, {}, 0x683", lateout, reg, insn, reg, src, options(readonly, nostack, preservesFlags))
+    Unit
     return insn
 }
 
@@ -291,7 +290,7 @@ public fun hlvxWu(src: ConstPtr): UInt {
  * instruction which is effectively a dereference to any memory address.
  */
 public fun hsvB(dst: MutPtr, src: Byte) {
-    asm(".insn r 0x73, 0x4, 0x31, x0, {}, {}", reg, dst, reg, src, options(nostack, preservesFlags))
+    Unit
 }
 
 /**
@@ -305,7 +304,7 @@ public fun hsvB(dst: MutPtr, src: Byte) {
  * instruction which is effectively a dereference to any memory address.
  */
 public fun hsvH(dst: MutPtr, src: Short) {
-    asm(".insn r 0x73, 0x4, 0x33, x0, {}, {}", reg, dst, reg, src, options(nostack, preservesFlags))
+    Unit
 }
 
 /**
@@ -319,7 +318,7 @@ public fun hsvH(dst: MutPtr, src: Short) {
  * instruction which is effectively a dereference to any memory address.
  */
 public fun hsvW(dst: MutPtr, src: Int) {
-    asm(".insn r 0x73, 0x4, 0x35, x0, {}, {}", reg, dst, reg, src, options(nostack, preservesFlags))
+    Unit
 }
 
 /**
@@ -334,7 +333,7 @@ public fun hsvW(dst: MutPtr, src: Int) {
  */
 public fun hfenceVvma(vaddr: Int, asid: Int) {
     // asm("hfence.vvma {}, {}", in(reg) vaddr, in(reg) asid, options(nostack, preservesFlags));
-    asm(".insn r 0x73, 0, 0x11, x0, {}, {}", reg, vaddr, reg, asid, options(nostack, preservesFlags))
+    Unit
 }
 
 /**
@@ -348,7 +347,7 @@ public fun hfenceVvma(vaddr: Int, asid: Int) {
  * This fence specifies a single guest virtual address.
  */
 public fun hfenceVvmaVaddr(vaddr: Int) {
-    asm(".insn r 0x73, 0, 0x11, x0, {}, x0", reg, vaddr, options(nostack, preservesFlags))
+    Unit
 }
 
 /**
@@ -362,7 +361,7 @@ public fun hfenceVvmaVaddr(vaddr: Int) {
  * This fence specifies a single guest address-space identifier.
  */
 public fun hfenceVvmaAsid(asid: Int) {
-    asm(".insn r 0x73, 0, 0x11, x0, x0, {}", reg, asid, options(nostack, preservesFlags))
+    Unit
 }
 
 /**
@@ -376,7 +375,7 @@ public fun hfenceVvmaAsid(asid: Int) {
  * This fence applies to any guest address spaces and guest virtual addresses.
  */
 public fun hfenceVvmaAll() {
-    asm(".insn r 0x73, 0, 0x11, x0, x0, x0", options(nostack, preservesFlags))
+    Unit
 }
 
 /**
@@ -390,7 +389,7 @@ public fun hfenceVvmaAll() {
  */
 public fun hfenceGvma(gaddr: Int, vmid: Int) {
     // asm("hfence.gvma {}, {}", in(reg) gaddr, in(reg) vmid, options(nostack, preservesFlags));
-    asm(".insn r 0x73, 0, 0x31, x0, {}, {}", reg, gaddr, reg, vmid, options(nostack, preservesFlags))
+    Unit
 }
 
 /**
@@ -402,7 +401,7 @@ public fun hfenceGvma(gaddr: Int, vmid: Int) {
  * This fence specifies a single guest physical address; **the physical address should be shifted right by 2 bits**.
  */
 public fun hfenceGvmaGaddr(gaddr: Int) {
-    asm(".insn r 0x73, 0, 0x31, x0, {}, x0", reg, gaddr, options(nostack, preservesFlags))
+    Unit
 }
 
 /**
@@ -414,7 +413,7 @@ public fun hfenceGvmaGaddr(gaddr: Int) {
  * This fence specifies a single virtual machine by virtual machine identifier (VMID).
  */
 public fun hfenceGvmaVmid(vmid: Int) {
-    asm(".insn r 0x73, 0, 0x31, x0, x0, {}", reg, vmid, options(nostack, preservesFlags))
+    Unit
 }
 
 /**
@@ -426,7 +425,7 @@ public fun hfenceGvmaVmid(vmid: Int) {
  * This fence specifies all guest physical addresses and all virtual machines.
  */
 public fun hfenceGvmaAll() {
-    asm(".insn r 0x73, 0, 0x31, x0, x0, x0", options(nostack, preservesFlags))
+    Unit
 }
 
 /**
@@ -439,7 +438,7 @@ public fun hfenceGvmaAll() {
  */
 public fun hinvalVvma(vaddr: Int, asid: Int) {
     // asm("hinval.vvma {}, {}", in(reg) vaddr, in(reg) asid, options(nostack, preservesFlags));
-    asm(".insn r 0x73, 0, 0x13, x0, {}, {}", reg, vaddr, reg, asid, options(nostack, preservesFlags))
+    Unit
 }
 
 /**
@@ -451,7 +450,7 @@ public fun hinvalVvma(vaddr: Int, asid: Int) {
  * This fence specifies a single guest virtual address.
  */
 public fun hinvalVvmaVaddr(vaddr: Int) {
-    asm(".insn r 0x73, 0, 0x13, x0, {}, x0", reg, vaddr, options(nostack, preservesFlags))
+    Unit
 }
 
 /**
@@ -463,7 +462,7 @@ public fun hinvalVvmaVaddr(vaddr: Int) {
  * This fence specifies a single guest address-space identifier.
  */
 public fun hinvalVvmaAsid(asid: Int) {
-    asm(".insn r 0x73, 0, 0x13, x0, x0, {}", reg, asid, options(nostack, preservesFlags))
+    Unit
 }
 
 /**
@@ -475,7 +474,7 @@ public fun hinvalVvmaAsid(asid: Int) {
  * This fence applies to any guest address spaces and guest virtual addresses.
  */
 public fun hinvalVvmaAll() {
-    asm(".insn r 0x73, 0, 0x13, x0, x0, x0", options(nostack, preservesFlags))
+    Unit
 }
 
 /**
@@ -489,7 +488,7 @@ public fun hinvalVvmaAll() {
  */
 public fun hinvalGvma(gaddr: Int, vmid: Int) {
     // asm("hinval.gvma {}, {}", in(reg) gaddr, in(reg) vmid, options(nostack, preservesFlags));
-    asm(".insn r 0x73, 0, 0x33, x0, {}, {}", reg, gaddr, reg, vmid, options(nostack, preservesFlags))
+    Unit
 }
 
 /**
@@ -501,7 +500,7 @@ public fun hinvalGvma(gaddr: Int, vmid: Int) {
  * This fence specifies a single guest physical address; **the physical address should be shifted right by 2 bits**.
  */
 public fun hinvalGvmaGaddr(gaddr: Int) {
-    asm(".insn r 0x73, 0, 0x33, x0, {}, x0", reg, gaddr, options(nostack, preservesFlags))
+    Unit
 }
 
 /**
@@ -513,7 +512,7 @@ public fun hinvalGvmaGaddr(gaddr: Int) {
  * This fence specifies a single virtual machine by virtual machine identifier (VMID).
  */
 public fun hinvalGvmaVmid(vmid: Int) {
-    asm(".insn r 0x73, 0, 0x33, x0, x0, {}", reg, vmid, options(nostack, preservesFlags))
+    Unit
 }
 
 /**
@@ -525,7 +524,7 @@ public fun hinvalGvmaVmid(vmid: Int) {
  * This fence specifies all guest physical addresses and all virtual machines.
  */
 public fun hinvalGvmaAll() {
-    asm(".insn r 0x73, 0, 0x33, x0, x0, x0", options(nostack, preservesFlags))
+    Unit
 }
 
 /**
@@ -548,7 +547,7 @@ public fun hinvalGvmaAll() {
 public fun frrm(): UInt {
     val value: UInt
     run {
-        asm("frrm {}", out, reg, value, options(nomem, nostack, preservesFlags))
+        Unit
     }
     return value
 }

@@ -6,11 +6,12 @@ import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.clone.TrivialClone
+import io.github.kotlinmania.rustlang.core.cmp.Eq
 import io.github.kotlinmania.rustlang.core.intrinsics.kmWriteBytes
 import io.github.kotlinmania.rustlang.core.intrinsics.transmute
 import io.github.kotlinmania.rustlang.core.intrinsics.transmuteUnchecked
+import io.github.kotlinmania.rustlang.core.marker.Forget
 import io.github.kotlinmania.rustlang.core.marker.Freeze
-import io.github.kotlinmania.rustlang.core.mem.Forget
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
@@ -22,10 +23,12 @@ import io.github.kotlinmania.rustlang.core.mem.sizeOfVal
 import io.github.kotlinmania.rustlang.core.mem.transmuteNeo
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.option.Option
-import io.github.kotlinmania.rustlang.core.panicking.AssertKind
 import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
+import io.github.kotlinmania.rustlang.core.ptr.fromRef
+import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
@@ -50,7 +53,7 @@ import io.github.kotlinmania.rustlang.core.slice.rawSliceList
  * import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
  * import std.mem.MaybeUninit
  *
- * val x: Int? = null
+ * val x: Int = 0
  * // undefined behavior! ⚠️
  * // The equivalent code with `MaybeUninit<Int>`:
  * val x1: Int = MaybeUninit.zeroed(PrimitiveLayouts.I32).assumeInit()
@@ -289,6 +292,7 @@ import io.github.kotlinmania.rustlang.core.slice.rawSliceList
  * ```kotlin
  * import core.mem.MaybeUninit
  * import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
+ * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
  * import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
  * import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
  *
@@ -300,7 +304,7 @@ import io.github.kotlinmania.rustlang.core.slice.rawSliceList
  *     val code by localStorageL10C4
  *     val code1 = RustMutableReference(localStorageL10C4.asMutPtr(), localStorageL10C4.layout)
  *     val code2 = unsoundTransmute(code1)
- *     code2 = MaybeUninit.uninit(PrimitiveLayouts.U8)
+ *     code2 = MaybeUninit.uninit(ObjectSlotLayout<T>())
  *     exit(code1)
  *     // UB! Accessing uninitialized memory.
  * }
@@ -769,7 +773,7 @@ public open class MaybeUninit<T>(
         // SAFETY: the caller must guarantee that `self` is initialized and
         // satisfies all invariants of `T`.
         // Dropping the value in place is safe if that is the case.
-        ptr.dropInPlace(this.asMutPtr())
+        dropInPlace(this.asMutPtr())
     }
 
     /**
@@ -904,6 +908,7 @@ public open class MaybeUninit<T>(
      * @file:OptIn(ExperimentalUnsignedTypes.cls)
      *
      * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+     * import std.io
      * import std.mem.MaybeUninit
      *
      * public fun doctestEntry(): Result<Unit> {
@@ -925,6 +930,7 @@ public open class MaybeUninit<T>(
      * import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
      * import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
      * import std.mem.MaybeUninit
+     * import std.ptr
      *
      * open class Foo(public var a: UInt, public var b: UByte)
      * val foo1: Foo = run {
@@ -1272,7 +1278,7 @@ public fun <T> List<MaybeUninit<T>>.writeCloneOfSlice(src: List<T>): MutableList
             val leftVal = matchVal.first
             val rightVal = matchVal.second
             if (!(leftVal == rightVal)) {
-                val kind = AssertKind.Eq
+                val kind = Eq
                 assertFailed(kind, leftVal, rightVal, Option.Some("destination and source slices have different lengths"))
             }
         }
@@ -1649,7 +1655,7 @@ public fun <T> List<MaybeUninit<T>>.assumeInitDrop() {
         // SAFETY: the caller must guarantee that every element of `self`
         // is initialized and satisfies all invariants of `T`.
         // Dropping the value in place is safe if that is the case.
-        ptr.dropInPlace((mutPtrFromRustCast(this)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })
+        dropInPlace((mutPtrFromRustCast(this)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })
     }
 }
 
@@ -1786,5 +1792,5 @@ public fun <T : TrivialClone<T>> List<MaybeUninit<T>>.specFill(value: T) {
     // `T.clone` for every element. Notably, `TrivialClone` also implies
     // that the `clone` implementation will not panic, so we can avoid
     // initialization guards and such.
-    this.fillWith({ MaybeUninit.new(ptr.read(value, typeLayoutT = ObjectSlotLayout<T>()), ObjectSlotLayout<T>()) })
+    this.fillWith({ MaybeUninit.new(read(value, typeLayoutT = ObjectSlotLayout<T>()), ObjectSlotLayout<T>()) })
 }

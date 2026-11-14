@@ -1,8 +1,9 @@
-@file:OptIn(kotlinx.cinterop.ExperimentalForeignApi::class, kotlin.ExperimentalUnsignedTypes::class)
+@file:OptIn(ExperimentalForeignApi::class, ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.corearch.x8664
 
 import io.github.kotlinmania.rustlang.corearch.x86.M128h
+import kotlinx.cinterop.ExperimentalForeignApi
 
 public actual fun vcvtsi642sh(a: M128h, b: Long, rounding: Int): M128h =
     M128h()

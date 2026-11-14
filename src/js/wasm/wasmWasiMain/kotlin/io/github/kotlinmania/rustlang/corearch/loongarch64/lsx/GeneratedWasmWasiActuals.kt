@@ -1,11 +1,11 @@
-@file:OptIn(kotlin.ExperimentalUnsignedTypes::class, kotlin.wasm.ExperimentalWasmInterop::class)
+@file:OptIn(ExperimentalUnsignedTypes::class, ExperimentalWasmInterop::class)
 
 package io.github.kotlinmania.rustlang.corearch.loongarch64.lsx
 
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 
-// The host must provide the C companion wrapper exports in import module corearch.
+// The host must provide the C companion wrapper exports in import module kmcore.
 public actual fun lsxVsrarB(a: V16i8, b: V16i8): V16i8 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVsrarB")
 

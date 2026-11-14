@@ -5,13 +5,11 @@ import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
-import io.github.kotlinmania.rustlang.std.fmt
-import io.github.kotlinmania.rustlang.std.sync.mpmc.IntoIter
 
 public open class Args(
     public var iter: ArrayDeque<OsString>,
 ) : Iterable<OsString> {
-    override fun iterator(): kotlin.collections.Iterator<OsString> = object : AbstractIterator<OsString>() {
+    override fun iterator(): Iterator<OsString> = object : AbstractIterator<OsString>() {
         override fun computeNext() {
             when (val v = this@Args.next()) {
                 null -> done()
@@ -21,14 +19,14 @@ public open class Args(
     }
 
     public open fun fmt(f: StringBuilder) {
-        this.iter.asSlice().fmt(f)
+        this.iter.toList().fmt(f)
     }
 
     public open fun next(): OsString? = this.iter.removeFirstOrNull()
 
     public open fun nextChunk(n: Int): Result<List<OsString>, IntoIter<OsString>> = this.iter.nextChunk()
 
-    public open fun sizeHint(): Pair<Int, Int?> = this.iter.sizeHint()
+    public open fun sizeHint(): Pair<Int, Int?> = run { val n = this.iter.size; Pair(n, n) }
 
     public open fun count(): Int = this.iter.size
 

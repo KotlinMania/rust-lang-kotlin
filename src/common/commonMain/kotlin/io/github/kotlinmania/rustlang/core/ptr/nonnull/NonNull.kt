@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.core.ptr.nonnull
 
 import io.github.kotlinmania.rustlang.core.clone.TrivialClone
+import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.fmt.Pointer
 import io.github.kotlinmania.rustlang.core.intrinsics.alignOf
 import io.github.kotlinmania.rustlang.core.intrinsics.transmute
@@ -15,13 +16,17 @@ import io.github.kotlinmania.rustlang.core.mem.typeinfo.of
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.copy
+import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
+import io.github.kotlinmania.rustlang.core.ptr.dropGlue
+import io.github.kotlinmania.rustlang.core.ptr.metadata.fromRawPartsMut
 import io.github.kotlinmania.rustlang.core.ptr.metadata.metadata
 import io.github.kotlinmania.rustlang.core.ptr.withExposedProvenanceMut
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.SliceIndex
+import io.github.kotlinmania.rustlang.core.slice.raw.fromRawParts
 import io.github.kotlinmania.rustlang.core.slice.rawMutSliceList
 import io.github.kotlinmania.rustlang.core.slice.rawSliceList
-import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 import io.github.kotlinmania.rustlang.core.ubchecks.assertUnsafePrecondition
 import io.github.kotlinmania.rustlang.core.ubchecks.checkLanguageUb
 
@@ -87,6 +92,12 @@ import io.github.kotlinmania.rustlang.core.ubchecks.checkLanguageUb
 public open class NonNull(
     public var pointer: ConstPtr,
 ) : TrivialClone<NonNull>, Pointer {
+    public val rawAddress: Long
+        get() = pointer.rawAddress
+
+    public val rawMeta: Long
+        get() = pointer.rawMeta
+
     // N.B., this impl is unnecessary, but should provide better error messages.
 
     /**
@@ -722,7 +733,7 @@ public open class NonNull(
      */
     public open fun read(): T {
         // SAFETY: the caller must uphold the safety contract for `read`.
-        return ptr.read(this.asPtr())
+        return io.github.kotlinmania.rustlang.core.ptr.read(this.asPtr())
     }
 
     // even without panics, this helps for Miri backtraces
@@ -741,7 +752,7 @@ public open class NonNull(
      */
     public open fun readVolatile(): T {
         // SAFETY: the caller must uphold the safety contract for `readVolatile`.
-        return ptr.readVolatile(this.asPtr())
+        return io.github.kotlinmania.rustlang.core.ptr.readVolatile(this.asPtr())
     }
 
     // even without panics, this helps for Miri backtraces
@@ -758,7 +769,7 @@ public open class NonNull(
      */
     public open fun readUnaligned(): T {
         // SAFETY: the caller must uphold the safety contract for `readUnaligned`.
-        return ptr.readUnaligned(this.asPtr())
+        return io.github.kotlinmania.rustlang.core.ptr.readUnaligned(this.asPtr())
     }
 
     // even without panics, this helps for Miri backtraces
@@ -775,7 +786,7 @@ public open class NonNull(
      */
     public open fun copyTo(dest: NonNull, count: Int) {
         // SAFETY: the caller must uphold the safety contract for `copy`.
-        ptr.copy(this.asPtr(), dest.asPtr(), count)
+        copy(this.asPtr(), dest.asPtr(), count)
     }
 
     // even without panics, this helps for Miri backtraces
@@ -792,7 +803,7 @@ public open class NonNull(
      */
     public open fun copyToNonoverlapping(dest: NonNull, count: Int) {
         // SAFETY: the caller must uphold the safety contract for `copyNonoverlapping`.
-        ptr.copyNonoverlapping(this.asPtr(), dest.asPtr(), count)
+        copyNonoverlapping(this.asPtr(), dest.asPtr(), count)
     }
 
     // even without panics, this helps for Miri backtraces
@@ -809,7 +820,7 @@ public open class NonNull(
      */
     public open fun copyFrom(src: NonNull, count: Int) {
         // SAFETY: the caller must uphold the safety contract for `copy`.
-        ptr.copy(src.asPtr(), this.asPtr(), count)
+        copy(src.asPtr(), this.asPtr(), count)
     }
 
     // even without panics, this helps for Miri backtraces
@@ -826,7 +837,7 @@ public open class NonNull(
      */
     public open fun copyFromNonoverlapping(src: NonNull, count: Int) {
         // SAFETY: the caller must uphold the safety contract for `copyNonoverlapping`.
-        ptr.copyNonoverlapping(src.asPtr(), this.asPtr(), count)
+        copyNonoverlapping(src.asPtr(), this.asPtr(), count)
     }
 
     /**
@@ -838,7 +849,7 @@ public open class NonNull(
      */
     public open fun dropInPlace() {
         // SAFETY: the caller must uphold the safety contract for `dropInPlace`.
-        ptr.dropGlue(this.asMut())
+        dropGlue(this.asMut())
     }
 
     // even without panics, this helps for Miri backtraces
@@ -853,7 +864,7 @@ public open class NonNull(
      */
     public open fun write(value: T) {
         // SAFETY: the caller must uphold the safety contract for `write`.
-        ptr.write(this.asPtr(), value)
+        io.github.kotlinmania.rustlang.core.ptr.write(this.asPtr(), value)
     }
 
     // even without panics, this helps for Miri backtraces
@@ -868,7 +879,7 @@ public open class NonNull(
      */
     public open fun writeBytes(value: UByte, count: Int) {
         // SAFETY: the caller must uphold the safety contract for `writeBytes`.
-        ptr.writeBytes(this.asPtr(), value, count)
+        io.github.kotlinmania.rustlang.core.ptr.writeBytes(this.asPtr(), value, count)
     }
 
     // even without panics, this helps for Miri backtraces
@@ -887,7 +898,7 @@ public open class NonNull(
      */
     public open fun writeVolatile(value: T) {
         // SAFETY: the caller must uphold the safety contract for `writeVolatile`.
-        ptr.writeVolatile(this.asPtr(), value)
+        io.github.kotlinmania.rustlang.core.ptr.writeVolatile(this.asPtr(), value)
     }
 
     // even without panics, this helps for Miri backtraces
@@ -904,7 +915,7 @@ public open class NonNull(
      */
     public open fun writeUnaligned(value: T) {
         // SAFETY: the caller must uphold the safety contract for `writeUnaligned`.
-        ptr.writeUnaligned(this.asPtr(), value)
+        io.github.kotlinmania.rustlang.core.ptr.writeUnaligned(this.asPtr(), value)
     }
 
     /**
@@ -917,7 +928,7 @@ public open class NonNull(
      */
     public open fun replace(src: T): T {
         // SAFETY: the caller must uphold the safety contract for `replace`.
-        return ptr.replace(this.asPtr(), src)
+        return io.github.kotlinmania.rustlang.core.ptr.replace(this.asPtr(), src)
     }
 
     /**
@@ -931,7 +942,7 @@ public open class NonNull(
      */
     public open fun swap(with: NonNull) {
         // SAFETY: the caller must uphold the safety contract for `swap`.
-        ptr.swap(this.asPtr(), with.asPtr())
+        io.github.kotlinmania.rustlang.core.ptr.swap(this.asPtr(), with.asPtr())
     }
 
     /**
@@ -991,7 +1002,7 @@ public open class NonNull(
         if (!align.isPowerOfTwo()) {
             error("align_offset: align is not a power-of-two")
         }
-        return ptr.alignOffset(this.asPtr(), align)
+        return io.github.kotlinmania.rustlang.core.ptr.alignOffset(this.asPtr(), align)
     }
 
     /**
@@ -1136,23 +1147,23 @@ public open class NonNull(
     }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<NonNull> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<NonNull> {
+        public fun typeLayout(): TypeLayout<NonNull> =
+            object : TypeLayout<NonNull> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 8L
                 override fun readNative(addr: Long): NonNull =
                     NonNull(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.constPtrLayout(64)).readNative(addr),
+                        (PrimitiveLayouts.constPtrLayout(64)).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: NonNull) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.constPtrLayout(64)).writeNative(addr, value.pointer)
+                    (PrimitiveLayouts.constPtrLayout(64)).writeNative(addr, value.pointer)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): NonNull =
                     NonNull(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.constPtrLayout(64)).readBytes(buf, offset),
+                        (PrimitiveLayouts.constPtrLayout(64)).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: NonNull) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.constPtrLayout(64)).writeBytes(buf, offset, value.pointer)
+                    (PrimitiveLayouts.constPtrLayout(64)).writeBytes(buf, offset, value.pointer)
                 }
             }
 
@@ -1542,7 +1553,7 @@ public fun <T> NonNull.asUninitSlice(): List<MaybeUninit<T>> {
  */
 public fun <T> NonNull.asUninitSliceMut(): MutableList<MaybeUninit<T>> {
     // SAFETY: the caller must uphold the safety contract for `asUninitSliceMut`.
-    return rawMutSliceList(this.cast().asPtr(), this.len().toInt(), PrimitiveLayouts.U8)
+    return io.github.kotlinmania.rustlang.core.slice.raw.fromRawPartsMut(this.cast().asPtr(), this.len())
 }
 
 /**

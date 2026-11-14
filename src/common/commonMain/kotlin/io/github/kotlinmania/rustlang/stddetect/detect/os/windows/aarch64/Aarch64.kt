@@ -1,7 +1,10 @@
 // port-lint: source detect/os/windows/aarch64.rs
 package io.github.kotlinmania.rustlang.stddetect.detect.os.windows.aarch64
 
-import io.github.kotlinmania.rustlang.stddetect.detect.Feature
+import io.github.kotlinmania.rustlang.core.intrinsics.kmAllocZeroed
+import io.github.kotlinmania.rustlang.core.intrinsics.kmDealloc
+import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.stddetect.detect.arch.Feature
 import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.s390x.cache
 
 // Run-time feature detection for Aarch64 on Windows.
@@ -13,7 +16,7 @@ public typealias Bool = Int
 /**
  * Try to read the features using IsProcessorFeaturePresent.
  */
-internal fun detectFeatures(): cache.Initializer {
+public fun detectFeatures(): cache.Initializer {
     val FALSE: Bool = 0
     // The following Microsoft documents isn't updated for aarch64.
     // https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-isprocessorfeaturepresent
@@ -46,7 +49,7 @@ internal fun detectFeatures(): cache.Initializer {
     val PF_ARM_V82_I8MM_INSTRUCTIONS_AVAILABLE: UInt = 66u
     val PF_ARM_V82_FP16_INSTRUCTIONS_AVAILABLE: UInt = 67u
     val PF_ARM_V86_BF16_INSTRUCTIONS_AVAILABLE: UInt = 68u
-    fun isProcessorFeaturePresent(processorFeature: Dword): Bool = null as Bool
+    fun isProcessorFeaturePresent(processorFeature: Dword): Bool = run { val ptr = kmAllocZeroed(maxOf(1L, (PrimitiveLayouts.I32).sizeBytes), maxOf(1L, (PrimitiveLayouts.I32).alignBytes)); val res = (PrimitiveLayouts.I32).readNative(ptr); kmDealloc(ptr, maxOf(1L, (PrimitiveLayouts.I32).sizeBytes), maxOf(1L, (PrimitiveLayouts.I32).alignBytes)); res }
     val value = cache.Initializer.default()
     run {
         var enableFeature =

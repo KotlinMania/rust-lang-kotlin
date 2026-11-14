@@ -2,13 +2,14 @@
 package io.github.kotlinmania.rustlang.core.result
 
 import io.github.kotlinmania.rustlang.core.clone.UseCloned
+import io.github.kotlinmania.rustlang.core.hint.unreachableUnchecked
+import io.github.kotlinmania.rustlang.core.iter.adapters.tryProcess
 import io.github.kotlinmania.rustlang.core.mem.forget
-import io.github.kotlinmania.rustlang.core.num.f128.consts.E
-import io.github.kotlinmania.rustlang.core.ops.Deref
-import io.github.kotlinmania.rustlang.core.ops.DerefMut
-import io.github.kotlinmania.rustlang.core.ops.Try
-import io.github.kotlinmania.rustlang.core.ops.Yeet
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
+import io.github.kotlinmania.rustlang.core.ops.deref.Deref
+import io.github.kotlinmania.rustlang.core.ops.deref.DerefMut
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Yeet
 
 // Error handling with the `Result` type.
 //
@@ -94,6 +95,8 @@ import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 // by the [Write] trait:
 //
 // ```kotlin
+// import std.io
+//
 // interface Write {
 //     public fun writeAll(bytes: List<UByte>): Result<Unit>
 // }
@@ -161,6 +164,7 @@ import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 //
 // ```kotlin
 // import std.fs.File
+// import std.io
 // import std.io.prelude.*
 //
 // open class Info(
@@ -209,6 +213,7 @@ import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 //
 // ```kotlin
 // import std.fs.File
+// import std.io
 // import std.io.prelude.*
 //
 // open class Info(
@@ -903,9 +908,9 @@ public sealed class Result<T, E> : UseCloned<Result<T, E>>, Try<Result<T, E>, An
      *     return "error code: $x"
      * }
      * val x: Result<UInt> = Result.success(2u)
-     * check(x.mapErr(stringify) == Result.success(2))
+     * check(x.mapErr(::stringify) == Result.success(2))
      * val x1: Result<UInt> = Result.failure(13)
-     * check(x1.mapErr(stringify) == Result.failure("error code: 13".toString()))
+     * check(x1.mapErr(::stringify) == Result.failure("error code: 13".toString()))
      * ```
      */
     public open fun <F> mapErr(op: (E) -> F): Result<T, F> =
@@ -947,6 +952,9 @@ public sealed class Result<T, E> : UseCloned<Result<T, E>>, Try<Result<T, E>, An
      * # Examples
      *
      * ```kotlin
+     * import std.fs
+     * import std.io
+     *
      * fun read(): io.Result<String> {
      *     return readToString("address.txt").inspectErr({ e -> println("failed to read file: $e") })
      * }
@@ -977,7 +985,7 @@ public sealed class Result<T, E> : UseCloned<Result<T, E>>, Try<Result<T, E>, An
      * check(x1.asDeref() == y1)
      * ```
      */
-    public open fun <Target> asDeref(): Result<Target, E> = this.asRef().map(Deref::deref)
+    public open fun <Target> asDeref(): Result<Target, E> = this.asRef().map({ Deref.deref(it) })
 
     /**
      * Converts from `Result<T, E>` (or `Result<T, E>`) to `Result<<T as DerefMut>.Target, E>`.
@@ -1008,7 +1016,7 @@ public sealed class Result<T, E> : UseCloned<Result<T, E>>, Try<Result<T, E>, An
      * }) == y1)
      * ```
      */
-    public open fun asDerefMut(): Result<Target, E> = this.asMut().map(DerefMut::derefMut)
+    public open fun asDerefMut(): Result<Target, E> = this.asMut().map({ DerefMut.derefMut(it) })
 
     // ////////////////////////////////////////////////////////////////////
     // Iterator constructors
@@ -1373,9 +1381,9 @@ public sealed class Result<T, E> : UseCloned<Result<T, E>>, Try<Result<T, E>, An
      * fun sqThenToString(x: UInt): Result<String> {
      *     return (x.checkedMul(x)?.let({ sq -> sq.toString() })?.let { Result.success(it) } ?: Result.failure("overflowed"))
      * }
-     * check(Result.success(2).andThen(sqThenToString) == Result.success(4.toString()))
-     * check(Result.success(1000000).andThen(sqThenToString) == Result.failure("overflowed"))
-     * check(Result.failure("not a number").andThen(sqThenToString) == Result.failure("not a number"))
+     * check(Result.success(2).andThen(::sqThenToString) == Result.success(4.toString()))
+     * check(Result.success(1000000).andThen(::sqThenToString) == Result.failure("overflowed"))
+     * check(Result.failure("not a number").andThen(::sqThenToString) == Result.failure("not a number"))
      * ```
      *
      * Often used to chain fallible operations that may return [Err].
@@ -1453,10 +1461,10 @@ public sealed class Result<T, E> : UseCloned<Result<T, E>>, Try<Result<T, E>, An
      * fun err(x: UInt): Result<UInt> {
      *     return Result.failure(x)
      * }
-     * check(Result.success(2).orElse(sq).orElse(sq) == Result.success(2))
-     * check(Result.success(2).orElse(err).orElse(sq) == Result.success(2))
-     * check(Result.failure(3).orElse(sq).orElse(err) == Result.success(9))
-     * check(Result.failure(3).orElse(err).orElse(err) == Result.failure(3))
+     * check(Result.success(2).orElse(::sq).orElse(::sq) == Result.success(2))
+     * check(Result.success(2).orElse(::err).orElse(::sq) == Result.success(2))
+     * check(Result.failure(3).orElse(::sq).orElse(::err) == Result.success(9))
+     * check(Result.failure(3).orElse(::err).orElse(::err) == Result.failure(3))
      * ```
      */
     public open fun <F> orElse(op: (E) -> Result<T, F>): Result<T, F> =
@@ -1508,8 +1516,8 @@ public sealed class Result<T, E> : UseCloned<Result<T, E>>, Try<Result<T, E>, An
      * fun count(x: String): Int {
      *     return x.length
      * }
-     * check(Result.success(2).unwrapOrElse(count) == 2)
-     * check(Result.failure("foo").unwrapOrElse(count) == 3)
+     * check(Result.success(2).unwrapOrElse(::count) == 2)
+     * check(Result.failure("foo").unwrapOrElse(::count) == 3)
      * ```
      */
     public open fun unwrapOrElse(op: (E) -> T): T =
@@ -1558,7 +1566,7 @@ public sealed class Result<T, E> : UseCloned<Result<T, E>>, Try<Result<T, E>, An
                 // Note(const-Note): to avoid E: const Destruct bound
                 forget(e)
                 // SAFETY: the safety contract must be upheld by the caller.
-                hint.unreachableUnchecked()
+                unreachableUnchecked()
             }
         }
 
@@ -1588,7 +1596,7 @@ public sealed class Result<T, E> : UseCloned<Result<T, E>>, Try<Result<T, E>, An
     public open fun unwrapErrUnchecked(): E =
         when (this) {
             // SAFETY: the safety contract must be upheld by the caller.
-            is Ok -> hint.unreachableUnchecked()
+            is Ok -> unreachableUnchecked()
             is Err -> {
                 val (e) = this
                 e
@@ -1806,7 +1814,7 @@ public fun <T> unwrapFailed(msg: String, error: T): Nothing {
 public open class Iter<T>(
     public var inner: T?,
 ) : Iterable<T> {
-    override fun iterator(): kotlin.collections.Iterator<T> = object : AbstractIterator<T>() {
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@Iter.next()) {
                 null -> done()
@@ -1840,7 +1848,7 @@ public open class Iter<T>(
 public open class IterMut<T>(
     public var inner: T?,
 ) : Iterable<T> {
-    override fun iterator(): kotlin.collections.Iterator<T> = object : AbstractIterator<T>() {
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@IterMut.next()) {
                 null -> done()
@@ -1877,7 +1885,7 @@ public open class IterMut<T>(
 public open class IntoIter<T>(
     public var inner: T?,
 ) : Iterable<T> {
-    override fun iterator(): kotlin.collections.Iterator<T> = object : AbstractIterator<T>() {
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@IntoIter.next()) {
                 null -> done()
@@ -1947,7 +1955,7 @@ public open class IntoIter<T>(
  * Since the third element caused an underflow, no further elements were taken,
  * so the final value of `shared` is 6 (= `3 + 2 + 1`), not 16.
  */
-public fun <T, E, V, I : Iterable<Result<T, E>>> fromIteratorFromIterResultVE(iter: I): Result<V, E> = Iter.tryProcess(iter.iterator(), { i -> i.collect() })
+public fun <T, E, V, I : Iterable<Result<T, E>>> fromIteratorFromIterResultVE(iter: I): Result<V, E> = tryProcess(iter.iterator(), { i -> i.collect() })
 
 public fun <T, E, F> fromResidualResultTF(residual: Result<Nothing, E>): Result<T, F> =
     when (residual) {

@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.core.slice.sort.unstable.heapsort
 
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.swapNonoverlapping
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 
 // This module contains a branchless heapsort as fallback for unstable quicksort.
@@ -13,7 +14,7 @@ import io.github.kotlinmania.rustlang.core.slice.asMutPtr
  * Never inline this, it sits the main hot-loop in `recurse` and is meant as unlikely algorithmic
  * fallback.
  */
-internal fun <T> heapsort(v: MutableList<T>, isLess: (T, T) -> Boolean) {
+public fun <T> heapsort(v: MutableList<T>, isLess: (T, T) -> Boolean) {
     val len = v.size
     for (i in (0 until len + len / 2).rev()) {
         val siftIdx =
@@ -60,7 +61,7 @@ public fun <T> siftDown(v: MutableList<T>, node: Int, isLess: (T, T) -> Boolean)
             if (!isLess((ObjectSlotLayout<T>()).readNative((MutPtr((vBase).rawAddress + ((node1).toLong() * (ObjectSlotLayout<T>()).strideBytes))).rawAddress), (ObjectSlotLayout<T>()).readNative((MutPtr((vBase).rawAddress + ((child).toLong() * (ObjectSlotLayout<T>()).strideBytes))).rawAddress))) {
                 break
             }
-            ptr.swapNonoverlapping(MutPtr((vBase).rawAddress + ((node1).toLong() * (ObjectSlotLayout<T>()).strideBytes)), MutPtr((vBase).rawAddress + ((child).toLong() * (ObjectSlotLayout<T>()).strideBytes)), 1)
+            swapNonoverlapping(MutPtr((vBase).rawAddress + ((node1).toLong() * (ObjectSlotLayout<T>()).strideBytes)), MutPtr((vBase).rawAddress + ((child).toLong() * (ObjectSlotLayout<T>()).strideBytes)), 1)
         }
         node1 = child
     }

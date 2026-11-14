@@ -8,16 +8,17 @@ import io.github.kotlinmania.rustlang.test.console.ConsoleTestDiscoveryState
 import io.github.kotlinmania.rustlang.test.console.ConsoleTestState
 import io.github.kotlinmania.rustlang.test.console.OutputLocation
 import io.github.kotlinmania.rustlang.test.formatters.OutputFormatter
+import io.github.kotlinmania.rustlang.test.term.color.CYAN
 import io.github.kotlinmania.rustlang.test.term.color.Color
-import io.github.kotlinmania.rustlang.test.term.color.cyan
-import io.github.kotlinmania.rustlang.test.term.color.green
-import io.github.kotlinmania.rustlang.test.term.color.red
-import io.github.kotlinmania.rustlang.test.term.color.yellow
+import io.github.kotlinmania.rustlang.test.term.color.GREEN
+import io.github.kotlinmania.rustlang.test.term.color.RED
+import io.github.kotlinmania.rustlang.test.term.color.YELLOW
 import io.github.kotlinmania.rustlang.test.testresult.TestResult
+import io.github.kotlinmania.rustlang.test.time.TEST_WARN_TIMEOUT_S
 import io.github.kotlinmania.rustlang.test.time.TestExecTime
 import io.github.kotlinmania.rustlang.test.time.TestTimeOptions
 
-internal open class PrettyFormatter<T>(
+public open class PrettyFormatter<T>(
     public var out: OutputLocation<T>,
     public var useColor: Boolean,
     public var timeOptions: TestTimeOptions?,
@@ -27,24 +28,24 @@ internal open class PrettyFormatter<T>(
     public var maxNameLen: Int,
     public var isMultithreaded: Boolean,
 ) : OutputFormatter {
-    internal open fun writeOk(): io.Result<Unit> = this.writeShortResult("ok", green)
+    public open fun writeOk(): Result<Unit> = this.writeShortResult("ok", GREEN)
 
-    internal open fun writeFailed(): io.Result<Unit> = this.writeShortResult("FAILED", red)
+    public open fun writeFailed(): Result<Unit> = this.writeShortResult("FAILED", RED)
 
-    internal open fun writeIgnored(message: String?): io.Result<Unit> =
+    public open fun writeIgnored(message: String?): Result<Unit> =
         if (message != null) {
-            this.writeShortResult("ignored, $message", yellow)
+            this.writeShortResult("ignored, $message", YELLOW)
         } else {
-            this.writeShortResult("ignored", yellow)
+            this.writeShortResult("ignored", YELLOW)
         }
 
-    internal open fun writeTimeFailed(): io.Result<Unit> = this.writeShortResult("FAILED (time limit exceeded)", red)
+    public open fun writeTimeFailed(): Result<Unit> = this.writeShortResult("FAILED (time limit exceeded)", RED)
 
-    internal open fun writeBench(): io.Result<Unit> = this.writePretty("bench", cyan)
+    public open fun writeBench(): Result<Unit> = this.writePretty("bench", CYAN)
 
-    internal open fun writeShortResult(result: String, color: Color): io.Result<Unit> = this.writePretty(result, color)
+    public open fun writeShortResult(result: String, color: Color): Result<Unit> = this.writePretty(result, color)
 
-    internal open fun writePretty(word: String, color: Color): io.Result<Unit> {
+    public open fun writePretty(word: String, color: Color): Result<Unit> {
         return when (val matchVal = this.out) {
             is OutputLocation.Pretty -> {
                 val (term) = matchVal
@@ -65,13 +66,13 @@ internal open class PrettyFormatter<T>(
         }
     }
 
-    internal open fun writePlain(s: String): io.Result<Unit> {
+    public open fun writePlain(s: String): Result<Unit> {
         val s1 = s
         when (val tryResult = this.out.writeAll(s1.encodeToByteArray().map { it.toUByte() })) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         return this.out.flush()
     }
 
-    public open fun writeTime(desc: TestDesc, execTime: TestExecTime?): io.Result<Unit> {
+    public open fun writeTime(desc: TestDesc, execTime: TestExecTime?): Result<Unit> {
         if (Pair(this.timeOptions, execTime) != null) {
             val opts = Pair(this.timeOptions, execTime).first
             val time = Pair(this.timeOptions, execTime).second
@@ -79,9 +80,9 @@ internal open class PrettyFormatter<T>(
             val color =
                 if (this.useColor) {
                     if (opts.isCritical(desc, time)) {
-                        red
+                        RED
                     } else if (opts.isWarn(desc, time)) {
-                        yellow
+                        YELLOW
                     } else {
                         null
                     }
@@ -99,7 +100,7 @@ internal open class PrettyFormatter<T>(
         return Result.Ok(Unit)
     }
 
-    public open fun writeResults(inputs: List<Pair<TestDesc, List<UByte>>>, resultsType: String): io.Result<Unit> {
+    public open fun writeResults(inputs: List<Pair<TestDesc, List<UByte>>>, resultsType: String): Result<Unit> {
         val resultsOutStr = "\n$resultsType:\n"
         when (val tryResult = this.writePlain(resultsOutStr)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         val results = mutableListOf()
@@ -125,13 +126,13 @@ internal open class PrettyFormatter<T>(
         return Result.Ok(Unit)
     }
 
-    internal open fun writeSuccesses(state: ConsoleTestState): io.Result<Unit> = this.writeResults(state.notFailures, "successes")
+    public open fun writeSuccesses(state: ConsoleTestState): Result<Unit> = this.writeResults(state.notFailures, "successes")
 
-    internal open fun writeFailures(state: ConsoleTestState): io.Result<Unit> = this.writeResults(state.failures, "failures")
+    public open fun writeFailures(state: ConsoleTestState): Result<Unit> = this.writeResults(state.failures, "failures")
 
-    internal open fun writeTimeFailures(state: ConsoleTestState): io.Result<Unit> = this.writeResults(state.timeFailures, "failures (time limit exceeded)")
+    public open fun writeTimeFailures(state: ConsoleTestState): Result<Unit> = this.writeResults(state.timeFailures, "failures (time limit exceeded)")
 
-    public open fun writeTestName(desc: TestDesc): io.Result<Unit> {
+    public open fun writeTestName(desc: TestDesc): Result<Unit> {
         val name = desc.paddedName(this.maxNameLen, desc.name.padding())
         when (val matchVal = desc.testMode()) {
             null -> {
@@ -145,11 +146,11 @@ internal open class PrettyFormatter<T>(
         return Result.Ok(Unit)
     }
 
-    public override fun writeDiscoveryStart(): io.Result<Unit> = Result.Ok(Unit)
+    public override fun writeDiscoveryStart(): Result<Unit> = Result.Ok(Unit)
 
-    public override fun writeTestDiscovered(desc: TestDesc, testType: String): io.Result<Unit> = this.writePlain("${desc.name}: $testType\n")
+    public override fun writeTestDiscovered(desc: TestDesc, testType: String): Result<Unit> = this.writePlain("${desc.name}: $testType\n")
 
-    public override fun writeDiscoveryFinish(state: ConsoleTestDiscoveryState): io.Result<Unit> {
+    public override fun writeDiscoveryFinish(state: ConsoleTestDiscoveryState): Result<Unit> {
         fun plural(count: Int, s: String): String =
             when (count) {
                 1 -> "1 $s"
@@ -164,7 +165,7 @@ internal open class PrettyFormatter<T>(
         return this.writePlain((plural(state.tests, "test")).toString() + ", " + (plural(state.benchmarks, "benchmark")).toString() + "\n")
     }
 
-    public override fun writeRunStart(testCount: Int, shuffleSeed: ULong?): io.Result<Unit> {
+    public override fun writeRunStart(testCount: Int, shuffleSeed: ULong?): Result<Unit> {
         val noun =
             if (testCount != 1) {
                 "tests"
@@ -180,7 +181,7 @@ internal open class PrettyFormatter<T>(
         return this.writePlain("\nrunning $testCount $noun$shuffleSeedMsg\n")
     }
 
-    public override fun writeTestStart(desc: TestDesc): io.Result<Unit> {
+    public override fun writeTestStart(desc: TestDesc): Result<Unit> {
         // When running tests concurrently, we should not print
         // the test's name as the result will be mis-aligned.
         // When running the tests serially, we print the name here so
@@ -191,7 +192,7 @@ internal open class PrettyFormatter<T>(
         return Result.Ok(Unit)
     }
 
-    public override fun writeResult(desc: TestDesc, result: TestResult, execTime: TestExecTime?, arg3: List<UByte>, arg4: ConsoleTestState): io.Result<Unit> {
+    public override fun writeResult(desc: TestDesc, result: TestResult, execTime: TestExecTime?, arg3: List<UByte>, arg4: ConsoleTestState): Result<Unit> {
         if (this.isMultithreaded) {
             when (val tryResult = this.writeTestName(desc)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         }
@@ -211,9 +212,9 @@ internal open class PrettyFormatter<T>(
         return this.writePlain("\n")
     }
 
-    public override fun writeTimeout(desc: TestDesc): io.Result<Unit> = this.writePlain("test ${desc.name} has been running for over ${time.TEST_WARN_TIMEOUT_S} seconds\n")
+    public override fun writeTimeout(desc: TestDesc): Result<Unit> = this.writePlain("test ${desc.name} has been running for over $TEST_WARN_TIMEOUT_S seconds\n")
 
-    public override fun writeRunFinish(state: ConsoleTestState): io.Result<Boolean> {
+    public override fun writeRunFinish(state: ConsoleTestState): Result<Boolean> {
         if (state.options.displayOutput) {
             when (val tryResult = this.writeSuccesses(state)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         }
@@ -229,9 +230,9 @@ internal open class PrettyFormatter<T>(
         when (val tryResult = this.writePlain("\ntest result: ")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         if (success) {
             // There's no parallelism at this point so it's safe to use color
-            when (val tryResult = this.writePretty("ok", green)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            when (val tryResult = this.writePretty("ok", GREEN)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         } else {
-            when (val tryResult = this.writePretty("FAILED", red)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            when (val tryResult = this.writePretty("FAILED", RED)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         }
         val s = ". ${state.passed} passed; ${state.failed} failed; ${state.ignored} ignored; ${state.measured} measured; ${state.filteredOut} filtered out"
         when (val tryResult = this.writePlain(s)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
@@ -247,9 +248,9 @@ internal open class PrettyFormatter<T>(
         return Result.Ok(success)
     }
 
-    public override fun writeMergedDoctestsTimes(totalTime: Double, compilationTime: Double): io.Result<Unit> = this.writePlain("all doctests ran in ${totalTime}s; merged doctests compilation took ${compilationTime}s\n")
+    public override fun writeMergedDoctestsTimes(totalTime: Double, compilationTime: Double): Result<Unit> = this.writePlain("all doctests ran in ${totalTime}s; merged doctests compilation took ${compilationTime}s\n")
 
     public companion object {
-        internal fun <T> new(out: OutputLocation<T>, useColor: Boolean, maxNameLen: Int, isMultithreaded: Boolean, timeOptions: TestTimeOptions?): PrettyFormatter<T> = PrettyFormatter(out = out, useColor = useColor, maxNameLen = maxNameLen, isMultithreaded = isMultithreaded, timeOptions = timeOptions)
+        public fun <T> new(out: OutputLocation<T>, useColor: Boolean, maxNameLen: Int, isMultithreaded: Boolean, timeOptions: TestTimeOptions?): PrettyFormatter<T> = PrettyFormatter(out = out, useColor = useColor, maxNameLen = maxNameLen, isMultithreaded = isMultithreaded, timeOptions = timeOptions)
     }
 }

@@ -1,11 +1,11 @@
 // port-lint: source io/error.rs
 package io.github.kotlinmania.rustlang.std.io.error
 
+import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.OsFunctions
 import io.github.kotlinmania.rustlang.core.io.error.RawOsError
-import io.github.kotlinmania.rustlang.std.os.xous.ffi.definitions.Error
+import io.github.kotlinmania.rustlang.std.sys.io.Errno
 import io.github.kotlinmania.rustlang.std.sys.io.error.generic.decodeErrorKind
-import io.github.kotlinmania.rustlang.std.sys.io.error.generic.errno
 import io.github.kotlinmania.rustlang.std.sys.io.error.generic.formatError
 import io.github.kotlinmania.rustlang.std.sys.io.error.generic.isInterrupted
 
@@ -34,7 +34,7 @@ import io.github.kotlinmania.rustlang.std.sys.io.error.generic.isInterrupted
  * println("last OS error: $osError")
  * ```
  */
-public fun Error.Companion.lastOsError(): Error = Error.fromRawOsError(errno())
+public fun Error.Companion.lastOsError(): Error = Error.fromRawOsError(Errno())
 
 /**
  * Creates a new instance of an [Error] from a particular OS error code.
@@ -44,6 +44,8 @@ public fun Error.Companion.lastOsError(): Error = Error.fromRawOsError(errno())
  * On Linux:
  *
  * ```kotlin
+ * import std.io
+ *
  * val error = io.Error.fromRawOsError(22)
  * check(error.kind() == io.ErrorKind.InvalidInput)
  * ```
@@ -51,6 +53,8 @@ public fun Error.Companion.lastOsError(): Error = Error.fromRawOsError(errno())
  * On Windows:
  *
  * ```kotlin
+ * import std.io
+ *
  * val error = io.Error.fromRawOsError(10022)
  * check(error.kind() == io.ErrorKind.InvalidInput)
  * ```

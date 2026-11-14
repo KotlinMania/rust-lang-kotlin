@@ -4,7 +4,6 @@ package io.github.kotlinmania.rustlang.std.os.windows.ffi
 import io.github.kotlinmania.rustlang.alloc.wtf8.Wtf8Buf
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
-import io.github.kotlinmania.rustlang.std.fmt
 import io.github.kotlinmania.rustlang.std.sys.FromInner
 import io.github.kotlinmania.rustlang.std.sys.osstr.bytes.Buf
 
@@ -82,6 +81,10 @@ public interface OsStringExt<T> {
      * ```kotlin
      */
     public fun fromWide(wide: List<UShort>): T
+
+    public companion object {
+        public fun fromWide(wide: List<UShort>): OsString = osStringExtFromWideOsString(wide)
+    }
 }
 
 public fun osStringExtFromWideOsString(wide: List<UShort>): OsString = FromInner.fromInner(Buf(inner = Wtf8Buf.fromWide(wide)))
@@ -123,7 +126,7 @@ public fun OsStr.encodeWide(): EncodeWide = EncodeWide(inner = this.asInner().in
 public open class EncodeWide(
     public var inner: EncodeWide,
 ) : Iterable<UShort> {
-    override fun iterator(): kotlin.collections.Iterator<UShort> = object : AbstractIterator<UShort>() {
+    override fun iterator(): Iterator<UShort> = object : AbstractIterator<UShort>() {
         override fun computeNext() {
             when (val v = this@EncodeWide.next()) {
                 null -> done()
@@ -131,6 +134,8 @@ public open class EncodeWide(
             }
         }
     }
+
+    public open fun clone(): EncodeWide = EncodeWide(inner)
 
     public open fun fmt(f: StringBuilder) {
         f.append((this.inner).toString())

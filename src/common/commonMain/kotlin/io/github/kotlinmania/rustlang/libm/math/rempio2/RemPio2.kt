@@ -65,7 +65,7 @@ public val PIO2_3T: Double = 8.47842766036889956997e-32
 // use remPio2Large() for large x
 //
 // caller must handle the case when reduction is not needed: |x| ~<= pi/4 * /
-internal fun remPio2(x: Double): Triple<Int, Double, Double> {
+public fun remPio2(x: Double): Triple<Int, Double, Double> {
     fun medium(x1: Double, ix: UInt): Triple<Int, Double, Double> {
         // rint(x/(pi/2)), Assume round-to-nearest.
         val tmp = x1 * INV_PIO2 + TO_INT

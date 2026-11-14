@@ -1,16 +1,17 @@
 // port-lint: source num/bfloat.rs
 package io.github.kotlinmania.rustlang.core.num.bfloat
 
+import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.fmt.LowerExp
 import io.github.kotlinmania.rustlang.core.fmt.UpperExp
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 
 // The 16-bit brain floating-point type.
 
@@ -74,7 +75,7 @@ public open class F16b internal constructor(
      */
     public open fun toBits(): UShort {
         // SAFETY: `f16b` and `UShort` have the same size, and every bit pattern is valid.
-        return mem.transmute(this)
+        return transmute(this)
     }
 
     public open fun clone(): F16b = F16b(this.value)

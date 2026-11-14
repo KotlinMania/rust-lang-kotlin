@@ -8,6 +8,8 @@ import io.github.kotlinmania.rustlang.core.result.Result
 public open class TryReserveError(
     public var kind: TryReserveErrorKind,
 ) {
+    public open fun clone(): TryReserveError = TryReserveError(kind)
+
     /**
      * Details about the allocation that caused the error
      */

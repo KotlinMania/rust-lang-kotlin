@@ -260,6 +260,7 @@ public fun matches(expression: String = "", pattern: String = "", guard: String 
  *
  * ```kotlin
  * import std.fs.File
+ * import std.io
  * import std.io.prelude.*
  *
  * sealed class MyError {

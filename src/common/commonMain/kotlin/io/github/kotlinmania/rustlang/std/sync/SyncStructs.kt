@@ -20,6 +20,8 @@ public open class WaitTimeoutResult(
             value = v
         }
 
+    public open fun clone(): WaitTimeoutResult = WaitTimeoutResult(value)
+
     /**
      * Returns `true` if the wait was known to have timed out.
      *
@@ -34,6 +36,7 @@ public open class WaitTimeoutResult(
      * ```kotlin
      * import std.sync.Condvar
      * import std.sync.Mutex
+     * import std.thread
      * import std.time.Duration
      *
      * val pair = Pair(Mutex.new(false), Condvar.new())
@@ -63,23 +66,23 @@ public open class WaitTimeoutResult(
     public open fun timedOut(): Boolean = this.value
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<WaitTimeoutResult> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<WaitTimeoutResult> {
+        public fun typeLayout(): TypeLayout<WaitTimeoutResult> =
+            object : TypeLayout<WaitTimeoutResult> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 1L
                 override fun readNative(addr: Long): WaitTimeoutResult =
                     WaitTimeoutResult(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr),
+                        (PrimitiveLayouts.BOOL).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: WaitTimeoutResult) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr, value.value)
+                    (PrimitiveLayouts.BOOL).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): WaitTimeoutResult =
                     WaitTimeoutResult(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: WaitTimeoutResult) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset, value.value)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset, value.value)
                 }
             }
     }

@@ -1,4 +1,4 @@
-@file:OptIn(kotlinx.cinterop.ExperimentalForeignApi::class, kotlin.ExperimentalUnsignedTypes::class)
+@file:OptIn(ExperimentalForeignApi::class, ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.corearch.x86
 
@@ -14,6 +14,7 @@ import io.github.kotlinmania.rustlang.corearch.simd.I64x8
 import io.github.kotlinmania.rustlang.corearch.simd.U64x2
 import io.github.kotlinmania.rustlang.corearch.simd.U64x4
 import io.github.kotlinmania.rustlang.corearch.simd.U64x8
+import kotlinx.cinterop.ExperimentalForeignApi
 
 public actual fun vcvtqq2pd128(a: I64x2, rounding: Int): F64x2 =
     null as F64x2

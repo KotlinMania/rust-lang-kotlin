@@ -254,28 +254,30 @@ public open class DriftsortRun(
             value = v
         }
 
+    public open fun clone(): DriftsortRun = DriftsortRun(value)
+
     public open fun sorted(): Boolean = this.value and 1 == 1
 
     public open fun len(): Int = this.value shr 1
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<DriftsortRun> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<DriftsortRun> {
+        public fun typeLayout(): TypeLayout<DriftsortRun> =
+            object : TypeLayout<DriftsortRun> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 8L
                 override fun readNative(addr: Long): DriftsortRun =
                     DriftsortRun(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readNative(addr),
+                        (PrimitiveLayouts.USIZE64).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: DriftsortRun) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeNative(addr, value.value)
+                    (PrimitiveLayouts.USIZE64).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): DriftsortRun =
                     DriftsortRun(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readBytes(buf, offset),
+                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: DriftsortRun) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeBytes(buf, offset, value.value)
+                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset, value.value)
                 }
             }
 

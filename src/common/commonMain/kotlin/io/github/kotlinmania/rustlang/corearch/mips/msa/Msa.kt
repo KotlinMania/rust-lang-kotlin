@@ -3,8 +3,6 @@
 
 package io.github.kotlinmania.rustlang.corearch.mips.msa
 
-import io.github.kotlinmania.rustlang.core.fmt.Formatter
-import io.github.kotlinmania.rustlang.core.fmt.Result
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
@@ -14,8 +12,6 @@ import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.corearch.Mem
-import io.github.kotlinmania.rustlang.corearch.mem
 import io.github.kotlinmania.rustlang.corearch.simd.Simd
 import io.github.kotlinmania.rustlang.corearch.simd.debugSimdFinish
 
@@ -38,6 +34,8 @@ public open class V16i8(
             value = v
         }
 
+    public open fun clone(): V16i8 = V16i8(value)
+
     /**
      * Returns an array reference containing the entire SIMD vector.
      */
@@ -51,36 +49,36 @@ public open class V16i8(
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "v16i8", this.asArray())
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<V16i8> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<V16i8> {
+        public fun typeLayout(): TypeLayout<V16i8> =
+            object : TypeLayout<V16i8> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): V16i8 =
                     V16i8(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.byteArray(16)).readNative(addr),
+                        (PrimitiveArrayLayouts.byteArray(16)).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: V16i8) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.byteArray(16)).writeNative(addr, value.value)
+                    (PrimitiveArrayLayouts.byteArray(16)).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): V16i8 =
                     V16i8(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.byteArray(16)).readBytes(buf, offset),
+                        (PrimitiveArrayLayouts.byteArray(16)).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: V16i8) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.byteArray(16)).writeBytes(buf, offset, value.value)
+                    (PrimitiveArrayLayouts.byteArray(16)).writeBytes(buf, offset, value.value)
                 }
             }
 
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: Byte): V16i8 = Simd.simdSplat(value)
+        public fun splat(value: Byte): V16i8 = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Byte>): V16i8 = Mem.transmute(simd)
+        public fun from(simd: Simd<Byte>): V16i8 = transmute(simd)
     }
 }
 
-public fun fromSimdByte(simd: V16i8): Simd<Byte> = Mem.transmute(simd)
+public fun fromSimdByte(simd: V16i8): Simd<Byte> = transmute(simd)
 
 /**
  * MIPS-specific 128-bit wide vector of 8 packed `Short`.
@@ -93,6 +91,8 @@ public open class V8i16(
         set(v) {
             value = v
         }
+
+    public open fun clone(): V8i16 = V8i16(value)
 
     /**
      * Returns an array reference containing the entire SIMD vector.
@@ -107,36 +107,36 @@ public open class V8i16(
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "v8i16", this.asArray())
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<V8i16> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<V8i16> {
+        public fun typeLayout(): TypeLayout<V8i16> =
+            object : TypeLayout<V8i16> {
                 override val alignBytes: Long = 2L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): V8i16 =
                     V8i16(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.shortArray(8)).readNative(addr),
+                        (PrimitiveArrayLayouts.shortArray(8)).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: V8i16) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.shortArray(8)).writeNative(addr, value.value)
+                    (PrimitiveArrayLayouts.shortArray(8)).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): V8i16 =
                     V8i16(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.shortArray(8)).readBytes(buf, offset),
+                        (PrimitiveArrayLayouts.shortArray(8)).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: V8i16) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.shortArray(8)).writeBytes(buf, offset, value.value)
+                    (PrimitiveArrayLayouts.shortArray(8)).writeBytes(buf, offset, value.value)
                 }
             }
 
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: Short): V8i16 = Simd.simdSplat(value)
+        public fun splat(value: Short): V8i16 = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Short>): V8i16 = Mem.transmute(simd)
+        public fun from(simd: Simd<Short>): V8i16 = transmute(simd)
     }
 }
 
-public fun fromSimdShort(simd: V8i16): Simd<Short> = Mem.transmute(simd)
+public fun fromSimdShort(simd: V8i16): Simd<Short> = transmute(simd)
 
 /**
  * MIPS-specific 128-bit wide vector of 4 packed `Int`.
@@ -149,6 +149,8 @@ public open class V4i32(
         set(v) {
             value = v
         }
+
+    public open fun clone(): V4i32 = V4i32(value)
 
     /**
      * Returns an array reference containing the entire SIMD vector.
@@ -163,36 +165,36 @@ public open class V4i32(
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "v4i32", this.asArray())
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<V4i32> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<V4i32> {
+        public fun typeLayout(): TypeLayout<V4i32> =
+            object : TypeLayout<V4i32> {
                 override val alignBytes: Long = 4L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): V4i32 =
                     V4i32(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.intArray(4)).readNative(addr),
+                        (PrimitiveArrayLayouts.intArray(4)).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: V4i32) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.intArray(4)).writeNative(addr, value.value)
+                    (PrimitiveArrayLayouts.intArray(4)).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): V4i32 =
                     V4i32(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.intArray(4)).readBytes(buf, offset),
+                        (PrimitiveArrayLayouts.intArray(4)).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: V4i32) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.intArray(4)).writeBytes(buf, offset, value.value)
+                    (PrimitiveArrayLayouts.intArray(4)).writeBytes(buf, offset, value.value)
                 }
             }
 
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: Int): V4i32 = Simd.simdSplat(value)
+        public fun splat(value: Int): V4i32 = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Int>): V4i32 = Mem.transmute(simd)
+        public fun from(simd: Simd<Int>): V4i32 = transmute(simd)
     }
 }
 
-public fun fromSimdInt(simd: V4i32): Simd<Int> = Mem.transmute(simd)
+public fun fromSimdInt(simd: V4i32): Simd<Int> = transmute(simd)
 
 /**
  * MIPS-specific 128-bit wide vector of 2 packed `Long`.
@@ -205,6 +207,8 @@ public open class V2i64(
         set(v) {
             value = v
         }
+
+    public open fun clone(): V2i64 = V2i64(value)
 
     /**
      * Returns an array reference containing the entire SIMD vector.
@@ -219,36 +223,36 @@ public open class V2i64(
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "v2i64", this.asArray())
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<V2i64> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<V2i64> {
+        public fun typeLayout(): TypeLayout<V2i64> =
+            object : TypeLayout<V2i64> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): V2i64 =
                     V2i64(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.longArray(2)).readNative(addr),
+                        (PrimitiveArrayLayouts.longArray(2)).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: V2i64) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.longArray(2)).writeNative(addr, value.value)
+                    (PrimitiveArrayLayouts.longArray(2)).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): V2i64 =
                     V2i64(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.longArray(2)).readBytes(buf, offset),
+                        (PrimitiveArrayLayouts.longArray(2)).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: V2i64) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.longArray(2)).writeBytes(buf, offset, value.value)
+                    (PrimitiveArrayLayouts.longArray(2)).writeBytes(buf, offset, value.value)
                 }
             }
 
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: Long): V2i64 = Simd.simdSplat(value)
+        public fun splat(value: Long): V2i64 = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Long>): V2i64 = Mem.transmute(simd)
+        public fun from(simd: Simd<Long>): V2i64 = transmute(simd)
     }
 }
 
-public fun fromSimdLong(simd: V2i64): Simd<Long> = Mem.transmute(simd)
+public fun fromSimdLong(simd: V2i64): Simd<Long> = transmute(simd)
 
 /**
  * MIPS-specific 128-bit wide vector of 16 packed `UByte`.
@@ -261,6 +265,8 @@ public open class V16u8(
         set(v) {
             value = v
         }
+
+    public open fun clone(): V16u8 = V16u8(value)
 
     /**
      * Returns an array reference containing the entire SIMD vector.
@@ -275,36 +281,36 @@ public open class V16u8(
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "v16u8", this.asArray())
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<V16u8> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<V16u8> {
+        public fun typeLayout(): TypeLayout<V16u8> =
+            object : TypeLayout<V16u8> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): V16u8 =
                     V16u8(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uByteArray(16)).readNative(addr),
+                        (PrimitiveArrayLayouts.uByteArray(16)).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: V16u8) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uByteArray(16)).writeNative(addr, value.value)
+                    (PrimitiveArrayLayouts.uByteArray(16)).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): V16u8 =
                     V16u8(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uByteArray(16)).readBytes(buf, offset),
+                        (PrimitiveArrayLayouts.uByteArray(16)).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: V16u8) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uByteArray(16)).writeBytes(buf, offset, value.value)
+                    (PrimitiveArrayLayouts.uByteArray(16)).writeBytes(buf, offset, value.value)
                 }
             }
 
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: UByte): V16u8 = Simd.simdSplat(value)
+        public fun splat(value: UByte): V16u8 = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<UByte>): V16u8 = Mem.transmute(simd)
+        public fun from(simd: Simd<UByte>): V16u8 = transmute(simd)
     }
 }
 
-public fun fromSimdUByte(simd: V16u8): Simd<UByte> = Mem.transmute(simd)
+public fun fromSimdUByte(simd: V16u8): Simd<UByte> = transmute(simd)
 
 /**
  * MIPS-specific 128-bit wide vector of 8 packed `UShort`.
@@ -317,6 +323,8 @@ public open class V8u16(
         set(v) {
             value = v
         }
+
+    public open fun clone(): V8u16 = V8u16(value)
 
     /**
      * Returns an array reference containing the entire SIMD vector.
@@ -331,36 +339,36 @@ public open class V8u16(
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "v8u16", this.asArray())
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<V8u16> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<V8u16> {
+        public fun typeLayout(): TypeLayout<V8u16> =
+            object : TypeLayout<V8u16> {
                 override val alignBytes: Long = 2L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): V8u16 =
                     V8u16(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uShortArray(8)).readNative(addr),
+                        (PrimitiveArrayLayouts.uShortArray(8)).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: V8u16) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uShortArray(8)).writeNative(addr, value.value)
+                    (PrimitiveArrayLayouts.uShortArray(8)).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): V8u16 =
                     V8u16(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uShortArray(8)).readBytes(buf, offset),
+                        (PrimitiveArrayLayouts.uShortArray(8)).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: V8u16) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uShortArray(8)).writeBytes(buf, offset, value.value)
+                    (PrimitiveArrayLayouts.uShortArray(8)).writeBytes(buf, offset, value.value)
                 }
             }
 
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: UShort): V8u16 = Simd.simdSplat(value)
+        public fun splat(value: UShort): V8u16 = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<UShort>): V8u16 = Mem.transmute(simd)
+        public fun from(simd: Simd<UShort>): V8u16 = transmute(simd)
     }
 }
 
-public fun fromSimdUShort(simd: V8u16): Simd<UShort> = Mem.transmute(simd)
+public fun fromSimdUShort(simd: V8u16): Simd<UShort> = transmute(simd)
 
 /**
  * MIPS-specific 128-bit wide vector of 4 packed `UInt`.
@@ -373,6 +381,8 @@ public open class V4u32(
         set(v) {
             value = v
         }
+
+    public open fun clone(): V4u32 = V4u32(value)
 
     /**
      * Returns an array reference containing the entire SIMD vector.
@@ -387,36 +397,36 @@ public open class V4u32(
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "v4u32", this.asArray())
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<V4u32> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<V4u32> {
+        public fun typeLayout(): TypeLayout<V4u32> =
+            object : TypeLayout<V4u32> {
                 override val alignBytes: Long = 4L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): V4u32 =
                     V4u32(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uIntArray(4)).readNative(addr),
+                        (PrimitiveArrayLayouts.uIntArray(4)).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: V4u32) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uIntArray(4)).writeNative(addr, value.value)
+                    (PrimitiveArrayLayouts.uIntArray(4)).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): V4u32 =
                     V4u32(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uIntArray(4)).readBytes(buf, offset),
+                        (PrimitiveArrayLayouts.uIntArray(4)).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: V4u32) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uIntArray(4)).writeBytes(buf, offset, value.value)
+                    (PrimitiveArrayLayouts.uIntArray(4)).writeBytes(buf, offset, value.value)
                 }
             }
 
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: UInt): V4u32 = Simd.simdSplat(value)
+        public fun splat(value: UInt): V4u32 = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<UInt>): V4u32 = Mem.transmute(simd)
+        public fun from(simd: Simd<UInt>): V4u32 = transmute(simd)
     }
 }
 
-public fun fromSimdUInt(simd: V4u32): Simd<UInt> = Mem.transmute(simd)
+public fun fromSimdUInt(simd: V4u32): Simd<UInt> = transmute(simd)
 
 /**
  * MIPS-specific 128-bit wide vector of 2 packed `ULong`.
@@ -429,6 +439,8 @@ public open class V2u64(
         set(v) {
             value = v
         }
+
+    public open fun clone(): V2u64 = V2u64(value)
 
     /**
      * Returns an array reference containing the entire SIMD vector.
@@ -443,36 +455,36 @@ public open class V2u64(
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "v2u64", this.asArray())
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<V2u64> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<V2u64> {
+        public fun typeLayout(): TypeLayout<V2u64> =
+            object : TypeLayout<V2u64> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): V2u64 =
                     V2u64(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uLongArray(2)).readNative(addr),
+                        (PrimitiveArrayLayouts.uLongArray(2)).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: V2u64) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uLongArray(2)).writeNative(addr, value.value)
+                    (PrimitiveArrayLayouts.uLongArray(2)).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): V2u64 =
                     V2u64(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uLongArray(2)).readBytes(buf, offset),
+                        (PrimitiveArrayLayouts.uLongArray(2)).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: V2u64) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uLongArray(2)).writeBytes(buf, offset, value.value)
+                    (PrimitiveArrayLayouts.uLongArray(2)).writeBytes(buf, offset, value.value)
                 }
             }
 
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: ULong): V2u64 = Simd.simdSplat(value)
+        public fun splat(value: ULong): V2u64 = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<ULong>): V2u64 = Mem.transmute(simd)
+        public fun from(simd: Simd<ULong>): V2u64 = transmute(simd)
     }
 }
 
-public fun fromSimdULong(simd: V2u64): Simd<ULong> = Mem.transmute(simd)
+public fun fromSimdULong(simd: V2u64): Simd<ULong> = transmute(simd)
 
 public open class V4f32(
     public var value: FloatArray,
@@ -482,6 +494,8 @@ public open class V4f32(
         set(v) {
             value = v
         }
+
+    public open fun clone(): V4f32 = V4f32(value)
 
     /**
      * Returns an array reference containing the entire SIMD vector.
@@ -496,36 +510,36 @@ public open class V4f32(
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "v4f32", this.asArray())
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<V4f32> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<V4f32> {
+        public fun typeLayout(): TypeLayout<V4f32> =
+            object : TypeLayout<V4f32> {
                 override val alignBytes: Long = 4L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): V4f32 =
                     V4f32(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.floatArray(4)).readNative(addr),
+                        (PrimitiveArrayLayouts.floatArray(4)).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: V4f32) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.floatArray(4)).writeNative(addr, value.value)
+                    (PrimitiveArrayLayouts.floatArray(4)).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): V4f32 =
                     V4f32(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.floatArray(4)).readBytes(buf, offset),
+                        (PrimitiveArrayLayouts.floatArray(4)).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: V4f32) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.floatArray(4)).writeBytes(buf, offset, value.value)
+                    (PrimitiveArrayLayouts.floatArray(4)).writeBytes(buf, offset, value.value)
                 }
             }
 
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: Float): V4f32 = Simd.simdSplat(value)
+        public fun splat(value: Float): V4f32 = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Float>): V4f32 = Mem.transmute(simd)
+        public fun from(simd: Simd<Float>): V4f32 = transmute(simd)
     }
 }
 
-public fun fromSimdFloat(simd: V4f32): Simd<Float> = Mem.transmute(simd)
+public fun fromSimdFloat(simd: V4f32): Simd<Float> = transmute(simd)
 
 /**
  * MIPS-specific 128-bit wide vector of 2 packed `Double`.
@@ -538,6 +552,8 @@ public open class V2f64(
         set(v) {
             value = v
         }
+
+    public open fun clone(): V2f64 = V2f64(value)
 
     /**
      * Returns an array reference containing the entire SIMD vector.
@@ -552,36 +568,36 @@ public open class V2f64(
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "v2f64", this.asArray())
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<V2f64> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<V2f64> {
+        public fun typeLayout(): TypeLayout<V2f64> =
+            object : TypeLayout<V2f64> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): V2f64 =
                     V2f64(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.doubleArray(2)).readNative(addr),
+                        (PrimitiveArrayLayouts.doubleArray(2)).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: V2f64) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.doubleArray(2)).writeNative(addr, value.value)
+                    (PrimitiveArrayLayouts.doubleArray(2)).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): V2f64 =
                     V2f64(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.doubleArray(2)).readBytes(buf, offset),
+                        (PrimitiveArrayLayouts.doubleArray(2)).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: V2f64) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.doubleArray(2)).writeBytes(buf, offset, value.value)
+                    (PrimitiveArrayLayouts.doubleArray(2)).writeBytes(buf, offset, value.value)
                 }
             }
 
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: Double): V2f64 = Simd.simdSplat(value)
+        public fun splat(value: Double): V2f64 = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Double>): V2f64 = Mem.transmute(simd)
+        public fun from(simd: Simd<Double>): V2f64 = transmute(simd)
     }
 }
 
-public fun fromSimdDouble(simd: V2f64): Simd<Double> = Mem.transmute(simd)
+public fun fromSimdDouble(simd: V2f64): Simd<Double> = transmute(simd)
 
 public expect fun msaAddAB(a: V16i8, b: V16i8): V16i8
 

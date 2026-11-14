@@ -8,12 +8,13 @@ import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.Leaf
 import io.github.kotlinmania.rustlang.alloc.collections.btree.search.SearchResult.*
 import io.github.kotlinmania.rustlang.core.alloc.AllocatorClone
 import io.github.kotlinmania.rustlang.core.borrow.Borrow
+import io.github.kotlinmania.rustlang.core.mem.dropguard.DropGuard
 
 /**
  * Calculates the length of both trees that result from splitting up
  * a given number of distinct key-value pairs.
  */
-internal fun <K, V> Root.Companion.calcSplitLength(totalNum: Int, rootA: Root<K, V>, rootB: Root<K, V>): Pair<Int, Int> {
+public fun <K, V> Root.Companion.calcSplitLength(totalNum: Int, rootA: Root<K, V>, rootB: Root<K, V>): Pair<Int, Int> {
     val (lengthA, lengthB)
     if (rootA.height() < rootB.height()) {
         lengthA = rootA.reborrow().calcLength()
@@ -34,7 +35,7 @@ internal fun <K, V> Root.Companion.calcSplitLength(totalNum: Int, rootA: Root<K,
  * If `self` respects all `BTreeMap` tree invariants, then both
  * `self` and the returned tree will respect those invariants.
  */
-internal fun <K, V, Q, A : AllocatorClone> Root<K, V>.splitOff(key: Q, alloc: A): Root<K, V> where K : Borrow<Q> {
+public fun <K, V, Q, A : AllocatorClone> Root<K, V>.splitOff(key: Q, alloc: A): Root<K, V> where K : Borrow<Q> {
     val leftRoot = this
     val rightRoot = Root.newPillar(leftRoot.height(), alloc.clone())
     var leftNode = leftRoot.borrowMut()
@@ -61,7 +62,7 @@ internal fun <K, V, Q, A : AllocatorClone> Root<K, V>.splitOff(key: Q, alloc: A)
     // A panic from a later `searchNode` comparison would unwind out of
     // that state and double-free the shared values (#158165), so abort
     // instead of exposing it.
-    val guard = mem.DropGuard.new({ intrinsics.abortImmediate() })
+    val guard = DropGuard.new({ abortImmediate() })
     while (true) {
         splitEdge.moveSuffix(rightNode)
         run {
@@ -90,7 +91,7 @@ internal fun <K, V, Q, A : AllocatorClone> Root<K, V>.splitOff(key: Q, alloc: A)
     }
     leftRoot.fixRightBorder(alloc.clone())
     rightRoot.fixLeftBorder(alloc)
-    mem.DropGuard.dismiss(guard)
+    DropGuard.dismiss(guard)
     return rightRoot
 }
 

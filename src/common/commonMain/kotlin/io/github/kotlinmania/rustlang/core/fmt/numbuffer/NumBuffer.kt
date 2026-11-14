@@ -90,7 +90,7 @@ public val DEFAULT11: List<MaybeUninit<UByte>> = List(U128.MAX_VALUE.ilog10().to
  * ```
  */
 public open class NumBuffer<T, Buf>(
-    internal var buf: Buf,
+    public var buf: Buf,
     public var phantom: Unit,
 ) {
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "NumBuffer").finish()

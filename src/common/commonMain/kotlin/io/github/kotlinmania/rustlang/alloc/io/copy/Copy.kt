@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.alloc.io.copy
 import io.github.kotlinmania.rustlang.alloc.io.copy.generic.genericCopy
 import io.github.kotlinmania.rustlang.alloc.io.read.Read
 import io.github.kotlinmania.rustlang.core.io.error.Result
+import io.github.kotlinmania.rustlang.core.io.write.Write
 
 /**
  * Used as a part of [copy specialization](SpecCopy) to communicate how many bytes
@@ -52,6 +53,8 @@ public sealed class CopyState {
  * # Examples
  *
  * ```kotlin
+ * import std.io
+ *
  * fun main(): io.Result<Unit> {
  *     var reader: List<UByte> = "hello".encodeToByteArray().map { it.toUByte() }
  *     var writer: List<UByte> = mutableListOf()

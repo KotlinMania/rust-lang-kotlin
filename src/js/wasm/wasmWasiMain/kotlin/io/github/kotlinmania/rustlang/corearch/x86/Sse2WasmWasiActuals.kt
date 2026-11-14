@@ -1,4 +1,4 @@
-@file:OptIn(kotlin.ExperimentalUnsignedTypes::class, kotlin.wasm.ExperimentalWasmInterop::class)
+@file:OptIn(ExperimentalUnsignedTypes::class, ExperimentalWasmInterop::class)
 
 package io.github.kotlinmania.rustlang.corearch.x86
 
@@ -12,8 +12,8 @@ import io.github.kotlinmania.rustlang.corearch.simd.U16x8
 import io.github.kotlinmania.rustlang.corearch.simd.U64x2
 import io.github.kotlinmania.rustlang.corearch.simd.U8x16
 
-// The host must provide the C companion wrapper exports in import module corearch.
-@kotlin.wasm.WasmImport("corearch", "corearchX86Sse2Pause")
+// The host must provide the C companion wrapper exports in import module kmcore.
+@kotlin.wasm.WasmImport("kmcore", "corearchX86Sse2Pause")
 private external fun wasiCorearchX86Sse2Pause(): Unit
 
 public actual fun pause(): Unit =
@@ -23,13 +23,13 @@ public actual fun clflush(p: ConstPtr) {
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Sse2Clflush")
 }
 
-@kotlin.wasm.WasmImport("corearch", "corearchX86Sse2Lfence")
+@kotlin.wasm.WasmImport("kmcore", "corearchX86Sse2Lfence")
 private external fun wasiCorearchX86Sse2Lfence(): Unit
 
 public actual fun lfence(): Unit =
     wasiCorearchX86Sse2Lfence()
 
-@kotlin.wasm.WasmImport("corearch", "corearchX86Sse2Mfence")
+@kotlin.wasm.WasmImport("kmcore", "corearchX86Sse2Mfence")
 private external fun wasiCorearchX86Sse2Mfence(): Unit
 
 public actual fun mfence(): Unit =

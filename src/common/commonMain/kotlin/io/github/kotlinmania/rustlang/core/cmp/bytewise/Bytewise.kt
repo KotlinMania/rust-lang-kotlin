@@ -19,7 +19,7 @@ package io.github.kotlinmania.rustlang.core.cmp.bytewise
  * - Neither `Self` nor `Rhs` have provenance, so integer comparisons are correct.
  * - `<Self as PartialEq<Rhs>>.{ eq, ne }` are equivalent to comparing the bytes.
  */
-internal interface BytewiseEq<Rhs>
+public interface BytewiseEq<Rhs>
 
 // SAFETY: All the ordinary integer types have no padding, and are not pointers.
 // SAFETY: These have *niches*, but no *padding* and no *provenance*,

@@ -3,7 +3,6 @@ package io.github.kotlinmania.rustlang.core.array
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
-import io.github.kotlinmania.rustlang.core.ops.index
 import io.github.kotlinmania.rustlang.core.result.Result
 
 /**
@@ -18,26 +17,28 @@ public open class TryFromSliceError(
             value = v
         }
 
+    public open fun clone(): TryFromSliceError = TryFromSliceError(value)
+
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = "could not convert slice to array".fmt(f)
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<TryFromSliceError> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<TryFromSliceError> {
+        public fun typeLayout(): TypeLayout<TryFromSliceError> =
+            object : TypeLayout<TryFromSliceError> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): TryFromSliceError =
                     TryFromSliceError(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.UNIT).readNative(addr),
+                        (PrimitiveLayouts.UNIT).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: TryFromSliceError) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.UNIT).writeNative(addr, value.value)
+                    (PrimitiveLayouts.UNIT).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): TryFromSliceError =
                     TryFromSliceError(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.UNIT).readBytes(buf, offset),
+                        (PrimitiveLayouts.UNIT).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: TryFromSliceError) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.UNIT).writeBytes(buf, offset, value.value)
+                    (PrimitiveLayouts.UNIT).writeBytes(buf, offset, value.value)
                 }
             }
 
@@ -75,7 +76,7 @@ public open class Guard<T>(
      *
      * No more than N elements must be initialized.
      */
-    internal open fun pushUnchecked(item: T) {
+    public open fun pushUnchecked(item: T) {
         // SAFETY: If `initialized` was correct before and the caller does not
         // invoke this method more than N times, then writes will be in-bounds
         // and slots will not be initialized more than once.
@@ -124,7 +125,7 @@ public open class GuardBack<T>(
      *
      * No more than N elements must be initialized.
      */
-    internal open fun pushUnchecked(item: T) {
+    public open fun pushUnchecked(item: T) {
         // SAFETY: If `initialized` was correct before and the caller does not
         // invoke this method more than N times, then writes will be in-bounds
         // and slots will not be initialized more than once.

@@ -5,14 +5,14 @@ package io.github.kotlinmania.rustlang.core.unicode.unicodedata.conversions
 
 import io.github.kotlinmania.rustlang.core.char.toAsciiLowercase
 import io.github.kotlinmania.rustlang.core.char.toAsciiUppercase
+import io.github.kotlinmania.rustlang.core.cmp.Eq
+import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ops.range.RangeInclusive
 import io.github.kotlinmania.rustlang.core.option.Option
 import io.github.kotlinmania.rustlang.core.panicking.assertFailed
-import io.github.kotlinmania.rustlang.core.ptr.eq
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 
 public open class L1Lut(
     public var l2Luts: List<L2Lut>,
@@ -29,36 +29,38 @@ public open class Range(
     public var len: UByte,
     public var parity: Boolean,
 ) {
+    public open fun clone(): Range = Range(start, len, parity)
+
     public open fun start(): UShort = this.start
 
     public open fun end(): UShort = this.start + this.len.toUShort()
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Range> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Range> {
+        public fun typeLayout(): TypeLayout<Range> =
+            object : TypeLayout<Range> {
                 override val alignBytes: Long = 2L
                 override val sizeBytes: Long = 4L
                 override fun readNative(addr: Long): Range =
                     Range(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U16).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U8).readNative(addr + 2L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 3L),
+                        (PrimitiveLayouts.U16).readNative(addr),
+                        (PrimitiveLayouts.U8).readNative(addr + 2L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 3L),
                     )
                 override fun writeNative(addr: Long, value: Range) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U16).writeNative(addr, value.start)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U8).writeNative(addr + 2L, value.len)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 3L, value.parity)
+                    (PrimitiveLayouts.U16).writeNative(addr, value.start)
+                    (PrimitiveLayouts.U8).writeNative(addr + 2L, value.len)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 3L, value.parity)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Range =
                     Range(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U16).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U8).readBytes(buf, offset + 2),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 3),
+                        (PrimitiveLayouts.U16).readBytes(buf, offset),
+                        (PrimitiveLayouts.U8).readBytes(buf, offset + 2),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 3),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Range) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U16).writeBytes(buf, offset, value.start)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U8).writeBytes(buf, offset + 2, value.len)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 3, value.parity)
+                    (PrimitiveLayouts.U16).writeBytes(buf, offset, value.start)
+                    (PrimitiveLayouts.U8).writeBytes(buf, offset + 2, value.len)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 3, value.parity)
                 }
             }
 
@@ -205,7 +207,7 @@ public fun toCasefold(c: Char): List<Char> {
                         val leftVal = matchVal.first
                         val rightVal = matchVal.second
                         if (!(leftVal == rightVal)) {
-                            val kind = eq
+                            val kind = Eq
                             assertFailed(kind, leftVal, rightVal, Option.None)
                         }
                     }
@@ -217,7 +219,7 @@ public fun toCasefold(c: Char): List<Char> {
                         val leftVal1 = matchVal1.first
                         val rightVal1 = matchVal1.second
                         if (!(leftVal1 == rightVal1)) {
-                            val kind1 = eq
+                            val kind1 = Eq
                             assertFailed(kind1, leftVal1, rightVal1, Option.None)
                         }
                     }
@@ -232,7 +234,7 @@ public fun toCasefold(c: Char): List<Char> {
                             val leftVal2 = matchVal2.first
                             val rightVal2 = matchVal2.second
                             if (!(leftVal2 == rightVal2)) {
-                                val kind2 = eq
+                                val kind2 = Eq
                                 assertFailed(kind2, leftVal2, rightVal2, Option.None)
                             }
                         }
@@ -245,7 +247,7 @@ public fun toCasefold(c: Char): List<Char> {
                             val leftVal3 = matchVal3.first
                             val rightVal3 = matchVal3.second
                             if (!(leftVal3 == rightVal3)) {
-                                val kind3 = eq
+                                val kind3 = Eq
                                 assertFailed(kind3, leftVal3, rightVal3, Option.None)
                             }
                         }
@@ -257,7 +259,7 @@ public fun toCasefold(c: Char): List<Char> {
                             val leftVal4 = matchVal4.first
                             val rightVal4 = matchVal4.second
                             if (!(leftVal4 == rightVal4)) {
-                                val kind4 = eq
+                                val kind4 = Eq
                                 assertFailed(kind4, leftVal4, rightVal4, Option.None)
                             }
                         }
@@ -271,7 +273,7 @@ public fun toCasefold(c: Char): List<Char> {
                             val leftVal5 = matchVal5.first
                             val rightVal5 = matchVal5.second
                             if (!(leftVal5 == rightVal5)) {
-                                val kind5 = eq
+                                val kind5 = Eq
                                 assertFailed(kind5, leftVal5, rightVal5, Option.None)
                             }
                         }

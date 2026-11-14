@@ -1,6 +1,7 @@
 // port-lint: source net/display_buffer.rs
 package io.github.kotlinmania.rustlang.core.net.displaybuffer
 
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -8,11 +9,14 @@ import io.github.kotlinmania.rustlang.core.result.Result
 /**
  * Used for slow path in `Display` implementations when alignment is required.
  */
-internal open class DisplayBuffer(
-    public var buf: MutableList<MaybeUninit<UByte>>,
+public open class DisplayBuffer internal constructor(
+    bufCtorArg: MutableList<MaybeUninit<UByte>>,
     public var len: Int,
 ) : Appendable {
-    internal open fun asStr(): String {
+    public var buf: MutableList<MaybeUninit<UByte>> = bufCtorArg
+        internal set
+
+    public open fun asStr(): String {
         // SAFETY: `buf` is only written to by the `fmt.Write.writeStr` implementation
         // which writes a valid UTF-8 string to `buf` and correctly sets `len`.
         return run {
@@ -25,7 +29,7 @@ internal open class DisplayBuffer(
         val bytes = s.encodeToByteArray().map { it.toUByte() }
         return when (val matchVal = this.buf.getMut(this.len until (this.len + bytes.size))) {
             null -> {
-                Result.Err(fmt.Error)
+                Result.Err(Error)
             }
             else -> {
                 val buf = matchVal
@@ -37,8 +41,16 @@ internal open class DisplayBuffer(
     }
 
     public companion object {
-        internal fun new(buf: MutableList<MaybeUninit<UByte>>): DisplayBuffer = DisplayBuffer(buf = buf, len = 0)
+        public operator fun invoke(
+            buf: MutableList<MaybeUninit<UByte>>,
+            len: Int,
+        ): DisplayBuffer = DisplayBuffer(
+            bufCtorArg = buf,
+            len = len,
+        )
 
-        internal fun buffer(size: Int): List<MaybeUninit<UByte>> = List(size) { MaybeUninit.uninit(ObjectSlotLayout<List<MaybeUninit<UByte>>>()) }
+        public fun new(buf: MutableList<MaybeUninit<UByte>>): DisplayBuffer = DisplayBuffer(buf = buf, len = 0)
+
+        public fun buffer(size: Int): List<MaybeUninit<UByte>> = List(size) { MaybeUninit.uninit(ObjectSlotLayout<List<MaybeUninit<UByte>>>()) }
     }
 }

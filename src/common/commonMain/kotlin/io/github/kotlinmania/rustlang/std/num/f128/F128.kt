@@ -1,12 +1,10 @@
 // port-lint: source num/f128.rs
 package io.github.kotlinmania.rustlang.std.num.f128
 
-import io.github.kotlinmania.intrinsics.log
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
-import io.github.kotlinmania.rustlang.std.intrinsics
 import io.github.kotlinmania.rustlang.std.sys.cmath.acosf128
 import io.github.kotlinmania.rustlang.std.sys.cmath.acoshf128
 import io.github.kotlinmania.rustlang.std.sys.cmath.asinf128
@@ -25,6 +23,9 @@ import io.github.kotlinmania.rustlang.std.sys.cmath.sinhf128
 import io.github.kotlinmania.rustlang.std.sys.cmath.tanf128
 import io.github.kotlinmania.rustlang.std.sys.cmath.tanhf128
 import io.github.kotlinmania.rustlang.std.sys.cmath.tgammaf128
+import kotlin.math.cos
+import kotlin.math.ln
+import kotlin.math.sin
 
 // Constants for the `f128` quadruple-precision floating point type.
 //
@@ -48,18 +49,20 @@ import io.github.kotlinmania.rustlang.std.sys.cmath.tgammaf128
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val x = 2.0
- *     val absDifference = (x.powf(2.0) - (x * x)).abs()
- *     check(absDifference <= EPSILON)
- *     check(powf(1.0, NAN) == 1.0)
- *     check(powf(NAN, 0.0) == 1.0)
- *     check(powf(0.0, 0.0) == 1.0)
+ *     val x = F128.fromDouble(2.0)
+ *     val absDifference = (x.powf(F128.fromDouble(2.0)) - (x * x)).abs()
+ *     check(absDifference <= F128.EPSILON)
+ *     check(F128.powf(1.0, F128.NAN) == 1.0)
+ *     check(F128.powf(F128.NAN, 0.0) == 1.0)
+ *     check(F128.powf(0.0, 0.0) == 1.0)
  * }
  * ```
  */
-public fun F128.powf(n: F128): F128 = io.github.kotlinmania.intrinsics.powf(this, n)
+public fun F128.powf(n: F128): F128 = powf(this, n)
 
 /**
  * Returns `e ^(self)`, (the exponential function).
@@ -72,18 +75,20 @@ public fun F128.powf(n: F128): F128 = io.github.kotlinmania.intrinsics.powf(this
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val one = 1.0
+ *     val one = F128.fromDouble(1.0)
  *     // e^1
  *     val e = one.exp()
  *     // ln(e) - 1 == 0
  *     val absDifference = (e.ln() - 1.0).abs()
- *     check(absDifference <= EPSILON)
+ *     check(absDifference <= F128.EPSILON)
  * }
  * ```
  */
-public fun F128.exp(): F128 = io.github.kotlinmania.intrinsics.exp(this)
+public fun F128.exp(): F128 = exp(this)
 
 /**
  * Returns `2 ^(self)`.
@@ -96,16 +101,18 @@ public fun F128.exp(): F128 = io.github.kotlinmania.intrinsics.exp(this)
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val f = 2.0
+ *     val f = F128.fromDouble(2.0)
  *     // 2^2 - 4 == 0
  *     val absDifference = (f.exp2() - 4.0).abs()
- *     check(absDifference <= EPSILON)
+ *     check(absDifference <= F128.EPSILON)
  * }
  * ```
  */
-public fun F128.exp2(): F128 = io.github.kotlinmania.intrinsics.exp2(this)
+public fun F128.exp2(): F128 = exp2(this)
 
 /**
  * Returns the natural logarithm of the number.
@@ -120,23 +127,27 @@ public fun F128.exp2(): F128 = io.github.kotlinmania.intrinsics.exp2(this)
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val one = 1.0
+ *     val one = F128.fromDouble(1.0)
  *     // e^1
  *     val e = one.exp()
  *     // ln(e) - 1 == 0
  *     val absDifference = (e.ln() - 1.0).abs()
- *     check(absDifference <= EPSILON)
+ *     check(absDifference <= F128.EPSILON)
  * }
  * ```
  *
  * Non-positive values:
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     check(0.ln() == NEG_INFINITY)
- *     check((-42).ln().isNan())
+ *     check(F128.fromDouble(0.0).ln() == F128.NEG_INFINITY)
+ *     check((-F128.fromDouble(42.0)).ln().isNan())
  * }
  * ```
  */
@@ -159,25 +170,29 @@ public fun F128.ln(): F128 = log(this)
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val five = 5.0
+ *     val five = F128.fromDouble(5.0)
  *     // log5(5) - 1 == 0
- *     val absDifference = (five.log(5.0) - 1.0).abs()
- *     check(absDifference <= EPSILON)
+ *     val absDifference = (five.log(F128.fromDouble(5.0)) - 1.0).abs()
+ *     check(absDifference <= F128.EPSILON)
  * }
  * ```
  *
  * Non-positive values:
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     check(0.log(10.0) == NEG_INFINITY)
- *     check((-42).log(10.0).isNan())
+ *     check(F128.fromDouble(0.0).log(10.0) == F128.NEG_INFINITY)
+ *     check((-F128.fromDouble(42.0)).log(10.0).isNan())
  * }
  * ```
  */
-public fun F128.log(base: F128): F128 = this.ln() / base.ln()
+public fun F128.log(base: F128): F128 = F128.fromDouble(ln(this.toDouble())) / F128.fromDouble(ln(base.toDouble()))
 
 /**
  * Returns the base 2 logarithm of the number.
@@ -192,25 +207,29 @@ public fun F128.log(base: F128): F128 = this.ln() / base.ln()
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val two = 2.0
+ *     val two = F128.fromDouble(2.0)
  *     // log2(2) - 1 == 0
  *     val absDifference = (two.log2() - 1.0).abs()
- *     check(absDifference <= EPSILON)
+ *     check(absDifference <= F128.EPSILON)
  * }
  * ```
  *
  * Non-positive values:
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     check(0.log2() == NEG_INFINITY)
- *     check((-42).log2().isNan())
+ *     check(F128.fromDouble(0.0).log2() == F128.NEG_INFINITY)
+ *     check((-F128.fromDouble(42.0)).log2().isNan())
  * }
  * ```
  */
-public fun F128.log2(): F128 = io.github.kotlinmania.intrinsics.log2(this)
+public fun F128.log2(): F128 = log2(this)
 
 /**
  * Returns the base 10 logarithm of the number.
@@ -225,25 +244,29 @@ public fun F128.log2(): F128 = io.github.kotlinmania.intrinsics.log2(this)
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val ten = 10.0
+ *     val ten = F128.fromDouble(10.0)
  *     // log10(10) - 1 == 0
  *     val absDifference = (ten.log10() - 1.0).abs()
- *     check(absDifference <= EPSILON)
+ *     check(absDifference <= F128.EPSILON)
  * }
  * ```
  *
  * Non-positive values:
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     check(0.log10() == NEG_INFINITY)
- *     check((-42).log10().isNan())
+ *     check(F128.fromDouble(0.0).log10() == F128.NEG_INFINITY)
+ *     check((-F128.fromDouble(42.0)).log10().isNan())
  * }
  * ```
  */
-public fun F128.log10(): F128 = io.github.kotlinmania.intrinsics.log10(this)
+public fun F128.log10(): F128 = log10(this)
 
 /**
  * Returns the cube root of a number.
@@ -259,12 +282,14 @@ public fun F128.log10(): F128 = io.github.kotlinmania.intrinsics.log10(this)
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val x = 8.0
+ *     val x = F128.fromDouble(8.0)
  *     // x^(1/3) - 2 == 0
  *     val absDifference = (x.cbrt() - 2.0).abs()
- *     check(absDifference <= EPSILON)
+ *     check(absDifference <= F128.EPSILON)
  * }
  * ```
  */
@@ -287,13 +312,15 @@ public fun F128.cbrt(): F128 = cbrtf128(this)
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val x = 2.0
- *     val y = 3.0
+ *     val x = F128.fromDouble(2.0)
+ *     val y = F128.fromDouble(3.0)
  *     // sqrt(x^2 + y^2)
  *     val absDifference = (x.hypot(y) - (x.powi(2) + y.powi(2)).sqrt()).abs()
- *     check(absDifference <= EPSILON)
+ *     check(absDifference <= F128.EPSILON)
  * }
  * ```
  */
@@ -310,15 +337,17 @@ public fun F128.hypot(other: F128): F128 = hypotf128(this, other)
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val x = FRAC_PI_2
+ *     val x = F128.fromDouble(1.5707963267948966)
  *     val absDifference = (x.sin() - 1.0).abs()
- *     check(absDifference <= EPSILON)
+ *     check(absDifference <= F128.EPSILON)
  * }
  * ```
  */
-public fun F128.sin(): F128 = io.github.kotlinmania.intrinsics.sin(this)
+public fun F128.sin(): F128 = sin(this)
 
 /**
  * Computes the cosine of a number (in radians).
@@ -331,15 +360,17 @@ public fun F128.sin(): F128 = io.github.kotlinmania.intrinsics.sin(this)
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val x = 2.0 * PI
+ *     val x = F128.fromDouble(2.0) * F128.fromDouble(kotlin.math.PI)
  *     val absDifference = (x.cos() - 1.0).abs()
- *     check(absDifference <= EPSILON)
+ *     check(absDifference <= F128.EPSILON)
  * }
  * ```
  */
-public fun F128.cos(): F128 = io.github.kotlinmania.intrinsics.cos(this)
+public fun F128.cos(): F128 = cos(this)
 
 /**
  * Computes the tangent of a number (in radians).
@@ -355,11 +386,13 @@ public fun F128.cos(): F128 = io.github.kotlinmania.intrinsics.cos(this)
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val x = FRAC_PI_4
+ *     val x = F128.fromDouble(0.7853981633974483)
  *     val absDifference = (x.tan() - 1.0).abs()
- *     check(absDifference <= EPSILON)
+ *     check(absDifference <= F128.EPSILON)
  * }
  * ```
  */
@@ -381,12 +414,14 @@ public fun F128.tan(): F128 = tanf128(this)
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val f = FRAC_PI_4
+ *     val f = F128.fromDouble(0.7853981633974483)
  *     // asin(sin(pi/2))
  *     val absDifference = (f.sin().asin() - f).abs()
- *     check(absDifference <= EPSILON)
+ *     check(absDifference <= F128.EPSILON)
  * }
  * ```
  */
@@ -408,12 +443,14 @@ public fun F128.asin(): F128 = asinf128(this)
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val f = FRAC_PI_4
+ *     val f = F128.fromDouble(0.7853981633974483)
  *     // acos(cos(pi/4))
- *     val absDifference = (f.cos().acos() - FRAC_PI_4).abs()
- *     check(absDifference <= EPSILON)
+ *     val absDifference = (f.cos().acos() - F128.fromDouble(0.7853981633974483)).abs()
+ *     check(absDifference <= F128.EPSILON)
  * }
  * ```
  */
@@ -434,12 +471,14 @@ public fun F128.acos(): F128 = acosf128(this)
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val f = 1.0
+ *     val f = F128.fromDouble(1.0)
  *     // atan(tan(1))
  *     val absDifference = (f.tan().atan() - 1.0).abs()
- *     check(absDifference <= EPSILON)
+ *     check(absDifference <= F128.EPSILON)
  * }
  * ```
  */
@@ -466,20 +505,22 @@ public fun F128.atan(): F128 = atanf128(this)
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
  *     // Positive angles measured counter-clockwise
  *     // from positive x axis
  *     // -pi/4 radians (45 deg clockwise)
- *     val x1 = 3.0
- *     val y1 = -3.0
+ *     val x1 = F128.fromDouble(3.0)
+ *     val y1 = -F128.fromDouble(3.0)
  *     // 3pi/4 radians (135 deg counter-clockwise)
- *     val x2 = -3.0
- *     val y2 = 3.0
- *     val absDifference1 = (y1.atan2(x1) - (-FRAC_PI_4)).abs()
- *     val absDifference2 = (y2.atan2(x2) - (3.0 * FRAC_PI_4)).abs()
- *     check(absDifference1 <= EPSILON)
- *     check(absDifference2 <= EPSILON)
+ *     val x2 = -F128.fromDouble(3.0)
+ *     val y2 = F128.fromDouble(3.0)
+ *     val absDifference1 = (y1.atan2(x1) - (-F128.fromDouble(0.7853981633974483))).abs()
+ *     val absDifference2 = (y2.atan2(x2) - (F128.fromDouble(3.0) * F128.fromDouble(0.7853981633974483))).abs()
+ *     check(absDifference1 <= F128.EPSILON)
+ *     check(absDifference2 <= F128.EPSILON)
  * }
  * ```
  */
@@ -500,18 +541,20 @@ public fun F128.atan2(other: F128): F128 = atan2f128(this, other)
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val x = FRAC_PI_4
+ *     val x = F128.fromDouble(0.7853981633974483)
  *     val f = x.sinCos()
  *     val absDifference0 = (f.first - x.sin()).abs()
  *     val absDifference1 = (f.second - x.cos()).abs()
- *     check(absDifference0 <= EPSILON)
- *     check(absDifference1 <= EPSILON)
+ *     check(absDifference0 <= F128.EPSILON)
+ *     check(absDifference1 <= F128.EPSILON)
  * }
  * ```
  */
-public fun F128.sinCos(): Pair<F128, F128> = Pair(this.sin(), this.cos())
+public fun F128.sinCos(): Pair<F128, F128> = Pair(F128.fromDouble(sin(this.toDouble())), F128.fromDouble(cos(this.toDouble())))
 
 /**
  * Returns `e ^(self) - 1` in a way that is accurate even if the
@@ -528,11 +571,13 @@ public fun F128.sinCos(): Pair<F128, F128> = Pair(this.sin(), this.cos())
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val x = 1e-8
+ *     val x = F128.fromDouble(1e-8)
  *     // for very small x, e^x is approximately 1 + x + x^2 / 2
- *     val approx = x + x * x / 2.0
+ *     val approx = x + x * x / F128.fromDouble(2.0)
  *     val absDifference = (x.expM1() - approx).abs()
  *     check(absDifference < 1e-10)
  * }
@@ -557,11 +602,13 @@ public fun F128.expM1(): F128 = expm1f128(this)
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val x = 1e-8
+ *     val x = F128.fromDouble(1e-8)
  *     // for very small x, ln(1 + x) is approximately x - x^2 / 2
- *     val approx = x - x * x / 2.0
+ *     val approx = x - x * x / F128.fromDouble(2.0)
  *     val absDifference = (x.ln1p() - approx).abs()
  *     check(absDifference < 1e-10)
  * }
@@ -569,10 +616,12 @@ public fun F128.expM1(): F128 = expm1f128(this)
  *
  * Out-of-range values:
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     check((-1.0).ln1p() == NEG_INFINITY)
- *     check((-2.0).ln1p().isNan())
+ *     check((-F128.fromDouble(1.0)).ln1p() == F128.NEG_INFINITY)
+ *     check((-F128.fromDouble(2.0)).ln1p().isNan())
  * }
  * ```
  */
@@ -592,15 +641,17 @@ public fun F128.ln1p(): F128 = log1pf128(this)
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val e = E
- *     val x = 1.0
+ *     val e = F128.fromDouble(kotlin.math.E)
+ *     val x = F128.fromDouble(1.0)
  *     val f = x.sinh()
  *     // Solving sinh() at 1 gives `(e ^ 2 - 1) / (2e)`
- *     val g = ((e * e) - 1.0) / (2.0 * e)
+ *     val g = ((e * e) - F128.fromDouble(1.0)) / (F128.fromDouble(2.0) * e)
  *     val absDifference = (f - g).abs()
- *     check(absDifference <= EPSILON)
+ *     check(absDifference <= F128.EPSILON)
  * }
  * ```
  */
@@ -620,16 +671,18 @@ public fun F128.sinh(): F128 = sinhf128(this)
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val e = E
- *     val x = 1.0
+ *     val e = F128.fromDouble(kotlin.math.E)
+ *     val x = F128.fromDouble(1.0)
  *     val f = x.cosh()
  *     // Solving cosh() at 1 gives this result
- *     val g = ((e * e) + 1.0) / (2.0 * e)
+ *     val g = ((e * e) + F128.fromDouble(1.0)) / (F128.fromDouble(2.0) * e)
  *     val absDifference = (f - g).abs()
  *     // Same result
- *     check(absDifference <= EPSILON)
+ *     check(absDifference <= F128.EPSILON)
  * }
  * ```
  */
@@ -649,15 +702,17 @@ public fun F128.cosh(): F128 = coshf128(this)
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val e = E
- *     val x = 1.0
+ *     val e = F128.fromDouble(kotlin.math.E)
+ *     val x = F128.fromDouble(1.0)
  *     val f = x.tanh()
  *     // Solving tanh() at 1 gives `(1 - e ^(- 2)) / (1 + e ^(- 2))`
  *     val g = (1.0 - e.powi(-2)) / (1.0 + e.powi(-2))
  *     val absDifference = (f - g).abs()
- *     check(absDifference <= EPSILON)
+ *     check(absDifference <= F128.EPSILON)
  * }
  * ```
  */
@@ -674,12 +729,14 @@ public fun F128.tanh(): F128 = tanhf128(this)
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val x = 1.0
+ *     val x = F128.fromDouble(1.0)
  *     val f = x.sinh().asinh()
  *     val absDifference = (f - x).abs()
- *     check(absDifference <= EPSILON)
+ *     check(absDifference <= F128.EPSILON)
  * }
  * ```
  */
@@ -696,12 +753,14 @@ public fun F128.asinh(): F128 = asinhf128(this)
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val x = 1.0
+ *     val x = F128.fromDouble(1.0)
  *     val f = x.cosh().acosh()
  *     val absDifference = (f - x).abs()
- *     check(absDifference <= EPSILON)
+ *     check(absDifference <= F128.EPSILON)
  * }
  * ```
  */
@@ -718,16 +777,18 @@ public fun F128.acosh(): F128 = acoshf128(this)
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val x = FRAC_PI_6
+ *     val x = F128.fromDouble(0.5235987755982989)
  *     val f = x.tanh().atanh()
  *     val absDifference = (f - x).abs()
  *     check(absDifference <= 1e-5)
  * }
  * ```
  */
-public fun F128.atanh(): F128 = 0.5 * ((2.0 * this) / (1.0 - this)).ln1p()
+public fun F128.atanh(): F128 = F128.fromDouble(0.5) * ((F128.fromDouble(2.0) * this) / (F128.fromDouble(1.0) - this)).ln1p()
 
 // @unstable(feature = "floatGamma", issue = "99842")
 
@@ -745,12 +806,14 @@ public fun F128.atanh(): F128 = 0.5 * ((2.0 * this) / (1.0 - this)).ln1p()
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * @feature(floatGamma)
  * public fun doctestEntry() {
- *     val x = 5.0
+ *     val x = F128.fromDouble(5.0)
  *     val absDifference = (x.gamma() - 24.0).abs()
- *     check(absDifference <= EPSILON)
+ *     check(absDifference <= F128.EPSILON)
  * }
  * ```
  */
@@ -774,12 +837,14 @@ public fun F128.gamma(): F128 = tgammaf128(this)
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * @feature(floatGamma)
  * public fun doctestEntry() {
- *     val x = 2.0
+ *     val x = F128.fromDouble(2.0)
  *     val absDifference = (x.lnGamma().first - 0.0).abs()
- *     check(absDifference <= EPSILON)
+ *     check(absDifference <= F128.EPSILON)
  * }
  * ```
  */
@@ -816,14 +881,14 @@ public fun F128.lnGamma(): Pair<F128, Int> {
  *      * within `x` standard deviations (scaled by `1 / sqrt(2)`).
  *      * /
  *     fun withinStandardDeviations(x: F128): F128 {
- *         return (x * FRAC_1_SQRT_2).erf() * 100.0
+ *         return (x * F128.fromDouble(0.7071067811865476)).erf() * F128.fromDouble(100.0)
  *     }
  *     // 68% of a normal distribution is within one standard deviation
- *     check((withinStandardDeviations(1.0) - 68.269).abs() < 0.01)
+ *     check((withinStandardDeviations(F128.fromDouble(1.0)) - F128.fromDouble(68.269)).abs() < 0.01)
  *     // 95% of a normal distribution is within two standard deviations
- *     check((withinStandardDeviations(2.0) - 95.450).abs() < 0.01)
+ *     check((withinStandardDeviations(F128.fromDouble(2.0)) - F128.fromDouble(95.450)).abs() < 0.01)
  *     // 99.7% of a normal distribution is within three standard deviations
- *     check((withinStandardDeviations(3.0) - 99.730).abs() < 0.01)
+ *     check((withinStandardDeviations(F128.fromDouble(3.0)) - F128.fromDouble(99.730)).abs() < 0.01)
  * }
  * ```
  */
@@ -850,10 +915,10 @@ public fun F128.erf(): F128 = erff128(this)
  * @feature(f128)
  * @feature(floatErf)
  * public fun doctestEntry() {
- *     val x: F128 = 0.123
+ *     val x: F128 = F128.fromDouble(0.123)
  *     val one = x.erf() + x.erfc()
  *     val absDifference = (one - 1.0).abs()
- *     check(absDifference <= EPSILON)
+ *     check(absDifference <= F128.EPSILON)
  * }
  * ```
  */

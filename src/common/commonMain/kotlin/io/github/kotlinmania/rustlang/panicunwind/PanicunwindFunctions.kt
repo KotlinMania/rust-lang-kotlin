@@ -1,10 +1,10 @@
 package io.github.kotlinmania.rustlang.panicunwind
 
-import io.github.kotlinmania.imp.cleanup
-import io.github.kotlinmania.imp.panic
 import io.github.kotlinmania.rustlang.alloc.panicking.PanicPayload
 import io.github.kotlinmania.rustlang.core.RustAny
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.panicunwind.dummy.cleanup
+import io.github.kotlinmania.rustlang.panicunwind.dummy.panic
 
 /**
  * Handler in std called when a panic object is dropped outside of

@@ -1,28 +1,22 @@
 // port-lint: source sys/backtrace.rs
 package io.github.kotlinmania.rustlang.std.sys.backtrace
 
-import io.github.kotlinmania.backtracers.resolveFrameUnsynchronized
-import io.github.kotlinmania.backtracers.traceUnsynchronized
-import io.github.kotlinmania.libc.myThreadExit
-import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.ptr.withoutProvenanceMut
+import io.github.kotlinmania.rustlang.backtrace.print.BacktraceFmt
+import io.github.kotlinmania.rustlang.backtrace.print.PrintFmt
+import io.github.kotlinmania.rustlang.backtrace.types.BytesOrWideString
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.andThen
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
-import io.github.kotlinmania.rustlang.std.backtracers.BacktraceFmt
-import io.github.kotlinmania.rustlang.std.backtracers.BytesOrWideString
-import io.github.kotlinmania.rustlang.std.backtracers.PrintFmt
-import io.github.kotlinmania.rustlang.std.backtracers.SymbolName
+import io.github.kotlinmania.rustlang.std.env.currentDir
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
-import io.github.kotlinmania.rustlang.std.fmt
+import io.github.kotlinmania.rustlang.std.io.error.Error
+import io.github.kotlinmania.rustlang.std.os.unix.ffi.fromBytes
+import io.github.kotlinmania.rustlang.std.path.MAIN_SEPARATOR
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.path.PathBuf
 import io.github.kotlinmania.rustlang.std.sync.nonpoison.mutex.Mutex
 import io.github.kotlinmania.rustlang.std.sync.nonpoison.mutex.MutexGuard
-import io.github.kotlinmania.rustlang.std.sync.poison.PoisonError
-import io.github.kotlinmania.rustlang.std.sys.env.unix.env
-import io.github.kotlinmania.rustlang.std.sys.pal.sgx.abi.mem.imageBase
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.stackoverflow.threadinfo.LOCK
 
 // Common code for printing backtraces.
@@ -32,11 +26,14 @@ import io.github.kotlinmania.rustlang.std.sys.pal.unix.stackoverflow.threadinfo.
  */
 public val MAX_NB_FRAMES: Int = 100
 
-internal val FULL_BACKTRACE_DEFAULT: Boolean = cfgSelect(targetOs, "fuchsia", true, false)
+public val FULL_BACKTRACE_DEFAULT: Boolean = false
 
-internal open class BacktraceLock(
-    public var value: MutexGuard<Unit>,
+public open class BacktraceLock internal constructor(
+    valueCtorArg: MutexGuard<Unit>,
 ) {
+    public var value: MutexGuard<Unit> = valueCtorArg
+        internal set
+
     public var field0: MutexGuard<Unit>
         get() = value
         set(v) {
@@ -46,7 +43,7 @@ internal open class BacktraceLock(
     /**
      * Prints the current backtrace.
      */
-    internal open fun print(w: Write, format: PrintFmt): Result<Unit> {
+    public open fun print(w: Write, format: PrintFmt): Result<Unit, Error> {
         open class DisplayBacktrace(
             public var format: PrintFmt,
         ) {
@@ -64,11 +61,19 @@ internal open class BacktraceLock(
         }
         return run { w.append("${DisplayBacktrace(format = format)}"); Result.Ok(Unit) }
     }
+
+    public companion object {
+        public operator fun invoke(
+            value: MutexGuard<Unit>,
+        ): BacktraceLock = BacktraceLock(
+            valueCtorArg = value,
+        )
+    }
 }
 
-internal fun lock(): BacktraceLock {
+public fun lock(): BacktraceLock {
     val LOCK: Mutex<Unit>  = Mutex.new()
-    return BacktraceLock(LOCK.lock().unwrapOrElse(PoisonError::intoInner))
+    return BacktraceLock(LOCK.lock().unwrapOrElse({ it.intoInner() }))
 }
 
 /**
@@ -81,7 +86,7 @@ public fun printFmt(fmt: StringBuilder, printFmt: PrintFmt) {
     // this allows Miri to display backtraces in isolation mode
     val cwd =
         if (!false) {
-            env.currentDir().ok()
+            currentDir().ok()
         } else {
             null
         }
@@ -104,7 +109,7 @@ public fun printFmt(fmt: StringBuilder, printFmt: PrintFmt) {
         if (printFmt == PrintFmt.Short && idx > MAX_NB_FRAMES) {
             return@closure false
         }
-        if (false) {
+        if (true) {
             val frameIp = frame.ip()
             res = btFmt.formatter().appendLine("$idx: $frameIp")
         } else {
@@ -149,12 +154,6 @@ public fun printFmt(fmt: StringBuilder, printFmt: PrintFmt) {
                     res = btFmt.frame().symbol(frame, symbol)
                 }
             })
-            if (((mutPtrFromRustCast(myThreadExit)).rawAddress.toULong() == (frame.ip()).rawAddress.toULong())) {
-                if (!hit && print) {
-                    res = btFmt.frame().printRaw(frame.ip(), SymbolName.new("__my_thread_exit".encodeToByteArray().map { it.toUByte() }), null, null)
-                }
-                return@closure false
-            }
             if (!hit && print) {
                 res = btFmt.frame().printRaw(frame.ip(), null, null, null)
             }
@@ -218,7 +217,7 @@ public fun outputFilename(fmt: StringBuilder, bows: BytesOrWideString, printFmt:
                         null -> {}
                         else -> {
                             val s = matchVal1
-                            return fmt.append(".${path.MAIN_SEPARATOR}$s")
+                            return fmt.append(".$MAIN_SEPARATOR$s")
                         }
                     }
                 }
@@ -230,6 +229,5 @@ public fun outputFilename(fmt: StringBuilder, bows: BytesOrWideString, printFmt:
 }
 
 public fun setImageBase() {
-    val imageBase = imageBase()
-    io.github.kotlinmania.backtracers.setImageBase(withoutProvenanceMut(((imageBase as Any?) as Unit)))
+    // nothing to do for platforms other than SGX
 }

@@ -89,6 +89,8 @@ public open class Formatted(
      */
     public var parts: List<Part>,
 ) {
+    public open fun clone(): Formatted = Formatted(sign, parts)
+
     /**
      * Returns the byte length of combined formatted result.
      *

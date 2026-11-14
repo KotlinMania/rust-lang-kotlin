@@ -1,7 +1,9 @@
 package io.github.kotlinmania.rustlang.procmacro.bridge
 
+import io.github.kotlinmania.rustlang.core.marker.PhantomData
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.procmacro.Delimiter
 import io.github.kotlinmania.rustlang.procmacro.Span
 import io.github.kotlinmania.rustlang.procmacro.bridge.buffer.Buffer
@@ -12,10 +14,10 @@ import io.github.kotlinmania.rustlang.procmacro.bridge.rpc.Encode
 import io.github.kotlinmania.rustlang.procmacro.bridge.symbol.Symbol
 import io.github.kotlinmania.rustlang.procmacro.diagnostic.Level
 
-internal open class Methods {
+public open class Methods {
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Methods> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Methods> {
+        public fun typeLayout(): TypeLayout<Methods> =
+            object : TypeLayout<Methods> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): Methods =
@@ -61,7 +63,7 @@ public open class Marked<T, M>(
     public override fun unmark(): T = this.value
 
     public companion object {
-        public fun <T, M> mark(unmarked: T): Marked<T, M> = Marked(value = unmarked, marker = Unit)
+        public fun <T, M> mark(unmarked: T): Marked<T, M> = Marked(value = unmarked, marker = PhantomData)
     }
 }
 
@@ -87,12 +89,12 @@ public open class DelimSpan<Span>(
     public override fun unmark(): DelimSpan<Unmarked> = DelimSpan(open = this.open.unmark(), close = this.close.unmark(), entire = this.entire.unmark())
 
     public companion object {
-        public fun <Span> typeLayout(typeLayoutSpan: io.github.kotlinmania.rustlang.core.mem.TypeLayout<Span>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<DelimSpan<Span>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<DelimSpan<Span>> {
+        public fun <Span> typeLayout(typeLayoutSpan: TypeLayout<Span>): TypeLayout<DelimSpan<Span>> =
+            object : TypeLayout<DelimSpan<Span>> {
                 override val alignBytes: Long = listOf(1L, typeLayoutSpan.alignBytes).max()
-                private val off1: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(typeLayoutSpan.sizeBytes, typeLayoutSpan.alignBytes)
-                private val off2: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes((off1 + typeLayoutSpan.sizeBytes), typeLayoutSpan.alignBytes)
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes((off2 + typeLayoutSpan.sizeBytes), alignBytes)
+                private val off1: Long = alignUpBytes(typeLayoutSpan.sizeBytes, typeLayoutSpan.alignBytes)
+                private val off2: Long = alignUpBytes((off1 + typeLayoutSpan.sizeBytes), typeLayoutSpan.alignBytes)
+                override val sizeBytes: Long = alignUpBytes((off2 + typeLayoutSpan.sizeBytes), alignBytes)
                 override fun readNative(addr: Long): DelimSpan<Span> =
                     DelimSpan(
                         (typeLayoutSpan).readNative(addr),
@@ -163,31 +165,31 @@ public open class Punct<Span>(
     public override fun unmark(): Punct<Unmarked> = Punct(ch = this.ch.unmark(), joint = this.joint.unmark(), span = this.span.unmark())
 
     public companion object {
-        public fun <Span> typeLayout(typeLayoutSpan: io.github.kotlinmania.rustlang.core.mem.TypeLayout<Span>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Punct<Span>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Punct<Span>> {
+        public fun <Span> typeLayout(typeLayoutSpan: TypeLayout<Span>): TypeLayout<Punct<Span>> =
+            object : TypeLayout<Punct<Span>> {
                 override val alignBytes: Long = listOf(1L, typeLayoutSpan.alignBytes).max()
-                private val off2: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(2L, typeLayoutSpan.alignBytes)
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes((off2 + typeLayoutSpan.sizeBytes), alignBytes)
+                private val off2: Long = alignUpBytes(2L, typeLayoutSpan.alignBytes)
+                override val sizeBytes: Long = alignUpBytes((off2 + typeLayoutSpan.sizeBytes), alignBytes)
                 override fun readNative(addr: Long): Punct<Span> =
                     Punct(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U8).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 1L),
+                        (PrimitiveLayouts.U8).readNative(addr),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 1L),
                         (typeLayoutSpan).readNative(addr + off2),
                     )
                 override fun writeNative(addr: Long, value: Punct<Span>) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U8).writeNative(addr, value.ch)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 1L, value.joint)
+                    (PrimitiveLayouts.U8).writeNative(addr, value.ch)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 1L, value.joint)
                     (typeLayoutSpan).writeNative(addr + off2, value.span)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Punct<Span> =
                     Punct(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U8).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 1),
+                        (PrimitiveLayouts.U8).readBytes(buf, offset),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 1),
                         (typeLayoutSpan).readBytes(buf, offset + off2.toInt()),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Punct<Span>) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U8).writeBytes(buf, offset, value.ch)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 1, value.joint)
+                    (PrimitiveLayouts.U8).writeBytes(buf, offset, value.ch)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 1, value.joint)
                     (typeLayoutSpan).writeBytes(buf, offset + off2.toInt(), value.span)
                 }
             }
@@ -288,12 +290,12 @@ public open class ExpnGlobals<Span>(
     public override fun unmark(): ExpnGlobals<Unmarked> = ExpnGlobals(defSite = this.defSite.unmark(), callSite = this.callSite.unmark(), mixedSite = this.mixedSite.unmark())
 
     public companion object {
-        public fun <Span> typeLayout(typeLayoutSpan: io.github.kotlinmania.rustlang.core.mem.TypeLayout<Span>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<ExpnGlobals<Span>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<ExpnGlobals<Span>> {
+        public fun <Span> typeLayout(typeLayoutSpan: TypeLayout<Span>): TypeLayout<ExpnGlobals<Span>> =
+            object : TypeLayout<ExpnGlobals<Span>> {
                 override val alignBytes: Long = listOf(1L, typeLayoutSpan.alignBytes).max()
-                private val off1: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(typeLayoutSpan.sizeBytes, typeLayoutSpan.alignBytes)
-                private val off2: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes((off1 + typeLayoutSpan.sizeBytes), typeLayoutSpan.alignBytes)
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes((off2 + typeLayoutSpan.sizeBytes), alignBytes)
+                private val off1: Long = alignUpBytes(typeLayoutSpan.sizeBytes, typeLayoutSpan.alignBytes)
+                private val off2: Long = alignUpBytes((off1 + typeLayoutSpan.sizeBytes), typeLayoutSpan.alignBytes)
+                override val sizeBytes: Long = alignUpBytes((off2 + typeLayoutSpan.sizeBytes), alignBytes)
                 override fun readNative(addr: Long): ExpnGlobals<Span> =
                     ExpnGlobals(
                         (typeLayoutSpan).readNative(addr),

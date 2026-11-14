@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.procmacro.bridge.selflessreify
 
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.mem.conjureZst
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.procmacro.bridge.BridgeConfig
 
@@ -33,15 +34,19 @@ import io.github.kotlinmania.rustlang.procmacro.bridge.BridgeConfig
 // A more flexible (and safer) solution to the general problem could exist once
 // `const`-generic parameters can have type parameters in their types:
 //
-// ```kotlin
-// fun <A, R> ffiWrapper(arg: A, f: (A) -> R): R {
-//     return f(arg)
+// ```rust,ignore (needs future const-generics)
+// extern "C" fn ffiWrapper<
+//     A, R,
+//     F: Fn(A) -> R,
+//     const f: F, // <-- this `const`-generic is not yet allowed
+// >(arg: A) -> R {
+//     f(arg)
 // }
 // ```
 
-internal fun <R> reifyToExternCFnHrtBridge(f: (BridgeConfig) -> R): (BridgeConfig) -> R {
+public fun <R> reifyToExternCFnHrtBridge(f: (BridgeConfig) -> R): (BridgeConfig) -> R {
     inline fun <reified R> wrapper(bridge: BridgeConfig): R {
-        val f1 = mem.conjureZst<(BridgeConfig) -> R>()
+        val f1 = conjureZst<(BridgeConfig) -> R>()
         return f1(bridge)
     }
     // Note(eddyb) describe the `F` type (e.g. via `typeName<F>`) once panic

@@ -210,7 +210,7 @@ public sealed class TestFn {
             is DynBenchAsTestFn -> PadNone
         }
 
-    internal open fun intoRunnable(): Runnable =
+    public open fun intoRunnable(): Runnable =
         when (this) {
             is StaticTestFn -> {
                 val (f) = this
@@ -250,18 +250,66 @@ public sealed class TestFn {
     }
 }
 
-internal sealed class Runnable {
+public sealed class Runnable {
     public data class Test(public var value: RunnableTest) : Runnable()
     public data class Bench(public var value: RunnableBench) : Runnable()
 }
 
-internal sealed class RunnableTest {
+public sealed class RunnableTest {
     public data class Static(public var value: FnCallback) : RunnableTest()
-    public data class Dynamic(public var value: () -> Result<Unit, String>) : RunnableTest()
-    public data class StaticBenchAsTest(public var value: FnCallback1) : RunnableTest()
-    public data class DynamicBenchAsTest(public var value: (Bencher) -> Result<Unit, String>) : RunnableTest()
+    public class Dynamic internal constructor(valueCtorArg: () -> Result<Unit, String>) : RunnableTest() {
+        public var value: () -> Result<Unit, String> = valueCtorArg
+            internal set
 
-    internal open fun run(): Result<Unit, String> =
+        public operator fun component1(): () -> Result<Unit, String> = this.value
+
+        public fun copy(value: () -> Result<Unit, String> = this.value): Dynamic = Dynamic(valueCtorArg = value)
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is Dynamic) return false
+            if (this.value != other.value) return false
+            return true
+        }
+
+        override fun hashCode(): Int = this.value.hashCode()
+
+        public companion object {
+            public operator fun invoke(
+                value: () -> Result<Unit, String>,
+            ): Dynamic = Dynamic(
+                valueCtorArg = value,
+            )
+        }
+    }
+    public data class StaticBenchAsTest(public var value: FnCallback1) : RunnableTest()
+    public class DynamicBenchAsTest internal constructor(valueCtorArg: (Bencher) -> Result<Unit, String>) : RunnableTest() {
+        public var value: (Bencher) -> Result<Unit, String> = valueCtorArg
+            internal set
+
+        public operator fun component1(): (Bencher) -> Result<Unit, String> = this.value
+
+        public fun copy(value: (Bencher) -> Result<Unit, String> = this.value): DynamicBenchAsTest = DynamicBenchAsTest(valueCtorArg = value)
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is DynamicBenchAsTest) return false
+            if (this.value != other.value) return false
+            return true
+        }
+
+        override fun hashCode(): Int = this.value.hashCode()
+
+        public companion object {
+            public operator fun invoke(
+                value: (Bencher) -> Result<Unit, String>,
+            ): DynamicBenchAsTest = DynamicBenchAsTest(
+                valueCtorArg = value,
+            )
+        }
+    }
+
+    public open fun run(): Result<Unit, String> =
         when (this) {
             is RunnableTest.Static -> {
                 val (f) = this
@@ -281,7 +329,7 @@ internal sealed class RunnableTest {
             }
         }
 
-    internal open fun isDynamic(): Boolean =
+    public open fun isDynamic(): Boolean =
         when (this) {
             is RunnableTest.Static -> false
             is RunnableTest.StaticBenchAsTest -> false
@@ -290,11 +338,35 @@ internal sealed class RunnableTest {
         }
 }
 
-internal sealed class RunnableBench {
+public sealed class RunnableBench {
     public data class Static(public var value: FnCallback1) : RunnableBench()
-    public data class Dynamic(public var value: (Bencher) -> Result<Unit, String>) : RunnableBench()
+    public class Dynamic internal constructor(valueCtorArg: (Bencher) -> Result<Unit, String>) : RunnableBench() {
+        public var value: (Bencher) -> Result<Unit, String> = valueCtorArg
+            internal set
 
-    internal open fun run(id: TestId, desc: TestDesc, monitorCh: Sender<CompletedTest>, nocapture: Boolean) {
+        public operator fun component1(): (Bencher) -> Result<Unit, String> = this.value
+
+        public fun copy(value: (Bencher) -> Result<Unit, String> = this.value): Dynamic = Dynamic(valueCtorArg = value)
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is Dynamic) return false
+            if (this.value != other.value) return false
+            return true
+        }
+
+        override fun hashCode(): Int = this.value.hashCode()
+
+        public companion object {
+            public operator fun invoke(
+                value: (Bencher) -> Result<Unit, String>,
+            ): Dynamic = Dynamic(
+                valueCtorArg = value,
+            )
+        }
+    }
+
+    public open fun run(id: TestId, desc: TestDesc, monitorCh: Sender<CompletedTest>, nocapture: Boolean) {
         when (this) {
             is RunnableBench.Static -> {
                 val (f) = this
@@ -318,24 +390,26 @@ public open class TestId(
             value = v
         }
 
+    public open fun clone(): TestId = TestId(value)
+
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<TestId> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<TestId> {
+        public fun typeLayout(): TypeLayout<TestId> =
+            object : TypeLayout<TestId> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 8L
                 override fun readNative(addr: Long): TestId =
                     TestId(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readNative(addr),
+                        (PrimitiveLayouts.USIZE64).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: TestId) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeNative(addr, value.value)
+                    (PrimitiveLayouts.USIZE64).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): TestId =
                     TestId(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readBytes(buf, offset),
+                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: TestId) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeBytes(buf, offset, value.value)
+                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset, value.value)
                 }
             }
     }
@@ -357,6 +431,8 @@ public open class TestDesc(
     public var noRun: Boolean,
     public var testType: TestType,
 ) {
+    public open fun clone(): TestDesc = TestDesc(name, ignore, ignoreMessage, sourceFile, startLine, startCol, endLine, endCol, shouldPanic, compileFail, noRun, testType)
+
     public open fun paddedName(columnCount: Int, align: NamePadding): String {
         var name = this.name.asSlice()
         val fill = rustSaturatingSub(columnCount, name.length)
@@ -401,6 +477,8 @@ public open class TestDescAndFn(
     public var desc: TestDesc,
     public var testfn: TestFn,
 ) {
+    public open fun clone(): TestDescAndFn = TestDescAndFn(desc, testfn)
+
     public companion object {
         public fun newDoctest(testName: String, ignore: Boolean, sourceFile: String, startLine: Int, noRun: Boolean, shouldPanic: Boolean, testfn: TestFn): TestDescAndFn =
             TestDescAndFn(desc = TestDesc(name = StaticTestName(testName), ignore = ignore, ignoreMessage = null, sourceFile = sourceFile, startLine = startLine, startCol = 0, endLine = 0, endCol = 0, compileFail = false, noRun = noRun, shouldPanic = if (shouldPanic) {

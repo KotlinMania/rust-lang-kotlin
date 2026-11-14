@@ -2,16 +2,19 @@
 package io.github.kotlinmania.rustlang.alloc.io.buffered.bufwriter
 
 import io.github.kotlinmania.rustlang.alloc.io.buffered.IntoInnerError
+import io.github.kotlinmania.rustlang.alloc.io.constError
 import io.github.kotlinmania.rustlang.alloc.io.read.DEFAULT_BUF_SIZE
-import io.github.kotlinmania.rustlang.alloc.io.write
 import io.github.kotlinmania.rustlang.alloc.vec.Vec
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.seek.Seek
 import io.github.kotlinmania.rustlang.core.io.seek.SeekFrom
+import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.take
 import io.github.kotlinmania.rustlang.core.num.rustSaturatingAdd
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
@@ -176,7 +179,7 @@ public open class BufWriter<W : Write>(
      */
     public open fun intoParts(): Pair<W, Result<List<UByte>, WriterPanicked>> {
         val thisRef = this
-        val buf = mem.take(thisRef.buf)
+        val buf = take(thisRef.buf)
         val buf1 =
             if (!thisRef.panicked) {
                 Result.Ok(buf)
@@ -252,7 +255,7 @@ public open class BufWriter<W : Write>(
             this.panicked = false
             when {
                 r is Result.Ok<*> && r.value == 0 -> {
-                    return Result.Err(io.constError(ErrorKind.WriteZero, "failed to write the buffered data"))
+                    return Result.Err(constError(ErrorKind.WriteZero, "failed to write the buffered data"))
                 }
                 r is Result.Ok<*> -> {
                     val n = (r as Result.Ok<*>).value
@@ -275,7 +278,7 @@ public open class BufWriter<W : Write>(
      * data. Writes as much as possible without exceeding capacity. Returns
      * the number of bytes written.
      */
-    internal open fun writeToBuf(buf: List<UByte>): Int {
+    public open fun writeToBuf(buf: List<UByte>): Int {
         val available = this.spareCapacity()
         val amtToBuffer = available.min(buf.size)
         // SAFETY: `amtToBuffer` is <= buffer's spare capacity by construction.
@@ -447,7 +450,7 @@ public open class BufWriter<W : Write>(
         // ignore-tidy-undocumented-unchecked
         run {
             val dst = MutPtr((this.buf.asMutPtr()).rawAddress + ((oldLen).toLong() * (PrimitiveLayouts.U8).strideBytes))
-            ptr.copyNonoverlapping(src, dst, bufLen)
+            copyNonoverlapping(src, dst, bufLen)
             this.buf.setLen(oldLen + bufLen)
         }
     }
@@ -618,7 +621,7 @@ public open class BufWriter<W : Write>(
         public fun <W : Write> tryNewWith(f: () -> Result<W>): Result<BufWriter<W>> {
             val buf =
                 when (val tryResult = Vec.tryWithCapacity(DEFAULT_BUF_SIZE).mapErr({
-                    io.constError(ErrorKind.OutOfMemory, "failed to allocate write buffer")
+                    constError(ErrorKind.OutOfMemory, "failed to allocate write buffer")
                 })) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
             val inner = when (val tryResult = f()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
             return Result.Ok(BufWriter(inner = inner, buf = buf, panicked = false))

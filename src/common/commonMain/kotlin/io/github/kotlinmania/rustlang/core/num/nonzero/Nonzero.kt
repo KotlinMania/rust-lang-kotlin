@@ -5,12 +5,14 @@ import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.clone.TrivialClone
 import io.github.kotlinmania.rustlang.core.clone.UseCloned
+import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.fmt.LowerExp
 import io.github.kotlinmania.rustlang.core.fmt.UpperExp
 import io.github.kotlinmania.rustlang.core.intrinsics.kmCtlzU64
 import io.github.kotlinmania.rustlang.core.intrinsics.kmCtpopU64
 import io.github.kotlinmania.rustlang.core.intrinsics.kmCttzU64
 import io.github.kotlinmania.rustlang.core.intrinsics.transmuteUnchecked
+import io.github.kotlinmania.rustlang.core.intrinsics.ubChecks
 import io.github.kotlinmania.rustlang.core.intrinsics.uncheckedDiv
 import io.github.kotlinmania.rustlang.core.intrinsics.uncheckedRem
 import io.github.kotlinmania.rustlang.core.marker.Freeze
@@ -21,11 +23,10 @@ import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
-import io.github.kotlinmania.rustlang.core.num.IntErrorKind
-import io.github.kotlinmania.rustlang.core.num.ParseIntError
+import io.github.kotlinmania.rustlang.core.num.error.IntErrorKind
+import io.github.kotlinmania.rustlang.core.num.error.ParseIntError
 import io.github.kotlinmania.rustlang.core.num.error.TryFromIntError
-import io.github.kotlinmania.rustlang.core.num.imp.overflowpanic.neg
-import io.github.kotlinmania.rustlang.core.num.imp.overflowpanic.rem
+import io.github.kotlinmania.rustlang.core.num.imp.intlog10.u8
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroCharInner
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroI128Inner
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroI16Inner
@@ -55,15 +56,14 @@ import io.github.kotlinmania.rustlang.core.num.rustSaturatingAdd
 import io.github.kotlinmania.rustlang.core.num.rustSaturatingMul
 import io.github.kotlinmania.rustlang.core.num.rustWrappingAbs
 import io.github.kotlinmania.rustlang.core.num.rustWrappingNeg
-import io.github.kotlinmania.rustlang.core.ops.BitOr
-import io.github.kotlinmania.rustlang.core.ops.BitOrAssign
+import io.github.kotlinmania.rustlang.core.ops.bit.BitOr
+import io.github.kotlinmania.rustlang.core.ops.bit.BitOrAssign
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.fromRef
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.rawSliceList
-import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
-import io.github.kotlinmania.rustlang.core.ubchecks.assertUnsafePrecondition
 import io.github.kotlinmania.rustlang.core.ubchecks.checkLanguageUb
 
 // Definitions of integer that is known not to equal zero.
@@ -284,7 +284,7 @@ public open class NonZero<T, NonZeroInner> internal constructor(
                 null -> {
                     // SAFETY: The caller guarantees that `n` is non-zero, so this is unreachable.
                     run {
-                        assertUnsafePrecondition(checkLanguageUb, "NonZero::new_unchecked requires the argument to be non-zero", false)
+                        ubChecks.assertUnsafePrecondition(checkLanguageUb, "NonZero::new_unchecked requires the argument to be non-zero", false)
                         error("Entered Rust intrinsics::unreachable")
                     }
                 }
@@ -319,7 +319,7 @@ public open class NonZero<T, NonZeroInner> internal constructor(
                 null -> {
                     // SAFETY: The caller guarantees that `n` references a value that is non-zero, so this is unreachable.
                     run {
-                        assertUnsafePrecondition(checkLibraryUb, "NonZero::from_mut_unchecked requires the argument to dereference as non-zero", false)
+                        ubChecks.assertUnsafePrecondition(checkLibraryUb, "NonZero::from_mut_unchecked requires the argument to dereference as non-zero", false)
                         error("Entered Rust intrinsics::unreachable")
                     }
                 }
@@ -420,7 +420,7 @@ public fun <NonZeroInner, T> tryFromNonZeroTArrayn(zeroable: List<T>, n: Int): R
 /**
  * Implementation of `From<[NonZero<T>; N]> for [T; N]`.
  */
-public fun <NonZeroInner, T> List<NonZero<T, NonZeroInner>>.intoZeroable(n: Int): List<T> = this.map(NonZero::get)
+public fun <NonZeroInner, T> List<NonZero<T, NonZeroInner>>.intoZeroable(n: Int): List<T> = this.map({ it.get() })
 
 /**
  * This enables some memory layout optimization.
@@ -643,7 +643,7 @@ public fun NonZero<UByte, NonZeroU8Inner>.reverseBits(): NonZero<UByte, NonZeroU
  *         return Unit
  *     }
  *     fun main() {
- *         test().unwrap()
+ *         test()!!
  *     }
  * }
  * ```
@@ -671,7 +671,7 @@ public fun NonZero.Companion.fromBe(x: NonZero<UByte, NonZeroU8Inner>): NonZero<
  *         return Unit
  *     }
  *     fun main() {
- *         test().unwrap()
+ *         test()!!
  *     }
  * }
  * ```
@@ -911,7 +911,7 @@ public fun NonZero<UByte, NonZeroU8Inner>.ilog2(): UInt = NonZero.BITS - 1u - th
  * ```kotlin
  * ```
  */
-public fun NonZero<UByte, NonZeroU8Inner>.ilog10(): UInt = io.github.kotlinmania.rustlang.core.imp.intlog10.UByte(this).toUInt()
+public fun NonZero<UByte, NonZeroU8Inner>.ilog10(): UInt = u8(this).toUInt()
 
 /**
  * Calculates the midpoint (average) between `self` and `rhs`.

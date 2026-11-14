@@ -1,8 +1,7 @@
 // port-lint: source detect/os/linux/auxvec.rs
 package io.github.kotlinmania.rustlang.stddetect.detect.os.linux.auxvec
 
-import io.github.kotlinmania.libc.CUlong
-import io.github.kotlinmania.rustlang.core.ffi.CStr
+import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
@@ -11,6 +10,7 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.chunks
+import io.github.kotlinmania.rustlang.libc.CUlong
 import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.readFile
 
 // Parses ELF auxiliary vectors.
@@ -21,17 +21,17 @@ public fun interface FnCallback {
 
 public typealias F = FnCallback
 
-internal val AT_NULL: Int = 0
+public val AT_NULL: Int = 0
 
 /**
  * Key to access the CPU Hardware capabilities bitfield.
  */
-internal val AT_HWCAP: Int = 16
+public val AT_HWCAP: Int = 16
 
 /**
  * Key to access the CPU Hardware capabilities 2 bitfield.
  */
-internal val AT_HWCAP2: Int = 26
+public val AT_HWCAP2: Int = 26
 
 /**
  * Cache HWCAP bitfields of the ELF Auxiliary Vector.
@@ -39,32 +39,34 @@ internal val AT_HWCAP2: Int = 26
  * If an entry cannot be read all the bits in the bitfield are set to zero.
  * This should be interpreted as all the features being disabled.
  */
-internal open class AuxVec(
+public open class AuxVec(
     public var hwcap: Int,
     public var hwcap2: Int,
 ) {
+    public open fun clone(): AuxVec = AuxVec(hwcap, hwcap2)
+
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<AuxVec> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<AuxVec> {
+        public fun typeLayout(): TypeLayout<AuxVec> =
+            object : TypeLayout<AuxVec> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): AuxVec =
                     AuxVec(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readNative(addr + 8L),
+                        (PrimitiveLayouts.USIZE64).readNative(addr),
+                        (PrimitiveLayouts.USIZE64).readNative(addr + 8L),
                     )
                 override fun writeNative(addr: Long, value: AuxVec) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeNative(addr, value.hwcap)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeNative(addr + 8L, value.hwcap2)
+                    (PrimitiveLayouts.USIZE64).writeNative(addr, value.hwcap)
+                    (PrimitiveLayouts.USIZE64).writeNative(addr + 8L, value.hwcap2)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): AuxVec =
                     AuxVec(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readBytes(buf, offset + 8),
+                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset),
+                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset + 8),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: AuxVec) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeBytes(buf, offset, value.hwcap)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeBytes(buf, offset + 8, value.hwcap2)
+                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset, value.hwcap)
+                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset + 8, value.hwcap2)
                 }
             }
     }
@@ -107,7 +109,7 @@ internal open class AuxVec(
  * [auxvDocs]: https://docs.rs/auxv/0.3.3/auxv/
  * [getauxval]: https://man7.org/linux/man-pages/man3/getauxval.3.html
  */
-internal fun auxv(): Result<AuxVec, Unit> {
+public fun auxv(): Result<AuxVec, Unit> {
     // Try to call a getauxval function.
     when (val matchVal = getauxval(AT_HWCAP)) {
         is Ok -> {
@@ -144,7 +146,7 @@ internal fun auxv(): Result<AuxVec, Unit> {
  * `getauxval` function. If the function is not linked, this function return `Err`.
  */
 public fun getauxval(key: Int): Result<Int, Unit> {
-    cfgSelect(any, all, targetOs, "linux", any, targetEnv, "gnu", targetEnv, "musl", targetEnv, "ohos", targetOs, "android", ffiGetauxval, F, libc, getauxval, ffiGetauxval, F, ptr, libc, dlsym, libc, RTLD_DEFAULT, "getauxval", asPtr, ptr, isNull, Err, core, mem, transmute, ptr)
+    val ffiGetauxval: F = io.github.kotlinmania.rustlang.libc.getauxval
     return Result.Ok(ffiGetauxval(key.toULong()).toInt())
 }
 
@@ -152,7 +154,7 @@ public fun getauxval(key: Int): Result<Int, Unit> {
  * Tries to read the auxiliary vector from the `file`. If this fails, this
  * function returns `Err`.
  */
-internal fun auxvFromFile(file: CStr): Result<AuxVec, String> {
+public fun auxvFromFile(file: CStr): Result<AuxVec, String> {
     val file1 = when (val tryResult = readFile(file)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
     return auxvFromFileBytes(file1)
 }
@@ -160,7 +162,7 @@ internal fun auxvFromFile(file: CStr): Result<AuxVec, String> {
 /**
  * Read auxiliary vector from a slice of bytes.
  */
-internal fun auxvFromFileBytes(bytes: List<UByte>): Result<AuxVec, String> {
+public fun auxvFromFileBytes(bytes: List<UByte>): Result<AuxVec, String> {
     // See <https://github.com/torvalds/linux/blob/v5.15/include/uapi/linux/auxvec.h>.
     //
     // The auxiliary vector contains at most 34 (key,value) fields: from

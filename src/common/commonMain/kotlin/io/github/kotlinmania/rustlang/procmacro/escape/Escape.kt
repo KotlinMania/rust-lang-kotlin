@@ -4,7 +4,7 @@ package io.github.kotlinmania.rustlang.procmacro.escape
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 
-internal open class EscapeOptions(
+public open class EscapeOptions(
     /**
      * Produce \'.
      */
@@ -19,38 +19,40 @@ internal open class EscapeOptions(
      */
     public var escapeNonascii: Boolean,
 ) {
+    public open fun clone(): EscapeOptions = EscapeOptions(escapeSingleQuote, escapeDoubleQuote, escapeNonascii)
+
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<EscapeOptions> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<EscapeOptions> {
+        public fun typeLayout(): TypeLayout<EscapeOptions> =
+            object : TypeLayout<EscapeOptions> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 3L
                 override fun readNative(addr: Long): EscapeOptions =
                     EscapeOptions(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 1L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 2L),
+                        (PrimitiveLayouts.BOOL).readNative(addr),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 1L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 2L),
                     )
                 override fun writeNative(addr: Long, value: EscapeOptions) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr, value.escapeSingleQuote)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 1L, value.escapeDoubleQuote)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 2L, value.escapeNonascii)
+                    (PrimitiveLayouts.BOOL).writeNative(addr, value.escapeSingleQuote)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 1L, value.escapeDoubleQuote)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 2L, value.escapeNonascii)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): EscapeOptions =
                     EscapeOptions(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 1),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 2),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 1),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 2),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: EscapeOptions) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset, value.escapeSingleQuote)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 1, value.escapeDoubleQuote)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 2, value.escapeNonascii)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset, value.escapeSingleQuote)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 1, value.escapeDoubleQuote)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 2, value.escapeNonascii)
                 }
             }
     }
 }
 
-internal fun escapeBytes(bytes: List<UByte>, opt: EscapeOptions): String {
+public fun escapeBytes(bytes: List<UByte>, opt: EscapeOptions): String {
     val repr = ""
     if (opt.escapeNonascii) {
         for (byte in bytes) {

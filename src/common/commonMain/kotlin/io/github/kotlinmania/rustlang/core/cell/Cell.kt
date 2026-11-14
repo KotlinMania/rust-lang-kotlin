@@ -1,6 +1,7 @@
 // port-lint: source cell.rs
 package io.github.kotlinmania.rustlang.core.cell
 
+import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
@@ -8,17 +9,18 @@ import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.num.f128.consts.E
-import io.github.kotlinmania.rustlang.core.ops.DerefPure
+import io.github.kotlinmania.rustlang.core.mem.replace
+import io.github.kotlinmania.rustlang.core.ops.deref.DerefPure
 import io.github.kotlinmania.rustlang.core.panic.constPanic
 import io.github.kotlinmania.rustlang.core.panic.location.Location
 import io.github.kotlinmania.rustlang.core.pin.PinSafePointer
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.eq
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 
 // Shareable mutable containers.
 //
@@ -353,7 +355,7 @@ public open class Cell<T> internal constructor(
             val diff = srcUsize.absDiff(dstUsize)
             return diff >= sizeOf<T>(typeLayoutT = typeLayoutT)
         }
-        if (ptr.eq(this, other)) {
+        if (eq(this, other)) {
             // Swapping wouldn't change anything.
             return
         }
@@ -729,7 +731,7 @@ public open class RefCell<T> internal constructor(
      * check(cell == RefCell.new(6))
      * ```
      */
-    public open fun replace(t: T): T = mem.replace(this.borrowMut(), t)
+    public open fun replace(t: T): T = io.github.kotlinmania.rustlang.core.mem.replace(this.borrowMut(), t)
 
     /**
      * Replaces the wrapped value with a new one computed from `f`, returning
@@ -753,7 +755,7 @@ public open class RefCell<T> internal constructor(
     public open fun replaceWith(f: (T) -> T): T {
         val mutBorrow = this.borrowMut()
         val replacement = f(mutBorrow)
-        return mem.replace(mutBorrow, replacement)
+        return replace(mutBorrow, replacement)
     }
 
     /**
@@ -780,7 +782,7 @@ public open class RefCell<T> internal constructor(
      * ```
      */
     public open fun swap(other: RefCell<T>) {
-        mem.swap(this.borrowMut(), other.borrowMut())
+        io.github.kotlinmania.rustlang.core.mem.swap(this.borrowMut(), other.borrowMut())
     }
 
     /**
@@ -1497,7 +1499,7 @@ public open class Ref<T>(
             // UNUSED within the scope `b`. Resetting the reference tracking state would require a
             // unique reference to the borrowed RefCell. No further mutable references can be created
             // from the original cell.
-            mem.forget((orig).value.borrow)
+            forget((orig).value.borrow)
             // SAFETY: after forgetting, we can form a reference for the rest of scope `b`.
             return (orig).value.value.asRef()
         }
@@ -1783,7 +1785,7 @@ public open class RefMut<T>(
             // require a unique reference to the borrowed RefCell. No further references can be created
             // from the original cell within that scope, making the current borrow the only
             // reference for the remaining scope.
-            mem.forget((orig).value.borrow)
+            forget((orig).value.borrow)
             // SAFETY: after forgetting, we can form a reference for the rest of scope `b`.
             return (orig).value.value.asMut()
         }

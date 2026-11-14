@@ -17,7 +17,7 @@ import io.github.kotlinmania.rustlang.core.ubchecks.checkLanguageUb
 /**
  * Converts a `UInt` to a `char`. See [char.fromU32].
  */
-internal fun fromU32(i: UInt): Char? {
+public fun fromU32(i: UInt): Char? {
     // Note(const-Note): once Result.ok is const fn, use it here
     return run {
         val matchVal = charTryFromU32(i)
@@ -33,7 +33,7 @@ internal fun fromU32(i: UInt): Char? {
 /**
  * Converts a `UInt` to a `char`, ignoring validity. See [char.fromU32Unchecked].
  */
-internal fun fromU32Unchecked(i: UInt): Char {
+public fun fromU32Unchecked(i: UInt): Char {
     // SAFETY: the caller must guarantee that `i` is a valid char value.
     return run {
         assertUnsafePrecondition(checkLanguageUb, "invalid value for `char`", i, i, charTryFromU32, i, isOk)
@@ -240,6 +240,8 @@ public fun fromChar(i: UByte): Char = i.toInt().toChar()
 public open class ParseCharError(
     public var kind: CharErrorKind,
 ) {
+    public open fun clone(): ParseCharError = ParseCharError(kind)
+
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> =
         when (this.kind) {
             CharErrorKind.EmptyString -> "cannot parse char from empty string"
@@ -307,26 +309,28 @@ public open class CharTryFromError(
             value = v
         }
 
+    public open fun clone(): CharTryFromError = CharTryFromError(value)
+
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = "converted integer out of range for `char`".fmt(f)
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<CharTryFromError> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<CharTryFromError> {
+        public fun typeLayout(): TypeLayout<CharTryFromError> =
+            object : TypeLayout<CharTryFromError> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): CharTryFromError =
                     CharTryFromError(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.UNIT).readNative(addr),
+                        (PrimitiveLayouts.UNIT).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: CharTryFromError) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.UNIT).writeNative(addr, value.value)
+                    (PrimitiveLayouts.UNIT).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): CharTryFromError =
                     CharTryFromError(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.UNIT).readBytes(buf, offset),
+                        (PrimitiveLayouts.UNIT).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: CharTryFromError) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.UNIT).writeBytes(buf, offset, value.value)
+                    (PrimitiveLayouts.UNIT).writeBytes(buf, offset, value.value)
                 }
             }
     }
@@ -335,7 +339,7 @@ public open class CharTryFromError(
 /**
  * Converts a digit in the given radix to a `char`. See [char.fromDigit].
  */
-internal fun fromDigit(num: UInt, radix: UInt): Char? {
+public fun fromDigit(num: UInt, radix: UInt): Char? {
     if (radix > 36u) {
         error("from_digit: radix is too high (maximum 36)")
     }

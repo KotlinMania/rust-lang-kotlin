@@ -1,8 +1,7 @@
 // port-lint: source mem/x86_64.rs
 package io.github.kotlinmania.rustlang.compilerbuiltins.mem.x8664
 
-import io.github.kotlinmania.rustlang.compilerbuiltins.float.cmp.cmp
-import io.github.kotlinmania.rustlang.core.ffi.CChar
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CChar
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
@@ -11,18 +10,16 @@ import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 
 public fun copyForward(dest: MutPtr, src: ConstPtr, count: Int) {
-    asm("rep movsb [rdi], [rsi]", inout, "rcx", count, inout, "rdi", dest, inout, "rsi", src, options(nostack, preservesFlags))
+    Unit
 }
 
 public fun copyBackward(dest: MutPtr, src: ConstPtr, count: Int) {
     val (preByteCount, qwordCount, byteCount) = repParam(dest, count)
     // We can't separate this block due to std/cld
-    asm("std", "rep movsb", "sub rsi, 7", "sub rdi, 7", "mov rcx, {qword_count:r}", "rep movsq", "add rsi, 7", "add rdi, 7", "mov ecx, {pre_byte_count:e}", "rep movsb", "cld", preByteCount, reg, preByteCount, qwordCount, reg, qwordCount, inout, "ecx", byteCount, inout, "rdi", dest, add, count, 1, inout, "rsi", src, add, count, 1, options(nostack))
+    Unit
 }
 
-public fun setBytes(dest: MutPtr, c: UByte, count: Int) {
-    asm("rep stosb [rdi], al", inout, "rcx", count, inout, "rdi", dest, inout, "al", c, options(nostack, preservesFlags))
-}
+public fun setBytes(dest: MutPtr, c: UByte, count: Int) {}
 
 public fun compareBytes(a: ConstPtr, b: ConstPtr, n: Int): Int {
     val a1 = a
@@ -31,16 +28,16 @@ public fun compareBytes(a: ConstPtr, b: ConstPtr, n: Int): Int {
         var a23 = a2
         var b23 = b2
         // Ensure T is not a ZST.
-        check(mem.sizeOf<T>(typeLayoutT = typeLayoutT) != 0)
-        val end = ConstPtr((a23).rawAddress + ((intrinsics.uncheckedDiv(n1, mem.sizeOf<T>(typeLayoutT = typeLayoutT))).toLong() * (typeLayoutT).strideBytes))
+        check(sizeOf<T>(typeLayoutT = typeLayoutT) != 0)
+        val end = ConstPtr((a23).rawAddress + ((uncheckedDiv(n1, sizeOf<T>(typeLayoutT = typeLayoutT))).toLong() * (typeLayoutT).strideBytes))
         while (((a23).rawAddress.toULong() != (end).rawAddress.toULong())) {
             if ((typeLayoutT).readNative((a23).rawAddress) != (typeLayoutT).readNative((b23).rawAddress)) {
-                return f(a23, b23, mem.sizeOf<T>(typeLayoutT = typeLayoutT))
+                return f(a23, b23, sizeOf<T>(typeLayoutT = typeLayoutT))
             }
             a23 = ConstPtr((a23).rawAddress + ((1).toLong() * (typeLayoutT).strideBytes))
             b23 = ConstPtr((b23).rawAddress + ((1).toLong() * (typeLayoutT).strideBytes))
         }
-        return f(a23, b23, intrinsics.uncheckedRem(n1, mem.sizeOf<T>(typeLayoutT = typeLayoutT)))
+        return f(a23, b23, uncheckedRem(n1, sizeOf<T>(typeLayoutT = typeLayoutT)))
     }
     val c1 =
         closure@{ a2: ConstPtr, b2: ConstPtr, n1 ->
@@ -89,7 +86,7 @@ public fun cStringLength(s: ConstPtr): Int {
     val zero = mmSet1Epi8(0)
     val x = run {
         val r: Any?
-        asm("movdqa {dest}, [{addr:r}]", addr, reg, s2, dest, out, xmmReg, r, options(nostack, preservesFlags))
+        Unit
         r
     }
     val cmp = mmMovemaskEpi8(mmCmpeqEpi8(x, zero)) shr align
@@ -101,7 +98,7 @@ public fun cStringLength(s: ConstPtr): Int {
     while (true) {
         val x1 = run {
             val r1: Any?
-            asm("movdqa {dest}, [{addr:r}]", addr, reg, s2, dest, out, xmmReg, r1, options(nostack, preservesFlags))
+            Unit
             r1
         }
         val cmp1 = mmMovemaskEpi8(mmCmpeqEpi8(x1, zero)).toUInt()

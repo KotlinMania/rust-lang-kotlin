@@ -1,6 +1,7 @@
 // port-lint: source collections/btree/append.rs
 package io.github.kotlinmania.rustlang.alloc.collections.btree.append
 
+import io.github.kotlinmania.rustlang.alloc.collections.btree.node.CAPACITY
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.Root
 import io.github.kotlinmania.rustlang.core.alloc.AllocatorClone
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
@@ -11,13 +12,13 @@ import io.github.kotlinmania.rustlang.core.result.Result
  * `length` variable along the way. The latter makes it easier for the
  * caller to avoid a leak when the iterator panicks.
  */
-internal fun <K, V, I, A : AllocatorClone> Root<K, V>.bulkPush(iter: I, length: RustMutableReference<Int>, alloc: A) where I : Iterator<Pair<K, V>> {
+public fun <K, V, I, A : AllocatorClone> Root<K, V>.bulkPush(iter: I, length: RustMutableReference<Int>, alloc: A) where I : Iterator<Pair<K, V>> {
     val length1 = length
     var curNode = this.borrowMut().lastLeafEdge().intoNode()
     // Iterate through all key-value pairs, pushing them into nodes at the right level.
     for ((key, value) in iter) {
         // Try to push key-value pair into the current leaf node.
-        if (curNode.len() < node.CAPACITY) {
+        if (curNode.len() < CAPACITY) {
             curNode.push(key, value)
         } else {
             // No space left, go up and push there.
@@ -29,7 +30,7 @@ internal fun <K, V, I, A : AllocatorClone> Root<K, V>.bulkPush(iter: I, length: 
                     when (matchVal) { is Result.Ok<*> -> {
                         val parent = matchVal.value
                         val parent1 = parent.intoNode()
-                        if (parent1.len() < node.CAPACITY) {
+                        if (parent1.len() < CAPACITY) {
                             // Found a node with space left, push here.
                             openNode = parent1
                             break

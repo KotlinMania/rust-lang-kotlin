@@ -1,9 +1,10 @@
-@file:OptIn(kotlinx.cinterop.ExperimentalForeignApi::class, kotlin.ExperimentalUnsignedTypes::class)
+@file:OptIn(ExperimentalForeignApi::class, ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.corearch.loongarch64.lsx
 
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import kotlinx.cinterop.ExperimentalForeignApi
 
 public actual fun lsxVsrarB(a: V16i8, b: V16i8): V16i8 =
     M128i()

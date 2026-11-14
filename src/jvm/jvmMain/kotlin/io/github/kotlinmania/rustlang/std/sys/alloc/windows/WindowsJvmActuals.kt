@@ -1,11 +1,10 @@
-@file:OptIn(kotlin.ExperimentalUnsignedTypes::class)
+@file:OptIn(ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.std.sys.alloc.windows
 
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.Bool
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.handle.Handle
+import io.github.kotlinmania.rustlang.std.sys.c
 
 private object SysAllocWindowsJniBridge {
     init {
@@ -29,9 +28,9 @@ private object SysAllocWindowsJniBridge {
             }
         val libFileName =
             when (hostPlatform) {
-                "windows" -> "std_jni.dll"
-                "macos" -> "libstd_jni.dylib"
-                else -> "libstd_jni.so"
+                "windows" -> "kmcore_jni.dll"
+                "macos" -> "libkmcore_jni.dylib"
+                else -> "libkmcore_jni.so"
             }
         val pathSep = System.getProperty("path.separator", ":")
         val libPathProp = System.getProperty("java.library.path", "")
@@ -47,7 +46,7 @@ private object SysAllocWindowsJniBridge {
         val stream = SysAllocWindowsJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
-            val extracted = java.nio.file.Files.createTempFile("std_jni-", suffix).toFile()
+            val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
             extracted.deleteOnExit()
             stream.use { input ->
                 extracted.outputStream().use { output ->
@@ -57,7 +56,7 @@ private object SysAllocWindowsJniBridge {
             System.load(extracted.absolutePath)
             return
         }
-        System.loadLibrary("std_jni")
+        System.loadLibrary("kmcore_jni")
     }
 
     @JvmStatic
@@ -73,14 +72,14 @@ private object SysAllocWindowsJniBridge {
     external fun stdSysAllocWindowsHeapFree(hheap: Long, dwflags: Int, lpmem: Long): Int
 }
 
-public actual fun getProcessHeap(): Handle =
+public actual fun getProcessHeap(): c.Handle =
     MutPtr(SysAllocWindowsJniBridge.stdSysAllocWindowsGetProcessHeap())
 
-public actual fun heapAlloc(hheap: Handle, dwflags: UInt, dwbytes: ULong): MutPtr =
+public actual fun heapAlloc(hheap: c.Handle, dwflags: UInt, dwbytes: ULong): MutPtr =
     MutPtr(SysAllocWindowsJniBridge.stdSysAllocWindowsHeapAlloc(hheap.rawAddress, dwflags.toInt(), dwbytes.toLong()))
 
-public actual fun heapReAlloc(hheap: Handle, dwflags: UInt, lpmem: ConstPtr, dwbytes: ULong): MutPtr =
+public actual fun heapReAlloc(hheap: c.Handle, dwflags: UInt, lpmem: ConstPtr, dwbytes: ULong): MutPtr =
     MutPtr(SysAllocWindowsJniBridge.stdSysAllocWindowsHeapReAlloc(hheap.rawAddress, dwflags.toInt(), lpmem.rawAddress, dwbytes.toLong()))
 
-public actual fun heapFree(hheap: Handle, dwflags: UInt, lpmem: ConstPtr): Bool =
+public actual fun heapFree(hheap: c.Handle, dwflags: UInt, lpmem: ConstPtr): c.Bool =
     SysAllocWindowsJniBridge.stdSysAllocWindowsHeapFree(hheap.rawAddress, dwflags.toInt(), lpmem.rawAddress)

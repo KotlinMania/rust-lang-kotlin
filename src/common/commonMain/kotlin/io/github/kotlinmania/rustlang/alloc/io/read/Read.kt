@@ -12,8 +12,8 @@ import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedBuf
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
+import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.Result
-import io.github.kotlinmania.rustlang.core.io.error.error
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
 import io.github.kotlinmania.rustlang.core.io.util.Chain
 import io.github.kotlinmania.rustlang.core.io.util.Take
@@ -55,6 +55,7 @@ import io.github.kotlinmania.rustlang.core.result.andThen
  *
  * ```kotlin
  * import std.fs.File
+ * import std.io
  * import std.io.prelude.*
  *
  * fun main(): io.Result<Unit> {
@@ -155,6 +156,7 @@ public interface Read<SelfType> {
      *
      * ```kotlin
      * import std.fs.File
+     * import std.io
      * import std.io.prelude.*
      *
      * fun main(): io.Result<Unit> {
@@ -226,6 +228,7 @@ public interface Read<SelfType> {
      *
      * ```kotlin
      * import std.fs.File
+     * import std.io
      * import std.io.prelude.*
      *
      * fun main(): io.Result<Unit> {
@@ -304,6 +307,7 @@ public interface Read<SelfType> {
      *
      * ```kotlin
      * import std.fs.File
+     * import std.io
      * import std.io.prelude.*
      *
      * fun main(): io.Result<Unit> {
@@ -368,6 +372,7 @@ public interface Read<SelfType> {
      *
      * ```kotlin
      * import std.fs.File
+     * import std.io
      * import std.io.prelude.*
      *
      * fun main(): io.Result<Unit> {
@@ -427,6 +432,7 @@ public interface Read<SelfType> {
      *
      * ```kotlin
      * import std.fs.File
+     * import std.io
      * import std.io.Read
      *
      * fun main(): io.Result<Unit> {
@@ -473,6 +479,7 @@ public interface Read<SelfType> {
      *
      * ```kotlin
      * import std.fs.File
+     * import std.io
      * import std.io.BufReader
      * import std.io.prelude.*
      *
@@ -500,6 +507,7 @@ public interface Read<SelfType> {
      *
      * ```kotlin
      * import std.fs.File
+     * import std.io
      * import std.io.prelude.*
      *
      * fun main(): io.Result<Unit> {
@@ -533,6 +541,7 @@ public interface Read<SelfType> {
      *
      * ```kotlin
      * import std.fs.File
+     * import std.io
      * import std.io.prelude.*
      *
      * fun main(): io.Result<Unit> {
@@ -722,7 +731,7 @@ public fun <R : Read<R>> readToString(reader: R): Result<String> {
  * Bare metal platforms usually have very small amounts of RAM
  * (in the order of hundreds of KB)
  */
-public val DEFAULT_BUF_SIZE: Int = cfgSelect(targetOs, "espidf", 512, 8, 1024)
+public val DEFAULT_BUF_SIZE: Int = 8 * 1024
 
 /**
  * Several `readToString` and `readLine` methods in the standard library will
@@ -745,7 +754,7 @@ public val DEFAULT_BUF_SIZE: Int = cfgSelect(targetOs, "espidf", 512, 8, 1024)
  *    the function only *appends* bytes to the buffer. We'll get undefined
  *    behavior if existing bytes are overwritten to have non-UTF-8 data.
  */
-internal fun appendToString(buf: String, f: (List<UByte>) -> Result<Int>): Result<Int> {
+public fun appendToString(buf: String, f: (List<UByte>) -> Result<Int>): Result<Int> {
     val lenOriginal = buf.length
     // SAFETY: invalid UTF-8 discarded before return or unwind
     val bufVec = buf.asMutVec()
@@ -782,13 +791,17 @@ public fun <R : Read<R>> defaultReadToEnd(r: R, buf: List<UByte>, sizeHint: Int?
     fun <R : Read<R>> smallProbeRead(r1: R, buf1: List<UByte>): Result<Int> {
         val probe = UByteArray((PROBE_SIZE).toInt()) { 0u.toUByte() }
         while (true) {
-            cfgSelect(noGlobalOomHandling, buf1, tryReserve, PROBE_SIZE)
+            // Without global OOM handling we must proactively allocate the buffer
+            // to avoid failing after already reading data.
+            when (val tryResult = buf1.tryReserve(PROBE_SIZE)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
             run {
                 val matchVal = r1.read(probe)
                 when {
                     matchVal is Result.Ok<*> -> {
                         val n = (matchVal as Result.Ok<*>).value
-                        cfgSelect(noGlobalOomHandling, buf1, tryExtendFromSliceOfBytes, probe, n, buf1, extendFromSlice, probe, n)
+                        // there is no way to recover from allocation failure here
+                        // because the data has already been read.
+                        when (val tryResult = buf1.tryExtendFromSliceOfBytes(((probe).sliceArray(0 until n)))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
                         return Result.Ok(n)
                     }
                     matchVal is Result.Err<*> && (matchVal as Result.Err<*>).error.isInterrupted() -> {
@@ -928,7 +941,7 @@ public fun defaultReadVectored(read: (MutableList<UByte>) -> Result<Int>, bufs: 
     return read(buf)
 }
 
-internal fun <R : Read<R>> defaultReadExact(thisRef: R, buf: MutableList<UByte>): Result<Unit> {
+public fun <R : Read<R>> defaultReadExact(thisRef: R, buf: MutableList<UByte>): Result<Unit> {
     var buf1 = buf
     while (!buf1.isEmpty()) {
         run {
@@ -962,7 +975,7 @@ public fun defaultReadBuf(read: (MutableList<UByte>) -> Result<Int>, cursor: Bor
     return Result.Ok(Unit)
 }
 
-internal fun <R : Read<R>> defaultReadBufExact(thisRef: R, cursor: BorrowedCursor<UByte>): Result<Unit> {
+public fun <R : Read<R>> defaultReadBufExact(thisRef: R, cursor: BorrowedCursor<UByte>): Result<Unit> {
     while (cursor.capacity() > 0) {
         val prevWritten = cursor.written()
         run {

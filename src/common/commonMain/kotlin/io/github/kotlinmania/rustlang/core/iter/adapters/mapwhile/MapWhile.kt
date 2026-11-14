@@ -1,12 +1,14 @@
 // port-lint: source iter/adapters/map_while.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.mapwhile
 
-import io.github.kotlinmania.rustlang.core.iter.InPlaceIterable
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.InPlaceIterable
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
 
 public class DebugStruct(
@@ -49,7 +51,7 @@ public open class MapWhile<I, P>(
     public var iter: I,
     public var predicate: P,
 ) : SourceIter<Any?, Source>, InPlaceIterable, Iterable<B> {
-    override fun iterator(): kotlin.collections.Iterator<B> = object : AbstractIterator<B>() {
+    override fun iterator(): Iterator<B> = object : AbstractIterator<B>() {
         override fun computeNext() {
             when (val v = this@MapWhile.next()) {
                 null -> done()
@@ -93,11 +95,11 @@ public open class MapWhile<I, P>(
     }
 
     public companion object {
-        public fun <I, P> typeLayout(typeLayoutI: io.github.kotlinmania.rustlang.core.mem.TypeLayout<I>, typeLayoutP: io.github.kotlinmania.rustlang.core.mem.TypeLayout<P>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<MapWhile<I, P>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<MapWhile<I, P>> {
+        public fun <I, P> typeLayout(typeLayoutI: TypeLayout<I>, typeLayoutP: TypeLayout<P>): TypeLayout<MapWhile<I, P>> =
+            object : TypeLayout<MapWhile<I, P>> {
                 override val alignBytes: Long = listOf(1L, typeLayoutI.alignBytes, typeLayoutP.alignBytes).max()
-                private val off1: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(typeLayoutI.sizeBytes, typeLayoutP.alignBytes)
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes((off1 + typeLayoutP.sizeBytes), alignBytes)
+                private val off1: Long = alignUpBytes(typeLayoutI.sizeBytes, typeLayoutP.alignBytes)
+                override val sizeBytes: Long = alignUpBytes((off1 + typeLayoutP.sizeBytes), alignBytes)
                 override fun readNative(addr: Long): MapWhile<I, P> =
                     MapWhile(
                         (typeLayoutI).readNative(addr),
@@ -118,7 +120,7 @@ public open class MapWhile<I, P>(
                 }
             }
 
-        internal fun <I, P> new(iter: I, predicate: P): MapWhile<I, P> = MapWhile(iter = iter, predicate = predicate)
+        public fun <I, P> new(iter: I, predicate: P): MapWhile<I, P> = MapWhile(iter = iter, predicate = predicate)
 
         public val EXPAND_BY: NonZero<Int>? = I.EXPAND_BY
 

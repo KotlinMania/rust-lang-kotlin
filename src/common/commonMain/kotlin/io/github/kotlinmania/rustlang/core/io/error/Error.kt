@@ -1,6 +1,7 @@
 // port-lint: source io/error.rs
 package io.github.kotlinmania.rustlang.core.io.error
 
+import io.github.kotlinmania.rustlang.core.fmt.builders.fromFn
 import io.github.kotlinmania.rustlang.core.hint.mustUse
 import io.github.kotlinmania.rustlang.core.hint.unreachableUnchecked
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind.*
@@ -12,6 +13,7 @@ import io.github.kotlinmania.rustlang.core.io.error.repr.Repr
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
+import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result as RustResult
@@ -108,6 +110,8 @@ public class DebugTuple(
  * A convenience function that bubbles an `io.Result` to its caller:
  *
  * ```kotlin
+ * import std.io
+ *
  * fun getString(): io.Result<String> {
  *     var buffer = ""
  *     io.stdin().readLine(buffer).getOrElse { return Result.failure(it) }
@@ -115,7 +119,7 @@ public class DebugTuple(
  * }
  * ```
  */
-public typealias Result<T> = Result<T, Error>
+public typealias Result<T> = io.github.kotlinmania.rustlang.core.result.Result<T, Error>
 
 // Note(#74481): Hard-links required to link from `core` to `std`
 
@@ -134,7 +138,7 @@ public open class Error(
 ) {
     public open fun fmt(f: StringBuilder): RustResult<Unit, Unit> = run { f.append((this.repr).toString()); RustResult.Ok(Unit) }
 
-    public open fun intoCustomOwner(): Result<CustomOwner, Error> =
+    public open fun intoCustomOwner(): io.github.kotlinmania.rustlang.core.result.Result<CustomOwner, Error> =
         if (when (val matchVal = this.repr.data()) {
             is ErrorData.Custom -> true
             else -> false
@@ -252,6 +256,8 @@ unreachableUnchecked()
      * # Examples
      *
      * ```kotlin
+     * import std.error
+     * import std.fmt
      * import std.io.Error
      * import std.io.ErrorKind
      *
@@ -382,7 +388,7 @@ unreachableUnchecked()
         when (val matchVal = this.repr.data()) {
             is ErrorData.Os -> {
                 val (code) = matchVal
-                val detail = fmt.fromFn({ fmt1 -> formatOsError(code, fmt1) })
+                val detail = fromFn({ fmt1 -> formatOsError(code, fmt1) })
                 fmt.writeFmt("$detail (os error $code)")
             }
             is ErrorData.Custom -> {
@@ -530,8 +536,8 @@ public fun Repr.fmt(fmt: StringBuilder): RustResult<Unit, Unit> =
     when (val matchVal = this.data()) {
         is ErrorData.Os -> {
             val (code) = matchVal
-            DebugStruct(fmt, "Os").field("code", code).field("kind", decodeErrorKind(code)).field("message", fmt.fromFn({ fmt1 ->
-                fmt1.writeFmt("\"${fmt.fromFn({ fmt2 -> formatOsError(code, fmt2) })}\"")
+            DebugStruct(fmt, "Os").field("code", code).field("kind", decodeErrorKind(code)).field("message", fromFn({ fmt1 ->
+                fmt1.writeFmt("\"${fromFn({ fmt2 -> formatOsError(code, fmt2) })}\"")
             })).finish()
         }
         is ErrorData.Custom -> {
@@ -601,7 +607,7 @@ public open class Custom(
     public open fun intoRaw(): NonNull {
         val ptr = this.error
         // Avoid `Custom.drop` which would free the error pointer.
-        mem.forget(this)
+        forget(this)
         return ptr
     }
 
@@ -672,7 +678,7 @@ public open class CustomOwner internal constructor(
     public open fun intoRaw(): NonNull {
         val ptr = this.value
         // Avoid `CustomOwner.drop`, which would free the pointer.
-        mem.forget(this)
+        forget(this)
         return ptr
     }
 

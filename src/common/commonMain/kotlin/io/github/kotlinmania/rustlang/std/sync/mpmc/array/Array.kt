@@ -1,7 +1,6 @@
 // port-lint: source sync/mpmc/array.rs
 package io.github.kotlinmania.rustlang.std.sync.mpmc.array
 
-import io.github.kotlinmania.atomic.fence
 import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
@@ -70,40 +69,51 @@ public open class Slot<T> internal constructor(
 /**
  * The token type for the array flavor.
  */
-internal open class ArrayToken(
-    /**
-     * Slot to read from or write to.
-     */
-    public var slot: ConstPtr,
+public open class ArrayToken internal constructor(
+    slotCtorArg: ConstPtr,
     /**
      * Stamp to store into the slot after reading or writing.
      */
     public var stamp: Int,
 ) {
+    /**
+     * Slot to read from or write to.
+     */
+    public var slot: ConstPtr = slotCtorArg
+        internal set
+
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<ArrayToken> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<ArrayToken> {
+        public fun typeLayout(): TypeLayout<ArrayToken> =
+            object : TypeLayout<ArrayToken> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): ArrayToken =
                     ArrayToken(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.constPtrLayout(64)).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readNative(addr + 8L),
+                        (PrimitiveLayouts.constPtrLayout(64)).readNative(addr),
+                        (PrimitiveLayouts.USIZE64).readNative(addr + 8L),
                     )
                 override fun writeNative(addr: Long, value: ArrayToken) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.constPtrLayout(64)).writeNative(addr, value.slot)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeNative(addr + 8L, value.stamp)
+                    (PrimitiveLayouts.constPtrLayout(64)).writeNative(addr, value.slot)
+                    (PrimitiveLayouts.USIZE64).writeNative(addr + 8L, value.stamp)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): ArrayToken =
                     ArrayToken(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.constPtrLayout(64)).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readBytes(buf, offset + 8),
+                        (PrimitiveLayouts.constPtrLayout(64)).readBytes(buf, offset),
+                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset + 8),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: ArrayToken) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.constPtrLayout(64)).writeBytes(buf, offset, value.slot)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeBytes(buf, offset + 8, value.stamp)
+                    (PrimitiveLayouts.constPtrLayout(64)).writeBytes(buf, offset, value.slot)
+                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset + 8, value.stamp)
                 }
             }
+
+        public operator fun invoke(
+            slot: ConstPtr,
+            stamp: Int,
+        ): ArrayToken = ArrayToken(
+            slotCtorArg = slot,
+            stamp = stamp,
+        )
 
         public fun default(): ArrayToken = ArrayToken(slot = ConstPtr(0L), stamp = 0)
     }
@@ -112,27 +122,9 @@ internal open class ArrayToken(
 /**
  * Bounded channel based on a preallocated array.
  */
-internal open class Channel<T>(
-    /**
-     * The head of the channel.
-     *
-     * This value is a "stamp" consisting of an index into the buffer, a mark bit, and a lap, but
-     * packed into a single `Int`. The lower bits represent the index, while the upper bits
-     * represent the lap. The mark bit in the head is always zero.
-     *
-     * Messages are popped from the head of the channel.
-     */
-    public var head: CachePadded<Atomic<Int>>,
-    /**
-     * The tail of the channel.
-     *
-     * This value is a "stamp" consisting of an index into the buffer, a mark bit, and a lap, but
-     * packed into a single `Int`. The lower bits represent the index, while the upper bits
-     * represent the lap. The mark bit indicates that the channel is disconnected.
-     *
-     * Messages are pushed into the tail of the channel.
-     */
-    public var tail: CachePadded<Atomic<Int>>,
+public open class Channel<T> internal constructor(
+    headCtorArg: CachePadded<Atomic<Int>>,
+    tailCtorArg: CachePadded<Atomic<Int>>,
     /**
      * The buffer holding slots.
      */
@@ -158,6 +150,30 @@ internal open class Channel<T>(
      */
     public var receivers: SyncWaker,
 ) {
+    /**
+     * The head of the channel.
+     *
+     * This value is a "stamp" consisting of an index into the buffer, a mark bit, and a lap, but
+     * packed into a single `Int`. The lower bits represent the index, while the upper bits
+     * represent the lap. The mark bit in the head is always zero.
+     *
+     * Messages are popped from the head of the channel.
+     */
+    public var head: CachePadded<Atomic<Int>> = headCtorArg
+        internal set
+
+    /**
+     * The tail of the channel.
+     *
+     * This value is a "stamp" consisting of an index into the buffer, a mark bit, and a lap, but
+     * packed into a single `Int`. The lower bits represent the index, while the upper bits
+     * represent the lap. The mark bit indicates that the channel is disconnected.
+     *
+     * Messages are pushed into the tail of the channel.
+     */
+    public var tail: CachePadded<Atomic<Int>> = tailCtorArg
+        internal set
+
     /**
      * Attempts to reserve a slot for sending a message.
      */
@@ -204,7 +220,7 @@ internal open class Channel<T>(
                     } }
                 }
             } else if (stamp.wrappingAdd(this.oneLap) == tail + 1) {
-                fence(Ordering.SeqCst)
+                atomic.fence(Ordering.SeqCst)
                 val head = this.head.load(Ordering.Relaxed)
                 // If the head lags one lap behind the tail as well...
                 if (head.wrappingAdd(this.oneLap) == tail) {
@@ -224,7 +240,7 @@ internal open class Channel<T>(
     /**
      * Writes a message into the channel.
      */
-    internal open fun write(token: Token, msg: T, typeLayoutT: TypeLayout<T>): Result<Unit, T> {
+    public open fun write(token: Token, msg: T, typeLayoutT: TypeLayout<T>): Result<Unit, T> {
         // If there is no slot, the channel is disconnected.
         if (((token.array.slot).rawAddress == 0L)) {
             return Result.Err(msg)
@@ -280,7 +296,7 @@ internal open class Channel<T>(
                     } }
                 }
             } else if (stamp == head) {
-                fence(Ordering.SeqCst)
+                atomic.fence(Ordering.SeqCst)
                 val tail = this.tail.load(Ordering.Relaxed)
                 // If the tail equals the head, that means the channel is empty.
                 if ((tail and this.markBit.inv()) == head) {
@@ -308,7 +324,7 @@ internal open class Channel<T>(
     /**
      * Reads a message from the channel.
      */
-    internal open fun read(token: Token, typeLayoutT: TypeLayout<T>): Result<T, Unit> {
+    public open fun read(token: Token, typeLayoutT: TypeLayout<T>): Result<T, Unit> {
         if (((token.array.slot).rawAddress == 0L)) {
             // The channel is disconnected.
             return Result.Err(Unit)
@@ -329,7 +345,7 @@ internal open class Channel<T>(
     /**
      * Attempts to send a message into the channel.
      */
-    internal open fun trySend(msg: T): Result<Unit, TrySendError<T>> {
+    public open fun trySend(msg: T): Result<Unit, TrySendError<T>> {
         val token = Token.default()
         return if (this.startSend(token)) {
             this.write(token, msg).mapErr({ TrySendError.Disconnected(it) })
@@ -341,7 +357,7 @@ internal open class Channel<T>(
     /**
      * Sends a message into the channel.
      */
-    internal open fun send(msg: T, deadline: Instant?): Result<Unit, SendTimeoutError<T>> {
+    public open fun send(msg: T, deadline: Instant?): Result<Unit, SendTimeoutError<T>> {
         val token = Token.default()
         while (true) {
             // Try sending a message.
@@ -380,7 +396,7 @@ internal open class Channel<T>(
     /**
      * Attempts to receive a message without blocking.
      */
-    internal open fun tryRecv(): Result<T, TryRecvError> {
+    public open fun tryRecv(): Result<T, TryRecvError> {
         val token = Token.default()
         return if (this.startRecv(token)) {
             this.read(token).mapErr({ TryRecvError.Disconnected })
@@ -392,7 +408,7 @@ internal open class Channel<T>(
     /**
      * Receives a message from the channel.
      */
-    internal open fun recv(deadline: Instant?): Result<T, RecvTimeoutError> {
+    public open fun recv(deadline: Instant?): Result<T, RecvTimeoutError> {
         val token = Token.default()
         while (true) {
             // Try receiving a message.
@@ -433,7 +449,7 @@ internal open class Channel<T>(
     /**
      * Returns the current number of messages inside the channel.
      */
-    internal open fun len(): Int {
+    public open fun len(): Int {
         while (true) {
             // Load the tail, then load the head.
             val tail = this.tail.load(Ordering.SeqCst)
@@ -460,14 +476,14 @@ internal open class Channel<T>(
     /**
      * Returns the capacity of the channel.
      */
-    internal open fun capacity(): Int? = this.cap
+    public open fun capacity(): Int? = this.cap
 
     /**
      * Disconnects senders and wakes up all blocked receivers.
      *
      * Returns `true` if this call disconnected the channel.
      */
-    internal open fun disconnectSenders(): Boolean {
+    public open fun disconnectSenders(): Boolean {
         val tail = this.tail.fetchOr(this.markBit, Ordering.SeqCst)
         return if (tail and this.markBit == 0) {
             this.receivers.disconnect()
@@ -487,7 +503,7 @@ internal open class Channel<T>(
      * destruction of all other receivers must have been observed with acquire
      * ordering or stronger.
      */
-    internal open fun disconnectReceivers(): Boolean {
+    public open fun disconnectReceivers(): Boolean {
         val tail = this.tail.fetchOr(this.markBit, Ordering.SeqCst)
         val disconnected =
             if (tail and this.markBit == 0) {
@@ -558,12 +574,12 @@ internal open class Channel<T>(
     /**
      * Returns `true` if the channel is disconnected.
      */
-    internal open fun isDisconnected(): Boolean = (this.tail.load(Ordering.SeqCst) and this.markBit != 0).toUByte()
+    public open fun isDisconnected(): Boolean = (this.tail.load(Ordering.SeqCst) and this.markBit != 0).toUByte()
 
     /**
      * Returns `true` if the channel is empty.
      */
-    internal open fun isEmpty(): Boolean {
+    public open fun isEmpty(): Boolean {
         val head = this.head.load(Ordering.SeqCst)
         val tail = this.tail.load(Ordering.SeqCst)
         // Is the tail equal to the head?
@@ -576,7 +592,7 @@ internal open class Channel<T>(
     /**
      * Returns `true` if the channel is full.
      */
-    internal open fun isFull(): Boolean {
+    public open fun isFull(): Boolean {
         val tail = this.tail.load(Ordering.SeqCst)
         val head = this.head.load(Ordering.SeqCst)
         // Is the head lagging one lap behind tail?
@@ -587,10 +603,30 @@ internal open class Channel<T>(
     }
 
     public companion object {
+        public operator fun <T> invoke(
+            head: CachePadded<Atomic<Int>>,
+            tail: CachePadded<Atomic<Int>>,
+            buffer: List<Slot<T>>,
+            cap: Int,
+            oneLap: Int,
+            markBit: Int,
+            senders: SyncWaker,
+            receivers: SyncWaker,
+        ): Channel<T> = Channel<T>(
+            headCtorArg = head,
+            tailCtorArg = tail,
+            buffer = buffer,
+            cap = cap,
+            oneLap = oneLap,
+            markBit = markBit,
+            senders = senders,
+            receivers = receivers,
+        )
+
         /**
          * Creates a bounded channel of capacity `cap`.
          */
-        internal fun <T> withCapacity(cap: Int): Channel<T> {
+        public fun <T> withCapacity(cap: Int): Channel<T> {
             check(cap > 0) { "capacity must be positive" }
             // Compute constants `markBit` and `oneLap`.
             val markBit = (cap + 1).nextPowerOfTwo()

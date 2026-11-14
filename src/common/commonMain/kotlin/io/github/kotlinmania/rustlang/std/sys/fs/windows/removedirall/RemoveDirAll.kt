@@ -6,26 +6,13 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU32
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
+import io.github.kotlinmania.rustlang.std.sys.c
 import io.github.kotlinmania.rustlang.std.sys.fs.windows.DirBuff
 import io.github.kotlinmania.rustlang.std.sys.fs.windows.File
 import io.github.kotlinmania.rustlang.std.sys.pal.api.unicodeStr
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.api.UnicodeStrRef
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.api.WinError
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.DELETE
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.FILE_LIST_DIRECTORY
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.FILE_OPEN_REPARSE_POINT
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.FILE_SHARE_DELETE
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.FILE_SHARE_READ
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.FILE_SHARE_WRITE
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.FILE_SYNCHRONOUS_IO_NONALERT
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.OBJ_DONT_REPARSE
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.SYNCHRONIZE
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.ntSuccess
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.IoStatusBlock
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.ObjectAttributes
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.STATUS_DELETE_PENDING
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.rtlNtStatusToDosError
-import io.github.kotlinmania.rustlang.std.sys.thread.windows.Thread
+import io.github.kotlinmania.rustlang.std.thread.functions.yieldNow
 
 // The Windows implementation of std.fs.removeDirAll.
 //
@@ -65,23 +52,23 @@ public val MAX_RETRIES: Int = 50
  *
  * This isn't completely safe because `OBJECT_ATTRIBUTES` contains raw pointers.
  */
-public fun ntOpenFile(access: UInt, objectAttribute: ObjectAttributes, share: UInt, options: UInt): Result<File, WinError> =
+public fun ntOpenFile(access: UInt, objectAttribute: c.ObjectAttributes, share: UInt, options: UInt): Result<File, WinError> =
     run {
         val handle = MutPtr(0L)
-        val ioStatus = IoStatusBlock.PENDING
-        val status = ntOpenFile(handle, access, objectAttribute, ioStatus, share, options)
-        if (ntSuccess(status)) {
+        val ioStatus = c.IoStatusBlock.PENDING
+        val status = c.NtOpenFile(handle, access, objectAttribute, ioStatus, share, options)
+        if (c.ntSuccess(status)) {
             Result.Ok(File.fromRawHandle(handle))
         } else {
             // Convert an NTSTATUS to the more familiar Win32 error code (aka "DosError")
             val winError =
-                if (status == STATUS_DELETE_PENDING) {
+                if (status == c.STATUS_DELETE_PENDING) {
                     // We make a special exception for `STATUS_DELETE_PENDING` because
                     // otherwise this will be mapped to `ERROR_ACCESS_DENIED` which is
                     // very unhelpful because that can also mean a permission error.
                     WinError.DELETE_PENDING
                 } else {
-                    WinError.new(rtlNtStatusToDosError(status))
+                    WinError.new(c.RtlNtStatusToDosError(status))
                 }
             Result.Err(winError)
         }
@@ -100,18 +87,18 @@ public fun openLinkNoReparse(parent: File, path: UnicodeStrRef, access: UInt, op
     // The `OBJ_DONT_REPARSE` attribute ensures that we haven't been
     // tricked into following a symlink. However, it may not be available in
     // earlier versions of Windows.
-    val ATTRIBUTES: Atomic<UInt>  = AtomicU32.new(OBJ_DONT_REPARSE)
+    val ATTRIBUTES: Atomic<UInt>  = AtomicU32.new(c.OBJ_DONT_REPARSE)
     val result1 =
         run {
-            val obj = ObjectAttributes.withLength().copy(objectName = path.asPtr().castMut(), rootDirectory = parent.asRawHandle(), attributes = ATTRIBUTES.load(Ordering.Relaxed))
-            val share = FILE_SHARE_DELETE or FILE_SHARE_READ or FILE_SHARE_WRITE
-            val options1 = FILE_OPEN_REPARSE_POINT or options
+            val obj = c.ObjectAttributes.withLength().copy(objectName = path.asPtr().castMut(), rootDirectory = parent.asRawHandle(), attributes = ATTRIBUTES.load(Ordering.Relaxed))
+            val share = c.FILE_SHARE_DELETE or c.FILE_SHARE_READ or c.FILE_SHARE_WRITE
+            val options1 = c.FILE_OPEN_REPARSE_POINT or options
             val result = ntOpenFile(access, obj, share, options1)
             // Retry without OBJ_DONT_REPARSE if it's not supported.
             if (when {
                 result is Result.Err<*> && result.error == WinError.INVALID_PARAMETER -> true
                 else -> false
-            } && ATTRIBUTES.load(Ordering.Relaxed) == OBJ_DONT_REPARSE) {
+            } && ATTRIBUTES.load(Ordering.Relaxed) == c.OBJ_DONT_REPARSE) {
                 ATTRIBUTES.store(0, Ordering.Relaxed)
                 obj.attributes = 0u
                 ntOpenFile(access, obj, share, options1)
@@ -135,14 +122,14 @@ public fun openLinkNoReparse(parent: File, path: UnicodeStrRef, access: UInt, op
 
 public fun openDir(parent: File, name: UnicodeStrRef): Result<File?, WinError> {
     // Open the directory for synchronous directory listing.
-    return openLinkNoReparse(parent, name, SYNCHRONIZE or FILE_LIST_DIRECTORY, FILE_SYNCHRONOUS_IO_NONALERT)
+    return openLinkNoReparse(parent, name, c.SYNCHRONIZE or c.FILE_LIST_DIRECTORY, c.FILE_SYNCHRONOUS_IO_NONALERT)
 }
 
 public fun delete(parent: File, name: UnicodeStrRef): Result<Unit, WinError> {
     // Note that the `delete` function consumes the opened file to ensure it's
     // dropped immediately. See module comments for why this is important.
     return run {
-        val matchVal = openLinkNoReparse(parent, name, DELETE, 0u)
+        val matchVal = openLinkNoReparse(parent, name, c.DELETE, 0u)
         when {
             matchVal is Result.Ok<*> && matchVal.value != null -> f.delete()
             matchVal is Result.Ok<*> && matchVal.value == null -> {
@@ -173,7 +160,7 @@ public fun <T> retry(f: () -> Result<T, WinError>, ignore: WinError): Result<T, 
                 return result
             }
         }
-        Thread.yieldNow()
+        yieldNow()
     }
 }
 

@@ -7,9 +7,10 @@ import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.ops.range.Range
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.sliceFromRawParts
+import io.github.kotlinmania.rustlang.core.ptr.sliceFromRawPartsMut
 import io.github.kotlinmania.rustlang.core.slice.rawMutSliceList
 import io.github.kotlinmania.rustlang.core.slice.rawSliceList
-import io.github.kotlinmania.rustlang.core.ubchecks.assertUnsafePrecondition
 import io.github.kotlinmania.rustlang.core.ubchecks.checkLanguageUb
 
 // Free functions to create `[T]` and `[T]`.
@@ -58,6 +59,7 @@ import io.github.kotlinmania.rustlang.core.ubchecks.checkLanguageUb
  * import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
  * import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
  * import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
+ * import std.slice
  *
  * // manifest a slice for a single element
  * val localStorageL6C0 = AddressableLocal(42, PrimitiveLayouts.I32)
@@ -73,6 +75,7 @@ import io.github.kotlinmania.rustlang.core.ubchecks.checkLanguageUb
  * ```kotlin
  * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
  * import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
+ * import std.slice
  *
  * fun <T> joinSlices(fst: List<T>, snd: List<T>): List<T> {
  *     val fstEnd = ConstPtr((fst.asPtr()).rawAddress + ((fst.size).toLong() * (ObjectSlotLayout<T>()).strideBytes))
@@ -98,6 +101,7 @@ import io.github.kotlinmania.rustlang.core.ubchecks.checkLanguageUb
  *
  * ```kotlin
  * import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
+ * import std.slice
  *
  * / **
  *  * Sum the elements of an FFI slice.
@@ -121,7 +125,7 @@ import io.github.kotlinmania.rustlang.core.ubchecks.checkLanguageUb
  * val ptr = ConstPtr(0L)
  * // And this could be std.vector.size():
  * val len = 0
- * check(sumSlice(ptr, len) == 0.0)
+ * check(sumSlice(ptr, len) == 0.0f.toFloat())
  * ```
  *
  * [valid]: ptr#safety
@@ -130,8 +134,8 @@ import io.github.kotlinmania.rustlang.core.ubchecks.checkLanguageUb
 public fun <T> fromRawParts(data: ConstPtr, len: Int): List<T> {
     // SAFETY: the caller must uphold the safety contract for `fromRawParts`.
     return run {
-        assertUnsafePrecondition(checkLanguageUb, "slice::from_raw_parts requires the pointer to be aligned and non-null, and the total size of the slice not to exceed `isize::MAX`", data, data, size, sizeOf, T, align, alignOf, T, len, len, ubChecks, maybeIsAlignedAndNotNull, data, align, false, ubChecks, isValidAllocationSize, size, len)
-        (PrimitiveLayouts.U8).readNative((ptr.sliceFromRawParts(data, len)).rawAddress)
+        ubChecks.assertUnsafePrecondition(checkLanguageUb, "slice::from_raw_parts requires the pointer to be aligned and non-null, and the total size of the slice not to exceed `isize::MAX`", data, data, size, sizeOf, T, align, alignOf, T, len, len, ubChecks, maybeIsAlignedAndNotNull, data, align, false, ubChecks, isValidAllocationSize, size, len)
+        (PrimitiveLayouts.U8).readNative((sliceFromRawParts(data, len)).rawAddress)
     }
 }
 
@@ -170,8 +174,8 @@ public fun <T> fromRawParts(data: ConstPtr, len: Int): List<T> {
 public fun <T> fromRawPartsMut(data: MutPtr, len: Int): MutableList<T> {
     // SAFETY: the caller must uphold the safety contract for `fromRawPartsMut`.
     return run {
-        assertUnsafePrecondition(checkLanguageUb, "slice::from_raw_parts_mut requires the pointer to be aligned and non-null, and the total size of the slice not to exceed `isize::MAX`", data, data, size, sizeOf, T, align, alignOf, T, len, len, ubChecks, maybeIsAlignedAndNotNull, data, align, false, ubChecks, isValidAllocationSize, size, len)
-        RustMutableReference(MutPtr((ptr.sliceFromRawPartsMut(data, len)).rawAddress), PrimitiveLayouts.U8)
+        ubChecks.assertUnsafePrecondition(checkLanguageUb, "slice::from_raw_parts_mut requires the pointer to be aligned and non-null, and the total size of the slice not to exceed `isize::MAX`", data, data, size, sizeOf, T, align, alignOf, T, len, len, ubChecks, maybeIsAlignedAndNotNull, data, align, false, ubChecks, isValidAllocationSize, size, len)
+        RustMutableReference(MutPtr((sliceFromRawPartsMut(data, len)).rawAddress), PrimitiveLayouts.U8)
     }
 }
 
@@ -232,6 +236,8 @@ public fun <T> fromMut(s: T): MutableList<T> = io.github.kotlinmania.rustlang.co
  * # Examples
  *
  * ```kotlin
+ * import core.slice
+ *
  * @feature(sliceFromPtrRange)
  * public fun doctestEntry() {
  *     val x = listOf(1, 2, 3)
@@ -300,6 +306,8 @@ public fun <T> fromPtrRange(range: Range<ConstPtr>): List<T> {
  * # Examples
  *
  * ```kotlin
+ * import core.slice
+ *
  * @feature(sliceFromPtrRange)
  * public fun doctestEntry() {
  *     var x = mutableListOf(1, 2, 3)

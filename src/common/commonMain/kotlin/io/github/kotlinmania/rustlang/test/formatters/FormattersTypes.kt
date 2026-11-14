@@ -1,13 +1,13 @@
 package io.github.kotlinmania.rustlang.test.formatters
 
-import io.github.kotlinmania.io.Result
+import io.github.kotlinmania.rustlang.std.thread.Result
 import io.github.kotlinmania.rustlang.test.TestDesc
 import io.github.kotlinmania.rustlang.test.console.ConsoleTestDiscoveryState
 import io.github.kotlinmania.rustlang.test.console.ConsoleTestState
 import io.github.kotlinmania.rustlang.test.testresult.TestResult
 import io.github.kotlinmania.rustlang.test.time.TestExecTime
 
-internal interface OutputFormatter {
+public interface OutputFormatter {
     public fun writeDiscoveryStart(): Result<Unit>
 
     public fun writeTestDiscovered(desc: TestDesc, testType: String): Result<Unit>

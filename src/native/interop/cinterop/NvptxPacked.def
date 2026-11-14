@@ -1,5 +1,0 @@
-package = io.github.kotlinmania.rustlang.corearch.nvptx.cinterop
-headers = nvptx_packed_wrapper.h
-headerFilter = nvptx_packed_wrapper.h
-compilerOpts = -Isrc/native/interop/cinterop
-staticLibraries = nvptx_packed_wrapper.a

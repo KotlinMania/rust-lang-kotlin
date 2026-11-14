@@ -25,7 +25,7 @@ import io.github.kotlinmania.rustlang.core.result.Result
  *     // Let's pretend that adding one is an interesting function.
  *     return x + 1u
  * }
- * val arr = listOf(::identity, manipulation)
+ * val arr = listOf(::identity, ::manipulation)
  * ```
  *
  * Using `identity` as a "do nothing" base case in a conditional:

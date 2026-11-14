@@ -56,7 +56,7 @@ public val S6: Double = 1.58969099521155010221e-10
 // r = x *(S2+x *(S3+x *(S4+x *(S5+x *S6))))
 // then                   3    2
 // sin(x) = x + (S1*x + (x *(r-y/2)+y))
-internal fun kSin(x: Double, y: Double, iy: Int): Double {
+public fun kSin(x: Double, y: Double, iy: Int): Double {
     val z = x * x
     val w = z * z
     val r = S2 + z * (S3 + z * S4) + z * w * (S5 + z * S6)

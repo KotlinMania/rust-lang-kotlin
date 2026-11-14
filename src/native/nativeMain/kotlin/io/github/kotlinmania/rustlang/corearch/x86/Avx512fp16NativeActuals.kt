@@ -1,4 +1,4 @@
-@file:OptIn(kotlinx.cinterop.ExperimentalForeignApi::class, kotlin.ExperimentalUnsignedTypes::class)
+@file:OptIn(ExperimentalForeignApi::class, ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.corearch.x86
 
@@ -21,6 +21,7 @@ import io.github.kotlinmania.rustlang.corearch.simd.U32x8
 import io.github.kotlinmania.rustlang.corearch.simd.U64x2
 import io.github.kotlinmania.rustlang.corearch.simd.U64x4
 import io.github.kotlinmania.rustlang.corearch.simd.U64x8
+import kotlinx.cinterop.ExperimentalForeignApi
 
 public actual fun vcmpph128(a: M128h, b: M128h, imm5: Int, mask: Mmask8): Mmask8 =
     0u
@@ -137,7 +138,7 @@ public actual fun vfmaddph512(a: M512h, b: M512h, c: M512h, rounding: Int): M512
     M512h()
 
 public actual fun vfmaddsh(a: F16, b: F16, c: F16, rounding: Int): F16 =
-    null as F16
+    F16()
 
 public actual fun vfmaddsubph512(a: M512h, b: M512h, c: M512h, rounding: Int): M512h =
     M512h()

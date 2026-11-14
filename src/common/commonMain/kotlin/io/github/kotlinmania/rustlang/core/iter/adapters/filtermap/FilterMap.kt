@@ -1,18 +1,20 @@
 // port-lint: source iter/adapters/filter_map.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.filtermap
 
+import io.github.kotlinmania.rustlang.core.array.Guard
 import io.github.kotlinmania.rustlang.core.array.iter.IntoIter
-import io.github.kotlinmania.rustlang.core.iter.InPlaceIterable
-import io.github.kotlinmania.rustlang.core.iter.TrustedFused
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.InPlaceIterable
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedFused
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.forget
-import io.github.kotlinmania.rustlang.core.mem.maybeuninit.Guard
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.needsDrop
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
@@ -59,7 +61,7 @@ public open class FilterMap<I, F>(
     public var iter: I,
     public var f: F,
 ) : TrustedFused, SourceIter<Any?, Source>, InPlaceIterable, Iterable<B> {
-    override fun iterator(): kotlin.collections.Iterator<B> = object : AbstractIterator<B>() {
+    override fun iterator(): Iterator<B> = object : AbstractIterator<B>() {
         override fun computeNext() {
             when (val v = this@FilterMap.next()) {
                 null -> done()
@@ -154,11 +156,11 @@ public open class FilterMap<I, F>(
     }
 
     public companion object {
-        public fun <I, F> typeLayout(typeLayoutI: io.github.kotlinmania.rustlang.core.mem.TypeLayout<I>, typeLayoutF: io.github.kotlinmania.rustlang.core.mem.TypeLayout<F>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<FilterMap<I, F>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<FilterMap<I, F>> {
+        public fun <I, F> typeLayout(typeLayoutI: TypeLayout<I>, typeLayoutF: TypeLayout<F>): TypeLayout<FilterMap<I, F>> =
+            object : TypeLayout<FilterMap<I, F>> {
                 override val alignBytes: Long = listOf(1L, typeLayoutI.alignBytes, typeLayoutF.alignBytes).max()
-                private val off1: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(typeLayoutI.sizeBytes, typeLayoutF.alignBytes)
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes((off1 + typeLayoutF.sizeBytes), alignBytes)
+                private val off1: Long = alignUpBytes(typeLayoutI.sizeBytes, typeLayoutF.alignBytes)
+                override val sizeBytes: Long = alignUpBytes((off1 + typeLayoutF.sizeBytes), alignBytes)
                 override fun readNative(addr: Long): FilterMap<I, F> =
                     FilterMap(
                         (typeLayoutI).readNative(addr),
@@ -179,7 +181,7 @@ public open class FilterMap<I, F>(
                 }
             }
 
-        internal fun <I, F> new(iter: I, f: F): FilterMap<I, F> = FilterMap(iter = iter, f = f)
+        public fun <I, F> new(iter: I, f: F): FilterMap<I, F> = FilterMap(iter = iter, f = f)
 
         public val EXPAND_BY: NonZero<Int>? = I.EXPAND_BY
 

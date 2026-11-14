@@ -16,26 +16,20 @@ import io.github.kotlinmania.rustlang.std.net.tcp.TcpListener
 import io.github.kotlinmania.rustlang.std.net.tcp.TcpStream
 import io.github.kotlinmania.rustlang.std.net.udp.UdpSocket
 import io.github.kotlinmania.rustlang.std.os.windows.raw.Handle
+import io.github.kotlinmania.rustlang.std.os.windows.raw.Socket
 import io.github.kotlinmania.rustlang.std.sys.FromInner
-import io.github.kotlinmania.rustlang.std.sys.net.connection.motor.Socket
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.INVALID_HANDLE_VALUE
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.STD_ERROR_HANDLE
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.STD_INPUT_HANDLE
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.STD_OUTPUT_HANDLE
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.getStdHandle
-import io.github.kotlinmania.rustlang.std.sys.sync.mutex.windows7.raw
 
 // Windows-specific extensions to general I/O primitives.
 
 /**
  * Raw HANDLEs.
  */
-public typealias RawHandle = raw.Handle
+public typealias RawHandle = Handle
 
 /**
  * Raw SOCKETs.
  */
-public typealias RawSocket = raw.Socket
+public typealias RawSocket = Socket
 
 /**
  * Extracts raw handles.
@@ -117,28 +111,28 @@ public interface IntoRawHandle {
 
 public fun File.asRawHandle(): RawHandle = ((this.asInner().asRawHandle() as Any?) as RawHandle)
 
-public fun Stdin.asRawHandle(): RawHandle = stdioHandle(MutPtr(getStdHandle(STD_INPUT_HANDLE).rawAddress))
+public fun Stdin.asRawHandle(): RawHandle = stdioHandle(MutPtr(C.GetStdHandle(C.STD_INPUT_HANDLE).rawAddress))
 
-public fun Stdout.asRawHandle(): RawHandle = stdioHandle(MutPtr(getStdHandle(STD_OUTPUT_HANDLE).rawAddress))
+public fun Stdout.asRawHandle(): RawHandle = stdioHandle(MutPtr(C.GetStdHandle(C.STD_OUTPUT_HANDLE).rawAddress))
 
-public fun Stderr.asRawHandle(): RawHandle = stdioHandle(MutPtr(getStdHandle(STD_ERROR_HANDLE).rawAddress))
+public fun Stderr.asRawHandle(): RawHandle = stdioHandle(MutPtr(C.GetStdHandle(C.STD_ERROR_HANDLE).rawAddress))
 
-public fun StdinLock.asRawHandle(): RawHandle = stdioHandle(MutPtr(getStdHandle(STD_INPUT_HANDLE).rawAddress))
+public fun StdinLock.asRawHandle(): RawHandle = stdioHandle(MutPtr(C.GetStdHandle(C.STD_INPUT_HANDLE).rawAddress))
 
-public fun StdoutLock.asRawHandle(): RawHandle = stdioHandle(MutPtr(getStdHandle(STD_OUTPUT_HANDLE).rawAddress))
+public fun StdoutLock.asRawHandle(): RawHandle = stdioHandle(MutPtr(C.GetStdHandle(C.STD_OUTPUT_HANDLE).rawAddress))
 
-public fun StderrLock.asRawHandle(): RawHandle = stdioHandle(MutPtr(getStdHandle(STD_ERROR_HANDLE).rawAddress))
+public fun StderrLock.asRawHandle(): RawHandle = stdioHandle(MutPtr(C.GetStdHandle(C.STD_ERROR_HANDLE).rawAddress))
 
 // Translate a handle returned from `GetStdHandle` into a handle to return to
 // the user.
-internal fun stdioHandle(raw: RawHandle): RawHandle {
+public fun stdioHandle(raw: RawHandle): RawHandle {
     // `GetStdHandle` isn't expected to actually fail, so when it returns
     // `INVALID_HANDLE_VALUE`, it means we were launched from a parent which
     // didn't provide us with stdio handles, such as a parent with a detached
     // console. In that case, return null to the user, which is consistent
     // with what they'd get in the parent, and which avoids the problem that
     // `INVALID_HANDLE_VALUE` aliases the current process handle.
-    return if (raw == INVALID_HANDLE_VALUE) {
+    return if (raw == C.INVALID_HANDLE_VALUE) {
         MutPtr(0L)
     } else {
         raw
@@ -148,7 +142,7 @@ internal fun stdioHandle(raw: RawHandle): RawHandle {
 public fun fromRawHandleFile(handle: RawHandle): File =
     run {
         val handle1 = MutPtr(handle.rawAddress)
-        fs.File.fromInner(io.github.kotlinmania.rustlang.std.sys.fs.hermit.File.fromInner(FromInner.fromInner(OwnedHandle.FromRawHandle(handle1))))
+        File.fromInner(io.github.kotlinmania.rustlang.std.sys.fs.unix.File.fromInner(FromInner.fromInner(OwnedHandle.FromRawHandle(handle1))))
     }
 
 public fun File.intoRawHandle(): RawHandle = mutPtrFromRustCast(this.intoInner().intoRawHandle())
@@ -227,20 +221,20 @@ public fun UdpSocket.asRawSocket(): RawSocket = this.asInner().socket().asRawSoc
 
 public fun fromRawSocketTcpStream(sock: RawSocket): TcpStream =
     run {
-        val sock1 = Socket.fromInner(OwnedSocket.FromRawSocket(sock))
-        net.TcpStream.fromInner(io.github.kotlinmania.rustlang.std.sys.net.connection.motor.TcpStream.fromInner(sock1))
+        val sock1 = io.github.kotlinmania.rustlang.std.sys.net.connection.wasip1.Socket.fromInner(OwnedSocket.FromRawSocket(sock))
+        TcpStream.fromInner(io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpStream.fromInner(sock1))
     }
 
 public fun fromRawSocketTcpListener(sock: RawSocket): TcpListener =
     run {
-        val sock1 = Socket.fromInner(OwnedSocket.FromRawSocket(sock))
-        net.TcpListener.fromInner(io.github.kotlinmania.rustlang.std.sys.net.connection.motor.TcpListener.fromInner(sock1))
+        val sock1 = io.github.kotlinmania.rustlang.std.sys.net.connection.wasip1.Socket.fromInner(OwnedSocket.FromRawSocket(sock))
+        TcpListener.fromInner(io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpListener.fromInner(sock1))
     }
 
 public fun fromRawSocketUdpSocket(sock: RawSocket): UdpSocket =
     run {
-        val sock1 = Socket.fromInner(OwnedSocket.FromRawSocket(sock))
-        net.UdpSocket.fromInner(io.github.kotlinmania.rustlang.std.sys.net.connection.motor.UdpSocket.fromInner(sock1))
+        val sock1 = io.github.kotlinmania.rustlang.std.sys.net.connection.wasip1.Socket.fromInner(OwnedSocket.FromRawSocket(sock))
+        UdpSocket.fromInner(io.github.kotlinmania.rustlang.std.sys.net.connection.socket.UdpSocket.fromInner(sock1))
     }
 
 public fun TcpStream.intoRawSocket(): RawSocket = this.intoInner().intoSocket().intoInner().intoRawSocket()

@@ -4,12 +4,12 @@ package io.github.kotlinmania.rustlang.core.num.complex
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.hint.coldPath
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.num.imp.libm.complex.rustDivhc3
 import io.github.kotlinmania.rustlang.core.num.imp.libm.complex.rustMulhc3
-import io.github.kotlinmania.rustlang.core.num.imp.overflowpanic.add
-import io.github.kotlinmania.rustlang.core.num.imp.overflowpanic.mul
-import io.github.kotlinmania.rustlang.core.num.imp.overflowpanic.neg
-import io.github.kotlinmania.rustlang.core.num.imp.overflowpanic.sub
+import io.github.kotlinmania.rustlang.core.ops.arith.Add
+import io.github.kotlinmania.rustlang.core.ops.arith.Neg
+import io.github.kotlinmania.rustlang.core.ops.arith.Sub
 
 /**
  * A [complex number], represented in rectangular form.
@@ -177,11 +177,11 @@ public open class Complex<T>(
     public override fun sub(rhs: T): Complex<Output> = Complex.new(this.re - rhs, this.im)
 
     public companion object {
-        public fun <T> typeLayout(typeLayoutT: io.github.kotlinmania.rustlang.core.mem.TypeLayout<T>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Complex<T>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Complex<T>> {
+        public fun <T> typeLayout(typeLayoutT: TypeLayout<T>): TypeLayout<Complex<T>> =
+            object : TypeLayout<Complex<T>> {
                 override val alignBytes: Long = listOf(1L, typeLayoutT.alignBytes).max()
-                private val off1: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(typeLayoutT.sizeBytes, typeLayoutT.alignBytes)
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes((off1 + typeLayoutT.sizeBytes), alignBytes)
+                private val off1: Long = alignUpBytes(typeLayoutT.sizeBytes, typeLayoutT.alignBytes)
+                override val sizeBytes: Long = alignUpBytes((off1 + typeLayoutT.sizeBytes), alignBytes)
                 override fun readNative(addr: Long): Complex<T> =
                     Complex(
                         (typeLayoutT).readNative(addr),

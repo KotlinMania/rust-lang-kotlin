@@ -1,6 +1,7 @@
 // port-lint: source slice/sort/shared/pivot.rs
 package io.github.kotlinmania.rustlang.core.slice.sort.shared.pivot
 
+import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
 import io.github.kotlinmania.rustlang.core.intrinsics.abortImmediate
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -47,7 +48,7 @@ public fun <T> choosePivot(v: List<T>, isLess: (T, T) -> Boolean): Int {
         }
     // SAFETY: preconditions must have been met for offsetFromUnsigned()
     return run {
-        hint.assertUnchecked(index < v.size)
+        assertUnchecked(index < v.size)
         index
     }
 }

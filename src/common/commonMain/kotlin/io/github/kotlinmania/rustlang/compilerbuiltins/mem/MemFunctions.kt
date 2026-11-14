@@ -5,7 +5,7 @@ import io.github.kotlinmania.rustlang.compilerbuiltins.mem.impls.compareBytes
 import io.github.kotlinmania.rustlang.compilerbuiltins.mem.impls.copyBackward
 import io.github.kotlinmania.rustlang.compilerbuiltins.mem.impls.copyForward
 import io.github.kotlinmania.rustlang.compilerbuiltins.mem.impls.setBytes
-import io.github.kotlinmania.rustlang.core.ffi.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 

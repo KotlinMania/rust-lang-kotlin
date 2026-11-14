@@ -1,4 +1,4 @@
-@file:OptIn(kotlinx.cinterop.ExperimentalForeignApi::class, kotlin.ExperimentalUnsignedTypes::class)
+@file:OptIn(ExperimentalForeignApi::class, ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.corearch.riscvshared
 
@@ -6,6 +6,7 @@ import io.github.kotlinmania.rustlang.corearch.riscvshared.cinterop.corearchRisc
 import io.github.kotlinmania.rustlang.corearch.riscvshared.cinterop.corearchRiscvsharedZbClmulh64
 import io.github.kotlinmania.rustlang.corearch.riscvshared.cinterop.corearchRiscvsharedZbClmulr64
 import io.github.kotlinmania.rustlang.corearch.riscvshared.cinterop.corearchRiscvsharedZbOrcB64
+import kotlinx.cinterop.ExperimentalForeignApi
 
 public actual fun orcB64(rs1: Long): Long =
     corearchRiscvsharedZbOrcB64(rs1)

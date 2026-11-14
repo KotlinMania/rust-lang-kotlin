@@ -1,7 +1,6 @@
 // port-lint: source collections/vec_deque/into_iter.rs
 package io.github.kotlinmania.rustlang.alloc.collections.vecdeque.intoiter
 
-import io.github.kotlinmania.rustlang.alloc.collections.btree.node.B
 import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.VecDeque
 import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.index.WrappedIndex
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
@@ -10,6 +9,7 @@ import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
+import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
@@ -50,7 +50,7 @@ public open class IntoIter<T, A : Allocator> internal constructor(
     public var inner: VecDeque<T, A> = innerCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<T> = object : AbstractIterator<T>() {
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@IntoIter.next()) {
                 null -> done()
@@ -61,7 +61,7 @@ public open class IntoIter<T, A : Allocator> internal constructor(
 
     public open fun clone(): IntoIter<T, A> = IntoIter(inner)
 
-    internal open fun intoVecdeque(): VecDeque<T, A> = this.inner
+    public open fun intoVecdeque(): VecDeque<T, A> = this.inner
 
     public open fun fmt(f: StringBuilder) {
         DebugTuple(f, "IntoIter").field(this.inner).finish()
@@ -127,39 +127,39 @@ public open class IntoIter<T, A : Allocator> internal constructor(
 
     public open fun last(): T? = this.inner.popBack()
 
-    public open fun nextChunk(n: Int): Result<List<T>, array.IntoIter<T>> {
-        val rawArr = MutableList(n) { MaybeUninit.uninit(ObjectSlotLayout<Result<List<T>, array.IntoIter<T>>>()) }
+    public open fun nextChunk(n: Int): Result<List<T>, io.github.kotlinmania.rustlang.core.array.iter.IntoIter<T>> {
+        val rawArr = MutableList(n) { MaybeUninit.uninit(ObjectSlotLayout<Result<List<T>, io.github.kotlinmania.rustlang.core.array.iter.IntoIter<T>>>()) }
         val rawArrPtr = rawArr.asMutPtr().cast()
         val (head, tail) = this.inner.asSlices()
         if (head.len() >= n) {
             // SAFETY: By manually adjusting the head and length of the deque, we effectively
             // make it forget the first `N` elements, so taking ownership of them is safe.
-            ptr.copyNonoverlapping(head.asPtr(), rawArrPtr, n)
+            copyNonoverlapping(head.asPtr(), rawArrPtr, n)
             this.inner.head = this.inner.toWrappedIndex(n)
             this.inner.len -= n
             // SAFETY: We initialized the entire array with items from `head`
             return Result.Ok(rawArr.transpose().assumeInit())
         }
         // SAFETY: Same argument as above.
-        ptr.copyNonoverlapping(head.asPtr(), rawArrPtr, head.len())
+        copyNonoverlapping(head.asPtr(), rawArrPtr, head.len())
         val remaining = n - head.len()
         return if (tail.len() >= remaining) {
             // SAFETY: Same argument as above.
-            ptr.copyNonoverlapping(tail.asPtr(), rawArrPtr.add(head.len()), remaining)
+            copyNonoverlapping(tail.asPtr(), rawArrPtr.add(head.len()), remaining)
             this.inner.head = this.inner.toWrappedIndex(n)
             this.inner.len -= n
             // SAFETY: We initialized the entire array with items from `head` and `tail`
             Result.Ok(rawArr.transpose().assumeInit())
         } else {
             // SAFETY: Same argument as above.
-            ptr.copyNonoverlapping(tail.asPtr(), rawArrPtr.add(head.len()), tail.len())
+            copyNonoverlapping(tail.asPtr(), rawArrPtr.add(head.len()), tail.len())
             val init = head.len() + tail.len()
             // We completely drained all the deques elements.
             this.inner.head = WrappedIndex.zero()
             this.inner.len = 0
             // SAFETY: We copied all elements from both slices to the beginning of the array, so
             // the given range is initialized.
-            Result.Err(array.IntoIter.newUnchecked(rawArr, 0 until init))
+            Result.Err(io.github.kotlinmania.rustlang.core.array.iter.IntoIter.newUnchecked(rawArr, 0 until init))
         }
     }
 
@@ -220,6 +220,6 @@ public open class IntoIter<T, A : Allocator> internal constructor(
             innerCtorArg = inner,
         )
 
-        internal fun <T, A : Allocator> new(inner: VecDeque<T, A>): IntoIter<T, A> = IntoIter(inner = inner)
+        public fun <T, A : Allocator> new(inner: VecDeque<T, A>): IntoIter<T, A> = IntoIter(inner = inner)
     }
 }

@@ -26,6 +26,8 @@ import io.github.kotlinmania.rustlang.core.U128
  *
  * public fun doctestEntry() {
  *     open class Point(public var x: Int, public var y: Int) : Add<Point, Any?, Point> {
+ *         public open fun clone(): Point = Point(x, y)
+ *
  *         public open fun add(other: Point): Point {
  *             return Point(x = this.x + other.x, y = this.y + other.y)
  *         }
@@ -146,6 +148,8 @@ public fun F128.addF128(other: F128): Output = Add.Add(this, other)
  *
  * public fun doctestEntry() {
  *     open class Point(public var x: Int, public var y: Int) : Sub<Point, Any?, Point> {
+ *         public open fun clone(): Point = Point(x, y)
+ *
  *         public open fun sub(other: Point): Point {
  *             return Point(x = this.x - other.x, y = this.y - other.y)
  *         }
@@ -972,6 +976,8 @@ public fun F128.neg(): F128 = -this
  * import std.ops.AddAssign
  *
  * open class Point(public var x: Int, public var y: Int) : AddAssign<Point> {
+ *     public open fun clone(): Point = Point(x, y)
+ *
  *     public open fun addAssign(other: Point) {
  *         this = Point(x = this.x + other.x, y = this.y + other.y)
  *     }
@@ -1120,6 +1126,8 @@ public fun F128.addAssignF128(other: F128) {
  * import std.ops.SubAssign
  *
  * open class Point(public var x: Int, public var y: Int) : SubAssign<Point> {
+ *     public open fun clone(): Point = Point(x, y)
+ *
  *     public open fun subAssign(other: Point) {
  *         this = Point(x = this.x - other.x, y = this.y - other.y)
  *     }

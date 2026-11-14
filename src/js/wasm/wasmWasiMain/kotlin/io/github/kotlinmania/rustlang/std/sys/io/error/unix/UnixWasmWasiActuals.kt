@@ -1,15 +1,15 @@
-@file:OptIn(kotlin.ExperimentalUnsignedTypes::class, kotlin.wasm.ExperimentalWasmInterop::class)
+@file:OptIn(ExperimentalUnsignedTypes::class, ExperimentalWasmInterop::class)
 
 package io.github.kotlinmania.rustlang.std.sys.io.error.unix
 
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.std.ffi.CInt
 
-// The host must provide the C companion wrapper exports in import module std.
-@kotlin.wasm.WasmImport("std", "stdSysIoErrorUnixGetLIBCERRNO")
+// The host must provide the C companion wrapper exports in import module kmcore.
+@kotlin.wasm.WasmImport("kmcore", "stdSysIoErrorUnixGetLIBCERRNO")
 private external fun wasiStdSysIoErrorUnixGetLIBCERRNO(): Int
 
-@kotlin.wasm.WasmImport("std", "stdSysIoErrorUnixSetLIBCERRNO")
+@kotlin.wasm.WasmImport("kmcore", "stdSysIoErrorUnixSetLIBCERRNO")
 private external fun wasiStdSysIoErrorUnixSetLIBCERRNO(value: Int): Unit
 
 public actual var LIBC_ERRNO: CInt

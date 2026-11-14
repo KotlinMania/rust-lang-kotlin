@@ -1,5 +1,7 @@
 package io.github.kotlinmania.rustlang.std.sys.net.connection.socket
 
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+
 // Similarly to reads (see READ_LIMIT), the `send` syscall on most platforms
 // takes a `sizeT` length, but returns an `ssizeT` of bytes written. So the
 // actual maximum number of bytes we can send in one call is SSIZE_MAX.
@@ -14,10 +16,12 @@ package io.github.kotlinmania.rustlang.std.sys.net.connection.socket
 //
 // On Windows, the relevant syscall takes an `Int` (unlike for read/write),
 // so we need to clamp to i32.Max.
-public val MAX_SEND_LEN: Int = cfgSelect(any, targetVendor, "apple", targetOs, "nto", targetOs, "qnx", cInt, MAX, targetOs, "windows", MAX, libc, ssizeT, MAX)
+public val MAX_SEND_LEN: Int = Int.MAX_VALUE.toInt()
 
 /**
  * Some systems support setting the nonblocking mode upon socket creation, which
  * saves a syscall.
  */
-public val SOCK_NONBLOCK: Int = cfgSelect(any, targetOs, "dragonfly", targetOs, "freebsd", targetOs, "hermit", targetOs, "illumos", targetOs, "linux", targetOs, "netbsd", targetOs, "openbsd", c, SOCK_NONBLOCK, 0)
+public val SOCK_NONBLOCK: Int = c.SOCK_NONBLOCK
+
+public val MSG_NOSIGNAL: CInt = 0x0

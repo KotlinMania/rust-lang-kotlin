@@ -2,11 +2,18 @@
 package io.github.kotlinmania.rustlang.stddetect.detect.cache
 
 import io.github.kotlinmania.rustlang.core.U128
+import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
+import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
+import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.slice.asMutPtr
+import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
+import io.github.kotlinmania.rustlang.stddetect.detect.arch.Feature
 import io.github.kotlinmania.rustlang.stddetect.detect.os.detectFeatures
 
 // Caches run-time feature detection so that it only needs to be computed
@@ -38,7 +45,7 @@ public val CACHE_CAPACITY: UInt = 93u
 /**
  * This type is used to initialize the cache
  */
-internal open class Initializer(
+public open class Initializer(
     public var value: U128,
 ) {
     public var field0: U128
@@ -47,13 +54,15 @@ internal open class Initializer(
             value = v
         }
 
+    public open fun clone(): Initializer = Initializer(value)
+
     // NOTE: the `debugAssert` would catch that we do not add more Features than
     // the one fitting our cache.
 
     /**
      * Tests the `bit` of the cache.
      */
-    internal open fun test(bit: UInt): Boolean {
+    public open fun test(bit: UInt): Boolean {
         check(bit < CACHE_CAPACITY) { "too many features, time to increase the cache size!" }
         return testBit(this.value, bit)
     }
@@ -61,7 +70,7 @@ internal open class Initializer(
     /**
      * Sets the `bit` of the cache.
      */
-    internal open fun set(bit: UInt) {
+    public open fun set(bit: UInt) {
         check(bit < CACHE_CAPACITY) { "too many features, time to increase the cache size!" }
         val v = this.value
         this.value = setBit(v, bit)
@@ -70,30 +79,30 @@ internal open class Initializer(
     /**
      * Unsets the `bit` of the cache.
      */
-    internal open fun unset(bit: UInt) {
+    public open fun unset(bit: UInt) {
         check(bit < CACHE_CAPACITY) { "too many features, time to increase the cache size!" }
         val v = this.value
         this.value = unsetBit(v, bit)
     }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Initializer> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Initializer> {
+        public fun typeLayout(): TypeLayout<Initializer> =
+            object : TypeLayout<Initializer> {
                 override val alignBytes: Long = 16L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): Initializer =
                     Initializer(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low })).readNative(addr),
+                        (PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low })).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: Initializer) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low })).writeNative(addr, value.value)
+                    (PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low })).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Initializer =
                     Initializer(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low })).readBytes(buf, offset),
+                        (PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low })).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Initializer) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low })).writeBytes(buf, offset, value.value)
+                    (PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low })).writeBytes(buf, offset, value.value)
                 }
             }
     }
@@ -129,7 +138,7 @@ public open class Cache(
     /**
      * Is the `bit` in the cache set? Returns `None` if the cache has not been initialized.
      */
-    internal open fun test(bit: UInt): Boolean? {
+    public open fun test(bit: UInt): Boolean? {
         val cached = this.value.load(Ordering.Relaxed)
         return if (cached == 0) {
             null
@@ -159,6 +168,34 @@ public open class Cache(
          */
         public fun uninitialized(): Cache = Cache(AtomicUsize.new(0))
     }
+}
+
+public fun disableFeatures(disable: List<UByte>, value: Initializer) {
+    when (val matchVal = String.fromUtf8(disable)) {
+        is Ok -> {
+            val disable1 = matchVal.value
+            for (v in disable1.split(" ")) {
+                Feature.fromStr(v).map({ v1 -> value.unset(v1.toUInt()) })
+            }
+        }
+        else -> {}
+    }
+}
+
+public fun initialize(value: Initializer): Initializer {
+    val RUST_STD_DETECT_UNSTABLE: CStr = "RUST_STD_DETECT_UNSTABLE"
+    fun getEnvironmentVariableA(name: ConstPtr, buffer: MutPtr, size: UInt): UInt = 0u
+    val len = GetEnvironmentVariableA(RUST_STD_DETECT_UNSTABLE.asPtr().cast(), MutPtr(0L), 0)
+    if (len > 0) {
+        // +1 to include the null terminator.
+        val env = mutableListOf(0, len.toInt() + 1)
+        val len1 = GetEnvironmentVariableA(RUST_STD_DETECT_UNSTABLE.asPtr().cast(), env.asMutPtr(), len + 1)
+        if (len1 > 0) {
+            disableFeatures(env[0 until len1.toInt()], value)
+        }
+    }
+    doInitialize(value)
+    return value
 }
 
 public fun doInitialize(value: Initializer) {
@@ -192,7 +229,7 @@ public fun detectAndInitialize(): Initializer = initialize(detectFeatures())
  * variable `RUST_STD_DETECT_UNSTABLE` and uses its content to disable
  * Features that would had been otherwise detected.
  */
-internal fun test(bit: UInt): Boolean {
+public fun test(bit: UInt): Boolean {
     val (relativeBit, idx) =
         if (bit < Cache.CAPACITY) {
             Pair(bit, 0)

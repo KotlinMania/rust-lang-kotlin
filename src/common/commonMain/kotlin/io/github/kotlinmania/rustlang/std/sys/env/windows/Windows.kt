@@ -1,22 +1,19 @@
 // port-lint: source sys/env/windows.rs
 package io.github.kotlinmania.rustlang.std.sys.env.windows
 
+import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
-import io.github.kotlinmania.rustlang.std.fmt
-import io.github.kotlinmania.rustlang.std.sys.osstr.bytes.Slice
-import io.github.kotlinmania.rustlang.std.sys.pal.hermit.cvt
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.freeEnvironmentStringsW
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.getEnvironmentStringsW
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.getEnvironmentVariableW
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.setEnvironmentVariableW
+import io.github.kotlinmania.rustlang.std.io.Error
+import io.github.kotlinmania.rustlang.std.os.windows.ffi.OsStringExt
+import io.github.kotlinmania.rustlang.std.sys.pal.c
+import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.fillUtf16Buf
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.toU16s
 
@@ -27,7 +24,7 @@ public open class Env internal constructor(
     public var base: MutPtr = baseCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<Pair<OsString, OsString>> = object : AbstractIterator<Pair<OsString, OsString>>() {
+    override fun iterator(): Iterator<Pair<OsString, OsString>> = object : AbstractIterator<Pair<OsString, OsString>>() {
         override fun computeNext() {
             when (val v = this@Env.next()) {
                 null -> done()
@@ -48,31 +45,31 @@ public open class Env internal constructor(
 
     public open fun drop() {
         run {
-            freeEnvironmentStringsW(this.base)
+            c.FreeEnvironmentStringsW(this.base)
         }
     }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Env> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Env> {
+        public fun typeLayout(): TypeLayout<Env> =
+            object : TypeLayout<Env> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): Env =
                     Env(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).readNative(addr),
+                        (PrimitiveLayouts.mutPtrLayout(64)).readNative(addr),
                         (EnvIterator.typeLayout()).readNative(addr + 8L),
                     )
                 override fun writeNative(addr: Long, value: Env) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).writeNative(addr, value.base)
+                    (PrimitiveLayouts.mutPtrLayout(64)).writeNative(addr, value.base)
                     (EnvIterator.typeLayout()).writeNative(addr + 8L, value.iter)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Env =
                     Env(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).readBytes(buf, offset),
+                        (PrimitiveLayouts.mutPtrLayout(64)).readBytes(buf, offset),
                         (EnvIterator.typeLayout()).readBytes(buf, offset + 8),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Env) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).writeBytes(buf, offset, value.base)
+                    (PrimitiveLayouts.mutPtrLayout(64)).writeBytes(buf, offset, value.base)
                     (EnvIterator.typeLayout()).writeBytes(buf, offset + 8, value.iter)
                 }
             }
@@ -99,7 +96,7 @@ public open class EnvIterator internal constructor(
             value = v
         }
 
-    override fun iterator(): kotlin.collections.Iterator<Pair<OsString, OsString>> = object : AbstractIterator<Pair<OsString, OsString>>() {
+    override fun iterator(): Iterator<Pair<OsString, OsString>> = object : AbstractIterator<Pair<OsString, OsString>>() {
         override fun computeNext() {
             when (val v = this@EnvIterator.next()) {
                 null -> done()
@@ -108,20 +105,29 @@ public open class EnvIterator internal constructor(
         }
     }
 
+    public open fun clone(): EnvIterator = EnvIterator(value)
+
     public open fun next(): Pair<OsString, OsString>? {
-        val cur = this
+        var cur by run {
+            fun <V> place(read: () -> V, write: (V) -> Unit): kotlin.properties.ReadWriteProperty<Any?, V> =
+                object : kotlin.properties.ReadWriteProperty<Any?, V> {
+                    override fun getValue(thisRef: Any?, property: kotlin.reflect.KProperty<*>): V = read()
+                    override fun setValue(thisRef: Any?, property: kotlin.reflect.KProperty<*>, value: V) = write(value)
+                }
+            place({ this.value }, { this.value = it })
+        }
         while (true) {
             run {
-                if (cur == 0) {
+                if ((ObjectSlotLayout<c.Wchar>()).readNative((cur).rawAddress) == 0u.toUShort()) {
                     return null
                 }
-                val p = constPtrFromRustCast(cur)
+                val p = ConstPtr(((ObjectSlotLayout<c.Wchar>()).readNative((cur).rawAddress)).toLong())
                 var len = 0
                 while ((PrimitiveLayouts.U16).readNative((ConstPtr((p).rawAddress + ((len).toLong() * (PrimitiveLayouts.U16).strideBytes))).rawAddress) != 0u.toUShort()) {
                     len += 1
                 }
                 val s = Slice.fromRawParts(p, len)
-                cur = cur.add(len + 1)
+                (ObjectSlotLayout<c.Wchar>()).writeNative((cur).rawAddress, MutPtr((cur).rawAddress + ((len + 1).toLong() * (ObjectSlotLayout<c.Wchar>()).strideBytes)))
                 // Windows allows environment variables to start with an equals
                 // symbol (in any other position, this is the separator between
                 // variable name and value). Since`s` has at least length 1 at
@@ -141,23 +147,23 @@ public open class EnvIterator internal constructor(
     }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<EnvIterator> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<EnvIterator> {
+        public fun typeLayout(): TypeLayout<EnvIterator> =
+            object : TypeLayout<EnvIterator> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 8L
                 override fun readNative(addr: Long): EnvIterator =
                     EnvIterator(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).readNative(addr),
+                        (PrimitiveLayouts.mutPtrLayout(64)).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: EnvIterator) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).writeNative(addr, value.value)
+                    (PrimitiveLayouts.mutPtrLayout(64)).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): EnvIterator =
                     EnvIterator(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).readBytes(buf, offset),
+                        (PrimitiveLayouts.mutPtrLayout(64)).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: EnvIterator) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).writeBytes(buf, offset, value.value)
+                    (PrimitiveLayouts.mutPtrLayout(64)).writeBytes(buf, offset, value.value)
                 }
             }
 
@@ -171,31 +177,31 @@ public open class EnvIterator internal constructor(
 
 public fun env(): Env =
     run {
-        val ch = getEnvironmentStringsW()
+        val ch = c.GetEnvironmentStringsW()
         if (ch.isNull()) {
-            error("failure getting env string from OS: ${io.Error.lastOsError()}")
+            error("failure getting env string from OS: ${Error.lastOsError()}")
         }
         Env(base = ch, iter = EnvIterator(ch))
     }
 
 public fun getenv(k: OsStr): OsString? {
     val k1 = (toU16s(k).ok() ?: return null)
-    return fillUtf16Buf({ buf, sz -> getEnvironmentVariableW(k1.asPtr(), buf, sz) }, OsStringExt::fromWide).ok()
+    return fillUtf16Buf({ buf, sz -> c.GetEnvironmentVariableW(k1.asPtr(), buf, sz) }, { OsStringExt.fromWide(it) }).ok()
 }
 
-public fun setenv(k: OsStr, v: OsStr): Result<Unit> {
+public fun setenv(k: OsStr, v: OsStr): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> {
     // SAFETY: We ensure that k and v are null-terminated wide strings.
     return run {
         val k1 = when (val tryResult = toU16s(k)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         val v1 = when (val tryResult = toU16s(v)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-        cvt(setEnvironmentVariableW(k1.asPtr(), v1.asPtr())).map(drop)
+        cvt(c.SetEnvironmentVariableW(k1.asPtr(), v1.asPtr())).map({ Unit })
     }
 }
 
-public fun unsetenv(n: OsStr): Result<Unit> {
+public fun unsetenv(n: OsStr): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> {
     // SAFETY: We ensure that v is a null-terminated wide strings.
     return run {
         val v = when (val tryResult = toU16s(n)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-        cvt(setEnvironmentVariableW(v.asPtr(), ConstPtr(0L))).map(drop)
+        cvt(c.SetEnvironmentVariableW(v.asPtr(), ConstPtr(0L))).map({ Unit })
     }
 }

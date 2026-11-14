@@ -1,6 +1,7 @@
 package io.github.kotlinmania.rustlang.core.alloc
 
 import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
+import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
@@ -56,7 +57,7 @@ import io.github.kotlinmania.rustlang.core.slice.asPtr
  * // The Holder allocates through our allocator.
  * val newBox = Holder.newIn(10, CountingAllocator())
  * check(LIVE_ALLOCATIONS.load(Ordering.Relaxed) == 1)
- * drop(newBox)
+ * (newBox).let { }
  * check(LIVE_ALLOCATIONS.load(Ordering.Relaxed) == 0)
  * ```
  *

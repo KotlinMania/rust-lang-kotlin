@@ -7,7 +7,7 @@ import io.github.kotlinmania.rustlang.core.clone.TrivialClone
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 
 // Specialization trait used for Vec.extend
-internal interface SpecExtend<T, I> {
+public interface SpecExtend<T, I> {
     public fun specExtend(iter: I)
 }
 
@@ -28,7 +28,7 @@ public fun <T, A1 : Allocator, A2 : Allocator> List<T>.specExtend(iterator: Into
 }
 
 public fun <T, A : Allocator> List<T>.specExtend(iterator: ArrayDeque<T>) where T : TrivialClone {
-    val slice = iterator.asSlice()
+    val slice = iterator.toList()
     // ignore-tidy-undocumented-unchecked
     this.appendElements(slice)
 }

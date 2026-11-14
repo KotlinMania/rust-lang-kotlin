@@ -7,10 +7,8 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 import io.github.kotlinmania.rustlang.std.env.varOs
-import io.github.kotlinmania.rustlang.std.fmt
 import io.github.kotlinmania.rustlang.std.panicking.beginPanic
 import io.github.kotlinmania.rustlang.std.panicking.paniccount.setAlwaysAbort
-import io.github.kotlinmania.rustlang.std.panicking.panicking
 import io.github.kotlinmania.rustlang.std.sys.backtrace.FULL_BACKTRACE_DEFAULT
 import io.github.kotlinmania.rustlang.std.thread.Result
 
@@ -32,6 +30,8 @@ public typealias PanicInfo = PanicHookInfo
  * # Examples
  *
  * ```kotlin
+ * import std.panic
+ *
  * panic.setHook({ panicInfo ->
  *     println("panic occurred: $panicInfo")
  * })
@@ -65,6 +65,8 @@ public open class PanicHookInfo(
      * # Examples
      *
      * ```kotlin
+     * import std.panic
+     *
      * panic.setHook({ panicInfo ->
      *     when (val matchVal1 = panicInfo.payload().downcastRef<String>()) {
      *         null -> {
@@ -147,6 +149,8 @@ public open class PanicHookInfo(
      * # Examples
      *
      * ```kotlin
+     * import std.panic
+     *
      * panic.setHook({ panicInfo ->
      *     when (val matchVal = panicInfo.location()) {
      *         null -> {
@@ -197,7 +201,7 @@ public open class PanicHookInfo(
     }
 
     public companion object {
-        internal fun new(location: Location, payload: RustAny, canUnwind: Boolean, forceNoBacktrace: Boolean): PanicHookInfo = PanicHookInfo(payload = payload, location = location, canUnwind = canUnwind, forceNoBacktrace = forceNoBacktrace)
+        public fun new(location: Location, payload: RustAny, canUnwind: Boolean, forceNoBacktrace: Boolean): PanicHookInfo = PanicHookInfo(payload = payload, location = location, canUnwind = canUnwind, forceNoBacktrace = forceNoBacktrace)
     }
 }
 
@@ -273,6 +277,8 @@ public fun <M> panicAny(msg: M): Nothing {
  * # Examples
  *
  * ```kotlin
+ * import std.panic
+ *
  * val result = panic.catchUnwind({
  *     println("hello!")
  * })
@@ -283,7 +289,7 @@ public fun <M> panicAny(msg: M): Nothing {
  * check(result1.isErr())
  * ```
  */
-public fun <R> catchUnwind(f: () -> R): Result<R> = panicking.catchUnwind(f)
+public fun <R> catchUnwind(f: () -> R): Result<R> = io.github.kotlinmania.rustlang.std.panicking.catchUnwind(f)
 
 /**
  * Triggers a panic without invoking the panic hook.
@@ -301,6 +307,8 @@ public fun <R> catchUnwind(f: () -> R): Result<R> = panicking.catchUnwind(f)
  * # Examples
  *
  * ```kotlin
+ * import std.panic
+ *
  * val result = panic.catchUnwind({
  *     if (1 != 2) {
  *         error("oh no!")
@@ -312,7 +320,7 @@ public fun <R> catchUnwind(f: () -> R): Result<R> = panicking.catchUnwind(f)
  * }
  * ```
  */
-public fun resumeUnwind(payload: RustAny): Nothing = panicking.resumeUnwind(payload)
+public fun resumeUnwind(payload: RustAny): Nothing = io.github.kotlinmania.rustlang.std.panicking.resumeUnwind(payload)
 
 /**
  * Makes all future panics abort directly without running the panic hook or unwinding.
@@ -334,6 +342,8 @@ public fun resumeUnwind(payload: RustAny): Nothing = panicking.resumeUnwind(payl
  * Examples
  *
  * ```kotlin
+ * import std.panic
+ *
  * @feature(panicAlwaysAbort)
  * public fun doctestEntry() {
  *     panic.alwaysAbort()
@@ -378,7 +388,7 @@ public sealed class BacktraceStyle {
         }
 
     public companion object {
-        internal fun full(): BacktraceStyle? =
+        public fun full(): BacktraceStyle? =
             if (false) {
                 BacktraceStyle.Full
             } else {

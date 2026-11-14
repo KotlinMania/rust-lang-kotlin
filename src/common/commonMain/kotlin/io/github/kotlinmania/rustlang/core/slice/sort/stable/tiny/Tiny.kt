@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.core.slice.sort.stable.tiny
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.swapNonoverlapping
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.sort.stable.merge.merge
 
@@ -32,7 +33,7 @@ public fun <T> mergesort(v: MutableList<T>, scratch: MutableList<MaybeUninit<T>>
             val vA = vBase
             val vB = MutPtr((vBase).rawAddress + ((1).toLong() * (ObjectSlotLayout<T>()).strideBytes))
             if (isLess((ObjectSlotLayout<T>()).readNative((vB).rawAddress), (ObjectSlotLayout<T>()).readNative((vA).rawAddress))) {
-                ptr.swapNonoverlapping(vA, vB, 1)
+                swapNonoverlapping(vA, vB, 1)
             }
         }
     }

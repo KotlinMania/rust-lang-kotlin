@@ -16,7 +16,7 @@ import io.github.kotlinmania.rustlang.procmacro.bridge.client.Client
 import io.github.kotlinmania.rustlang.procmacro.bridge.fxhash.FxHashMap
 import io.github.kotlinmania.rustlang.procmacro.bridge.server.HandleStore
 import io.github.kotlinmania.rustlang.procmacro.bridge.server.MarkedSymbol
-import io.github.kotlinmania.rustlang.procmacro.server.Server
+import io.github.kotlinmania.rustlang.procmacro.bridge.server.Server
 
 // Client-side interner used for symbols.
 //
@@ -44,10 +44,12 @@ public open class Symbol internal constructor(
             value = v
         }
 
+    public open fun clone(): Symbol = Symbol(value)
+
     /**
      * Run a callback with the symbol's string value.
      */
-    internal open fun <R> with(f: (String) -> R): R = INTERNER.withBorrow({ i -> f(i.get(this)) })
+    public open fun <R> with(f: (String) -> R): R = INTERNER.withBorrow({ i -> f(i.get(this)) })
 
     public open fun fmt(f: StringBuilder) {
         this.with({ s -> f.append((s).toString()) })
@@ -71,14 +73,14 @@ public open class Symbol internal constructor(
         /**
          * Intern a new `Symbol`
          */
-        internal fun new(string: String): Symbol = INTERNER.withBorrowMut({ i -> i.intern(string) })
+        public fun new(string: String): Symbol = INTERNER.withBorrowMut({ i -> i.intern(string) })
 
         /**
          * Creates a new `Symbol` for an identifier.
          *
          * Validates and normalizes before converting it to a symbol.
          */
-        internal fun newIdent(string: String, isRaw: Boolean): Symbol {
+        public fun newIdent(string: String, isRaw: Boolean): Symbol {
             // Fast-path: check if this is a valid ASCII identifier
             if (Symbol.isValidAsciiIdent(string.encodeToByteArray().map { it.toUByte() }) || string == "\$crate") {
                 if (isRaw && !Symbol.canBeRaw(string)) {
@@ -101,7 +103,7 @@ public open class Symbol internal constructor(
          * Clear out the thread-local symbol interner, making all previously
          * created symbols invalid such that `with` will panic when called on them.
          */
-        internal fun invalidateAll() {
+        public fun invalidateAll() {
             INTERNER.withBorrowMut({ i -> i.clear() })
         }
 

@@ -29,7 +29,7 @@ public fun utf8AccContByte(ch: UInt, byte: UByte): UInt = (ch shl 6) or (byte an
  * Checks whether the byte is a UTF-8 continuation byte (i.e., starts with the
  * bits `10`).
  */
-internal fun utf8IsContByte(byte: UByte): Boolean = (byte.toByte()) < (-64).toByte()
+public fun utf8IsContByte(byte: UByte): Boolean = (byte.toByte()) < (-64).toByte()
 
 /**
  * Reads the next code point out of a byte iterator (assuming a
@@ -81,7 +81,7 @@ public fun <I : Iterator<UByte>> nextCodePoint(bytes: I): UInt? {
  *
  * `bytes` must produce a valid UTF-8-like (UTF-8 or WTF-8) string
  */
-internal fun <I> nextCodePointReverse(bytes: I): UInt? {
+public fun <I> nextCodePointReverse(bytes: I): UInt? {
     // Decode UTF-8
     val w =
         run {
@@ -136,7 +136,7 @@ public fun containsNonascii(x: Int): Boolean = (x and NONASCII_MASK) != 0
  * Walks through `v` checking that it's a valid UTF-8 sequence,
  * returning `Ok(())` in that case, or, if it is invalid, `Err(err)`.
  */
-internal fun runUtf8Validation(v: List<UByte>): Result<Unit, Utf8Error> {
+public fun runUtf8Validation(v: List<UByte>): Result<Unit, Utf8Error> {
     val USIZE_BYTES: Int = sizeOf<Int>(typeLayoutT = PrimitiveLayouts.USIZE64)
     var index = 0
     val len = v.size

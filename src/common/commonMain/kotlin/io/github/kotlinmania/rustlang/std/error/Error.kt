@@ -2,11 +2,12 @@
 package io.github.kotlinmania.rustlang.std.error
 
 import io.github.kotlinmania.rustlang.core.error.requestRef
+import io.github.kotlinmania.rustlang.core.fmt.Write
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.result.orElse
 import io.github.kotlinmania.rustlang.std.backtrace.Backtrace
-import io.github.kotlinmania.rustlang.std.fmt
 
 /**
  * An error reporter that prints an error and its sources.
@@ -22,6 +23,7 @@ import io.github.kotlinmania.rustlang.std.fmt
  * ```kotlin
  * import std.error.Error
  * import std.error.Report
+ * import std.fmt
  *
  * @feature(errorReporter)
  * public fun doctestEntry() {
@@ -334,33 +336,33 @@ public open class Report<E>(
     }
 
     public companion object {
-        public fun <E> typeLayout(typeLayoutE: io.github.kotlinmania.rustlang.core.mem.TypeLayout<E>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Report<E>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Report<E>> {
+        public fun <E> typeLayout(typeLayoutE: TypeLayout<E>): TypeLayout<Report<E>> =
+            object : TypeLayout<Report<E>> {
                 override val alignBytes: Long = listOf(1L, typeLayoutE.alignBytes).max()
-                private val off1: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(typeLayoutE.sizeBytes, 1L)
-                private val off2: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes((off1 + 1L), 1L)
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes((off2 + 1L), alignBytes)
+                private val off1: Long = alignUpBytes(typeLayoutE.sizeBytes, 1L)
+                private val off2: Long = alignUpBytes((off1 + 1L), 1L)
+                override val sizeBytes: Long = alignUpBytes((off2 + 1L), alignBytes)
                 override fun readNative(addr: Long): Report<E> =
                     Report(
                         (typeLayoutE).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + off1),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + off2),
+                        (PrimitiveLayouts.BOOL).readNative(addr + off1),
+                        (PrimitiveLayouts.BOOL).readNative(addr + off2),
                     )
                 override fun writeNative(addr: Long, value: Report<E>) {
                     (typeLayoutE).writeNative(addr, value.error)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + off1, value.showBacktrace)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + off2, value.pretty)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + off1, value.showBacktrace)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + off2, value.pretty)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Report<E> =
                     Report(
                         (typeLayoutE).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + off1.toInt()),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + off2.toInt()),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + off1.toInt()),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + off2.toInt()),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Report<E>) {
                     (typeLayoutE).writeBytes(buf, offset, value.error)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + off1.toInt(), value.showBacktrace)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + off2.toInt(), value.pretty)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + off1.toInt(), value.showBacktrace)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + off2.toInt(), value.pretty)
                 }
             }
 

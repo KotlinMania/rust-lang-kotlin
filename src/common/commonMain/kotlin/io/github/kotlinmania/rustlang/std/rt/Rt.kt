@@ -5,16 +5,18 @@ import io.github.kotlinmania.rustlang.core.RustAny
 import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
-import io.github.kotlinmania.rustlang.std.mem
+import io.github.kotlinmania.rustlang.std.panic.AssertUnwindSafe
+import io.github.kotlinmania.rustlang.std.panic.catchUnwind
 import io.github.kotlinmania.rustlang.std.process.Termination
 import io.github.kotlinmania.rustlang.std.process.abort
 import io.github.kotlinmania.rustlang.std.sync.once.Once
 import io.github.kotlinmania.rustlang.std.sys.backtrace.rustBeginShortBacktrace
 import io.github.kotlinmania.rustlang.std.sys.exit.uniqueThreadExit
-import io.github.kotlinmania.rustlang.std.sys.stdio.motor.panicOutput
+import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
 import io.github.kotlinmania.rustlang.std.sys.threadlocal.guard.key.keybased.CLEANUP
-import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.unix.set
+import io.github.kotlinmania.rustlang.std.thread.current.currentId
 import io.github.kotlinmania.rustlang.std.thread.current.dropCurrent
+import io.github.kotlinmania.rustlang.std.thread.mainthread.set
 
 // Runtime services
 //
@@ -30,7 +32,7 @@ public fun rustAbort() {
 }
 
 public inline fun <reified T> handleRtPanic(e: RustAny): T {
-    mem.forget(e)
+    forget(e)
     return run {
         when (val matchVal = panicOutput()) {
             null -> {}
@@ -72,8 +74,8 @@ public inline fun <reified T> handleRtPanic(e: RustAny): T {
 public fun init(argc: Int, argv: ConstPtr, sigpipe: UByte) {
     // Remember the main thread ID to give it the correct name.
     // SAFETY: this is the only time and place where we call this function.
-    set(thread.currentId())
-    io.github.kotlinmania.rustlang.std.sys.args.sgx.init(argc, argv, sigpipe)
+    set(currentId())
+    io.github.kotlinmania.rustlang.std.sys.args.unix.init(argc, argv, sigpipe)
 }
 
 /**
@@ -82,11 +84,11 @@ public fun init(argc: Int, argv: ConstPtr, sigpipe: UByte) {
  * not fulfilled. Also note that this function is not guaranteed to be run, but
  * skipping it will cause leaks and therefore is to be avoided.
  */
-internal fun threadCleanup() {
+public fun threadCleanup() {
     // This function is run in situations where unwinding leads to an abort
     // (think `extern "C"` functions). Abort here instead so that we can
     // print a nice message.
-    panic.catchUnwind({
+    catchUnwind({
         dropCurrent()
     }).unwrapOrElse(::handleRtPanic)
 }
@@ -94,13 +96,13 @@ internal fun threadCleanup() {
 // One-time runtime cleanup.
 // Runs after `main` or at program exit.
 // NOTE: this is not guaranteed to run, for example when the program aborts.
-internal fun cleanup() {
+public fun cleanup() {
     val CLEANUP: Once  = Once.new()
     CLEANUP.callOnce({ run {
         // Flush stdout and disable buffering.
         io.github.kotlinmania.rustlang.std.io.stdio.cleanup()
         // SAFETY: Only called once during runtime cleanup.
-        io.github.kotlinmania.rustlang.std.sys.pal.hermit.cleanup()
+        io.github.kotlinmania.rustlang.std.sys.pal.unix.cleanup()
     } })
 }
 
@@ -120,15 +122,15 @@ public fun langStartInternal(main: () -> Int, argc: Int, argv: ConstPtr, sigpipe
     //
     // We use `catchUnwind` with `handleRtPanic` instead of `abortOnUnwind` to make the error
     // in case of a panic a bit nicer.
-    return panic.catchUnwind({
+    return catchUnwind({
         // SAFETY: Only called once during runtime initialization.
         init(argc, argv, sigpipe)
         val retCode =
-            panic.catchUnwind(main).unwrapOrElse({ payload ->
+            catchUnwind(main).unwrapOrElse({ payload ->
                 // Carefully dispose of the panic payload.
-                val payload1 = panic.AssertUnwindSafe(payload)
-                panic.catchUnwind({ drop(payload1.first) }).unwrapOrElse({ e ->
-                    mem.forget(e)
+                val payload1 = AssertUnwindSafe(payload)
+                catchUnwind({ (payload1.first).let { } }).unwrapOrElse({ e ->
+                    forget(e)
                     run {
                         when (val matchVal = panicOutput()) {
                             null -> {}

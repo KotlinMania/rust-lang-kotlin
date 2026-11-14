@@ -11,7 +11,7 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 /**
  * Helper methods to process immutable bytes.
  */
-internal interface ByteSlice<T> {
+public interface ByteSlice<T> {
     /**
      * Reads 8 bytes as a 64-bit integer in little-endian order.
      */
@@ -73,7 +73,7 @@ public fun List<UByte>.parseDigits(func: (UByte) -> Unit): List<UByte> {
  *
  * This does not care about the order in which the bytes were loaded.
  */
-internal fun is8digits(v: ULong): Boolean {
+public fun is8digits(v: ULong): Boolean {
     val a = (v + 0x4646464646464646uL)
     val b = (v - 0x3030303030303030uL)
     return (a or b) and 0x8080808080808080uL == 0uL
@@ -93,28 +93,30 @@ public open class BiasedFp(
      */
     public var pBiased: Int,
 ) {
+    public open fun clone(): BiasedFp = BiasedFp(m, pBiased)
+
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<BiasedFp> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<BiasedFp> {
+        public fun typeLayout(): TypeLayout<BiasedFp> =
+            object : TypeLayout<BiasedFp> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): BiasedFp =
                     BiasedFp(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I32).readNative(addr + 8L),
+                        (PrimitiveLayouts.U64).readNative(addr),
+                        (PrimitiveLayouts.I32).readNative(addr + 8L),
                     )
                 override fun writeNative(addr: Long, value: BiasedFp) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).writeNative(addr, value.m)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I32).writeNative(addr + 8L, value.pBiased)
+                    (PrimitiveLayouts.U64).writeNative(addr, value.m)
+                    (PrimitiveLayouts.I32).writeNative(addr + 8L, value.pBiased)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): BiasedFp =
                     BiasedFp(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I32).readBytes(buf, offset + 8),
+                        (PrimitiveLayouts.U64).readBytes(buf, offset),
+                        (PrimitiveLayouts.I32).readBytes(buf, offset + 8),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: BiasedFp) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).writeBytes(buf, offset, value.m)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I32).writeBytes(buf, offset + 8, value.pBiased)
+                    (PrimitiveLayouts.U64).writeBytes(buf, offset, value.m)
+                    (PrimitiveLayouts.I32).writeBytes(buf, offset + 8, value.pBiased)
                 }
             }
 

@@ -10,28 +10,30 @@ public open class Metric(
     public var value: Double,
     public var noise: Double,
 ) {
+    public open fun clone(): Metric = Metric(value, noise)
+
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Metric> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Metric> {
+        public fun typeLayout(): TypeLayout<Metric> =
+            object : TypeLayout<Metric> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): Metric =
                     Metric(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.F64).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.F64).readNative(addr + 8L),
+                        (PrimitiveLayouts.F64).readNative(addr),
+                        (PrimitiveLayouts.F64).readNative(addr + 8L),
                     )
                 override fun writeNative(addr: Long, value: Metric) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.F64).writeNative(addr, value.value)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.F64).writeNative(addr + 8L, value.noise)
+                    (PrimitiveLayouts.F64).writeNative(addr, value.value)
+                    (PrimitiveLayouts.F64).writeNative(addr + 8L, value.noise)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Metric =
                     Metric(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.F64).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.F64).readBytes(buf, offset + 8),
+                        (PrimitiveLayouts.F64).readBytes(buf, offset),
+                        (PrimitiveLayouts.F64).readBytes(buf, offset + 8),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Metric) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.F64).writeBytes(buf, offset, value.value)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.F64).writeBytes(buf, offset + 8, value.noise)
+                    (PrimitiveLayouts.F64).writeBytes(buf, offset, value.value)
+                    (PrimitiveLayouts.F64).writeBytes(buf, offset + 8, value.noise)
                 }
             }
 
@@ -47,6 +49,8 @@ public open class MetricMap(
         set(v) {
             value = v
         }
+
+    public open fun clone(): MetricMap = MetricMap(value)
 
     /**
      * Insert a named `value` (+/- `noise`) metric into the map. The value

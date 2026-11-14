@@ -1,6 +1,7 @@
 // port-lint: source io/error/repr_bitpacked.rs
 package io.github.kotlinmania.rustlang.core.io.error.reprbitpacked
 
+import io.github.kotlinmania.rustlang.core.cmp.Eq
 import io.github.kotlinmania.rustlang.core.io.error.Custom
 import io.github.kotlinmania.rustlang.core.io.error.CustomOwner
 import io.github.kotlinmania.rustlang.core.io.error.ErrorData
@@ -10,7 +11,6 @@ import io.github.kotlinmania.rustlang.core.io.error.SimpleMessage
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.num.NonZeroUsize
 import io.github.kotlinmania.rustlang.core.option.Option
-import io.github.kotlinmania.rustlang.core.panicking.AssertKind
 import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
@@ -28,12 +28,12 @@ import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 // the following enum (which is roughly equivalent to what's stored by
 // `reprUnpacked.Repr`, e.g. `ErrorData<Holder<Custom>>`):
 //
-// ```kotlin
-// sealed class ErrorData {
-//     public data class Os(public var value: Int) : ErrorData()
-//     public data class Simple(public var value: ErrorKind) : ErrorData()
-//     public data class SimpleMessage(public var value: SimpleMessage) : ErrorData()
-//     public data class Custom(public var value: Custom) : ErrorData()
+// ```ignore (exposition-only)
+// enum ErrorData {
+//    Os(i32),
+//    Simple(ErrorKind),
+//    SimpleMessage(&static SimpleMessage),
+//    Custom(Holder<Custom>),
 // }
 // ```
 //
@@ -87,16 +87,16 @@ import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 //
 // Conceptually you might think of this more like:
 //
-// ```kotlin
-// open class Repr(
+// ```ignore (exposition-only)
+// union Repr {
 //     // holds integer (Simple/Os) variants, and
 //     // provides access to the tag bits.
-//     public var bits: NonZero<ULong>? = null,
+//     bits: NonZero<u64>,
 //     // Tag is 0, so this is stored untagged.
-//     public var msg: SimpleMessage? = null,
+//     msg: &static SimpleMessage,
 //     // Tagged (offset) `Holder<Custom>` pointer.
-//     public var taggedCustom: NonNull? = null,
-// )
+//     taggedCustom: NonNull<()>,
+// }
 // ```
 //
 // But there are a few problems with this:
@@ -137,28 +137,31 @@ public val TAG_SIMPLE: Int = 0x3
  * See the module docs for more, this is just a way to Note in a check that we
  * indeed are not unwind-safe.
  *
- * ```kotlin
- * fun <T> isUnwindSafe() {}
- * isUnwindSafe<Error>()
+ * ```compile_fail,E0277
+ * fn isUnwindSafe<T: core.panic.UnwindSafe>() {}
+ * isUnwindSafe::<std.io.Error>();
  * ```
  */
-internal open class Repr(
-    public var field0: NonNull,
+public open class Repr internal constructor(
+    field0CtorArg: NonNull,
     public var field1: Unit,
 ) {
+    public var field0: NonNull = field0CtorArg
+        internal set
+
     // All the types `Repr` stores internally are ThreadSafe, and so is it.
 
-    internal open fun data(): ErrorData<Custom> {
+    public open fun data(): ErrorData<Custom> {
         // SAFETY: We're a Repr, decodeRepr is fine.
         return decodeRepr(this.field0, { c -> c })
     }
 
-    internal open fun dataMut(): ErrorData<Custom> {
+    public open fun dataMut(): ErrorData<Custom> {
         // SAFETY: We're a Repr, decodeRepr is fine.
         return decodeRepr(this.field0, { c -> c })
     }
 
-    internal open fun intoData(): ErrorData<CustomOwner> {
+    public open fun intoData(): ErrorData<CustomOwner> {
         val thisRef = this
         // SAFETY: We're a Repr, decodeRepr is fine. The `Holder.fromRaw` is
         // safe because we prevent double-drop using `ManuallyDrop`.
@@ -176,7 +179,15 @@ internal open class Repr(
     }
 
     public companion object {
-        internal fun newCustom(b: CustomOwner): Repr {
+        public operator fun invoke(
+            field0: NonNull,
+            field1: Unit,
+        ): Repr = Repr(
+            field0CtorArg = field0,
+            field1 = field1,
+        )
+
+        public fun newCustom(b: CustomOwner): Repr {
             val p = b.intoRaw().asPtr().cast()
             if (false) {
                 when (val matchVal = Pair(p.addr() and TAG_MASK, 0)) {
@@ -184,7 +195,7 @@ internal open class Repr(
                         val leftVal = matchVal.first
                         val rightVal = matchVal.second
                         if (!(leftVal == rightVal)) {
-                            val kind = AssertKind.Eq
+                            val kind = Eq
                             assertFailed(kind, leftVal, rightVal, Option.None)
                         }
                     }
@@ -220,7 +231,7 @@ internal open class Repr(
             return res
         }
 
-        internal fun newOs(code: RawOsError): Repr {
+        public fun newOs(code: RawOsError): Repr {
             val utagged = ((code.toInt()) shl 32) or TAG_OS
             // SAFETY: `TAG_OS` is not zero, so the result of the `|` is not 0.
             val utagged1 = NonZeroUsize.newUnchecked(utagged)
@@ -240,7 +251,7 @@ internal open class Repr(
             return res
         }
 
-        internal fun newSimple(kind: ErrorKind): Repr {
+        public fun newSimple(kind: ErrorKind): Repr {
             val utagged = ((kind.toInt()) shl 32) or TAG_SIMPLE
             // SAFETY: `TAG_SIMPLE` is not zero, so the result of the `|` is not 0.
             val utagged1 = NonZeroUsize.newUnchecked(utagged)
@@ -260,7 +271,7 @@ internal open class Repr(
             return res
         }
 
-        internal fun newSimpleMessage(m: SimpleMessage): Repr {
+        public fun newSimpleMessage(m: SimpleMessage): Repr {
             // SAFETY: References are never null.
             val ptr = NonNull.newUnchecked((constPtrFromRustCast(m)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })
             return Repr(ptr, Unit)

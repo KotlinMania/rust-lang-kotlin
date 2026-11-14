@@ -8,21 +8,32 @@ import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 // The idea is: The length field in SetLenOnDrop is a local variable
 // that the optimizer will see does not alias with any stores through the Vec's data
 // pointer. This is a workaround for alias analysis issue #32155
-internal open class SetLenOnDrop(
-    public var len: RustMutableReference<Int>,
+public open class SetLenOnDrop internal constructor(
+    lenCtorArg: RustMutableReference<Int>,
     public var localLen: Int,
 ) {
-    internal open fun incrementLen(increment: Int) {
+    public var len: RustMutableReference<Int> = lenCtorArg
+        internal set
+
+    public open fun incrementLen(increment: Int) {
         this.localLen += increment
     }
 
-    internal open fun currentLen(): Int = this.localLen
+    public open fun currentLen(): Int = this.localLen
 
     public open fun drop() {
         (this.len).write(this.localLen)
     }
 
     public companion object {
-        internal fun new(len: RustMutableReference<Int>): SetLenOnDrop = SetLenOnDrop(localLen = (len).read(), len = len)
+        public operator fun invoke(
+            len: RustMutableReference<Int>,
+            localLen: Int,
+        ): SetLenOnDrop = SetLenOnDrop(
+            lenCtorArg = len,
+            localLen = localLen,
+        )
+
+        public fun new(len: RustMutableReference<Int>): SetLenOnDrop = SetLenOnDrop(localLen = (len).read(), len = len)
     }
 }

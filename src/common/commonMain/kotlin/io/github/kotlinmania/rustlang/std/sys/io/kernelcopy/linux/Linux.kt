@@ -1,26 +1,28 @@
 // port-lint: source sys/io/kernel_copy/linux.rs
 package io.github.kotlinmania.rustlang.std.sys.io.kernelcopy.linux
 
-import io.github.kotlinmania.libc.fuchsia.EBADF
-import io.github.kotlinmania.libc.fuchsia.EINVAL
-import io.github.kotlinmania.libc.fuchsia.ENOSYS
-import io.github.kotlinmania.libc.fuchsia.EOPNOTSUPP
-import io.github.kotlinmania.libc.fuchsia.EOVERFLOW
-import io.github.kotlinmania.libc.fuchsia.EPERM
-import io.github.kotlinmania.libc.fuchsia.EXDEV
-import io.github.kotlinmania.libc.unix.bsd.freebsdlike.freebsd.Splice
 import io.github.kotlinmania.rustlang.alloc.io.buffered.bufreader.BufReader
 import io.github.kotlinmania.rustlang.alloc.io.buffered.bufwriter.BufWriter
 import io.github.kotlinmania.rustlang.alloc.io.copy.CopyState
+import io.github.kotlinmania.rustlang.alloc.io.read.Read
+import io.github.kotlinmania.rustlang.core.io.error.Error
+import io.github.kotlinmania.rustlang.core.io.error.Result
 import io.github.kotlinmania.rustlang.core.io.util.Take
+import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
-import io.github.kotlinmania.rustlang.std.Cmp
-import io.github.kotlinmania.rustlang.std.cmp.min
+import io.github.kotlinmania.rustlang.libc.Splice
+import io.github.kotlinmania.rustlang.libc.wasi.EBADF
+import io.github.kotlinmania.rustlang.libc.wasi.EINVAL
+import io.github.kotlinmania.rustlang.libc.wasi.ENOSYS
+import io.github.kotlinmania.rustlang.libc.wasi.EOPNOTSUPP
+import io.github.kotlinmania.rustlang.libc.wasi.EOVERFLOW
+import io.github.kotlinmania.rustlang.libc.wasi.EPERM
+import io.github.kotlinmania.rustlang.libc.wasi.EXDEV
 import io.github.kotlinmania.rustlang.std.fs.File
 import io.github.kotlinmania.rustlang.std.fs.Metadata
 import io.github.kotlinmania.rustlang.std.io.pipe.PipeReader
@@ -29,19 +31,16 @@ import io.github.kotlinmania.rustlang.std.io.stdio.StderrLock
 import io.github.kotlinmania.rustlang.std.io.stdio.StdinLock
 import io.github.kotlinmania.rustlang.std.io.stdio.StdoutLock
 import io.github.kotlinmania.rustlang.std.net.tcp.TcpStream
-import io.github.kotlinmania.rustlang.std.os.fortanixsgx.io.AsRawFd
-import io.github.kotlinmania.rustlang.std.os.solid.io.RawFd
+import io.github.kotlinmania.rustlang.std.os.fd.AsRawFd
+import io.github.kotlinmania.rustlang.std.os.fd.RawFd
 import io.github.kotlinmania.rustlang.std.os.unix.net.UnixStream
-import io.github.kotlinmania.rustlang.std.os.xous.ffi.definitions.Error
 import io.github.kotlinmania.rustlang.std.process.ChildStderr
 import io.github.kotlinmania.rustlang.std.process.ChildStdin
 import io.github.kotlinmania.rustlang.std.process.ChildStdout
 import io.github.kotlinmania.rustlang.std.sys.fs.unix.cfm.CachedFileMetadata
-import io.github.kotlinmania.rustlang.std.sys.fs.unix.runtimesymbols.read
-import io.github.kotlinmania.rustlang.std.sys.fs.unix.runtimesymbols.write
-import io.github.kotlinmania.rustlang.std.sys.pal.hermit.cvt
-import io.github.kotlinmania.rustlang.std.thread.Result
-import io.github.kotlinmania.libc.sendfile as sendfile64
+import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
+import io.github.kotlinmania.rustlang.std.sys.weak.syscall
+import io.github.kotlinmania.rustlang.libc.sendfile as sendfile64
 
 // This module contains specializations that can offload `io.copy()` operations on file descriptor
 // containing types (`File`, `TcpStream`, etc.) to more efficient syscalls than `read(2)` and `write(2)`.
@@ -617,7 +616,7 @@ public fun sendfileSplice(mode: SpliceMode, reader: RawFd, writer: RawFd, len: U
     var written = 0uL
     while (written < len) {
         // according to its manpage that's the maximum size sendfile() will copy per invocation
-        val chunkSize = Cmp.min(len - written, 0x7ffff000uL).toInt()
+        val chunkSize = minOf(len - written, 0x7ffff000uL).toInt()
         val result =
             when (mode) {
                 SpliceMode.Sendfile -> {

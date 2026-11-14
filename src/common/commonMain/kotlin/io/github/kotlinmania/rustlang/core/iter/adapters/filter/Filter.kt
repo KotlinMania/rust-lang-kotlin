@@ -3,14 +3,16 @@ package io.github.kotlinmania.rustlang.core.iter.adapters.filter
 
 import io.github.kotlinmania.rustlang.core.array.iter.IntoIter
 import io.github.kotlinmania.rustlang.core.array.iterNextChunk
-import io.github.kotlinmania.rustlang.core.iter.InPlaceIterable
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.InPlaceIterable
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.needsDrop
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
 
@@ -52,10 +54,10 @@ public typealias Source<I> = I.Source
  */
 public open class Filter<I, P>(
     // Used for `SplitWhitespace` and `SplitAsciiWhitespace` `asStr` methods
-    internal var iter: I,
+    public var iter: I,
     public var predicate: P,
 ) : SourceIter<Any?, Source>, InPlaceIterable, Iterable<Item> {
-    override fun iterator(): kotlin.collections.Iterator<Item> = object : AbstractIterator<Item>() {
+    override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
         override fun computeNext() {
             when (val v = this@Filter.next()) {
                 null -> done()
@@ -105,7 +107,7 @@ public open class Filter<I, P>(
             if (needsDrop<Item>()) {
                 iterNextChunk<Item>
             } else {
-                Filter::nextChunkDropless
+                { it.nextChunkDropless() }
             }
         return fn(this)
     }
@@ -154,11 +156,11 @@ public open class Filter<I, P>(
     }
 
     public companion object {
-        public fun <I, P> typeLayout(typeLayoutI: io.github.kotlinmania.rustlang.core.mem.TypeLayout<I>, typeLayoutP: io.github.kotlinmania.rustlang.core.mem.TypeLayout<P>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Filter<I, P>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Filter<I, P>> {
+        public fun <I, P> typeLayout(typeLayoutI: TypeLayout<I>, typeLayoutP: TypeLayout<P>): TypeLayout<Filter<I, P>> =
+            object : TypeLayout<Filter<I, P>> {
                 override val alignBytes: Long = listOf(1L, typeLayoutI.alignBytes, typeLayoutP.alignBytes).max()
-                private val off1: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(typeLayoutI.sizeBytes, typeLayoutP.alignBytes)
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes((off1 + typeLayoutP.sizeBytes), alignBytes)
+                private val off1: Long = alignUpBytes(typeLayoutI.sizeBytes, typeLayoutP.alignBytes)
+                override val sizeBytes: Long = alignUpBytes((off1 + typeLayoutP.sizeBytes), alignBytes)
                 override fun readNative(addr: Long): Filter<I, P> =
                     Filter(
                         (typeLayoutI).readNative(addr),
@@ -179,7 +181,7 @@ public open class Filter<I, P>(
                 }
             }
 
-        internal fun <I, P> new(iter: I, predicate: P): Filter<I, P> = Filter(iter = iter, predicate = predicate)
+        public fun <I, P> new(iter: I, predicate: P): Filter<I, P> = Filter(iter = iter, predicate = predicate)
 
         public val EXPAND_BY: NonZero<Int>? = I.EXPAND_BY
 

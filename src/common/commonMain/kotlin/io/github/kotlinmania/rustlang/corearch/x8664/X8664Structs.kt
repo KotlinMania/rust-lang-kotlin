@@ -11,16 +11,15 @@ package io.github.kotlinmania.rustlang.corearch.x8664
  * with `row * colsb` never exceeding 1024.
  *
  * The typical usage pattern looks like
- * ```kotlin
- * import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
- * import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
+ * ```ignore
+ * let tile = MaybeUninit.uninit();
+ * let tilePtr = tile.asMutPtr();
  *
- * val tile = MaybeUninit.uninit(PrimitiveLayouts.U8)
- * val tilePtr = tile.asMutPtr()
- * tilePtr.rows = rows
- * tilePtr.colsb = colsb
- * tileZero(tilePtr)
- * val tile1 = tile.assumeInit()
+ * (*tilePtr).rows = rows;
+ * (*tilePtr).colsb = colsb;
+ * __tile_zero(tilePtr);
+ *
+ * let tile = tile.assumeInit();
  * ```
  * Most intrinsics using `__tile1024i` (except for the store intrinsics) have a destination parameter
  * of type `* __tile1024i`, and it expects the `rows` and `colsb` fields of the destination
@@ -32,4 +31,6 @@ public open class Tile1024i(
     public var rows: UShort,
     public var colsb: UShort,
     public var tile: Tile,
-)
+) {
+    public open fun clone(): Tile1024i = Tile1024i(rows, colsb, tile)
+}

@@ -9,10 +9,12 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
  * * `BTreeMap<T, ()>` (possible user-defined map)
  * * `BTreeMap<T, SetValZST>` (internal set representation)
  */
-internal open class SetValZST : IsSetVal {
+public open class SetValZST : IsSetVal {
+    public open fun clone(): SetValZST = SetValZST()
+
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<SetValZST> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<SetValZST> {
+        public fun typeLayout(): TypeLayout<SetValZST> =
+            object : TypeLayout<SetValZST> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): SetValZST =
@@ -35,8 +37,12 @@ internal open class SetValZST : IsSetVal {
  * Returns `true` only for type `SetValZST`, `false` for all other types (blanket implementation).
  * `TypeId` requires a `static` scope, use of this trait avoids that restriction.
  */
-internal interface IsSetVal {
+public interface IsSetVal {
     public fun isSetVal(): Boolean
+
+    public companion object {
+        public fun isSetVal(): Boolean = SetValZST.isSetVal()
+    }
 }
 
 // Blanket implementation

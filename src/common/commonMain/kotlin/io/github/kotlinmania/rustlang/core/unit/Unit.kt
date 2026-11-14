@@ -21,7 +21,7 @@ public fun <I : Iterable<Unit>> fromIteratorFromIter(iter: I) {
     iter.iterator().forEach({})
 }
 
-internal interface IsUnit {
+public interface IsUnit {
     public val IS_UNIT: Boolean
 }
 

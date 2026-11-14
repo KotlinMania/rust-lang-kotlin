@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.procmacro.bridge.client
 
 import io.github.kotlinmania.rustlang.core.cell.RefCell
 import io.github.kotlinmania.rustlang.core.ops.range.Bound
+import io.github.kotlinmania.rustlang.core.panic.unwindsafe.AssertUnwindSafe
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
@@ -21,6 +22,10 @@ import io.github.kotlinmania.rustlang.procmacro.bridge.handle.Handle
 import io.github.kotlinmania.rustlang.procmacro.bridge.panicmessage.PanicMessage
 import io.github.kotlinmania.rustlang.procmacro.bridge.selflessreify.reifyToExternCFnHrtBridge
 import io.github.kotlinmania.rustlang.procmacro.bridge.symbol.Symbol
+import io.github.kotlinmania.rustlang.std.panic.catchUnwind
+import io.github.kotlinmania.rustlang.std.panic.resumeUnwind
+import io.github.kotlinmania.rustlang.std.panicking.setHook
+import io.github.kotlinmania.rustlang.std.panicking.takeHook
 import io.github.kotlinmania.rustlang.std.sync.once.Once
 
 // Client-side types.
@@ -29,7 +34,7 @@ public fun interface ClientRunCallback {
     public operator fun invoke(arg0: BridgeConfig): Buffer
 }
 
-internal open class TokenStream(
+public open class TokenStream(
     public var handle: Handle,
 ) : Encode<S>, Decode<S, TokenStream> {
     // Forward `Drop.drop` to the inherent `drop` method.
@@ -38,7 +43,7 @@ internal open class TokenStream(
     }
 
     public override fun encode(w: Buffer, s: S) {
-        mem.ManuallyDrop.new(this).handle.encode(w, s)
+        this.handle.encode(w, s)
     }
 
     public open fun clone(): TokenStream = Methods.tsClone(this)
@@ -54,9 +59,11 @@ public fun TokenStream.encode(w: Buffer, s: Unit) {
 
 public fun decodeTokenStream(r: List<UByte>, s: Unit): TokenStream = TokenStream(Decode.decode(r, s))
 
-internal open class Span(
+public open class Span(
     public var handle: Handle,
 ) : Encode<S>, Decode<S, Span> {
+    public open fun clone(): Span = Span(handle)
+
     public override fun encode(w: Buffer, s: S) {
         this.handle.encode(w, s)
     }
@@ -68,15 +75,15 @@ internal open class Span(
     public companion object {
         public fun <S> decode(r: List<UByte>, s: S): Span = Span(handle = Handle.Handle.decode(r, s))
 
-        internal fun defSite(): Span = Bridge.with({ bridge -> bridge.globals.defSite })
+        public fun defSite(): Span = Bridge.with({ bridge -> bridge.globals.defSite })
 
-        internal fun callSite(): Span = Bridge.with({ bridge -> bridge.globals.callSite })
+        public fun callSite(): Span = Bridge.with({ bridge -> bridge.globals.callSite })
 
-        internal fun mixedSite(): Span = Bridge.with({ bridge -> bridge.globals.mixedSite })
+        public fun mixedSite(): Span = Bridge.with({ bridge -> bridge.globals.mixedSite })
     }
 }
 
-internal fun Methods.Companion.trackEnvVar(variable: String, value: String?) {
+public fun Methods.Companion.trackEnvVar(variable: String, value: String?) {
     Bridge.with({ bridge ->
         var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
         buf.clear()
@@ -86,11 +93,11 @@ internal fun Methods.Companion.trackEnvVar(variable: String, value: String?) {
         buf = bridge.dispatch.call(buf)
         val r = Result.decode(buf, Unit)
         bridge.cachedBuffer = buf
-        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+        r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
 }
 
-internal fun Methods.Companion.trackPath(path: String) {
+public fun Methods.Companion.trackPath(path: String) {
     Bridge.with({ bridge ->
         var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
         buf.clear()
@@ -99,11 +106,11 @@ internal fun Methods.Companion.trackPath(path: String) {
         buf = bridge.dispatch.call(buf)
         val r = Result.decode(buf, Unit)
         bridge.cachedBuffer = buf
-        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+        r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
 }
 
-internal fun Methods.Companion.literalFromStr(s: String): Result<Literal<Span, Symbol>, String> =
+public fun Methods.Companion.literalFromStr(s: String): Result<Literal<Span, Symbol>, String> =
     Bridge.with({ bridge ->
         var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
         buf.clear()
@@ -112,10 +119,10 @@ internal fun Methods.Companion.literalFromStr(s: String): Result<Literal<Span, S
         buf = bridge.dispatch.call(buf)
         val r = Result.decode(buf, Unit)
         bridge.cachedBuffer = buf
-        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+        r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
 
-internal fun Methods.Companion.emitDiagnostic(diagnostic: Diagnostic<Span>) {
+public fun Methods.Companion.emitDiagnostic(diagnostic: Diagnostic<Span>) {
     Bridge.with({ bridge ->
         var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
         buf.clear()
@@ -124,11 +131,11 @@ internal fun Methods.Companion.emitDiagnostic(diagnostic: Diagnostic<Span>) {
         buf = bridge.dispatch.call(buf)
         val r = Result.decode(buf, Unit)
         bridge.cachedBuffer = buf
-        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+        r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
 }
 
-internal fun Methods.Companion.tsDrop(stream: TokenStream) {
+public fun Methods.Companion.tsDrop(stream: TokenStream) {
     Bridge.with({ bridge ->
         var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
         buf.clear()
@@ -137,11 +144,11 @@ internal fun Methods.Companion.tsDrop(stream: TokenStream) {
         buf = bridge.dispatch.call(buf)
         val r = Result.decode(buf, Unit)
         bridge.cachedBuffer = buf
-        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+        r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
 }
 
-internal fun Methods.Companion.tsClone(stream: TokenStream): TokenStream =
+public fun Methods.Companion.tsClone(stream: TokenStream): TokenStream =
     Bridge.with({ bridge ->
         var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
         buf.clear()
@@ -150,10 +157,10 @@ internal fun Methods.Companion.tsClone(stream: TokenStream): TokenStream =
         buf = bridge.dispatch.call(buf)
         val r = Result.decode(buf, Unit)
         bridge.cachedBuffer = buf
-        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+        r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
 
-internal fun Methods.Companion.tsIsEmpty(stream: TokenStream): Boolean =
+public fun Methods.Companion.tsIsEmpty(stream: TokenStream): Boolean =
     Bridge.with({ bridge ->
         var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
         buf.clear()
@@ -162,10 +169,10 @@ internal fun Methods.Companion.tsIsEmpty(stream: TokenStream): Boolean =
         buf = bridge.dispatch.call(buf)
         val r = Result.decode(buf, Unit)
         bridge.cachedBuffer = buf
-        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+        r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
 
-internal fun Methods.Companion.tsExpandExpr(stream: TokenStream): Result<TokenStream, Unit> =
+public fun Methods.Companion.tsExpandExpr(stream: TokenStream): Result<TokenStream, Unit> =
     Bridge.with({ bridge ->
         var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
         buf.clear()
@@ -174,10 +181,10 @@ internal fun Methods.Companion.tsExpandExpr(stream: TokenStream): Result<TokenSt
         buf = bridge.dispatch.call(buf)
         val r = Result.decode(buf, Unit)
         bridge.cachedBuffer = buf
-        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+        r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
 
-internal fun Methods.Companion.tsFromStr(src: String): Result<TokenStream, String> =
+public fun Methods.Companion.tsFromStr(src: String): Result<TokenStream, String> =
     Bridge.with({ bridge ->
         var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
         buf.clear()
@@ -186,10 +193,10 @@ internal fun Methods.Companion.tsFromStr(src: String): Result<TokenStream, Strin
         buf = bridge.dispatch.call(buf)
         val r = Result.decode(buf, Unit)
         bridge.cachedBuffer = buf
-        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+        r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
 
-internal fun Methods.Companion.tsToString(stream: TokenStream): String =
+public fun Methods.Companion.tsToString(stream: TokenStream): String =
     Bridge.with({ bridge ->
         var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
         buf.clear()
@@ -198,10 +205,10 @@ internal fun Methods.Companion.tsToString(stream: TokenStream): String =
         buf = bridge.dispatch.call(buf)
         val r = Result.decode(buf, Unit)
         bridge.cachedBuffer = buf
-        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+        r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
 
-internal fun Methods.Companion.tsFromTokenTree(tree: TokenTree<TokenStream, Span, Symbol>): TokenStream =
+public fun Methods.Companion.tsFromTokenTree(tree: TokenTree<TokenStream, Span, Symbol>): TokenStream =
     Bridge.with({ bridge ->
         var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
         buf.clear()
@@ -210,10 +217,10 @@ internal fun Methods.Companion.tsFromTokenTree(tree: TokenTree<TokenStream, Span
         buf = bridge.dispatch.call(buf)
         val r = Result.decode(buf, Unit)
         bridge.cachedBuffer = buf
-        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+        r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
 
-internal fun Methods.Companion.tsConcatTrees(base: TokenStream?, trees: List<TokenTree<TokenStream, Span, Symbol>>): TokenStream =
+public fun Methods.Companion.tsConcatTrees(base: TokenStream?, trees: List<TokenTree<TokenStream, Span, Symbol>>): TokenStream =
     Bridge.with({ bridge ->
         var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
         buf.clear()
@@ -223,10 +230,10 @@ internal fun Methods.Companion.tsConcatTrees(base: TokenStream?, trees: List<Tok
         buf = bridge.dispatch.call(buf)
         val r = Result.decode(buf, Unit)
         bridge.cachedBuffer = buf
-        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+        r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
 
-internal fun Methods.Companion.tsConcatStreams(base: TokenStream?, streams: List<TokenStream>): TokenStream =
+public fun Methods.Companion.tsConcatStreams(base: TokenStream?, streams: List<TokenStream>): TokenStream =
     Bridge.with({ bridge ->
         var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
         buf.clear()
@@ -236,10 +243,10 @@ internal fun Methods.Companion.tsConcatStreams(base: TokenStream?, streams: List
         buf = bridge.dispatch.call(buf)
         val r = Result.decode(buf, Unit)
         bridge.cachedBuffer = buf
-        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+        r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
 
-internal fun Methods.Companion.tsIntoTrees(stream: TokenStream): List<TokenTree<TokenStream, Span, Symbol>> =
+public fun Methods.Companion.tsIntoTrees(stream: TokenStream): List<TokenTree<TokenStream, Span, Symbol>> =
     Bridge.with({ bridge ->
         var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
         buf.clear()
@@ -248,10 +255,10 @@ internal fun Methods.Companion.tsIntoTrees(stream: TokenStream): List<TokenTree<
         buf = bridge.dispatch.call(buf)
         val r = Result.decode(buf, Unit)
         bridge.cachedBuffer = buf
-        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+        r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
 
-internal fun Methods.Companion.spanDebug(span: Span): String =
+public fun Methods.Companion.spanDebug(span: Span): String =
     Bridge.with({ bridge ->
         var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
         buf.clear()
@@ -260,10 +267,10 @@ internal fun Methods.Companion.spanDebug(span: Span): String =
         buf = bridge.dispatch.call(buf)
         val r = Result.decode(buf, Unit)
         bridge.cachedBuffer = buf
-        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+        r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
 
-internal fun Methods.Companion.spanParent(span: Span): Span? =
+public fun Methods.Companion.spanParent(span: Span): Span? =
     Bridge.with({ bridge ->
         var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
         buf.clear()
@@ -272,10 +279,10 @@ internal fun Methods.Companion.spanParent(span: Span): Span? =
         buf = bridge.dispatch.call(buf)
         val r = Result.decode(buf, Unit)
         bridge.cachedBuffer = buf
-        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+        r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
 
-internal fun Methods.Companion.spanSource(span: Span): Span =
+public fun Methods.Companion.spanSource(span: Span): Span =
     Bridge.with({ bridge ->
         var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
         buf.clear()
@@ -284,10 +291,10 @@ internal fun Methods.Companion.spanSource(span: Span): Span =
         buf = bridge.dispatch.call(buf)
         val r = Result.decode(buf, Unit)
         bridge.cachedBuffer = buf
-        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+        r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
 
-internal fun Methods.Companion.spanByteRange(span: Span): IntRange =
+public fun Methods.Companion.spanByteRange(span: Span): IntRange =
     Bridge.with({ bridge ->
         var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
         buf.clear()
@@ -296,10 +303,10 @@ internal fun Methods.Companion.spanByteRange(span: Span): IntRange =
         buf = bridge.dispatch.call(buf)
         val r = Result.decode(buf, Unit)
         bridge.cachedBuffer = buf
-        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+        r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
 
-internal fun Methods.Companion.spanStart(span: Span): Span =
+public fun Methods.Companion.spanStart(span: Span): Span =
     Bridge.with({ bridge ->
         var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
         buf.clear()
@@ -308,10 +315,10 @@ internal fun Methods.Companion.spanStart(span: Span): Span =
         buf = bridge.dispatch.call(buf)
         val r = Result.decode(buf, Unit)
         bridge.cachedBuffer = buf
-        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+        r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
 
-internal fun Methods.Companion.spanEnd(span: Span): Span =
+public fun Methods.Companion.spanEnd(span: Span): Span =
     Bridge.with({ bridge ->
         var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
         buf.clear()
@@ -320,10 +327,10 @@ internal fun Methods.Companion.spanEnd(span: Span): Span =
         buf = bridge.dispatch.call(buf)
         val r = Result.decode(buf, Unit)
         bridge.cachedBuffer = buf
-        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+        r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
 
-internal fun Methods.Companion.spanLine(span: Span): Int =
+public fun Methods.Companion.spanLine(span: Span): Int =
     Bridge.with({ bridge ->
         var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
         buf.clear()
@@ -332,10 +339,10 @@ internal fun Methods.Companion.spanLine(span: Span): Int =
         buf = bridge.dispatch.call(buf)
         val r = Result.decode(buf, Unit)
         bridge.cachedBuffer = buf
-        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+        r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
 
-internal fun Methods.Companion.spanColumn(span: Span): Int =
+public fun Methods.Companion.spanColumn(span: Span): Int =
     Bridge.with({ bridge ->
         var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
         buf.clear()
@@ -344,10 +351,10 @@ internal fun Methods.Companion.spanColumn(span: Span): Int =
         buf = bridge.dispatch.call(buf)
         val r = Result.decode(buf, Unit)
         bridge.cachedBuffer = buf
-        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+        r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
 
-internal fun Methods.Companion.spanFile(span: Span): String =
+public fun Methods.Companion.spanFile(span: Span): String =
     Bridge.with({ bridge ->
         var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
         buf.clear()
@@ -356,10 +363,10 @@ internal fun Methods.Companion.spanFile(span: Span): String =
         buf = bridge.dispatch.call(buf)
         val r = Result.decode(buf, Unit)
         bridge.cachedBuffer = buf
-        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+        r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
 
-internal fun Methods.Companion.spanLocalFile(span: Span): String? =
+public fun Methods.Companion.spanLocalFile(span: Span): String? =
     Bridge.with({ bridge ->
         var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
         buf.clear()
@@ -368,10 +375,10 @@ internal fun Methods.Companion.spanLocalFile(span: Span): String? =
         buf = bridge.dispatch.call(buf)
         val r = Result.decode(buf, Unit)
         bridge.cachedBuffer = buf
-        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+        r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
 
-internal fun Methods.Companion.spanJoin(span: Span, other: Span): Span? =
+public fun Methods.Companion.spanJoin(span: Span, other: Span): Span? =
     Bridge.with({ bridge ->
         var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
         buf.clear()
@@ -381,10 +388,10 @@ internal fun Methods.Companion.spanJoin(span: Span, other: Span): Span? =
         buf = bridge.dispatch.call(buf)
         val r = Result.decode(buf, Unit)
         bridge.cachedBuffer = buf
-        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+        r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
 
-internal fun Methods.Companion.spanSubspan(span: Span, start: Bound<Int>, end: Bound<Int>): Span? =
+public fun Methods.Companion.spanSubspan(span: Span, start: Bound<Int>, end: Bound<Int>): Span? =
     Bridge.with({ bridge ->
         var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
         buf.clear()
@@ -395,10 +402,10 @@ internal fun Methods.Companion.spanSubspan(span: Span, start: Bound<Int>, end: B
         buf = bridge.dispatch.call(buf)
         val r = Result.decode(buf, Unit)
         bridge.cachedBuffer = buf
-        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+        r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
 
-internal fun Methods.Companion.spanResolvedAt(span: Span, at: Span): Span =
+public fun Methods.Companion.spanResolvedAt(span: Span, at: Span): Span =
     Bridge.with({ bridge ->
         var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
         buf.clear()
@@ -408,10 +415,10 @@ internal fun Methods.Companion.spanResolvedAt(span: Span, at: Span): Span =
         buf = bridge.dispatch.call(buf)
         val r = Result.decode(buf, Unit)
         bridge.cachedBuffer = buf
-        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+        r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
 
-internal fun Methods.Companion.spanSourceText(span: Span): String? =
+public fun Methods.Companion.spanSourceText(span: Span): String? =
     Bridge.with({ bridge ->
         var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
         buf.clear()
@@ -420,10 +427,10 @@ internal fun Methods.Companion.spanSourceText(span: Span): String? =
         buf = bridge.dispatch.call(buf)
         val r = Result.decode(buf, Unit)
         bridge.cachedBuffer = buf
-        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+        r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
 
-internal fun Methods.Companion.spanSaveSpan(span: Span): Int =
+public fun Methods.Companion.spanSaveSpan(span: Span): Int =
     Bridge.with({ bridge ->
         var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
         buf.clear()
@@ -432,10 +439,10 @@ internal fun Methods.Companion.spanSaveSpan(span: Span): Int =
         buf = bridge.dispatch.call(buf)
         val r = Result.decode(buf, Unit)
         bridge.cachedBuffer = buf
-        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+        r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
 
-internal fun Methods.Companion.spanRecoverProcMacroSpan(id: Int): Span =
+public fun Methods.Companion.spanRecoverProcMacroSpan(id: Int): Span =
     Bridge.with({ bridge ->
         var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
         buf.clear()
@@ -444,10 +451,10 @@ internal fun Methods.Companion.spanRecoverProcMacroSpan(id: Int): Span =
         buf = bridge.dispatch.call(buf)
         val r = Result.decode(buf, Unit)
         bridge.cachedBuffer = buf
-        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+        r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
 
-internal fun Methods.Companion.symbolNormalizeAndValidateIdent(string: String): Result<Symbol, Unit> =
+public fun Methods.Companion.symbolNormalizeAndValidateIdent(string: String): Result<Symbol, Unit> =
     Bridge.with({ bridge ->
         var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
         buf.clear()
@@ -456,7 +463,7 @@ internal fun Methods.Companion.symbolNormalizeAndValidateIdent(string: String): 
         buf = bridge.dispatch.call(buf)
         val r = Result.decode(buf, Unit)
         bridge.cachedBuffer = buf
-        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+        r.unwrapOrElse({ e -> resumeUnwind(e.into()) })
     })
 
 public open class Bridge internal constructor(
@@ -497,7 +504,7 @@ public open class Bridge internal constructor(
     }
 }
 
-internal fun <R> set(state: RefCell<Bridge>, f: () -> R): R {
+public fun <R> set(state: RefCell<Bridge>, f: () -> R): R {
     open class RestoreOnDrop(
         public var value: ConstPtr,
     ) {
@@ -514,7 +521,7 @@ internal fun <R> set(state: RefCell<Bridge>, f: () -> R): R {
     return f()
 }
 
-internal fun <R> with(f: (RefCell<Bridge>?) -> R): R {
+public fun <R> with(f: (RefCell<Bridge>?) -> R): R {
     val state = BRIDGE_STATE.get()
     // SAFETY: the only place where the pointer is set is in `set`. It puts
     // back the previous value after the inner call has returned, so we know
@@ -527,7 +534,7 @@ internal fun <R> with(f: (RefCell<Bridge>?) -> R): R {
     return f(bridge)
 }
 
-internal fun isAvailable(): Boolean = with({ s -> s != null })
+public fun isAvailable(): Boolean = with({ s -> s != null })
 
 /**
  * A client-side RPC entry-point, which may be using a different `procMacro`
@@ -538,8 +545,10 @@ internal fun isAvailable(): Boolean = with({ s -> s != null })
  * result in a panic, it will not result in UB.
  */
 public open class Client(
-    internal var run: ClientRunCallback,
+    public var run: ClientRunCallback,
 ) {
+    public open fun clone(): Client = Client(run)
+
     public companion object {
         public fun expand1(f: (TokenStream) -> TokenStream): Client =
             Client(run = reifyToExternCFnHrtBridge({ bridge ->
@@ -558,8 +567,8 @@ public fun maybeInstallPanicHook(forceShowPanics: Boolean) {
     // NB. the server can't do this because it may use a different std.
     val HIDE_PANICS_DURING_EXPANSION: Once  = Once.new()
     HIDE_PANICS_DURING_EXPANSION.callOnce({
-        val prev = panic.takeHook()
-        panic.setHook({ info ->
+        val prev = takeHook()
+        setHook({ info ->
             // We normally report panics by catching unwinds and passing the payload from the
             // unwind back to the compiler, but if the panic doesn't unwind we'll abort before
             // the compiler has a chance to print an error. So we special-case PanicInfo where
@@ -580,7 +589,7 @@ public fun <A : Decode<Unit, A>> runClient(config: BridgeConfig, f: (A) -> Token
     val dispatch = config.dispatch
     val forceShowPanics = config.forceShowPanics
     val res =
-        panic.catchUnwind(panic.AssertUnwindSafe({
+        catchUnwind(AssertUnwindSafe({
             maybeInstallPanicHook(forceShowPanics)
             // Make sure the symbol store is empty before decoding inputs.
             Symbol.invalidateAll()

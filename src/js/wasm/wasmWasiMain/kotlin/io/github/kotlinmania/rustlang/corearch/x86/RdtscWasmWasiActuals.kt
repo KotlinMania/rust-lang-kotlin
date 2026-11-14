@@ -1,9 +1,9 @@
-@file:OptIn(kotlin.ExperimentalUnsignedTypes::class, kotlin.wasm.ExperimentalWasmInterop::class)
+@file:OptIn(ExperimentalUnsignedTypes::class, ExperimentalWasmInterop::class)
 
 package io.github.kotlinmania.rustlang.corearch.x86
 
-// The host must provide the C companion wrapper exports in import module corearch.
-@kotlin.wasm.WasmImport("corearch", "corearchX86RdtscRdtsc")
+// The host must provide the C companion wrapper exports in import module kmcore.
+@kotlin.wasm.WasmImport("kmcore", "corearchX86RdtscRdtsc")
 private external fun wasiCorearchX86RdtscRdtsc(): Long
 
 public actual fun rdtsc(): ULong =

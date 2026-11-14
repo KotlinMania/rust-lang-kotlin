@@ -18,11 +18,14 @@ import io.github.kotlinmania.rustlang.core.alloc.Allocator
  * val iter: Splice = v.splice(1 until Int.MAX_VALUE, new)
  * ```
  */
-public open class Splice<I, A : Allocator>(
-    internal var drain: Drain<Item, A>,
-    internal var replaceWith: I,
+public open class Splice<I, A : Allocator> internal constructor(
+    drainCtorArg: Drain<Item, A>,
+    public var replaceWith: I,
 ) : Iterable<Item> {
-    override fun iterator(): kotlin.collections.Iterator<Item> = object : AbstractIterator<Item>() {
+    public var drain: Drain<Item, A> = drainCtorArg
+        internal set
+
+    override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
         override fun computeNext() {
             when (val v = this@Splice.next()) {
                 null -> done()
@@ -77,6 +80,16 @@ public open class Splice<I, A : Allocator>(
             }
         }
         // Let `Drain.drop` move the tail back if necessary and restore `deque.len`.
+    }
+
+    public companion object {
+        public operator fun <I, A : Allocator> invoke(
+            drain: Drain<Item, A>,
+            replaceWith: I,
+        ): Splice<I, A> = Splice<I, A>(
+            drainCtorArg = drain,
+            replaceWith = replaceWith,
+        )
     }
 }
 

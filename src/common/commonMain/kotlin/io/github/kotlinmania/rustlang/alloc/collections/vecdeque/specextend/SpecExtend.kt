@@ -9,7 +9,7 @@ import io.github.kotlinmania.rustlang.core.iter.adapters.rev.Rev
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 
 // Specialization trait used for VecDeque.extend
-internal interface SpecExtend<T, I> {
+public interface SpecExtend<T, I> {
     public fun specExtend(iter: I)
 }
 
@@ -57,7 +57,7 @@ public fun <T, I, A : Allocator> VecDeque<T, A>.specExtendTI(iter: I) where I : 
 }
 
 public fun <T, A1 : Allocator, A2 : Allocator> VecDeque<T, A1>.specExtend(iterator: ArrayDeque<T>) {
-    val slice = iterator.asSlice()
+    val slice = iterator.toList()
     this.reserve(slice.len())
     // ignore-tidy-undocumented-unchecked
     run {
@@ -68,7 +68,7 @@ public fun <T, A1 : Allocator, A2 : Allocator> VecDeque<T, A1>.specExtend(iterat
 }
 
 public fun <T, A : Allocator> VecDeque<T, A>.specExtendTIterT(iterator: ArrayDeque<T>) {
-    val slice = iterator.asSlice()
+    val slice = iterator.toList()
     this.reserve(slice.len())
     // ignore-tidy-undocumented-unchecked
     run {
@@ -78,7 +78,7 @@ public fun <T, A : Allocator> VecDeque<T, A>.specExtendTIterT(iterator: ArrayDeq
 }
 
 // Specialization trait used for VecDeque.extendFront
-internal interface SpecExtendFront<T, I> {
+public interface SpecExtendFront<T, I> {
     public fun specExtendFront(iter: I)
 }
 
@@ -106,7 +106,7 @@ public fun <T, I, A : Allocator> VecDeque<T, A>.specExtendFront(iter: I) where I
 }
 
 public fun <T, A1 : Allocator, A2 : Allocator> VecDeque<T, A1>.specExtendFront(iterator: ArrayDeque<T>) {
-    val slice = iterator.asSlice()
+    val slice = iterator.toList()
     this.reserve(slice.len())
     // SAFETY: `slice.len()` space was just reserved and elements in the slice are forgotten after this call
     prependReversed(this, slice)

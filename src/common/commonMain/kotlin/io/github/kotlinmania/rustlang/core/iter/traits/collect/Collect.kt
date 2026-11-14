@@ -1,7 +1,7 @@
 // port-lint: source iter/traits/collect.rs
 package io.github.kotlinmania.rustlang.core.iter.traits.collect
 
-import io.github.kotlinmania.rustlang.core.iter.traits.TrustedLen
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.drop
 
 public typealias Item<I> = I.Item
@@ -144,7 +144,7 @@ public interface FromIterator<T, SelfType> {
  *                 value = v
  *             }
  *
- *         override fun iterator(): kotlin.collections.Iterator<Int> = this.intoIter().iterator()
+ *         override fun iterator(): Iterator<Int> = this.intoIter().iterator()
  *
  *         // Let's give it some methods so we can create one and add things
  *         // to it.

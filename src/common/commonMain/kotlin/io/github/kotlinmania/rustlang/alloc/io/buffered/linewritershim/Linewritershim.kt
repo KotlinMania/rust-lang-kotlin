@@ -1,13 +1,13 @@
 // port-lint: source io/buffered/linewritershim.rs
 package io.github.kotlinmania.rustlang.alloc.io.buffered.linewritershim
 
-import io.github.kotlinmania.memchr.memrchr
 import io.github.kotlinmania.rustlang.alloc.io.buffered.bufwriter.BufWriter
-import io.github.kotlinmania.rustlang.alloc.io.write
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
+import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.num.rustSaturatingAdd
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.memchr.memchr
+import io.github.kotlinmania.rustlang.core.slice.memchr.memrchr
 
 /**
  * Private helper struct for implementing the line-buffered writing logic.
@@ -21,9 +21,12 @@ import io.github.kotlinmania.rustlang.core.slice.memchr.memchr
  * `BufWriters` to be temporarily given line-buffering logic; this is what
  * enables Stdout to be alternately in line-buffered or block-buffered mode.
  */
-internal open class LineWriterShim<W : Write>(
-    public var buffer: BufWriter<W>,
+public open class LineWriterShim<W : Write> internal constructor(
+    bufferCtorArg: BufWriter<W>,
 ) : Write {
+    public var buffer: BufWriter<W> = bufferCtorArg
+        internal set
+
     /**
      * Gets a reference to the inner writer (that is, the writer
      * wrapped by the BufWriter).
@@ -66,7 +69,7 @@ internal open class LineWriterShim<W : Write>(
      */
     public open fun writeVectoredScanned(bufs: List<IoSlice>): Result<Int> {
         // Find the buffer containing the last newline.
-        val lastNewlineBufIdx = bufs.mapIndexed { index, item -> Pair(index, item) }.rev().findMap({ (i, buf) -> memchr(10u, buf).map({ i }) })
+        val lastNewlineBufIdx = bufs.mapIndexed { index, item -> Pair(index, item) }.rev().findMap({ (i, buf) -> memchr(10u, buf)?.let({ i }) })
         // If there are no new newlines (that is, if this write is less than
         // one line), just do a regular buffered write.
         val lastNewlineBufIdx1 =
@@ -318,6 +321,12 @@ internal open class LineWriterShim<W : Write>(
     }
 
     public companion object {
-        internal fun <W : Write> new(buffer: BufWriter<W>): LineWriterShim<W> = LineWriterShim(buffer = buffer)
+        public operator fun <W : Write> invoke(
+            buffer: BufWriter<W>,
+        ): LineWriterShim<W> = LineWriterShim<W>(
+            bufferCtorArg = buffer,
+        )
+
+        public fun <W : Write> new(buffer: BufWriter<W>): LineWriterShim<W> = LineWriterShim(buffer = buffer)
     }
 }

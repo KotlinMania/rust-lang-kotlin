@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.core.str.converts
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -53,6 +54,8 @@ import io.github.kotlinmania.rustlang.core.str.validations.runUtf8Validation
  * Basic usage:
  *
  * ```kotlin
+ * import std.str
+ *
  * // some bytes, in a vector
  * val sparkleHeart = mutableListOf(240, 159, 146, 150)
  * // We can use the ? (try) operator to check if the bytes are valid
@@ -63,6 +66,8 @@ import io.github.kotlinmania.rustlang.core.str.validations.runUtf8Validation
  * Incorrect bytes:
  *
  * ```kotlin
+ * import std.str
+ *
  * // some invalid bytes, in a vector
  * val sparkleHeart = mutableListOf(0, 159, 146, 150)
  * check(String.fromUtf8(sparkleHeart).isErr())
@@ -105,6 +110,8 @@ public fun fromUtf8(v: List<UByte>): Result<String, Utf8Error> {
  * Basic usage:
  *
  * ```kotlin
+ * import std.str
+ *
  * // "Hello, Rust!" as a mutable vector
  * var hellorust = mutableListOf(72, 101, 108, 108, 111, 44, 32, 82, 117, 115, 116, 33)
  * // As we know these bytes are valid, we can use `unwrap()`
@@ -115,6 +122,8 @@ public fun fromUtf8(v: List<UByte>): Result<String, Utf8Error> {
  * Incorrect bytes:
  *
  * ```kotlin
+ * import std.str
+ *
  * // Some invalid bytes in a mutable vector
  * var invalid = mutableListOf(128, 223)
  * check(String.fromUtf8Mut(invalid).isErr())
@@ -153,6 +162,8 @@ public fun fromUtf8Mut(v: MutableList<UByte>): Result<String, Utf8Error> {
  * Basic usage:
  *
  * ```kotlin
+ * import std.str
+ *
  * // some bytes, in a vector
  * val sparkleHeart = mutableListOf(240, 159, 146, 150)
  * val sparkleHeart1 = String.fromUtf8Unchecked(sparkleHeart)
@@ -162,7 +173,7 @@ public fun fromUtf8Mut(v: MutableList<UByte>): Result<String, Utf8Error> {
 public fun fromUtf8Unchecked(v: List<UByte>): String {
     // SAFETY: the caller must guarantee that the bytes `v` are valid UTF-8.
     // Also relies on `String` and `[UByte]` having the same layout.
-    return mem.transmute(v)
+    return transmute(v)
 }
 
 /**
@@ -180,6 +191,8 @@ public fun fromUtf8Unchecked(v: List<UByte>): String {
  * Basic usage:
  *
  * ```kotlin
+ * import std.str
+ *
  * var heart = mutableListOf(240, 159, 146, 150)
  * val heart1 = String.fromUtf8UncheckedMut(heart)
  * check("💖" == heart1)
@@ -209,7 +222,7 @@ public fun fromUtf8UncheckedMut(v: MutableList<UByte>): String {
  */
 public fun fromRawParts(ptr: ConstPtr, len: Int): String {
     // SAFETY: the caller must uphold the safety contract for `fromRawParts`.
-    return (ObjectSlotLayout<T>()).readNative((ptr.fromRawParts(ptr, len)).rawAddress)
+    return (ObjectSlotLayout<T>()).readNative((io.github.kotlinmania.rustlang.core.ptr.metadata.fromRawParts(ptr, len)).rawAddress)
 }
 
 /**
@@ -228,5 +241,5 @@ public fun fromRawParts(ptr: ConstPtr, len: Int): String {
  */
 public fun fromRawPartsMut(ptr: MutPtr, len: Int): String {
     // SAFETY: the caller must uphold the safety contract for `fromRawPartsMut`.
-    return RustMutableReference(MutPtr((ptr.fromRawPartsMut(ptr, len)).rawAddress), ObjectSlotLayout<T>())
+    return RustMutableReference(MutPtr((io.github.kotlinmania.rustlang.core.ptr.metadata.fromRawPartsMut(ptr, len)).rawAddress), ObjectSlotLayout<T>())
 }

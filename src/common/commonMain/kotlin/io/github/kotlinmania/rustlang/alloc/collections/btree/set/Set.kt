@@ -121,7 +121,7 @@ public class DebugTuple(
 public open class BTreeSet<T, A : AllocatorClone>(
     public var map: MutableMap<T, SetValZST>,
 ) : Sub<BTreeSet<T, A>, Any?, BTreeSet<T, A>>, BitXor<BTreeSet<T, A>, Any?, BTreeSet<T, A>>, BitAnd<BTreeSet<T, A>, Any?, BTreeSet<T, A>>, BitOr<BTreeSet<T, A>, Any?, BTreeSet<T, A>>, Iterable<T> {
-    override fun iterator(): kotlin.collections.Iterator<T> = this.intoIter().iterator()
+    override fun iterator(): Iterator<T> = this.intoIter().iterator()
 
     public override fun hashCode(): Int {
         var state = 0
@@ -615,7 +615,7 @@ public open class BTreeSet<T, A : AllocatorClone>(
      *     var set: MutableSet<String> = listOf("cat", "dog", "horse").iter().map({ pet -> pet.toOwned() }).toMutableSet()
      *     check(set.size == 3)
      *     for (pet in listOf("cat", "dog", "fish")) {
-     *         val value = set.getOrInsertWith(pet, String.toOwned)
+     *         val value = set.getOrInsertWith(pet, { it.toOwned() })
      *         check(value == pet)
      *     }
      *     check(set.size == 4)
@@ -668,11 +668,11 @@ public open class BTreeSet<T, A : AllocatorClone>(
      */
     public open fun entry(value: T): Entry<T, A> =
         when (val matchVal = this.map.entry(value)) {
-            is map.Entry.Occupied -> {
+            is io.github.kotlinmania.rustlang.alloc.collections.btree.map.entry.Entry.Occupied -> {
                 val (entry) = matchVal
                 Entry.Occupied(OccupiedEntry(inner = entry))
             }
-            is map.Entry.Vacant -> {
+            is io.github.kotlinmania.rustlang.alloc.collections.btree.map.entry.Entry.Vacant -> {
                 val (entry1) = matchVal
                 Entry.Vacant(VacantEntry(inner = entry1))
             }
@@ -1033,7 +1033,7 @@ public open class BTreeSet<T, A : AllocatorClone>(
         this.insert(elem)
     }
 
-    public open fun <I : Iterable<T>> extend(iter: I) {
+    public open fun <I : Iterable<T>> extendT(iter: I) {
         this.extend(iter.iterator().cloned())
     }
 
@@ -1137,7 +1137,7 @@ public open class Iter<T> internal constructor(
     public var iter: Keys<T, SetValZST> = iterCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<T> = object : AbstractIterator<T>() {
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@Iter.next()) {
                 null -> done()
@@ -1201,7 +1201,7 @@ public open class IntoIter<T, A : AllocatorClone> internal constructor(
     public var iter: io.github.kotlinmania.rustlang.alloc.collections.btree.map.IntoIter<T, SetValZST, A> = iterCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<T> = object : AbstractIterator<T>() {
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@IntoIter.next()) {
                 null -> done()
@@ -1253,7 +1253,7 @@ public open class Range<T> internal constructor(
     public var iter: io.github.kotlinmania.rustlang.alloc.collections.btree.map.Range<T, SetValZST> = iterCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<T> = object : AbstractIterator<T>() {
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@Range.next()) {
                 null -> done()
@@ -1309,7 +1309,7 @@ public open class Difference<T, A : AllocatorClone> internal constructor(
     public var inner: DifferenceInner<T, A> = innerCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<T> = object : AbstractIterator<T>() {
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@Difference.next()) {
                 null -> done()
@@ -1520,7 +1520,7 @@ public open class SymmetricDifference<T> internal constructor(
             value = v
         }
 
-    override fun iterator(): kotlin.collections.Iterator<T> = object : AbstractIterator<T>() {
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@SymmetricDifference.next()) {
                 null -> done()
@@ -1577,7 +1577,7 @@ public open class Intersection<T, A : AllocatorClone> internal constructor(
     public var inner: IntersectionInner<T, A> = innerCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<T> = object : AbstractIterator<T>() {
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@Intersection.next()) {
                 null -> done()
@@ -1751,7 +1751,7 @@ public open class Union<T> internal constructor(
             value = v
         }
 
-    override fun iterator(): kotlin.collections.Iterator<T> = object : AbstractIterator<T>() {
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@Union.next()) {
                 null -> done()
@@ -1858,7 +1858,7 @@ public open class ExtractIf<T, R, F, A : AllocatorClone> internal constructor(
     public var inner: ExtractIfInner<T, SetValZST, R> = innerCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<T> = object : AbstractIterator<T>() {
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@ExtractIf.next()) {
                 null -> done()

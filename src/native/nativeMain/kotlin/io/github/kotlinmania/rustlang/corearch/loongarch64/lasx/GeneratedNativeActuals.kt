@@ -1,4 +1,4 @@
-@file:OptIn(kotlinx.cinterop.ExperimentalForeignApi::class, kotlin.ExperimentalUnsignedTypes::class)
+@file:OptIn(ExperimentalForeignApi::class, ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.corearch.loongarch64.lasx
 
@@ -10,6 +10,7 @@ import io.github.kotlinmania.rustlang.corearch.loongarch64.lsx.M128i
 import io.github.kotlinmania.rustlang.corearch.loongarch64.lsx.V2f64
 import io.github.kotlinmania.rustlang.corearch.loongarch64.lsx.V2i64
 import io.github.kotlinmania.rustlang.corearch.loongarch64.lsx.V4f32
+import kotlinx.cinterop.ExperimentalForeignApi
 
 public actual fun lasxXvsrarB(a: V32i8, b: V32i8): V32i8 =
     M256i()

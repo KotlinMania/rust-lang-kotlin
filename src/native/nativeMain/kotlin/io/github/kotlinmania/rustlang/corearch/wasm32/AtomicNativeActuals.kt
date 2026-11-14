@@ -1,4 +1,4 @@
-@file:OptIn(kotlinx.cinterop.ExperimentalForeignApi::class, kotlin.ExperimentalUnsignedTypes::class)
+@file:OptIn(ExperimentalForeignApi::class, ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.corearch.wasm32
 
@@ -7,6 +7,7 @@ import io.github.kotlinmania.rustlang.corearch.wasm32.cinterop.corearchWasm32Ato
 import io.github.kotlinmania.rustlang.corearch.wasm32.cinterop.corearchWasm32AtomicLlvmAtomicWaitI32
 import io.github.kotlinmania.rustlang.corearch.wasm32.cinterop.corearchWasm32AtomicLlvmAtomicWaitI64
 import kotlinx.cinterop.ByteVar
+import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.toCPointer
 
 public actual fun llvmAtomicWaitI32(ptr: MutPtr, exp: Int, timeout: Long): Int =

@@ -16,6 +16,8 @@ public open class CompletedTest(
     public var execTime: TestExecTime?,
     public var stdout: List<UByte>,
 ) {
+    public open fun clone(): CompletedTest = CompletedTest(id, desc, result, execTime, stdout)
+
     public companion object {
         public fun new(id: TestId, desc: TestDesc, result: TestResult, execTime: TestExecTime?, stdout: List<UByte>): CompletedTest = CompletedTest(id = id, desc = desc, result = result, execTime = execTime, stdout = stdout)
     }

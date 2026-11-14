@@ -2,17 +2,11 @@
 
 package io.github.kotlinmania.rustlang.procmacro
 
-import io.github.kotlinmania.rustcliteralescaper.MixedUnit
-import io.github.kotlinmania.rustcliteralescaper.unescapeByte
-import io.github.kotlinmania.rustcliteralescaper.unescapeByteStr
-import io.github.kotlinmania.rustcliteralescaper.unescapeCStr
-import io.github.kotlinmania.rustcliteralescaper.unescapeChar
-import io.github.kotlinmania.rustcliteralescaper.unescapeStr
-import io.github.kotlinmania.rustlang.alloc.ffi.CString
+import io.github.kotlinmania.rustlang.alloc.ffi.cstr.CString
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
-import io.github.kotlinmania.rustlang.core.ffi.CStr
+import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.num.rustFromStrRadixByte
 import io.github.kotlinmania.rustlang.core.num.rustFromStrRadixI128
@@ -35,9 +29,15 @@ import io.github.kotlinmania.rustlang.procmacro.diagnostic.Diagnostic
 import io.github.kotlinmania.rustlang.procmacro.diagnostic.Level
 import io.github.kotlinmania.rustlang.procmacro.escape.EscapeOptions
 import io.github.kotlinmania.rustlang.procmacro.escape.escapeBytes
+import io.github.kotlinmania.rustlang.rustcliteralescaper.MixedUnit
+import io.github.kotlinmania.rustlang.rustcliteralescaper.unescapeByte
+import io.github.kotlinmania.rustlang.rustcliteralescaper.unescapeByteStr
+import io.github.kotlinmania.rustlang.rustcliteralescaper.unescapeCStr
+import io.github.kotlinmania.rustlang.rustcliteralescaper.unescapeChar
+import io.github.kotlinmania.rustlang.rustcliteralescaper.unescapeStr
 import io.github.kotlinmania.rustlang.std.path.PathBuf
-import io.github.kotlinmania.rustcliteralescaper.EscapeError as EE
 import io.github.kotlinmania.rustlang.procmacro.bridge.Methods as BridgeMethods
+import io.github.kotlinmania.rustlang.rustcliteralescaper.EscapeError as EE
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -75,7 +75,7 @@ public open class EscapeError(
     }
 
     public companion object {
-        public fun from(value: io.github.kotlinmania.rustcliteralescaper.EscapeError): EscapeError {
+        public fun from(value: io.github.kotlinmania.rustlang.rustcliteralescaper.EscapeError): EscapeError {
             val kind =
                 when (value) {
                     EE.ZeroChars -> EscapeErrorKind.ZeroChars
@@ -124,6 +124,8 @@ public open class TokenStream(
         set(v) {
             value = v
         }
+
+    public open fun clone(): TokenStream = TokenStream(value)
 
     /**
      * Checks if this `TokenStream` is empty.
@@ -294,8 +296,8 @@ public open class ExpandError {
     }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<ExpandError> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<ExpandError> {
+        public fun typeLayout(): TypeLayout<ExpandError> =
+            object : TypeLayout<ExpandError> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): ExpandError =
@@ -401,6 +403,8 @@ public open class Span(
         set(v) {
             value = v
         }
+
+    public open fun clone(): Span = Span(value)
 
     /**
      * The `Span` for the tokens in the previous macro expansion from which
@@ -574,6 +578,8 @@ public open class Group internal constructor(
             value = v
         }
 
+    public open fun clone(): Group = Group(value)
+
     /**
      * Returns the delimiter of this `Group`
      */
@@ -679,6 +685,8 @@ public open class Punct internal constructor(
             value = v
         }
 
+    public open fun clone(): Punct = Punct(value)
+
     /**
      * Returns the value of this punctuation character as `char`.
      */
@@ -761,6 +769,8 @@ public open class Ident internal constructor(
         set(v) {
             value = v
         }
+
+    public open fun clone(): Ident = Ident(value)
 
     /**
      * Returns the span of this `Ident`, encompassing the entire string returned
@@ -855,6 +865,8 @@ public open class Literal internal constructor(
         set(v) {
             value = v
         }
+
+    public open fun clone(): Literal = Literal(value)
 
     /**
      * Returns the span encompassing this literal.
@@ -1230,7 +1242,7 @@ public open class Literal internal constructor(
             when (suffix) {
                 "" -> {
                     val number = stripUnderscores(symbol)
-                    FromStr(number).mapErr({ ConversionErrorKind.InvalidLiteralKind })
+                    F16.fromStr(number).mapErr({ ConversionErrorKind.InvalidLiteralKind })
                 }
                 else -> Result.Err(ConversionErrorKind.InvalidLiteralKind)
             }

@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.core.fmt.builders
 import io.github.kotlinmania.rustlang.core.cell.Cell
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.andThen
 
@@ -39,23 +40,23 @@ public open class PadAdapterState(
     public var onNewline: Boolean,
 ) {
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<PadAdapterState> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<PadAdapterState> {
+        public fun typeLayout(): TypeLayout<PadAdapterState> =
+            object : TypeLayout<PadAdapterState> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 1L
                 override fun readNative(addr: Long): PadAdapterState =
                     PadAdapterState(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr),
+                        (PrimitiveLayouts.BOOL).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: PadAdapterState) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr, value.onNewline)
+                    (PrimitiveLayouts.BOOL).writeNative(addr, value.onNewline)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): PadAdapterState =
                     PadAdapterState(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: PadAdapterState) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset, value.onNewline)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset, value.onNewline)
                 }
             }
 
@@ -104,6 +105,8 @@ public open class DebugOnce<F>(
  * # Examples
  *
  * ```kotlin
+ * import std.fmt
+ *
  * open class Foo(public var bar: Int, public var baz: String) {
  *     public open fun fmt(fmt: StringBuilder) {
  *         DebugStruct(fmt, "Foo").field("bar", this.bar).field("baz", this.baz).finish()
@@ -123,6 +126,8 @@ public open class DebugStruct(
      * # Examples
      *
      * ```kotlin
+     * import std.fmt
+     *
      * open class Bar(public var bar: Int, public var another: String) {
      *     public open fun fmt(fmt: StringBuilder) {
      *         DebugStruct(fmt, "Bar").field("bar", this.bar).field("another", this.another).field("nonexistentField", 1).finish()
@@ -171,6 +176,8 @@ public open class DebugStruct(
      * # Examples
      *
      * ```kotlin
+     * import std.fmt
+     *
      * open class Bar(public var bar: Int, public var another: String) {
      *     public open fun fmt(fmt: StringBuilder) {
      *         DebugStruct(fmt, "Bar").fieldWith("bar", { fmt1 -> fmt1.append("${this.bar}") }).field("another", this.another).finish()
@@ -188,6 +195,8 @@ public open class DebugStruct(
      * # Examples
      *
      * ```kotlin
+     * import std.fmt
+     *
      * open class Bar(public var bar: Int, public var hidden: Float) {
      *     public open fun fmt(fmt: StringBuilder) {
      *         DebugStruct(fmt, "Bar").field("bar", this.bar).finishNonExhaustive()
@@ -222,6 +231,8 @@ public open class DebugStruct(
      * # Examples
      *
      * ```kotlin
+     * import std.fmt
+     *
      * open class Bar(public var bar: Int, public var baz: String) {
      *     public open fun fmt(fmt: StringBuilder) {
      *         DebugStruct(fmt, "Bar").field("bar", this.bar).field("baz", this.baz).finish()
@@ -248,7 +259,7 @@ public open class DebugStruct(
     public open fun isPretty(): Boolean = this.fmt.alternate()
 }
 
-internal fun debugStructNew(fmt: StringBuilder, name: String): DebugStruct {
+public fun debugStructNew(fmt: StringBuilder, name: String): DebugStruct {
     val result = fmt.append(name)
     return DebugStruct(fmt = fmt, result = result, hasFields = false)
 }
@@ -264,6 +275,8 @@ internal fun debugStructNew(fmt: StringBuilder, name: String): DebugStruct {
  * # Examples
  *
  * ```kotlin
+ * import std.fmt
+ *
  * public class DebugTuple(
  *     private val out: StringBuilder,
  *     private val name: String,
@@ -308,6 +321,8 @@ public open class DebugTuple(
      * # Examples
      *
      * ```kotlin
+     * import std.fmt
+     *
      * public class DebugTuple(
      *     private val out: StringBuilder,
      *     private val name: String,
@@ -376,6 +391,8 @@ public open class DebugTuple(
      * # Examples
      *
      * ```kotlin
+     * import std.fmt
+     *
      * public class DebugTuple(
      *     private val out: StringBuilder,
      *     private val name: String,
@@ -417,6 +434,8 @@ public open class DebugTuple(
      * # Examples
      *
      * ```kotlin
+     * import std.fmt
+     *
      * public class DebugTuple(
      *     private val out: StringBuilder,
      *     private val name: String,
@@ -475,6 +494,8 @@ public open class DebugTuple(
      * # Examples
      *
      * ```kotlin
+     * import std.fmt
+     *
      * public class DebugTuple(
      *     private val out: StringBuilder,
      *     private val name: String,
@@ -524,7 +545,7 @@ public open class DebugTuple(
     public open fun isPretty(): Boolean = this.fmt.alternate()
 }
 
-internal fun debugTupleNew(fmt: StringBuilder, name: String): DebugTuple {
+public fun debugTupleNew(fmt: StringBuilder, name: String): DebugTuple {
     val result = fmt.append(name)
     return DebugTuple(fmt = fmt, result = result, fields = 0, emptyName = name.isEmpty())
 }
@@ -576,6 +597,8 @@ public open class DebugInner(
  * # Examples
  *
  * ```kotlin
+ * import std.fmt
+ *
  * open class Foo(public var value: List<Int>) {
  *     public var field0: List<Int>
  *         get() = value
@@ -599,6 +622,8 @@ public open class DebugSet(
      * # Examples
      *
      * ```kotlin
+     * import std.fmt
+     *
      * open class Foo(public var field0: List<Int>, public var field1: List<UInt>) {
      *     public open fun fmt(fmt: StringBuilder) {
      *         object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { fmt.append(entries.joinToString(", ", "{", "}")) } }.entry(this.field0).entry(this.field1).finish()
@@ -621,6 +646,8 @@ public open class DebugSet(
      * # Examples
      *
      * ```kotlin
+     * import std.fmt
+     *
      * open class Foo(public var field0: List<Int>, public var field1: List<UInt>) {
      *     public open fun fmt(fmt: StringBuilder) {
      *         object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { fmt.append(entries.joinToString(", ", "{", "}")) } }.entry(this.field0).entryWith({ fmt1 -> object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { fmt1.append(entries.joinToString(", ", "{", "}")) } }.entries(this.field1).finish() }).finish()
@@ -640,6 +667,8 @@ public open class DebugSet(
      * # Examples
      *
      * ```kotlin
+     * import std.fmt
+     *
      * open class Foo(public var field0: List<Int>, public var field1: List<UInt>) {
      *     public open fun fmt(fmt: StringBuilder) {
      *         object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { fmt.append(entries.joinToString(", ", "{", "}")) } }.entries(this.field0.iter()).entries(this.field1.iter()).finish()
@@ -662,6 +691,8 @@ public open class DebugSet(
      * # Examples
      *
      * ```kotlin
+     * import std.fmt
+     *
      * open class Foo(public var value: List<Int>) {
      *     public var field0: List<Int>
      *         get() = value
@@ -708,6 +739,8 @@ public open class DebugSet(
      * # Examples
      *
      * ```kotlin
+     * import std.fmt
+     *
      * open class Foo(public var value: List<Int>) {
      *     public var field0: List<Int>
      *         get() = value
@@ -729,7 +762,7 @@ public open class DebugSet(
     }
 }
 
-internal fun debugSetNew(fmt: StringBuilder): DebugSet {
+public fun debugSetNew(fmt: StringBuilder): DebugSet {
     val result = fmt.append("{")
     return DebugSet(inner = DebugInner(fmt = fmt, result = result, hasFields = false))
 }
@@ -745,6 +778,8 @@ internal fun debugSetNew(fmt: StringBuilder): DebugSet {
  * # Examples
  *
  * ```kotlin
+ * import std.fmt
+ *
  * open class Foo(public var value: List<Int>) {
  *     public var field0: List<Int>
  *         get() = value
@@ -768,6 +803,8 @@ public open class DebugList(
      * # Examples
      *
      * ```kotlin
+     * import std.fmt
+     *
      * open class Foo(public var field0: List<Int>, public var field1: List<UInt>) {
      *     public open fun fmt(fmt: StringBuilder) {
      *         object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { fmt.append(entries.joinToString(", ", "[", "]")) } }.entry(this.field0).entry(this.field1).finish()
@@ -790,6 +827,8 @@ public open class DebugList(
      * # Examples
      *
      * ```kotlin
+     * import std.fmt
+     *
      * open class Foo(public var field0: List<Int>, public var field1: List<UInt>) {
      *     public open fun fmt(fmt: StringBuilder) {
      *         object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { fmt.append(entries.joinToString(", ", "[", "]")) } }.entry(this.field0).entryWith({ fmt1 -> object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { fmt1.append(entries.joinToString(", ", "{", "}")) } }.entries(this.field1).finish() }).finish()
@@ -809,6 +848,8 @@ public open class DebugList(
      * # Examples
      *
      * ```kotlin
+     * import std.fmt
+     *
      * open class Foo(public var field0: List<Int>, public var field1: List<UInt>) {
      *     public open fun fmt(fmt: StringBuilder) {
      *         object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { fmt.append(entries.joinToString(", ", "[", "]")) } }.entries(this.field0.iter()).entries(this.field1.iter()).finish()
@@ -831,6 +872,8 @@ public open class DebugList(
      * # Examples
      *
      * ```kotlin
+     * import std.fmt
+     *
      * open class Foo(public var value: List<Int>) {
      *     public var field0: List<Int>
      *         get() = value
@@ -876,6 +919,8 @@ public open class DebugList(
      * # Examples
      *
      * ```kotlin
+     * import std.fmt
+     *
      * open class Foo(public var value: List<Int>) {
      *     public var field0: List<Int>
      *         get() = value
@@ -897,7 +942,7 @@ public open class DebugList(
     }
 }
 
-internal fun debugListNew(fmt: StringBuilder): DebugList {
+public fun debugListNew(fmt: StringBuilder): DebugList {
     val result = fmt.append("[")
     return DebugList(inner = DebugInner(fmt = fmt, result = result, hasFields = false))
 }
@@ -913,6 +958,8 @@ internal fun debugListNew(fmt: StringBuilder): DebugList {
  * # Examples
  *
  * ```kotlin
+ * import std.fmt
+ *
  * open class Foo(public var value: List<Pair<String, Int>>) {
  *     public var field0: List<Pair<String, Int>>
  *         get() = value
@@ -941,6 +988,8 @@ public open class DebugMap(
      * # Examples
      *
      * ```kotlin
+     * import std.fmt
+     *
      * open class Foo(public var value: List<Pair<String, Int>>) {
      *     public var field0: List<Pair<String, Int>>
      *         get() = value
@@ -973,6 +1022,8 @@ public open class DebugMap(
      * # Examples
      *
      * ```kotlin
+     * import std.fmt
+     *
      * open class Foo(public var value: List<Pair<String, Int>>) {
      *     public var field0: List<Pair<String, Int>>
      *         get() = value
@@ -1027,6 +1078,8 @@ public open class DebugMap(
      * # Examples
      *
      * ```kotlin
+     * import std.fmt
+     *
      * open class Foo(public var value: List<Pair<String, Int>>) {
      *     public var field0: List<Pair<String, Int>>
      *         get() = value
@@ -1066,6 +1119,8 @@ public open class DebugMap(
      * # Examples
      *
      * ```kotlin
+     * import std.fmt
+     *
      * open class Foo(public var value: List<Pair<String, Int>>) {
      *     public var field0: List<Pair<String, Int>>
      *         get() = value
@@ -1113,6 +1168,8 @@ public open class DebugMap(
      * # Examples
      *
      * ```kotlin
+     * import std.fmt
+     *
      * open class Foo(public var value: List<Pair<String, Int>>) {
      *     public var field0: List<Pair<String, Int>>
      *         get() = value
@@ -1142,6 +1199,8 @@ public open class DebugMap(
      * # Examples
      *
      * ```kotlin
+     * import std.fmt
+     *
      * open class Foo(public var value: List<Pair<String, Int>>) {
      *     public var field0: List<Pair<String, Int>>
      *         get() = value
@@ -1170,6 +1229,8 @@ public open class DebugMap(
      * # Examples
      *
      * ```kotlin
+     * import std.fmt
+     *
      * open class Foo(public var value: List<Pair<String, Int>>) {
      *     public var field0: List<Pair<String, Int>>
      *         get() = value
@@ -1223,6 +1284,8 @@ public open class DebugMap(
      * # Examples
      *
      * ```kotlin
+     * import std.fmt
+     *
      * open class Foo(public var value: List<Pair<String, Int>>) {
      *     public var field0: List<Pair<String, Int>>
      *         get() = value
@@ -1249,7 +1312,7 @@ public open class DebugMap(
     public open fun isPretty(): Boolean = this.fmt.alternate()
 }
 
-internal fun debugMapNew(fmt: StringBuilder): DebugMap {
+public fun debugMapNew(fmt: StringBuilder): DebugMap {
     val result = fmt.append("{")
     return DebugMap(fmt = fmt, result = result, hasFields = false, hasKey = false, state = Default.default())
 }
@@ -1261,6 +1324,8 @@ internal fun debugMapNew(fmt: StringBuilder): DebugMap {
  * # Examples
  *
  * ```kotlin
+ * import std.fmt
+ *
  * val value = 'a'
  * check("$value" == "a")
  * check("$value" == "'a'")
@@ -1290,10 +1355,10 @@ public open class FromFn<F>(
     public open fun fmtDisplay(f: StringBuilder): Result<Unit, Unit> = (this.value)(f)
 
     public companion object {
-        public fun <F> typeLayout(typeLayoutF: io.github.kotlinmania.rustlang.core.mem.TypeLayout<F>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<FromFn<F>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<FromFn<F>> {
+        public fun <F> typeLayout(typeLayoutF: TypeLayout<F>): TypeLayout<FromFn<F>> =
+            object : TypeLayout<FromFn<F>> {
                 override val alignBytes: Long = listOf(1L, typeLayoutF.alignBytes).max()
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(typeLayoutF.sizeBytes, alignBytes)
+                override val sizeBytes: Long = alignUpBytes(typeLayoutF.sizeBytes, alignBytes)
                 override fun readNative(addr: Long): FromFn<F> =
                     FromFn(
                         (typeLayoutF).readNative(addr),

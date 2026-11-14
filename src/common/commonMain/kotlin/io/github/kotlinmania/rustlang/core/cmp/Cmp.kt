@@ -18,7 +18,10 @@ import io.github.kotlinmania.rustlang.core.intrinsics.threeWayCompare
 import io.github.kotlinmania.rustlang.core.marker.Tuple
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
+import io.github.kotlinmania.rustlang.core.ops.ControlFlow.Break
+import io.github.kotlinmania.rustlang.core.ops.ControlFlow.Continue
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.panic.constAssert
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -609,7 +612,7 @@ public open class Reverse<T>(
  *
  * Used to implement `Iterator.minByKey` as `map`+`min`, for example.
  */
-internal open class KeyAndValue<K, V>(
+public open class KeyAndValue<K, V>(
     public var key: K,
     public var value: V,
 ) : PartialEq<KeyAndValue<K, V>>, Eq, PartialOrd<KeyAndValue<K, V>>, Ord<KeyAndValue<K, V>> {
@@ -632,11 +635,11 @@ internal open class KeyAndValue<K, V>(
     public override fun cmp(other: KeyAndValue<K, V>): Ordering = this.key.cmp(other.key)
 
     public companion object {
-        public fun <K, V> typeLayout(typeLayoutK: io.github.kotlinmania.rustlang.core.mem.TypeLayout<K>, typeLayoutV: io.github.kotlinmania.rustlang.core.mem.TypeLayout<V>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<KeyAndValue<K, V>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<KeyAndValue<K, V>> {
+        public fun <K, V> typeLayout(typeLayoutK: TypeLayout<K>, typeLayoutV: TypeLayout<V>): TypeLayout<KeyAndValue<K, V>> =
+            object : TypeLayout<KeyAndValue<K, V>> {
                 override val alignBytes: Long = listOf(1L, typeLayoutK.alignBytes, typeLayoutV.alignBytes).max()
-                private val off1: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(typeLayoutK.sizeBytes, typeLayoutV.alignBytes)
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes((off1 + typeLayoutV.sizeBytes), alignBytes)
+                private val off1: Long = alignUpBytes(typeLayoutK.sizeBytes, typeLayoutV.alignBytes)
+                override val sizeBytes: Long = alignUpBytes((off1 + typeLayoutV.sizeBytes), alignBytes)
                 override fun readNative(addr: Long): KeyAndValue<K, V> =
                     KeyAndValue(
                         (typeLayoutK).readNative(addr),
@@ -1237,7 +1240,7 @@ public interface PartialOrd<Rhs> : PartialEq<Rhs> {
      * check(2.0 < 1.0 == false)
      * ```
      */
-    public fun lt(other: Rhs): Boolean = this.partialCmp(other).isSomeAnd(Ordering::isLt)
+    public fun lt(other: Rhs): Boolean = this.partialCmp(other).isSomeAnd({ it.isLt() })
 
     /**
      * Tests less than or equal to (for `self` and `other`) and is used by the
@@ -1251,7 +1254,7 @@ public interface PartialOrd<Rhs> : PartialEq<Rhs> {
      * check(2.0 <= 1.0 == false)
      * ```
      */
-    public fun le(other: Rhs): Boolean = this.partialCmp(other).isSomeAnd(Ordering::isLe)
+    public fun le(other: Rhs): Boolean = this.partialCmp(other).isSomeAnd({ it.isLe() })
 
     /**
      * Tests greater than (for `self` and `other`) and is used by the `>`
@@ -1265,7 +1268,7 @@ public interface PartialOrd<Rhs> : PartialEq<Rhs> {
      * check(2.0 > 1.0 == true)
      * ```
      */
-    public fun gt(other: Rhs): Boolean = this.partialCmp(other).isSomeAnd(Ordering::isGt)
+    public fun gt(other: Rhs): Boolean = this.partialCmp(other).isSomeAnd({ it.isGt() })
 
     /**
      * Tests greater than or equal to (for `self` and `other`) and is used by
@@ -1279,7 +1282,7 @@ public interface PartialOrd<Rhs> : PartialEq<Rhs> {
      * check(2.0 >= 1.0 == true)
      * ```
      */
-    public fun ge(other: Rhs): Boolean = this.partialCmp(other).isSomeAnd(Ordering::isGe)
+    public fun ge(other: Rhs): Boolean = this.partialCmp(other).isSomeAnd({ it.isGe() })
 
     /**
      * If `self == other`, returns `Continue(())`.
@@ -1292,12 +1295,12 @@ public interface PartialOrd<Rhs> : PartialEq<Rhs> {
      * check `==` and `<` separately to do rather than needing to calculate
      * (then optimize out) the three-way `Ordering` result.
      */
-    public fun chainingLess(other: Rhs): ControlFlow<Boolean> = defaultChainingImpl(this, other, Ordering::isLt)
+    public fun chainingLess(other: Rhs): ControlFlow<Boolean> = defaultChainingImpl(this, other, { it.isLt() })
 
     /**
      * Same as `__chaining_less`, but for `>`/`>=` instead of `<`/`<=`.
      */
-    public fun chainingGreater(other: Rhs): ControlFlow<Boolean> = defaultChainingImpl(this, other, Ordering::isGt)
+    public fun chainingGreater(other: Rhs): ControlFlow<Boolean> = defaultChainingImpl(this, other, { it.isGt() })
 }
 
 public fun <T, U> defaultChainingImpl(lhs: T, rhs: U, p: (Ordering) -> Boolean, partialCmpTFn: (T, Rhs) -> Ordering?): ControlFlow<Boolean> where T : PartialOrd<U> {
@@ -1327,6 +1330,8 @@ public fun <T, U> defaultChainingImpl(lhs: T, rhs: U, p: (Ordering) -> Boolean, 
  * # Examples
  *
  * ```kotlin
+ * import std.cmp
+ *
  * check(minOf(1, 2) == 1)
  * check(minOf(2, 2) == 2)
  * ```
@@ -1368,6 +1373,8 @@ public fun <T : Ord<T>> min(v1: T, v2: T): T = v1.min(v2)
  * # Examples
  *
  * ```kotlin
+ * import std.cmp
+ *
  * val absCmp = { x: Int, y: Int -> x.abs().cmp(y.abs()) }
  * val result = cmp.minBy(2, -1, absCmp)
  * check(result == -1)
@@ -1392,6 +1399,8 @@ public fun <T> minBy(v1: T, v2: T, compare: (T, T) -> Ordering): T =
  * # Examples
  *
  * ```kotlin
+ * import std.cmp
+ *
  * val result = cmp.minByKey(2, -1, { x: Int -> x.abs() })
  * check(result == -1)
  * val result1 = cmp.minByKey(2, -3, { x: Int -> x.abs() })
@@ -1417,6 +1426,8 @@ public fun <T, K> minByKey(v1: T, v2: T, f: (T) -> K): T where K : Ord<K> =
  * # Examples
  *
  * ```kotlin
+ * import std.cmp
+ *
  * check(cmp.max(1, 2) == 2)
  * check(cmp.max(2, 2) == 2)
  * ```
@@ -1458,6 +1469,8 @@ public fun <T : Ord<T>> max(v1: T, v2: T): T = v1.max(v2)
  * # Examples
  *
  * ```kotlin
+ * import std.cmp
+ *
  * val absCmp = { x: Int, y: Int -> x.abs().cmp(y.abs()) }
  * val result = cmp.maxBy(3, -2, absCmp)
  * check(result == 3)
@@ -1482,6 +1495,8 @@ public fun <T> maxBy(v1: T, v2: T, compare: (T, T) -> Ordering): T =
  * # Examples
  *
  * ```kotlin
+ * import std.cmp
+ *
  * val result = cmp.maxByKey(3, -2, { x: Int -> x.abs() })
  * check(result == 3)
  * val result1 = cmp.maxByKey(1, -2, { x: Int -> x.abs() })
@@ -1505,6 +1520,8 @@ public fun <T, K> maxByKey(v1: T, v2: T, f: (T) -> K): T where K : Ord<K> =
  * # Examples
  *
  * ```kotlin
+ * import std.cmp
+ *
  * @feature(cmpMinmax)
  * public fun doctestEntry() {
  *     check(cmp.minmax(1, 2) == listOf(1, 2))
@@ -1561,6 +1578,8 @@ public fun <T> minmax(v1: T, v2: T): List<T> where T : Ord<T> =
  * # Examples
  *
  * ```kotlin
+ * import std.cmp
+ *
  * @feature(cmpMinmax)
  * public fun doctestEntry() {
  *     val absCmp = { x: Int, y: Int -> x.abs().cmp(y.abs()) }
@@ -1589,6 +1608,8 @@ public fun <T> minmaxBy(v1: T, v2: T, compare: (T, T) -> Ordering): List<T> =
  * # Examples
  *
  * ```kotlin
+ * import std.cmp
+ *
  * @feature(cmpMinmax)
  * public fun doctestEntry() {
  *     check(cmp.minmaxByKey(-2, 1, { x: Int -> x.abs() }) == listOf(1, -2))
@@ -1627,6 +1648,8 @@ public interface HomogeneousTuple<T> : Tuple
  * # Examples
  *
  * ```kotlin
+ * import std.cmp
+ *
  * @feature(cmpSplat)
  * public fun doctestEntry() {
  *     check(cmp.smallest(1) == 1)
@@ -1719,6 +1742,8 @@ public fun <T> smallestArgsSmallestTTTTTTTTTTTT(v1: T, tupleArg1: List<Any?>): T
  * # Examples
  *
  * ```kotlin
+ * import std.cmp
+ *
  * @feature(cmpSplat)
  * public fun doctestEntry() {
  *     check(cmp.largest(1) == 1)

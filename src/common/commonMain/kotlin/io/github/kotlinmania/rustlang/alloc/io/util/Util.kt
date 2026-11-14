@@ -1,7 +1,8 @@
 // port-lint: source io/util.rs
 package io.github.kotlinmania.rustlang.alloc.io.util
 
-import io.github.kotlinmania.rustlang.alloc.collections.btree.node.B
+import io.github.kotlinmania.rustlang.alloc.io.Error
+import io.github.kotlinmania.rustlang.alloc.io.ErrorKind
 import io.github.kotlinmania.rustlang.alloc.io.bufread.BufRead
 import io.github.kotlinmania.rustlang.alloc.io.read.Read
 import io.github.kotlinmania.rustlang.alloc.string.String
@@ -18,6 +19,7 @@ import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 
 public fun Empty.read(buf: MutableList<UByte>): Result<Int> = Result.Ok(0)
 
@@ -33,14 +35,14 @@ public fun Empty.isReadVectored(): Boolean {
 
 public fun Empty.readExact(buf: MutableList<UByte>): Result<Unit> =
     if (!buf.isEmpty()) {
-        Result.Err(io.Error.READ_EXACT_EOF)
+        Result.Err(Error.READ_EXACT_EOF)
     } else {
         Result.Ok(Unit)
     }
 
 public fun Empty.readBufExact(cursor: BorrowedCursor<UByte>): Result<Unit> =
     if (cursor.capacity() != 0) {
-        Result.Err(io.Error.READ_EXACT_EOF)
+        Result.Err(Error.READ_EXACT_EOF)
     } else {
         Result.Ok(Unit)
     }
@@ -84,12 +86,12 @@ public fun Repeat.readBufExact(buf: BorrowedCursor<UByte>): Result<Unit> = this.
 /**
  * This function is not supported by `io.Repeat`, because there's no end of its data
  */
-public fun Repeat.readToEnd(arg0: List<UByte>): Result<Int> = Result.Err(io.Error.from(io.ErrorKind.OutOfMemory))
+public fun Repeat.readToEnd(arg0: List<UByte>): Result<Int> = Result.Err(Error.from(ErrorKind.OutOfMemory))
 
 /**
  * This function is not supported by `io.Repeat`, because there's no end of its data
  */
-public fun Repeat.readToString(arg0: String): Result<Int> = Result.Err(io.Error.from(io.ErrorKind.OutOfMemory))
+public fun Repeat.readToString(arg0: String): Result<Int> = Result.Err(Error.from(ErrorKind.OutOfMemory))
 
 public fun Repeat.readVectored(bufs: MutableList<IoSliceMut>): Result<Int> {
     var nwritten = 0
@@ -294,7 +296,7 @@ public fun <T : BufRead<T>> Take<T>.consume(amt: Int) {
 public open class Bytes<R>(
     public var inner: R,
 ) : Iterable<Result<UByte>> {
-    override fun iterator(): kotlin.collections.Iterator<Result<UByte>> = object : AbstractIterator<Result<UByte>>() {
+    override fun iterator(): Iterator<Result<UByte>> = object : AbstractIterator<Result<UByte>>() {
         override fun computeNext() {
             when (val v = this@Bytes.next()) {
                 null -> done()
@@ -310,10 +312,10 @@ public open class Bytes<R>(
     public open fun sizeHint(): Pair<Int, Int?> = SizeHint.sizeHint(this.inner)
 
     public companion object {
-        public fun <R> typeLayout(typeLayoutR: io.github.kotlinmania.rustlang.core.mem.TypeLayout<R>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Bytes<R>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Bytes<R>> {
+        public fun <R> typeLayout(typeLayoutR: TypeLayout<R>): TypeLayout<Bytes<R>> =
+            object : TypeLayout<Bytes<R>> {
                 override val alignBytes: Long = listOf(1L, typeLayoutR.alignBytes).max()
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(typeLayoutR.sizeBytes, alignBytes)
+                override val sizeBytes: Long = alignUpBytes(typeLayoutR.sizeBytes, alignBytes)
                 override fun readNative(addr: Long): Bytes<R> =
                     Bytes(
                         (typeLayoutR).readNative(addr),
@@ -350,7 +352,7 @@ public fun <R : Read<R>> inlinedSlowReadByte(reader: R): Result<UByte>? {
     val byte by localStorageL377C4
     while (true) {
         return run {
-            val matchVal = reader.read(slice.fromMut(RustMutableReference(localStorageL377C4.asMutPtr(), localStorageL377C4.layout)))
+            val matchVal = reader.read(RustMutableReference(localStorageL377C4.asMutPtr(), localStorageL377C4.layout))
             when {
                 matchVal is Result.Ok<*> && matchVal.value == 0 -> null
                 matchVal is Result.Ok<*> -> Result.Ok(byte)
@@ -369,9 +371,9 @@ public fun <R : Read<R>> inlinedSlowReadByte(reader: R): Result<UByte>? {
 
 // Used by `BufReader.specReadByte`, for which the `inline(never)` is
 // important.
-internal fun <R : Read<R>> uninlinedSlowReadByte(reader: R): Result<UByte>? = inlinedSlowReadByte(reader)
+public fun <R : Read<R>> uninlinedSlowReadByte(reader: R): Result<UByte>? = inlinedSlowReadByte(reader)
 
-internal fun <R> bytes(inner: R): Bytes<R> = Bytes(inner = inner)
+public fun <R> bytes(inner: R): Bytes<R> = Bytes(inner = inner)
 
 /**
  * An iterator over the contents of an instance of `BufRead` split on a
@@ -386,7 +388,7 @@ public open class Split<B>(
     public var buf: B,
     public var delim: UByte,
 ) : Iterable<Result<List<UByte>>> {
-    override fun iterator(): kotlin.collections.Iterator<Result<List<UByte>>> = object : AbstractIterator<Result<List<UByte>>>() {
+    override fun iterator(): Iterator<Result<List<UByte>>> = object : AbstractIterator<Result<List<UByte>>>() {
         override fun computeNext() {
             when (val v = this@Split.next()) {
                 null -> done()
@@ -416,34 +418,34 @@ public open class Split<B>(
     }
 
     public companion object {
-        public fun <B> typeLayout(typeLayoutB: io.github.kotlinmania.rustlang.core.mem.TypeLayout<B>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Split<B>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Split<B>> {
+        public fun <B> typeLayout(typeLayoutB: TypeLayout<B>): TypeLayout<Split<B>> =
+            object : TypeLayout<Split<B>> {
                 override val alignBytes: Long = listOf(1L, typeLayoutB.alignBytes).max()
-                private val off1: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(typeLayoutB.sizeBytes, 1L)
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes((off1 + 1L), alignBytes)
+                private val off1: Long = alignUpBytes(typeLayoutB.sizeBytes, 1L)
+                override val sizeBytes: Long = alignUpBytes((off1 + 1L), alignBytes)
                 override fun readNative(addr: Long): Split<B> =
                     Split(
                         (typeLayoutB).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U8).readNative(addr + off1),
+                        (PrimitiveLayouts.U8).readNative(addr + off1),
                     )
                 override fun writeNative(addr: Long, value: Split<B>) {
                     (typeLayoutB).writeNative(addr, value.buf)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U8).writeNative(addr + off1, value.delim)
+                    (PrimitiveLayouts.U8).writeNative(addr + off1, value.delim)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Split<B> =
                     Split(
                         (typeLayoutB).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U8).readBytes(buf, offset + off1.toInt()),
+                        (PrimitiveLayouts.U8).readBytes(buf, offset + off1.toInt()),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Split<B>) {
                     (typeLayoutB).writeBytes(buf, offset, value.buf)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U8).writeBytes(buf, offset + off1.toInt(), value.delim)
+                    (PrimitiveLayouts.U8).writeBytes(buf, offset + off1.toInt(), value.delim)
                 }
             }
     }
 }
 
-internal fun <B> split(buf: B, delim: UByte): Split<B> = Split(buf = buf, delim = delim)
+public fun <B> split(buf: B, delim: UByte): Split<B> = Split(buf = buf, delim = delim)
 
 /**
  * An iterator over the lines of an instance of [BufRead].
@@ -456,7 +458,7 @@ internal fun <B> split(buf: B, delim: UByte): Split<B> = Split(buf = buf, delim 
 public open class Lines<B>(
     public var buf: B,
 ) : Iterable<Result<String>> {
-    override fun iterator(): kotlin.collections.Iterator<Result<String>> = object : AbstractIterator<Result<String>>() {
+    override fun iterator(): Iterator<Result<String>> = object : AbstractIterator<Result<String>>() {
         override fun computeNext() {
             when (val v = this@Lines.next()) {
                 null -> done()
@@ -489,10 +491,10 @@ public open class Lines<B>(
     }
 
     public companion object {
-        public fun <B> typeLayout(typeLayoutB: io.github.kotlinmania.rustlang.core.mem.TypeLayout<B>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Lines<B>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Lines<B>> {
+        public fun <B> typeLayout(typeLayoutB: TypeLayout<B>): TypeLayout<Lines<B>> =
+            object : TypeLayout<Lines<B>> {
                 override val alignBytes: Long = listOf(1L, typeLayoutB.alignBytes).max()
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(typeLayoutB.sizeBytes, alignBytes)
+                override val sizeBytes: Long = alignUpBytes(typeLayoutB.sizeBytes, alignBytes)
                 override fun readNative(addr: Long): Lines<B> =
                     Lines(
                         (typeLayoutB).readNative(addr),
@@ -511,4 +513,4 @@ public open class Lines<B>(
     }
 }
 
-internal fun <B> lines(buf: B): Lines<B> = Lines(buf = buf)
+public fun <B> lines(buf: B): Lines<B> = Lines(buf = buf)

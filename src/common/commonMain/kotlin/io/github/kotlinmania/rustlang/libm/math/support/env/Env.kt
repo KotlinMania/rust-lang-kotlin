@@ -3,7 +3,7 @@ package io.github.kotlinmania.rustlang.libm.math.support.env
 
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.libm.math.ktan.T
+import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 
 // Support for rounding directions and status flags as specified by IEEE 754.
 //
@@ -26,11 +26,11 @@ public open class FpResult<T>(
     public var status: Status,
 ) {
     public companion object {
-        public fun <T> typeLayout(typeLayoutT: io.github.kotlinmania.rustlang.core.mem.TypeLayout<T>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<FpResult<T>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<FpResult<T>> {
+        public fun <T> typeLayout(typeLayoutT: TypeLayout<T>): TypeLayout<FpResult<T>> =
+            object : TypeLayout<FpResult<T>> {
                 override val alignBytes: Long = listOf(1L, typeLayoutT.alignBytes).max()
-                private val off1: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(typeLayoutT.sizeBytes, 1L)
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes((off1 + 1L), alignBytes)
+                private val off1: Long = alignUpBytes(typeLayoutT.sizeBytes, 1L)
+                override val sizeBytes: Long = alignUpBytes((off1 + 1L), alignBytes)
                 override fun readNative(addr: Long): FpResult<T> =
                     FpResult(
                         (typeLayoutT).readNative(addr),
@@ -100,6 +100,8 @@ public open class Status(
             value = v
         }
 
+    public open fun clone(): Status = Status(value)
+
     /**
      * True if `UNDERFLOW` is set.
      */
@@ -131,7 +133,7 @@ public open class Status(
         }
     }
 
-    internal open fun with(rhs: Status): Status = Status(this.value or rhs.value)
+    public open fun with(rhs: Status): Status = Status(this.value or rhs.value)
 
     public open fun fmt(f: StringBuilder) {
         // shift -> flag map
@@ -160,23 +162,23 @@ public open class Status(
     }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Status> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Status> {
+        public fun typeLayout(): TypeLayout<Status> =
+            object : TypeLayout<Status> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 1L
                 override fun readNative(addr: Long): Status =
                     Status(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U8).readNative(addr),
+                        (PrimitiveLayouts.U8).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: Status) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U8).writeNative(addr, value.value)
+                    (PrimitiveLayouts.U8).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Status =
                     Status(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U8).readBytes(buf, offset),
+                        (PrimitiveLayouts.U8).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Status) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U8).writeBytes(buf, offset, value.value)
+                    (PrimitiveLayouts.U8).writeBytes(buf, offset, value.value)
                 }
             }
 

@@ -1,96 +1,22 @@
 // port-lint: source sys/fs/unix.rs
 package io.github.kotlinmania.rustlang.std.sys.fs.unix
 
-import io.github.kotlinmania.libc.CInt
-import io.github.kotlinmania.libc.chmod
-import io.github.kotlinmania.libc.closedir
-import io.github.kotlinmania.libc.fchmod
-import io.github.kotlinmania.libc.fcntl
-import io.github.kotlinmania.libc.fdopendir
-import io.github.kotlinmania.libc.fuchsia.AT_EMPTY_PATH
-import io.github.kotlinmania.libc.fuchsia.AT_FDCWD
-import io.github.kotlinmania.libc.fuchsia.AT_REMOVEDIR
-import io.github.kotlinmania.libc.fuchsia.AT_SYMLINK_NOFOLLOW
-import io.github.kotlinmania.libc.fuchsia.DT_BLK
-import io.github.kotlinmania.libc.fuchsia.DT_CHR
-import io.github.kotlinmania.libc.fuchsia.DT_DIR
-import io.github.kotlinmania.libc.fuchsia.DT_FIFO
-import io.github.kotlinmania.libc.fuchsia.DT_LNK
-import io.github.kotlinmania.libc.fuchsia.DT_REG
-import io.github.kotlinmania.libc.fuchsia.DT_SOCK
-import io.github.kotlinmania.libc.fuchsia.EBADF
-import io.github.kotlinmania.libc.fuchsia.EEXIST
-import io.github.kotlinmania.libc.fuchsia.EINVAL
-import io.github.kotlinmania.libc.fuchsia.ELOOP
-import io.github.kotlinmania.libc.fuchsia.ENOENT
-import io.github.kotlinmania.libc.fuchsia.ENOSYS
-import io.github.kotlinmania.libc.fuchsia.ENOTDIR
-import io.github.kotlinmania.libc.fuchsia.F_GETFD
-import io.github.kotlinmania.libc.fuchsia.F_GETFL
-import io.github.kotlinmania.libc.fuchsia.ModeT
-import io.github.kotlinmania.libc.fuchsia.O_ACCMODE
-import io.github.kotlinmania.libc.fuchsia.O_APPEND
-import io.github.kotlinmania.libc.fuchsia.O_CLOEXEC
-import io.github.kotlinmania.libc.fuchsia.O_CREAT
-import io.github.kotlinmania.libc.fuchsia.O_DIRECTORY
-import io.github.kotlinmania.libc.fuchsia.O_EXCL
-import io.github.kotlinmania.libc.fuchsia.O_NOFOLLOW
-import io.github.kotlinmania.libc.fuchsia.O_RDONLY
-import io.github.kotlinmania.libc.fuchsia.O_RDWR
-import io.github.kotlinmania.libc.fuchsia.O_TRUNC
-import io.github.kotlinmania.libc.fuchsia.O_WRONLY
-import io.github.kotlinmania.libc.fuchsia.SEEK_CUR
-import io.github.kotlinmania.libc.fuchsia.SEEK_END
-import io.github.kotlinmania.libc.fuchsia.SEEK_SET
-import io.github.kotlinmania.libc.fuchsia.S_IFBLK
-import io.github.kotlinmania.libc.fuchsia.S_IFCHR
-import io.github.kotlinmania.libc.fuchsia.S_IFDIR
-import io.github.kotlinmania.libc.fuchsia.S_IFIFO
-import io.github.kotlinmania.libc.fuchsia.S_IFLNK
-import io.github.kotlinmania.libc.fuchsia.S_IFMT
-import io.github.kotlinmania.libc.fuchsia.S_IFREG
-import io.github.kotlinmania.libc.fuchsia.S_IFSOCK
-import io.github.kotlinmania.libc.fuchsia.S_IRGRP
-import io.github.kotlinmania.libc.fuchsia.S_IROTH
-import io.github.kotlinmania.libc.fuchsia.S_IRUSR
-import io.github.kotlinmania.libc.fuchsia.S_ISGID
-import io.github.kotlinmania.libc.fuchsia.S_ISUID
-import io.github.kotlinmania.libc.fuchsia.S_ISVTX
-import io.github.kotlinmania.libc.fuchsia.S_IWGRP
-import io.github.kotlinmania.libc.fuchsia.S_IWOTH
-import io.github.kotlinmania.libc.fuchsia.S_IWUSR
-import io.github.kotlinmania.libc.fuchsia.S_IXGRP
-import io.github.kotlinmania.libc.fuchsia.S_IXOTH
-import io.github.kotlinmania.libc.fuchsia.S_IXUSR
-import io.github.kotlinmania.libc.fuchsia.Timespec
-import io.github.kotlinmania.libc.fuchsia.UTIME_OMIT
-import io.github.kotlinmania.libc.openat
-import io.github.kotlinmania.libc.opendir
-import io.github.kotlinmania.libc.psp.free
-import io.github.kotlinmania.libc.realpath
-import io.github.kotlinmania.libc.timespec.default
-import io.github.kotlinmania.libc.unix.bsd.apple.ATTR_BIT_MAP_COUNT
-import io.github.kotlinmania.libc.unix.bsd.apple.ATTR_CMN_ACCTIME
-import io.github.kotlinmania.libc.unix.bsd.apple.ATTR_CMN_CRTIME
-import io.github.kotlinmania.libc.unix.bsd.apple.ATTR_CMN_MODTIME
-import io.github.kotlinmania.libc.unix.bsd.apple.Attrlist
-import io.github.kotlinmania.libc.unix.bsd.apple.F_FULLFSYNC
-import io.github.kotlinmania.libc.unix.bsd.netbsdlike.netbsd.dirfd
-import io.github.kotlinmania.libc.unix.hurd.AT_STATX_SYNC_AS_STAT
-import io.github.kotlinmania.libc.unix.hurd.STATX_BASIC_STATS
-import io.github.kotlinmania.libc.unix.hurd.STATX_BTIME
-import io.github.kotlinmania.libc.unlinkat
 import io.github.kotlinmania.rustlang.alloc.ffi.cstr.CString
-import io.github.kotlinmania.rustlang.core.ffi.CSizeT
-import io.github.kotlinmania.rustlang.core.ffi.CSsizeT
+import io.github.kotlinmania.rustlang.alloc.io.read.Read
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CSizeT
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CSsizeT
+import io.github.kotlinmania.rustlang.core.fmt.Write
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
+import io.github.kotlinmania.rustlang.core.io.error.Error
+import io.github.kotlinmania.rustlang.core.io.error.Result
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
 import io.github.kotlinmania.rustlang.core.io.seek.SeekFrom
-import io.github.kotlinmania.rustlang.core.io.write.Write
+import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
@@ -98,14 +24,115 @@ import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.result.andThen
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
+import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
+import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU8
+import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
+import io.github.kotlinmania.rustlang.libc.CInt
+import io.github.kotlinmania.rustlang.libc.chmod
+import io.github.kotlinmania.rustlang.libc.closedir
+import io.github.kotlinmania.rustlang.libc.dirfd
+import io.github.kotlinmania.rustlang.libc.fchmod
+import io.github.kotlinmania.rustlang.libc.fchmodat
+import io.github.kotlinmania.rustlang.libc.fcntl
+import io.github.kotlinmania.rustlang.libc.fdopendir
+import io.github.kotlinmania.rustlang.libc.free
+import io.github.kotlinmania.rustlang.libc.fsetattrlist
+import io.github.kotlinmania.rustlang.libc.openat
+import io.github.kotlinmania.rustlang.libc.opendir
+import io.github.kotlinmania.rustlang.libc.realpath
+import io.github.kotlinmania.rustlang.libc.setattrlist
+import io.github.kotlinmania.rustlang.libc.timespec.default
+import io.github.kotlinmania.rustlang.libc.unix.DT_BLK
+import io.github.kotlinmania.rustlang.libc.unix.DT_CHR
+import io.github.kotlinmania.rustlang.libc.unix.DT_DIR
+import io.github.kotlinmania.rustlang.libc.unix.DT_FIFO
+import io.github.kotlinmania.rustlang.libc.unix.DT_LNK
+import io.github.kotlinmania.rustlang.libc.unix.DT_REG
+import io.github.kotlinmania.rustlang.libc.unix.DT_SOCK
+import io.github.kotlinmania.rustlang.libc.unix.DT_UNKNOWN
+import io.github.kotlinmania.rustlang.libc.unix.S_ISGID
+import io.github.kotlinmania.rustlang.libc.unix.S_ISUID
+import io.github.kotlinmania.rustlang.libc.unix.S_ISVTX
+import io.github.kotlinmania.rustlang.libc.unix.Timespec
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.ATTR_BIT_MAP_COUNT
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.ATTR_CMN_ACCTIME
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.ATTR_CMN_CRTIME
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.ATTR_CMN_MODTIME
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.Attrlist
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.FSOPT_NOFOLLOW
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.F_FULLFSYNC
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.Flock
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.AT_EMPTY_PATH
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.AT_STATX_SYNC_AS_STAT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.LOCK_EX
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.LOCK_NB
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.LOCK_SH
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.LOCK_UN
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.STATX_BASIC_STATS
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.STATX_BTIME
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.Statx
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.StatxTimestamp
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.Ino64T
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.RENAME_NOREPLACE
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.Blkcnt64T
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.makedev
+import io.github.kotlinmania.rustlang.libc.unlinkat
+import io.github.kotlinmania.rustlang.libc.wasi.AT_FDCWD
+import io.github.kotlinmania.rustlang.libc.wasi.AT_REMOVEDIR
+import io.github.kotlinmania.rustlang.libc.wasi.AT_SYMLINK_NOFOLLOW
+import io.github.kotlinmania.rustlang.libc.wasi.EBADF
+import io.github.kotlinmania.rustlang.libc.wasi.EEXIST
+import io.github.kotlinmania.rustlang.libc.wasi.EFAULT
+import io.github.kotlinmania.rustlang.libc.wasi.EINVAL
+import io.github.kotlinmania.rustlang.libc.wasi.ELOOP
+import io.github.kotlinmania.rustlang.libc.wasi.ENOENT
+import io.github.kotlinmania.rustlang.libc.wasi.ENOSYS
+import io.github.kotlinmania.rustlang.libc.wasi.ENOTDIR
+import io.github.kotlinmania.rustlang.libc.wasi.F_GETFD
+import io.github.kotlinmania.rustlang.libc.wasi.F_GETFL
+import io.github.kotlinmania.rustlang.libc.wasi.ModeT
+import io.github.kotlinmania.rustlang.libc.wasi.O_ACCMODE
+import io.github.kotlinmania.rustlang.libc.wasi.O_APPEND
+import io.github.kotlinmania.rustlang.libc.wasi.O_CLOEXEC
+import io.github.kotlinmania.rustlang.libc.wasi.O_CREAT
+import io.github.kotlinmania.rustlang.libc.wasi.O_DIRECTORY
+import io.github.kotlinmania.rustlang.libc.wasi.O_EXCL
+import io.github.kotlinmania.rustlang.libc.wasi.O_NOFOLLOW
+import io.github.kotlinmania.rustlang.libc.wasi.O_RDONLY
+import io.github.kotlinmania.rustlang.libc.wasi.O_RDWR
+import io.github.kotlinmania.rustlang.libc.wasi.O_TRUNC
+import io.github.kotlinmania.rustlang.libc.wasi.O_WRONLY
+import io.github.kotlinmania.rustlang.libc.wasi.SEEK_CUR
+import io.github.kotlinmania.rustlang.libc.wasi.SEEK_END
+import io.github.kotlinmania.rustlang.libc.wasi.SEEK_SET
+import io.github.kotlinmania.rustlang.libc.wasi.S_IFBLK
+import io.github.kotlinmania.rustlang.libc.wasi.S_IFCHR
+import io.github.kotlinmania.rustlang.libc.wasi.S_IFDIR
+import io.github.kotlinmania.rustlang.libc.wasi.S_IFIFO
+import io.github.kotlinmania.rustlang.libc.wasi.S_IFLNK
+import io.github.kotlinmania.rustlang.libc.wasi.S_IFMT
+import io.github.kotlinmania.rustlang.libc.wasi.S_IFREG
+import io.github.kotlinmania.rustlang.libc.wasi.S_IFSOCK
+import io.github.kotlinmania.rustlang.libc.wasi.S_IRGRP
+import io.github.kotlinmania.rustlang.libc.wasi.S_IROTH
+import io.github.kotlinmania.rustlang.libc.wasi.S_IRUSR
+import io.github.kotlinmania.rustlang.libc.wasi.S_IWGRP
+import io.github.kotlinmania.rustlang.libc.wasi.S_IWOTH
+import io.github.kotlinmania.rustlang.libc.wasi.S_IWUSR
+import io.github.kotlinmania.rustlang.libc.wasi.S_IXGRP
+import io.github.kotlinmania.rustlang.libc.wasi.S_IXOTH
+import io.github.kotlinmania.rustlang.libc.wasi.S_IXUSR
+import io.github.kotlinmania.rustlang.libc.wasi.UTIME_OMIT
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
-import io.github.kotlinmania.rustlang.std.fmt
 import io.github.kotlinmania.rustlang.std.fs.Metadata
+import io.github.kotlinmania.rustlang.std.fs.Permissions
 import io.github.kotlinmania.rustlang.std.fs.TryLockError
-import io.github.kotlinmania.rustlang.std.mem
+import io.github.kotlinmania.rustlang.std.io.ErrorKind
+import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.os.fd.AsFd
 import io.github.kotlinmania.rustlang.std.os.fd.AsRawFd
 import io.github.kotlinmania.rustlang.std.os.fd.BorrowedFd
@@ -113,30 +140,38 @@ import io.github.kotlinmania.rustlang.std.os.fd.FromRawFd
 import io.github.kotlinmania.rustlang.std.os.fd.IntoRawFd
 import io.github.kotlinmania.rustlang.std.os.fd.OwnedFd
 import io.github.kotlinmania.rustlang.std.os.fd.RawFd
-import io.github.kotlinmania.rustlang.std.os.xous.ffi.definitions.Error
+import io.github.kotlinmania.rustlang.std.os.unix.ffi.asBytes
+import io.github.kotlinmania.rustlang.std.os.unix.ffi.fromBytes
+import io.github.kotlinmania.rustlang.std.os.unix.ffi.fromVec
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.path.PathBuf
 import io.github.kotlinmania.rustlang.std.process.abort
-import io.github.kotlinmania.rustlang.std.ptr
 import io.github.kotlinmania.rustlang.std.sys.AsInner
 import io.github.kotlinmania.rustlang.std.sys.AsInnerMut
 import io.github.kotlinmania.rustlang.std.sys.FromInner
 import io.github.kotlinmania.rustlang.std.sys.IntoInner
-import io.github.kotlinmania.rustlang.std.sys.fd.hermit.FileDesc
+import io.github.kotlinmania.rustlang.std.sys.fd.unix.FileDesc
+import io.github.kotlinmania.rustlang.std.sys.fs.common.Dir
 import io.github.kotlinmania.rustlang.std.sys.fs.common.NOT_FILE_ERROR
-import io.github.kotlinmania.rustlang.std.sys.fs.hermit.FileAttr
-import io.github.kotlinmania.rustlang.std.sys.fs.unix.dir.Dir
-import io.github.kotlinmania.rustlang.std.sys.fs.windows.getPath
 import io.github.kotlinmania.rustlang.std.sys.helpers.ignoreNotfound
 import io.github.kotlinmania.rustlang.std.sys.helpers.smallcstring.runPathWithCstr
-import io.github.kotlinmania.rustlang.std.sys.io.error.generic.errno
-import io.github.kotlinmania.rustlang.std.sys.pal.hermit.cvt
-import io.github.kotlinmania.rustlang.std.sys.pal.hermit.cvtR
-import io.github.kotlinmania.rustlang.std.sys.pal.unix.unsupported
-import io.github.kotlinmania.rustlang.std.sys.stdio.motor.panicOutput
-import io.github.kotlinmania.rustlang.std.sys.time.sgx.SystemTime
-import io.github.kotlinmania.rustlang.std.sys.time.sgx.UNIX_EPOCH
-import io.github.kotlinmania.rustlang.std.thread.Result
+import io.github.kotlinmania.rustlang.std.sys.io.Errno
+import io.github.kotlinmania.rustlang.std.sys.io.error.unix.setErrno
+import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
+import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvtR
+import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
+import io.github.kotlinmania.rustlang.std.sys.time.unix.SystemTime
+import io.github.kotlinmania.rustlang.std.sys.time.unix.UNIX_EPOCH
+import io.github.kotlinmania.rustlang.std.sys.weak.syscall
+import io.github.kotlinmania.rustlang.libc.fstat as fstat64
+import io.github.kotlinmania.rustlang.libc.ftruncate as ftruncate64
+import io.github.kotlinmania.rustlang.libc.lseek as lseek64
+import io.github.kotlinmania.rustlang.libc.lstat as lstat64
+import io.github.kotlinmania.rustlang.libc.open as open64
+import io.github.kotlinmania.rustlang.libc.readdir as readdir64
+import io.github.kotlinmania.rustlang.libc.wasi.Dirent as Dirent64
+import io.github.kotlinmania.rustlang.libc.wasi.OffT as Off64T
+import io.github.kotlinmania.rustlang.libc.wasi.Stat as Stat64
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -173,14 +208,14 @@ public expect fun close(fd: CInt): CInt
 
 public open class File(
     public var value: FileDesc,
-) : AsInner<FileDesc>, AsInnerMut<FileDesc>, IntoInner<FileDesc>, FromInner<FileDesc, File>, AsFd, AsRawFd, IntoRawFd, FromRawFd<File, Any?, Any> {
+) : AsInner<FileDesc>, AsInnerMut<FileDesc>, IntoInner<FileDesc>, FromInner<FileDesc, File>, AsFd, AsRawFd, IntoRawFd, FromRawFd<File> {
     public var field0: FileDesc
         get() = value
         set(v) {
             value = v
         }
 
-    public open fun fileAttr(): Result<FileAttr> {
+    public open fun fileAttr(): Result<FileAttr, Error> {
         val fd = this.asRawFd()
         when (val matchVal = tryStatx(fd, constPtrFromRustCast("".asPtr()), AT_EMPTY_PATH or AT_STATX_SYNC_AS_STAT, STATX_BASIC_STATS or STATX_BTIME)) {
             null -> {}
@@ -189,65 +224,98 @@ public open class File(
                 return ret
             }
         }
-        val stat: Stat64?  = null
+        val stat: Stat64  = MaybeUninit.zeroed(ObjectSlotLayout<Stat64>()).assumeInit()
         when (val tryResult = cvt(fstat64(fd, stat))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         return Result.Ok(FileAttr.fromStat64(stat))
     }
 
-    public open fun fsync(): Result<Unit> {
+    public open fun fsync(): Result<Unit, Error> {
         fun osFsync(fd: CInt): CInt = fcntl(fd, F_FULLFSYNC)
         when (val tryResult = cvtR({ osFsync(this.asRawFd()) })) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         return Result.Ok(Unit)
     }
 
-    public open fun datasync(): Result<Unit> {
+    public open fun datasync(): Result<Unit, Error> {
         fun osDatasync(fd: CInt): CInt = fcntl(fd, F_FULLFSYNC)
         when (val tryResult = cvtR({ osDatasync(this.asRawFd()) })) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         return Result.Ok(Unit)
     }
 
-    public open fun lock(): Result<Unit> = cfgSelect(any, targetOs, "freebsd", targetOs, "fuchsia", targetOs, "hurd", targetOs, "linux", targetOs, "netbsd", targetOs, "openbsd", targetOs, "cygwin", targetOs, "illumos", targetOs, "aix", targetOs, "haiku", targetOs, "android", targetOs, "redox", targetVendor, "apple", cvt, libc, flock, this, asRawFd, libc, LOCK_EX, Ok, Err, io, constError, io, ErrorKind, Unsupported, "lock() not supported")
-
-    public open fun lockShared(): Result<Unit> = cfgSelect(any, targetOs, "freebsd", targetOs, "fuchsia", targetOs, "hurd", targetOs, "linux", targetOs, "netbsd", targetOs, "openbsd", targetOs, "cygwin", targetOs, "illumos", targetOs, "aix", targetOs, "haiku", targetOs, "android", targetOs, "redox", targetVendor, "apple", cvt, libc, flock, this, asRawFd, libc, LOCK_SH, Ok, Err, io, constError, io, ErrorKind, Unsupported, "lock_shared() not supported")
-
-    public open fun tryLock(): Result<Unit, TryLockError> = cfgSelect(any, targetOs, "freebsd", targetOs, "fuchsia", targetOs, "hurd", targetOs, "linux", targetOs, "netbsd", targetOs, "openbsd", targetOs, "cygwin", targetOs, "illumos", targetOs, "aix", targetOs, "haiku", targetOs, "android", targetOs, "redox", targetVendor, "apple", result, cvt, libc, flock, this, asRawFd, libc, LOCK_EX, libc, LOCK_NB, Err, err, result, err, kind, io, ErrorKind, WouldBlock, Err, TryLockError, WouldBlock, Err, TryLockError, Error, err, Ok, Err, TryLockError, Error, io, constError, io, ErrorKind, Unsupported, "try_lock() not supported")
-
-    public open fun tryLockShared(): Result<Unit, TryLockError> = cfgSelect(any, targetOs, "freebsd", targetOs, "fuchsia", targetOs, "hurd", targetOs, "linux", targetOs, "netbsd", targetOs, "openbsd", targetOs, "cygwin", targetOs, "illumos", targetOs, "aix", targetOs, "haiku", targetOs, "android", targetOs, "redox", targetVendor, "apple", result, cvt, libc, flock, this, asRawFd, libc, LOCK_SH, libc, LOCK_NB, Err, err, result, err, kind, io, ErrorKind, WouldBlock, Err, TryLockError, WouldBlock, Err, TryLockError, Error, err, Ok, Err, TryLockError, Error, io, constError, io, ErrorKind, Unsupported, "try_lock_shared() not supported")
-
-    public open fun unlock(): Result<Unit> = cfgSelect(any, targetOs, "freebsd", targetOs, "fuchsia", targetOs, "hurd", targetOs, "linux", targetOs, "netbsd", targetOs, "openbsd", targetOs, "cygwin", targetOs, "illumos", targetOs, "aix", targetOs, "haiku", targetOs, "android", targetOs, "redox", targetVendor, "apple", cvt, libc, flock, this, asRawFd, libc, LOCK_UN, Ok, Err, io, constError, io, ErrorKind, Unsupported, "unlock() not supported")
-
-    public open fun truncate(size: ULong): Result<Unit> {
-        val size1: Off64T = when (val tryResult = size.tryInto().mapErr({ e -> io.Error.new(io.ErrorKind.InvalidInput, e) })) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-        return cvtR({ ftruncate64(this.asRawFd(), size1) }).map(drop)
+    public open fun lock(): Result<Unit, Error> {
+        when (val tryResult = cvt(Flock(this.asRawFd(), LOCK_EX))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        return Result.Ok(Unit)
     }
 
-    public open fun read(buf: MutableList<UByte>): Result<Int> = this.value.read(buf)
+    public open fun lockShared(): Result<Unit, Error> {
+        when (val tryResult = cvt(Flock(this.asRawFd(), LOCK_SH))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        return Result.Ok(Unit)
+    }
 
-    public open fun readVectored(bufs: MutableList<IoSliceMut>): Result<Int> = this.value.readVectored(bufs)
+    public open fun tryLock(): Result<Unit, TryLockError> {
+        val result = cvt(Flock(this.asRawFd(), LOCK_EX or LOCK_NB))
+        return if (result is Result.Err<*>) {
+            val err = (result as Result.Err<*>).error
+            if (err.kind() == ErrorKind.WouldBlock) {
+                Result.Err(TryLockError.WouldBlock)
+            } else {
+                Result.Err(TryLockError.Error(err))
+            }
+        } else {
+            Result.Ok(Unit)
+        }
+    }
+
+    public open fun tryLockShared(): Result<Unit, TryLockError> {
+        val result = cvt(Flock(this.asRawFd(), LOCK_SH or LOCK_NB))
+        return if (result is Result.Err<*>) {
+            val err = (result as Result.Err<*>).error
+            if (err.kind() == ErrorKind.WouldBlock) {
+                Result.Err(TryLockError.WouldBlock)
+            } else {
+                Result.Err(TryLockError.Error(err))
+            }
+        } else {
+            Result.Ok(Unit)
+        }
+    }
+
+    public open fun unlock(): Result<Unit, Error> {
+        when (val tryResult = cvt(Flock(this.asRawFd(), LOCK_UN))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        return Result.Ok(Unit)
+    }
+
+    public open fun truncate(size: ULong): Result<Unit, Error> {
+        val size1: Off64T = when (val tryResult = size.tryInto().mapErr({ e -> io.github.kotlinmania.rustlang.std.io.Error.new(ErrorKind.InvalidInput, e) })) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        return cvtR({ ftruncate64(this.asRawFd(), size1) }).map({ Unit })
+    }
+
+    public open fun read(buf: MutableList<UByte>): Result<Int, Error> = this.value.read(buf)
+
+    public open fun readVectored(bufs: MutableList<IoSliceMut>): Result<Int, Error> = this.value.readVectored(bufs)
 
     public open fun isReadVectored(): Boolean = this.value.isReadVectored()
 
-    public open fun readAt(buf: MutableList<UByte>, offset: ULong): Result<Int> = this.value.readAt(buf, offset)
+    public open fun readAt(buf: MutableList<UByte>, offset: ULong): Result<Int, Error> = this.value.readAt(buf, offset)
 
-    public open fun readBuf(cursor: BorrowedCursor<UByte>): Result<Unit> = this.value.readBuf(cursor)
+    public open fun readBuf(cursor: BorrowedCursor<UByte>): Result<Unit, Error> = this.value.readBuf(cursor)
 
-    public open fun readBufAt(cursor: BorrowedCursor<UByte>, offset: ULong): Result<Unit> = this.value.readBufAt(cursor, offset)
+    public open fun readBufAt(cursor: BorrowedCursor<UByte>, offset: ULong): Result<Unit, Error> = this.value.readBufAt(cursor, offset)
 
-    public open fun readVectoredAt(bufs: MutableList<IoSliceMut>, offset: ULong): Result<Int> = this.value.readVectoredAt(bufs, offset)
+    public open fun readVectoredAt(bufs: MutableList<IoSliceMut>, offset: ULong): Result<Int, Error> = this.value.readVectoredAt(bufs, offset)
 
-    public open fun write(buf: List<UByte>): Result<Int> = this.value.write(buf)
+    public open fun write(buf: List<UByte>): Result<Int, Error> = this.value.write(buf)
 
-    public open fun writeVectored(bufs: List<IoSlice>): Result<Int> = this.value.writeVectored(bufs)
+    public open fun writeVectored(bufs: List<IoSlice>): Result<Int, Error> = this.value.writeVectored(bufs)
 
     public open fun isWriteVectored(): Boolean = this.value.isWriteVectored()
 
-    public open fun writeAt(buf: List<UByte>, offset: ULong): Result<Int> = this.value.writeAt(buf, offset)
+    public open fun writeAt(buf: List<UByte>, offset: ULong): Result<Int, Error> = this.value.writeAt(buf, offset)
 
-    public open fun writeVectoredAt(bufs: List<IoSlice>, offset: ULong): Result<Int> = this.value.writeVectoredAt(bufs, offset)
+    public open fun writeVectoredAt(bufs: List<IoSlice>, offset: ULong): Result<Int, Error> = this.value.writeVectoredAt(bufs, offset)
 
-    public open fun flush(): Result<Unit> = Result.Ok(Unit)
+    public open fun flush(): Result<Unit, Error> = Result.Ok(Unit)
 
-    public open fun seek(pos: SeekFrom): Result<ULong> {
+    public open fun seek(pos: SeekFrom): Result<ULong, Error> {
         val (whence, pos1) =
             when (pos) {
                 // Casting to `Long` is fine, too large values will end up as
@@ -269,7 +337,7 @@ public open class File(
         return Result.Ok(n.toULong())
     }
 
-    public open fun size(): Result<ULong>? =
+    public open fun size(): Result<ULong, Error>? =
         run {
             val matchVal = this.fileAttr().map({ attr -> attr.size() })
             when {
@@ -283,16 +351,20 @@ public open class File(
             }
         }
 
-    public open fun tell(): Result<ULong> = this.seek(SeekFrom.Current(0))
+    public open fun tell(): Result<ULong, Error> = this.seek(SeekFrom.Current(0))
 
-    public open fun duplicate(): Result<File> = this.value.duplicate().map({ File(it) })
+    public open fun duplicate(): Result<File, Error> = this.value.duplicate().map({ File(it) })
 
-    public open fun setPermissions(perm: FilePermissions): Result<Unit> {
+    public open fun setPermissions(perm: FilePermissions): Result<Unit, Error> {
         when (val tryResult = cvtR({ fchmod(this.asRawFd(), perm.mode) })) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         return Result.Ok(Unit)
     }
 
-    public open fun setTimes(times: FileTimes): Result<Unit> = cfgSelect(any, targetOs, "redox", targetOs, "espidf", targetOs, "horizon", targetOs, "nuttx", targetOs, "l4re", times, Err, io, constError, io, ErrorKind, Unsupported, "setting file times not supported", targetVendor, "apple", ta, TimesAttrlist, fromTimes, times, cvt, libc, fsetattrlist, this, asRawFd, ta, attrlist, ta, timesBuf, ta, timesBufSize, 0, Ok, targetOs, "android", times, fileTimeToTimespec, times, accessed, fileTimeToTimespec, times, modified, cvt, weak, futimens, fd, cInt, times, libc, timespec, cInt, futimens, get, Some, futimens, futimens, this, asRawFd, times, asPtr, None, Err, io, constError, io, ErrorKind, Unsupported, "setting file times requires Android API level >= 19", Ok, cfg, all, targetOs, "linux", targetEnv, "gnu", targetPointerWidth, "32", not, targetArch, "riscv32", sys, pal, time, timespec64, sys, pal, weak, weak, weak, futimens64, fd, cInt, times, timespec64, cInt, Some, futimens64, futimens64, get, toTimespec, time, Option, SystemTime, time, map, time, time, t, toTimespec64, unwrapOr, timespec64, new, 0, libc, UTIME_OMIT, times, toTimespec, times, accessed, toTimespec, times, modified, cvt, futimens64, this, asRawFd, times, asPtr, Ok, times, fileTimeToTimespec, times, accessed, fileTimeToTimespec, times, modified, cvt, libc, futimens, this, asRawFd, times, asPtr, Ok)
+    public open fun setTimes(times: FileTimes): Result<Unit, Error> {
+        val ta = when (val tryResult = TimesAttrlist.fromTimes(times)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = cvt(fsetattrlist(this.asRawFd(), ta.attrlist(), ta.timesBuf(), ta.timesBufSize(), 0))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        return Result.Ok(Unit)
+    }
 
     public override fun asInner(): FileDesc = this.value
 
@@ -313,9 +385,9 @@ public open class File(
     }
 
     public companion object {
-        public fun open(path: Path, opts: OpenOptions): Result<File> = runPathWithCstr(path, { path1 -> File.openC(path1, opts) })
+        public fun open(path: Path, opts: OpenOptions): Result<File, Error> = runPathWithCstr(path, { path1 -> File.openC(path1, opts) })
 
-        public fun openC(path: CStr, opts: OpenOptions): Result<File> {
+        public fun openC(path: CStr, opts: OpenOptions): Result<File, Error> {
             val flags = O_CLOEXEC or when (val tryResult = opts.getAccessMode()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) } or when (val tryResult = opts.getCreationMode()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) } or (opts.customFlags and O_ACCMODE.inv())
             // The third argument of `open64` is documented to have type `modeT`. On
             // some platforms (like macOS, where `open64` is actually `open`), `modeT` is `UShort`.
@@ -331,6 +403,134 @@ public open class File(
     }
 }
 
+public open class FileAttr(
+    public var stat: Stat64,
+    public var statxExtraFields: StatxExtraFields?,
+) : AsInner<Stat64> {
+    public open fun clone(): FileAttr = FileAttr(stat, statxExtraFields)
+
+    public open fun size(): ULong = this.stat.stSize.toULong()
+
+    public open fun perm(): FilePermissions = FilePermissions(mode = (this.stat.stMode.toUInt()))
+
+    public open fun fileType(): FileType = FileType(mode = this.stat.stMode.toUInt())
+
+    public open fun modified(): Result<SystemTime, Error> {
+        when (val matchVal = this.stxMtime()) {
+            null -> {}
+            else -> {
+                val mtime = matchVal
+                return SystemTime.new(mtime.tvSec, mtime.tvNsec.toLong())
+            }
+        }
+        return SystemTime.new(this.stat.stMtime.toLong(), this.stat.stMtimeNsec.toLong())
+    }
+
+    public open fun accessed(): Result<SystemTime, Error> {
+        when (val matchVal = this.stxAtime()) {
+            null -> {}
+            else -> {
+                val atime = matchVal
+                return SystemTime.new(atime.tvSec, atime.tvNsec.toLong())
+            }
+        }
+        return SystemTime.new(this.stat.stAtime.toLong(), this.stat.stAtimeNsec.toLong())
+    }
+
+    public open fun created(): Result<SystemTime, Error> = SystemTime.new(this.stat.stBirthtime.toLong(), this.stat.stBirthtimeNsec.toLong())
+
+    public override fun asInner(): Stat64 = this.stat
+
+    public companion object {
+        public fun fromStat64(stat: Stat64): FileAttr = FileAttr(stat = stat, statxExtraFields = null)
+    }
+}
+
+public open class StatxExtraFields(
+    // This is needed to check if btime is supported by the filesystem.
+    public var stxMask: UInt,
+    public var stxBtime: StatxTimestamp,
+) {
+    public open fun clone(): StatxExtraFields = StatxExtraFields(stxMask, stxBtime)
+}
+
+// We prefer `statx` on Linux if available, which contains file creation time,
+// as well as 64-bit timestamps of all kinds.
+// Default `stat64` contains no creation time and may have 32-bit `timeT`.
+public fun tryStatx(fd: CInt, path: ConstPtr, flags: Int, mask: UInt): Result<FileAttr, Error>? {
+    // Linux kernel prior to 4.11 or glibc prior to glibc 2.28 don't support `statx`.
+    // We check for it on first failure and remember availability to avoid having to
+    // do it again.
+    sealed class StatxState(
+        public val value: UByte,
+    ) {
+        public data object Unknown : StatxState(0u)
+        public data object Present : StatxState((Unknown.value + 1u).toUByte())
+        public data object Unavailable : StatxState((Present.value + 1u).toUByte())
+    }
+    val STATX_SAVED_STATE: Atomic<UByte>  = AtomicU8.new(StatxState.Unknown.value.toUByte())
+    syscall(statx, fd, cInt, pathname, cChar, flags, cInt, mask, libc, cUint, statxbuf, libc, statx, cInt)
+    val statxAvailability = STATX_SAVED_STATE.load(Ordering.Relaxed)
+    if (statxAvailability == StatxState.Unavailable.value.toUByte()) {
+        return null
+    }
+    val localStorageL172C8 = AddressableLocal(Statx(), ObjectSlotLayout<Statx>())
+    val buf by localStorageL172C8
+    when (val matchVal = cvt(statx(fd, path, flags, mask, RustMutableReference(localStorageL172C8.asMutPtr(), localStorageL172C8.layout)))) {
+        is Err -> {
+            val err = matchVal.error
+            if (STATX_SAVED_STATE.load(Ordering.Relaxed) == StatxState.Present.value.toUByte()) {
+                return Result.Err(err)
+            }
+            // We're not yet entirely sure whether `statx` is usable on this kernel
+            // or not. Syscalls can return errors from things other than the kernel
+            // per se, e.g. `EPERM` can be returned if seccomp is used to block the
+            // syscall, or `ENOSYS` might be returned from a faulty FUSE driver.
+            //
+            // Availability is checked by performing a call which expects `EFAULT`
+            // if the syscall is usable.
+            //
+            // See: https://github.com/rust-lang/rust/issues/65662
+            //
+            // Note what about transient conditions like `ENOMEM`?
+            val err2 = cvt(statx(0, ConstPtr(0L), 0, STATX_BASIC_STATS or STATX_BTIME, MutPtr(0L))).err().andThen({ e -> e.rawOsError() })
+            if (err2 == EFAULT) {
+                STATX_SAVED_STATE.store(StatxState.Present.value.toUByte(), Ordering.Relaxed)
+                return Result.Err(err)
+            } else {
+                STATX_SAVED_STATE.store(StatxState.Unavailable.value.toUByte(), Ordering.Relaxed)
+                return null
+            }
+        }
+        else -> {}
+    }
+    if (statxAvailability == StatxState.Unknown.value.toUByte()) {
+        STATX_SAVED_STATE.store(StatxState.Present.value.toUByte(), Ordering.Relaxed)
+    }
+    // We cannot fill `stat64` exhaustively because of private padding fields.
+    var stat: Stat64 = MaybeUninit.zeroed(ObjectSlotLayout<Stat64>()).assumeInit()
+    // `cUlong` on gnu-mips, `devT` otherwise
+    stat.stDev = ((makedev(buf.stxDevMajor, buf.stxDevMinor) as Any?) as Result<FileAttr, Error>?)
+    stat.stIno = ((buf.stxIno as Any?) as Ino64T)
+    stat.stNlink = buf.stxNlink.toUInt()
+    stat.stMode = buf.stxMode.toUInt()
+    stat.stUid = buf.stxUid.toUInt()
+    stat.stGid = buf.stxGid.toUInt()
+    stat.stRdev = ((makedev(buf.stxRdevMajor, buf.stxRdevMinor) as Any?) as Result<FileAttr, Error>?)
+    stat.stSize = buf.stxSize.toLong()
+    stat.stBlksize = buf.stxBlksize.toULong()
+    stat.stBlocks = ((buf.stxBlocks as Any?) as Blkcnt64T)
+    stat.stAtime = buf.stxAtime.tvSec.toLong()
+    // `Long` on gnu-x8664-x32, `cUlong` otherwise.
+    stat.stAtimeNsec = ((buf.stxAtime.tvNsec as Any?) as Result<FileAttr, Error>?)
+    stat.stMtime = buf.stxMtime.tvSec.toLong()
+    stat.stMtimeNsec = ((buf.stxMtime.tvNsec as Any?) as Result<FileAttr, Error>?)
+    stat.stCtime = buf.stxCtime.tvSec.toLong()
+    stat.stCtimeNsec = ((buf.stxCtime.tvNsec as Any?) as Result<FileAttr, Error>?)
+    val extra = StatxExtraFields(stxMask = buf.stxMask, stxBtime = buf.stxBtime, stxAtime = buf.stxAtime, stxCtime = buf.stxCtime, stxMtime = buf.stxMtime)
+    return Result.Ok(FileAttr(stat = stat, statxExtraFields = extra))
+}
+
 // all DirEntry's will have a reference to this struct
 public open class InnerReadDir(
     public var dirp: DirStream,
@@ -340,8 +540,8 @@ public open class InnerReadDir(
 public open class ReadDir(
     public var inner: InnerReadDir,
     public var endOfStream: Boolean,
-) : Iterable<Result<DirEntry>> {
-    override fun iterator(): kotlin.collections.Iterator<Result<DirEntry>> = object : AbstractIterator<Result<DirEntry>>() {
+) : Iterable<Result<DirEntry, Error>> {
+    override fun iterator(): Iterator<Result<DirEntry, Error>> = object : AbstractIterator<Result<DirEntry, Error>>() {
         override fun computeNext() {
             when (val v = this@ReadDir.next()) {
                 null -> done()
@@ -350,10 +550,10 @@ public open class ReadDir(
         }
     }
 
-    public open fun dir(): Result<Dir> {
+    public open fun dir(): Result<Dir, Error> {
         val options = OpenOptions.new()
         options.read(true)
-        return cfgSelect(any, targetOs, "redox", targetOs, "espidf", targetOs, "horizon", targetOs, "vita", targetOs, "nto", targetOs, "qnx", targetOs, "vxworks", targetOs, "rtems", targetOs, "l4re", Dir, open, this, inner, root, options, fd, libc, dirfd, this, inner, dirp, 0, dirHandle, mem, ManuallyDrop, new, dir, Dir, OwnedFd, fromRawFd, fd, dirHandle, openDir, Path, new, ".", options)
+        return Dir.open(this.inner.root, options)
     }
 
     public open fun fmt(f: StringBuilder) {
@@ -362,27 +562,27 @@ public open class ReadDir(
         f.append((this.inner.root).toString())
     }
 
-    public open fun next(): Result<DirEntry>? {
+    public open fun next(): Result<DirEntry, Error>? {
         if (this.endOfStream) {
             return null
         }
-        return while (true) {
-            // POSIX.1-2024 formalized what was already guaranteed by a lot
-            // of implementations and required readdir() to be thread-safe as
-            // long as an individual DIR* is not accessed concurrently. Taking
-            // a mutable reference to the `ReadDir` iterator prevents that.
-            // Even POSIX.1-1994 specified that the data in the returned
-            // dirent
-            // > is not overwritten by another call to readdir() on a
-            // > different directory stream.
-            //
-            // and that guarantee together with the requirement that the
-            // underlying syscalls need to be thread-safe because of readdirR
-            // make it very unlikely for an implementation to be non-conforming.
-            // Nevertheless, there are still some platforms where we either
-            // cannot confirm `readdir` to be thread-safe or know that it
-            // isn't.
-            cfgSelect(any, targetOs, "espidf", targetOs, "lynxos178", targetOs, "qurt", targetOs, "rtems", targetOs, "vxworks", mem, MaybeUninit, entry, MaybeUninit, uninit, entryPtr, dirent64, ptr, nullMut, err, libc, readdirR, this, inner, dirp, 0, entry, asMutPtr, entryPtr, err, 0, entryPtr, isNull, this, endOfStream, true, Some, Err, Error, fromRawOsError, err, entryPtr, isNull, None, entryPtr, entryPtr, castConst, cfg, not, any, all, targetOs, "linux", not, targetEnv, "musl", targetOs, "hurd", targetOs, "l4re", libc, readdir, readdir64, cfg, any, all, targetOs, "linux", not, targetEnv, "musl", targetOs, "hurd", targetOs, "l4re", libc, readdir64, sys, io, errno, setErrno, setErrno, 0, entryPtr, dirent64, readdir64, this, inner, dirp, 0, entryPtr, isNull, this, endOfStream, true, errno, 0, None, e, Some, Err, Error, fromRawOsError, e)
+        while (true) {
+            setErrno(0)
+            val entryPtr: ConstPtr = readdir64(this.inner.dirp.value)
+            if (((entryPtr).rawAddress == 0L)) {
+                // We either encountered an error, or reached the end. Either way,
+                // the next call to next() should return None.
+                this.endOfStream = true
+                // To distinguish between errors and end-of-directory, we had to clear
+                // errno beforehand to check for an error now.
+                return when (val matchVal = Errno()) {
+                    0 -> null
+                    else -> {
+                        val e = matchVal
+                        Result.Err(Error.fromRawOsError(e))
+                    }
+                }
+            }
             // The dirent64 struct is a weird imaginary thing that isn't ever supposed
             // to be worked with by value. Its trailing dName field is declared
             // variously as [cChar; 256] or [cChar; 1] on different systems but
@@ -401,7 +601,7 @@ public open class ReadDir(
             // to be in bounds of the same allocation, only the offset of the field
             // being referenced.
             // dName is guaranteed to be null-terminated.
-            val name = CStr.fromPtr((addrOf(entryPtr.dName)).cast())
+            val name = CStr.fromPtr((addrOf((ObjectSlotLayout<Dirent64>()).readNative((entryPtr).rawAddress).dName)).cast())
             val nameBytes = name.toBytes()
             if (nameBytes == ".".encodeToByteArray() || nameBytes == "..".encodeToByteArray()) {
                 continue
@@ -409,7 +609,7 @@ public open class ReadDir(
             // When loading from a field, we can skip the `raw const`; `(* entryPtr).dIno` as
             // a value expression will do the right thing: `byteOffset` to the field and then
             // only access those bytes.
-            val entry = Dirent64Min(dIno = entryPtr.dFileno, dType = entryPtr.dType.toUByte())
+            val entry = Dirent64Min(dIno = (ObjectSlotLayout<Dirent64>()).readNative((entryPtr).rawAddress).dFileno, dType = ((ObjectSlotLayout<Dirent64>()).readNative((entryPtr).rawAddress).dType).toUByte())
             return Result.Ok(DirEntry(entry = entry, name = name.toOwned(), dir = this.inner))
         }
     }
@@ -438,30 +638,30 @@ public open class DirStream internal constructor(
             debugAssertFdIsOpen(fd)
         }
         val r = closedir(this.value)
-        check(r == 0 || Error.lastOsError().isInterrupted()) { "unexpected error during closedir: ${Error.lastOsError()}" }
+        check(r == 0 || io.github.kotlinmania.rustlang.core.io.error.Error.lastOsError().isInterrupted()) { "unexpected error during closedir: ${io.github.kotlinmania.rustlang.core.io.error.Error.lastOsError()}" }
     }
 
     // SAFETY: `int dirfd(DIR * dirstream)` is MT-safe, implying that the pointer
     // may be safely sent among threads.
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<DirStream> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<DirStream> {
+        public fun typeLayout(): TypeLayout<DirStream> =
+            object : TypeLayout<DirStream> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 8L
                 override fun readNative(addr: Long): DirStream =
                     DirStream(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).readNative(addr),
+                        (PrimitiveLayouts.mutPtrLayout(64)).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: DirStream) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).writeNative(addr, value.value)
+                    (PrimitiveLayouts.mutPtrLayout(64)).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): DirStream =
                     DirStream(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).readBytes(buf, offset),
+                        (PrimitiveLayouts.mutPtrLayout(64)).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: DirStream) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).writeBytes(buf, offset, value.value)
+                    (PrimitiveLayouts.mutPtrLayout(64)).writeBytes(buf, offset, value.value)
                 }
             }
 
@@ -527,9 +727,15 @@ public open class DirEntry(
 
     public open fun fileName(): OsString = this.fileNameOsStr().toOsString()
 
-    public open fun metadata(): Result<FileAttr> = cfgSelect(not, any, targetOs, "redox", targetOs, "nto", targetOs, "qnx", targetOs, "vita", targetOs, "espidf", targetOs, "horizon", targetOs, "vxworks", targetOs, "rtems", targetOs, "l4re", fd, cvt, libc, dirfd, this, dir, dirp, 0, dirHandle, mem, ManuallyDrop, new, dir, Dir, OwnedFd, fromRawFd, fd, dirHandle, metadataC, this, name, true, runPathWithCstr, this, path, lstat)
+    public open fun metadata(): Result<FileAttr, Error> {
+        val fd = when (val tryResult = cvt(dirfd(this.dir.dirp.value))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        // Make this FD into a directory handle. We don't actually drop it,
+        // so having an `OwnedFd` is fine.
+        val dirHandle = Dir(OwnedFd.fromRawFd(fd))
+        return dirHandle.metadataC(this.name, true)
+    }
 
-    public open fun fileType(): Result<FileType> {
+    public open fun fileType(): Result<FileType, Error> {
         // Use `entry.dType` if available.
         when (this.entry.dType) {
             DT_CHR -> { return Result.Ok(FileType(mode = S_IFCHR)) }
@@ -558,27 +764,27 @@ public open class Dirent64Min(
     public var dType: UByte,
 ) {
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Dirent64Min> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Dirent64Min> {
+        public fun typeLayout(): TypeLayout<Dirent64Min> =
+            object : TypeLayout<Dirent64Min> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): Dirent64Min =
                     Dirent64Min(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U8).readNative(addr + 8L),
+                        (PrimitiveLayouts.U64).readNative(addr),
+                        (PrimitiveLayouts.U8).readNative(addr + 8L),
                     )
                 override fun writeNative(addr: Long, value: Dirent64Min) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).writeNative(addr, value.dIno)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U8).writeNative(addr + 8L, value.dType)
+                    (PrimitiveLayouts.U64).writeNative(addr, value.dIno)
+                    (PrimitiveLayouts.U8).writeNative(addr + 8L, value.dType)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Dirent64Min =
                     Dirent64Min(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U8).readBytes(buf, offset + 8),
+                        (PrimitiveLayouts.U64).readBytes(buf, offset),
+                        (PrimitiveLayouts.U8).readBytes(buf, offset + 8),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Dirent64Min) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).writeBytes(buf, offset, value.dIno)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U8).writeBytes(buf, offset + 8, value.dType)
+                    (PrimitiveLayouts.U64).writeBytes(buf, offset, value.dIno)
+                    (PrimitiveLayouts.U8).writeBytes(buf, offset + 8, value.dType)
                 }
             }
     }
@@ -596,6 +802,8 @@ public open class OpenOptions(
     public var customFlags: Int,
     public var mode: ModeT,
 ) {
+    public open fun clone(): OpenOptions = OpenOptions(read, write, append, truncate, create, createNew, customFlags, mode)
+
     public open fun read(read: Boolean) {
         this.read = read
     }
@@ -628,7 +836,7 @@ public open class OpenOptions(
         this.mode = mode
     }
 
-    public open fun getAccessMode(): Result<CInt> =
+    public open fun getAccessMode(): Result<CInt, Error> =
         run {
             val matchVal = Triple(this.read, this.write, this.append)
             when {
@@ -641,27 +849,27 @@ public open class OpenOptions(
                     // If no access mode is set, check if any creation flags are set
                     // to provide a more descriptive error message
                     if (this.create || this.createNew || this.truncate) {
-                        Result.Err(io.Error.new(io.ErrorKind.InvalidInput, "creating or truncating a file requires write or append access"))
+                        Result.Err(io.github.kotlinmania.rustlang.std.io.Error.new(ErrorKind.InvalidInput, "creating or truncating a file requires write or append access"))
                     } else {
-                        Result.Err(io.Error.new(io.ErrorKind.InvalidInput, "must specify at least one of read, write, or append access"))
+                        Result.Err(io.github.kotlinmania.rustlang.std.io.Error.new(ErrorKind.InvalidInput, "must specify at least one of read, write, or append access"))
                     }
                 }
             }
         }
 
-    public open fun getCreationMode(): Result<CInt> {
+    public open fun getCreationMode(): Result<CInt, Error> {
         run {
             val matchVal = Pair(this.write, this.append)
             when {
                 matchVal.first == true && matchVal.second == false -> {}
                 matchVal.first == false && matchVal.second == false -> {
                     if (this.truncate || this.create || this.createNew) {
-                        return Result.Err(io.Error.new(io.ErrorKind.InvalidInput, "creating or truncating a file requires write or append access"))
+                        return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.new(ErrorKind.InvalidInput, "creating or truncating a file requires write or append access"))
                     }
                 }
                 else -> {
                     if (this.truncate && !this.createNew) {
-                        return Result.Err(io.Error.new(io.ErrorKind.InvalidInput, "append and truncate cannot both be enabled"))
+                        return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.new(ErrorKind.InvalidInput, "append and truncate cannot both be enabled"))
                     }
                 }
             }
@@ -691,51 +899,51 @@ public open class OpenOptions(
     }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<OpenOptions> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<OpenOptions> {
+        public fun typeLayout(): TypeLayout<OpenOptions> =
+            object : TypeLayout<OpenOptions> {
                 override val alignBytes: Long = 4L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): OpenOptions =
                     OpenOptions(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 1L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 2L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 3L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 4L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 5L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I32).readNative(addr + 8L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).readNative(addr + 12L),
+                        (PrimitiveLayouts.BOOL).readNative(addr),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 1L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 2L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 3L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 4L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 5L),
+                        (PrimitiveLayouts.I32).readNative(addr + 8L),
+                        (PrimitiveLayouts.U32).readNative(addr + 12L),
                     )
                 override fun writeNative(addr: Long, value: OpenOptions) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr, value.read)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 1L, value.write)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 2L, value.append)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 3L, value.truncate)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 4L, value.create)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 5L, value.createNew)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I32).writeNative(addr + 8L, value.customFlags)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).writeNative(addr + 12L, value.mode)
+                    (PrimitiveLayouts.BOOL).writeNative(addr, value.read)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 1L, value.write)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 2L, value.append)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 3L, value.truncate)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 4L, value.create)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 5L, value.createNew)
+                    (PrimitiveLayouts.I32).writeNative(addr + 8L, value.customFlags)
+                    (PrimitiveLayouts.U32).writeNative(addr + 12L, value.mode)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): OpenOptions =
                     OpenOptions(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 1),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 2),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 3),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 4),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 5),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I32).readBytes(buf, offset + 8),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).readBytes(buf, offset + 12),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 1),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 2),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 3),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 4),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 5),
+                        (PrimitiveLayouts.I32).readBytes(buf, offset + 8),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 12),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: OpenOptions) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset, value.read)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 1, value.write)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 2, value.append)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 3, value.truncate)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 4, value.create)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 5, value.createNew)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I32).writeBytes(buf, offset + 8, value.customFlags)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).writeBytes(buf, offset + 12, value.mode)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset, value.read)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 1, value.write)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 2, value.append)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 3, value.truncate)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 4, value.create)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 5, value.createNew)
+                    (PrimitiveLayouts.I32).writeBytes(buf, offset + 8, value.customFlags)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + 12, value.mode)
                 }
             }
 
@@ -746,6 +954,8 @@ public open class OpenOptions(
 public open class FilePermissions(
     public var mode: ModeT,
 ) : FromInner<UInt, FilePermissions> {
+    public open fun clone(): FilePermissions = FilePermissions(mode)
+
     public open fun readonly(): Boolean {
         // check if any class (owner, group, others) has write permission
         return (this.mode and 146u == 0u).toUByte()
@@ -769,23 +979,23 @@ public open class FilePermissions(
     }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<FilePermissions> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<FilePermissions> {
+        public fun typeLayout(): TypeLayout<FilePermissions> =
+            object : TypeLayout<FilePermissions> {
                 override val alignBytes: Long = 4L
                 override val sizeBytes: Long = 4L
                 override fun readNative(addr: Long): FilePermissions =
                     FilePermissions(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).readNative(addr),
+                        (PrimitiveLayouts.U32).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: FilePermissions) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).writeNative(addr, value.mode)
+                    (PrimitiveLayouts.U32).writeNative(addr, value.mode)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): FilePermissions =
                     FilePermissions(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).readBytes(buf, offset),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: FilePermissions) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).writeBytes(buf, offset, value.mode)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset, value.mode)
                 }
             }
 
@@ -798,6 +1008,8 @@ public open class FileTimes(
     public var modified: SystemTime?,
     public var created: SystemTime?,
 ) {
+    public open fun clone(): FileTimes = FileTimes(accessed, modified, created)
+
     public open fun setAccessed(t: SystemTime) {
         this.accessed = t
     }
@@ -814,6 +1026,8 @@ public open class FileTimes(
 public open class FileType(
     public var mode: ModeT,
 ) {
+    public open fun clone(): FileType = FileType(mode)
+
     public open fun eq(other: FileType): Boolean = (this.masked() == other.masked()).toUByte()
 
     public override fun hashCode(): Int {
@@ -838,23 +1052,23 @@ public open class FileType(
     }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<FileType> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<FileType> {
+        public fun typeLayout(): TypeLayout<FileType> =
+            object : TypeLayout<FileType> {
                 override val alignBytes: Long = 4L
                 override val sizeBytes: Long = 4L
                 override fun readNative(addr: Long): FileType =
                     FileType(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).readNative(addr),
+                        (PrimitiveLayouts.U32).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: FileType) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).writeNative(addr, value.mode)
+                    (PrimitiveLayouts.U32).writeNative(addr, value.mode)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): FileType =
                     FileType(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).readBytes(buf, offset),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: FileType) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).writeBytes(buf, offset, value.mode)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset, value.mode)
                 }
             }
     }
@@ -863,7 +1077,7 @@ public open class FileType(
 public open class DirBuilder(
     public var mode: ModeT,
 ) {
-    public open fun mkdir(p: Path): Result<Unit> = runPathWithCstr(p, { p1 -> cvt(io.github.kotlinmania.libc.mkdir(p1.asPtr(), this.mode)).map({ Unit }) })
+    public open fun mkdir(p: Path): Result<Unit, Error> = runPathWithCstr(p, { p1 -> cvt(io.github.kotlinmania.rustlang.libc.mkdir(p1.asPtr(), this.mode)).map({ Unit }) })
 
     public open fun setMode(mode: UInt) {
         this.mode = mode
@@ -875,23 +1089,23 @@ public open class DirBuilder(
     }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<DirBuilder> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<DirBuilder> {
+        public fun typeLayout(): TypeLayout<DirBuilder> =
+            object : TypeLayout<DirBuilder> {
                 override val alignBytes: Long = 4L
                 override val sizeBytes: Long = 4L
                 override fun readNative(addr: Long): DirBuilder =
                     DirBuilder(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).readNative(addr),
+                        (PrimitiveLayouts.U32).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: DirBuilder) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).writeNative(addr, value.mode)
+                    (PrimitiveLayouts.U32).writeNative(addr, value.mode)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): DirBuilder =
                     DirBuilder(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).readBytes(buf, offset),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: DirBuilder) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).writeBytes(buf, offset, value.mode)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset, value.mode)
                 }
             }
 
@@ -908,6 +1122,8 @@ public open class Mode(
             value = v
         }
 
+    public open fun clone(): Mode = Mode(value)
+
     // Format in octal, followed by the mode format used in `ls - l`.
     //
     // References:
@@ -918,7 +1134,7 @@ public open class Mode(
     // Example:
     // 0o100664 (-rw-rw-r--)
     public open fun fmt(f: StringBuilder) {
-        val mode = this
+        val mode = this.value
         f.append("0o$mode")
         val entryType =
             when (mode and S_IFMT) {
@@ -933,17 +1149,17 @@ public open class Mode(
         f.append(" (")
         f.append(entryType)
         // Owner permissions
-        f.append(if (mode and S_IRUSR != 0) {
+        f.append(if (mode and S_IRUSR != 0u) {
             'r'
         } else {
             '-'
         })
-        f.append(if (mode and S_IWUSR != 0) {
+        f.append(if (mode and S_IWUSR != 0u) {
             'w'
         } else {
             '-'
         })
-        val ownerExecutable = mode and S_IXUSR != 0
+        val ownerExecutable = mode and S_IXUSR != 0u
         val setuid = mode.toInt() and S_ISUID.toInt() != 0
         f.append(run {
             val matchVal = Pair(ownerExecutable, setuid)
@@ -958,17 +1174,17 @@ public open class Mode(
             }
         })
         // Group permissions
-        f.append(if (mode and S_IRGRP != 0) {
+        f.append(if (mode and S_IRGRP != 0u) {
             'r'
         } else {
             '-'
         })
-        f.append(if (mode and S_IWGRP != 0) {
+        f.append(if (mode and S_IWGRP != 0u) {
             'w'
         } else {
             '-'
         })
-        val groupExecutable = mode and S_IXGRP != 0
+        val groupExecutable = mode and S_IXGRP != 0u
         val setgid = mode.toInt() and S_ISGID.toInt() != 0
         f.append(run {
             val matchVal1 = Pair(groupExecutable, setgid)
@@ -983,17 +1199,17 @@ public open class Mode(
             }
         })
         // Other permissions
-        f.append(if (mode and S_IROTH != 0) {
+        f.append(if (mode and S_IROTH != 0u) {
             'r'
         } else {
             '-'
         })
-        f.append(if (mode and S_IWOTH != 0) {
+        f.append(if (mode and S_IWOTH != 0u) {
             'w'
         } else {
             '-'
         })
-        val otherExecutable = mode and S_IXOTH != 0
+        val otherExecutable = mode and S_IXOTH != 0u
         val sticky = mode.toInt() and S_ISVTX.toInt() != 0
         f.append(run {
             val matchVal2 = Triple(entryType, otherExecutable, sticky)
@@ -1011,41 +1227,27 @@ public open class Mode(
     }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Mode> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Mode> {
+        public fun typeLayout(): TypeLayout<Mode> =
+            object : TypeLayout<Mode> {
                 override val alignBytes: Long = 4L
                 override val sizeBytes: Long = 4L
                 override fun readNative(addr: Long): Mode =
                     Mode(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).readNative(addr),
+                        (PrimitiveLayouts.U32).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: Mode) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).writeNative(addr, value.value)
+                    (PrimitiveLayouts.U32).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Mode =
                     Mode(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).readBytes(buf, offset),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Mode) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).writeBytes(buf, offset, value.value)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset, value.value)
                 }
             }
     }
 }
-
-public fun FileAttr.size(): ULong = this.stat.stSize.toULong()
-
-public fun FileAttr.perm(): FilePermissions = FilePermissions(mode = (this.stat.stMode))
-
-public fun FileAttr.fileType(): FileType = FileType(mode = this.stat.stMode)
-
-public fun FileAttr.modified(): Result<SystemTime> = SystemTime.new(this.stat.stMtime, this.stat.stMtimensec.toLong())
-
-public fun FileAttr.accessed(): Result<SystemTime> = SystemTime.new(this.stat.stAtime, this.stat.stAtimensec.toLong())
-
-public fun FileAttr.created(): Result<SystemTime> = SystemTime.new(this.stat.stBirthtime, this.stat.stBirthtimensec.toLong())
-
-public fun FileAttr.asInner(): Stat64 = this.stat
 
 /**
  * Aborts the process if a file descriptor is not open, if debug asserts are enabled
@@ -1057,10 +1259,10 @@ public fun FileAttr.asInner(): Stat64 = this.stat
  * So we check file flags instead which live on the file descriptor and not the underlying file.
  * The downside is that it costs an extra syscall, so we only do it for debug.
  */
-internal fun debugAssertFdIsOpen(fd: RawFd) {
+public fun debugAssertFdIsOpen(fd: RawFd) {
     // this is similar to assertUnsafePrecondition() but it doesn't require const
     if (checkLibraryUb()) {
-        if (fcntl(fd, F_GETFD) == -1 && errno() == EBADF) {
+        if (fcntl(fd, F_GETFD) == -1 && Errno() == EBADF) {
             run {
                 when (val matchVal = panicOutput()) {
                     null -> {}
@@ -1078,7 +1280,7 @@ internal fun debugAssertFdIsOpen(fd: RawFd) {
     }
 }
 
-public fun fileTimeToTimespec(time: SystemTime?): Result<Timespec> =
+public fun fileTimeToTimespec(time: SystemTime?): Result<Timespec, Error> =
     when {
         time != null && time!!.t.toTimespec() != null -> {
             val time1 = time
@@ -1086,13 +1288,13 @@ public fun fileTimeToTimespec(time: SystemTime?): Result<Timespec> =
         }
         time != null && time > UNIX_EPOCH -> {
             val time2 = time
-            Result.Err(io.constError(io.ErrorKind.InvalidInput, "timestamp is too large to set as a file time"))
+            Result.Err(constError(ErrorKind.InvalidInput, "timestamp is too large to set as a file time"))
         }
-        time != null -> Result.Err(io.constError(io.ErrorKind.InvalidInput, "timestamp is too small to set as a file time"))
+        time != null -> Result.Err(constError(ErrorKind.InvalidInput, "timestamp is too small to set as a file time"))
         else -> Result.Ok(run {
             val ts = default()
             ts.tvSec = 0
-            ts.tvNsec = ((UTIME_OMIT as Any?) as Result<Timespec>)
+            ts.tvNsec = ((UTIME_OMIT as Any?) as Result<Timespec, Error>)
             ts
         })
     }
@@ -1122,8 +1324,8 @@ public open class TimesAttrlist internal constructor(
             numTimes = numTimes,
         )
 
-        public fun fromTimes(times: FileTimes): Result<TimesAttrlist> {
-            val thisRef = TimesAttrlist(buf = List(3) { MaybeUninit.uninit(ObjectSlotLayout<Timespec>()) }, attrlist = null, numTimes = 0)
+        public fun fromTimes(times: FileTimes): Result<TimesAttrlist, Error> {
+            val thisRef = TimesAttrlist(buf = List(3) { MaybeUninit.uninit(ObjectSlotLayout<Timespec>()) }, attrlist = Attrlist(), numTimes = 0)
             thisRef.attrlist.bitmapcount = ATTR_BIT_MAP_COUNT
             if (times.created != null) {
                 thisRef.buf[thisRef.numTimes].write(when (val tryResult = fileTimeToTimespec(times.created)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) })
@@ -1145,7 +1347,7 @@ public open class TimesAttrlist internal constructor(
     }
 }
 
-public fun readdir(path: Path): Result<ReadDir> {
+public fun readdir(path: Path): Result<ReadDir, Error> {
     val ptr = when (val tryResult = runPathWithCstr(path, { p -> Result.Ok(opendir(p.asPtr())) })) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
     return if (ptr.isNull()) {
         Result.Err(Error.lastOsError())
@@ -1156,14 +1358,14 @@ public fun readdir(path: Path): Result<ReadDir> {
     }
 }
 
-public fun unlink(p: CStr): Result<Unit> = cvt(io.github.kotlinmania.libc.unlink(p.asPtr())).map({ Unit })
+public fun unlink(p: CStr): Result<Unit, Error> = cvt(io.github.kotlinmania.rustlang.libc.unlink(p.asPtr())).map({ Unit })
 
-public fun rename(old: CStr, new: CStr): Result<Unit> = cvt(io.github.kotlinmania.libc.rename(old.asPtr(), new.asPtr())).map({ Unit })
+public fun rename(old: CStr, new: CStr): Result<Unit, Error> = cvt(io.github.kotlinmania.rustlang.libc.rename(old.asPtr(), new.asPtr())).map({ Unit })
 
-public fun renameNoreplace(old: CStr, new: CStr): Result<Unit> {
+public fun renameNoreplace(old: CStr, new: CStr): Result<Unit, Error> {
     syscall(renameat2, olddirfd, cInt, oldpath, libc, cChar, newdirfd, cInt, newpath, libc, cChar, flags, libc, cUint, cInt)
     // `RENAME_NOREPLACE` is `cUint` on linux and `cInt` on Android, so casting is needed here.
-    val flags = io.github.kotlinmania.libc.renameNoreplace.toUInt()
+    val flags = RENAME_NOREPLACE.toUInt()
     val res = cvt(renameat2(AT_FDCWD, old.asPtr(), AT_FDCWD, new.asPtr(), flags))
     return when (res) { is Result.Ok<*> -> {
         Result.Ok(Unit)
@@ -1192,21 +1394,70 @@ public fun renameNoreplace(old: CStr, new: CStr): Result<Unit> {
     } }
 }
 
-public fun setPerm(p: CStr, perm: FilePermissions): Result<Unit> = cvtR({ chmod(p.asPtr(), perm.mode) }).map({ Unit })
+public fun setPerm(p: CStr, perm: FilePermissions): Result<Unit, Error> = cvtR({ chmod(p.asPtr(), perm.mode) }).map({ Unit })
 
-public fun setPermNofollow(p: CStr, perm: FilePermissions): Result<Unit> {
-    // VxWorks has no `O_NOFOLLOW`, and its `fchmodat` rejects
-    // `AT_SYMLINK_NOFOLLOW` with `ENOTSUP`, so a no-follow chmod is unsupported.
-    return Result.Err(unsupported.into())
+public fun setPermNofollow(p: CStr, perm: FilePermissions): Result<Unit, Error> {
+    /**
+     * Helper function for fallback open with `O_NOFOLLOW` + `fchmod` behavior. This will
+     * successfully change the permissions of non-symlinks and fail when there's a symlink.
+     */
+    fun openAndSetPermissions(p1: CStr, perm1: FilePermissions): Result<Unit, Error> {
+        val options = OpenOptions.new()
+        options.read(true)
+        // ESP-IDF and Horizon do not support O_NOFOLLOW, so we skip setting it.
+        // Their filesystems do not have symbolic links, so no special handling is required.
+        run {
+            options.customFlags(O_NOFOLLOW)
+        }
+        // SAFETY: Since this function is called with `withNativePath`
+        // and that successfully converted the `Path` to a `CString`,
+        // it should be safe to convert the `CStr` back to a `Path`.
+        val osStr = OsStr.fromEncodedBytesUnchecked(p1.toBytes())
+        return when (val tryResult = options.open(Path.new(osStr))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }.setPermissions(Permissions.fromInner(perm1))
+    }
+    // This res value is modified for platforms that support the `fchmodat` syscall.
+    var res: Result<Unit, Error> = Result.Err(io.github.kotlinmania.rustlang.core.io.error.ErrorKind.Unsupported.into())
+    // These platforms support `fchmodat`, so utilize this syscall over `open` + `fchmod`.
+    // We can *not* use this on Android due to <https://github.com/android/ndk/issues/1258>.
+    run {
+        res = cvtR({ fchmodat(AT_FDCWD, p.asPtr(), perm.mode, AT_SYMLINK_NOFOLLOW) }).map({ Unit })
+    }
+    // If fchmodat fails with `ErrorKind.Unsupported` fallback to using open + fchmod. This is just in case
+    // for older systems like Ubuntu 20.04 where fchmodat fails with EOPNOTSUPP on both regular files and
+    // symlinks when AT_SYMLINK_NOFOLLOW is passed in.
+    return when (res) { is Result.Ok<*> -> {
+        Result.Ok(Unit)
+    }; is Result.Err<*> -> {
+        val err = res.error
+        if (err.kind() == io.github.kotlinmania.rustlang.core.io.error.ErrorKind.Unsupported) {
+            run {
+                val matchVal = openAndSetPermissions(p, perm)
+                when (matchVal) { is Result.Ok<*> -> {
+                    return Result.Ok(Unit)
+                }; is Result.Err<*> -> {
+                    val e = matchVal.error
+                    if (e.kind() == io.github.kotlinmania.rustlang.core.io.error.ErrorKind.FilesystemLoop) {
+                        // When open is used with O_NOFOLLOW flag, if the trailing component of
+                        // a path is a symbolic link, it should fail with ELOOP error. Instead of
+                        // returning `FilesystemLoop`, this returns `Unsupported` to keep it consistent
+                        // with what `fchmodat` would return when chmoding a symlink using AT_SYMLINK_NOFOLLOW.
+                        return Result.Err(err)
+                    }
+                    return Result.Err(e)
+                } }
+            }
+        }
+        Result.Err(err)
+    } }
 }
 
-public fun rmdir(p: CStr): Result<Unit> = cvt(io.github.kotlinmania.libc.rmdir(p.asPtr())).map({ Unit })
+public fun rmdir(p: CStr): Result<Unit, Error> = cvt(io.github.kotlinmania.rustlang.libc.rmdir(p.asPtr())).map({ Unit })
 
-public fun readlink(cPath: CStr): Result<PathBuf> {
+public fun readlink(cPath: CStr): Result<PathBuf, Error> {
     val p = cPath.asPtr()
     val buf = ArrayList(256)
     while (true) {
-        val bufRead = (when (val tryResult = cvt(io.github.kotlinmania.libc.readlink(p, buf.asMutPtr(), buf.capacity()))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }).toInt()
+        val bufRead = (when (val tryResult = cvt(io.github.kotlinmania.rustlang.libc.readlink(p, buf.asMutPtr(), buf.capacity()))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }).toInt()
         run {
             buf.setLen(bufRead)
         }
@@ -1221,14 +1472,14 @@ public fun readlink(cPath: CStr): Result<PathBuf> {
     }
 }
 
-public fun symlink(original: CStr, link: CStr): Result<Unit> = cvt(io.github.kotlinmania.libc.symlink(original.asPtr(), link.asPtr())).map({ Unit })
+public fun symlink(original: CStr, link: CStr): Result<Unit, Error> = cvt(io.github.kotlinmania.rustlang.libc.symlink(original.asPtr(), link.asPtr())).map({ Unit })
 
-public fun link(original: CStr, link: CStr): Result<Unit> {
-    cfgSelect(any, targetOs, "vxworks", targetOs, "redox", targetOs, "espidf", targetOs, "horizon", targetOs, "vita", targetOs, "l4re", targetEnv, "nto70", cvt, libc, link, original, asPtr, link, asPtr, cvt, libc, linkat, libc, AT_FDCWD, original, asPtr, libc, AT_FDCWD, link, asPtr, 0)
+public fun link(original: CStr, link: CStr): Result<Unit, Error> {
+    when (val tryResult = cvt(io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.powerpc64.link(original.asPtr(), link.asPtr()))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
     return Result.Ok(Unit)
 }
 
-public fun stat(p: CStr): Result<FileAttr> {
+public fun stat(p: CStr): Result<FileAttr, Error> {
     when (val matchVal = tryStatx(AT_FDCWD, p.asPtr(), AT_STATX_SYNC_AS_STAT, STATX_BASIC_STATS or STATX_BTIME)) {
         null -> {}
         else -> {
@@ -1236,12 +1487,12 @@ public fun stat(p: CStr): Result<FileAttr> {
             return ret
         }
     }
-    val stat: Stat64?  = null
-    when (val tryResult = cvt(stat64(p.asPtr(), stat))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    val stat: Stat64  = MaybeUninit.zeroed(ObjectSlotLayout<Stat64>()).assumeInit()
+    when (val tryResult = cvt(Stat64(p.asPtr(), stat))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
     return Result.Ok(FileAttr.fromStat64(stat))
 }
 
-public fun lstat(p: CStr): Result<FileAttr> {
+public fun lstat(p: CStr): Result<FileAttr, Error> {
     when (val matchVal = tryStatx(AT_FDCWD, p.asPtr(), AT_SYMLINK_NOFOLLOW or AT_STATX_SYNC_AS_STAT, STATX_BASIC_STATS or STATX_BTIME)) {
         null -> {}
         else -> {
@@ -1249,29 +1500,29 @@ public fun lstat(p: CStr): Result<FileAttr> {
             return ret
         }
     }
-    val stat: Stat64?  = null
+    val stat: Stat64  = MaybeUninit.zeroed(ObjectSlotLayout<Stat64>()).assumeInit()
     when (val tryResult = cvt(lstat64(p.asPtr(), stat))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
     return Result.Ok(FileAttr.fromStat64(stat))
 }
 
-public fun canonicalize(path: CStr): Result<PathBuf> {
+public fun canonicalize(path: CStr): Result<PathBuf, Error> {
     val r = realpath(path.asPtr(), MutPtr(0L))
     if (r.isNull()) {
-        return Result.Err(io.Error.lastOsError())
+        return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
     }
     return Result.Ok(PathBuf.from(OsString.fromVec(run {
-        val buf = CStr.fromPtr(r).toBytes().toVec()
+        val buf = CStr.fromPtr(r).toBytes().toMutableList()
         free(mutPtrFromRustCast(r))
         buf
     })))
 }
 
-public fun linkThenUnlink(old: CStr, new: CStr): Result<Unit> {
+public fun linkThenUnlink(old: CStr, new: CStr): Result<Unit, Error> {
     when (val tryResult = link(old, new)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
     return unlink(old)
 }
 
-public fun openFrom(from: Path): Result<Pair<io.github.kotlinmania.rustlang.std.fs.File, Metadata>> {
+public fun openFrom(from: Path): Result<Pair<io.github.kotlinmania.rustlang.std.fs.File, Metadata>, Error> {
     val reader = when (val tryResult = File.open(from)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
     val metadata = when (val tryResult = reader.metadata()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
     if (!metadata.isFile()) {
@@ -1280,13 +1531,24 @@ public fun openFrom(from: Path): Result<Pair<io.github.kotlinmania.rustlang.std.
     return Result.Ok(Pair(reader, metadata))
 }
 
-public fun setTimesImpl(p: CStr, times: FileTimes, followSymlinks: Boolean): Result<Unit> = cfgSelect(any, targetOs, "redox", targetOs, "espidf", targetOs, "horizon", targetOs, "nuttx", targetOs, "vita", targetOs, "rtems", p, times, followSymlinks, Err, io, constError, io, ErrorKind, Unsupported, "setting file times not supported", targetVendor, "apple", ta, TimesAttrlist, fromTimes, times, options, followSymlinks, 0, libc, FSOPT_NOFOLLOW, cvt, libc, setattrlist, p, asPtr, ta, attrlist, ta, timesBuf, ta, timesBufSize, options, Ok, targetOs, "android", times, fileTimeToTimespec, times, accessed, fileTimeToTimespec, times, modified, flags, followSymlinks, 0, libc, AT_SYMLINK_NOFOLLOW, cvt, weak, utimensat, dirfd, cInt, path, libc, cChar, times, libc, timespec, flags, cInt, cInt, utimensat, get, Some, utimensat, utimensat, libc, AT_FDCWD, p, asPtr, times, asPtr, flags, None, Err, io, constError, io, ErrorKind, Unsupported, "setting file times requires Android API level >= 19", Ok, flags, followSymlinks, 0, libc, AT_SYMLINK_NOFOLLOW, cfg, all, targetOs, "linux", targetEnv, "gnu", targetPointerWidth, "32", not, targetArch, "riscv32", sys, pal, time, timespec64, sys, pal, weak, weak, weak, utimensat64, dirfd, cInt, path, cChar, times, timespec64, flags, cInt, cInt, Some, utimensat64, utimensat64, get, toTimespec, time, Option, SystemTime, time, map, time, time, t, toTimespec64, unwrapOr, timespec64, new, 0, libc, UTIME_OMIT, times, toTimespec, times, accessed, toTimespec, times, modified, cvt, utimensat64, libc, AT_FDCWD, p, asPtr, times, asPtr, flags, Ok, times, fileTimeToTimespec, times, accessed, fileTimeToTimespec, times, modified, cvt, libc, utimensat, libc, AT_FDCWD, p, asPtr, times, asPtr, flags, Ok)
+public fun setTimesImpl(p: CStr, times: FileTimes, followSymlinks: Boolean): Result<Unit, Error> {
+    // Apple platforms use setattrlist which supports setting times on symlinks
+    val ta = when (val tryResult = TimesAttrlist.fromTimes(times)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    val options =
+        if (followSymlinks) {
+            0
+        } else {
+            FSOPT_NOFOLLOW
+        }
+    when (val tryResult = cvt(setattrlist(p.asPtr(), ta.attrlist(), ta.timesBuf(), ta.timesBufSize(), options.toUInt()))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    return Result.Ok(Unit)
+}
 
-public fun setTimes(p: CStr, times: FileTimes): Result<Unit> = setTimesImpl(p, times, true)
+public fun setTimes(p: CStr, times: FileTimes): Result<Unit, Error> = setTimesImpl(p, times, true)
 
-public fun setTimesNofollow(p: CStr, times: FileTimes): Result<Unit> = setTimesImpl(p, times, false)
+public fun setTimesNofollow(p: CStr, times: FileTimes): Result<Unit, Error> = setTimesImpl(p, times, false)
 
-public fun openToAndSetPermissions(to: Path, readerMetadata: Metadata): Result<Pair<io.github.kotlinmania.rustlang.std.fs.File, Metadata>> {
+public fun openToAndSetPermissions(to: Path, readerMetadata: Metadata): Result<Pair<io.github.kotlinmania.rustlang.std.fs.File, Metadata>, Error> {
     val writer = when (val tryResult = OpenOptions.new().write(true).create(true).truncate(true).open(to)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
     val writerMetadata = when (val tryResult = writer.metadata()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
     return Result.Ok(Pair(writer, writerMetadata))
@@ -1317,43 +1579,43 @@ public open class CachedFileMetadata(
     public open fun flush(): Result<Unit> = this.field0.flush()
 }
 
-public fun copy(from: Path, to: Path): Result<ULong> {
+public fun copy(from: Path, to: Path): Result<ULong, Error> {
     val (reader, readerMetadata) = when (val tryResult = openFrom(from)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
     val (writer, writerMetadata) = when (val tryResult = openToAndSetPermissions(to, readerMetadata)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-    return io.copy(CachedFileMetadata(reader, readerMetadata), CachedFileMetadata(writer, writerMetadata))
+    return io.github.kotlinmania.rustlang.std.io.copy(CachedFileMetadata(reader, readerMetadata), CachedFileMetadata(writer, writerMetadata))
 }
 
-public fun chown(path: Path, uid: UInt, gid: UInt): Result<Unit> =
+public fun chown(path: Path, uid: UInt, gid: UInt): Result<Unit, Error> =
     runPathWithCstr(path, { path1 ->
-        cvt(io.github.kotlinmania.libc.chown(path1.asPtr(), uid.toInt(), gid.toInt())).map({ Unit })
+        cvt(io.github.kotlinmania.rustlang.libc.chown(path1.asPtr(), uid, gid)).map({ Unit })
     })
 
-public fun fchown(fd: CInt, uid: UInt, gid: UInt): Result<Unit> {
-    when (val tryResult = cvt(io.github.kotlinmania.libc.fchown(fd, uid.toInt(), gid.toInt()))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+public fun fchown(fd: CInt, uid: UInt, gid: UInt): Result<Unit, Error> {
+    when (val tryResult = cvt(io.github.kotlinmania.rustlang.libc.fchown(fd, uid, gid))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
     return Result.Ok(Unit)
 }
 
-public fun lchown(path: Path, uid: UInt, gid: UInt): Result<Unit> =
+public fun lchown(path: Path, uid: UInt, gid: UInt): Result<Unit, Error> =
     runPathWithCstr(path, { path1 ->
-        cvt(io.github.kotlinmania.libc.lchown(path1.asPtr(), uid.toInt(), gid.toInt())).map({ Unit })
+        cvt(io.github.kotlinmania.rustlang.libc.lchown(path1.asPtr(), uid, gid)).map({ Unit })
     })
 
-public fun chroot(dir: Path): Result<Unit> = runPathWithCstr(dir, { dir1 -> cvt(io.github.kotlinmania.libc.chroot(dir1.asPtr())).map({ Unit }) })
+public fun chroot(dir: Path): Result<Unit, Error> = runPathWithCstr(dir, { dir1 -> cvt(io.github.kotlinmania.rustlang.libc.chroot(dir1.asPtr())).map({ Unit }) })
 
-public fun mkfifo(path: Path, mode: UInt): Result<Unit> =
+public fun mkfifo(path: Path, mode: UInt): Result<Unit, Error> =
     runPathWithCstr(path, { path1 ->
-        cvt(io.github.kotlinmania.libc.mkfifo(path1.asPtr(), mode.tryInto().unwrap())).map({ Unit })
+        cvt(io.github.kotlinmania.rustlang.libc.mkfifo(path1.asPtr(), mode.tryInto().unwrap())).map({ Unit })
     })
 
-public fun openatNofollowDironly(parentFd: RawFd?, p: CStr): Result<OwnedFd> {
+public fun openatNofollowDironly(parentFd: RawFd?, p: CStr): Result<OwnedFd, Error> {
     val fd = when (val tryResult = cvtR({ openat((parentFd ?: AT_FDCWD), p.asPtr(), O_CLOEXEC or O_RDONLY or O_NOFOLLOW or O_DIRECTORY) })) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
     return Result.Ok(OwnedFd.fromRawFd(fd))
 }
 
-public fun fdreaddir(dirFd: OwnedFd): Result<Pair<ReadDir, RawFd>> {
+public fun fdreaddir(dirFd: OwnedFd): Result<Pair<ReadDir, RawFd>, Error> {
     val ptr = fdopendir(dirFd.asRawFd())
     if (ptr.isNull()) {
-        return Result.Err(io.Error.lastOsError())
+        return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
     }
     val dirp = DirStream(ptr)
     // file descriptor is automatically closed by libc.closedir() now, so give up ownership
@@ -1365,9 +1627,14 @@ public fun fdreaddir(dirFd: OwnedFd): Result<Pair<ReadDir, RawFd>> {
     return Result.Ok(Pair(ReadDir.new(inner), newParentFd))
 }
 
-public fun isDir(ent: DirEntry): Boolean? = null
+public fun isDir(ent: DirEntry): Boolean? =
+    when (ent.entry.dType) {
+        DT_UNKNOWN -> null
+        DT_DIR -> true
+        else -> false
+    }
 
-public fun isEnoent(result: Result<Unit>): Boolean =
+public fun isEnoent(result: Result<Unit, Error>): Boolean =
     if (result is Result.Err<*> &&
         when (val matchVal = err.rawOsError()) {
             ENOENT -> true
@@ -1383,7 +1650,7 @@ public fun isEnoent(result: Result<Unit>): Boolean =
  * In that case, `path` will only be deleted if it is a directory.
  * When it is `Some`, this will delete anything.
  */
-public fun removeDirAllRecursive(parentFd: RawFd?, path: CStr): Result<Unit> {
+public fun removeDirAllRecursive(parentFd: RawFd?, path: CStr): Result<Unit, Error> {
     // try opening as directory
     val fd =
         run {
@@ -1403,7 +1670,7 @@ public fun removeDirAllRecursive(parentFd: RawFd?, path: CStr): Result<Unit> {
                         // unlink...
                         else -> {
                             val parentFd1 = parentFd
-                            cvt(unlinkat(parentFd1, path.asPtr(), 0)).map(drop)
+                            cvt(unlinkat(parentFd1, path.asPtr(), 0)).map({ Unit })
                         }
                     }
                 }
@@ -1427,7 +1694,7 @@ public fun removeDirAllRecursive(parentFd: RawFd?, path: CStr): Result<Unit> {
         // we need an inner try block, because if one of these
         // directories has already been deleted, then we need to
         // continue the loop, not return ok.
-        val result1: Result<Unit> =
+        val result1: Result<Unit, Error> =
             when (val matchVal2 = isDir(child1)) {
                 true -> {
                     when (val tryResult = removeDirAllRecursive(fd1, child1.name)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
@@ -1452,7 +1719,7 @@ public fun removeDirAllRecursive(parentFd: RawFd?, path: CStr): Result<Unit> {
     return Result.Ok(Unit)
 }
 
-public fun removeDirAllModern(p: CStr): Result<Unit> {
+public fun removeDirAllModern(p: CStr): Result<Unit, Error> {
     // We cannot just call removeDirAllRecursive() here because that would not delete a passed
     // symlink. No need to worry about races, because removeDirAllRecursive() does not recurse
     // into symlinks.
@@ -1467,4 +1734,4 @@ public fun removeDirAllModern(p: CStr): Result<Unit> {
     }
 }
 
-public fun removeDirAll(p: Path): Result<Unit> = runPathWithCstr(p, ::removeDirAllModern)
+public fun removeDirAll(p: Path): Result<Unit, Error> = runPathWithCstr(p, ::removeDirAllModern)

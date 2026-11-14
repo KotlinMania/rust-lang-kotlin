@@ -141,6 +141,8 @@ public fun Error.intoInner(): Any? {
  *
  * ```kotlin
  * import std.error.Error
+ * import std.fmt
+ * import std.io
  *
  * sealed class E {
  *     public data class Io(public var value: io.Error) : E()
@@ -217,7 +219,7 @@ public fun customOwnerFromBox(kind: ErrorKind, error: Any): CustomOwner {
      */
     fun dropBoxRaw(ptr: NonNull) {
         // SAFETY: Caller ensures `ptr` is valid to pass into `Holder.fromRaw`.
-        drop(Box.fromNonNull(ptr))
+        (Box.fromNonNull(ptr)).let { }
     }
     val error1 = Box.intoNonNull(error)
     // SAFETY:

@@ -21,7 +21,7 @@ import io.github.kotlinmania.rustlang.core.result.Result
  * a root node that is internal, which the caller should pop from the map
  * holding the tree. The caller should also decrement the map's length.
  */
-internal fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, LeafOrInternal>, KV>.removeKvTracking(handleEmptiedInternalRoot: () -> Unit, alloc: A): Pair<Pair<K, V>, Handle<NodeRef<Mut, K, V, Leaf>, Edge>> =
+public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, LeafOrInternal>, KV>.removeKvTracking(handleEmptiedInternalRoot: () -> Unit, alloc: A): Pair<Pair<K, V>, Handle<NodeRef<Mut, K, V, Leaf>, Edge>> =
     when (val matchVal = this.force()) {
         is Leaf -> {
             val (node) = matchVal

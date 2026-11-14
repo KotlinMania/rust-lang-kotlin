@@ -650,7 +650,107 @@ public fun <T : Hash<T>, B : Hash<B>, C : Hash<C>, D : Hash<D>, S> List<Any?>.ha
     D.hash(state)
 }
 
-public fun <T : Hash<T>, H> List<T>.hash(state: H) {
+public fun <T : Hash<T>, B : Hash<B>, C : Hash<C>, D : Hash<D>, E : Hash<E>, S> List<Any?>.hashFromTBCDE(state: S) {
+    val (T, B, C, D, E) = this
+    T.hash(state)
+    B.hash(state)
+    C.hash(state)
+    D.hash(state)
+    E.hash(state)
+}
+
+public fun <T : Hash<T>, B : Hash<B>, C : Hash<C>, D : Hash<D>, E : Hash<E>, F : Hash<F>, S> List<Any?>.hashFromTBCDEF(state: S) {
+    val (T, B, C, D, E, F) = this
+    T.hash(state)
+    B.hash(state)
+    C.hash(state)
+    D.hash(state)
+    E.hash(state)
+    F.hash(state)
+}
+
+public fun <T : Hash<T>, B : Hash<B>, C : Hash<C>, D : Hash<D>, E : Hash<E>, F : Hash<F>, G : Hash<G>, S> List<Any?>.hashFromTBCDEFG(state: S) {
+    val (T, B, C, D, E, F, G) = this
+    T.hash(state)
+    B.hash(state)
+    C.hash(state)
+    D.hash(state)
+    E.hash(state)
+    F.hash(state)
+    G.hash(state)
+}
+
+public fun <T : Hash<T>, B : Hash<B>, C : Hash<C>, D : Hash<D>, E : Hash<E>, F : Hash<F>, G : Hash<G>, H : Hash<H>, S> List<Any?>.hashFromTBCDEFGH(state: S) {
+    val (T, B, C, D, E, F, G, H) = this
+    T.hash(state)
+    B.hash(state)
+    C.hash(state)
+    D.hash(state)
+    E.hash(state)
+    F.hash(state)
+    G.hash(state)
+    H.hash(state)
+}
+
+public fun <T : Hash<T>, B : Hash<B>, C : Hash<C>, D : Hash<D>, E : Hash<E>, F : Hash<F>, G : Hash<G>, H : Hash<H>, I : Hash<I>, S> List<Any?>.hashFromTBCDEFGHI(state: S) {
+    val (T, B, C, D, E, F, G, H, I) = this
+    T.hash(state)
+    B.hash(state)
+    C.hash(state)
+    D.hash(state)
+    E.hash(state)
+    F.hash(state)
+    G.hash(state)
+    H.hash(state)
+    I.hash(state)
+}
+
+public fun <T : Hash<T>, B : Hash<B>, C : Hash<C>, D : Hash<D>, E : Hash<E>, F : Hash<F>, G : Hash<G>, H : Hash<H>, I : Hash<I>, J : Hash<J>, S> List<Any?>.hashFromTBCDEFGHIJ(state: S) {
+    val (T, B, C, D, E, F, G, H, I, J) = this
+    T.hash(state)
+    B.hash(state)
+    C.hash(state)
+    D.hash(state)
+    E.hash(state)
+    F.hash(state)
+    G.hash(state)
+    H.hash(state)
+    I.hash(state)
+    J.hash(state)
+}
+
+public fun <T : Hash<T>, B : Hash<B>, C : Hash<C>, D : Hash<D>, E : Hash<E>, F : Hash<F>, G : Hash<G>, H : Hash<H>, I : Hash<I>, J : Hash<J>, K : Hash<K>, S> List<Any?>.hashFromTBCDEFGHIJK(state: S) {
+    val (T, B, C, D, E, F, G, H, I, J, K) = this
+    T.hash(state)
+    B.hash(state)
+    C.hash(state)
+    D.hash(state)
+    E.hash(state)
+    F.hash(state)
+    G.hash(state)
+    H.hash(state)
+    I.hash(state)
+    J.hash(state)
+    K.hash(state)
+}
+
+public fun <T : Hash<T>, B : Hash<B>, C : Hash<C>, D : Hash<D>, E : Hash<E>, F : Hash<F>, G : Hash<G>, H : Hash<H>, I : Hash<I>, J : Hash<J>, K : Hash<K>, L : Hash<L>, S> List<Any?>.hashFromTBCDEFGHIJKL(state: S) {
+    val (T, B, C, D, E, F, G, H, I, J, K, L) = this
+    T.hash(state)
+    B.hash(state)
+    C.hash(state)
+    D.hash(state)
+    E.hash(state)
+    F.hash(state)
+    G.hash(state)
+    H.hash(state)
+    I.hash(state)
+    J.hash(state)
+    K.hash(state)
+    L.hash(state)
+}
+
+public fun <T : Hash<T>, H> List<T>.hashFromTSlice(state: H) {
     state.writeLengthPrefix(this.size)
     Hash.hashSlice(this, state)
 }

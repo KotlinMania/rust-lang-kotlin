@@ -1,8 +1,6 @@
 // port-lint: source arm_shared/hints.rs
 package io.github.kotlinmania.rustlang.corearch.armshared
 
-import io.github.kotlinmania.rustlang.corearch.arch.asm
-
 // # References
 //
 // - Section 7.4 "Hints" of ACLE
@@ -101,7 +99,7 @@ public fun yield() {
 public fun nop() {
     // SAFETY: `nop` performs no operation.
     run {
-        asm("nop", options(nomem, nostack, preservesFlags))
+        Unit
     }
 }
 

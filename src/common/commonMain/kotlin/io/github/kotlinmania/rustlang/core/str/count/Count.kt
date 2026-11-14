@@ -31,7 +31,7 @@ public val UNROLL_INNER: Int = 4
 
 public val USIZE_SIZE: Int = sizeOf<Int>(typeLayoutT = PrimitiveLayouts.USIZE64)
 
-internal fun countChars(s: String): Int =
+public fun countChars(s: String): Int =
     if (false || s.length < USIZE_SIZE * UNROLL_INNER) {
         // Avoid entering the optimized implementation for strings where the
         // difference is not likely to matter, or where it might even be slower.

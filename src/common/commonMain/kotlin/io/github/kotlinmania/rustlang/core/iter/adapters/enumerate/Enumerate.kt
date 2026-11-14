@@ -1,17 +1,19 @@
 // port-lint: source iter/adapters/enumerate.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.enumerate
 
-import io.github.kotlinmania.rustlang.core.iter.InPlaceIterable
-import io.github.kotlinmania.rustlang.core.iter.TrustedFused
-import io.github.kotlinmania.rustlang.core.iter.TrustedLen
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
-import io.github.kotlinmania.rustlang.core.iter.adapters.TrustedRandomAccess
-import io.github.kotlinmania.rustlang.core.iter.adapters.TrustedRandomAccessNoCoerce
+import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccess
+import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccessNoCoerce
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.tryGetUnchecked
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.InPlaceIterable
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedFused
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
 
 public typealias Source<I> = I.Source
@@ -29,7 +31,7 @@ public open class Enumerate<I>(
     public var iter: I,
     public var count: Int,
 ) : TrustedRandomAccess, TrustedRandomAccessNoCoerce, TrustedFused, TrustedLen<Enumerate<I>>, SourceIter<Any?, Source>, InPlaceIterable, Iterable<Pair<Int, Item>> {
-    override fun iterator(): kotlin.collections.Iterator<Pair<Int, Item>> = object : AbstractIterator<Pair<Int, Item>>() {
+    override fun iterator(): Iterator<Pair<Int, Item>> = object : AbstractIterator<Pair<Int, Item>>() {
         override fun computeNext() {
             when (val v = this@Enumerate.next()) {
                 null -> done()
@@ -106,7 +108,7 @@ public open class Enumerate<I>(
                 acc1
             }
         }
-        return this.iter.tryFold(init, Enumerate(this.count, fold))
+        return this.iter.tryFold(init, enumerate(this.count, fold))
     }
 
     public override fun <Acc> fold(init: Acc, fold: (Acc, Pair<Int, Item>) -> Acc): Acc {
@@ -118,7 +120,7 @@ public open class Enumerate<I>(
                 acc1
             }
         }
-        return this.iter.fold(init, Enumerate(this.count, fold))
+        return this.iter.fold(init, enumerate(this.count, fold))
     }
 
     public override fun advanceBy(n: Int): Result<Unit, NonZero<Int>> {
@@ -168,7 +170,7 @@ public open class Enumerate<I>(
             }
         }
         val count = this.count + this.iter.len()
-        return this.iter.tryRfold(init, Enumerate(count, fold))
+        return this.iter.tryRfold(init, enumerate(count, fold))
     }
 
     public open fun <Acc> rfold(init: Acc, fold: (Acc, Pair<Int, Item>) -> Acc): Acc {
@@ -182,7 +184,7 @@ public open class Enumerate<I>(
             }
         }
         val count = this.count + this.iter.len()
-        return this.iter.rfold(init, Enumerate(count, fold))
+        return this.iter.rfold(init, enumerate(count, fold))
     }
 
     public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int>> {
@@ -201,32 +203,32 @@ public open class Enumerate<I>(
     }
 
     public companion object {
-        public fun <I> typeLayout(typeLayoutI: io.github.kotlinmania.rustlang.core.mem.TypeLayout<I>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Enumerate<I>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Enumerate<I>> {
+        public fun <I> typeLayout(typeLayoutI: TypeLayout<I>): TypeLayout<Enumerate<I>> =
+            object : TypeLayout<Enumerate<I>> {
                 override val alignBytes: Long = listOf(8L, typeLayoutI.alignBytes).max()
-                private val off1: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(typeLayoutI.sizeBytes, 8L)
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes((off1 + 8L), alignBytes)
+                private val off1: Long = alignUpBytes(typeLayoutI.sizeBytes, 8L)
+                override val sizeBytes: Long = alignUpBytes((off1 + 8L), alignBytes)
                 override fun readNative(addr: Long): Enumerate<I> =
                     Enumerate(
                         (typeLayoutI).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readNative(addr + off1),
+                        (PrimitiveLayouts.USIZE64).readNative(addr + off1),
                     )
                 override fun writeNative(addr: Long, value: Enumerate<I>) {
                     (typeLayoutI).writeNative(addr, value.iter)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeNative(addr + off1, value.count)
+                    (PrimitiveLayouts.USIZE64).writeNative(addr + off1, value.count)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Enumerate<I> =
                     Enumerate(
                         (typeLayoutI).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readBytes(buf, offset + off1.toInt()),
+                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset + off1.toInt()),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Enumerate<I>) {
                     (typeLayoutI).writeBytes(buf, offset, value.iter)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeBytes(buf, offset + off1.toInt(), value.count)
+                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset + off1.toInt(), value.count)
                 }
             }
 
-        internal fun <I> new(iter: I): Enumerate<I> = Enumerate(iter = iter, count = 0)
+        public fun <I> new(iter: I): Enumerate<I> = Enumerate(iter = iter, count = 0)
 
         public val MAY_HAVE_SIDE_EFFECT: Boolean = I.MAY_HAVE_SIDE_EFFECT
 

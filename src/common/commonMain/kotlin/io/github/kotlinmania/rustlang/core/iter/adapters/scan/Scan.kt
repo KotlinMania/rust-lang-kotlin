@@ -1,12 +1,14 @@
 // port-lint: source iter/adapters/scan.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.scan
 
-import io.github.kotlinmania.rustlang.core.iter.InPlaceIterable
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.InPlaceIterable
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
 
 public class DebugStruct(
@@ -50,7 +52,7 @@ public open class Scan<I, St, F>(
     public var f: F,
     public var state: St,
 ) : SourceIter<Any?, Source>, InPlaceIterable, Iterable<B> {
-    override fun iterator(): kotlin.collections.Iterator<B> = object : AbstractIterator<B>() {
+    override fun iterator(): Iterator<B> = object : AbstractIterator<B>() {
         override fun computeNext() {
             when (val v = this@Scan.next()) {
                 null -> done()
@@ -85,7 +87,7 @@ public open class Scan<I, St, F>(
             } }
         val state = this.state
         val f = this.f
-        return this.iter.tryFold(init, Scan(state, f, fold)).intoTry()
+        return this.iter.tryFold(init, scan(state, f, fold)).intoTry()
     }
 
     public open fun <Aaa> fold(init: Aaa, fold: (Aaa, B) -> Aaa): Aaa = this.tryFold(init, NeverShortCircuit.wrapMut2(fold)).first
@@ -96,12 +98,12 @@ public open class Scan<I, St, F>(
     }
 
     public companion object {
-        public fun <I, St, F> typeLayout(typeLayoutI: io.github.kotlinmania.rustlang.core.mem.TypeLayout<I>, typeLayoutF: io.github.kotlinmania.rustlang.core.mem.TypeLayout<F>, typeLayoutSt: io.github.kotlinmania.rustlang.core.mem.TypeLayout<St>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Scan<I, St, F>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Scan<I, St, F>> {
+        public fun <I, St, F> typeLayout(typeLayoutI: TypeLayout<I>, typeLayoutF: TypeLayout<F>, typeLayoutSt: TypeLayout<St>): TypeLayout<Scan<I, St, F>> =
+            object : TypeLayout<Scan<I, St, F>> {
                 override val alignBytes: Long = listOf(1L, typeLayoutI.alignBytes, typeLayoutF.alignBytes, typeLayoutSt.alignBytes).max()
-                private val off1: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(typeLayoutI.sizeBytes, typeLayoutF.alignBytes)
-                private val off2: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes((off1 + typeLayoutF.sizeBytes), typeLayoutSt.alignBytes)
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes((off2 + typeLayoutSt.sizeBytes), alignBytes)
+                private val off1: Long = alignUpBytes(typeLayoutI.sizeBytes, typeLayoutF.alignBytes)
+                private val off2: Long = alignUpBytes((off1 + typeLayoutF.sizeBytes), typeLayoutSt.alignBytes)
+                override val sizeBytes: Long = alignUpBytes((off2 + typeLayoutSt.sizeBytes), alignBytes)
                 override fun readNative(addr: Long): Scan<I, St, F> =
                     Scan(
                         (typeLayoutI).readNative(addr),
@@ -126,7 +128,7 @@ public open class Scan<I, St, F>(
                 }
             }
 
-        internal fun <I, St, F> new(iter: I, state: St, f: F): Scan<I, St, F> = Scan(iter = iter, state = state, f = f)
+        public fun <I, St, F> new(iter: I, state: St, f: F): Scan<I, St, F> = Scan(iter = iter, state = state, f = f)
 
         public val EXPAND_BY: NonZero<Int>? = I.EXPAND_BY
 

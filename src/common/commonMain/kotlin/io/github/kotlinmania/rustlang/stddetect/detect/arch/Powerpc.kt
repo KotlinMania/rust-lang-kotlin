@@ -12,7 +12,7 @@ import io.github.kotlinmania.rustlang.stddetect.detect.checkFor
  * PLEASE: do not use this, it is an implementation detail subject
  * to change.
  */
-internal sealed class Feature {
+public sealed class Feature {
     /**
      * Altivec
      */
@@ -50,7 +50,7 @@ internal sealed class Feature {
      */
     public data object Power9Vector : Feature()
 
-    internal open fun toStr(): String =
+    public open fun toStr(): String =
         when (this) {
             Feature.altivec -> "altivec"
             Feature.vsx -> "vsx"
@@ -64,9 +64,9 @@ internal sealed class Feature {
         }
 
     public companion object {
-        internal val ALL: List<Feature> = listOf(Feature::altivec, Feature::vsx, Feature::power8, Feature::power8Altivec, Feature::power8Vector, Feature::power8Crypto, Feature::power9, Feature::power9Altivec, Feature::power9Vector)
+        public val ALL: List<Feature> = listOf(Feature::altivec, Feature::vsx, Feature::power8, Feature::power8Altivec, Feature::power8Vector, Feature::power8Crypto, Feature::power9, Feature::power9Altivec, Feature::power9Vector)
 
-        internal fun fromStr(s: String): Result<Feature, Unit> =
+        public fun fromStr(s: String): Result<Feature, Unit> =
             when (s) {
                 "altivec" -> Result.Ok(Feature::altivec)
                 "vsx" -> Result.Ok(Feature::vsx)
@@ -86,52 +86,52 @@ internal sealed class Feature {
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun altivec(): Boolean = checkFor(io.github.kotlinmania.rustlang.stddetect.detect.Feature::altivec)
+public fun altivec(): Boolean = checkFor(Feature::altivec)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun vsx(): Boolean = checkFor(io.github.kotlinmania.rustlang.stddetect.detect.Feature::vsx)
+public fun vsx(): Boolean = checkFor(Feature::vsx)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun power8(): Boolean = checkFor(io.github.kotlinmania.rustlang.stddetect.detect.Feature::power8)
+public fun power8(): Boolean = checkFor(Feature::power8)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun power8Altivec(): Boolean = checkFor(io.github.kotlinmania.rustlang.stddetect.detect.Feature::power8Altivec)
+public fun power8Altivec(): Boolean = checkFor(Feature::power8Altivec)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun power8Vector(): Boolean = checkFor(io.github.kotlinmania.rustlang.stddetect.detect.Feature::power8Vector)
+public fun power8Vector(): Boolean = checkFor(Feature::power8Vector)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun power8Crypto(): Boolean = checkFor(io.github.kotlinmania.rustlang.stddetect.detect.Feature::power8Crypto)
+public fun power8Crypto(): Boolean = checkFor(Feature::power8Crypto)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun power9(): Boolean = checkFor(io.github.kotlinmania.rustlang.stddetect.detect.Feature::power9)
+public fun power9(): Boolean = checkFor(Feature::power9)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun power9Altivec(): Boolean = checkFor(io.github.kotlinmania.rustlang.stddetect.detect.Feature::power9Altivec)
+public fun power9Altivec(): Boolean = checkFor(Feature::power9Altivec)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun power9Vector(): Boolean = checkFor(io.github.kotlinmania.rustlang.stddetect.detect.Feature::power9Vector)
+public fun power9Vector(): Boolean = checkFor(Feature::power9Vector)

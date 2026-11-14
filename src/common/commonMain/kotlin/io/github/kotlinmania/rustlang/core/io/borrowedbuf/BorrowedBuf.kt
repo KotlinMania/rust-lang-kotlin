@@ -200,31 +200,31 @@ public open class BorrowedBufDebug(
     public open fun fmt(f: Formatter): Result<Unit, Unit> = DebugStruct(f, "BorrowedBuf").field("init", this.init).field("filled", this.filled).field("capacity", this.capacity).finish()
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<BorrowedBufDebug> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<BorrowedBufDebug> {
+        public fun typeLayout(): TypeLayout<BorrowedBufDebug> =
+            object : TypeLayout<BorrowedBufDebug> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 24L
                 override fun readNative(addr: Long): BorrowedBufDebug =
                     BorrowedBufDebug(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readNative(addr + 8L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readNative(addr + 16L),
+                        (PrimitiveLayouts.BOOL).readNative(addr),
+                        (PrimitiveLayouts.USIZE64).readNative(addr + 8L),
+                        (PrimitiveLayouts.USIZE64).readNative(addr + 16L),
                     )
                 override fun writeNative(addr: Long, value: BorrowedBufDebug) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr, value.init)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeNative(addr + 8L, value.filled)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeNative(addr + 16L, value.capacity)
+                    (PrimitiveLayouts.BOOL).writeNative(addr, value.init)
+                    (PrimitiveLayouts.USIZE64).writeNative(addr + 8L, value.filled)
+                    (PrimitiveLayouts.USIZE64).writeNative(addr + 16L, value.capacity)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): BorrowedBufDebug =
                     BorrowedBufDebug(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readBytes(buf, offset + 8),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readBytes(buf, offset + 16),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset),
+                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset + 8),
+                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset + 16),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: BorrowedBufDebug) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset, value.init)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeBytes(buf, offset + 8, value.filled)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeBytes(buf, offset + 16, value.capacity)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset, value.init)
+                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset + 8, value.filled)
+                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset + 16, value.capacity)
                 }
             }
     }

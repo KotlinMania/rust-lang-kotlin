@@ -31,7 +31,7 @@ import io.github.kotlinmania.rustlang.core.num.imp.traits.Float
  * The algorithms described here are based on "Processing Long Numbers Quickly",
  * available here: <https://arxiv.org/pdf/2101.11408.pdf#section.11>.
  */
-internal fun <Int, F : Float<F, Any?>> parseLongMantissa(s: List<UByte>): BiasedFp {
+public fun <Int, F : Float<F, Any?>> parseLongMantissa(s: List<UByte>): BiasedFp {
     val MAX_SHIFT: Int = 60
     val NUM_POWERS: Int = 19
     val POWERS: UByteArray = ubyteArrayOf(0u, 3u, 6u, 9u, 13u, 16u, 19u, 23u, 26u, 29u, 33u, 36u, 39u, 43u, 46u, 49u, 53u, 56u, 59u)

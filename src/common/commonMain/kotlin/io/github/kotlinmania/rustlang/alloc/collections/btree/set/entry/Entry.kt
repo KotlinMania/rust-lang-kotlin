@@ -300,9 +300,12 @@ public sealed class Entry<T, A : AllocatorClone> {
  * }
  * ```
  */
-public open class OccupiedEntry<T, A : AllocatorClone>(
-    internal var inner: OccupiedEntry<T, SetValZST, A>,
+public open class OccupiedEntry<T, A : AllocatorClone> internal constructor(
+    innerCtorArg: OccupiedEntry<T, SetValZST, A>,
 ) {
+    public var inner: OccupiedEntry<T, SetValZST, A> = innerCtorArg
+        internal set
+
     public open fun fmt(f: StringBuilder) {
         DebugStruct(f, "OccupiedEntry").field("value", this.get()).finish()
     }
@@ -355,6 +358,14 @@ public open class OccupiedEntry<T, A : AllocatorClone>(
      * ```
      */
     public open fun remove(): T = this.inner.removeEntry().first
+
+    public companion object {
+        public operator fun <T, A : AllocatorClone> invoke(
+            inner: OccupiedEntry<T, SetValZST, A>,
+        ): OccupiedEntry<T, A> = OccupiedEntry<T, A>(
+            innerCtorArg = inner,
+        )
+    }
 }
 
 /**
@@ -390,9 +401,12 @@ public open class OccupiedEntry<T, A : AllocatorClone>(
  * }
  * ```
  */
-public open class VacantEntry<T, A : AllocatorClone>(
-    internal var inner: VacantEntry<T, SetValZST, A>,
+public open class VacantEntry<T, A : AllocatorClone> internal constructor(
+    innerCtorArg: VacantEntry<T, SetValZST, A>,
 ) {
+    public var inner: VacantEntry<T, SetValZST, A> = innerCtorArg
+        internal set
+
     public open fun fmt(f: StringBuilder) {
         DebugTuple(f, "VacantEntry").field(this.get()).finish()
     }
@@ -463,4 +477,12 @@ public open class VacantEntry<T, A : AllocatorClone>(
     }
 
     public open fun insertEntry(): OccupiedEntry<T, A> = OccupiedEntry(inner = this.inner.insertEntry(SetValZST))
+
+    public companion object {
+        public operator fun <T, A : AllocatorClone> invoke(
+            inner: VacantEntry<T, SetValZST, A>,
+        ): VacantEntry<T, A> = VacantEntry<T, A>(
+            innerCtorArg = inner,
+        )
+    }
 }

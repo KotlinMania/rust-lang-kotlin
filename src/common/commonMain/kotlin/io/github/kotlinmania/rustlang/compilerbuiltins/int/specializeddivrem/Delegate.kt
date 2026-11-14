@@ -83,7 +83,7 @@ public fun u128DivideSparc(duo: U128, div: U128, rem: RustMutableReference<U128>
                         val (quo1, rem2) = u64ByU64DivRem(duoMid, div0)
                         val duoLo1 = ((duo1.toUInt()).toULong()) or (rem2 shl 32)
                         val (quo0, rem1) = u64ByU64DivRem(duoLo1, div0)
-                        (rem1).write(U128.fromLong(rem1.toLong()))
+                        (rem1).write(U128.fromLong(rem1.pointer.rawAddress))
                         return (U128.fromLong(quo0.toLong())) or ((U128.fromLong(quo1.toLong())) shl 32) or ((U128.fromLong(quoHi.toLong())) shl 64)
                     }
                     val duoLo2 = duo1.toULong()

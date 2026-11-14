@@ -1,4 +1,4 @@
-@file:OptIn(kotlinx.cinterop.ExperimentalForeignApi::class, kotlin.ExperimentalUnsignedTypes::class)
+@file:OptIn(ExperimentalForeignApi::class, ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.corearch.aarch64
 
@@ -10,6 +10,7 @@ import io.github.kotlinmania.rustlang.corearch.aarch64.cinterop.corearchAarch64M
 import io.github.kotlinmania.rustlang.corearch.aarch64.cinterop.corearchAarch64MteStg
 import io.github.kotlinmania.rustlang.corearch.aarch64.cinterop.corearchAarch64MteSubp
 import kotlinx.cinterop.ByteVar
+import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.toCPointer
 import kotlinx.cinterop.toLong
 

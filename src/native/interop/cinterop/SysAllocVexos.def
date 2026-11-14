@@ -1,5 +1,0 @@
-package = io.github.kotlinmania.rustlang.std.sys.alloc.vexos.cinterop
-headers = sys_alloc_vexos_wrapper.h
-headerFilter = sys_alloc_vexos_wrapper.h
-compilerOpts = -Isrc/native/interop/cinterop
-staticLibraries = sys_alloc_vexos_wrapper.a

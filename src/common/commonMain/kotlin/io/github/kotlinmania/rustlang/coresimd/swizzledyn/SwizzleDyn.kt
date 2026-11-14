@@ -226,7 +226,7 @@ public fun loong64LasxSwizzle(bytes: Simd<UByte>, idxs: Simd<UByte>): Simd<UByte
  */
 public fun <T> transize(f: (T, T) -> T, a: Simd<UByte, N>, b: Simd<UByte, N>, n: Int): Simd<UByte> {
     // SAFETY: Same obligation to use this function as to use mem.transmuteCopy.
-    return mem.transmuteCopy(f(mem.transmuteCopy(a), mem.transmuteCopy(b)))
+    return transmuteCopy(f(transmuteCopy(a), transmuteCopy(b)))
 }
 
 /**

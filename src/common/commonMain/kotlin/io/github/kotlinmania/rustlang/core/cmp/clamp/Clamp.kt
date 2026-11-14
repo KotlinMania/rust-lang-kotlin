@@ -33,12 +33,12 @@ public fun <T> RangeFull.clamp(value: T): T = value
 // @unstable(feature = "f128", issue = "116909")
 public fun RangeFrom<F16>.clamp(value: F16): F16 {
     check(!this.start.isNan()) { "start was NaN" }
-    return value.max(this.start)
+    return run { val lhsMax0 = (value); val rhsMax0 = (F16.fromDouble(this.start.toDouble())); when { lhsMax0.isNaN() -> rhsMax0; rhsMax0.isNaN() -> lhsMax0; else -> maxOf(lhsMax0, rhsMax0) } }
 }
 
 public fun RangeToInclusive<F16>.clamp(value: F16): F16 {
     check(!this.end.isNan()) { "end was NaN" }
-    return value.min(this.end)
+    return run { val lhsMin0 = (value); val rhsMin0 = (F16.fromDouble(this.end.toDouble())); when { lhsMin0.isNaN() -> rhsMin0; rhsMin0.isNaN() -> lhsMin0; else -> minOf(lhsMin0, rhsMin0) } }
 }
 
 public fun RangeInclusive<F16>.clamp(value: F16): F16 {
@@ -81,12 +81,12 @@ public fun RangeInclusive<Double>.clamp(value: Double): Double {
 
 public fun RangeFrom<F128>.clamp(value: F128): F128 {
     check(!this.start.isNan()) { "start was NaN" }
-    return value.max(this.start)
+    return run { val lhsMax0 = (value); val rhsMax0 = (F128.fromDouble(this.start.toDouble())); when { lhsMax0.isNaN() -> rhsMax0; rhsMax0.isNaN() -> lhsMax0; else -> maxOf(lhsMax0, rhsMax0) } }
 }
 
 public fun RangeToInclusive<F128>.clamp(value: F128): F128 {
     check(!this.end.isNan()) { "end was NaN" }
-    return value.min(this.end)
+    return run { val lhsMin0 = (value); val rhsMin0 = (F128.fromDouble(this.end.toDouble())); when { lhsMin0.isNaN() -> rhsMin0; rhsMin0.isNaN() -> lhsMin0; else -> minOf(lhsMin0, rhsMin0) } }
 }
 
 public fun RangeInclusive<F128>.clamp(value: F128): F128 {

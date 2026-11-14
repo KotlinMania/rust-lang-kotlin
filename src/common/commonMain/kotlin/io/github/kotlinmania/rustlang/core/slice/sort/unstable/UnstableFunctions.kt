@@ -1,10 +1,10 @@
 package io.github.kotlinmania.rustlang.core.slice.sort.unstable
 
-import io.github.kotlinmania.rustlang.core.cfgSelect
-import io.github.kotlinmania.rustlang.core.ops.RangeBounds
+import io.github.kotlinmania.rustlang.core.ops.range.RangeBounds
+import io.github.kotlinmania.rustlang.core.slice.index.range
 import io.github.kotlinmania.rustlang.core.slice.sort.select.partitionAtIndex
 import io.github.kotlinmania.rustlang.core.slice.sort.shared.findExistingRun
-import io.github.kotlinmania.rustlang.core.slice.sort.shared.smallsort.insertionSortShiftLeft
+import io.github.kotlinmania.rustlang.core.slice.sort.unstable.heapsort.heapsort
 import io.github.kotlinmania.rustlang.core.slice.sort.unstable.quicksort.quicksort
 
 /**
@@ -26,7 +26,7 @@ public fun <T> sort(v: MutableList<T>, isLess: (T, T) -> Boolean) {
     if (len < 2) {
         return
     }
-    cfgSelect(any, feature, "optimize_for_size", targetPointerWidth, "16", heapsort, heapsort, v, isLess, MAX_LEN_ALWAYS_INSERTION_SORT, 20, intrinsics, likely, len, MAX_LEN_ALWAYS_INSERTION_SORT, insertionSortShiftLeft, v, 1, isLess, ipnsort, v, isLess)
+    heapsort(v, isLess)
 }
 
 /**

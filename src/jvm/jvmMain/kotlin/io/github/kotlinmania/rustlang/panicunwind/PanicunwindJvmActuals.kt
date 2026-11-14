@@ -1,4 +1,4 @@
-@file:OptIn(kotlin.ExperimentalUnsignedTypes::class)
+@file:OptIn(ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.panicunwind
 
@@ -24,9 +24,9 @@ private object PanicunwindJniBridge {
             }
         val libFileName =
             when (hostPlatform) {
-                "windows" -> "panicunwind_jni.dll"
-                "macos" -> "libpanicunwind_jni.dylib"
-                else -> "libpanicunwind_jni.so"
+                "windows" -> "kmcore_jni.dll"
+                "macos" -> "libkmcore_jni.dylib"
+                else -> "libkmcore_jni.so"
             }
         val pathSep = System.getProperty("path.separator", ":")
         val libPathProp = System.getProperty("java.library.path", "")
@@ -42,7 +42,7 @@ private object PanicunwindJniBridge {
         val stream = PanicunwindJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
-            val extracted = java.nio.file.Files.createTempFile("panicunwind_jni-", suffix).toFile()
+            val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
             extracted.deleteOnExit()
             stream.use { input ->
                 extracted.outputStream().use { output ->
@@ -52,7 +52,7 @@ private object PanicunwindJniBridge {
             System.load(extracted.absolutePath)
             return
         }
-        System.loadLibrary("panicunwind_jni")
+        System.loadLibrary("kmcore_jni")
     }
 
     @JvmStatic

@@ -1,14 +1,16 @@
 // port-lint: source range/iter.rs
 package io.github.kotlinmania.rustlang.core.range.iter
 
-import io.github.kotlinmania.rustlang.core.iter.Step
-import io.github.kotlinmania.rustlang.core.iter.TrustedLen
+import io.github.kotlinmania.rustlang.core.iter.range.Step
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
+import io.github.kotlinmania.rustlang.core.mem.replace
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
-import io.github.kotlinmania.rustlang.core.ops.range.RangeFrom
-import io.github.kotlinmania.rustlang.core.ops.range.RangeInclusive
 import io.github.kotlinmania.rustlang.core.range.Range
+import io.github.kotlinmania.rustlang.core.range.RangeFrom
+import io.github.kotlinmania.rustlang.core.range.RangeInclusive
 import io.github.kotlinmania.rustlang.core.result.Result
 
 // Safety: This macro must only be used on types that are `Copy` and result in ranges
@@ -18,7 +20,7 @@ import io.github.kotlinmania.rustlang.core.result.Result
  * By-value [Range] iterator.
  */
 public open class RangeIter<A>(
-    internal var value: Range<A>,
+    public var value: Range<A>,
 ) : TrustedLen<RangeIter<A>>, Iterable<A> {
     public var field0: Range<A>
         get() = value
@@ -26,7 +28,7 @@ public open class RangeIter<A>(
             value = v
         }
 
-    override fun iterator(): kotlin.collections.Iterator<A> = object : AbstractIterator<A>() {
+    override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
         override fun computeNext() {
             when (val v = this@RangeIter.next()) {
                 null -> done()
@@ -55,7 +57,7 @@ public open class RangeIter<A>(
      * }
      * ```
      */
-    public open fun remainder(): Range<A> = Range(start = this.value.start, end = this.value.end)
+    public open fun remainder(): io.github.kotlinmania.rustlang.core.range.Range<A> = Range(start = this.value.start, end = this.value.end)
 
     public override fun next(): A? = this.value.next()
 
@@ -110,21 +112,21 @@ public val MAY_HAVE_SIDE_EFFECT8: Boolean = false
 
 public val MAY_HAVE_SIDE_EFFECT9: Boolean = false
 
-public fun <A : Step<A>> Range<A>.intoIter(): RangeIter<A> = RangeIter(this.into())
+public fun <A : Step<A>> io.github.kotlinmania.rustlang.core.range.Range<A>.intoIter(): RangeIter<A> = RangeIter(this.into())
 
 /**
  * By-value [RangeInclusive] iterator.
  */
 public open class RangeInclusiveIter<A>(
-    public var value: RangeInclusive<A>,
+    public var value: io.github.kotlinmania.rustlang.core.range.legacy.RangeInclusive<A>,
 ) : TrustedLen<RangeInclusiveIter<A>>, Iterable<A> {
-    public var field0: RangeInclusive<A>
+    public var field0: io.github.kotlinmania.rustlang.core.range.legacy.RangeInclusive<A>
         get() = value
         set(v) {
             value = v
         }
 
-    override fun iterator(): kotlin.collections.Iterator<A> = object : AbstractIterator<A>() {
+    override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
         override fun computeNext() {
             when (val v = this@RangeInclusiveIter.next()) {
                 null -> done()
@@ -200,7 +202,7 @@ public open class RangeFromIter<A>(
      */
     public var exhausted: Boolean,
 ) : TrustedLen<RangeFromIter<A>>, Iterable<A> {
-    override fun iterator(): kotlin.collections.Iterator<A> = object : AbstractIterator<A>() {
+    override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
         override fun computeNext() {
             when (val v = this@RangeFromIter.next()) {
                 null -> done()
@@ -260,10 +262,10 @@ public open class RangeFromIter<A>(
                 this.exhausted = true
                 return this.start.clone()
             }
-            return mem.replace(this.start, n)
+            return replace(this.start, n)
         }
         val n1 = Step.forward(this.start.clone(), 1)
-        return mem.replace(this.start, n1)
+        return replace(this.start, n1)
     }
 
     public override fun sizeHint(): Pair<Int, Int?> = Pair(Int.MAX_VALUE, null)
@@ -296,28 +298,28 @@ public open class RangeFromIter<A>(
     }
 
     public companion object {
-        public fun <A> typeLayout(typeLayoutA: io.github.kotlinmania.rustlang.core.mem.TypeLayout<A>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<RangeFromIter<A>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<RangeFromIter<A>> {
+        public fun <A> typeLayout(typeLayoutA: TypeLayout<A>): TypeLayout<RangeFromIter<A>> =
+            object : TypeLayout<RangeFromIter<A>> {
                 override val alignBytes: Long = listOf(1L, typeLayoutA.alignBytes).max()
-                private val off1: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(typeLayoutA.sizeBytes, 1L)
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes((off1 + 1L), alignBytes)
+                private val off1: Long = alignUpBytes(typeLayoutA.sizeBytes, 1L)
+                override val sizeBytes: Long = alignUpBytes((off1 + 1L), alignBytes)
                 override fun readNative(addr: Long): RangeFromIter<A> =
                     RangeFromIter(
                         (typeLayoutA).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + off1),
+                        (PrimitiveLayouts.BOOL).readNative(addr + off1),
                     )
                 override fun writeNative(addr: Long, value: RangeFromIter<A>) {
                     (typeLayoutA).writeNative(addr, value.start)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + off1, value.exhausted)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + off1, value.exhausted)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): RangeFromIter<A> =
                     RangeFromIter(
                         (typeLayoutA).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + off1.toInt()),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + off1.toInt()),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: RangeFromIter<A>) {
                     (typeLayoutA).writeBytes(buf, offset, value.start)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + off1.toInt(), value.exhausted)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + off1.toInt(), value.exhausted)
                 }
             }
     }

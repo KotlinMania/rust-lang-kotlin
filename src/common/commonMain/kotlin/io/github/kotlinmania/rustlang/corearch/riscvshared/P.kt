@@ -1,8 +1,6 @@
 // port-lint: source riscv_shared/p.rs
 package io.github.kotlinmania.rustlang.corearch.riscvshared
 
-import io.github.kotlinmania.rustlang.corearch.arch.asm
-
 // RISC-V Packed SIMD intrinsics; shared part.
 //
 // RV64 only part is placed in riscv64 folder.
@@ -22,7 +20,6 @@ import io.github.kotlinmania.rustlang.corearch.arch.asm
  */
 public fun add16(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x20, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -31,7 +28,6 @@ public fun add16(a: Int, b: Int): Int {
  */
 public fun radd16(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x00, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -40,7 +36,6 @@ public fun radd16(a: Int, b: Int): Int {
  */
 public fun uradd16(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x10, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -49,7 +44,6 @@ public fun uradd16(a: Int, b: Int): Int {
  */
 public fun kadd16(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x08, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -58,7 +52,6 @@ public fun kadd16(a: Int, b: Int): Int {
  */
 public fun ukadd16(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x18, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -67,7 +60,6 @@ public fun ukadd16(a: Int, b: Int): Int {
  */
 public fun sub16(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x21, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -76,7 +68,6 @@ public fun sub16(a: Int, b: Int): Int {
  */
 public fun rsub16(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x01, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -85,7 +76,6 @@ public fun rsub16(a: Int, b: Int): Int {
  */
 public fun ursub16(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x11, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -94,7 +84,6 @@ public fun ursub16(a: Int, b: Int): Int {
  */
 public fun ksub16(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x09, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -103,7 +92,6 @@ public fun ksub16(a: Int, b: Int): Int {
  */
 public fun uksub16(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x19, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -112,7 +100,6 @@ public fun uksub16(a: Int, b: Int): Int {
  */
 public fun cras16(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x22, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -121,7 +108,6 @@ public fun cras16(a: Int, b: Int): Int {
  */
 public fun rcras16(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x02, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -130,7 +116,6 @@ public fun rcras16(a: Int, b: Int): Int {
  */
 public fun urcras16(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x12, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -139,7 +124,6 @@ public fun urcras16(a: Int, b: Int): Int {
  */
 public fun kcras16(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x0A, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -148,7 +132,6 @@ public fun kcras16(a: Int, b: Int): Int {
  */
 public fun ukcras16(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x1A, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -157,7 +140,6 @@ public fun ukcras16(a: Int, b: Int): Int {
  */
 public fun crsa16(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x23, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -166,7 +148,6 @@ public fun crsa16(a: Int, b: Int): Int {
  */
 public fun rcrsa16(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x03, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -175,7 +156,6 @@ public fun rcrsa16(a: Int, b: Int): Int {
  */
 public fun urcrsa16(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x13, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -184,7 +164,6 @@ public fun urcrsa16(a: Int, b: Int): Int {
  */
 public fun kcrsa16(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x0B, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -193,7 +172,6 @@ public fun kcrsa16(a: Int, b: Int): Int {
  */
 public fun ukcrsa16(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x1B, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -202,7 +180,6 @@ public fun ukcrsa16(a: Int, b: Int): Int {
  */
 public fun stas16(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x7A, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -211,7 +188,6 @@ public fun stas16(a: Int, b: Int): Int {
  */
 public fun rstas16(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x5A, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -220,7 +196,6 @@ public fun rstas16(a: Int, b: Int): Int {
  */
 public fun urstas16(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x6A, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -229,7 +204,6 @@ public fun urstas16(a: Int, b: Int): Int {
  */
 public fun kstas16(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x62, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -238,7 +212,6 @@ public fun kstas16(a: Int, b: Int): Int {
  */
 public fun ukstas16(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x72, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -247,7 +220,6 @@ public fun ukstas16(a: Int, b: Int): Int {
  */
 public fun stsa16(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x7B, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -256,7 +228,6 @@ public fun stsa16(a: Int, b: Int): Int {
  */
 public fun rstsa16(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x5B, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -265,7 +236,6 @@ public fun rstsa16(a: Int, b: Int): Int {
  */
 public fun urstsa16(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x6B, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -274,7 +244,6 @@ public fun urstsa16(a: Int, b: Int): Int {
  */
 public fun kstsa16(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x63, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -283,7 +252,6 @@ public fun kstsa16(a: Int, b: Int): Int {
  */
 public fun ukstsa16(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x73, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -292,7 +260,6 @@ public fun ukstsa16(a: Int, b: Int): Int {
  */
 public fun add8(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x24, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -301,7 +268,6 @@ public fun add8(a: Int, b: Int): Int {
  */
 public fun radd8(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x04, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -310,7 +276,6 @@ public fun radd8(a: Int, b: Int): Int {
  */
 public fun uradd8(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x14, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -319,7 +284,6 @@ public fun uradd8(a: Int, b: Int): Int {
  */
 public fun kadd8(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x0C, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -328,7 +292,6 @@ public fun kadd8(a: Int, b: Int): Int {
  */
 public fun ukadd8(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x1C, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -337,7 +300,6 @@ public fun ukadd8(a: Int, b: Int): Int {
  */
 public fun sub8(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x25, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -346,7 +308,6 @@ public fun sub8(a: Int, b: Int): Int {
  */
 public fun rsub8(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x05, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -355,7 +316,6 @@ public fun rsub8(a: Int, b: Int): Int {
  */
 public fun ursub8(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x15, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -364,7 +324,6 @@ public fun ursub8(a: Int, b: Int): Int {
  */
 public fun ksub8(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x0D, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -373,7 +332,6 @@ public fun ksub8(a: Int, b: Int): Int {
  */
 public fun uksub8(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x1D, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -382,7 +340,6 @@ public fun uksub8(a: Int, b: Int): Int {
  */
 public fun sra16(a: Int, b: UInt): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x28, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -391,7 +348,6 @@ public fun sra16(a: Int, b: UInt): Int {
  */
 public fun sra16u(a: Int, b: UInt): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x30, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -400,7 +356,6 @@ public fun sra16u(a: Int, b: UInt): Int {
  */
 public fun srl16(a: Int, b: UInt): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x29, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -409,7 +364,6 @@ public fun srl16(a: Int, b: UInt): Int {
  */
 public fun srl16u(a: Int, b: UInt): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x31, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -418,7 +372,6 @@ public fun srl16u(a: Int, b: UInt): Int {
  */
 public fun sll16(a: Int, b: UInt): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x2A, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -427,7 +380,6 @@ public fun sll16(a: Int, b: UInt): Int {
  */
 public fun ksll16(a: Int, b: UInt): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x32, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -436,7 +388,6 @@ public fun ksll16(a: Int, b: UInt): Int {
  */
 public fun kslra16(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x2B, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -445,7 +396,6 @@ public fun kslra16(a: Int, b: Int): Int {
  */
 public fun kslra16u(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x33, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -454,7 +404,6 @@ public fun kslra16u(a: Int, b: Int): Int {
  */
 public fun sra8(a: Int, b: UInt): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x2C, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -463,7 +412,6 @@ public fun sra8(a: Int, b: UInt): Int {
  */
 public fun sra8u(a: Int, b: UInt): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x34, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -472,7 +420,6 @@ public fun sra8u(a: Int, b: UInt): Int {
  */
 public fun srl8(a: Int, b: UInt): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x2D, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -481,7 +428,6 @@ public fun srl8(a: Int, b: UInt): Int {
  */
 public fun srl8u(a: Int, b: UInt): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x35, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -490,7 +436,6 @@ public fun srl8u(a: Int, b: UInt): Int {
  */
 public fun sll8(a: Int, b: UInt): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x2E, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -499,7 +444,6 @@ public fun sll8(a: Int, b: UInt): Int {
  */
 public fun ksll8(a: Int, b: UInt): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x36, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -508,7 +452,6 @@ public fun ksll8(a: Int, b: UInt): Int {
  */
 public fun kslra8(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x2F, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -517,7 +460,6 @@ public fun kslra8(a: Int, b: Int): Int {
  */
 public fun kslra8u(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x37, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -526,7 +468,6 @@ public fun kslra8u(a: Int, b: Int): Int {
  */
 public fun cmpeq16(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x26, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -535,7 +476,6 @@ public fun cmpeq16(a: Int, b: Int): Int {
  */
 public fun scmplt16(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x06, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -544,7 +484,6 @@ public fun scmplt16(a: Int, b: Int): Int {
  */
 public fun scmple16(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x0E, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -553,7 +492,6 @@ public fun scmple16(a: Int, b: Int): Int {
  */
 public fun ucmplt16(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x16, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -562,7 +500,6 @@ public fun ucmplt16(a: Int, b: Int): Int {
  */
 public fun ucmple16(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x1E, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -571,7 +508,6 @@ public fun ucmple16(a: Int, b: Int): Int {
  */
 public fun cmpeq8(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x27, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -580,7 +516,6 @@ public fun cmpeq8(a: Int, b: Int): Int {
  */
 public fun scmplt8(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x07, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -589,7 +524,6 @@ public fun scmplt8(a: Int, b: Int): Int {
  */
 public fun scmple8(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x0F, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -598,7 +532,6 @@ public fun scmple8(a: Int, b: Int): Int {
  */
 public fun ucmplt8(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x17, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -607,7 +540,6 @@ public fun ucmplt8(a: Int, b: Int): Int {
  */
 public fun ucmple8(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x1F, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -616,7 +548,6 @@ public fun ucmple8(a: Int, b: Int): Int {
  */
 public fun smin16(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x40, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -625,7 +556,6 @@ public fun smin16(a: Int, b: Int): Int {
  */
 public fun umin16(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x48, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -634,7 +564,6 @@ public fun umin16(a: Int, b: Int): Int {
  */
 public fun smax16(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x41, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -643,7 +572,6 @@ public fun smax16(a: Int, b: Int): Int {
  */
 public fun umax16(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x49, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -654,7 +582,6 @@ public fun umax16(a: Int, b: Int): Int {
  */
 public fun kabs16(a: Int): Int {
     val value: Int
-    asm(".insn i 0x77, 0x0, {}, {}, %lo(0xAD1)", lateout, reg, value, reg, a, options(pure, nomem, nostack))
     return value
 }
 
@@ -663,7 +590,6 @@ public fun kabs16(a: Int): Int {
  */
 public fun clrs16(a: Int): Int {
     val value: Int
-    asm(".insn i 0x77, 0x0, {}, {}, %lo(0xAE8)", lateout, reg, value, reg, a, options(pure, nomem, nostack))
     return value
 }
 
@@ -672,7 +598,6 @@ public fun clrs16(a: Int): Int {
  */
 public fun clz16(a: Int): Int {
     val value: Int
-    asm(".insn i 0x77, 0x0, {}, {}, %lo(0xAE9)", lateout, reg, value, reg, a, options(pure, nomem, nostack))
     return value
 }
 
@@ -682,7 +607,6 @@ public fun clz16(a: Int): Int {
 public fun swap16(a: Int): Int {
     val value: Int
     // this instruction is an alias for `pkbt rd, rs1, rs1`.
-    asm(".insn r 0x77, 0x0, 0x0F, {}, {}, {}", lateout, reg, value, reg, a, reg, a, options(pure, nomem, nostack))
     return value
 }
 
@@ -691,7 +615,6 @@ public fun swap16(a: Int): Int {
  */
 public fun smin8(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x44, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -700,7 +623,6 @@ public fun smin8(a: Int, b: Int): Int {
  */
 public fun umin8(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x4C, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -709,7 +631,6 @@ public fun umin8(a: Int, b: Int): Int {
  */
 public fun smax8(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x45, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -718,7 +639,6 @@ public fun smax8(a: Int, b: Int): Int {
  */
 public fun umax8(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x4D, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -729,7 +649,6 @@ public fun umax8(a: Int, b: Int): Int {
  */
 public fun kabs8(a: Int): Int {
     val value: Int
-    asm(".insn i 0x77, 0x0, {}, {}, %lo(0xAD0)", lateout, reg, value, reg, a, options(pure, nomem, nostack))
     return value
 }
 
@@ -738,7 +657,6 @@ public fun kabs8(a: Int): Int {
  */
 public fun clrs8(a: Int): Int {
     val value: Int
-    asm(".insn i 0x77, 0x0, {}, {}, %lo(0xAE0)", lateout, reg, value, reg, a, options(pure, nomem, nostack))
     return value
 }
 
@@ -747,7 +665,6 @@ public fun clrs8(a: Int): Int {
  */
 public fun clz8(a: Int): Int {
     val value: Int
-    asm(".insn i 0x77, 0x0, {}, {}, %lo(0xAE1)", lateout, reg, value, reg, a, options(pure, nomem, nostack))
     return value
 }
 
@@ -756,7 +673,6 @@ public fun clz8(a: Int): Int {
  */
 public fun swap8(a: Int): Int {
     val value: Int
-    asm(".insn i 0x77, 0x0, {}, {}, %lo(0xAD8)", lateout, reg, value, reg, a, options(pure, nomem, nostack))
     return value
 }
 
@@ -765,7 +681,6 @@ public fun swap8(a: Int): Int {
  */
 public fun sunpkd810(a: Int): Int {
     val value: Int
-    asm(".insn i 0x77, 0x0, {}, {}, %lo(0xAC8)", lateout, reg, value, reg, a, options(pure, nomem, nostack))
     return value
 }
 
@@ -774,7 +689,6 @@ public fun sunpkd810(a: Int): Int {
  */
 public fun sunpkd820(a: Int): Int {
     val value: Int
-    asm(".insn i 0x77, 0x0, {}, {}, %lo(0xAC9)", lateout, reg, value, reg, a, options(pure, nomem, nostack))
     return value
 }
 
@@ -783,7 +697,6 @@ public fun sunpkd820(a: Int): Int {
  */
 public fun sunpkd830(a: Int): Int {
     val value: Int
-    asm(".insn i 0x77, 0x0, {}, {}, %lo(0xACA)", lateout, reg, value, reg, a, options(pure, nomem, nostack))
     return value
 }
 
@@ -792,7 +705,6 @@ public fun sunpkd830(a: Int): Int {
  */
 public fun sunpkd831(a: Int): Int {
     val value: Int
-    asm(".insn i 0x77, 0x0, {}, {}, %lo(0xACB)", lateout, reg, value, reg, a, options(pure, nomem, nostack))
     return value
 }
 
@@ -801,7 +713,6 @@ public fun sunpkd831(a: Int): Int {
  */
 public fun sunpkd832(a: Int): Int {
     val value: Int
-    asm(".insn i 0x77, 0x0, {}, {}, %lo(0xAD3)", lateout, reg, value, reg, a, options(pure, nomem, nostack))
     return value
 }
 
@@ -810,7 +721,6 @@ public fun sunpkd832(a: Int): Int {
  */
 public fun zunpkd810(a: Int): Int {
     val value: Int
-    asm(".insn i 0x77, 0x0, {}, {}, %lo(0xACC)", lateout, reg, value, reg, a, options(pure, nomem, nostack))
     return value
 }
 
@@ -819,7 +729,6 @@ public fun zunpkd810(a: Int): Int {
  */
 public fun zunpkd820(a: Int): Int {
     val value: Int
-    asm(".insn i 0x77, 0x0, {}, {}, %lo(0xACD)", lateout, reg, value, reg, a, options(pure, nomem, nostack))
     return value
 }
 
@@ -828,7 +737,6 @@ public fun zunpkd820(a: Int): Int {
  */
 public fun zunpkd830(a: Int): Int {
     val value: Int
-    asm(".insn i 0x77, 0x0, {}, {}, %lo(0xACE)", lateout, reg, value, reg, a, options(pure, nomem, nostack))
     return value
 }
 
@@ -837,7 +745,6 @@ public fun zunpkd830(a: Int): Int {
  */
 public fun zunpkd831(a: Int): Int {
     val value: Int
-    asm(".insn i 0x77, 0x0, {}, {}, %lo(0xACF)", lateout, reg, value, reg, a, options(pure, nomem, nostack))
     return value
 }
 
@@ -846,7 +753,6 @@ public fun zunpkd831(a: Int): Int {
  */
 public fun zunpkd832(a: Int): Int {
     val value: Int
-    asm(".insn i 0x77, 0x0, {}, {}, %lo(0xAD7)", lateout, reg, value, reg, a, options(pure, nomem, nostack))
     return value
 }
 
@@ -857,7 +763,6 @@ public fun zunpkd832(a: Int): Int {
  */
 public fun pkbt16(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x1, 0x0F, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -866,7 +771,6 @@ public fun pkbt16(a: Int, b: Int): Int {
  */
 public fun pktb16(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x1, 0x1F, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -875,7 +779,6 @@ public fun pktb16(a: Int, b: Int): Int {
  */
 public fun clrs32(a: Int): Int {
     val value: Int
-    asm(".insn i 0x77, 0x0, {}, {}, %lo(0xAF8)", lateout, reg, value, reg, a, options(pure, nomem, nostack))
     return value
 }
 
@@ -884,7 +787,6 @@ public fun clrs32(a: Int): Int {
  */
 public fun clz32(a: Int): Int {
     val value: Int
-    asm(".insn i 0x77, 0x0, {}, {}, %lo(0xAF9)", lateout, reg, value, reg, a, options(pure, nomem, nostack))
     return value
 }
 
@@ -893,7 +795,6 @@ public fun clz32(a: Int): Int {
  */
 public fun pbsad(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x0, 0x7E, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -902,7 +803,6 @@ public fun pbsad(a: Int, b: Int): Int {
  */
 public fun pbsada(t: Int, a: Int, b: Int): Int {
     var value: Int
-    asm(".insn r 0x77, 0x0, 0x7F, {}, {}, {}", inlateout, reg, t, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -911,7 +811,6 @@ public fun pbsada(t: Int, a: Int, b: Int): Int {
  */
 public fun smaqa(t: Int, a: Int, b: Int): Int {
     var value: Int
-    asm(".insn r 0x77, 0x0, 0x64, {}, {}, {}", inlateout, reg, t, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -920,7 +819,6 @@ public fun smaqa(t: Int, a: Int, b: Int): Int {
  */
 public fun umaqa(t: Int, a: Int, b: Int): Int {
     var value: Int
-    asm(".insn r 0x77, 0x0, 0x66, {}, {}, {}", inlateout, reg, t, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -929,7 +827,6 @@ public fun umaqa(t: Int, a: Int, b: Int): Int {
  */
 public fun smaqasu(t: Int, a: Int, b: Int): Int {
     var value: Int
-    asm(".insn r 0x77, 0x0, 0x65, {}, {}, {}", inlateout, reg, t, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -938,7 +835,6 @@ public fun smaqasu(t: Int, a: Int, b: Int): Int {
  */
 public fun kaddh(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x1, 0x02, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -947,7 +843,6 @@ public fun kaddh(a: Int, b: Int): Int {
  */
 public fun ksubh(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x1, 0x03, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -956,7 +851,6 @@ public fun ksubh(a: Int, b: Int): Int {
  */
 public fun ukaddh(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x1, 0x0A, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }
 
@@ -965,6 +859,5 @@ public fun ukaddh(a: Int, b: Int): Int {
  */
 public fun uksubh(a: Int, b: Int): Int {
     val value: Int
-    asm(".insn r 0x77, 0x1, 0x0B, {}, {}, {}", lateout, reg, value, reg, a, reg, b, options(pure, nomem, nostack))
     return value
 }

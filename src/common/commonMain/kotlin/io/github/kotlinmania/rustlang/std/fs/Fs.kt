@@ -1,28 +1,32 @@
 // port-lint: source fs.rs
 package io.github.kotlinmania.rustlang.std.fs
 
-import io.github.kotlinmania.fsimp.FileAttr
-import io.github.kotlinmania.fsimp.FilePermissions
-import io.github.kotlinmania.fsimp.symlink
-import io.github.kotlinmania.rustlang.alloc.io.buffered.bufreader.BufReader
-import io.github.kotlinmania.rustlang.alloc.io.buffered.bufwriter.BufWriter
+import io.github.kotlinmania.rustlang.alloc.io.read.Read
 import io.github.kotlinmania.rustlang.core.io.IoHandle
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
 import io.github.kotlinmania.rustlang.core.io.seek.Seek
 import io.github.kotlinmania.rustlang.core.io.seek.SeekFrom
+import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
-import io.github.kotlinmania.rustlang.std.fmt
-import io.github.kotlinmania.rustlang.std.os.xous.ffi.definitions.Error
+import io.github.kotlinmania.rustlang.std.io.BufReader
+import io.github.kotlinmania.rustlang.std.io.BufWriter
+import io.github.kotlinmania.rustlang.std.io.ErrorKind
+import io.github.kotlinmania.rustlang.std.io.defaultReadToEnd
+import io.github.kotlinmania.rustlang.std.io.defaultReadToString
+import io.github.kotlinmania.rustlang.std.io.streamLenDefault
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.path.PathBuf
 import io.github.kotlinmania.rustlang.std.sys.AsInner
 import io.github.kotlinmania.rustlang.std.sys.AsInnerMut
 import io.github.kotlinmania.rustlang.std.sys.FromInner
 import io.github.kotlinmania.rustlang.std.sys.IntoInner
+import io.github.kotlinmania.rustlang.std.sys.fs.symlink
+import io.github.kotlinmania.rustlang.std.sys.fs.unix.FilePermissions
+import io.github.kotlinmania.rustlang.std.sys.fs.unsupported.FileAttr
 import io.github.kotlinmania.rustlang.std.time.SystemTime
 
 // Filesystem manipulation operations.
@@ -183,8 +187,8 @@ public class DebugTuple(
  * [read]: File.read
  */
 public open class File(
-    public var inner: io.github.kotlinmania.fsimp.File,
-) : AsInner<io.github.kotlinmania.fsimp.File>, FromInner<io.github.kotlinmania.fsimp.File, File>, IntoInner<io.github.kotlinmania.fsimp.File>, Read, Write, Seek, IoHandle {
+    public var inner: io.github.kotlinmania.rustlang.std.sys.fs.unix.File,
+) : AsInner<io.github.kotlinmania.rustlang.std.sys.fs.unix.File>, FromInner<io.github.kotlinmania.rustlang.std.sys.fs.unix.File, File>, IntoInner<io.github.kotlinmania.rustlang.std.sys.fs.unix.File>, Read, Write, Seek, IoHandle {
     /**
      * Attempts to sync all OS-internal file content and metadata to disk.
      *
@@ -215,7 +219,7 @@ public open class File(
      * }
      * ```
      */
-    public open fun syncAll(): Result<Unit> = this.inner.fsync()
+    public open fun syncAll(): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = this.inner.fsync()
 
     /**
      * This function is similar to [syncAll], except that it might not
@@ -244,7 +248,7 @@ public open class File(
      * }
      * ```
      */
-    public open fun syncData(): Result<Unit> = this.inner.datasync()
+    public open fun syncData(): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = this.inner.datasync()
 
     /**
      * Acquire an exclusive lock on the file. Blocks until the lock can be acquired.
@@ -296,7 +300,7 @@ public open class File(
      * }
      * ```
      */
-    public open fun lock(): Result<Unit> = this.inner.lock()
+    public open fun lock(): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = this.inner.lock()
 
     /**
      * Acquire a shared (non-exclusive) lock on the file. Blocks until the lock can be acquired.
@@ -347,7 +351,7 @@ public open class File(
      * }
      * ```
      */
-    public open fun lockShared(): Result<Unit> = this.inner.lockShared()
+    public open fun lockShared(): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = this.inner.lockShared()
 
     /**
      * Try to acquire an exclusive lock on the file.
@@ -525,7 +529,7 @@ public open class File(
      * }
      * ```
      */
-    public open fun unlock(): Result<Unit> = this.inner.unlock()
+    public open fun unlock(): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = this.inner.unlock()
 
     /**
      * Truncates or extends the underlying file, updating the size of
@@ -562,7 +566,7 @@ public open class File(
      * Note that this method alters the content of the underlying file, even
      * though it takes `self` rather than `self`.
      */
-    public open fun setLen(size: ULong): Result<Unit> = this.inner.truncate(size)
+    public open fun setLen(size: ULong): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = this.inner.truncate(size)
 
     /**
      * Queries metadata about the underlying file.
@@ -579,7 +583,7 @@ public open class File(
      * }
      * ```
      */
-    public open fun metadata(): Result<Metadata> = this.inner.fileAttr().map({ Metadata(it) })
+    public open fun metadata(): Result<Metadata, io.github.kotlinmania.rustlang.std.io.error.Error> = this.inner.fileAttr().map({ Metadata(it) })
 
     /**
      * Creates a new `File` instance that shares the same underlying file handle
@@ -620,7 +624,7 @@ public open class File(
      * }
      * ```
      */
-    public open fun tryClone(): Result<File> {
+    public open fun tryClone(): Result<File, io.github.kotlinmania.rustlang.std.io.error.Error> {
         return Result.Ok(File(inner = when (val tryResult = this.inner.duplicate()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }))
     }
 
@@ -658,7 +662,7 @@ public open class File(
      * Note that this method alters the permissions of the underlying file,
      * even though it takes `self` rather than `self`.
      */
-    public open fun setPermissions(perm: Permissions): Result<Unit> = this.inner.setPermissions(perm.value)
+    public open fun setPermissions(perm: Permissions): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = this.inner.setPermissions(perm.value)
 
     /**
      * Changes the timestamps of the underlying file.
@@ -699,23 +703,23 @@ public open class File(
      * }
      * ```
      */
-    public open fun setTimes(times: FileTimes): Result<Unit> = this.inner.setTimes(times.value)
+    public open fun setTimes(times: FileTimes): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = this.inner.setTimes(times.value)
 
     /**
      * Changes the modification time of the underlying file.
      *
      * This is an alias for `setTimes(FileTimes.new().setModified(time))`.
      */
-    public open fun setModified(time: SystemTime): Result<Unit> = this.setTimes(FileTimes.new().setModified(time))
+    public open fun setModified(time: SystemTime): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = this.setTimes(FileTimes.new().setModified(time))
 
     // In addition to the `implementation`s here, `File` also has `implementation`s for
     // `AsFd`/`From<OwnedFd>`/`Into<OwnedFd>` and
     // `AsRawFd`/`IntoRawFd`/`FromRawFd`, on Unix and WASI, and
     // `AsHandle`/`From<OwnedHandle>`/`Into<OwnedHandle>` and
     // `AsRawHandle`/`IntoRawHandle`/`FromRawHandle` on Windows.
-    public override fun asInner(): io.github.kotlinmania.fsimp.File = this.inner
+    public override fun asInner(): io.github.kotlinmania.rustlang.std.sys.fs.unix.File = this.inner
 
-    public override fun intoInner(): io.github.kotlinmania.fsimp.File = this.inner
+    public override fun intoInner(): io.github.kotlinmania.rustlang.std.sys.fs.unix.File = this.inner
 
     public open fun fmt(f: StringBuilder) {
         this.inner.fmt(f)
@@ -734,7 +738,7 @@ public open class File(
      *
      * [changes]: io#platform-specific-behavior
      */
-    public open fun read(buf: MutableList<UByte>): Result<Int> = this.inner.read(buf)
+    public open fun read(buf: MutableList<UByte>): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> = this.inner.read(buf)
 
     /**
      * Like `read`, except that it reads into a slice of buffers.
@@ -749,9 +753,9 @@ public open class File(
      *
      * [changes]: io#platform-specific-behavior
      */
-    public open fun readVectored(bufs: MutableList<IoSliceMut>): Result<Int> = this.inner.readVectored(bufs)
+    public open fun readVectored(bufs: MutableList<IoSliceMut>): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> = this.inner.readVectored(bufs)
 
-    public open fun readBuf(cursor: BorrowedCursor<UByte>): Result<Unit> = this.inner.readBuf(cursor)
+    public open fun readBuf(cursor: BorrowedCursor<UByte>): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = this.inner.readBuf(cursor)
 
     /**
      * Determines if `File` has an efficient `readVectored` implementation.
@@ -768,17 +772,17 @@ public open class File(
     public open fun isReadVectored(): Boolean = this.inner.isReadVectored()
 
     // Reserves space in the buffer based on the file size when available.
-    public open fun readToEnd(buf: List<UByte>): Result<Int> {
+    public open fun readToEnd(buf: List<UByte>): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> {
         val size = bufferCapacityRequired(this)
         when (val tryResult = buf.tryReserve((size ?: 0))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-        return io.defaultReadToEnd(this, buf, size)
+        return defaultReadToEnd(this, buf, size)
     }
 
     // Reserves space in the buffer based on the file size when available.
-    public open fun readToString(buf: String): Result<Int> {
+    public open fun readToString(buf: String): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> {
         val size = bufferCapacityRequired(this)
         when (val tryResult = buf.tryReserve((size ?: 0))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-        return io.defaultReadToString(this, buf, size)
+        return defaultReadToString(this, buf, size)
     }
 
     /**
@@ -794,7 +798,7 @@ public open class File(
      *
      * [changes]: io#platform-specific-behavior
      */
-    public open fun write(buf: List<UByte>): Result<Int> = this.inner.write(buf)
+    public open fun write(buf: List<UByte>): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> = this.inner.write(buf)
 
     /**
      * Like `write`, except that it writes into a slice of buffers.
@@ -809,7 +813,7 @@ public open class File(
      *
      * [changes]: io#platform-specific-behavior
      */
-    public open fun writeVectored(bufs: List<IoSlice>): Result<Int> = this.inner.writeVectored(bufs)
+    public open fun writeVectored(bufs: List<IoSlice>): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> = this.inner.writeVectored(bufs)
 
     /**
      * Determines if `File` has an efficient `writeVectored` implementation.
@@ -839,7 +843,7 @@ public open class File(
      *
      * [changes]: io#platform-specific-behavior
      */
-    public open fun flush(): Result<Unit> = this.inner.flush()
+    public open fun flush(): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = this.inner.flush()
 
     /**
      * Seek to an offset, in bytes in a file.
@@ -854,7 +858,7 @@ public open class File(
      *
      * [changes]: io#platform-specific-behavior
      */
-    public open fun seek(pos: SeekFrom): Result<ULong> = this.inner.seek(pos)
+    public open fun seek(pos: SeekFrom): Result<ULong, io.github.kotlinmania.rustlang.std.io.error.Error> = this.inner.seek(pos)
 
     /**
      * Returns the length of this file (in bytes).
@@ -869,7 +873,7 @@ public open class File(
      *
      * [changes]: io#platform-specific-behavior
      */
-    public open fun streamLen(): Result<ULong> {
+    public open fun streamLen(): Result<ULong, io.github.kotlinmania.rustlang.std.io.error.Error> {
         when (val matchVal = this.inner.size()) {
             null -> {}
             else -> {
@@ -877,30 +881,30 @@ public open class File(
                 return result
             }
         }
-        return io.streamLenDefault(this)
+        return streamLenDefault(this)
     }
 
-    public open fun streamPosition(): Result<ULong> = this.inner.tell()
+    public open fun streamPosition(): Result<ULong, io.github.kotlinmania.rustlang.std.io.error.Error> = this.inner.tell()
 
-    public open fun readVectoredRead(bufs: MutableList<IoSliceMut>): Result<Int> = (this).readVectored(bufs)
+    public open fun readVectoredRead(bufs: MutableList<IoSliceMut>): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> = (this).readVectored(bufs)
 
-    public open fun readBufRead(cursor: BorrowedCursor<UByte>): Result<Unit> = (this).readBuf(cursor)
+    public open fun readBufRead(cursor: BorrowedCursor<UByte>): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = (this).readBuf(cursor)
 
     public open fun isReadVectoredRead(): Boolean = (this).isReadVectored()
 
-    public open fun readToEndRead(buf: List<UByte>): Result<Int> = (this).readToEnd(buf)
+    public open fun readToEndRead(buf: List<UByte>): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> = (this).readToEnd(buf)
 
-    public open fun readToStringRead(buf: String): Result<Int> = (this).readToString(buf)
+    public open fun readToStringRead(buf: String): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> = (this).readToString(buf)
 
-    public open fun writeVectoredWrite(bufs: List<IoSlice>): Result<Int> = (this).writeVectored(bufs)
+    public open fun writeVectoredWrite(bufs: List<IoSlice>): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> = (this).writeVectored(bufs)
 
     public open fun isWriteVectoredWrite(): Boolean = (this).isWriteVectored()
 
-    public open fun flushWrite(): Result<Unit> = (this).flush()
+    public open fun flushWrite(): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = (this).flush()
 
-    public open fun streamLenSeek(): Result<ULong> = (this).streamLen()
+    public open fun streamLenSeek(): Result<ULong, io.github.kotlinmania.rustlang.std.io.error.Error> = (this).streamLen()
 
-    public open fun streamPositionSeek(): Result<ULong> = (this).streamPosition()
+    public open fun streamPositionSeek(): Result<ULong, io.github.kotlinmania.rustlang.std.io.error.Error> = (this).streamPosition()
 
     public companion object {
         /**
@@ -931,7 +935,7 @@ public open class File(
          * }
          * ```
          */
-        public fun open(path: Path): Result<File> = OpenOptions.new().read(true).open(path)
+        public fun open(path: Path): Result<File, io.github.kotlinmania.rustlang.std.io.error.Error> = OpenOptions.new().read(true).open(path)
 
         /**
          * Attempts to open a file in read-only mode with buffering.
@@ -969,9 +973,9 @@ public open class File(
          * }
          * ```
          */
-        public fun openBuffered(path: Path): Result<BufReader<File>> {
+        public fun openBuffered(path: Path): Result<BufReader<File>, io.github.kotlinmania.rustlang.std.io.error.Error> {
             // Allocate the buffer *first* so we don't affect the filesystem otherwise.
-            return io.BufReader.tryNewWith({ File.open(path) })
+            return BufReader.tryNewWith({ File.open(path) })
         }
 
         /**
@@ -1005,7 +1009,7 @@ public open class File(
          * }
          * ```
          */
-        public fun create(path: Path): Result<File> = OpenOptions.new().write(true).create(true).truncate(true).open(path)
+        public fun create(path: Path): Result<File, io.github.kotlinmania.rustlang.std.io.error.Error> = OpenOptions.new().write(true).create(true).truncate(true).open(path)
 
         /**
          * Opens a file in write-only mode with buffering.
@@ -1043,9 +1047,9 @@ public open class File(
          * }
          * ```
          */
-        public fun createBuffered(path: Path): Result<BufWriter<File>> {
+        public fun createBuffered(path: Path): Result<BufWriter<File>, io.github.kotlinmania.rustlang.std.io.error.Error> {
             // Allocate the buffer *first* so we don't affect the filesystem otherwise.
-            return io.BufWriter.tryNewWith({ File.create(path) })
+            return BufWriter.tryNewWith({ File.create(path) })
         }
 
         /**
@@ -1079,7 +1083,7 @@ public open class File(
          * }
          * ```
          */
-        public fun createNew(path: Path): Result<File> = OpenOptions.new().read(true).write(true).createNew(true).open(path)
+        public fun createNew(path: Path): Result<File, io.github.kotlinmania.rustlang.std.io.error.Error> = OpenOptions.new().read(true).write(true).createNew(true).open(path)
 
         /**
          * Returns a new OpenOptions object.
@@ -1111,7 +1115,7 @@ public open class File(
          */
         public fun options(): OpenOptions = OpenOptions.new()
 
-        public fun fromInner(f: io.github.kotlinmania.fsimp.File): File = File(inner = f)
+        public fun fromInner(f: io.github.kotlinmania.rustlang.std.sys.fs.unix.File): File = File(inner = f)
     }
 }
 
@@ -1174,6 +1178,7 @@ public sealed class TryLockError {
  *
  * ```kotlin
  * import std.fs.Dir
+ * import std.io
  *
  * @feature(dirfd)
  * public fun doctestEntry(): Result<Unit> {
@@ -1191,8 +1196,8 @@ public sealed class TryLockError {
  * [TOCTOU]: self#time-of-check-to-time-of-use-toctou
  */
 public open class Dir(
-    public var inner: io.github.kotlinmania.fsimp.Dir,
-) : AsInner<io.github.kotlinmania.fsimp.Dir>, FromInner<io.github.kotlinmania.fsimp.Dir, Dir>, IntoInner<io.github.kotlinmania.fsimp.Dir> {
+    public var inner: io.github.kotlinmania.rustlang.std.sys.fs.common.Dir,
+) : AsInner<io.github.kotlinmania.rustlang.std.sys.fs.common.Dir>, FromInner<io.github.kotlinmania.rustlang.std.sys.fs.common.Dir, Dir>, IntoInner<io.github.kotlinmania.rustlang.std.sys.fs.common.Dir> {
     /**
      * Queries metadata about the underlying directory.
      *
@@ -1214,7 +1219,7 @@ public open class Dir(
      * }
      * ```
      */
-    public open fun selfMetadata(): Result<Metadata> = this.inner.selfMetadata().map({ Metadata(it) })
+    public open fun selfMetadata(): Result<Metadata, io.github.kotlinmania.rustlang.std.io.error.Error> = this.inner.selfMetadata().map({ Metadata(it) })
 
     /**
      * Attempts to open a file in read-only mode relative to this directory.
@@ -1231,6 +1236,7 @@ public open class Dir(
      *
      * ```kotlin
      * import std.fs.Dir
+     * import std.io
      *
      * @feature(dirfd)
      * public fun doctestEntry(): Result<Unit> {
@@ -1245,7 +1251,7 @@ public open class Dir(
      * }
      * ```
      */
-    public open fun openFile(path: Path): Result<File> = this.inner.openFile(path, OpenOptions.new().read(true).value).map({ f -> File(inner = f) })
+    public open fun openFile(path: Path): Result<File, io.github.kotlinmania.rustlang.std.io.error.Error> = this.inner.openFile(path, OpenOptions.new().read(true).value).map({ f -> File(inner = f) })
 
     /**
      * Attempts to open a file according to `opts` relative to this directory.
@@ -1281,7 +1287,7 @@ public open class Dir(
      * }
      * ```
      */
-    public open fun openFileWith(path: Path, opts: OpenOptions): Result<File> = this.inner.openFile(path, opts.value).map({ f -> File(inner = f) })
+    public open fun openFileWith(path: Path, opts: OpenOptions): Result<File, io.github.kotlinmania.rustlang.std.io.error.Error> = this.inner.openFile(path, opts.value).map({ f -> File(inner = f) })
 
     /**
      * Attempts to remove a file relative to this directory.
@@ -1310,7 +1316,7 @@ public open class Dir(
      * }
      * ```
      */
-    public open fun removeFile(path: Path): Result<Unit> = this.inner.removeFile(path)
+    public open fun removeFile(path: Path): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = this.inner.removeFile(path)
 
     /**
      * Attempts to rename a file or directory relative to this directory to a new name, replacing
@@ -1340,7 +1346,7 @@ public open class Dir(
      * }
      * ```
      */
-    public open fun rename(from: Path, toDir: Dir, to: Path): Result<Unit> = this.inner.rename(from, toDir.inner, to)
+    public open fun rename(from: Path, toDir: Dir, to: Path): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = this.inner.rename(from, toDir.inner, to)
 
     /**
      * Attempts to create a directory relative to this directory.
@@ -1349,7 +1355,7 @@ public open class Dir(
      * relative to the current working directory, or at an absolute path, see
      * [`fs.createDir`][fs.createDir].
      */
-    public open fun createDir(path: Path): Result<Unit> = this.inner.createDir(path)
+    public open fun createDir(path: Path): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = this.inner.createDir(path)
 
     /**
      * Attempts to open a directory in read-only mode relative to this directory.
@@ -1378,7 +1384,7 @@ public open class Dir(
      * }
      * ```
      */
-    public open fun openDir(path: Path): Result<Dir> = this.inner.openDir(path, OpenOptions.new().read(true).value).map({ inner -> Dir(inner = inner) })
+    public open fun openDir(path: Path): Result<Dir, io.github.kotlinmania.rustlang.std.io.error.Error> = this.inner.openDir(path, OpenOptions.new().read(true).value).map({ inner -> Dir(inner = inner) })
 
     /**
      * Attempts to open a directory relative to this directory according to `opts`.
@@ -1407,7 +1413,7 @@ public open class Dir(
      * }
      * ```
      */
-    public open fun openDirWith(path: Path, opts: OpenOptions): Result<Dir> = this.inner.openDir(path, opts.value).map({ inner -> Dir(inner = inner) })
+    public open fun openDirWith(path: Path, opts: OpenOptions): Result<Dir, io.github.kotlinmania.rustlang.std.io.error.Error> = this.inner.openDir(path, opts.value).map({ inner -> Dir(inner = inner) })
 
     /**
      * Attempts to remove a directory relative to this directory.
@@ -1437,7 +1443,7 @@ public open class Dir(
      * }
      * ```
      */
-    public open fun removeDir(path: Path): Result<Unit> = this.inner.removeDir(path)
+    public open fun removeDir(path: Path): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = this.inner.removeDir(path)
 
     /**
      * Creates a new `Dir` instance that shares the same underlying directory handle
@@ -1461,7 +1467,7 @@ public open class Dir(
      * }
      * ```
      */
-    public open fun tryClone(): Result<Dir> {
+    public open fun tryClone(): Result<Dir, io.github.kotlinmania.rustlang.std.io.error.Error> {
         return Result.Ok(Dir(inner = when (val tryResult = this.inner.duplicate()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }))
     }
 
@@ -1489,7 +1495,7 @@ public open class Dir(
      * }
      * ```
      */
-    public open fun metadata(path: Path): Result<Metadata> = this.inner.metadata(path).map({ Metadata(it) })
+    public open fun metadata(path: Path): Result<Metadata, io.github.kotlinmania.rustlang.std.io.error.Error> = this.inner.metadata(path).map({ Metadata(it) })
 
     /**
      * Queries the file system to get information about a file, directory, etc. relative to this
@@ -1515,11 +1521,11 @@ public open class Dir(
      * }
      * ```
      */
-    public open fun symlinkMetadata(path: Path): Result<Metadata> = this.inner.symlinkMetadata(path).map({ Metadata(it) })
+    public open fun symlinkMetadata(path: Path): Result<Metadata, io.github.kotlinmania.rustlang.std.io.error.Error> = this.inner.symlinkMetadata(path).map({ Metadata(it) })
 
-    public override fun asInner(): io.github.kotlinmania.fsimp.Dir = this.inner
+    public override fun asInner(): io.github.kotlinmania.rustlang.std.sys.fs.common.Dir = this.inner
 
-    public override fun intoInner(): io.github.kotlinmania.fsimp.Dir = this.inner
+    public override fun intoInner(): io.github.kotlinmania.rustlang.std.sys.fs.common.Dir = this.inner
 
     public open fun fmt(f: StringBuilder) {
         this.inner.fmt(f)
@@ -1540,6 +1546,7 @@ public open class Dir(
          *
          * ```kotlin
          * import std.fs.Dir
+         * import std.io
          *
          * @feature(dirfd)
          * public fun doctestEntry(): Result<Unit> {
@@ -1554,7 +1561,7 @@ public open class Dir(
          * }
          * ```
          */
-        public fun open(path: Path): Result<Dir> = io.github.kotlinmania.fsimp.Dir.open(path, OpenOptions.new().read(true).value).map({ inner -> Dir(inner = inner) })
+        public fun open(path: Path): Result<Dir, io.github.kotlinmania.rustlang.std.io.error.Error> = io.github.kotlinmania.rustlang.std.sys.fs.common.Dir.open(path, OpenOptions.new().read(true).value).map({ inner -> Dir(inner = inner) })
 
         /**
          * Attempts to open a directory at `path` according to `opts`.
@@ -1571,6 +1578,7 @@ public open class Dir(
          * ```kotlin
          * import std.fs.Dir
          * import std.fs.OpenOptions
+         * import std.io
          *
          * @feature(dirfd)
          * public fun doctestEntry(): Result<Unit> {
@@ -1585,7 +1593,7 @@ public open class Dir(
          * }
          * ```
          */
-        public fun openWith(path: Path, opts: OpenOptions): Result<Dir> = io.github.kotlinmania.fsimp.Dir.open(path, opts.value).map({ inner -> Dir(inner = inner) })
+        public fun openWith(path: Path, opts: OpenOptions): Result<Dir, io.github.kotlinmania.rustlang.std.io.error.Error> = io.github.kotlinmania.rustlang.std.sys.fs.common.Dir.open(path, opts.value).map({ inner -> Dir(inner = inner) })
 
         /**
          * Attempts to open a directory at `path` with the minimum permissions for traversal.
@@ -1601,6 +1609,7 @@ public open class Dir(
          *
          * ```kotlin
          * import std.fs.Dir
+         * import std.io
          *
          * @feature(dirfd)
          * public fun doctestEntry(): Result<Unit> {
@@ -1616,9 +1625,9 @@ public open class Dir(
          * }
          * ```
          */
-        public fun openForTraversal(path: Path): Result<Dir> = io.github.kotlinmania.fsimp.Dir.openForTraversal(path).map({ inner -> Dir(inner = inner) })
+        public fun openForTraversal(path: Path): Result<Dir, io.github.kotlinmania.rustlang.std.io.error.Error> = io.github.kotlinmania.rustlang.std.sys.fs.common.Dir.openForTraversal(path).map({ inner -> Dir(inner = inner) })
 
-        public fun fromInner(f: io.github.kotlinmania.fsimp.Dir): Dir = Dir(inner = f)
+        public fun fromInner(f: io.github.kotlinmania.rustlang.std.sys.fs.common.Dir): Dir = Dir(inner = f)
     }
 }
 
@@ -1639,12 +1648,16 @@ public open class Metadata(
             value = v
         }
 
+    public open fun clone(): Metadata = Metadata(value)
+
     /**
      * Returns the file type for this metadata.
      *
      * # Examples
      *
      * ```kotlin
+     * import std.fs
+     *
      * fun main(): Result<Unit> {
      *     val metadata = metadata("foo.txt").getOrElse { return Result.failure(it) }
      *     println("${metadata.fileType()}")
@@ -1662,6 +1675,8 @@ public open class Metadata(
      * # Examples
      *
      * ```kotlin
+     * import std.fs
+     *
      * fun main(): Result<Unit> {
      *     val metadata = metadata("foo.txt").getOrElse { return Result.failure(it) }
      *     check(!metadata.isDir())
@@ -1685,6 +1700,8 @@ public open class Metadata(
      * # Examples
      *
      * ```kotlin
+     * import std.fs
+     *
      * fun main(): Result<Unit> {
      *     val metadata = metadata("foo.txt").getOrElse { return Result.failure(it) }
      *     check(metadata.isFile())
@@ -1722,6 +1739,8 @@ public open class Metadata(
      * # Examples
      *
      * ```kotlin
+     * import std.fs
+     *
      * fun main(): Result<Unit> {
      *     val metadata = metadata("foo.txt").getOrElse { return Result.failure(it) }
      *     check(0 == metadata.len())
@@ -1737,6 +1756,8 @@ public open class Metadata(
      * # Examples
      *
      * ```kotlin
+     * import std.fs
+     *
      * fun main(): Result<Unit> {
      *     val metadata = metadata("foo.txt").getOrElse { return Result.failure(it) }
      *     check(!metadata.permissions().readonly())
@@ -1760,6 +1781,8 @@ public open class Metadata(
      * # Examples
      *
      * ```kotlin
+     * import std.fs
+     *
      * fun main(): Result<Unit> {
      *     val metadata = metadata("foo.txt").getOrElse { return Result.failure(it) }
      *     when (val matchVal = metadata.modified()) {
@@ -1775,7 +1798,7 @@ public open class Metadata(
      * }
      * ```
      */
-    public open fun modified(): Result<SystemTime> = this.value.modified().map(FromInner::fromInner)
+    public open fun modified(): Result<SystemTime, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.modified().map(FromInner::fromInner)
 
     /**
      * Returns the last access time of this metadata.
@@ -1795,6 +1818,8 @@ public open class Metadata(
      * # Examples
      *
      * ```kotlin
+     * import std.fs
+     *
      * fun main(): Result<Unit> {
      *     val metadata = metadata("foo.txt").getOrElse { return Result.failure(it) }
      *     when (val matchVal = metadata.accessed()) {
@@ -1810,7 +1835,7 @@ public open class Metadata(
      * }
      * ```
      */
-    public open fun accessed(): Result<SystemTime> = this.value.accessed().map(FromInner::fromInner)
+    public open fun accessed(): Result<SystemTime, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.accessed().map(FromInner::fromInner)
 
     /**
      * Returns the creation time listed in this metadata.
@@ -1827,6 +1852,8 @@ public open class Metadata(
      * # Examples
      *
      * ```kotlin
+     * import std.fs
+     *
      * fun main(): Result<Unit> {
      *     val metadata = metadata("foo.txt").getOrElse { return Result.failure(it) }
      *     when (val matchVal = metadata.created()) {
@@ -1842,7 +1869,7 @@ public open class Metadata(
      * }
      * ```
      */
-    public open fun created(): Result<SystemTime> = this.value.created().map(FromInner::fromInner)
+    public open fun created(): Result<SystemTime, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.created().map(FromInner::fromInner)
 
     public open fun fmt(f: StringBuilder) {
         val debug = DebugStruct(f, "Metadata")
@@ -1898,15 +1925,15 @@ public open class Metadata(
  * the next entry from the OS.
  */
 public open class ReadDir(
-    public var value: io.github.kotlinmania.fsimp.ReadDir,
-) : Iterable<Result<DirEntry>> {
-    public var field0: io.github.kotlinmania.fsimp.ReadDir
+    public var value: io.github.kotlinmania.rustlang.std.sys.fs.unix.ReadDir,
+) : Iterable<Result<DirEntry, io.github.kotlinmania.rustlang.std.io.error.Error>> {
+    public var field0: io.github.kotlinmania.rustlang.std.sys.fs.unix.ReadDir
         get() = value
         set(v) {
             value = v
         }
 
-    override fun iterator(): kotlin.collections.Iterator<Result<DirEntry>> = object : AbstractIterator<Result<DirEntry>>() {
+    override fun iterator(): Iterator<Result<DirEntry, io.github.kotlinmania.rustlang.std.io.error.Error>> = object : AbstractIterator<Result<DirEntry, io.github.kotlinmania.rustlang.std.io.error.Error>>() {
         override fun computeNext() {
             when (val v = this@ReadDir.next()) {
                 null -> done()
@@ -1925,9 +1952,9 @@ public open class ReadDir(
      * path, which is subject to race conditions if the file system has changed since the `ReadDir`
      * was created.
      */
-    public open fun dir(): Result<Dir> = this.value.dir().map({ d -> Dir(inner = d) })
+    public open fun dir(): Result<Dir, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.dir().map({ d -> Dir(inner = d) })
 
-    public open fun next(): Result<DirEntry>? = this.value.next()?.let({ entry -> entry.map({ DirEntry(it) }) })
+    public open fun next(): Result<DirEntry, io.github.kotlinmania.rustlang.std.io.error.Error>? = this.value.next()?.let({ entry -> entry.map({ DirEntry(it) }) })
 }
 
 /**
@@ -1948,9 +1975,9 @@ public open class ReadDir(
  * [changes]: io#platform-specific-behavior
  */
 public open class DirEntry(
-    public var value: io.github.kotlinmania.fsimp.DirEntry,
-) : AsInner<io.github.kotlinmania.fsimp.DirEntry> {
-    public var field0: io.github.kotlinmania.fsimp.DirEntry
+    public var value: io.github.kotlinmania.rustlang.std.sys.fs.unix.DirEntry,
+) : AsInner<io.github.kotlinmania.rustlang.std.sys.fs.unix.DirEntry> {
+    public var field0: io.github.kotlinmania.rustlang.std.sys.fs.unix.DirEntry
         get() = value
         set(v) {
             value = v
@@ -1965,6 +1992,8 @@ public open class DirEntry(
      * # Examples
      *
      * ```kotlin
+     * import std.fs
+     *
      * fun main(): Result<Unit> {
      *     for (entry in readDir(".").getOrElse { return Result.failure(it) }) {
      *         val dir = entry.getOrElse { return Result.failure(it) }
@@ -2006,6 +2035,8 @@ public open class DirEntry(
      * # Examples
      *
      * ```kotlin
+     * import std.fs
+     *
      * when (val matchVal = readDir(".")) {
      *     is Ok -> {
      *         val (entries) = matchVal
@@ -2030,7 +2061,7 @@ public open class DirEntry(
      * }
      * ```
      */
-    public open fun metadata(): Result<Metadata> = this.value.metadata().map({ Metadata(it) })
+    public open fun metadata(): Result<Metadata, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.metadata().map({ Metadata(it) })
 
     /**
      * Returns the file type for the file that this entry points at.
@@ -2049,6 +2080,8 @@ public open class DirEntry(
      * # Examples
      *
      * ```kotlin
+     * import std.fs
+     *
      * when (val matchVal = readDir(".")) {
      *     is Ok -> {
      *         val (entries) = matchVal
@@ -2073,7 +2106,7 @@ public open class DirEntry(
      * }
      * ```
      */
-    public open fun fileType(): Result<FileType> = this.value.fileType().map({ FileType(it) })
+    public open fun fileType(): Result<FileType, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.fileType().map({ FileType(it) })
 
     /**
      * Returns the file name of this directory entry without any
@@ -2088,6 +2121,8 @@ public open class DirEntry(
      * # Examples
      *
      * ```kotlin
+     * import std.fs
+     *
      * when (val matchVal = readDir(".")) {
      *     is Ok -> {
      *         val (entries) = matchVal
@@ -2109,7 +2144,7 @@ public open class DirEntry(
         DebugTuple(f, "DirEntry").field(this.path()).finish()
     }
 
-    public override fun asInner(): io.github.kotlinmania.fsimp.DirEntry = this.value
+    public override fun asInner(): io.github.kotlinmania.rustlang.std.sys.fs.unix.DirEntry = this.value
 }
 
 /**
@@ -2146,13 +2181,15 @@ public open class DirEntry(
  * ```
  */
 public open class OpenOptions(
-    public var value: io.github.kotlinmania.fsimp.OpenOptions,
-) : AsInner<io.github.kotlinmania.fsimp.OpenOptions>, AsInnerMut<io.github.kotlinmania.fsimp.OpenOptions> {
-    public var field0: io.github.kotlinmania.fsimp.OpenOptions
+    public var value: io.github.kotlinmania.rustlang.std.sys.fs.unix.OpenOptions,
+) : AsInner<io.github.kotlinmania.rustlang.std.sys.fs.unix.OpenOptions>, AsInnerMut<io.github.kotlinmania.rustlang.std.sys.fs.unix.OpenOptions> {
+    public var field0: io.github.kotlinmania.rustlang.std.sys.fs.unix.OpenOptions
         get() = value
         set(v) {
             value = v
         }
+
+    public open fun clone(): OpenOptions = OpenOptions(value)
 
     /**
      * Sets the option for read access.
@@ -2378,11 +2415,11 @@ public open class OpenOptions(
      * [NotFound]: io.ErrorKind.NotFound
      * [PermissionDenied]: io.ErrorKind.PermissionDenied
      */
-    public open fun open(path: Path): Result<File> = this.open(path)
+    public open fun open(path: Path): Result<File, io.github.kotlinmania.rustlang.std.io.error.Error> = this.open(path)
 
-    public override fun asInner(): io.github.kotlinmania.fsimp.OpenOptions = this.value
+    public override fun asInner(): io.github.kotlinmania.rustlang.std.sys.fs.unix.OpenOptions = this.value
 
-    public override fun asInnerMut(): io.github.kotlinmania.fsimp.OpenOptions = this.value
+    public override fun asInnerMut(): io.github.kotlinmania.rustlang.std.sys.fs.unix.OpenOptions = this.value
 
     public companion object {
         /**
@@ -2399,7 +2436,7 @@ public open class OpenOptions(
          * val file = options.read(true).open("foo.txt")
          * ```
          */
-        public fun new(): OpenOptions = OpenOptions(io.github.kotlinmania.fsimp.OpenOptions.new())
+        public fun new(): OpenOptions = OpenOptions(io.github.kotlinmania.rustlang.std.sys.fs.unix.OpenOptions.new())
     }
 }
 
@@ -2407,13 +2444,15 @@ public open class OpenOptions(
  * Representation of the various timestamps on a file.
  */
 public open class FileTimes(
-    public var value: io.github.kotlinmania.fsimp.FileTimes,
-) : AsInnerMut<io.github.kotlinmania.fsimp.FileTimes> {
-    public var field0: io.github.kotlinmania.fsimp.FileTimes
+    public var value: io.github.kotlinmania.rustlang.std.sys.fs.unix.FileTimes,
+) : AsInnerMut<io.github.kotlinmania.rustlang.std.sys.fs.unix.FileTimes> {
+    public var field0: io.github.kotlinmania.rustlang.std.sys.fs.unix.FileTimes
         get() = value
         set(v) {
             value = v
         }
+
+    public open fun clone(): FileTimes = FileTimes(value)
 
     /**
      * Set the last access time of a file.
@@ -2431,7 +2470,7 @@ public open class FileTimes(
         return this
     }
 
-    public override fun asInnerMut(): io.github.kotlinmania.fsimp.FileTimes = this.value
+    public override fun asInnerMut(): io.github.kotlinmania.rustlang.std.sys.fs.unix.FileTimes = this.value
 
     public companion object {
         /**
@@ -2459,6 +2498,8 @@ public open class Permissions(
         set(v) {
             value = v
         }
+
+    public open fun clone(): Permissions = Permissions(value)
 
     /**
      * Returns `true` if these permissions describe a readonly (unwritable) file.
@@ -2583,13 +2624,15 @@ public open class Permissions(
  * It is returned by [Metadata.fileType] method.
  */
 public open class FileType(
-    public var value: io.github.kotlinmania.fsimp.FileType,
-) : AsInner<io.github.kotlinmania.fsimp.FileType> {
-    public var field0: io.github.kotlinmania.fsimp.FileType
+    public var value: io.github.kotlinmania.rustlang.std.sys.fs.unix.FileType,
+) : AsInner<io.github.kotlinmania.rustlang.std.sys.fs.unix.FileType> {
+    public var field0: io.github.kotlinmania.rustlang.std.sys.fs.unix.FileType
         get() = value
         set(v) {
             value = v
         }
+
+    public open fun clone(): FileType = FileType(value)
 
     /**
      * Tests whether this file type represents a directory. The
@@ -2603,6 +2646,8 @@ public open class FileType(
      * # Examples
      *
      * ```kotlin
+     * import std.fs
+     *
      * fun main(): Result<Unit> {
      *     val metadata = metadata("foo.txt").getOrElse { return Result.failure(it) }
      *     val fileType = metadata.fileType()
@@ -2631,6 +2676,8 @@ public open class FileType(
      * # Examples
      *
      * ```kotlin
+     * import std.fs
+     *
      * fun main(): Result<Unit> {
      *     val metadata = metadata("foo.txt").getOrElse { return Result.failure(it) }
      *     val fileType = metadata.fileType()
@@ -2662,6 +2709,8 @@ public open class FileType(
      * # Examples
      *
      * ```kotlin
+     * import std.fs
+     *
      * fun main(): Result<Unit> {
      *     val metadata = symlinkMetadata("foo.txt").getOrElse { return Result.failure(it) }
      *     val fileType = metadata.fileType()
@@ -2676,7 +2725,7 @@ public open class FileType(
         DebugStruct(f, "FileType").field("is_file", this.isFile()).field("is_dir", this.isDir()).field("is_symlink", this.isSymlink()).finishNonExhaustive()
     }
 
-    public override fun asInner(): io.github.kotlinmania.fsimp.FileType = this.value
+    public override fun asInner(): io.github.kotlinmania.rustlang.std.sys.fs.unix.FileType = this.value
 }
 
 /**
@@ -2685,9 +2734,9 @@ public open class FileType(
  * This builder also supports platform-specific options.
  */
 public open class DirBuilder(
-    public var inner: io.github.kotlinmania.fsimp.DirBuilder,
+    public var inner: io.github.kotlinmania.rustlang.std.sys.fs.unix.DirBuilder,
     public var recursive: Boolean,
-) : AsInnerMut<io.github.kotlinmania.fsimp.DirBuilder> {
+) : AsInnerMut<io.github.kotlinmania.rustlang.std.sys.fs.unix.DirBuilder> {
     /**
      * Indicates that directories should be created recursively, creating all
      * parent directories. Parents that do not exist are created with the same
@@ -2726,9 +2775,9 @@ public open class DirBuilder(
      * check(fs.metadata(path).unwrap().isDir())
      * ```
      */
-    public open fun create(path: Path): Result<Unit> = this.create(path)
+    public open fun create(path: Path): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = this.create(path)
 
-    public open fun createDirAll(path: Path): Result<Unit> {
+    public open fun createDirAll(path: Path): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> {
         // if path's parent is None, it is "/" path, which should
         // return Ok immediately
         if (path.isEmpty() || path.parent() == null) {
@@ -2747,7 +2796,7 @@ public open class DirBuilder(
                 val matchVal = this.inner.mkdir(ancestor)
                 when {
                     matchVal is Result.Ok<*> -> { break }
-                    matchVal is Result.Err<*> && (matchVal as Result.Err<*>).error.kind() == io.ErrorKind.NotFound -> {
+                    matchVal is Result.Err<*> && (matchVal as Result.Err<*>).error.kind() == ErrorKind.NotFound -> {
                         val e = (matchVal as Result.Err<*>).error
                         uncreatedDirs += 1
                     }
@@ -2755,7 +2804,7 @@ public open class DirBuilder(
                     // - in case the path exists as a *file*
                     // - and to avoid calls to .isDir() in case of other errs
                     // (i.e. PermissionDenied)
-                    matchVal is Result.Err<*> && (matchVal as Result.Err<*>).error.kind() == io.ErrorKind.AlreadyExists && ancestor.isDir() -> {
+                    matchVal is Result.Err<*> && (matchVal as Result.Err<*>).error.kind() == ErrorKind.AlreadyExists && ancestor.isDir() -> {
                         val e1 = (matchVal as Result.Err<*>).error
                         break
                     }
@@ -2773,7 +2822,7 @@ public open class DirBuilder(
             when (val matchVal1 = this.inner.mkdir(uncreatedDir)) {
                 is Err -> {
                     val e3 = matchVal1.error
-                    if (e3.kind() != io.ErrorKind.AlreadyExists || !uncreatedDir.isDir()) {
+                    if (e3.kind() != ErrorKind.AlreadyExists || !uncreatedDir.isDir()) {
                         return Result.Err(e3)
                     }
                 }
@@ -2783,7 +2832,7 @@ public open class DirBuilder(
         return Result.Ok(Unit)
     }
 
-    public override fun asInnerMut(): io.github.kotlinmania.fsimp.DirBuilder = this.inner
+    public override fun asInnerMut(): io.github.kotlinmania.rustlang.std.sys.fs.unix.DirBuilder = this.inner
 
     public companion object {
         /**
@@ -2798,7 +2847,7 @@ public open class DirBuilder(
          * val builder = DirBuilder.new()
          * ```
          */
-        public fun new(): DirBuilder = DirBuilder(inner = io.github.kotlinmania.fsimp.DirBuilder.new(), recursive = false)
+        public fun new(): DirBuilder = DirBuilder(inner = io.github.kotlinmania.rustlang.std.sys.fs.unix.DirBuilder.new(), recursive = false)
     }
 }
 
@@ -2821,6 +2870,8 @@ public open class DirBuilder(
  * # Examples
  *
  * ```kotlin
+ * import std.fs
+ *
  * fun main(): Result<Unit> {
  *     val data: List<UByte> = read("image.jpg").getOrElse { return Result.failure(it) }
  *     check(((data).slice(0 until 3)) == listOf(0xFFu, 0xD8u, 0xFFu))
@@ -2828,12 +2879,12 @@ public open class DirBuilder(
  * }
  * ```
  */
-public fun read(path: Path): Result<List<UByte>> {
-    fun inner(path1: Path): Result<List<UByte>> {
+public fun read(path: Path): Result<List<UByte>, io.github.kotlinmania.rustlang.std.io.error.Error> {
+    fun inner(path1: Path): Result<List<UByte>, io.github.kotlinmania.rustlang.std.io.error.Error> {
         val file = when (val tryResult = File.open(path1)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         val size = file.metadata().map({ m -> Int.tryFrom(m.len()).unwrapOr(Int.MAX_VALUE) }).ok()
         val bytes = when (val tryResult = Vec.tryWithCapacity(size.unwrapOr(0))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-        when (val tryResult = io.defaultReadToEnd(file, bytes, size)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = defaultReadToEnd(file, bytes, size)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         return Result.Ok(bytes)
     }
     return inner(path)
@@ -2862,6 +2913,7 @@ public fun read(path: Path): Result<List<UByte>> {
  *
  * ```kotlin
  * import std.error.Error
+ * import std.fs
  *
  * fun main(): Result<Unit> {
  *     val message: String = readToString("message.txt").getOrElse { return Result.failure(it) }
@@ -2870,13 +2922,13 @@ public fun read(path: Path): Result<List<UByte>> {
  * }
  * ```
  */
-public fun readToString(path: Path): Result<String> {
-    fun inner(path1: Path): Result<String> {
+public fun readToString(path: Path): Result<String, io.github.kotlinmania.rustlang.std.io.error.Error> {
+    fun inner(path1: Path): Result<String, io.github.kotlinmania.rustlang.std.io.error.Error> {
         val file = when (val tryResult = File.open(path1)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         val size = file.metadata().map({ m -> Int.tryFrom(m.len()).unwrapOr(Int.MAX_VALUE) }).ok()
         val string = ""
         when (val tryResult = string.tryReserveExact(size.unwrapOr(0))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-        when (val tryResult = io.defaultReadToString(file, string, size)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = defaultReadToString(file, string, size)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         return Result.Ok(string)
     }
     return inner(path)
@@ -2899,6 +2951,8 @@ public fun readToString(path: Path): Result<String> {
  * # Examples
  *
  * ```kotlin
+ * import std.fs
+ *
  * fun main(): Result<Unit> {
  *     write("foo.txt", "Lorem ipsum".encodeToByteArray()).getOrElse { return Result.failure(it) }
  *     write("bar.txt", "dolor sit").getOrElse { return Result.failure(it) }
@@ -2906,8 +2960,8 @@ public fun readToString(path: Path): Result<String> {
  * }
  * ```
  */
-public fun write(path: Path, contents: List<UByte>): Result<Unit> {
-    fun inner(path1: Path, contents1: List<UByte>): Result<Unit> {
+public fun write(path: Path, contents: List<UByte>): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> {
+    fun inner(path1: Path, contents1: List<UByte>): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> {
         return when (val tryResult = File.create(path1)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }.writeAll(contents1)
     }
     return inner(path, contents)
@@ -2944,7 +2998,7 @@ public fun write(path: Path, contents: List<UByte>): Result<Unit> {
  * }
  * ```
  */
-public fun setTimes(path: Path, times: FileTimes): Result<Unit> = io.github.kotlinmania.fsimp.setTimes(path, times.value)
+public fun setTimes(path: Path, times: FileTimes): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = io.github.kotlinmania.rustlang.std.sys.fs.setTimes(path, times.value)
 
 /**
  * Changes the timestamps of the file or symlink at the specified path.
@@ -2978,7 +3032,7 @@ public fun setTimes(path: Path, times: FileTimes): Result<Unit> = io.github.kotl
  * }
  * ```
  */
-public fun setTimesNofollow(path: Path, times: FileTimes): Result<Unit> = io.github.kotlinmania.fsimp.setTimesNofollow(path, times.value)
+public fun setTimesNofollow(path: Path, times: FileTimes): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = io.github.kotlinmania.rustlang.std.sys.fs.setTimesNofollow(path, times.value)
 
 public fun fromError(err: TryLockError): Error =
     when (err) {
@@ -2986,7 +3040,7 @@ public fun fromError(err: TryLockError): Error =
             val (err1) = err
             err1
         }
-        TryLockError.WouldBlock -> io.ErrorKind.WouldBlock.into()
+        TryLockError.WouldBlock -> ErrorKind.WouldBlock.into()
     }
 
 /**
@@ -3035,13 +3089,15 @@ public fun bufferCapacityRequired(file: File): Int? {
  * # Examples
  *
  * ```kotlin
+ * import std.fs
+ *
  * fun main(): Result<Unit> {
  *     removeFile("a.txt").getOrElse { return Result.failure(it) }
  *     return Result.success(Unit)
  * }
  * ```
  */
-public fun removeFile(path: Path): Result<Unit> = io.github.kotlinmania.fsimp.removeFile(path)
+public fun removeFile(path: Path): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = io.github.kotlinmania.rustlang.std.sys.fs.removeFile(path)
 
 /**
  * Given a path, queries the file system to get information about a file,
@@ -3071,6 +3127,8 @@ public fun removeFile(path: Path): Result<Unit> = io.github.kotlinmania.fsimp.re
  * # Examples
  *
  * ```kotlin
+ * import std.fs
+ *
  * fun main(): Result<Unit> {
  *     val attr = metadata("/some/file/path.txt").getOrElse { return Result.failure(it) }
  *     // inspect attr ...
@@ -3078,7 +3136,7 @@ public fun removeFile(path: Path): Result<Unit> = io.github.kotlinmania.fsimp.re
  * }
  * ```
  */
-public fun metadata(path: Path): Result<Metadata> = io.github.kotlinmania.fsimp.metadata(path).map({ Metadata(it) })
+public fun metadata(path: Path): Result<Metadata, io.github.kotlinmania.rustlang.std.io.error.Error> = io.github.kotlinmania.rustlang.std.sys.fs.metadata(path).map({ Metadata(it) })
 
 /**
  * Queries the metadata about a file without following symlinks.
@@ -3107,6 +3165,8 @@ public fun metadata(path: Path): Result<Metadata> = io.github.kotlinmania.fsimp.
  * # Examples
  *
  * ```kotlin
+ * import std.fs
+ *
  * fun main(): Result<Unit> {
  *     val attr = symlinkMetadata("/some/file/path.txt").getOrElse { return Result.failure(it) }
  *     // inspect attr ...
@@ -3114,7 +3174,7 @@ public fun metadata(path: Path): Result<Metadata> = io.github.kotlinmania.fsimp.
  * }
  * ```
  */
-public fun symlinkMetadata(path: Path): Result<Metadata> = io.github.kotlinmania.fsimp.symlinkMetadata(path).map({ Metadata(it) })
+public fun symlinkMetadata(path: Path): Result<Metadata, io.github.kotlinmania.rustlang.std.io.error.Error> = io.github.kotlinmania.rustlang.std.sys.fs.symlinkMetadata(path).map({ Metadata(it) })
 
 /**
  * Renames a file or directory to a new name, replacing the original file if
@@ -3152,6 +3212,8 @@ public fun symlinkMetadata(path: Path): Result<Metadata> = io.github.kotlinmania
  * # Examples
  *
  * ```kotlin
+ * import std.fs
+ *
  * fun main(): Result<Unit> {
  *     rename("a.txt", "b.txt").getOrElse { return Result.failure(it) }
  *     // Rename a.txt to b.txt
@@ -3159,7 +3221,7 @@ public fun symlinkMetadata(path: Path): Result<Metadata> = io.github.kotlinmania
  * }
  * ```
  */
-public fun rename(from: Path, to: Path): Result<Unit> = io.github.kotlinmania.fsimp.rename(from, to)
+public fun rename(from: Path, to: Path): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = io.github.kotlinmania.rustlang.std.sys.fs.rename(from, to)
 
 /**
  * Renames a file or directory to a new name, returning [AlreadyExists] if `to` already
@@ -3208,6 +3270,7 @@ public fun rename(from: Path, to: Path): Result<Unit> = io.github.kotlinmania.fs
  * # Examples
  *
  * ```kotlin
+ * import std.fs
  * import std.io.ErrorKind
  *
  * @feature(renameNoreplace)
@@ -3224,7 +3287,7 @@ public fun rename(from: Path, to: Path): Result<Unit> = io.github.kotlinmania.fs
  * }
  * ```
  */
-public fun renameNoreplace(from: Path, to: Path): Result<Unit> = io.github.kotlinmania.fsimp.renameNoreplace(from, to)
+public fun renameNoreplace(from: Path, to: Path): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = io.github.kotlinmania.rustlang.std.sys.fs.renameNoreplace(from, to)
 
 /**
  * Copies the contents of one file to another. This function will also
@@ -3275,6 +3338,8 @@ public fun renameNoreplace(from: Path, to: Path): Result<Unit> = io.github.kotli
  * # Examples
  *
  * ```kotlin
+ * import std.fs
+ *
  * fun main(): Result<Unit> {
  *     copy("foo.txt", "bar.txt").getOrElse { return Result.failure(it) }
  *     // Copy foo.txt to bar.txt
@@ -3282,7 +3347,7 @@ public fun renameNoreplace(from: Path, to: Path): Result<Unit> = io.github.kotli
  * }
  * ```
  */
-public fun copy(from: Path, to: Path): Result<ULong> = io.github.kotlinmania.fsimp.copy(from, to)
+public fun copy(from: Path, to: Path): Result<ULong, io.github.kotlinmania.rustlang.std.io.error.Error> = io.github.kotlinmania.rustlang.std.sys.fs.copy(from, to)
 
 /**
  * Creates a new hard link on the filesystem.
@@ -3318,6 +3383,8 @@ public fun copy(from: Path, to: Path): Result<ULong> = io.github.kotlinmania.fsi
  * # Examples
  *
  * ```kotlin
+ * import std.fs
+ *
  * fun main(): Result<Unit> {
  *     hardLink("a.txt", "b.txt").getOrElse { return Result.failure(it) }
  *     // Hard link a.txt to b.txt
@@ -3325,7 +3392,7 @@ public fun copy(from: Path, to: Path): Result<ULong> = io.github.kotlinmania.fsi
  * }
  * ```
  */
-public fun hardLink(original: Path, link: Path): Result<Unit> = io.github.kotlinmania.fsimp.hardLink(original, link)
+public fun hardLink(original: Path, link: Path): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = io.github.kotlinmania.rustlang.std.sys.fs.hardLink(original, link)
 
 /**
  * Creates a new symbolic link on the filesystem.
@@ -3339,13 +3406,15 @@ public fun hardLink(original: Path, link: Path): Result<Unit> = io.github.kotlin
  * # Examples
  *
  * ```kotlin
+ * import std.fs
+ *
  * fun main(): Result<Unit> {
  *     softLink("a.txt", "b.txt").getOrElse { return Result.failure(it) }
  *     return Result.success(Unit)
  * }
  * ```
  */
-public fun softLink(original: Path, link: Path): Result<Unit> = symlink(original, link)
+public fun softLink(original: Path, link: Path): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = symlink(original, link)
 
 /**
  * Reads a symbolic link, returning the file that the link points to.
@@ -3370,13 +3439,15 @@ public fun softLink(original: Path, link: Path): Result<Unit> = symlink(original
  * # Examples
  *
  * ```kotlin
+ * import std.fs
+ *
  * fun main(): Result<Unit> {
  *     val path = readLink("a.txt").getOrElse { return Result.failure(it) }
  *     return Result.success(Unit)
  * }
  * ```
  */
-public fun readLink(path: Path): Result<PathBuf> = io.github.kotlinmania.fsimp.readLink(path)
+public fun readLink(path: Path): Result<PathBuf, io.github.kotlinmania.rustlang.std.io.error.Error> = io.github.kotlinmania.rustlang.std.sys.fs.readLink(path)
 
 /**
  * Returns the canonical, absolute form of a path with all intermediate
@@ -3408,13 +3479,15 @@ public fun readLink(path: Path): Result<PathBuf> = io.github.kotlinmania.fsimp.r
  * # Examples
  *
  * ```kotlin
+ * import std.fs
+ *
  * fun main(): Result<Unit> {
  *     val path = canonicalize("../a/../foo.txt").getOrElse { return Result.failure(it) }
  *     return Result.success(Unit)
  * }
  * ```
  */
-public fun canonicalize(path: Path): Result<PathBuf> = io.github.kotlinmania.fsimp.canonicalize(path)
+public fun canonicalize(path: Path): Result<PathBuf, io.github.kotlinmania.rustlang.std.io.error.Error> = io.github.kotlinmania.rustlang.std.sys.fs.canonicalize(path)
 
 /**
  * Creates a new, empty directory at the provided path.
@@ -3445,13 +3518,15 @@ public fun canonicalize(path: Path): Result<PathBuf> = io.github.kotlinmania.fsi
  * # Examples
  *
  * ```kotlin
+ * import std.fs
+ *
  * fun main(): Result<Unit> {
  *     createDir("/some/dir").getOrElse { return Result.failure(it) }
  *     return Result.success(Unit)
  * }
  * ```
  */
-public fun createDir(path: Path): Result<Unit> = DirBuilder.new().create(path)
+public fun createDir(path: Path): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = DirBuilder.new().create(path)
 
 /**
  * Recursively create a directory and all of its parent components if they
@@ -3488,13 +3563,15 @@ public fun createDir(path: Path): Result<Unit> = DirBuilder.new().create(path)
  * # Examples
  *
  * ```kotlin
+ * import std.fs
+ *
  * fun main(): Result<Unit> {
  *     createDirAll("/some/dir").getOrElse { return Result.failure(it) }
  *     return Result.success(Unit)
  * }
  * ```
  */
-public fun createDirAll(path: Path): Result<Unit> = DirBuilder.new().recursive(true).create(path)
+public fun createDirAll(path: Path): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = DirBuilder.new().recursive(true).create(path)
 
 /**
  * Removes an empty directory.
@@ -3532,13 +3609,15 @@ public fun createDirAll(path: Path): Result<Unit> = DirBuilder.new().recursive(t
  * # Examples
  *
  * ```kotlin
+ * import std.fs
+ *
  * fun main(): Result<Unit> {
  *     removeDir("/some/dir").getOrElse { return Result.failure(it) }
  *     return Result.success(Unit)
  * }
  * ```
  */
-public fun removeDir(path: Path): Result<Unit> = io.github.kotlinmania.fsimp.removeDir(path)
+public fun removeDir(path: Path): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = io.github.kotlinmania.rustlang.std.sys.fs.removeDir(path)
 
 /**
  * Removes a directory at this path, after removing all its contents. Use
@@ -3596,13 +3675,15 @@ public fun removeDir(path: Path): Result<Unit> = io.github.kotlinmania.fsimp.rem
  * # Examples
  *
  * ```kotlin
+ * import std.fs
+ *
  * fun main(): Result<Unit> {
  *     removeDirAll("/some/dir").getOrElse { return Result.failure(it) }
  *     return Result.success(Unit)
  * }
  * ```
  */
-public fun removeDirAll(path: Path): Result<Unit> = io.github.kotlinmania.fsimp.removeDirAll(path)
+public fun removeDirAll(path: Path): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = io.github.kotlinmania.rustlang.std.sys.fs.removeDirAll(path)
 
 /**
  * Returns an iterator over the entries within a directory.
@@ -3640,6 +3721,7 @@ public fun removeDirAll(path: Path): Result<Unit> = io.github.kotlinmania.fsimp.
  *
  * ```kotlin
  * import std.fs.DirEntry
+ * import std.io
  * import std.path.Path
  *
  * // one possible implementation of walking a directory only visiting files
@@ -3660,6 +3742,9 @@ public fun removeDirAll(path: Path): Result<Unit> = io.github.kotlinmania.fsimp.
  * ```
  *
  * ```kotlin
+ * import std.fs
+ * import std.io
+ *
  * fun main(): io.Result<Unit> {
  *     var entries = readDir(".").getOrElse { return Result.failure(it) }.map({ res -> res.map({ e -> e.path() }) }).collect<Result<Vec>>().getOrElse { return Result.failure(it) }
  *     // The order in which `readDir` returns entries is not guaranteed. If reproducible
@@ -3670,7 +3755,7 @@ public fun removeDirAll(path: Path): Result<Unit> = io.github.kotlinmania.fsimp.
  * }
  * ```
  */
-public fun readDir(path: Path): Result<ReadDir> = io.github.kotlinmania.fsimp.readDir(path).map({ ReadDir(it) })
+public fun readDir(path: Path): Result<ReadDir, io.github.kotlinmania.rustlang.std.io.error.Error> = io.github.kotlinmania.rustlang.std.sys.fs.readDir(path).map({ ReadDir(it) })
 
 /**
  * Changes the permissions found on a file or a directory.
@@ -3709,6 +3794,8 @@ public fun readDir(path: Path): Result<ReadDir> = io.github.kotlinmania.fsimp.re
  * # Examples
  *
  * ```kotlin
+ * import std.fs
+ *
  * fun main(): Result<Unit> {
  *     var perms = metadata("foo.txt").getOrElse { return Result.failure(it) }.permissions()
  *     perms.setReadonly(true)
@@ -3717,7 +3804,7 @@ public fun readDir(path: Path): Result<ReadDir> = io.github.kotlinmania.fsimp.re
  * }
  * ```
  */
-public fun setPermissions(path: Path, perm: Permissions): Result<Unit> = io.github.kotlinmania.fsimp.setPermissions(path, perm.value)
+public fun setPermissions(path: Path, perm: Permissions): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = io.github.kotlinmania.rustlang.std.sys.fs.setPermissions(path, perm.value)
 
 /**
  * Changes the permissions found on a file or a directory. On certain platforms, if the file
@@ -3757,6 +3844,8 @@ public fun setPermissions(path: Path, perm: Permissions): Result<Unit> = io.gith
  * # Examples
  *
  * ```kotlin
+ * import std.fs
+ *
  * @feature(setPermissionsNofollow)
  * public fun doctestEntry(): Result<Unit> {
  *     fun main(): Result<Unit> {
@@ -3771,7 +3860,7 @@ public fun setPermissions(path: Path, perm: Permissions): Result<Unit> = io.gith
  * }
  * ```
  */
-public fun setPermissionsNofollow(path: Path, perm: Permissions): Result<Unit> = io.github.kotlinmania.fsimp.setPermissionsNofollow(path, perm.value)
+public fun setPermissionsNofollow(path: Path, perm: Permissions): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = io.github.kotlinmania.rustlang.std.sys.fs.setPermissionsNofollow(path, perm.value)
 
 /**
  * Returns `Ok(true)` if the path points at an existing entity.
@@ -3791,10 +3880,12 @@ public fun setPermissionsNofollow(path: Path, perm: Permissions): Result<Unit> =
  * # Examples
  *
  * ```kotlin
+ * import std.fs
+ *
  * check(!exists("doesNotExist.txt").expect("Can't check existence of file doesNotExist.txt"))
  * check(exists("/root/secretFile.txt").isErr())
  * ```
  *
  * [TOCTOU]: self#time-of-check-to-time-of-use-toctou
  */
-public fun exists(path: Path): Result<Boolean> = io.github.kotlinmania.fsimp.exists(path)
+public fun exists(path: Path): Result<Boolean, io.github.kotlinmania.rustlang.std.io.error.Error> = io.github.kotlinmania.rustlang.std.sys.fs.exists(path)

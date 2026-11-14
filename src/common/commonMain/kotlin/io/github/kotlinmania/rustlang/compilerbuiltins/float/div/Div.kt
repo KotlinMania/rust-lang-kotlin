@@ -8,7 +8,6 @@ import io.github.kotlinmania.rustlang.compilerbuiltins.support.HalfRep
 import io.github.kotlinmania.rustlang.compilerbuiltins.support.Int
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.U128
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
@@ -548,6 +547,6 @@ public fun divsf3(a: Float, b: Float): Float = div(a, b, typeLayoutF = Primitive
 
 public fun divdf3(a: Double, b: Double): Double = div(a, b, typeLayoutF = PrimitiveLayouts.F64)
 
-public fun divtf3(a: F128, b: F128): F128 = div(a, b, typeLayoutF = ObjectSlotLayout<F128>())
+public fun divtf3(a: F128, b: F128): F128 = div(a, b, typeLayoutF = PrimitiveLayouts.F128_LAYOUT)
 
-public fun divkf3(a: F128, b: F128): F128 = div(a, b, typeLayoutF = ObjectSlotLayout<F128>())
+public fun divkf3(a: F128, b: F128): F128 = div(a, b, typeLayoutF = PrimitiveLayouts.F128_LAYOUT)

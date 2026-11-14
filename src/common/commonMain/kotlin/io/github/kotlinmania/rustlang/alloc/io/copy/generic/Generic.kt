@@ -10,6 +10,7 @@ import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedBuf
 import io.github.kotlinmania.rustlang.core.io.error.Result
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
+import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 
@@ -27,7 +28,7 @@ import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
  * Currently, `[UByte]`, `List<UByte>`, `VecDeque<UByte>`, `BufReader<T>` and `BufWriter<T>`
  * are specialized with.
  */
-internal fun <R, W> genericCopy(reader: R, writer: W): Result<ULong> where R : Read<R>, W : Write {
+public fun <R, W> genericCopy(reader: R, writer: W): Result<ULong> where R : Read<R>, W : Write {
     val readPriority = reader.bufferPriority()
     val writePriority = writer.bufferPriority()
     if (readPriority >= DEFAULT_BUF_SIZE && readPriority >= writePriority) {

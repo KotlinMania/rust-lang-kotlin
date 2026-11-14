@@ -16,28 +16,30 @@ public open class Wsabuf internal constructor(
     public var buf: MutPtr = bufCtorArg
         internal set
 
+    public open fun clone(): Wsabuf = Wsabuf(len, buf)
+
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Wsabuf> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Wsabuf> {
+        public fun typeLayout(): TypeLayout<Wsabuf> =
+            object : TypeLayout<Wsabuf> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): Wsabuf =
                     Wsabuf(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).readNative(addr + 8L),
+                        (PrimitiveLayouts.U32).readNative(addr),
+                        (PrimitiveLayouts.mutPtrLayout(64)).readNative(addr + 8L),
                     )
                 override fun writeNative(addr: Long, value: Wsabuf) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).writeNative(addr, value.len)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).writeNative(addr + 8L, value.buf)
+                    (PrimitiveLayouts.U32).writeNative(addr, value.len)
+                    (PrimitiveLayouts.mutPtrLayout(64)).writeNative(addr + 8L, value.buf)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Wsabuf =
                     Wsabuf(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).readBytes(buf, offset + 8),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset),
+                        (PrimitiveLayouts.mutPtrLayout(64)).readBytes(buf, offset + 8),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Wsabuf) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).writeBytes(buf, offset, value.len)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).writeBytes(buf, offset + 8, value.buf)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset, value.len)
+                    (PrimitiveLayouts.mutPtrLayout(64)).writeBytes(buf, offset + 8, value.buf)
                 }
             }
 
@@ -51,11 +53,13 @@ public open class Wsabuf internal constructor(
     }
 }
 
-internal open class IoSlice(
+public open class IoSlice(
     public var vec: Wsabuf,
     public var p: Unit,
 ) {
-    internal open fun advance(n: Int) {
+    public open fun clone(): IoSlice = IoSlice(vec, p)
+
+    public open fun advance(n: Int) {
         check(n <= this.vec.len.toInt()) { "advancing IoSlice beyond its length" }
         // SAFETY:
         // * `n <= len` as asserted above.
@@ -66,25 +70,25 @@ internal open class IoSlice(
         }
     }
 
-    internal open fun asSlice(): List<UByte> {
+    public open fun asSlice(): List<UByte> {
         // SAFETY:
         // * `buf` and `len` come from a prior decomposition of a valid slice.
         return rawSliceList(this.vec.buf, this.vec.len.toInt(), PrimitiveLayouts.U8)
     }
 
     public companion object {
-        internal fun new(buf: List<UByte>): IoSlice {
+        public fun new(buf: List<UByte>): IoSlice {
             check(buf.size <= UInt.MAX_VALUE.toInt())
             return IoSlice(vec = Wsabuf(len = buf.size.toUInt(), buf = (buf.asPtr()).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }), p = Unit)
         }
     }
 }
 
-internal open class IoSliceMut(
+public open class IoSliceMut(
     public var vec: Wsabuf,
     public var p: Unit,
 ) {
-    internal open fun advance(n: Int) {
+    public open fun advance(n: Int) {
         check(n <= this.vec.len.toInt()) { "advancing IoSliceMut beyond its length" }
         // SAFETY:
         // * `n <= len` as asserted above.
@@ -95,26 +99,26 @@ internal open class IoSliceMut(
         }
     }
 
-    internal open fun asSlice(): List<UByte> {
+    public open fun asSlice(): List<UByte> {
         // SAFETY:
         // * `buf` and `len` come from a prior decomposition of a valid slice.
         return rawSliceList(this.vec.buf, this.vec.len.toInt(), PrimitiveLayouts.U8)
     }
 
-    internal open fun intoSlice(): MutableList<UByte> {
+    public open fun intoSlice(): MutableList<UByte> {
         // SAFETY:
         // * `buf` and `len` come from a prior decomposition of a valid slice.
         return rawMutSliceList(this.vec.buf, this.vec.len.toInt(), PrimitiveLayouts.U8)
     }
 
-    internal open fun asMutSlice(): MutableList<UByte> {
+    public open fun asMutSlice(): MutableList<UByte> {
         // SAFETY:
         // * `buf` and `len` come from a prior decomposition of a valid slice.
         return rawMutSliceList(this.vec.buf, this.vec.len.toInt(), PrimitiveLayouts.U8)
     }
 
     public companion object {
-        internal fun new(buf: MutableList<UByte>): IoSliceMut {
+        public fun new(buf: MutableList<UByte>): IoSliceMut {
             check(buf.size <= UInt.MAX_VALUE.toInt())
             return IoSliceMut(vec = Wsabuf(len = buf.size.toUInt(), buf = buf.asMutPtr()), p = Unit)
         }

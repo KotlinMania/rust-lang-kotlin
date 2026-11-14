@@ -1,7 +1,7 @@
 // port-lint: source array/equality.rs
 package io.github.kotlinmania.rustlang.core.array.equality
 
-import io.github.kotlinmania.rustlang.core.cmp.BytewiseEq
+import io.github.kotlinmania.rustlang.core.cmp.bytewise.BytewiseEq
 import io.github.kotlinmania.rustlang.core.intrinsics.rawEq
 import io.github.kotlinmania.rustlang.core.intrinsics.transmute
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout

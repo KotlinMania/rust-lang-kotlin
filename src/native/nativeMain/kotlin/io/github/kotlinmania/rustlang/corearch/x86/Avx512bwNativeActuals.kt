@@ -1,4 +1,4 @@
-@file:OptIn(kotlinx.cinterop.ExperimentalForeignApi::class, kotlin.ExperimentalUnsignedTypes::class)
+@file:OptIn(ExperimentalForeignApi::class, ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.corearch.x86
 
@@ -16,6 +16,7 @@ import io.github.kotlinmania.rustlang.corearch.simd.U64x8
 import io.github.kotlinmania.rustlang.corearch.simd.U8x16
 import io.github.kotlinmania.rustlang.corearch.simd.U8x32
 import io.github.kotlinmania.rustlang.corearch.simd.U8x64
+import kotlinx.cinterop.ExperimentalForeignApi
 
 public actual fun vpmulhrsw(a: I16x32, b: I16x32): I16x32 =
     null as I16x32

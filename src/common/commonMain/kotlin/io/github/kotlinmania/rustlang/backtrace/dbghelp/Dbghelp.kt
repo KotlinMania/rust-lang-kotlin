@@ -167,7 +167,7 @@ public open class Dbghelp internal constructor(
                 val name = "SymGetOptions\u0000"
                 this.symGetOptions = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            mem.transmute<Int, SymGetOptions>(this.symGetOptions)
+            transmute<Int, SymGetOptions>(this.symGetOptions)
         }
     }
 
@@ -177,7 +177,7 @@ public open class Dbghelp internal constructor(
                 val name = "SymSetOptions\u0000"
                 this.symSetOptions = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            mem.transmute<Int, SymSetOptions>(this.symSetOptions)
+            transmute<Int, SymSetOptions>(this.symSetOptions)
         }
     }
 
@@ -187,7 +187,7 @@ public open class Dbghelp internal constructor(
                 val name = "SymInitializeW\u0000"
                 this.symInitializeW = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            mem.transmute<Int, SymInitializeW>(this.symInitializeW)
+            transmute<Int, SymInitializeW>(this.symInitializeW)
         }
     }
 
@@ -197,7 +197,7 @@ public open class Dbghelp internal constructor(
                 val name = "SymGetSearchPathW\u0000"
                 this.symGetSearchPathW = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            mem.transmute<Int, SymGetSearchPathW>(this.symGetSearchPathW)
+            transmute<Int, SymGetSearchPathW>(this.symGetSearchPathW)
         }
     }
 
@@ -207,7 +207,7 @@ public open class Dbghelp internal constructor(
                 val name = "SymSetSearchPathW\u0000"
                 this.symSetSearchPathW = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            mem.transmute<Int, SymSetSearchPathW>(this.symSetSearchPathW)
+            transmute<Int, SymSetSearchPathW>(this.symSetSearchPathW)
         }
     }
 
@@ -217,7 +217,7 @@ public open class Dbghelp internal constructor(
                 val name = "EnumerateLoadedModulesW64\u0000"
                 this.enumerateLoadedModulesW64 = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            mem.transmute<Int, EnumerateLoadedModulesW64>(this.enumerateLoadedModulesW64)
+            transmute<Int, EnumerateLoadedModulesW64>(this.enumerateLoadedModulesW64)
         }
     }
 
@@ -227,7 +227,7 @@ public open class Dbghelp internal constructor(
                 val name = "StackWalk64\u0000"
                 this.stackWalk64 = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            mem.transmute<Int, StackWalk64>(this.stackWalk64)
+            transmute<Int, StackWalk64>(this.stackWalk64)
         }
     }
 
@@ -237,7 +237,7 @@ public open class Dbghelp internal constructor(
                 val name = "SymFunctionTableAccess64\u0000"
                 this.symFunctionTableAccess64 = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            mem.transmute<Int, SymFunctionTableAccess64>(this.symFunctionTableAccess64)
+            transmute<Int, SymFunctionTableAccess64>(this.symFunctionTableAccess64)
         }
     }
 
@@ -247,7 +247,7 @@ public open class Dbghelp internal constructor(
                 val name = "SymGetModuleBase64\u0000"
                 this.symGetModuleBase64 = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            mem.transmute<Int, SymGetModuleBase64>(this.symGetModuleBase64)
+            transmute<Int, SymGetModuleBase64>(this.symGetModuleBase64)
         }
     }
 
@@ -257,7 +257,7 @@ public open class Dbghelp internal constructor(
                 val name = "SymFromAddrW\u0000"
                 this.symFromAddrW = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            mem.transmute<Int, SymFromAddrW>(this.symFromAddrW)
+            transmute<Int, SymFromAddrW>(this.symFromAddrW)
         }
     }
 
@@ -267,7 +267,7 @@ public open class Dbghelp internal constructor(
                 val name = "SymGetLineFromAddrW64\u0000"
                 this.symGetLineFromAddrW64 = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            mem.transmute<Int, SymGetLineFromAddrW64>(this.symGetLineFromAddrW64)
+            transmute<Int, SymGetLineFromAddrW64>(this.symGetLineFromAddrW64)
         }
     }
 
@@ -277,7 +277,7 @@ public open class Dbghelp internal constructor(
                 val name = "StackWalkEx\u0000"
                 this.stackWalkEx = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            mem.transmute<Int, StackWalkEx>(this.stackWalkEx)
+            transmute<Int, StackWalkEx>(this.stackWalkEx)
         }
     }
 
@@ -287,7 +287,7 @@ public open class Dbghelp internal constructor(
                 val name = "SymFromInlineContextW\u0000"
                 this.symFromInlineContextW = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            mem.transmute<Int, SymFromInlineContextW>(this.symFromInlineContextW)
+            transmute<Int, SymFromInlineContextW>(this.symFromInlineContextW)
         }
     }
 
@@ -297,7 +297,7 @@ public open class Dbghelp internal constructor(
                 val name = "SymGetLineFromInlineContextW\u0000"
                 this.symGetLineFromInlineContextW = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            mem.transmute<Int, SymGetLineFromInlineContextW>(this.symGetLineFromInlineContextW)
+            transmute<Int, SymGetLineFromInlineContextW>(this.symGetLineFromInlineContextW)
         }
     }
 
@@ -307,7 +307,7 @@ public open class Dbghelp internal constructor(
                 val name = "SymAddrIncludeInlineTrace\u0000"
                 this.symAddrIncludeInlineTrace = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            mem.transmute<Int, SymAddrIncludeInlineTrace>(this.symAddrIncludeInlineTrace)
+            transmute<Int, SymAddrIncludeInlineTrace>(this.symAddrIncludeInlineTrace)
         }
     }
 
@@ -317,7 +317,7 @@ public open class Dbghelp internal constructor(
                 val name = "SymQueryInlineTrace\u0000"
                 this.symQueryInlineTrace = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            mem.transmute<Int, SymQueryInlineTrace>(this.symQueryInlineTrace)
+            transmute<Int, SymQueryInlineTrace>(this.symQueryInlineTrace)
         }
     }
 
@@ -625,7 +625,7 @@ public fun setOptionalOptions(dbghelp: MutPtr): Unit? {
         //
         // See https://learn.microsoft.com/cpp/build/reference/pdbpath for an
         // example of where symbols are usually searched for.
-        val searchPathBuf = mutableListOf()
+        val searchPathBuf = mutableListOf<UShort>()
         searchPathBuf.resize(1024, 0)
         // Prefill the buffer with the current search path.
         if (((ObjectSlotLayout<Dbghelp>()).readNative((dbghelp).rawAddress).symGetSearchPathW() ?: return null)(GetCurrentProcess(), searchPathBuf.asMutPtr(), null) == TRUE) {

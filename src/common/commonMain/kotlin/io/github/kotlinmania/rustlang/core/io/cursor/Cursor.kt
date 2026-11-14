@@ -3,14 +3,17 @@
 
 package io.github.kotlinmania.rustlang.core.io.cursor
 
-import io.github.kotlinmania.rustlang.core.fmt.write
+import io.github.kotlinmania.rustlang.core.cmp.min
+import io.github.kotlinmania.rustlang.core.io.constError
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
+import io.github.kotlinmania.rustlang.core.io.error.WRITE_ALL_EOF
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.seek.Seek
 import io.github.kotlinmania.rustlang.core.io.seek.SeekFrom
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 
 // Note(#74481): Hard-links required to link from `core` to `std`
@@ -231,7 +234,7 @@ public open class Cursor<T>(
                 }
             }
         return when (val matchVal = basePos.checkedAddSigned(offset)) {
-            null -> Result.Err(io.constError(ErrorKind.InvalidInput, "invalid seek to a negative or overflowing position"))
+            null -> Result.Err(constError(ErrorKind.InvalidInput, "invalid seek to a negative or overflowing position"))
             else -> {
                 val n3 = matchVal
                 this.setPosition(n3)
@@ -245,28 +248,28 @@ public open class Cursor<T>(
     public override fun streamPosition(): Result<ULong> = Result.Ok(this.position())
 
     public companion object {
-        public fun <T> typeLayout(typeLayoutT: io.github.kotlinmania.rustlang.core.mem.TypeLayout<T>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Cursor<T>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Cursor<T>> {
+        public fun <T> typeLayout(typeLayoutT: TypeLayout<T>): TypeLayout<Cursor<T>> =
+            object : TypeLayout<Cursor<T>> {
                 override val alignBytes: Long = listOf(8L, typeLayoutT.alignBytes).max()
-                private val off1: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(typeLayoutT.sizeBytes, 8L)
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes((off1 + 8L), alignBytes)
+                private val off1: Long = alignUpBytes(typeLayoutT.sizeBytes, 8L)
+                override val sizeBytes: Long = alignUpBytes((off1 + 8L), alignBytes)
                 override fun readNative(addr: Long): Cursor<T> =
                     Cursor(
                         (typeLayoutT).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).readNative(addr + off1),
+                        (PrimitiveLayouts.U64).readNative(addr + off1),
                     )
                 override fun writeNative(addr: Long, value: Cursor<T>) {
                     (typeLayoutT).writeNative(addr, value.inner)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).writeNative(addr + off1, value.pos)
+                    (PrimitiveLayouts.U64).writeNative(addr + off1, value.pos)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Cursor<T> =
                     Cursor(
                         (typeLayoutT).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).readBytes(buf, offset + off1.toInt()),
+                        (PrimitiveLayouts.U64).readBytes(buf, offset + off1.toInt()),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Cursor<T>) {
                     (typeLayoutT).writeBytes(buf, offset, value.inner)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).writeBytes(buf, offset + off1.toInt(), value.pos)
+                    (PrimitiveLayouts.U64).writeBytes(buf, offset + off1.toInt(), value.pos)
                 }
             }
 
@@ -330,7 +333,7 @@ public fun sliceWriteVectored(posMut: RustMutableReference<ULong>, slice: Mutabl
 public fun sliceWriteAll(posMut: RustMutableReference<ULong>, slice: MutableList<UByte>, buf: List<UByte>): Result<Unit> {
     val n = when (val tryResult = sliceWrite(posMut, slice, buf)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
     return if (n < buf.size) {
-        Result.Err(io.Error.WRITE_ALL_EOF)
+        Result.Err(WRITE_ALL_EOF)
     } else {
         Result.Ok(Unit)
     }
@@ -344,7 +347,7 @@ public fun sliceWriteAllVectored(posMut: RustMutableReference<ULong>, slice: Mut
     for (buf in bufs) {
         val n = when (val tryResult = sliceWrite(posMut, slice, buf)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         if (n < buf.len()) {
-            return Result.Err(io.Error.WRITE_ALL_EOF)
+            return Result.Err(WRITE_ALL_EOF)
         }
     }
     return Result.Ok(Unit)

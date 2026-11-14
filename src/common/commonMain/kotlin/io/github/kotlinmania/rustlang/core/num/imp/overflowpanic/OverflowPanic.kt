@@ -5,38 +5,38 @@ package io.github.kotlinmania.rustlang.core.num.imp.overflowpanic
 //
 // In particular, these are used by the `strict_` methods on integers.
 
-internal fun add(): Nothing {
+public fun add(): Nothing {
     error("attempt to add with overflow")
 }
 
-internal fun sub(): Nothing {
+public fun sub(): Nothing {
     error("attempt to subtract with overflow")
 }
 
-internal fun mul(): Nothing {
+public fun mul(): Nothing {
     error("attempt to multiply with overflow")
 }
 
-internal fun rem(): Nothing {
+public fun rem(): Nothing {
     error("attempt to calculate the remainder with overflow")
 }
 
-internal fun neg(): Nothing {
+public fun neg(): Nothing {
     error("attempt to negate with overflow")
 }
 
-internal fun shr(): Nothing {
+public fun shr(): Nothing {
     error("attempt to shift right with overflow")
 }
 
-internal fun shl(): Nothing {
+public fun shl(): Nothing {
     error("attempt to shift left with overflow")
 }
 
-internal fun pow(): Nothing {
+public fun pow(): Nothing {
     error("attempt to exponentiate with overflow")
 }
 
-internal fun castInteger(): Nothing {
+public fun castInteger(): Nothing {
     error("attempt to cast integer with overflow")
 }

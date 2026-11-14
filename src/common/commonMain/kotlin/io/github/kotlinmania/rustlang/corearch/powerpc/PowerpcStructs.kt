@@ -2,8 +2,6 @@
 
 package io.github.kotlinmania.rustlang.corearch.powerpc
 
-import io.github.kotlinmania.rustlang.core.fmt.Formatter
-import io.github.kotlinmania.rustlang.core.fmt.Result
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -33,6 +31,8 @@ public open class Ppcf128 internal constructor(
     internal constructor(value: Ppcf128, fieldLayout: TypeLayout<Ppcf128>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<Ppcf128> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Ppcf128(ptr, layout) }, { it.value })
+
+    public open fun clone(): Ppcf128 = Ppcf128(value, fieldLayout)
 
     public open fun fmt(f: Formatter): Result {
         val (hi, lo) = this.toComponents()

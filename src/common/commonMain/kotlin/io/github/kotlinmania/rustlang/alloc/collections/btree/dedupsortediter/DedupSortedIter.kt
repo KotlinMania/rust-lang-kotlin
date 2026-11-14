@@ -9,10 +9,13 @@ import io.github.kotlinmania.rustlang.core.iter.adapters.peekable.Peekable
  *
  * Used by [`BTreeMap.bulkBuildFromSortedIter`][1].
  */
-internal open class DedupSortedIter<K, V, I>(
-    public var iter: Peekable<I>,
+public open class DedupSortedIter<K, V, I> internal constructor(
+    iterCtorArg: Peekable<I>,
 ) : Iterable<Pair<K, V>> where I : Iterator<Pair<K, V>> {
-    override fun iterator(): kotlin.collections.Iterator<Pair<K, V>> = object : AbstractIterator<Pair<K, V>>() {
+    public var iter: Peekable<I> = iterCtorArg
+        internal set
+
+    override fun iterator(): Iterator<Pair<K, V>> = object : AbstractIterator<Pair<K, V>>() {
         override fun computeNext() {
             when (val v = this@DedupSortedIter.next()) {
                 null -> done()
@@ -46,6 +49,12 @@ internal open class DedupSortedIter<K, V, I>(
     }
 
     public companion object {
-        internal fun <K, V, I> new(iter: I): DedupSortedIter<K, V, I> where I : Iterator<Pair<K, V>> = DedupSortedIter(iter = iter.peekable())
+        public operator fun <K, V, I> invoke(
+            iter: Peekable<I>,
+        ): DedupSortedIter<K, V, I> = DedupSortedIter<K, V, I>(
+            iterCtorArg = iter,
+        )
+
+        public fun <K, V, I> new(iter: I): DedupSortedIter<K, V, I> where I : Iterator<Pair<K, V>> = DedupSortedIter(iter = iter.peekable())
     }
 }

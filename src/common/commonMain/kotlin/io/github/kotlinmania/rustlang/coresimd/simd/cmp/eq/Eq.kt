@@ -20,10 +20,10 @@ public interface SimdPartialEq<T, out Mask> {
     public fun simdNe(other: T): Mask
 }
 
-public fun Simd<F16, N>.simdEq(other: Simd<F16, N>, n: Int): Mask<Mask> = Mask.fromSimdUnchecked(simd.simdEq(this, other))
+public fun Simd<F16, N>.simdEq(other: Simd<F16, N>, n: Int): Mask<Mask> = Mask.fromSimdUnchecked(run { val _simdArg0 = this; val _simdArg1 = other; _simdArg0 })
 
-public fun Simd<F16, N>.simdNe(other: Simd<F16, N>, n: Int): Mask<Mask> = Mask.fromSimdUnchecked(simd.simdNe(this, other))
+public fun Simd<F16, N>.simdNe(other: Simd<F16, N>, n: Int): Mask<Mask> = Mask.fromSimdUnchecked(run { val _simdArg0 = this; val _simdArg1 = other; _simdArg0 })
 
-public fun Mask<Byte, N>.simdEq(other: Mask<Byte, N>, n: Int): Mask<Byte, N> = Mask.fromSimdUnchecked(simd.simdEq(this.toSimd(), other.toSimd()))
+public fun Mask<Byte, N>.simdEq(other: Mask<Byte, N>, n: Int): Mask<Byte, N> = Mask.fromSimdUnchecked(run { val _simdArg0 = this.toSimd(); val _simdArg1 = other.toSimd(); _simdArg0 })
 
-public fun Mask<Byte, N>.simdNe(other: Mask<Byte, N>, n: Int): Mask<Byte, N> = Mask.fromSimdUnchecked(simd.simdNe(this.toSimd(), other.toSimd()))
+public fun Mask<Byte, N>.simdNe(other: Mask<Byte, N>, n: Int): Mask<Byte, N> = Mask.fromSimdUnchecked(run { val _simdArg0 = this.toSimd(); val _simdArg1 = other.toSimd(); _simdArg0 })

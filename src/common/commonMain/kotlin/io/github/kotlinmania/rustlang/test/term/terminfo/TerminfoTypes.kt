@@ -5,7 +5,7 @@ import io.github.kotlinmania.rustlang.test.term.terminfo.Error.*
 /**
  * A terminfo creation error.
  */
-internal sealed class Error {
+public sealed class Error {
     /**
      * TermUnset Indicates that the environment doesn't include enough information to find
      * the terminfo entry.
@@ -18,7 +18,7 @@ internal sealed class Error {
     /**
      * io.Error forwards any io.Errors encountered when finding or reading the terminfo entry.
      */
-    public data class IoError(public var value: io.github.kotlinmania.io.Error) : Error()
+    public data class IoError(public var value: io.github.kotlinmania.rustlang.core.io.error.Error) : Error()
 
     public open fun source(): Any? =
         when (this) {

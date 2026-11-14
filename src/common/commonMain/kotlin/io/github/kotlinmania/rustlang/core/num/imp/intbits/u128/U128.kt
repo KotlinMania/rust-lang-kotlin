@@ -26,7 +26,7 @@ public fun prepare(sparse: U128): List<U128> {
     return masks
 }
 
-internal fun extractImpl(x: U128, sparse: U128): U128 {
+public fun extractImpl(x: U128, sparse: U128): U128 {
     var x1 = x
     val masks = prepare(sparse)
     x1 = x1 and sparse
@@ -45,7 +45,7 @@ internal fun extractImpl(x: U128, sparse: U128): U128 {
     return x1
 }
 
-internal fun depositImpl(x: U128, sparse: U128): U128 {
+public fun depositImpl(x: U128, sparse: U128): U128 {
     var x1 = x
     val masks = prepare(sparse)
     var stage = STAGES

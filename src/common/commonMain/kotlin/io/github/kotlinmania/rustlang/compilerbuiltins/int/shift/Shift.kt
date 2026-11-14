@@ -5,7 +5,7 @@ import io.github.kotlinmania.rustlang.compilerbuiltins.support.DInt
 import io.github.kotlinmania.rustlang.compilerbuiltins.support.Int
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
-import io.github.kotlinmania.rustlang.core.ffi.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
 
 public interface Ashl<T> : DInt {
     /**

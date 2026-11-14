@@ -7,7 +7,6 @@ import io.github.kotlinmania.rustlang.corearch.simd.F16x8
 import io.github.kotlinmania.rustlang.corearch.simd.F32x4
 import io.github.kotlinmania.rustlang.corearch.simd.F32x8
 import io.github.kotlinmania.rustlang.corearch.simd.I16x8
-import io.github.kotlinmania.rustlang.corearch.simdShuffle
 
 // [F16C intrinsics].
 //
@@ -27,8 +26,8 @@ public expect fun llvmVcvtps2ph256(a: F32x8, rounding: Int): I16x8
 public fun mmCvtphPs(a: M128i): M128 =
     run {
         val a1: F16x8 = transmute(a)
-        val a2: F16x4 = simdShuffle(a1, a1, SimdShuffleIdx(listOf(0, 1, 2, 3)))
-        simdCast(a2)
+        val a2: F16x4 = run { val _simdArg0 = a1; val _simdArg1 = a1; val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 2, 3)); _simdArg0 }
+        run { val _simdArg0 = a2; _simdArg0 }
     }
 
 /**
@@ -40,7 +39,7 @@ public fun mmCvtphPs(a: M128i): M128 =
 public fun mm256CvtphPs(a: M128i): M256 =
     run {
         val a1: F16x8 = transmute(a)
-        simdCast(a1)
+        run { val _simdArg0 = a1; _simdArg0 }
     }
 
 /**

@@ -1,15 +1,20 @@
 // port-lint: source slice/sort/shared/smallsort.rs
 package io.github.kotlinmania.rustlang.core.slice.sort.shared.smallsort
 
+import io.github.kotlinmania.rustlang.core.hint.selectUnpredictable
 import io.github.kotlinmania.rustlang.core.intrinsics.abortImmediate
 import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.copy
+import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
+import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.rawMutSliceList
@@ -31,7 +36,7 @@ import io.github.kotlinmania.rustlang.core.slice.sort.shared.FreezeMarker
  * Using a trait allows us to specialize on `Freeze` which in turn allows us to make safe
  * abstractions.
  */
-internal interface StableSmallSortTypeImpl<T> {
+public interface StableSmallSortTypeImpl<T> {
     /**
      * For which input length <= return value of this function, is it valid to call `smallSort`.
      */
@@ -58,7 +63,7 @@ public fun <T> stableSmallSortTypeImplSmallSortT(v: MutableList<T>, scratch: Mut
  * Using a trait allows us to specialize on `Freeze` which in turn allows us to make safe
  * abstractions.
  */
-internal interface UnstableSmallSortTypeImpl<T> {
+public interface UnstableSmallSortTypeImpl<T> {
     /**
      * For which input length <= return value of this function, is it valid to call `smallSort`.
      */
@@ -86,7 +91,7 @@ public fun <T : FreezeMarker> unstableSmallSortTypeImplSmallSortT(v: MutableList
  * Note(constTraitImpl) use original ipnsort approach with chooseUnstableSmallSort,
  * as found here <https://github.com/Voultapher/sort-research-rs/blob/438fad5d0495f65d4b72aa87f0b62fc96611dff3/ipnsort/src/smallsort.rs#L83C10-L83C36>.
  */
-internal interface UnstableSmallSortFreezeTypeImpl<T> : FreezeMarker {
+public interface UnstableSmallSortFreezeTypeImpl<T> : FreezeMarker {
     public fun smallSortThreshold(): Int
 
     public fun smallSort(v: MutableList<T>, isLess: (T, T) -> Boolean)
@@ -133,7 +138,7 @@ public val SMALL_SORT_GENERAL_THRESHOLD: Int = 32
  *
  * SAFETY: If you change this value, you have to adjust [smallSortGeneral] !
  */
-internal val SMALL_SORT_GENERAL_SCRATCH_LEN: Int = SMALL_SORT_GENERAL_THRESHOLD + 16
+public val SMALL_SORT_GENERAL_SCRATCH_LEN: Int = SMALL_SORT_GENERAL_THRESHOLD + 16
 
 /**
  * SAFETY: If you change this value, you have to adjust [smallSortNetwork] !
@@ -188,8 +193,8 @@ public fun <T : FreezeMarker> smallSortGeneralWithScratch(v: MutableList<T>, scr
                 sort4Stable(MutPtr((vBase).rawAddress + ((lenDiv2).toLong() * (typeLayoutT).strideBytes)), MutPtr((scratchBase).rawAddress + ((lenDiv2).toLong() * (typeLayoutT).strideBytes)), isLess)
                 4
             } else {
-                ptr.copyNonoverlapping(vBase, scratchBase, 1)
-                ptr.copyNonoverlapping(MutPtr((vBase).rawAddress + ((lenDiv2).toLong() * (typeLayoutT).strideBytes)), MutPtr((scratchBase).rawAddress + ((lenDiv2).toLong() * (typeLayoutT).strideBytes)), 1)
+                copyNonoverlapping(vBase, scratchBase, 1)
+                copyNonoverlapping(MutPtr((vBase).rawAddress + ((lenDiv2).toLong() * (typeLayoutT).strideBytes)), MutPtr((scratchBase).rawAddress + ((lenDiv2).toLong() * (typeLayoutT).strideBytes)), 1)
                 1
             }
         for (offset in intArrayOf(0, lenDiv2)) {
@@ -204,7 +209,7 @@ public fun <T : FreezeMarker> smallSortGeneralWithScratch(v: MutableList<T>, scr
                     len - lenDiv2
                 }
             for (i in presortedLen until desiredLen) {
-                ptr.copyNonoverlapping(MutPtr((src).rawAddress + ((i).toLong() * (typeLayoutT).strideBytes)), MutPtr((dst).rawAddress + ((i).toLong() * (typeLayoutT).strideBytes)), 1)
+                copyNonoverlapping(MutPtr((src).rawAddress + ((i).toLong() * (typeLayoutT).strideBytes)), MutPtr((dst).rawAddress + ((i).toLong() * (typeLayoutT).strideBytes)), 1)
                 insertTail(dst, MutPtr((dst).rawAddress + ((i).toLong() * (typeLayoutT).strideBytes)), isLess, typeLayoutT = typeLayoutT)
             }
         }
@@ -216,7 +221,7 @@ public fun <T : FreezeMarker> smallSortGeneralWithScratch(v: MutableList<T>, scr
         // permutation of the input through dropGuard. This technique is similar
         // to ping-pong merging.
         bidirectionalMerge(rawSliceList(dropGuard.src, dropGuard.len.toInt(), typeLayoutT), dropGuard.dst, isLess)
-        mem.forget(dropGuard)
+        forget(dropGuard)
     }
 }
 
@@ -229,36 +234,36 @@ public open class CopyOnDrop<T>(
         // SAFETY: `src` must contain `len` initialized elements, and dst must
         // be valid to write `len` elements.
         run {
-            ptr.copyNonoverlapping(this.src, this.dst, this.len)
+            copyNonoverlapping(this.src, this.dst, this.len)
         }
     }
 
     public companion object {
-        public fun <T> typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<CopyOnDrop<T>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<CopyOnDrop<T>> {
+        public fun <T> typeLayout(): TypeLayout<CopyOnDrop<T>> =
+            object : TypeLayout<CopyOnDrop<T>> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 24L
                 override fun readNative(addr: Long): CopyOnDrop<T> =
                     CopyOnDrop(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.constPtrLayout(64)).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).readNative(addr + 8L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readNative(addr + 16L),
+                        (PrimitiveLayouts.constPtrLayout(64)).readNative(addr),
+                        (PrimitiveLayouts.mutPtrLayout(64)).readNative(addr + 8L),
+                        (PrimitiveLayouts.USIZE64).readNative(addr + 16L),
                     )
                 override fun writeNative(addr: Long, value: CopyOnDrop<T>) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.constPtrLayout(64)).writeNative(addr, value.src)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).writeNative(addr + 8L, value.dst)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeNative(addr + 16L, value.len)
+                    (PrimitiveLayouts.constPtrLayout(64)).writeNative(addr, value.src)
+                    (PrimitiveLayouts.mutPtrLayout(64)).writeNative(addr + 8L, value.dst)
+                    (PrimitiveLayouts.USIZE64).writeNative(addr + 16L, value.len)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): CopyOnDrop<T> =
                     CopyOnDrop(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.constPtrLayout(64)).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).readBytes(buf, offset + 8),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readBytes(buf, offset + 16),
+                        (PrimitiveLayouts.constPtrLayout(64)).readBytes(buf, offset),
+                        (PrimitiveLayouts.mutPtrLayout(64)).readBytes(buf, offset + 8),
+                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset + 16),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: CopyOnDrop<T>) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.constPtrLayout(64)).writeBytes(buf, offset, value.src)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).writeBytes(buf, offset + 8, value.dst)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeBytes(buf, offset + 16, value.len)
+                    (PrimitiveLayouts.constPtrLayout(64)).writeBytes(buf, offset, value.src)
+                    (PrimitiveLayouts.mutPtrLayout(64)).writeBytes(buf, offset + 8, value.dst)
+                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset + 16, value.len)
                 }
             }
     }
@@ -313,7 +318,7 @@ public fun <T> smallSortNetwork(v: MutableList<T>, isLess: (T, T) -> Boolean) wh
     run {
         val scratchBase = mutPtrFromRustCast(stackArray.asMutPtr())
         bidirectionalMerge(rawMutSliceList(vBase, len.toInt(), ObjectSlotLayout<T>()), scratchBase, isLess, typeLayoutT = ObjectSlotLayout<T>())
-        ptr.copyNonoverlapping(scratchBase, vBase, len, typeLayoutT = ObjectSlotLayout<T>())
+        copyNonoverlapping(scratchBase, vBase, len, typeLayoutT = ObjectSlotLayout<T>())
     }
 }
 
@@ -344,11 +349,11 @@ public fun <T> swapIfLess(vBase: MutPtr, aPos: Int, bPos: Int, isLess: (T, T) ->
         // ptr.swap(vA, vB, 1);
         // }
         // The goal is to generate cmov instructions here.
-        val vASwap = hint.selectUnpredictable(shouldSwap, vB, vA)
-        val vBSwap = hint.selectUnpredictable(shouldSwap, vA, vB)
-        val vBSwapTmp = ptr.read(vBSwap)
-        ptr.copy(vASwap, vA, 1)
-        ptr.copyNonoverlapping(vBSwapTmp, vB, 1)
+        val vASwap = selectUnpredictable(shouldSwap, vB, vA)
+        val vBSwap = selectUnpredictable(shouldSwap, vA, vB)
+        val vBSwapTmp = read(vBSwap)
+        copy(vASwap, vA, 1)
+        copyNonoverlapping(vBSwapTmp, vB, 1)
     }
 }
 
@@ -487,7 +492,7 @@ public fun <T> insertTail(begin: MutPtr, tail: MutPtr, isLess: (T, T) -> Boolean
             // SAFETY: we move sift into the gap (which is valid), and point the
             // gap guard destination at sift, ensuring that if a panic occurs the
             // gap is once again filled.
-            ptr.copyNonoverlapping(sift, gapGuard.dst, 1, typeLayoutT = typeLayoutT)
+            copyNonoverlapping(sift, gapGuard.dst, 1, typeLayoutT = typeLayoutT)
             gapGuard.dst = sift
             if (((sift).rawAddress.toULong() == (begin).rawAddress.toULong())) {
                 break
@@ -557,18 +562,18 @@ public fun <T> sort4Stable(vBase: ConstPtr, dst: MutPtr, isLess: (T, T) -> Boole
         // 1,  1 |  c   b    a         d
         val c3 = isLess((typeLayoutT).readNative((c).rawAddress), (typeLayoutT).readNative((a).rawAddress))
         val c4 = isLess((typeLayoutT).readNative((d).rawAddress), (typeLayoutT).readNative((b).rawAddress))
-        val min = hint.selectUnpredictable(c3, c, a)
-        val max = hint.selectUnpredictable(c4, b, d)
-        val unknownLeft = hint.selectUnpredictable(c3, a, hint.selectUnpredictable(c4, c, b))
-        val unknownRight = hint.selectUnpredictable(c4, d, hint.selectUnpredictable(c3, b, c))
+        val min = selectUnpredictable(c3, c, a)
+        val max = selectUnpredictable(c4, b, d)
+        val unknownLeft = selectUnpredictable(c3, a, selectUnpredictable(c4, c, b))
+        val unknownRight = selectUnpredictable(c4, d, selectUnpredictable(c3, b, c))
         // Sort the last two unknown elements.
         val c5 = isLess(unknownRight, unknownLeft)
-        val lo = hint.selectUnpredictable(c5, unknownRight, unknownLeft)
-        val hi = hint.selectUnpredictable(c5, unknownLeft, unknownRight)
-        ptr.copyNonoverlapping(min, dst, 1)
-        ptr.copyNonoverlapping(lo, MutPtr((dst).rawAddress + ((1).toLong() * (typeLayoutT).strideBytes)), 1)
-        ptr.copyNonoverlapping(hi, MutPtr((dst).rawAddress + ((2).toLong() * (typeLayoutT).strideBytes)), 1)
-        ptr.copyNonoverlapping(max, MutPtr((dst).rawAddress + ((3).toLong() * (typeLayoutT).strideBytes)), 1)
+        val lo = selectUnpredictable(c5, unknownRight, unknownLeft)
+        val hi = selectUnpredictable(c5, unknownLeft, unknownRight)
+        copyNonoverlapping(min, dst, 1)
+        copyNonoverlapping(lo, MutPtr((dst).rawAddress + ((1).toLong() * (typeLayoutT).strideBytes)), 1)
+        copyNonoverlapping(hi, MutPtr((dst).rawAddress + ((2).toLong() * (typeLayoutT).strideBytes)), 1)
+        copyNonoverlapping(max, MutPtr((dst).rawAddress + ((3).toLong() * (typeLayoutT).strideBytes)), 1)
     }
 }
 
@@ -615,7 +620,7 @@ public fun <T> mergeUp(leftSrc: ConstPtr, rightSrc: ConstPtr, dst: MutPtr, isLes
             } else {
                 rightSrc1
             }
-        ptr.copyNonoverlapping(src, dst1, 1)
+        copyNonoverlapping(src, dst1, 1)
         rightSrc1 = ConstPtr((rightSrc1).rawAddress + (((if (!isL) 1 else 0)).toLong() * (typeLayoutT).strideBytes))
         leftSrc1 = ConstPtr((leftSrc1).rawAddress + ((isL.toInt()).toLong() * (typeLayoutT).strideBytes))
         dst1 = MutPtr((dst1).rawAddress + ((1).toLong() * (typeLayoutT).strideBytes))
@@ -648,7 +653,7 @@ public fun <T> mergeDown(leftSrc: ConstPtr, rightSrc: ConstPtr, dst: MutPtr, isL
             } else {
                 leftSrc1
             }
-        ptr.copyNonoverlapping(src, dst1, 1)
+        copyNonoverlapping(src, dst1, 1)
         rightSrc1 = ConstPtr((rightSrc1).rawAddress - ((isL.toInt()).toLong() * (typeLayoutT).strideBytes))
         leftSrc1 = ConstPtr((leftSrc1).rawAddress - (((if (!isL) 1 else 0)).toLong() * (typeLayoutT).strideBytes))
         dst1 = MutPtr((dst1).rawAddress - ((1).toLong() * (typeLayoutT).strideBytes))
@@ -732,7 +737,7 @@ public fun <T : FreezeMarker> bidirectionalMerge(v: List<T>, dst: MutPtr, isLess
                 } else {
                     right
                 }
-            ptr.copyNonoverlapping(lastSrc, dst1, 1)
+            copyNonoverlapping(lastSrc, dst1, 1)
             left = ConstPtr((left).rawAddress + ((leftNonempty.toInt()).toLong() * (typeLayoutT).strideBytes))
             right = ConstPtr((right).rawAddress + (((if (!leftNonempty) 1 else 0)).toLong() * (typeLayoutT).strideBytes))
         }
@@ -763,7 +768,7 @@ public fun panicOnOrdViolation(): Nothing {
     error("user-provided comparison function does not correctly implement a total order")
 }
 
-internal fun <T> hasEfficientInPlaceSwap(typeLayoutT: TypeLayout<T>): Boolean {
+public fun <T> hasEfficientInPlaceSwap(typeLayoutT: TypeLayout<T>): Boolean {
     // Heuristic that holds true on all tested 64-bit capable architectures.
     return sizeOf<T>(typeLayoutT = typeLayoutT) <= 8
     // sizeOf::<u64>()

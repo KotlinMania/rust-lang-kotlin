@@ -1,11 +1,11 @@
-@file:OptIn(kotlin.ExperimentalUnsignedTypes::class, kotlin.wasm.ExperimentalWasmInterop::class)
+@file:OptIn(ExperimentalUnsignedTypes::class, ExperimentalWasmInterop::class)
 
 package io.github.kotlinmania.rustlang.backtrace.windowssys
 
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 
-// The host must provide the C companion wrapper exports in import module backtrace.
+// The host must provide the C companion wrapper exports in import module kmcore.
 public actual fun enumerateLoadedModulesW64(hprocess: Handle, enumloadedmodulescallback: PenumloadedModulesCallbackw64, usercontext: ConstPtr): Bool =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for backtraceWindowsSysEnumerateLoadedModulesW64")
 
@@ -36,7 +36,7 @@ public actual fun symGetLineFromInlineContextW(hprocess: Handle, dwaddr: ULong, 
 public actual fun symGetModuleBase64(hprocess: Handle, qwaddr: ULong): ULong =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for backtraceWindowsSysSymGetModuleBase64")
 
-@kotlin.wasm.WasmImport("backtrace", "backtraceWindowsSysSymGetOptions")
+@kotlin.wasm.WasmImport("kmcore", "backtraceWindowsSysSymGetOptions")
 private external fun wasiBacktraceWindowsSysSymGetOptions(): Int
 
 public actual fun symGetOptions(): UInt =
@@ -51,7 +51,7 @@ public actual fun symInitializeW(hprocess: Handle, usersearchpath: Pcwstr, finva
 public actual fun symQueryInlineTrace(hprocess: Handle, startaddress: ULong, startcontext: UInt, startretaddress: ULong, curaddress: ULong, curcontext: MutPtr, curframeindex: MutPtr): Bool =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for backtraceWindowsSysSymQueryInlineTrace")
 
-@kotlin.wasm.WasmImport("backtrace", "backtraceWindowsSysSymSetOptions")
+@kotlin.wasm.WasmImport("kmcore", "backtraceWindowsSysSymSetOptions")
 private external fun wasiBacktraceWindowsSysSymSetOptions(symoptions: Int): Int
 
 public actual fun symSetOptions(symoptions: UInt): UInt =
@@ -75,7 +75,7 @@ public actual fun createToolhelp32Snapshot(dwflags: CreateToolhelpSnapshotFlags,
 public actual fun getCurrentProcess(): Handle =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for backtraceWindowsSysGetCurrentProcess")
 
-@kotlin.wasm.WasmImport("backtrace", "backtraceWindowsSysGetCurrentProcessId")
+@kotlin.wasm.WasmImport("kmcore", "backtraceWindowsSysGetCurrentProcessId")
 private external fun wasiBacktraceWindowsSysGetCurrentProcessId(): Int
 
 public actual fun getCurrentProcessId(): UInt =

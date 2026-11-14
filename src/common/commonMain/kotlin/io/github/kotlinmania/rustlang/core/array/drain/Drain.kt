@@ -4,6 +4,8 @@ package io.github.kotlinmania.rustlang.core.array.drain
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.conjureZst
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
+import io.github.kotlinmania.rustlang.core.ops.function.FnMut
+import io.github.kotlinmania.rustlang.core.ops.function.FnOnce
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
@@ -13,7 +15,7 @@ import io.github.kotlinmania.rustlang.core.slice.rawMutSliceList
 /**
  * See [Drain.new]; this is our fake iterator.
  */
-internal open class Drain<T, F>(
+public open class Drain<T, F>(
     // Note(const-Note): This is a slice.IterMut<l>, replace when possible.
     /**
      * The pointer to the next element to return, or the past-the-end location
@@ -81,7 +83,7 @@ internal open class Drain<T, F>(
          *
          * SAFETY: must only be called `N` times. Thou shalt not drop the array either.
          */
-        internal fun <T, U> new(array: List<T>, f: (T) -> U, n: Int): Drain<T, F> {
+        public fun <T, U> new(array: List<T>, f: (T) -> U, n: Int): Drain<T, F> {
             // dont drop the array, transfers "ownership" to Self
             val ptr: NonNull = NonNull.fromMut(array).cast()
             // SAFETY:

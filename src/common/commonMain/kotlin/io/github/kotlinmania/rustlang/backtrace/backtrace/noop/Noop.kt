@@ -13,6 +13,8 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 public fun trace(cb: (io.github.kotlinmania.rustlang.backtrace.backtrace.Frame) -> Boolean) {}
 
 public open class Frame {
+    public open fun clone(): Frame = Frame()
+
     public open fun ip(): MutPtr = MutPtr(0L)
 
     public open fun sp(): MutPtr = MutPtr(0L)
@@ -22,8 +24,8 @@ public open class Frame {
     public open fun moduleBaseAddress(): MutPtr? = null
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Frame> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Frame> {
+        public fun typeLayout(): TypeLayout<Frame> =
+            object : TypeLayout<Frame> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): Frame =

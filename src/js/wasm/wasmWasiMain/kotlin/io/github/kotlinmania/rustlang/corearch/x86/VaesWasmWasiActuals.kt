@@ -1,8 +1,8 @@
-@file:OptIn(kotlin.ExperimentalUnsignedTypes::class, kotlin.wasm.ExperimentalWasmInterop::class)
+@file:OptIn(ExperimentalUnsignedTypes::class, ExperimentalWasmInterop::class)
 
 package io.github.kotlinmania.rustlang.corearch.x86
 
-// The host must provide the C companion wrapper exports in import module corearch.
+// The host must provide the C companion wrapper exports in import module kmcore.
 public actual fun aesenc256(a: M256i, roundKey: M256i): M256i =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86VaesAesenc256")
 

@@ -2,13 +2,14 @@
 package io.github.kotlinmania.rustlang.alloc.vec.inplacecollect
 
 import io.github.kotlinmania.rustlang.alloc.alloc.Global
-import io.github.kotlinmania.rustlang.alloc.handleAllocError
+import io.github.kotlinmania.rustlang.alloc.alloc.handleAllocError
 import io.github.kotlinmania.rustlang.alloc.vec.Vec
 import io.github.kotlinmania.rustlang.alloc.vec.inplacedrop.InPlaceDrop
 import io.github.kotlinmania.rustlang.alloc.vec.inplacedrop.InPlaceDstDataSrcBufDrop
 import io.github.kotlinmania.rustlang.alloc.vec.intoiter.IntoIter
 import io.github.kotlinmania.rustlang.alloc.vec.specfromiternested.SpecFromIterNested
 import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
+import io.github.kotlinmania.rustlang.core.array.write
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccessNoCoerce
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.InPlaceIterable
@@ -16,6 +17,7 @@ import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignOf
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
@@ -296,7 +298,7 @@ public fun <Src, Item, I, T> fromIterInPlace(iterator: I, typeLayoutT: TypeLayou
     } else {
         check(srcCap * sizeOf<Src>(typeLayoutT = ObjectSlotLayout<Src>()) == dstCap * sizeOf<T>(typeLayoutT = typeLayoutT))
     }
-    mem.forget(dstGuard)
+    forget(dstGuard)
     // ignore-tidy-undocumented-unchecked
     return Vec.fromParts(dstBuf, len, dstCap)
 }
@@ -309,7 +311,7 @@ public fun <T> writeInPlaceWithDrop(srcEnd: ConstPtr): (InPlaceDrop<T>, T) -> Re
         check(((constPtrFromRustCast(sink.dst)).rawAddress.toULong() <= (srcEnd).rawAddress.toULong())) { "InPlaceIterable contract violation" }
         // ignore-tidy-undocumented-unchecked
         run {
-            ptr.write(sink.dst, item)
+            write(sink.dst, item)
             // Since this executes user code which can panic we have to bump the pointer
             // after each step.
             sink.dst = sink.dst.add(1)
@@ -357,13 +359,13 @@ public fun <T, I> I.collectInPlace(dstBuf: MutPtr, end: ConstPtr, typeLayoutT: T
         run {
             val dst = MutPtr((dstBuf).rawAddress + ((i).toLong() * (typeLayoutT).strideBytes))
             check(((ConstPtr(dst.rawAddress, dst.rawMeta)).rawAddress.toULong() <= (end).rawAddress.toULong())) { "InPlaceIterable contract violation" }
-            ptr.write(dst, this.iteratorGetUnchecked(i), typeLayoutT = typeLayoutT)
+            write(dst, this.iteratorGetUnchecked(i), typeLayoutT = typeLayoutT)
             // Since this executes user code which can panic we have to bump the pointer
             // after each step.
             dropGuard.dst = MutPtr((dst).rawAddress + ((1).toLong() * (typeLayoutT).strideBytes))
         }
     }
-    mem.forget(dropGuard)
+    forget(dropGuard)
     return len
 }
 
@@ -381,6 +383,6 @@ public fun <T, I> I.collectInPlace(dstBuf: MutPtr, end: ConstPtr, typeLayoutT: T
  * In-place iteration relies on implementation details of `vec.IntoIter`, most importantly that
  * it does not create references to the whole allocation during iteration, only raw pointers
  */
-internal interface AsVecIntoIter<Item> {
+public interface AsVecIntoIter<Item> {
     public fun asIntoIter(): IntoIter<Item>
 }

@@ -11,7 +11,7 @@ import io.github.kotlinmania.rustlang.core.num.imp.dec2flt.slow.parseLongMantiss
 import io.github.kotlinmania.rustlang.core.num.imp.traits.FloatExt
 import io.github.kotlinmania.rustlang.core.result.Result
 
-internal fun pfeEmpty(): ParseFloatError = ParseFloatError(kind = FloatErrorKind.Empty)
+public fun pfeEmpty(): ParseFloatError = ParseFloatError(kind = FloatErrorKind.Empty)
 
 // Only used in unit tests, keep public.
 public fun pfeInvalid(): ParseFloatError = ParseFloatError(kind = FloatErrorKind.Invalid)
@@ -84,7 +84,7 @@ public fun <F : Lemire<F>> dec2flt(s: String): Result<F, ParseFloatError> {
 }
 
 public fun lemirePow10FastPathF16(exponent: Int): F16 {
-    val TABLE: List<F16> = listOf(1e0, 1e1, 1e2, 1e3, 1e4, 0.0, 0.0, 0.0)
+    val TABLE: List<F16> = listOf(F16.fromFloat(1e0f), F16.fromFloat(1e1f), F16.fromFloat(1e2f), F16.fromFloat(1e3f), F16.fromFloat(1e4f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f))
     return TABLE[exponent and 7]
 }
 
@@ -92,7 +92,7 @@ public fun lemireFromU64F16(v: ULong): F16 {
     if (false) {
         check(v <= F16.MAX_MANTISSA_FAST_PATH)
     }
-    return ((v as Any?) as F16)
+    return F16.fromULong(v)
 }
 
 public fun lemirePow10FastPathFloat(exponent: Int): kotlin.Float {

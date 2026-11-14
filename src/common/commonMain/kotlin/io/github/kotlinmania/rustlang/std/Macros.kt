@@ -301,22 +301,14 @@ public fun eprintln(arg: String = ""): String =
  *
  * The `dbg(..)` macro moves the input:
  *
- * ```kotlin
- * / **
- *  * A wrapper around `Int` which importantly is not Copyable.
- *  * /
- * open class NoCopy(public var value: Int) {
- *     public var field0: Int
- *         get() = value
- *         set(v) {
- *             value = v
- *         }
- * }
- * val a = NoCopy(42)
- * dbg(a)
- * // <-- `a` is moved here.
- * dbg(a)
- * // <-- `a` is moved again; error!
+ * ```compile_fail
+ * /// A wrapper around `Int` which importantly is not Copyable.
+ * @derive(Debug)
+ * struct NoCopy(Int);
+ *
+ * let a = NoCopy(42);
+ * let _ = dbg(a); // <-- `a` is moved here.
+ * let _ = dbg(a); // <-- `a` is moved again; error!
  * ```
  *
  * You can also use `dbg()` without a value to just print the
@@ -375,6 +367,8 @@ public fun repetitionUtils(tokens: String = "", x: String = "", y: String = "", 
  * # Examples
  *
  * ```kotlin
+ * import std.hashMap
+ *
  * @feature(hashMapMacro)
  * public fun doctestEntry() {
  *     val map = hashMap("key", "value", "key1", "value1")
@@ -387,6 +381,8 @@ public fun repetitionUtils(tokens: String = "", x: String = "", y: String = "", 
  * And with a trailing comma
  *
  * ```kotlin
+ * import std.hashMap
+ *
  * @feature(hashMapMacro)
  * public fun doctestEntry() {
  *     val map = hashMap("key", "value")

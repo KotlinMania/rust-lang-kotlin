@@ -2,10 +2,10 @@
 package io.github.kotlinmania.rustlang.core.mem.typeinfo
 
 import io.github.kotlinmania.rustlang.core.RustTypeId
-import io.github.kotlinmania.rustlang.core.any.TypeId
 import io.github.kotlinmania.rustlang.core.intrinsics.fieldRepresentingTypeActualTypeId
 import io.github.kotlinmania.rustlang.core.intrinsics.fieldRepresentingTypeName
 import io.github.kotlinmania.rustlang.core.intrinsics.fieldRepresentingTypeOffset
+import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeId
 import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeIdArrayLen
 import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeIdElementTy
 import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeIdFieldRepresentingType
@@ -50,7 +50,7 @@ public open class Type(
          * be able to break invariants that other `TypeId` consuming crates
          * may have assumed to hold.
          */
-        public fun <T> of(): Type = TypeId<T>().info()
+        public fun <T> of(): Type = typeId<T>().info()
     }
 }
 
@@ -58,7 +58,7 @@ public open class Type(
  * Info of a trait implementation, you can retrieve the vtable with [Self.getVtable]
  */
 public open class TraitImpl<T>(
-    internal var vtable: DynMetadata<T>,
+    public var vtable: DynMetadata<T>,
 ) {
     /**
      * Gets the raw vtable for type reflection mapping
@@ -80,7 +80,7 @@ public fun RustTypeId.info(): Type = typeIdTypeOf(this)
  * This is identical to [TypeId.of] but without the static scope bound. It will be removed
  * in the future.
  */
-public fun <T> of(): RustTypeId = TypeId<T>()
+public fun <T> of(): RustTypeId = typeId<T>()
 
 /**
  * Compile-time type information.
@@ -212,8 +212,8 @@ public sealed class Generic {
  */
 public open class Lifetime {
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Lifetime> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Lifetime> {
+        public fun typeLayout(): TypeLayout<Lifetime> =
+            object : TypeLayout<Lifetime> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): Lifetime =
@@ -253,8 +253,8 @@ public open class Const(
  */
 public open class Str {
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Str> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Str> {
+        public fun typeLayout(): TypeLayout<Str> =
+            object : TypeLayout<Str> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): Str =
@@ -475,12 +475,22 @@ public fun RustTypeId.variants(): Int = typeIdVariants(this)
  * Calling variant on the TypeId for a struct will be treated as a compile-time error. The same
  * is true for out-of-bounds indexing on an enum.
  *
- * ```kotlin
- * run {
- *     RustTypeId.of<Point>().variant(0)
- *     // error: cannot get the variant of a struct
- *     RustTypeId.of<Enum>().variant(10)
- *     // error: indexing out of bounds: the len is 3 but the index is 10
+ * ```compile_fail,E0080
+ * # @file:feature(typeInfo)
+ * # use std.any.TypeId;
+ * #
+ * # struct Point {
+ * #     x: u32,
+ * #     y: u32,
+ * # }
+ * # enum Enum {
+ * #     Unit,
+ * #     Tuple(u32, u64),
+ * #     Struct { x: u32, y: u32, z: String },
+ * # }
+ * const {
+ *     _ = TypeId.of::<Point>().variant(0); // error: cannot get the variant of a struct
+ *     _ = TypeId.of::<Enum>().variant(10); // error: indexing out of bounds: the len is 3 but the index is 10
  * }
  * ```
  */
@@ -529,12 +539,22 @@ public fun RustTypeId.variant(variantIndex: Int): VariantId {
  *
  * Out-of-bounds indexing will be treated as a compile-time error.
  *
- * ```kotlin
- * run {
- *     RustTypeId.of<Point>().fields(10)
- *     // error: indexing out of bounds: the len is 2 but the index is 10
- *     RustTypeId.of<Enum>().fields(10)
- *     // error: indexing out of bounds: the len is 3 but the index is 10
+ * ```compile_fail,E0080
+ * # @file:feature(typeInfo)
+ * # use std.any.TypeId;
+ * #
+ * # struct Point {
+ * #     x: u32,
+ * #     y: u32,
+ * # }
+ * # enum Enum {
+ * #     Unit,
+ * #     Tuple(u32, u64),
+ * #     Struct { x: u32, y: u32, z: String },
+ * # }
+ * const {
+ *     _ = TypeId.of::<Point>().fields(10); // error: indexing out of bounds: the len is 2 but the index is 10
+ *     _ = TypeId.of::<Enum>().fields(10); // error: indexing out of bounds: the len is 3 but the index is 10
  * }
  * ```
  */
@@ -577,12 +597,22 @@ public fun RustTypeId.fields(variantIndex: Int): Int = typeIdFields(this, varian
  *
  * Out-of-bounds indexing will be treated as a compile-time error.
  *
- * ```kotlin
- * run {
- *     RustTypeId.of<Point>().field(0, 10)
- *     // error: indexing out of bounds: the len is 2 but the index is 10
- *     RustTypeId.of<Enum>().field(2, 10)
- *     // error: indexing out of bounds: the len is 3 but the index is 10
+ * ```compile_fail,E0080
+ * # @file:feature(typeInfo)
+ * # use std.any.TypeId;
+ * #
+ * # struct Point {
+ * #     x: u32,
+ * #     y: u32,
+ * # }
+ * # enum Enum {
+ * #     Unit,
+ * #     Tuple(u32, u64),
+ * #     Struct { x: u32, y: u32, z: String },
+ * # }
+ * const {
+ *     _ = TypeId.of::<Point>().field(0, 10); // error: indexing out of bounds: the len is 2 but the index is 10
+ *     _ = TypeId.of::<Enum>().field(2, 10); // error: indexing out of bounds: the len is 3 but the index is 10
  * }
  * ```
  */
@@ -696,6 +726,8 @@ public open class VariantId(
     public var base: RustTypeId,
     public var variant: Int,
 ) {
+    public open fun clone(): VariantId = VariantId(base, variant)
+
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = f.writeFmt("Variant(${this.base.asU128()}-${this.variant})")
 
     /**
@@ -747,6 +779,8 @@ public open class VariantId(
 public open class FieldId(
     public var frtTypeId: RustTypeId,
 ) {
+    public open fun clone(): FieldId = FieldId(frtTypeId)
+
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = f.writeFmt("FieldId(${this.frtTypeId.asU128()})")
 
     /**

@@ -238,24 +238,28 @@ public interface DerefPure
 /**
  * Indicates that a struct can be used as a method receiver.
  * That is, a type can use this type as a type of `self`, like this:
- * ```kotlin
- * import std.ops.Receiver
+ * ```compile_fail
+ * # // This is currently compileFail because the compiler-side parts
+ * # // of arbitrarySelfTypes are not implemented
+ * use std.ops.Receiver;
  *
- * open class SmartPointer<T>(public var value: T) : Receiver {
- *     public var field0: T
- *         get() = value
- *         set(v) {
- *             value = v
- *         }
+ * struct SmartPointer<T>(T);
+ *
+ * impl<T> Receiver for SmartPointer<T> {
+ *    type Target = T;
  * }
- * open class MyContainedType {
- *     public open fun method() {
- *         // ...
- *     }
+ *
+ * struct MyContainedType;
+ *
+ * impl MyContainedType {
+ *   fn method(self: SmartPointer<Self>) {
+ *     // ...
+ *   }
  * }
- * fun main() {
- *     val ptr = SmartPointer(MyContainedType())
- *     ptr.method()
+ *
+ * fn main() {
+ *   let ptr = SmartPointer(MyContainedType);
+ *   ptr.method();
  * }
  * ```
  * This trait is blanket implemented for any type which implements

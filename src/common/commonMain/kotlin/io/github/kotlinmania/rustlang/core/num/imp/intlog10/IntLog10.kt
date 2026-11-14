@@ -96,44 +96,44 @@ public fun u128Impl(value: U128): UInt {
     return log + u64Impl(value1.toULong())
 }
 
-internal fun u8(value: NonZero<UByte>): UInt {
+public fun u8(value: NonZero<UByte>): UInt {
     val result = u8Impl(value.get())
     assertUnchecked(result <= u8Impl(UByte.MAX_VALUE))
     return result
 }
 
-internal fun u16(value: NonZero<UShort>): UInt {
+public fun u16(value: NonZero<UShort>): UInt {
     val result = u16Impl(value.get())
     assertUnchecked(result <= u16Impl(UShort.MAX_VALUE))
     return result
 }
 
-internal fun u32(value: NonZero<UInt>): UInt {
+public fun u32(value: NonZero<UInt>): UInt {
     val result = u32Impl(value.get())
     assertUnchecked(result <= u32Impl(UInt.MAX_VALUE))
     return result
 }
 
-internal fun u64(value: NonZero<ULong>): UInt {
+public fun u64(value: NonZero<ULong>): UInt {
     val result = u64Impl(value.get())
     assertUnchecked(result <= u64Impl(ULong.MAX_VALUE))
     return result
 }
 
-internal fun u128(value: NonZero<U128>): UInt {
+public fun u128(value: NonZero<U128>): UInt {
     val result = u128Impl(value.get())
     assertUnchecked(result <= u128Impl(U128.MAX_VALUE))
     return result
 }
 
-internal fun usize(value: NonZero<Int>): UInt {
+public fun usize(value: NonZero<Int>): UInt {
     val implFn = ::u64
     // SAFETY: We have selected the correct `implFn`, so the converting `val` to the argument is
     // safe.
     return implFn(NonZero.newUnchecked(value.get().toUInt()))
 }
 
-internal fun i8(value: Byte): UInt? =
+public fun i8(value: Byte): UInt? =
     if (value > 0.toByte()) {
         val result = u8Impl(value.castUnsigned())
         run {
@@ -144,7 +144,7 @@ internal fun i8(value: Byte): UInt? =
         null
     }
 
-internal fun i16(value: Short): UInt? =
+public fun i16(value: Short): UInt? =
     if (value > 0.toShort()) {
         val result = u16Impl(value.castUnsigned())
         run {
@@ -155,7 +155,7 @@ internal fun i16(value: Short): UInt? =
         null
     }
 
-internal fun i32(value: Int): UInt? =
+public fun i32(value: Int): UInt? =
     if (value > 0) {
         val result = u32Impl(value.castUnsigned())
         run {
@@ -166,7 +166,7 @@ internal fun i32(value: Int): UInt? =
         null
     }
 
-internal fun i64(value: Long): UInt? =
+public fun i64(value: Long): UInt? =
     if (value > 0L) {
         val result = u64Impl(value.castUnsigned())
         run {
@@ -177,7 +177,7 @@ internal fun i64(value: Long): UInt? =
         null
     }
 
-internal fun i128(value: I128): UInt? =
+public fun i128(value: I128): UInt? =
     if (value > I128(0x0L, 0x0uL)) {
         val result = u128Impl(value.castUnsigned())
         run {
@@ -192,6 +192,6 @@ internal fun i128(value: I128): UInt? =
  * Instantiate this panic logic once, rather than for all the ilog methods
  * on every single primitive type.
  */
-internal fun panicForNonpositiveArgument(): Nothing {
+public fun panicForNonpositiveArgument(): Nothing {
     error("argument of integer logarithm must be positive")
 }

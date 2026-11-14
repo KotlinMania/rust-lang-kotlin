@@ -2,7 +2,9 @@
 package io.github.kotlinmania.rustlang.core.iter.adapters.rev
 
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
 
 /**
@@ -39,10 +41,10 @@ public open class Rev<T>(
     public open fun intoInner(): T = this.iter
 
     public companion object {
-        public fun <T> typeLayout(typeLayoutT: io.github.kotlinmania.rustlang.core.mem.TypeLayout<T>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Rev<T>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Rev<T>> {
+        public fun <T> typeLayout(typeLayoutT: TypeLayout<T>): TypeLayout<Rev<T>> =
+            object : TypeLayout<Rev<T>> {
                 override val alignBytes: Long = listOf(1L, typeLayoutT.alignBytes).max()
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(typeLayoutT.sizeBytes, alignBytes)
+                override val sizeBytes: Long = alignUpBytes(typeLayoutT.sizeBytes, alignBytes)
                 override fun readNative(addr: Long): Rev<T> =
                     Rev(
                         (typeLayoutT).readNative(addr),
@@ -59,7 +61,7 @@ public open class Rev<T>(
                 }
             }
 
-        internal fun <T> new(iter: T): Rev<T> = Rev(iter = iter)
+        public fun <T> new(iter: T): Rev<T> = Rev(iter = iter)
     }
 }
 

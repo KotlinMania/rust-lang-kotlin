@@ -1,4 +1,4 @@
-@file:OptIn(kotlinx.cinterop.ExperimentalForeignApi::class, kotlin.ExperimentalUnsignedTypes::class)
+@file:OptIn(ExperimentalForeignApi::class, ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.corearch.riscv64
 
@@ -11,6 +11,7 @@ import io.github.kotlinmania.rustlang.corearch.riscv64.cinterop.corearchRiscv64Z
 import io.github.kotlinmania.rustlang.corearch.riscv64.cinterop.corearchRiscv64ZkSha512sig1
 import io.github.kotlinmania.rustlang.corearch.riscv64.cinterop.corearchRiscv64ZkSha512sum0
 import io.github.kotlinmania.rustlang.corearch.riscv64.cinterop.corearchRiscv64ZkSha512sum1
+import kotlinx.cinterop.ExperimentalForeignApi
 
 public actual fun aes64es(rs1: Long, rs2: Long): Long =
     corearchRiscv64ZkAes64es(rs1, rs2)

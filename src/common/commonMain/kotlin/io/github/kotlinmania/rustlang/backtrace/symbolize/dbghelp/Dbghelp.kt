@@ -3,6 +3,8 @@
 
 package io.github.kotlinmania.rustlang.backtrace.symbolize.dbghelp
 
+import io.github.kotlinmania.rustlang.backtrace.dbghelp.Init
+import io.github.kotlinmania.rustlang.backtrace.dbghelp.init
 import io.github.kotlinmania.rustlang.backtrace.symbolize.ResolveWhat
 import io.github.kotlinmania.rustlang.backtrace.symbolize.SymbolName
 import io.github.kotlinmania.rustlang.backtrace.symbolize.adjustIp
@@ -12,6 +14,7 @@ import io.github.kotlinmania.rustlang.backtrace.windowssys.CP_UTF8
 import io.github.kotlinmania.rustlang.backtrace.windowssys.ImagehlpLinew64
 import io.github.kotlinmania.rustlang.backtrace.windowssys.MAX_SYM_NAME
 import io.github.kotlinmania.rustlang.backtrace.windowssys.TRUE
+import io.github.kotlinmania.rustlang.core.marker.PhantomData
 import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.AlignedTypeLayout
@@ -122,7 +125,7 @@ public fun resolve(what: ResolveWhat, cb: (io.github.kotlinmania.rustlang.backtr
     // Ensure this process's symbols are initialized
     val dbghelp1 =
         run {
-            val matchVal = dbghelp.init()
+            val matchVal = init()
             when (matchVal) { is Result.Ok<*> -> {
                 val dbghelp = matchVal.value
                 dbghelp
@@ -144,26 +147,12 @@ public fun resolve(what: ResolveWhat, cb: (io.github.kotlinmania.rustlang.backtr
 }
 
 /**
- * Resolve the address using the legacy dbghelp API.
- *
- * This should work all the way down to Windows XP. The inline context is
- * ignored, since this concept was only introduced in dbghelp 6.2+.
- */
-public fun resolveLegacy(dbghelp: dbghelp.Init, addr: MutPtr, inlineContext: UInt?, cb: (io.github.kotlinmania.rustlang.backtrace.symbolize.Symbol) -> Unit): Unit? {
-    val addr1 = adjustIp(addr).rawAddress.toULong()
-    run {
-        doResolve({ info -> dbghelp.symFromAddrW()(GetCurrentProcess(), addr1, RustMutableReference(allocateNativeCell(0, PrimitiveLayouts.I32), PrimitiveLayouts.I32), info) }, { line -> dbghelp.symGetLineFromAddrW64()(GetCurrentProcess(), addr1, RustMutableReference(allocateNativeCell(0, PrimitiveLayouts.I32), PrimitiveLayouts.I32), line) }, cb)
-    }
-    return Unit
-}
-
-/**
  * Resolve the address using the modern dbghelp APIs.
  *
  * Note that calling this function requires having dbghelp 6.2+ loaded - and
  * will panic otherwise.
  */
-public fun resolveWithInline(dbghelp: dbghelp.Init, addr: MutPtr, inlineContext: UInt?, cb: (io.github.kotlinmania.rustlang.backtrace.symbolize.Symbol) -> Unit): Unit? {
+public fun resolveWithInline(dbghelp: Init, addr: MutPtr, inlineContext: UInt?, cb: (io.github.kotlinmania.rustlang.backtrace.symbolize.Symbol) -> Unit): Unit? {
     val inlineContext1 = inlineContext
     run {
         val currentProcess = GetCurrentProcess()
@@ -201,7 +190,7 @@ public fun resolveWithInline(dbghelp: dbghelp.Init, addr: MutPtr, inlineContext:
  * - `symFromAddr`: either `SymFromAddrW` or `SymFromInlineContextW`
  * - `getLineFromAddr`: `SymGetLineFromAddrW64` or `SymGetLineFromInlineContextW`
  */
-public fun doResolve(symFromAddr: (MutPtr) -> Bool, getLineFromAddr: (ImagehlpLinew64) -> Bool, cb: (io.github.kotlinmania.rustlang.backtrace.symbolize.Symbol) -> Unit) {
+public fun doResolve(symFromAddr: (MutPtr) -> Bool, getLineFromAddr: (RustMutableReference<ImagehlpLinew64>) -> Bool, cb: (io.github.kotlinmania.rustlang.backtrace.symbolize.Symbol) -> Unit) {
     val data = MaybeUninit.zeroed(ObjectSlotLayout<Aligned8<UByteArray>>())
     val info = data.asMutPtr().cast()
     info.maxNameLen = MAX_SYM_NAME
@@ -234,7 +223,7 @@ public fun doResolve(symFromAddr: (MutPtr) -> Bool, getLineFromAddr: (ImagehlpLi
     }
     val name = addrOf(((nameBuffer).sliceArray(0 until nameLen1)))
     var line = ImagehlpLinew64(sizeOfStruct = 0u, key = MutPtr(0L), lineNumber = 0u, fileName = MutPtr(0L), address = 0uL)
-    line.sizeOfStruct = mem.sizeOf<ImagehlpLinew64>(typeLayoutT = ObjectSlotLayout<ImagehlpLinew64>()).toUInt()
+    line.sizeOfStruct = sizeOf<ImagehlpLinew64>(typeLayoutT = ObjectSlotLayout<ImagehlpLinew64>()).toUInt()
     var filename = null
     var lineno = null
     if (getLineFromAddr(line) == TRUE) {
@@ -249,7 +238,7 @@ public fun doResolve(symFromAddr: (MutPtr) -> Bool, getLineFromAddr: (ImagehlpLi
             filename = ptrFromRef(rawSliceList(base, len1.toInt(), PrimitiveLayouts.U8))
         }
     }
-    cb(io.github.kotlinmania.rustlang.backtrace.symbolize.Symbol(inner = Symbol(name = name, addr = mutPtrFromRustCast(info.address), line = lineno, filename = filename, filenameCache = cache(filename), marker = marker.PhantomData)))
+    cb(io.github.kotlinmania.rustlang.backtrace.symbolize.Symbol(inner = Symbol(name = name, addr = mutPtrFromRustCast(info.address), line = lineno, filename = filename, filenameCache = cache(filename), marker = PhantomData)))
 }
 
 public fun cache(filename: ConstPtr?): OsString? = filename?.let({ f -> OsString.fromWide(f) })

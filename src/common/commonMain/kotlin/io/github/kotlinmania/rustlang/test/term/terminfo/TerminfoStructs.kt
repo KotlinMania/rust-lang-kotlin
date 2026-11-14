@@ -1,5 +1,6 @@
 package io.github.kotlinmania.rustlang.test.term.terminfo
 
+import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.and
 import io.github.kotlinmania.rustlang.core.result.andThen
@@ -16,32 +17,32 @@ import io.github.kotlinmania.rustlang.test.term.terminfo.searcher.getDbpathForTe
 /**
  * A parsed terminfo database entry.
  */
-internal open class TermInfo(
+public open class TermInfo(
     /**
      * Names for the terminal
      */
-    internal var names: List<String>,
+    public var names: List<String>,
     /**
      * Map of capability name to boolean value
      */
-    internal var bools: MutableMap<String, Boolean>,
+    public var bools: MutableMap<String, Boolean>,
     /**
      * Map of capability name to numeric value
      */
-    internal var numbers: MutableMap<String, UInt>,
+    public var numbers: MutableMap<String, UInt>,
     /**
      * Map of capability name to raw (unexpanded) string
      */
-    internal var strings: MutableMap<String, List<UByte>>,
+    public var strings: MutableMap<String, List<UByte>>,
 ) {
     public companion object {
         /**
          * Creates a TermInfo based on current environment.
          */
-        internal fun fromEnv(): Result<TermInfo, Error> {
+        public fun fromEnv(): Result<TermInfo, Error> {
             val term =
                 run {
-                    val matchVal = variable("TERM")
+                    val matchVal = Env.variable("TERM")
                     when (matchVal) { is Result.Ok<*> -> {
                         val name = matchVal.value
                         TermInfo.fromName(name)
@@ -49,7 +50,7 @@ internal open class TermInfo(
                         return Result.Err(Error.TermUnset)
                     } }
                 }
-            return if (term.isErr() && variable("MSYSCON").isOkAnd({ s -> "mintty.exe" == s })) {
+            return if (term.isErr() && Env.variable("MSYSCON").isOkAnd({ s -> "mintty.exe" == s })) {
                 // msys terminal
                 Result.Ok(msysTerminfo())
             } else {
@@ -60,21 +61,21 @@ internal open class TermInfo(
         /**
          * Creates a TermInfo for the named terminal.
          */
-        internal fun fromName(name: String): Result<TermInfo, Error> {
+        public fun fromName(name: String): Result<TermInfo, Error> {
             if (false) {
                 // Avoid all the work of parsing the terminfo (it's pretty slow under Miri), and just
                 // assume that the standard color codes work (like e.g. the 'colored' crate).
                 return Result.Ok(TermInfo(names = Default.default(), bools = Default.default(), numbers = Default.default(), strings = Default.default()))
             }
             return getDbpathForTerm(name).okOrElse({
-                Error.IoError(constError(ErrorKind.NotFound, "terminfo file not found"))
+                Error.IoError(io.constError(ErrorKind.NotFound, "terminfo file not found"))
             }).andThen({ p -> TermInfo.fromPath(p) })
         }
 
         /**
          * Parse the given TermInfo.
          */
-        internal fun fromPath(path: Path): Result<TermInfo, Error> = TermInfo.fromPath(path)
+        public fun fromPath(path: Path): Result<TermInfo, Error> = TermInfo.fromPath(path)
     }
 }
 
@@ -82,7 +83,7 @@ internal open class TermInfo(
  * A Terminal that knows how many colors it supports, with a reference to its
  * parsed Terminfo database record.
  */
-internal open class TerminfoTerminal<T>(
+public open class TerminfoTerminal<T>(
     public var numColors: UInt,
     public var out: T,
     public var ti: TermInfo,
@@ -119,7 +120,7 @@ internal open class TerminfoTerminal<T>(
                             cmd
                         }; is Result.Err<*> -> {
                             val e = matchVal1.error
-                            return Result.Err(Error.new(ErrorKind.InvalidData, e))
+                            return Result.Err(io.github.kotlinmania.rustlang.core.io.error.Error.new(ErrorKind.InvalidData, e))
                         } }
                     }
                 }
@@ -146,7 +147,7 @@ internal open class TerminfoTerminal<T>(
                         this.out.writeAll(s).and(Result.Ok(true))
                     }; is Result.Err<*> -> {
                         val e = matchVal1.error
-                        Result.Err(Error.new(ErrorKind.InvalidData, e))
+                        Result.Err(io.github.kotlinmania.rustlang.core.io.error.Error.new(ErrorKind.InvalidData, e))
                     } }
                 }
             }
@@ -160,7 +161,7 @@ internal open class TerminfoTerminal<T>(
         /**
          * Creates a new TerminfoTerminal with the given TermInfo and Write.
          */
-        internal fun <T> newWithTerminfo(out: T, terminfo: TermInfo): TerminfoTerminal<T> {
+        public fun <T> newWithTerminfo(out: T, terminfo: TermInfo): TerminfoTerminal<T> {
             val nc =
                 if (terminfo.strings.containsKey("setaf") && terminfo.strings.containsKey("setab")) {
                     (terminfo.numbers.get("colors")?.let({ n -> n }) ?: 0)
@@ -175,6 +176,6 @@ internal open class TerminfoTerminal<T>(
          *
          * Returns `None` when the terminfo cannot be found or parsed.
          */
-        internal fun <T> new(out: T): TerminfoTerminal<T>? = TermInfo.fromEnv().map({ ti -> TerminfoTerminal.newWithTerminfo(out, ti) }).ok()
+        public fun <T> new(out: T): TerminfoTerminal<T>? = TermInfo.fromEnv().map({ ti -> TerminfoTerminal.newWithTerminfo(out, ti) }).ok()
     }
 }

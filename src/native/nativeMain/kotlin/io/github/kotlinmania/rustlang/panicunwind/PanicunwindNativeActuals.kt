@@ -1,9 +1,10 @@
-@file:OptIn(kotlinx.cinterop.ExperimentalForeignApi::class, kotlin.ExperimentalUnsignedTypes::class)
+@file:OptIn(ExperimentalForeignApi::class, ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.panicunwind
 
 import io.github.kotlinmania.rustlang.panicunwind.cinterop.panicunwindRustDropPanic
 import io.github.kotlinmania.rustlang.panicunwind.cinterop.panicunwindRustForeignException
+import kotlinx.cinterop.ExperimentalForeignApi
 
 public actual fun rustDropPanic(): Nothing {
     panicunwindRustDropPanic()

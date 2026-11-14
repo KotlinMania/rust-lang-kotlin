@@ -3,25 +3,26 @@
 
 package io.github.kotlinmania.rustlang.std.os.darwin.fs.dirs
 
-import io.github.kotlinmania.libc.fuchsia.PATH_MAX
-import io.github.kotlinmania.libc.sysdirGetNextSearchPathEnumeration
-import io.github.kotlinmania.libc.sysdirStartSearchPathEnumeration
-import io.github.kotlinmania.libc.sysdirsearchpathdirectoryt.*
-import io.github.kotlinmania.libc.sysdirsearchpathdomainmaskt.SYSDIR_DOMAIN_MASK_USER
-import io.github.kotlinmania.libc.unix.bsd.apple.SysdirSearchPathDirectoryT
-import io.github.kotlinmania.libc.unix.bsd.apple.SysdirSearchPathDomainMaskT
-import io.github.kotlinmania.libc.unix.bsd.apple.SysdirSearchPathEnumerationState
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.libc.sysdirGetNextSearchPathEnumeration
+import io.github.kotlinmania.rustlang.libc.sysdirStartSearchPathEnumeration
+import io.github.kotlinmania.rustlang.libc.sysdirsearchpathdirectoryt.*
+import io.github.kotlinmania.rustlang.libc.sysdirsearchpathdomainmaskt.SYSDIR_DOMAIN_MASK_USER
+import io.github.kotlinmania.rustlang.libc.unix.bsd.PATH_MAX
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SysdirSearchPathDirectoryT
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SysdirSearchPathDomainMaskT
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SysdirSearchPathEnumerationState
+import io.github.kotlinmania.rustlang.std.env.homeDir
 import io.github.kotlinmania.rustlang.std.fs.dirs.HomeDirs
 import io.github.kotlinmania.rustlang.std.fs.dirs.MediaDirs
 import io.github.kotlinmania.rustlang.std.io.constError
+import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.path.PathBuf
-import io.github.kotlinmania.rustlang.std.sys.env.unix.env
 
 /**
  * Darwin-specific extensions to [`fs.HomeDirs`](HomeDirs).
@@ -76,7 +77,60 @@ public interface HomeDirsExt<T> {
      * [NSCachesDirectory]: https://developer.apple.com/documentation/foundation/filemanager/searchpathdirectory/cachesdirectory?language=objc
      * [NSApplicationSupportDirectory]: https://developer.apple.com/documentation/foundation/filemanager/searchpathdirectory/applicationsupportdirectory?language=objc
      */
-    public fun sysdir(): Result<T>
+    public fun sysdir(): Result<T, Error>
+
+    public companion object {
+        /**
+         * Load the standard user directory paths for the current user.
+         *
+         * On iOS, tvOS, watchOS, visionOS, and sandboxed macOS applications,
+         * these directories are within the application's container. Outside
+         * the sandbox, these are subdirectories of the `~ / Library` directory on
+         * macOS.
+         *
+         * The produced directory paths are not guaranteed to be the canonical
+         * paths to the directories; they are allowed to be sandbox-redirected
+         * paths as long as the directory is accessible there.
+         *
+         * The loaded common directories are:
+         *
+         * | `HomeDirs` | [NSSearchPathDirectory] |
+         * | ---------- | ----------------------- |
+         * | [cacheHome] | [NSCachesDirectory] (`~ / Library / Caches`) |
+         * | [configHome] | [NSApplicationSupportDirectory] (`~ / Library / Application Support`) |
+         * | [dataHome] | [NSApplicationSupportDirectory] (`~ / Library / Application Support`) |
+         * | [stateHome] | [NSApplicationSupportDirectory] (`~ / Library / Application Support`) |
+         *
+         * Note that the Application Support directory is used for the config,
+         * data, and state directories. It is always possible for multiple user
+         * directories to be configured to the same path, but this is the common
+         * configuration on Apple platforms, making it even more important to not
+         * assume files in different user directories cannot alias each other.
+         *
+         * # Errors
+         *
+         * Errors if the [user home](env.homeDir) cannot be determined.
+         *
+         * # Implementation-specific behavior
+         *
+         * Uses the `sysdir(3)` API from `libSystem` to discover the standard
+         * user directories.
+         *
+         * This behavior may change in the future. One example change that we
+         * explicitly reserve the right to make is to load additional common
+         * directories not currently in this list.
+         *
+         * [cacheHome]: HomeDirs.cacheHome
+         * [configHome]: HomeDirs.configHome
+         * [dataHome]: HomeDirs.dataHome
+         * [stateHome]: HomeDirs.stateHome
+         *
+         * [NSSearchPathDirectory]: https://developer.apple.com/documentation/foundation/filemanager/searchpathdirectory?language=objc
+         * [NSCachesDirectory]: https://developer.apple.com/documentation/foundation/filemanager/searchpathdirectory/cachesdirectory?language=objc
+         * [NSApplicationSupportDirectory]: https://developer.apple.com/documentation/foundation/filemanager/searchpathdirectory/applicationsupportdirectory?language=objc
+         */
+        public fun sysdir(): Result<HomeDirs, Error> = homeDirsExtSysdirHomeDirs()
+    }
 }
 
 /**
@@ -129,12 +183,62 @@ public interface MediaDirsExt<T> {
      * [NSPicturesDirectory]: https://developer.apple.com/documentation/foundation/filemanager/searchpathdirectory/picturesdirectory?language=objc
      * [NSMoviesDirectory]: https://developer.apple.com/documentation/foundation/filemanager/searchpathdirectory/moviesdirectory?language=objc
      */
-    public fun sysdir(): Result<T>
+    public fun sysdir(): Result<T, Error>
+
+    public companion object {
+        /**
+         * Load the standard user directory paths for the current user.
+         *
+         * The produced directory paths are not guaranteed to be the canonical
+         * paths to the directories; they are allowed to be sandbox-redirected
+         * paths as long as the directory is accessible there.
+         *
+         * The loaded common directories are:
+         *
+         * | `MediaDirs` | [NSSearchPathDirectory] |
+         * | ---------- | ----------------------- |
+         * | [desktop] | [NSDesktopDirectory] (`~ / Desktop`) |
+         * | [documents] | [NSDocumentDirectory] (`~ / Documents`) |
+         * | [downloads] | [NSDownloadsDirectory] (`~ / Downloads`) |
+         * | [music] | [NSMusicDirectory] (`~ / Music`) |
+         * | [pictures] | [NSPicturesDirectory] (`~ / Pictures`) |
+         * | [videos] | [NSMoviesDirectory] (`~ / Movies`) |
+         *
+         * # Errors
+         *
+         * Errors if the the [user home](env.homeDir) cannot be determined.
+         *
+         * # Implementation-specific behavior
+         *
+         * Uses the `sysdir(3)` API from `libSystem` to discover the standard
+         * user directories.
+         *
+         * This behavior may change in the future. One example change that we
+         * explicitly reserve the right to make is to load additional common
+         * directories not currently in this list.
+         *
+         * [desktop]: MediaDirs.desktop
+         * [documents]: MediaDirs.documents
+         * [downloads]: MediaDirs.downloads
+         * [music]: MediaDirs.music
+         * [pictures]: MediaDirs.pictures
+         * [videos]: MediaDirs.videos
+         *
+         * [NSSearchPathDirectory]: https://developer.apple.com/documentation/foundation/filemanager/searchpathdirectory?language=objc
+         * [NSDesktopDirectory]: https://developer.apple.com/documentation/foundation/filemanager/searchpathdirectory/desktopdirectory?language=objc
+         * [NSDocumentDirectory]: https://developer.apple.com/documentation/foundation/filemanager/searchpathdirectory/documentdirectory?language=objc
+         * [NSDownloadsDirectory]: https://developer.apple.com/documentation/foundation/filemanager/searchpathdirectory/downloadsdirectory?language=objc
+         * [NSMusicDirectory]: https://developer.apple.com/documentation/foundation/filemanager/searchpathdirectory/musicdirectory?language=objc
+         * [NSPicturesDirectory]: https://developer.apple.com/documentation/foundation/filemanager/searchpathdirectory/picturesdirectory?language=objc
+         * [NSMoviesDirectory]: https://developer.apple.com/documentation/foundation/filemanager/searchpathdirectory/moviesdirectory?language=objc
+         */
+        public fun sysdir(): Result<MediaDirs, Error> = mediaDirsExtSysdirMediaDirs()
+    }
 }
 
-public fun userHome(): Result<PathBuf> = env.homeDir().filter({ p -> p.isAbsolute() }).okOr(constError(ErrorKind.InvalidData, "home path not absolute"))
+public fun userHome(): Result<PathBuf, Error> = (homeDir().filter({ p -> p.isAbsolute() })?.let { Result.Ok(it) } ?: Result.Err(constError(ErrorKind.InvalidData, "home path not absolute")))
 
-public fun homeDirsExtSysdirHomeDirs(): Result<HomeDirs> {
+public fun homeDirsExtSysdirHomeDirs(): Result<HomeDirs, Error> {
     val dirs = HomeDirs.empty()
     val home = when (val tryResult = userHome()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
     val caches = when (val tryResult = getUserDir(home, SYSDIR_DIRECTORY_CACHES)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
@@ -147,7 +251,7 @@ public fun homeDirsExtSysdirHomeDirs(): Result<HomeDirs> {
     return Result.Ok(dirs)
 }
 
-public fun mediaDirsExtSysdirMediaDirs(): Result<MediaDirs> {
+public fun mediaDirsExtSysdirMediaDirs(): Result<MediaDirs, Error> {
     val dirs = MediaDirs.empty()
     val home = when (val tryResult = userHome()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
     val desktop = when (val tryResult = getUserDir(home, SYSDIR_DIRECTORY_DESKTOP)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
@@ -168,7 +272,7 @@ public fun mediaDirsExtSysdirMediaDirs(): Result<MediaDirs> {
 /**
  * Get the path for a system directory using `sysdir(3)`.
  */
-public fun getUserDir(home: Path, kind: SysdirSearchPathDirectoryT): Result<PathBuf?> {
+public fun getUserDir(home: Path, kind: SysdirSearchPathDirectoryT): Result<PathBuf?, Error> {
     // SAFETY: SYSDIR_DOMAIN_MASK_USER < SYSDIR_DOMAIN_MASK_ALL
     val iter = Iter.new(home, kind, SYSDIR_DOMAIN_MASK_USER)
     val path = iter.next() ?: return Result.Ok(null)
@@ -183,8 +287,8 @@ public fun getUserDir(home: Path, kind: SysdirSearchPathDirectoryT): Result<Path
 public open class Iter(
     public var home: Path,
     public var state: SysdirSearchPathEnumerationState,
-) : Iterable<Result<PathBuf>> {
-    override fun iterator(): kotlin.collections.Iterator<Result<PathBuf>> = object : AbstractIterator<Result<PathBuf>>() {
+) : Iterable<Result<PathBuf, Error>> {
+    override fun iterator(): Iterator<Result<PathBuf, Error>> = object : AbstractIterator<Result<PathBuf, Error>>() {
         override fun computeNext() {
             when (val v = this@Iter.next()) {
                 null -> done()
@@ -197,7 +301,7 @@ public open class Iter(
         for (unused in this) {}
     }
 
-    public open fun next(): Result<PathBuf>? {
+    public open fun next(): Result<PathBuf, Error>? {
         val localStorageL235C12 = AddressableArrayLocal.fromUByteArray(UByteArray(PATH_MAX.toInt()) { 0u.toUByte() })
         val buf by localStorageL235C12
         if (this.state != 0) {

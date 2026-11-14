@@ -1,10 +1,12 @@
 package io.github.kotlinmania.rustlang.test
 
 import io.github.kotlinmania.rustlang.core.RustAny
+import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.panic.unwindsafe.AssertUnwindSafe
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 import io.github.kotlinmania.rustlang.core.time.Duration
+import io.github.kotlinmania.rustlang.std.io.stdio.setOutputCapture
 import io.github.kotlinmania.rustlang.std.panic.PanicHookInfo
 import io.github.kotlinmania.rustlang.std.panic.catchUnwind
 import io.github.kotlinmania.rustlang.std.process.Command
@@ -13,6 +15,10 @@ import io.github.kotlinmania.rustlang.std.process.Termination
 import io.github.kotlinmania.rustlang.std.sync.mpsc.RecvTimeoutError
 import io.github.kotlinmania.rustlang.std.sync.mpsc.Sender
 import io.github.kotlinmania.rustlang.std.sync.mpsc.channel
+import io.github.kotlinmania.rustlang.std.sync.nonpoison.mutex.Mutex
+import io.github.kotlinmania.rustlang.std.thread.builder.Builder
+import io.github.kotlinmania.rustlang.std.thread.joinhandle.JoinHandle
+import io.github.kotlinmania.rustlang.std.time.Instant
 import io.github.kotlinmania.rustlang.test.bench.blackBox
 import io.github.kotlinmania.rustlang.test.cli.TestOpts
 import io.github.kotlinmania.rustlang.test.cli.parseOpts
@@ -35,7 +41,6 @@ import io.github.kotlinmania.rustlang.test.testresult.getResultFromExitCode
 import io.github.kotlinmania.rustlang.test.time.TestExecTime
 import io.github.kotlinmania.rustlang.test.time.TestTimeOptions
 import io.github.kotlinmania.rustlang.test.time.getDefaultTestTimeout
-import io.github.kotlinmania.thread.JoinHandle
 
 public typealias TestMap = MutableMap<TestId, RunningTest>
 
@@ -79,7 +84,7 @@ public fun testMainInner(args: List<String>, tests: TestList, options: Options?)
             // and stop capturing output to ensure that the non-unwinding panic message is visible.
             // We also acquire the locks for both output streams to prevent output from other threads
             // from interleaving with the panic message or appearing after it.
-            val builtinPanicHook = takeHook()
+            val builtinPanicHook = panic.takeHook()
             val hook =
                 { info: PanicHookInfo ->
                     if (!info.canUnwind()) {
@@ -102,9 +107,9 @@ public fun testMainInner(args: List<String>, tests: TestList, options: Options?)
                     }
                     builtinPanicHook(info)
                 }
-            setHook(hook)
+            panic.setHook(hook)
             // Use a thread spawning hook to make new threads inherit output capturing.
-            addSpawnHook({
+            thread.addSpawnHook({
                 // Get and clone the output capture of the current thread.
                 val outputCapture = setOutputCapture(null)
                 setOutputCapture(outputCapture.clone())
@@ -116,7 +121,7 @@ public fun testMainInner(args: List<String>, tests: TestList, options: Options?)
         }
         val res = runTestsConsole(opts, tests)
         // Prevent Valgrind from reporting reachable blocks in users' unit tests.
-        drop(takeHook())
+        (panic.takeHook()).let { }
         when {
             res is Result.Ok<*> && res.value == true -> {}
             res is Result.Ok<*> && res.value == false -> { return ExitCode.from(ERROR_EXIT_CODE) }
@@ -140,7 +145,7 @@ public fun testMainEnvArgs(tests: List<TestDescAndFn>): ExitCode {
     // This is supposed to be reasonably fast even in Miri. In particular, when invoked via `--exact
     // test`, we want the entire invocation to be`O(log n)` in the number of tests: never iterate
     // the entire test list (as that list could be big)!
-    val args = args().collect<Vec>()
+    val args = Env.args().collect<Vec>()
     // Tests are sorted by name at compile time by mkTestsSlice.
     val tests1 = TestList.new(tests, TestListOrder.Sorted)
     return testMainInner(args, tests1, null)
@@ -159,7 +164,7 @@ public fun testMainEnvArgsAbort(tests: List<TestDescAndFn>): ExitCode {
     val tests1 = tests
     // If we're being run in SpawnedSecondary mode, run the test here. runTest
     // will then exit the process.
-    when (val matchVal = variable(SECONDARY_TEST_INVOKER_VAR)) {
+    when (val matchVal = Env.variable(SECONDARY_TEST_INVOKER_VAR)) {
         is Ok -> {
             val name = matchVal.value
             // SAFETY: Technically, this is a racy access that we probably shouldn't do?
@@ -171,14 +176,14 @@ public fun testMainEnvArgsAbort(tests: List<TestDescAndFn>): ExitCode {
             // If we ever grow an actual story for libtest and start documenting custom harness reqs,
             // we should either fix this being racy or say "write it in Rust, please".
             run {
-                removeVar(SECONDARY_TEST_INVOKER_VAR)
+                Env.removeVar(SECONDARY_TEST_INVOKER_VAR)
             }
             // Convert benchmarks to tests if we're not benchmarking.
             var tests2 = tests1.iter().copied().cloned().collect<Vec>()
-            if (variable(SECONDARY_TEST_BENCH_BENCHMARKS_VAR).isOk()) {
+            if (Env.variable(SECONDARY_TEST_BENCH_BENCHMARKS_VAR).isOk()) {
                 // SAFETY: Same as for SECONDARY_TEST_INVOKER_VAR
                 run {
-                    removeVar(SECONDARY_TEST_BENCH_BENCHMARKS_VAR)
+                    Env.removeVar(SECONDARY_TEST_BENCH_BENCHMARKS_VAR)
                 }
             } else {
                 tests2 = convertBenchmarksToTests(tests2)
@@ -202,7 +207,7 @@ public fun testMainEnvArgsAbort(tests: List<TestDescAndFn>): ExitCode {
         }
         else -> {}
     }
-    val args = args().collect<Vec>()
+    val args = Env.args().collect<Vec>()
     // Tests are sorted by name at compile time by mkTestsSlice.
     val tests3 = TestList.new(tests1, TestListOrder.Sorted)
     return testMainInner(args, tests3, Options.new().panicAbort(true))
@@ -664,7 +669,7 @@ public fun <T, E> foldErr(result: Result<Result<T, E>, RustAny>): Result<T, Rust
 public fun spawnTestSubprocess(id: TestId, desc: TestDesc, nocapture: Boolean, reportTime: Boolean, monitorCh: Sender<CompletedTest>, timeOpts: TestTimeOptions?, benchBenchmarks: Boolean) {
     val (result, testOutput, execTime) =
         (closure@{
-            val args = args().collect<Vec>()
+            val args = Env.args().collect<Vec>()
             val currentExe = args[0]
             var command = Command.new(currentExe)
             command.env(SECONDARY_TEST_INVOKER_VAR, desc.name.asSlice())
@@ -707,7 +712,7 @@ public fun spawnTestSubprocess(id: TestId, desc: TestDesc, nocapture: Boolean, r
 }
 
 public fun runTestInSpawnedSubprocess(desc: TestDesc, runnableTest: RunnableTest): Nothing {
-    val builtinPanicHook = takeHook()
+    val builtinPanicHook = panic.takeHook()
     val recordResult =
         { panicInfo: PanicHookInfo? ->
             val testResult = calcResult(desc, panicInfo.map({ info -> info.payload() }), null, null)
@@ -728,7 +733,7 @@ public fun runTestInSpawnedSubprocess(desc: TestDesc, runnableTest: RunnableTest
             }
         }
     val recordResult2 = recordResult.clone()
-    setHook({ info -> recordResult2(info) })
+    panic.setHook({ info -> recordResult2(info) })
     when (val matchVal = runnableTest.run()) {
         is Err -> {
             val message = matchVal.error

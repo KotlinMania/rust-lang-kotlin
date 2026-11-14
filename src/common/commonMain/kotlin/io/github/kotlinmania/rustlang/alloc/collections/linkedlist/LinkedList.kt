@@ -6,6 +6,10 @@ import io.github.kotlinmania.rustlang.alloc.boxed.Box
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
+import io.github.kotlinmania.rustlang.core.mem.forget
+import io.github.kotlinmania.rustlang.core.mem.replace
+import io.github.kotlinmania.rustlang.core.mem.swap
+import io.github.kotlinmania.rustlang.core.mem.take
 import io.github.kotlinmania.rustlang.core.num.rustCheckedSub
 import io.github.kotlinmania.rustlang.core.num.rustSaturatingSub
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
@@ -97,7 +101,7 @@ public open class LinkedList<T, A : Allocator> internal constructor(
     public var tail: NonNull? = tailCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<T> = this.intoIter().iterator()
+    override fun iterator(): Iterator<T> = this.intoIter().iterator()
 
     // private methods
 
@@ -282,7 +286,7 @@ public open class LinkedList<T, A : Allocator> internal constructor(
     public open fun detachAllNodes(): Triple<NonNull, NonNull, Int>? {
         val head = this.head.also { this.head = null }
         val tail = this.tail.also { this.tail = null }
-        val len = mem.replace(this.len, 0)
+        val len = replace(this.len, 0)
         return if (head != null) {
             val head1 = head
             // SAFETY: In a LinkedList, either both the head and tail are None because
@@ -333,7 +337,7 @@ public open class LinkedList<T, A : Allocator> internal constructor(
             this.len -= at
             firstPart
         } else {
-            mem.replace(this, LinkedList.newIn(this.alloc.clone()))
+            replace(this, LinkedList.newIn(this.alloc.clone()))
         }
     }
 
@@ -376,7 +380,7 @@ public open class LinkedList<T, A : Allocator> internal constructor(
             this.len = at
             secondPart
         } else {
-            mem.replace(this, LinkedList.newIn(this.alloc.clone()))
+            replace(this, LinkedList.newIn(this.alloc.clone()))
         }
     }
 
@@ -533,7 +537,7 @@ public open class LinkedList<T, A : Allocator> internal constructor(
     public open fun clear() {
         // We need to drop the nodes while keeping self.alloc
         // We can do this by moving (head, tail, len) into a new list that borrows self.alloc
-        drop(LinkedList(head = this.head.also { this.head = null }, tail = this.tail.also { this.tail = null }, len = mem.take(this.len), alloc = this.alloc, marker = Unit))
+        (LinkedList(head = this.head.also { this.head = null }, tail = this.tail.also { this.tail = null }, len = take(this.len), alloc = this.alloc, marker = Unit)).let { }
     }
 
     /**
@@ -727,7 +731,7 @@ public open class LinkedList<T, A : Allocator> internal constructor(
      * check(d.removeFirstOrNull() == null)
      * ```
      */
-    public open fun popFront(): T? = this.popFrontNode().map(Node::intoElement)
+    public open fun popFront(): T? = this.popFrontNode().map({ it.intoElement() })
 
     /**
      * Adds an element to the back of the list.
@@ -792,7 +796,7 @@ public open class LinkedList<T, A : Allocator> internal constructor(
      * check(d.popBack() == 3)
      * ```
      */
-    public open fun popBack(): T? = this.popBackNode().map(Node::intoElement)
+    public open fun popBack(): T? = this.popBackNode().map({ it.intoElement() })
 
     /**
      * Splits the list into two at the given index. Returns everything after the given index,
@@ -822,7 +826,7 @@ public open class LinkedList<T, A : Allocator> internal constructor(
         val len = this.len()
         check(at <= len) { "Cannot split off at a nonexistent index" }
         if (at == 0) {
-            return mem.replace(this, LinkedList.newIn(this.alloc.clone()))
+            return replace(this, LinkedList.newIn(this.alloc.clone()))
         } else if (at == len) {
             return LinkedList.newIn(this.alloc.clone())
         }
@@ -1009,7 +1013,7 @@ public open class LinkedList<T, A : Allocator> internal constructor(
         // Wrap self so that if a destructor panics, we can try to keep looping
         val guard = DropGuard(this)
         while (guard.first.popFrontNode() != null) {}
-        mem.forget(guard)
+        forget(guard)
     }
 
     /**
@@ -1162,7 +1166,7 @@ public open class Iter<T> internal constructor(
     public var tail: NonNull? = tailCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<T> = object : AbstractIterator<T>() {
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@Iter.next()) {
                 null -> done()
@@ -1172,7 +1176,7 @@ public open class Iter<T> internal constructor(
     }
 
     public open fun fmt(f: StringBuilder) {
-        DebugTuple(f, "Iter").field(mem.ManuallyDrop.new(LinkedList(head = this.head, tail = this.tail, len = this.len, alloc = Global, marker = Unit))).field(this.len).finish()
+        DebugTuple(f, "Iter").field(LinkedList(head = this.head, tail = this.tail, len = this.len, alloc = Global, marker = Unit)).field(this.len).finish()
     }
 
     // Note(#26925) Remove in favor of `@derive(Clone)`
@@ -1259,7 +1263,7 @@ public open class IterMut<T> internal constructor(
     public var tail: NonNull? = tailCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<T> = object : AbstractIterator<T>() {
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@IterMut.next()) {
                 null -> done()
@@ -1269,7 +1273,7 @@ public open class IterMut<T> internal constructor(
     }
 
     public open fun fmt(f: StringBuilder) {
-        DebugTuple(f, "IterMut").field(mem.ManuallyDrop.new(LinkedList(head = this.head, tail = this.tail, len = this.len, alloc = Global, marker = Unit))).field(this.len).finish()
+        DebugTuple(f, "IterMut").field(LinkedList(head = this.head, tail = this.tail, len = this.len, alloc = Global, marker = Unit)).field(this.len).finish()
     }
 
     public open fun next(): T? {
@@ -1339,7 +1343,7 @@ public open class IntoIter<T, A : Allocator> internal constructor(
     public var list: LinkedList<T, A> = listCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<T> = object : AbstractIterator<T>() {
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@IntoIter.next()) {
                 null -> done()
@@ -1416,7 +1420,7 @@ public fun <T> LinkedList.Companion.new(): LinkedList<T> = LinkedList(head = nul
  */
 public fun <T> LinkedList<T>.append(other: LinkedList<T>) {
     when (val matchVal = this.tail) {
-        null -> mem.swap(this, other)
+        null -> swap(this, other)
         else -> {
             val tail = matchVal
             when (val matchVal1 = other.head.also { other.head = null }) {
@@ -1430,7 +1434,7 @@ public fun <T> LinkedList<T>.append(other: LinkedList<T>) {
                         otherHead.asMut().prev = tail
                     }
                     this.tail = other.tail.also { other.tail = null }
-                    this.len += mem.replace(other.len, 0)
+                    this.len += replace(other.len, 0)
                 }
             }
         }
@@ -2184,7 +2188,7 @@ public open class ExtractIf<T, F, A : Allocator> internal constructor(
     public var it: NonNull? = itCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<T> = object : AbstractIterator<T>() {
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@ExtractIf.next()) {
                 null -> done()

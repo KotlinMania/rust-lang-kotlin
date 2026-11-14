@@ -1,19 +1,22 @@
 // port-lint: source iter/adapters/take.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.take
 
-import io.github.kotlinmania.rustlang.core.iter.InPlaceIterable
-import io.github.kotlinmania.rustlang.core.iter.TrustedFused
-import io.github.kotlinmania.rustlang.core.iter.TrustedLen
+import io.github.kotlinmania.rustlang.core.cmp.min
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
 import io.github.kotlinmania.rustlang.core.iter.sources.repeat.Repeat
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.InPlaceIterable
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedFused
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.num.rustSaturatingAdd
 import io.github.kotlinmania.rustlang.core.num.rustSaturatingSub
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
 
 public typealias Source<I> = I.Source
@@ -31,7 +34,7 @@ public open class Take<I>(
     public var iter: I,
     public var n: Int,
 ) : SourceIter<Any?, Source>, InPlaceIterable, TrustedFused, TrustedLen<Take<I>>, SpecTake<Take<I>>, Iterable<Item> {
-    override fun iterator(): kotlin.collections.Iterator<Item> = object : AbstractIterator<Item>() {
+    override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
         override fun computeNext() {
             when (val v = this@Take.next()) {
                 null -> done()
@@ -254,32 +257,32 @@ public open class Take<I>(
     }
 
     public companion object {
-        public fun <I> typeLayout(typeLayoutI: io.github.kotlinmania.rustlang.core.mem.TypeLayout<I>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Take<I>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Take<I>> {
+        public fun <I> typeLayout(typeLayoutI: TypeLayout<I>): TypeLayout<Take<I>> =
+            object : TypeLayout<Take<I>> {
                 override val alignBytes: Long = listOf(8L, typeLayoutI.alignBytes).max()
-                private val off1: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(typeLayoutI.sizeBytes, 8L)
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes((off1 + 8L), alignBytes)
+                private val off1: Long = alignUpBytes(typeLayoutI.sizeBytes, 8L)
+                override val sizeBytes: Long = alignUpBytes((off1 + 8L), alignBytes)
                 override fun readNative(addr: Long): Take<I> =
                     Take(
                         (typeLayoutI).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readNative(addr + off1),
+                        (PrimitiveLayouts.USIZE64).readNative(addr + off1),
                     )
                 override fun writeNative(addr: Long, value: Take<I>) {
                     (typeLayoutI).writeNative(addr, value.iter)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeNative(addr + off1, value.n)
+                    (PrimitiveLayouts.USIZE64).writeNative(addr + off1, value.n)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Take<I> =
                     Take(
                         (typeLayoutI).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readBytes(buf, offset + off1.toInt()),
+                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset + off1.toInt()),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Take<I>) {
                     (typeLayoutI).writeBytes(buf, offset, value.iter)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeBytes(buf, offset + off1.toInt(), value.n)
+                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset + off1.toInt(), value.n)
                 }
             }
 
-        internal fun <I> new(iter: I, n: Int): Take<I> = Take(iter = iter, n = n)
+        public fun <I> new(iter: I, n: Int): Take<I> = Take(iter = iter, n = n)
 
         public val EXPAND_BY: NonZero<Int>? = I.EXPAND_BY
 

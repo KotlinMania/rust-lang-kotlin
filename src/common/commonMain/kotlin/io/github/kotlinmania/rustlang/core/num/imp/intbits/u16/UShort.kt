@@ -25,7 +25,7 @@ public fun prepare(sparse: UShort): UShortArray {
     return masks
 }
 
-internal fun extractImpl(x: UShort, sparse: UShort): UShort {
+public fun extractImpl(x: UShort, sparse: UShort): UShort {
     var x1 = x
     val masks = prepare(sparse)
     x1 = x1 and sparse
@@ -44,7 +44,7 @@ internal fun extractImpl(x: UShort, sparse: UShort): UShort {
     return x1
 }
 
-internal fun depositImpl(x: UShort, sparse: UShort): UShort {
+public fun depositImpl(x: UShort, sparse: UShort): UShort {
     var x1 = x
     val masks = prepare(sparse)
     var stage = STAGES

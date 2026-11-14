@@ -1,4 +1,4 @@
-@file:OptIn(kotlin.ExperimentalUnsignedTypes::class)
+@file:OptIn(ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.corearch.s390x.vector
 
@@ -32,9 +32,9 @@ private object S390xVectorJniBridge {
             }
         val libFileName =
             when (hostPlatform) {
-                "windows" -> "corearch_jni.dll"
-                "macos" -> "libcorearch_jni.dylib"
-                else -> "libcorearch_jni.so"
+                "windows" -> "kmcore_jni.dll"
+                "macos" -> "libkmcore_jni.dylib"
+                else -> "libkmcore_jni.so"
             }
         val pathSep = System.getProperty("path.separator", ":")
         val libPathProp = System.getProperty("java.library.path", "")
@@ -50,7 +50,7 @@ private object S390xVectorJniBridge {
         val stream = S390xVectorJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
-            val extracted = java.nio.file.Files.createTempFile("corearch_jni-", suffix).toFile()
+            val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
             extracted.deleteOnExit()
             stream.use { input ->
                 extracted.outputStream().use { output ->
@@ -60,7 +60,7 @@ private object S390xVectorJniBridge {
             System.load(extracted.absolutePath)
             return
         }
-        System.loadLibrary("corearch_jni")
+        System.loadLibrary("kmcore_jni")
     }
 
     @JvmStatic

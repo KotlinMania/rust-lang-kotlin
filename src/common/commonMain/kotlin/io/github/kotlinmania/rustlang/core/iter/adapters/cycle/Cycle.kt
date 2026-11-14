@@ -2,7 +2,9 @@
 package io.github.kotlinmania.rustlang.core.iter.adapters.cycle
 
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
 
 /**
@@ -18,7 +20,7 @@ public open class Cycle<I>(
     public var orig: I,
     public var iter: I,
 ) : Iterable<Item> {
-    override fun iterator(): kotlin.collections.Iterator<Item> = object : AbstractIterator<Item>() {
+    override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
         override fun computeNext() {
             when (val v = this@Cycle.next()) {
                 null -> done()
@@ -113,11 +115,11 @@ public open class Cycle<I>(
     }
 
     public companion object {
-        public fun <I> typeLayout(typeLayoutI: io.github.kotlinmania.rustlang.core.mem.TypeLayout<I>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Cycle<I>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Cycle<I>> {
+        public fun <I> typeLayout(typeLayoutI: TypeLayout<I>): TypeLayout<Cycle<I>> =
+            object : TypeLayout<Cycle<I>> {
                 override val alignBytes: Long = listOf(1L, typeLayoutI.alignBytes).max()
-                private val off1: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(typeLayoutI.sizeBytes, typeLayoutI.alignBytes)
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes((off1 + typeLayoutI.sizeBytes), alignBytes)
+                private val off1: Long = alignUpBytes(typeLayoutI.sizeBytes, typeLayoutI.alignBytes)
+                override val sizeBytes: Long = alignUpBytes((off1 + typeLayoutI.sizeBytes), alignBytes)
                 override fun readNative(addr: Long): Cycle<I> =
                     Cycle(
                         (typeLayoutI).readNative(addr),
@@ -138,6 +140,6 @@ public open class Cycle<I>(
                 }
             }
 
-        internal fun <I> new(iter: I, cloneIFn: (I) -> I = { it }): Cycle<I> = Cycle(orig = cloneIFn(iter), iter = iter)
+        public fun <I> new(iter: I, cloneIFn: (I) -> I = { it }): Cycle<I> = Cycle(orig = cloneIFn(iter), iter = iter)
     }
 }

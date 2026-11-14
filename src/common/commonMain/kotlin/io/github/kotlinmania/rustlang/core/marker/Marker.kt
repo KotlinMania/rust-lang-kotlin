@@ -2,8 +2,8 @@
 package io.github.kotlinmania.rustlang.core.marker
 
 import io.github.kotlinmania.rustlang.core.clone.TrivialClone
+import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 
 // Primitive traits and types representing basic properties of types.
 //
@@ -192,7 +192,9 @@ public interface StructuralPartialEq
  * ```kotlin
  * // We can derive a `Copy` implementation. `Clone` is also required, as it's
  * // a supertrait of `Copy`.
- * open class Foo
+ * open class Foo {
+ *     public open fun clone(): Foo = Foo()
+ * }
  * val x = Foo()
  * val y = x
  * // `y` is a copy of `x`
@@ -209,7 +211,9 @@ public interface StructuralPartialEq
  * There are two ways to implement `Copy` on your type. The simplest is to use `derive`:
  *
  * ```kotlin
- * open class MyStruct
+ * open class MyStruct {
+ *     public open fun clone(): MyStruct = MyStruct()
+ * }
  * ```
  *
  * You can also implement `Copy` and `Clone` manually:
@@ -263,7 +267,9 @@ public interface StructuralPartialEq
  * struct can be `Copy`:
  *
  * ```kotlin
- * open class Point(public var x: Int, public var y: Int)
+ * open class Point(public var x: Int, public var y: Int) {
+ *     public open fun clone(): Point = Point(x, y)
+ * }
  * ```
  *
  * A struct can be `Copy`, and [i32] is `Copy`, therefore `Point` is eligible to be `Copy`.
@@ -286,7 +292,9 @@ public interface StructuralPartialEq
  * type `PointList` from above:
  *
  * ```kotlin
- * open class PointListWrapper(public var pointListRef: PointList)
+ * open class PointListWrapper(public var pointListRef: PointList) {
+ *     public open fun clone(): PointListWrapper = PointListWrapper(pointListRef)
+ * }
  * ```
  *
  * ## When *can't* my type be `Copy`?
@@ -447,10 +455,11 @@ public interface Sync
  * example, here is a struct `Slice` that has two pointers of type `* const T`,
  * presumably pointing into an array somewhere:
  *
- * ```kotlin
- * import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
- *
- * open class Slice<T>(public var start: ConstPtr, public var end: ConstPtr)
+ * ```compile_fail,E0392
+ * struct Slice<a, T> {
+ *     start: *const T,
+ *     end: *const T,
+ * }
  * ```
  *
  * The intention is that the underlying data is only valid for the
@@ -536,15 +545,15 @@ public open class PhantomData<T> : Copy<PhantomData<T>>, TrivialClone<PhantomDat
 
     public open fun eq(other: PhantomData<T>): Boolean = true
 
-    public open fun partialCmp(other: PhantomData<T>): Ordering? = Option.Some(cmp.Ordering.Equal)
+    public open fun partialCmp(other: PhantomData<T>): Ordering? = Option.Some(Ordering.Equal)
 
-    public open fun cmp(other: PhantomData<T>): Ordering = cmp.Ordering.Equal
+    public open fun cmp(other: PhantomData<T>): Ordering = Ordering.Equal
 
     public override fun clone(): PhantomData<T> = PhantomData()
 
     public companion object {
-        public fun <T> typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<PhantomData<T>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<PhantomData<T>> {
+        public fun <T> typeLayout(): TypeLayout<PhantomData<T>> =
+            object : TypeLayout<PhantomData<T>> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): PhantomData<T> =
@@ -635,6 +644,7 @@ public interface UnsafeUnpin
  * So this, for example, can only be done on types implementing `Unpin`:
  *
  * ```kotlin
+ * import std.mem
  * import std.pin.Pin
  *
  * var string = "this".toString()
@@ -669,14 +679,16 @@ public interface Unpin
  * If a type contains a `PhantomPinned`, it will not implement `Unpin` by default.
  */
 public open class PhantomPinned : UnsafeUnpin {
+    public open fun clone(): PhantomPinned = PhantomPinned()
+
     // This is a small Note to allow existing code which uses PhantomPinned to opt-out of noalias to
     // continue working. Ideally PhantomPinned could just wrap an `UnsafePinned<Unit>` to get the same
     // effect, but we can't add a new field to an already stable unit struct -- that would be a breaking
     // change.
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<PhantomPinned> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<PhantomPinned> {
+        public fun typeLayout(): TypeLayout<PhantomPinned> =
+            object : TypeLayout<PhantomPinned> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): PhantomPinned =
@@ -710,8 +722,8 @@ public interface Tuple
 // Note(khyperia): if this is missing, the gca macro's `impliedBy = "gcaAdts"` emits an error
 public open class HackGcaAdtsFeature {
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<HackGcaAdtsFeature> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<HackGcaAdtsFeature> {
+        public fun typeLayout(): TypeLayout<HackGcaAdtsFeature> =
+            object : TypeLayout<HackGcaAdtsFeature> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): HackGcaAdtsFeature =
@@ -774,13 +786,12 @@ public interface CoerceShared<Target : Copy<Target>> : Reborrow
  * `Forget` bounds are implicitly added in *all* cases unless explicitly opted out
  * of - notably, in trait definitions and associated types. If the `forgetTrait`
  * feature is enabled, these can similarly be opted out of:
- * ```kotlin
- * import std.marker.Forget
+ * ```ignore (illustrative, unsupported)
+ * @file:feature(forgetTrait)
+ * use std.marker.Forget;
  *
- * @feature(forgetTrait)
- * public fun doctestEntry(): Result<Unit> {
- *     interface Foo
- *     return Result.success(Unit)
+ * trait Foo: ?Forget {
+ *     type Bar: ?Forget;
  * }
  * ```
  * The explicit goal of [`mem.forget`](core.mem.forget) is not to run the destructor
@@ -812,7 +823,9 @@ public interface Move
 
 /**
  * Creates a new style directly represented const argument.
- * ```kotlin
+ * ```ignore (cannot test this from within core yet)
+ * const BAR<const N: Int>: Int = gca(N);
+ * const FOO<const N: Int>: Int = gca(BAR::<N>);
  * ```
  */
 

@@ -10,7 +10,7 @@ import io.github.kotlinmania.rustlang.core.F16
  * Constructs a number with the magnitude (absolute value) of its
  * first argument, `x`, and the sign of its second argument, `y`.
  */
-public fun copysignf16(x: F16, y: F16): F16 = io.github.kotlinmania.rustlang.libm.math.generic.copysign(x, y)
+public fun copysignf16(x: F16, y: F16): F16 = io.github.kotlinmania.rustlang.libm.math.generic.copysign(x.toDouble(), y.toDouble())
 
 /**
  * Sign of Y, magnitude of X (f32)
@@ -34,4 +34,4 @@ public fun copysign(x: Double, y: Double): Double = io.github.kotlinmania.rustla
  * Constructs a number with the magnitude (absolute value) of its
  * first argument, `x`, and the sign of its second argument, `y`.
  */
-public fun copysignf128(x: F128, y: F128): F128 = io.github.kotlinmania.rustlang.libm.math.generic.copysign(x, y)
+public fun copysignf128(x: F128, y: F128): F128 = io.github.kotlinmania.rustlang.libm.math.generic.copysign(x.toDouble(), y.toDouble())

@@ -1,6 +1,8 @@
 // port-lint: source sys/configure_builtins.rs
 package io.github.kotlinmania.rustlang.std.sys.configurebuiltins
 
+import io.github.kotlinmania.rustlang.std.arch.isAarch64FeatureDetected
+
 // The configure builtins provides runtime support compiler-builtin features
 // which require dynamic initialization to work as expected, e.g. aarch64
 // outline-atomics.
@@ -44,11 +46,11 @@ public var RUST_LSE_INIT: FnCallback =
         fun initLse() {
             // This is provided by compiler-builtins.aarch64OutlineAtomics.
             fun rustEnableLse() {}
-            if (arch.isAarch64FeatureDetected("lse")) {
+            if (isAarch64FeatureDetected("lse")) {
                 run {
                     rustEnableLse()
                 }
             }
         }
-        initLse
+        ::initLse
     }

@@ -1,7 +1,8 @@
-@file:OptIn(kotlinx.cinterop.ExperimentalForeignApi::class)
+@file:OptIn(ExperimentalForeignApi::class)
 
 package io.github.kotlinmania.rustlang.core.intrinsics
 
+import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.UByteVar
 import kotlinx.cinterop.ULongVar
 import kotlinx.cinterop.alloc

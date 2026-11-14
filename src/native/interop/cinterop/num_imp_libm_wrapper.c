@@ -852,6 +852,650 @@ float coreNumImpLibmTruncf(float x) {
     return 0.0f;
 }
 
+float coreNumImpLibmAcosf(float n) {
+    typedef float (*km_fn_t)(float);
+    static km_fn_t km_fn_ptr = NULL;
+#ifdef _WIN32
+    if (km_fn_ptr == NULL) {
+        HMODULE km_h_msvcrt = GetModuleHandleA("msvcrt.dll");
+        if (km_h_msvcrt == NULL) km_h_msvcrt = LoadLibraryA("msvcrt.dll");
+        if (km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "acosf");
+        if (km_fn_ptr == NULL && km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "_acosf");
+        if (km_fn_ptr == NULL) {
+            HMODULE km_h_ucrt = GetModuleHandleA("ucrtbase.dll");
+            if (km_h_ucrt == NULL) km_h_ucrt = LoadLibraryA("ucrtbase.dll");
+            if (km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "acosf");
+            if (km_fn_ptr == NULL && km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "_acosf");
+        }
+    }
+#else
+    if (km_fn_ptr == NULL) {
+        km_fn_ptr = (km_fn_t)dlsym(RTLD_DEFAULT, "acosf");
+    }
+#endif
+    if (km_fn_ptr != NULL) {
+        return km_fn_ptr(n);
+    }
+    errno = ENOSYS;
+    return 0.0f;
+}
+
+float coreNumImpLibmAsinf(float n) {
+    typedef float (*km_fn_t)(float);
+    static km_fn_t km_fn_ptr = NULL;
+#ifdef _WIN32
+    if (km_fn_ptr == NULL) {
+        HMODULE km_h_msvcrt = GetModuleHandleA("msvcrt.dll");
+        if (km_h_msvcrt == NULL) km_h_msvcrt = LoadLibraryA("msvcrt.dll");
+        if (km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "asinf");
+        if (km_fn_ptr == NULL && km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "_asinf");
+        if (km_fn_ptr == NULL) {
+            HMODULE km_h_ucrt = GetModuleHandleA("ucrtbase.dll");
+            if (km_h_ucrt == NULL) km_h_ucrt = LoadLibraryA("ucrtbase.dll");
+            if (km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "asinf");
+            if (km_fn_ptr == NULL && km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "_asinf");
+        }
+    }
+#else
+    if (km_fn_ptr == NULL) {
+        km_fn_ptr = (km_fn_t)dlsym(RTLD_DEFAULT, "asinf");
+    }
+#endif
+    if (km_fn_ptr != NULL) {
+        return km_fn_ptr(n);
+    }
+    errno = ENOSYS;
+    return 0.0f;
+}
+
+float coreNumImpLibmAtan2f(float a, float b) {
+    typedef float (*km_fn_t)(float, float);
+    static km_fn_t km_fn_ptr = NULL;
+#ifdef _WIN32
+    if (km_fn_ptr == NULL) {
+        HMODULE km_h_msvcrt = GetModuleHandleA("msvcrt.dll");
+        if (km_h_msvcrt == NULL) km_h_msvcrt = LoadLibraryA("msvcrt.dll");
+        if (km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "atan2f");
+        if (km_fn_ptr == NULL && km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "_atan2f");
+        if (km_fn_ptr == NULL) {
+            HMODULE km_h_ucrt = GetModuleHandleA("ucrtbase.dll");
+            if (km_h_ucrt == NULL) km_h_ucrt = LoadLibraryA("ucrtbase.dll");
+            if (km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "atan2f");
+            if (km_fn_ptr == NULL && km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "_atan2f");
+        }
+    }
+#else
+    if (km_fn_ptr == NULL) {
+        km_fn_ptr = (km_fn_t)dlsym(RTLD_DEFAULT, "atan2f");
+    }
+#endif
+    if (km_fn_ptr != NULL) {
+        return km_fn_ptr(a, b);
+    }
+    errno = ENOSYS;
+    return 0.0f;
+}
+
+float coreNumImpLibmAtanf(float n) {
+    typedef float (*km_fn_t)(float);
+    static km_fn_t km_fn_ptr = NULL;
+#ifdef _WIN32
+    if (km_fn_ptr == NULL) {
+        HMODULE km_h_msvcrt = GetModuleHandleA("msvcrt.dll");
+        if (km_h_msvcrt == NULL) km_h_msvcrt = LoadLibraryA("msvcrt.dll");
+        if (km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "atanf");
+        if (km_fn_ptr == NULL && km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "_atanf");
+        if (km_fn_ptr == NULL) {
+            HMODULE km_h_ucrt = GetModuleHandleA("ucrtbase.dll");
+            if (km_h_ucrt == NULL) km_h_ucrt = LoadLibraryA("ucrtbase.dll");
+            if (km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "atanf");
+            if (km_fn_ptr == NULL && km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "_atanf");
+        }
+    }
+#else
+    if (km_fn_ptr == NULL) {
+        km_fn_ptr = (km_fn_t)dlsym(RTLD_DEFAULT, "atanf");
+    }
+#endif
+    if (km_fn_ptr != NULL) {
+        return km_fn_ptr(n);
+    }
+    errno = ENOSYS;
+    return 0.0f;
+}
+
+float coreNumImpLibmCosf(float x) {
+    typedef float (*km_fn_t)(float);
+    static km_fn_t km_fn_ptr = NULL;
+#ifdef _WIN32
+    if (km_fn_ptr == NULL) {
+        HMODULE km_h_msvcrt = GetModuleHandleA("msvcrt.dll");
+        if (km_h_msvcrt == NULL) km_h_msvcrt = LoadLibraryA("msvcrt.dll");
+        if (km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "cosf");
+        if (km_fn_ptr == NULL && km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "_cosf");
+        if (km_fn_ptr == NULL) {
+            HMODULE km_h_ucrt = GetModuleHandleA("ucrtbase.dll");
+            if (km_h_ucrt == NULL) km_h_ucrt = LoadLibraryA("ucrtbase.dll");
+            if (km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "cosf");
+            if (km_fn_ptr == NULL && km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "_cosf");
+        }
+    }
+#else
+    if (km_fn_ptr == NULL) {
+        km_fn_ptr = (km_fn_t)dlsym(RTLD_DEFAULT, "cosf");
+    }
+#endif
+    if (km_fn_ptr != NULL) {
+        return km_fn_ptr(x);
+    }
+    errno = ENOSYS;
+    return 0.0f;
+}
+
+float coreNumImpLibmCoshf(float n) {
+    typedef float (*km_fn_t)(float);
+    static km_fn_t km_fn_ptr = NULL;
+#ifdef _WIN32
+    if (km_fn_ptr == NULL) {
+        HMODULE km_h_msvcrt = GetModuleHandleA("msvcrt.dll");
+        if (km_h_msvcrt == NULL) km_h_msvcrt = LoadLibraryA("msvcrt.dll");
+        if (km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "coshf");
+        if (km_fn_ptr == NULL && km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "_coshf");
+        if (km_fn_ptr == NULL) {
+            HMODULE km_h_ucrt = GetModuleHandleA("ucrtbase.dll");
+            if (km_h_ucrt == NULL) km_h_ucrt = LoadLibraryA("ucrtbase.dll");
+            if (km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "coshf");
+            if (km_fn_ptr == NULL && km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "_coshf");
+        }
+    }
+#else
+    if (km_fn_ptr == NULL) {
+        km_fn_ptr = (km_fn_t)dlsym(RTLD_DEFAULT, "coshf");
+    }
+#endif
+    if (km_fn_ptr != NULL) {
+        return km_fn_ptr(n);
+    }
+    errno = ENOSYS;
+    return 0.0f;
+}
+
+float coreNumImpLibmErfcf(float x) {
+    typedef float (*km_fn_t)(float);
+    static km_fn_t km_fn_ptr = NULL;
+#ifdef _WIN32
+    if (km_fn_ptr == NULL) {
+        HMODULE km_h_msvcrt = GetModuleHandleA("msvcrt.dll");
+        if (km_h_msvcrt == NULL) km_h_msvcrt = LoadLibraryA("msvcrt.dll");
+        if (km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "erfcf");
+        if (km_fn_ptr == NULL && km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "_erfcf");
+        if (km_fn_ptr == NULL) {
+            HMODULE km_h_ucrt = GetModuleHandleA("ucrtbase.dll");
+            if (km_h_ucrt == NULL) km_h_ucrt = LoadLibraryA("ucrtbase.dll");
+            if (km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "erfcf");
+            if (km_fn_ptr == NULL && km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "_erfcf");
+        }
+    }
+#else
+    if (km_fn_ptr == NULL) {
+        km_fn_ptr = (km_fn_t)dlsym(RTLD_DEFAULT, "erfcf");
+    }
+#endif
+    if (km_fn_ptr != NULL) {
+        return km_fn_ptr(x);
+    }
+    errno = ENOSYS;
+    return 0.0f;
+}
+
+float coreNumImpLibmErff(float x) {
+    typedef float (*km_fn_t)(float);
+    static km_fn_t km_fn_ptr = NULL;
+#ifdef _WIN32
+    if (km_fn_ptr == NULL) {
+        HMODULE km_h_msvcrt = GetModuleHandleA("msvcrt.dll");
+        if (km_h_msvcrt == NULL) km_h_msvcrt = LoadLibraryA("msvcrt.dll");
+        if (km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "erff");
+        if (km_fn_ptr == NULL && km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "_erff");
+        if (km_fn_ptr == NULL) {
+            HMODULE km_h_ucrt = GetModuleHandleA("ucrtbase.dll");
+            if (km_h_ucrt == NULL) km_h_ucrt = LoadLibraryA("ucrtbase.dll");
+            if (km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "erff");
+            if (km_fn_ptr == NULL && km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "_erff");
+        }
+    }
+#else
+    if (km_fn_ptr == NULL) {
+        km_fn_ptr = (km_fn_t)dlsym(RTLD_DEFAULT, "erff");
+    }
+#endif
+    if (km_fn_ptr != NULL) {
+        return km_fn_ptr(x);
+    }
+    errno = ENOSYS;
+    return 0.0f;
+}
+
+float coreNumImpLibmExp2f(float x) {
+    typedef float (*km_fn_t)(float);
+    static km_fn_t km_fn_ptr = NULL;
+#ifdef _WIN32
+    if (km_fn_ptr == NULL) {
+        HMODULE km_h_msvcrt = GetModuleHandleA("msvcrt.dll");
+        if (km_h_msvcrt == NULL) km_h_msvcrt = LoadLibraryA("msvcrt.dll");
+        if (km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "exp2f");
+        if (km_fn_ptr == NULL && km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "_exp2f");
+        if (km_fn_ptr == NULL) {
+            HMODULE km_h_ucrt = GetModuleHandleA("ucrtbase.dll");
+            if (km_h_ucrt == NULL) km_h_ucrt = LoadLibraryA("ucrtbase.dll");
+            if (km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "exp2f");
+            if (km_fn_ptr == NULL && km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "_exp2f");
+        }
+    }
+#else
+    if (km_fn_ptr == NULL) {
+        km_fn_ptr = (km_fn_t)dlsym(RTLD_DEFAULT, "exp2f");
+    }
+#endif
+    if (km_fn_ptr != NULL) {
+        return km_fn_ptr(x);
+    }
+    errno = ENOSYS;
+    return 0.0f;
+}
+
+float coreNumImpLibmExpf(float x) {
+    typedef float (*km_fn_t)(float);
+    static km_fn_t km_fn_ptr = NULL;
+#ifdef _WIN32
+    if (km_fn_ptr == NULL) {
+        HMODULE km_h_msvcrt = GetModuleHandleA("msvcrt.dll");
+        if (km_h_msvcrt == NULL) km_h_msvcrt = LoadLibraryA("msvcrt.dll");
+        if (km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "expf");
+        if (km_fn_ptr == NULL && km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "_expf");
+        if (km_fn_ptr == NULL) {
+            HMODULE km_h_ucrt = GetModuleHandleA("ucrtbase.dll");
+            if (km_h_ucrt == NULL) km_h_ucrt = LoadLibraryA("ucrtbase.dll");
+            if (km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "expf");
+            if (km_fn_ptr == NULL && km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "_expf");
+        }
+    }
+#else
+    if (km_fn_ptr == NULL) {
+        km_fn_ptr = (km_fn_t)dlsym(RTLD_DEFAULT, "expf");
+    }
+#endif
+    if (km_fn_ptr != NULL) {
+        return km_fn_ptr(x);
+    }
+    errno = ENOSYS;
+    return 0.0f;
+}
+
+float coreNumImpLibmExpm1f(float n) {
+    typedef float (*km_fn_t)(float);
+    static km_fn_t km_fn_ptr = NULL;
+#ifdef _WIN32
+    if (km_fn_ptr == NULL) {
+        HMODULE km_h_msvcrt = GetModuleHandleA("msvcrt.dll");
+        if (km_h_msvcrt == NULL) km_h_msvcrt = LoadLibraryA("msvcrt.dll");
+        if (km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "expm1f");
+        if (km_fn_ptr == NULL && km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "_expm1f");
+        if (km_fn_ptr == NULL) {
+            HMODULE km_h_ucrt = GetModuleHandleA("ucrtbase.dll");
+            if (km_h_ucrt == NULL) km_h_ucrt = LoadLibraryA("ucrtbase.dll");
+            if (km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "expm1f");
+            if (km_fn_ptr == NULL && km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "_expm1f");
+        }
+    }
+#else
+    if (km_fn_ptr == NULL) {
+        km_fn_ptr = (km_fn_t)dlsym(RTLD_DEFAULT, "expm1f");
+    }
+#endif
+    if (km_fn_ptr != NULL) {
+        return km_fn_ptr(n);
+    }
+    errno = ENOSYS;
+    return 0.0f;
+}
+
+float coreNumImpLibmHypotf(float x, float y) {
+    typedef float (*km_fn_t)(float, float);
+    static km_fn_t km_fn_ptr = NULL;
+#ifdef _WIN32
+    if (km_fn_ptr == NULL) {
+        HMODULE km_h_msvcrt = GetModuleHandleA("msvcrt.dll");
+        if (km_h_msvcrt == NULL) km_h_msvcrt = LoadLibraryA("msvcrt.dll");
+        if (km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "hypotf");
+        if (km_fn_ptr == NULL && km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "_hypotf");
+        if (km_fn_ptr == NULL) {
+            HMODULE km_h_ucrt = GetModuleHandleA("ucrtbase.dll");
+            if (km_h_ucrt == NULL) km_h_ucrt = LoadLibraryA("ucrtbase.dll");
+            if (km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "hypotf");
+            if (km_fn_ptr == NULL && km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "_hypotf");
+        }
+    }
+#else
+    if (km_fn_ptr == NULL) {
+        km_fn_ptr = (km_fn_t)dlsym(RTLD_DEFAULT, "hypotf");
+    }
+#endif
+    if (km_fn_ptr != NULL) {
+        return km_fn_ptr(x, y);
+    }
+    errno = ENOSYS;
+    return 0.0f;
+}
+
+float coreNumImpLibmLdexpf(float f, int32_t n) {
+    typedef float (*km_fn_t)(float, int32_t);
+    static km_fn_t km_fn_ptr = NULL;
+#ifdef _WIN32
+    if (km_fn_ptr == NULL) {
+        HMODULE km_h_msvcrt = GetModuleHandleA("msvcrt.dll");
+        if (km_h_msvcrt == NULL) km_h_msvcrt = LoadLibraryA("msvcrt.dll");
+        if (km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "ldexpf");
+        if (km_fn_ptr == NULL && km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "_ldexpf");
+        if (km_fn_ptr == NULL) {
+            HMODULE km_h_ucrt = GetModuleHandleA("ucrtbase.dll");
+            if (km_h_ucrt == NULL) km_h_ucrt = LoadLibraryA("ucrtbase.dll");
+            if (km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "ldexpf");
+            if (km_fn_ptr == NULL && km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "_ldexpf");
+        }
+    }
+#else
+    if (km_fn_ptr == NULL) {
+        km_fn_ptr = (km_fn_t)dlsym(RTLD_DEFAULT, "ldexpf");
+    }
+#endif
+    if (km_fn_ptr != NULL) {
+        return km_fn_ptr(f, n);
+    }
+    errno = ENOSYS;
+    return 0.0f;
+}
+
+float coreNumImpLibmLog10f(float x) {
+    typedef float (*km_fn_t)(float);
+    static km_fn_t km_fn_ptr = NULL;
+#ifdef _WIN32
+    if (km_fn_ptr == NULL) {
+        HMODULE km_h_msvcrt = GetModuleHandleA("msvcrt.dll");
+        if (km_h_msvcrt == NULL) km_h_msvcrt = LoadLibraryA("msvcrt.dll");
+        if (km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "log10f");
+        if (km_fn_ptr == NULL && km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "_log10f");
+        if (km_fn_ptr == NULL) {
+            HMODULE km_h_ucrt = GetModuleHandleA("ucrtbase.dll");
+            if (km_h_ucrt == NULL) km_h_ucrt = LoadLibraryA("ucrtbase.dll");
+            if (km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "log10f");
+            if (km_fn_ptr == NULL && km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "_log10f");
+        }
+    }
+#else
+    if (km_fn_ptr == NULL) {
+        km_fn_ptr = (km_fn_t)dlsym(RTLD_DEFAULT, "log10f");
+    }
+#endif
+    if (km_fn_ptr != NULL) {
+        return km_fn_ptr(x);
+    }
+    errno = ENOSYS;
+    return 0.0f;
+}
+
+float coreNumImpLibmLog1pf(float n) {
+    typedef float (*km_fn_t)(float);
+    static km_fn_t km_fn_ptr = NULL;
+#ifdef _WIN32
+    if (km_fn_ptr == NULL) {
+        HMODULE km_h_msvcrt = GetModuleHandleA("msvcrt.dll");
+        if (km_h_msvcrt == NULL) km_h_msvcrt = LoadLibraryA("msvcrt.dll");
+        if (km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "log1pf");
+        if (km_fn_ptr == NULL && km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "_log1pf");
+        if (km_fn_ptr == NULL) {
+            HMODULE km_h_ucrt = GetModuleHandleA("ucrtbase.dll");
+            if (km_h_ucrt == NULL) km_h_ucrt = LoadLibraryA("ucrtbase.dll");
+            if (km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "log1pf");
+            if (km_fn_ptr == NULL && km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "_log1pf");
+        }
+    }
+#else
+    if (km_fn_ptr == NULL) {
+        km_fn_ptr = (km_fn_t)dlsym(RTLD_DEFAULT, "log1pf");
+    }
+#endif
+    if (km_fn_ptr != NULL) {
+        return km_fn_ptr(n);
+    }
+    errno = ENOSYS;
+    return 0.0f;
+}
+
+float coreNumImpLibmLog2f(float x) {
+    typedef float (*km_fn_t)(float);
+    static km_fn_t km_fn_ptr = NULL;
+#ifdef _WIN32
+    if (km_fn_ptr == NULL) {
+        HMODULE km_h_msvcrt = GetModuleHandleA("msvcrt.dll");
+        if (km_h_msvcrt == NULL) km_h_msvcrt = LoadLibraryA("msvcrt.dll");
+        if (km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "log2f");
+        if (km_fn_ptr == NULL && km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "_log2f");
+        if (km_fn_ptr == NULL) {
+            HMODULE km_h_ucrt = GetModuleHandleA("ucrtbase.dll");
+            if (km_h_ucrt == NULL) km_h_ucrt = LoadLibraryA("ucrtbase.dll");
+            if (km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "log2f");
+            if (km_fn_ptr == NULL && km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "_log2f");
+        }
+    }
+#else
+    if (km_fn_ptr == NULL) {
+        km_fn_ptr = (km_fn_t)dlsym(RTLD_DEFAULT, "log2f");
+    }
+#endif
+    if (km_fn_ptr != NULL) {
+        return km_fn_ptr(x);
+    }
+    errno = ENOSYS;
+    return 0.0f;
+}
+
+float coreNumImpLibmLogf(float x) {
+    typedef float (*km_fn_t)(float);
+    static km_fn_t km_fn_ptr = NULL;
+#ifdef _WIN32
+    if (km_fn_ptr == NULL) {
+        HMODULE km_h_msvcrt = GetModuleHandleA("msvcrt.dll");
+        if (km_h_msvcrt == NULL) km_h_msvcrt = LoadLibraryA("msvcrt.dll");
+        if (km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "logf");
+        if (km_fn_ptr == NULL && km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "_logf");
+        if (km_fn_ptr == NULL) {
+            HMODULE km_h_ucrt = GetModuleHandleA("ucrtbase.dll");
+            if (km_h_ucrt == NULL) km_h_ucrt = LoadLibraryA("ucrtbase.dll");
+            if (km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "logf");
+            if (km_fn_ptr == NULL && km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "_logf");
+        }
+    }
+#else
+    if (km_fn_ptr == NULL) {
+        km_fn_ptr = (km_fn_t)dlsym(RTLD_DEFAULT, "logf");
+    }
+#endif
+    if (km_fn_ptr != NULL) {
+        return km_fn_ptr(x);
+    }
+    errno = ENOSYS;
+    return 0.0f;
+}
+
+float coreNumImpLibmPowf(float x, float y) {
+    typedef float (*km_fn_t)(float, float);
+    static km_fn_t km_fn_ptr = NULL;
+#ifdef _WIN32
+    if (km_fn_ptr == NULL) {
+        HMODULE km_h_msvcrt = GetModuleHandleA("msvcrt.dll");
+        if (km_h_msvcrt == NULL) km_h_msvcrt = LoadLibraryA("msvcrt.dll");
+        if (km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "powf");
+        if (km_fn_ptr == NULL && km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "_powf");
+        if (km_fn_ptr == NULL) {
+            HMODULE km_h_ucrt = GetModuleHandleA("ucrtbase.dll");
+            if (km_h_ucrt == NULL) km_h_ucrt = LoadLibraryA("ucrtbase.dll");
+            if (km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "powf");
+            if (km_fn_ptr == NULL && km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "_powf");
+        }
+    }
+#else
+    if (km_fn_ptr == NULL) {
+        km_fn_ptr = (km_fn_t)dlsym(RTLD_DEFAULT, "powf");
+    }
+#endif
+    if (km_fn_ptr != NULL) {
+        return km_fn_ptr(x, y);
+    }
+    errno = ENOSYS;
+    return 0.0f;
+}
+
+float coreNumImpLibmSinf(float x) {
+    typedef float (*km_fn_t)(float);
+    static km_fn_t km_fn_ptr = NULL;
+#ifdef _WIN32
+    if (km_fn_ptr == NULL) {
+        HMODULE km_h_msvcrt = GetModuleHandleA("msvcrt.dll");
+        if (km_h_msvcrt == NULL) km_h_msvcrt = LoadLibraryA("msvcrt.dll");
+        if (km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "sinf");
+        if (km_fn_ptr == NULL && km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "_sinf");
+        if (km_fn_ptr == NULL) {
+            HMODULE km_h_ucrt = GetModuleHandleA("ucrtbase.dll");
+            if (km_h_ucrt == NULL) km_h_ucrt = LoadLibraryA("ucrtbase.dll");
+            if (km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "sinf");
+            if (km_fn_ptr == NULL && km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "_sinf");
+        }
+    }
+#else
+    if (km_fn_ptr == NULL) {
+        km_fn_ptr = (km_fn_t)dlsym(RTLD_DEFAULT, "sinf");
+    }
+#endif
+    if (km_fn_ptr != NULL) {
+        return km_fn_ptr(x);
+    }
+    errno = ENOSYS;
+    return 0.0f;
+}
+
+float coreNumImpLibmSinhf(float n) {
+    typedef float (*km_fn_t)(float);
+    static km_fn_t km_fn_ptr = NULL;
+#ifdef _WIN32
+    if (km_fn_ptr == NULL) {
+        HMODULE km_h_msvcrt = GetModuleHandleA("msvcrt.dll");
+        if (km_h_msvcrt == NULL) km_h_msvcrt = LoadLibraryA("msvcrt.dll");
+        if (km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "sinhf");
+        if (km_fn_ptr == NULL && km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "_sinhf");
+        if (km_fn_ptr == NULL) {
+            HMODULE km_h_ucrt = GetModuleHandleA("ucrtbase.dll");
+            if (km_h_ucrt == NULL) km_h_ucrt = LoadLibraryA("ucrtbase.dll");
+            if (km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "sinhf");
+            if (km_fn_ptr == NULL && km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "_sinhf");
+        }
+    }
+#else
+    if (km_fn_ptr == NULL) {
+        km_fn_ptr = (km_fn_t)dlsym(RTLD_DEFAULT, "sinhf");
+    }
+#endif
+    if (km_fn_ptr != NULL) {
+        return km_fn_ptr(n);
+    }
+    errno = ENOSYS;
+    return 0.0f;
+}
+
+float coreNumImpLibmTanf(float n) {
+    typedef float (*km_fn_t)(float);
+    static km_fn_t km_fn_ptr = NULL;
+#ifdef _WIN32
+    if (km_fn_ptr == NULL) {
+        HMODULE km_h_msvcrt = GetModuleHandleA("msvcrt.dll");
+        if (km_h_msvcrt == NULL) km_h_msvcrt = LoadLibraryA("msvcrt.dll");
+        if (km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "tanf");
+        if (km_fn_ptr == NULL && km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "_tanf");
+        if (km_fn_ptr == NULL) {
+            HMODULE km_h_ucrt = GetModuleHandleA("ucrtbase.dll");
+            if (km_h_ucrt == NULL) km_h_ucrt = LoadLibraryA("ucrtbase.dll");
+            if (km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "tanf");
+            if (km_fn_ptr == NULL && km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "_tanf");
+        }
+    }
+#else
+    if (km_fn_ptr == NULL) {
+        km_fn_ptr = (km_fn_t)dlsym(RTLD_DEFAULT, "tanf");
+    }
+#endif
+    if (km_fn_ptr != NULL) {
+        return km_fn_ptr(n);
+    }
+    errno = ENOSYS;
+    return 0.0f;
+}
+
+float coreNumImpLibmTanhf(float n) {
+    typedef float (*km_fn_t)(float);
+    static km_fn_t km_fn_ptr = NULL;
+#ifdef _WIN32
+    if (km_fn_ptr == NULL) {
+        HMODULE km_h_msvcrt = GetModuleHandleA("msvcrt.dll");
+        if (km_h_msvcrt == NULL) km_h_msvcrt = LoadLibraryA("msvcrt.dll");
+        if (km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "tanhf");
+        if (km_fn_ptr == NULL && km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "_tanhf");
+        if (km_fn_ptr == NULL) {
+            HMODULE km_h_ucrt = GetModuleHandleA("ucrtbase.dll");
+            if (km_h_ucrt == NULL) km_h_ucrt = LoadLibraryA("ucrtbase.dll");
+            if (km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "tanhf");
+            if (km_fn_ptr == NULL && km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "_tanhf");
+        }
+    }
+#else
+    if (km_fn_ptr == NULL) {
+        km_fn_ptr = (km_fn_t)dlsym(RTLD_DEFAULT, "tanhf");
+    }
+#endif
+    if (km_fn_ptr != NULL) {
+        return km_fn_ptr(n);
+    }
+    errno = ENOSYS;
+    return 0.0f;
+}
+
+float coreNumImpLibmTgammaf(float x) {
+    typedef float (*km_fn_t)(float);
+    static km_fn_t km_fn_ptr = NULL;
+#ifdef _WIN32
+    if (km_fn_ptr == NULL) {
+        HMODULE km_h_msvcrt = GetModuleHandleA("msvcrt.dll");
+        if (km_h_msvcrt == NULL) km_h_msvcrt = LoadLibraryA("msvcrt.dll");
+        if (km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "tgammaf");
+        if (km_fn_ptr == NULL && km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "_tgammaf");
+        if (km_fn_ptr == NULL) {
+            HMODULE km_h_ucrt = GetModuleHandleA("ucrtbase.dll");
+            if (km_h_ucrt == NULL) km_h_ucrt = LoadLibraryA("ucrtbase.dll");
+            if (km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "tgammaf");
+            if (km_fn_ptr == NULL && km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "_tgammaf");
+        }
+    }
+#else
+    if (km_fn_ptr == NULL) {
+        km_fn_ptr = (km_fn_t)dlsym(RTLD_DEFAULT, "tgammaf");
+    }
+#endif
+    if (km_fn_ptr != NULL) {
+        return km_fn_ptr(x);
+    }
+    errno = ENOSYS;
+    return 0.0f;
+}
+
 double coreNumImpLibmAcos(double x) {
     return (double)acos(x);
 }

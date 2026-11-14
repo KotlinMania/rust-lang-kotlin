@@ -1,8 +1,8 @@
-@file:OptIn(kotlin.ExperimentalUnsignedTypes::class, kotlin.wasm.ExperimentalWasmInterop::class)
+@file:OptIn(ExperimentalUnsignedTypes::class, ExperimentalWasmInterop::class)
 
 package io.github.kotlinmania.rustlang.corearch.x86
 
-// The host must provide the C companion wrapper exports in import module corearch.
+// The host must provide the C companion wrapper exports in import module kmcore.
 public actual fun vpmadd52luq128(z: M128i, x: M128i, y: M128i): M128i =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512ifmaVpmadd52luq128")
 

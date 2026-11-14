@@ -3,16 +3,16 @@ package io.github.kotlinmania.rustlang.core.iter.adapters.skip
 
 import io.github.kotlinmania.rustlang.core.cmp.min
 import io.github.kotlinmania.rustlang.core.intrinsics.unlikely
-import io.github.kotlinmania.rustlang.core.iter.InPlaceIterable
-import io.github.kotlinmania.rustlang.core.iter.TrustedFused
-import io.github.kotlinmania.rustlang.core.iter.TrustedLen
-import io.github.kotlinmania.rustlang.core.iter.TrustedRandomAccess
-import io.github.kotlinmania.rustlang.core.iter.TrustedRandomAccessNoCoerce
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
+import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccess
+import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccessNoCoerce
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.tryGetUnchecked
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.InPlaceIterable
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedFused
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.drop
+import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.take
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.num.rustCheckedAdd
@@ -20,6 +20,7 @@ import io.github.kotlinmania.rustlang.core.num.rustSaturatingAdd
 import io.github.kotlinmania.rustlang.core.num.rustSaturatingSub
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
 
 public typealias Source<I> = I.Source
@@ -37,7 +38,7 @@ public open class Skip<I>(
     public var iter: I,
     public var n: Int,
 ) : TrustedFused, SourceIter<Any?, Source>, InPlaceIterable, TrustedRandomAccess, TrustedRandomAccessNoCoerce, TrustedLen<Skip<I>>, Iterable<Item> {
-    override fun iterator(): kotlin.collections.Iterator<Item> = object : AbstractIterator<Item>() {
+    override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
         override fun computeNext() {
             when (val v = this@Skip.next()) {
                 null -> done()
@@ -187,7 +188,7 @@ public open class Skip<I>(
         return run {
             if (Skip.MAY_HAVE_SIDE_EFFECT && idx == 0) {
                 for (skippedIdx in 0 until this.n) {
-                    drop(tryGetUnchecked(this.iter, skippedIdx))
+                    (tryGetUnchecked(this.iter, skippedIdx)).let { }
                 }
             }
             tryGetUnchecked(this.iter, idx + this.n)
@@ -255,32 +256,32 @@ public open class Skip<I>(
     // I: TrustedLen would not.
 
     public companion object {
-        public fun <I> typeLayout(typeLayoutI: io.github.kotlinmania.rustlang.core.mem.TypeLayout<I>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Skip<I>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Skip<I>> {
+        public fun <I> typeLayout(typeLayoutI: TypeLayout<I>): TypeLayout<Skip<I>> =
+            object : TypeLayout<Skip<I>> {
                 override val alignBytes: Long = listOf(8L, typeLayoutI.alignBytes).max()
-                private val off1: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(typeLayoutI.sizeBytes, 8L)
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes((off1 + 8L), alignBytes)
+                private val off1: Long = alignUpBytes(typeLayoutI.sizeBytes, 8L)
+                override val sizeBytes: Long = alignUpBytes((off1 + 8L), alignBytes)
                 override fun readNative(addr: Long): Skip<I> =
                     Skip(
                         (typeLayoutI).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readNative(addr + off1),
+                        (PrimitiveLayouts.USIZE64).readNative(addr + off1),
                     )
                 override fun writeNative(addr: Long, value: Skip<I>) {
                     (typeLayoutI).writeNative(addr, value.iter)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeNative(addr + off1, value.n)
+                    (PrimitiveLayouts.USIZE64).writeNative(addr + off1, value.n)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Skip<I> =
                     Skip(
                         (typeLayoutI).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readBytes(buf, offset + off1.toInt()),
+                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset + off1.toInt()),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Skip<I>) {
                     (typeLayoutI).writeBytes(buf, offset, value.iter)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeBytes(buf, offset + off1.toInt(), value.n)
+                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset + off1.toInt(), value.n)
                 }
             }
 
-        internal fun <I> new(iter: I, n: Int): Skip<I> = Skip(iter = iter, n = n)
+        public fun <I> new(iter: I, n: Int): Skip<I> = Skip(iter = iter, n = n)
 
         public val EXPAND_BY: NonZero<Int>? = I.EXPAND_BY
 

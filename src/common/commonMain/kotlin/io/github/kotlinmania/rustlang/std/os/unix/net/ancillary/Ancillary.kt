@@ -1,25 +1,6 @@
 // port-lint: source os/unix/net/ancillary.rs
 package io.github.kotlinmania.rustlang.std.os.unix.net.ancillary
 
-import io.github.kotlinmania.libc.CInt
-import io.github.kotlinmania.libc.fuchsia.Cmsghdr
-import io.github.kotlinmania.libc.fuchsia.GidT
-import io.github.kotlinmania.libc.fuchsia.MSG_CTRUNC
-import io.github.kotlinmania.libc.fuchsia.MSG_TRUNC
-import io.github.kotlinmania.libc.fuchsia.Msghdr
-import io.github.kotlinmania.libc.fuchsia.PidT
-import io.github.kotlinmania.libc.fuchsia.SOL_SOCKET
-import io.github.kotlinmania.libc.fuchsia.Ucred
-import io.github.kotlinmania.libc.fuchsia.UidT
-import io.github.kotlinmania.libc.fuchsia.cmsgData
-import io.github.kotlinmania.libc.fuchsia.cmsgFirsthdr
-import io.github.kotlinmania.libc.fuchsia.cmsgLen
-import io.github.kotlinmania.libc.fuchsia.cmsgNxthdr
-import io.github.kotlinmania.libc.fuchsia.cmsgSpace
-import io.github.kotlinmania.libc.memcpy
-import io.github.kotlinmania.libc.unix.bsd.freebsdlike.freebsd.SCM_CREDS2
-import io.github.kotlinmania.libc.unix.bsd.freebsdlike.freebsd.sockcred2size
-import io.github.kotlinmania.libc.unix.hurd.SCM_CREDS
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
@@ -27,9 +8,12 @@ import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
+import io.github.kotlinmania.rustlang.core.mem.zeroed
 import io.github.kotlinmania.rustlang.core.num.rustCheckedAdd
+import io.github.kotlinmania.rustlang.core.num.rustCheckedMul
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.eq
 import io.github.kotlinmania.rustlang.core.ptr.readUnaligned
@@ -37,28 +21,48 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.rawSliceList
+import io.github.kotlinmania.rustlang.libc.CInt
+import io.github.kotlinmania.rustlang.libc.CMSG_DATA
+import io.github.kotlinmania.rustlang.libc.CMSG_FIRSTHDR
+import io.github.kotlinmania.rustlang.libc.CMSG_LEN
+import io.github.kotlinmania.rustlang.libc.CMSG_NXTHDR
+import io.github.kotlinmania.rustlang.libc.CMSG_SPACE
+import io.github.kotlinmania.rustlang.libc.SCM_CREDS2
+import io.github.kotlinmania.rustlang.libc.helenos.PidT
+import io.github.kotlinmania.rustlang.libc.memcpy
+import io.github.kotlinmania.rustlang.libc.unix.GidT
+import io.github.kotlinmania.rustlang.libc.unix.UidT
+import io.github.kotlinmania.rustlang.libc.unix.bsd.Cmsghdr
+import io.github.kotlinmania.rustlang.libc.unix.bsd.Msghdr
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SCM_CREDS
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.MSG_CTRUNC
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.MSG_TRUNC
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.Ucred
+import io.github.kotlinmania.rustlang.libc.wasi.SOL_SOCKET
+import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.os.fd.RawFd
 import io.github.kotlinmania.rustlang.std.os.unix.net.SocketAddr
 import io.github.kotlinmania.rustlang.std.path.Path
-import io.github.kotlinmania.rustlang.std.sys.net.connection.motor.Socket
+import io.github.kotlinmania.rustlang.std.sys.net.connection.wasip1.Socket
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.SockaddrUn
 
-internal fun recvVectoredWithAncillaryFrom(socket: Socket, bufs: MutableList<IoSliceMut>, ancillary: SocketAncillary): Result<Triple<Int, Boolean, Result<SocketAddr>>> {
+public fun recvVectoredWithAncillaryFrom(socket: Socket, bufs: MutableList<IoSliceMut>, ancillary: SocketAncillary): Result<Triple<Int, Boolean, Result<SocketAddr, Error>>, Error> {
     return run {
-        val localStorageL41C8 = AddressableLocal(null, ObjectSlotLayout<SockaddrUn>())
+        val localStorageL41C8 = AddressableLocal(SockaddrUn(), ObjectSlotLayout<SockaddrUn>())
         val msgName by localStorageL41C8
-        val msg: Msghdr?  = null
-        msg!!.msgName = ((localStorageL41C8.asMutPtr())).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
-        msg.msgNamelen = sizeOf<SockaddrUn>(typeLayoutT = ObjectSlotLayout<SockaddrUn>()).toInt()
-        msg.msgIov = MutPtr((bufs.asMutPtr()).rawAddress)
-        msg.msgIovlen = bufs.size
-        msg.msgControllen = ancillary.buffer.size
+        val localStorageL42C8 = AddressableLocal(Msghdr(), ObjectSlotLayout<Msghdr>())
+        val msg by localStorageL42C8
+        msg.msgName = (localStorageL41C8.asMutPtr())
+        msg.msgNamelen = sizeOf<SockaddrUn>(typeLayoutT = ObjectSlotLayout<SockaddrUn>())
+        msg.msgIov = bufs.asMutPtr()
+        msg.msgIovlen = ((bufs.size as Any?) as Result<Triple<Int, Boolean, Result<SocketAddr, Error>>, Error>)
+        msg.msgControllen = ((ancillary.buffer.size as Any?) as Result<Triple<Int, Boolean, Result<SocketAddr, Error>>, Error>)
         // macos requires that the control pointer is null when the len is 0.
         if (msg.msgControllen > 0) {
-            msg.msgControl = MutPtr((ancillary.buffer.asMutPtr()).rawAddress)
+            msg.msgControl = ancillary.buffer.asMutPtr()
         }
-        val count = when (val tryResult = socket.recvMsg(msg)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-        ancillary.length = msg.msgControllen
+        val count = when (val tryResult = socket.recvMsg(RustMutableReference(localStorageL42C8.asMutPtr(), localStorageL42C8.layout))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        ancillary.length = msg.msgControllen.toInt()
         ancillary.truncated = (msg.msgFlags and MSG_CTRUNC == MSG_CTRUNC).toUByte()
         val truncated = msg.msgFlags and MSG_TRUNC == MSG_TRUNC
         val addr = SocketAddr.fromParts(msgName, msg.msgNamelen)
@@ -66,33 +70,34 @@ internal fun recvVectoredWithAncillaryFrom(socket: Socket, bufs: MutableList<IoS
     }
 }
 
-internal fun sendVectoredWithAncillaryTo(socket: Socket, path: Path?, bufs: List<IoSlice>, ancillary: SocketAncillary): Result<Int> {
+public fun sendVectoredWithAncillaryTo(socket: Socket, path: Path?, bufs: List<IoSlice>, ancillary: SocketAncillary): Result<Int, Error> {
     return run {
         var (msgName, msgNamelen) =
             if (path != null) {
                 val path1 = path
                 when (val tryResult = io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.SockaddrUn(path1)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
             } else {
-                Pair(null, 0)
+                Pair(MaybeUninit.zeroed(ObjectSlotLayout<Result<Int, Error>>()).assumeInit(), 0)
             }
-        val msg: Msghdr?  = null
-        msg!!.msgName = mutPtrFromRustCast((addrOfMut(msgName)))
+        val localStorageL76C8 = AddressableLocal(Msghdr(), ObjectSlotLayout<Msghdr>())
+        val msg by localStorageL76C8
+        msg.msgName = mutPtrFromRustCast((addrOfMut(msgName)))
         msg.msgNamelen = msgNamelen
         msg.msgIov = (bufs.asPtr()).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
-        msg.msgIovlen = bufs.size
-        msg.msgControllen = ancillary.length
+        msg.msgIovlen = ((bufs.size as Any?) as Result<Int, Error>)
+        msg.msgControllen = ((ancillary.length as Any?) as Result<Int, Error>)
         // macos requires that the control pointer is null when the len is 0.
         if (msg.msgControllen > 0) {
-            msg.msgControl = MutPtr((ancillary.buffer.asMutPtr()).rawAddress)
+            msg.msgControl = ancillary.buffer.asMutPtr()
         }
         ancillary.truncated = false
-        socket.sendMsg(msg)
+        socket.sendMsg(RustMutableReference(localStorageL76C8.asMutPtr(), localStorageL76C8.layout))
     }
 }
 
 public fun <T> addToAncillaryData(buffer: MutableList<UByte>, length: RustMutableReference<Int>, source: List<T>, cmsgLevel: CInt, cmsgType: CInt, typeLayoutT: TypeLayout<T>): Boolean {
     val length1 = length
-    val cmsgSize = sockcred2size(1)
+    val cmsgSize = rustCheckedMul(source.size, sizeOf<T>(typeLayoutT = typeLayoutT))
     val sourceLen2 =
         if (cmsgSize != null) {
             val sourceLen = cmsgSize
@@ -109,7 +114,7 @@ public fun <T> addToAncillaryData(buffer: MutableList<UByte>, length: RustMutabl
             return false
         }
     run {
-        val additionalSpace = cmsgSpace(sourceLen2).toInt()
+        val additionalSpace = CMSG_SPACE(sourceLen2).toInt()
         val newLength1 =
             when (val matchVal1 = rustCheckedAdd(additionalSpace, (length1).read())) {
                 null -> {
@@ -125,14 +130,14 @@ public fun <T> addToAncillaryData(buffer: MutableList<UByte>, length: RustMutabl
         }
         ((buffer).slice((length1).read() until newLength1)).fill(0)
         (length1).write(newLength1)
-        val msg: Msghdr?  = null
-        msg!!.msgControl = MutPtr((buffer.asMutPtr()).rawAddress)
-        msg.msgControllen = (length1).read()
-        var cmsg = cmsgFirsthdr(msg)
+        val msg: Msghdr  = Msghdr()
+        msg.msgControl = buffer.asMutPtr()
+        msg.msgControllen = ((length1).read()).toUByte()
+        var cmsg = CMSG_FIRSTHDR(msg)
         var previousCmsg = cmsg
         while (!cmsg.isNull()) {
             previousCmsg = cmsg
-            cmsg = cmsgNxthdr(msg, cmsg)
+            cmsg = CMSG_NXTHDR(msg, cmsg)
             // Most operating systems, but not Linux or emscripten, return the previous pointer
             // when its length is zero. Therefore, check if the previous pointer is the same as
             // the current one.
@@ -145,8 +150,8 @@ public fun <T> addToAncillaryData(buffer: MutableList<UByte>, length: RustMutabl
         }
         previousCmsg.cmsgLevel = cmsgLevel
         previousCmsg.cmsgType = cmsgType
-        previousCmsg.cmsgLen = cmsgLen(sourceLen2).toUByte()
-        val data = cmsgData(previousCmsg).cast()
+        previousCmsg.cmsgLen = CMSG_LEN(sourceLen2).toUByte()
+        val data = CMSG_DATA(previousCmsg).cast()
         memcpy(data, source.asPtr(), sourceLen2.toInt())
     }
     return true
@@ -156,7 +161,7 @@ public open class AncillaryDataIter<T>(
     public var data: List<UByte>,
     public var phantom: Unit,
 ) : Iterable<T> {
-    override fun iterator(): kotlin.collections.Iterator<T> = object : AbstractIterator<T>() {
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@AncillaryDataIter.next()) {
                 null -> done()
@@ -199,6 +204,8 @@ public open class SocketCred(
         set(v) {
             value = v
         }
+
+    public open fun clone(): SocketCred = SocketCred(value)
 
     /**
      * Set the PID.
@@ -263,7 +270,7 @@ public open class ScmRights internal constructor(
             value = v
         }
 
-    override fun iterator(): kotlin.collections.Iterator<RawFd> = object : AbstractIterator<RawFd>() {
+    override fun iterator(): Iterator<RawFd> = object : AbstractIterator<RawFd>() {
         override fun computeNext() {
             when (val v = this@ScmRights.next()) {
                 null -> done()
@@ -300,7 +307,7 @@ public open class ScmCredentials internal constructor(
             value = v
         }
 
-    override fun iterator(): kotlin.collections.Iterator<SocketCred> = object : AbstractIterator<SocketCred>() {
+    override fun iterator(): Iterator<SocketCred> = object : AbstractIterator<SocketCred>() {
         override fun computeNext() {
             when (val v = this@ScmCredentials.next()) {
                 null -> done()
@@ -367,16 +374,14 @@ public sealed class AncillaryData {
 
         public fun tryFromCmsghdr(cmsg: Cmsghdr): Result<AncillaryData, AncillaryError> =
             run {
-                val cmsgLenZero = cmsgLen(0).toInt()
+                val cmsgLenZero = CMSG_LEN(0).toInt()
                 val dataLen = cmsg.cmsgLen.toInt() - cmsgLenZero
-                val data = cmsgData(cmsg).cast()
+                val data = CMSG_DATA(cmsg).cast()
                 val data1 = rawSliceList(data, dataLen.toInt(), PrimitiveLayouts.U8)
                 when (val matchVal = cmsg.cmsgLevel) {
                     SOL_SOCKET -> when (val matchVal1 = cmsg.cmsgType) {
-                        io.github.kotlinmania.libc.ScmRights -> Result.Ok(AncillaryData.asRights(data1))
-                        io.github.kotlinmania.libc.ScmCredentials -> Result.Ok(AncillaryData.asCredentials(data1))
-                        SCM_CREDS2 -> Result.Ok(AncillaryData.asCredentials(data1))
-                        SCM_CREDS -> Result.Ok(AncillaryData.asCredentials(data1))
+                        io.github.kotlinmania.rustlang.libc.ScmRights -> Result.Ok(AncillaryData.asRights(data1))
+                        io.github.kotlinmania.rustlang.libc.ScmCredentials -> Result.Ok(AncillaryData.asCredentials(data1))
                         else -> {
                             val cmsgType = matchVal1
                             Result.Err(AncillaryError.Unknown(cmsgLevel = SOL_SOCKET, cmsgType = cmsgType))
@@ -398,7 +403,7 @@ public open class Messages(
     public var buffer: List<UByte>,
     public var current: Cmsghdr?,
 ) : Iterable<Result<AncillaryData, AncillaryError>> {
-    override fun iterator(): kotlin.collections.Iterator<Result<AncillaryData, AncillaryError>> = object : AbstractIterator<Result<AncillaryData, AncillaryError>>() {
+    override fun iterator(): Iterator<Result<AncillaryData, AncillaryError>> = object : AbstractIterator<Result<AncillaryData, AncillaryError>>() {
         override fun computeNext() {
             when (val v = this@Messages.next()) {
                 null -> done()
@@ -409,17 +414,17 @@ public open class Messages(
 
     public open fun next(): Result<AncillaryData, AncillaryError>? {
         return run {
-            val msg: Msghdr?  = null
-            msg!!.msgControl = (this.buffer.asPtr()).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
-            msg.msgControllen = this.buffer.size
+            val msg: Msghdr  = Msghdr()
+            msg.msgControl = (this.buffer.asPtr()).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
+            msg.msgControllen = null
             val cmsg =
                 when (val matchVal = this.current) {
                     null -> {
-                        cmsgFirsthdr(msg)
+                        CMSG_FIRSTHDR(msg)
                     }
                     else -> {
                         val current = matchVal
-                        cmsgNxthdr(msg, current)
+                        CMSG_NXTHDR(msg, current)
                     }
                 }
             val cmsg1 = when (val tryResult = cmsg.asRef()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
@@ -555,7 +560,7 @@ public open class SocketAncillary(
      */
     public open fun addFds(fds: List<RawFd>): Boolean {
         this.truncated = false
-        return addToAncillaryData(this.buffer, this.length, fds, SOL_SOCKET, io.github.kotlinmania.libc.ScmRights)
+        return addToAncillaryData(this.buffer, this.length, fds, SOL_SOCKET, io.github.kotlinmania.rustlang.libc.ScmRights)
     }
 
     /**
@@ -568,7 +573,7 @@ public open class SocketAncillary(
      */
     public open fun addCreds(creds: List<SocketCred>): Boolean {
         this.truncated = false
-        return addToAncillaryData(this.buffer, this.length, creds, SOL_SOCKET, io.github.kotlinmania.libc.ScmCredentials, SCM_CREDS2, SCM_CREDS)
+        return addToAncillaryData(this.buffer, this.length, creds, SOL_SOCKET, io.github.kotlinmania.rustlang.libc.ScmCredentials, SCM_CREDS2, SCM_CREDS)
     }
 
     /**

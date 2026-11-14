@@ -6,27 +6,28 @@ import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.std.String
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
-import io.github.kotlinmania.rustlang.std.fmt
 import io.github.kotlinmania.rustlang.std.formatArgsNl
 import io.github.kotlinmania.rustlang.std.fs.File
+import io.github.kotlinmania.rustlang.std.io.Write
+import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.io.pipe.PipeReader
 import io.github.kotlinmania.rustlang.std.io.pipe.PipeWriter
 import io.github.kotlinmania.rustlang.std.io.stdio.Stderr
 import io.github.kotlinmania.rustlang.std.io.stdio.Stdout
+import io.github.kotlinmania.rustlang.std.io.stdio.attemptPrintToStderr
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.rt.cleanup
 import io.github.kotlinmania.rustlang.std.sys.AsInner
 import io.github.kotlinmania.rustlang.std.sys.AsInnerMut
 import io.github.kotlinmania.rustlang.std.sys.FromInner
 import io.github.kotlinmania.rustlang.std.sys.IntoInner
-import io.github.kotlinmania.rustlang.std.sys.pal.hermit.abortInternal
+import io.github.kotlinmania.rustlang.std.sys.pal.unix.abortInternal
 import io.github.kotlinmania.rustlang.std.sys.process.env.CommandResolvedEnvs
-import io.github.kotlinmania.rustlang.std.sys.process.unix.common.ChildPipe
-import io.github.kotlinmania.rustlang.std.sys.process.unix.common.getpid
-import io.github.kotlinmania.rustlang.std.sys.process.unix.common.readOutput
-import io.github.kotlinmania.rustlang.std.sys.process.unix.unix.Process
+import io.github.kotlinmania.rustlang.std.sys.process.unsupported.ChildPipe
+import io.github.kotlinmania.rustlang.std.sys.process.unsupported.Process
+import io.github.kotlinmania.rustlang.std.sys.process.unsupported.getpid
+import io.github.kotlinmania.rustlang.std.sys.process.unsupported.readOutput
 
 // A module for working with processes.
 //
@@ -218,13 +219,13 @@ public class DebugStruct(
  * [wait]: Child.wait
  */
 public open class Child(
-    internal var handle: Process,
+    public var handle: Process,
     /**
      * The handle for writing to the child's standard input (stdin), if it
      * has been captured. You might find it helpful to do
      *
-     * ```kotlin
-     * val stdin = (child.stdin.also { child.stdin = null } ?: error("handle should be present"))
+     * ```ignore (incomplete)
+     * let stdin = child.stdin.take().expect("handle should be present");
      * ```
      *
      * to avoid partially moving the `child` and thus blocking yourself from calling
@@ -235,8 +236,8 @@ public open class Child(
      * The handle for reading from the child's standard output (stdout), if it
      * has been captured. You might find it helpful to do
      *
-     * ```kotlin
-     * val stdout = (child.stdout.also { child.stdout = null } ?: error("handle should be present"))
+     * ```ignore (incomplete)
+     * let stdout = child.stdout.take().expect("handle should be present");
      * ```
      *
      * to avoid partially moving the `child` and thus blocking yourself from calling
@@ -247,8 +248,8 @@ public open class Child(
      * The handle for reading from the child's standard error (stderr), if it
      * has been captured. You might find it helpful to do
      *
-     * ```kotlin
-     * val stderr = (child.stderr.also { child.stderr = null } ?: error("handle should be present"))
+     * ```ignore (incomplete)
+     * let stderr = child.stderr.take().expect("handle should be present");
      * ```
      *
      * to avoid partially moving the `child` and thus blocking yourself from calling
@@ -292,7 +293,7 @@ public open class Child(
      * [ErrorKind]: io.ErrorKind
      * [InvalidInput]: io.ErrorKind.InvalidInput
      */
-    public open fun kill(): Result<Unit> = this.handle.kill()
+    public open fun kill(): Result<Unit, Error> = this.handle.kill()
 
     /**
      * Returns the OS-assigned process identifier associated with this child.
@@ -344,8 +345,8 @@ public open class Child(
      * }
      * ```
      */
-    public open fun wait(): Result<ExitStatus> {
-        drop(this.stdin.also { this.stdin = null })
+    public open fun wait(): Result<ExitStatus, Error> {
+        (this.stdin.also { this.stdin = null }).let { }
         return this.handle.wait().map({ ExitStatus(it) })
     }
 
@@ -392,7 +393,7 @@ public open class Child(
      * }
      * ```
      */
-    public open fun tryWait(): Result<ExitStatus?> {
+    public open fun tryWait(): Result<ExitStatus?, Error> {
         return Result.Ok(when (val tryResult = this.handle.tryWait()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }.map({ ExitStatus(it) }))
     }
 
@@ -422,8 +423,8 @@ public open class Child(
      * check(output.status.success())
      * ```
      */
-    public open fun waitWithOutput(): Result<Output> {
-        drop(this.stdin.also { this.stdin = null })
+    public open fun waitWithOutput(): Result<Output, Error> {
+        (this.stdin.also { this.stdin = null }).let { }
         var (stdout, stderr) = Pair(mutableListOf(), mutableListOf())
         run {
             val matchVal = Pair(this.stdout.also { this.stdout = null }, this.stderr.also { this.stderr = null })
@@ -461,11 +462,32 @@ public open class Child(
  *
  * Used to pass pipe handles between this module and [imp].
  */
-internal open class StdioPipes(
-    public var stdin: ChildPipe?,
-    public var stdout: ChildPipe?,
-    public var stderr: ChildPipe?,
-)
+public open class StdioPipes internal constructor(
+    stdinCtorArg: ChildPipe?,
+    stdoutCtorArg: ChildPipe?,
+    stderrCtorArg: ChildPipe?,
+) {
+    public var stdin: ChildPipe? = stdinCtorArg
+        internal set
+
+    public var stdout: ChildPipe? = stdoutCtorArg
+        internal set
+
+    public var stderr: ChildPipe? = stderrCtorArg
+        internal set
+
+    public companion object {
+        public operator fun invoke(
+            stdin: ChildPipe?,
+            stdout: ChildPipe?,
+            stderr: ChildPipe?,
+        ): StdioPipes = StdioPipes(
+            stdinCtorArg = stdin,
+            stdoutCtorArg = stdout,
+            stderrCtorArg = stderr,
+        )
+    }
+}
 
 /**
  * A handle to a child process's standard input (stdin).
@@ -490,13 +512,13 @@ public open class ChildStdin internal constructor(
     // `AsRawFd`/`IntoRawFd`/`FromRawFd`, on Unix and WASI, and
     // `AsHandle`/`From<OwnedHandle>`/`Into<OwnedHandle>` and
     // `AsRawHandle`/`IntoRawHandle`/`FromRawHandle` on Windows.
-    public open fun write(buf: List<UByte>): Result<Int> = (this).write(buf)
+    public open fun write(buf: List<UByte>): Result<Int, Error> = (this).write(buf)
 
-    public open fun writeVectored(bufs: List<IoSlice>): Result<Int> = (this).writeVectored(bufs)
+    public open fun writeVectored(bufs: List<IoSlice>): Result<Int, Error> = (this).writeVectored(bufs)
 
-    public open fun isWriteVectored(): Boolean = io.Write.isWriteVectored(this)
+    public open fun isWriteVectored(): Boolean = Write.isWriteVectored(this)
 
-    public open fun flush(): Result<Unit> = (this).flush()
+    public open fun flush(): Result<Unit, Error> = (this).flush()
 
     public override fun asInner(): ChildPipe = this.inner
 
@@ -539,15 +561,15 @@ public open class ChildStdout internal constructor(
     // `AsRawFd`/`IntoRawFd`/`FromRawFd`, on Unix and WASI, and
     // `AsHandle`/`From<OwnedHandle>`/`Into<OwnedHandle>` and
     // `AsRawHandle`/`IntoRawHandle`/`FromRawHandle` on Windows.
-    public open fun read(buf: MutableList<UByte>): Result<Int> = this.inner.read(buf)
+    public open fun read(buf: MutableList<UByte>): Result<Int, Error> = this.inner.read(buf)
 
-    public open fun readBuf(buf: BorrowedCursor<UByte>): Result<Unit> = this.inner.readBuf(buf)
+    public open fun readBuf(buf: BorrowedCursor<UByte>): Result<Unit, Error> = this.inner.readBuf(buf)
 
-    public open fun readVectored(bufs: MutableList<IoSliceMut>): Result<Int> = this.inner.readVectored(bufs)
+    public open fun readVectored(bufs: MutableList<IoSliceMut>): Result<Int, Error> = this.inner.readVectored(bufs)
 
     public open fun isReadVectored(): Boolean = this.inner.isReadVectored()
 
-    public open fun readToEnd(buf: List<UByte>): Result<Int> = this.inner.readToEnd(buf)
+    public open fun readToEnd(buf: List<UByte>): Result<Int, Error> = this.inner.readToEnd(buf)
 
     public override fun asInner(): ChildPipe = this.inner
 
@@ -590,15 +612,15 @@ public open class ChildStderr internal constructor(
     // `AsRawFd`/`IntoRawFd`/`FromRawFd`, on Unix and WASI, and
     // `AsHandle`/`From<OwnedHandle>`/`Into<OwnedHandle>` and
     // `AsRawHandle`/`IntoRawHandle`/`FromRawHandle` on Windows.
-    public open fun read(buf: MutableList<UByte>): Result<Int> = this.inner.read(buf)
+    public open fun read(buf: MutableList<UByte>): Result<Int, Error> = this.inner.read(buf)
 
-    public open fun readBuf(buf: BorrowedCursor<UByte>): Result<Unit> = this.inner.readBuf(buf)
+    public open fun readBuf(buf: BorrowedCursor<UByte>): Result<Unit, Error> = this.inner.readBuf(buf)
 
-    public open fun readVectored(bufs: MutableList<IoSliceMut>): Result<Int> = this.inner.readVectored(bufs)
+    public open fun readVectored(bufs: MutableList<IoSliceMut>): Result<Int, Error> = this.inner.readVectored(bufs)
 
     public open fun isReadVectored(): Boolean = this.inner.isReadVectored()
 
-    public open fun readToEnd(buf: List<UByte>): Result<Int> = this.inner.readToEnd(buf)
+    public open fun readToEnd(buf: List<UByte>): Result<Int, Error> = this.inner.readToEnd(buf)
 
     public override fun asInner(): ChildPipe = this.inner
 
@@ -668,8 +690,8 @@ public open class ChildStderr internal constructor(
  * ```
  */
 public open class Command(
-    public var inner: Command,
-) : AsInner<Command>, AsInnerMut<Command> {
+    public var inner: io.github.kotlinmania.rustlang.std.sys.process.unsupported.Command,
+) : AsInner<io.github.kotlinmania.rustlang.std.sys.process.unsupported.Command>, AsInnerMut<io.github.kotlinmania.rustlang.std.sys.process.unsupported.Command> {
     /**
      * Adds an argument to pass to the program.
      *
@@ -813,6 +835,7 @@ public open class Command(
      *
      * ```kotlin
      * import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
+     * import std.env
      * import std.process.Command
      * import std.process.Stdio
      *
@@ -1024,7 +1047,7 @@ public open class Command(
      * Command.new("ls").spawn().expect("ls command should start")
      * ```
      */
-    public open fun spawn(): Result<Child> = this.inner.spawn(Stdio.Inherit, true).map(Child::fromInner)
+    public open fun spawn(): Result<Child, Error> = this.inner.spawn(io.github.kotlinmania.rustlang.std.sys.process.unsupported.Stdio.Inherit, true).map(Child::fromInner)
 
     /**
      * Executes the command as a child process, waiting for it to finish and
@@ -1062,8 +1085,8 @@ public open class Command(
      * check(output.status.success())
      * ```
      */
-    public open fun output(): Result<Output> {
-        val (status, stdout, stderr) = when (val tryResult = Output(this.inner)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    public open fun output(): Result<Output, Error> {
+        val (status, stdout, stderr) = when (val tryResult = io.github.kotlinmania.rustlang.std.sys.process.output(this.inner)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         return Result.Ok(Output(status = ExitStatus(status), stdout = stdout, stderr = stderr))
     }
 
@@ -1096,7 +1119,7 @@ public open class Command(
      * check(status.success())
      * ```
      */
-    public open fun status(): Result<ExitStatus> = io.github.kotlinmania.rustlang.std.sys.process.status(this.inner).map({ ExitStatus(it) })
+    public open fun status(): Result<ExitStatus, Error> = io.github.kotlinmania.rustlang.std.sys.process.status(this.inner).map({ ExitStatus(it) })
 
     /**
      * Returns the path to the program that was given to [Command.new].
@@ -1183,6 +1206,7 @@ public open class Command(
      * # Examples
      *
      * ```kotlin
+     * import std.env
      * import std.ffi.OsStr
      * import std.ffi.OsString
      * import std.process.Command
@@ -1263,9 +1287,9 @@ public open class Command(
         this.inner.fmt(f)
     }
 
-    public override fun asInner(): Command = this.inner
+    public override fun asInner(): io.github.kotlinmania.rustlang.std.sys.process.unsupported.Command = this.inner
 
-    public override fun asInnerMut(): Command = this.inner
+    public override fun asInnerMut(): io.github.kotlinmania.rustlang.std.sys.process.unsupported.Command = this.inner
 
     public companion object {
         /**
@@ -1353,7 +1377,7 @@ public open class Command(
          * [arg]: Self.arg
          * [args]: Self.args
          */
-        public fun new(program: OsStr): Command = Command(inner = Command.new(program))
+        public fun new(program: OsStr): Command = Command(inner = io.github.kotlinmania.rustlang.std.sys.process.unsupported.Command.new(program))
     }
 }
 
@@ -1364,9 +1388,9 @@ public open class Command(
  * more.
  */
 public open class CommandArgs(
-    public var inner: CommandArgs,
+    public var inner: io.github.kotlinmania.rustlang.std.sys.process.unsupported.CommandArgs,
 ) : Iterable<OsStr> {
-    override fun iterator(): kotlin.collections.Iterator<OsStr> = object : AbstractIterator<OsStr>() {
+    override fun iterator(): Iterator<OsStr> = object : AbstractIterator<OsStr>() {
         override fun computeNext() {
             when (val v = this@CommandArgs.next()) {
                 null -> done()
@@ -1396,9 +1420,9 @@ public fun <T> assertSync() {}
  * documentation for more.
  */
 public open class CommandEnvs(
-    public var iter: CommandEnvs,
+    public var iter: io.github.kotlinmania.rustlang.std.sys.process.env.CommandEnvs,
 ) : Iterable<Pair<OsStr, OsStr?>> {
-    override fun iterator(): kotlin.collections.Iterator<Pair<OsStr, OsStr?>> = object : AbstractIterator<Pair<OsStr, OsStr?>>() {
+    override fun iterator(): Iterator<Pair<OsStr, OsStr?>> = object : AbstractIterator<Pair<OsStr, OsStr?>>() {
         override fun computeNext() {
             when (val v = this@CommandEnvs.next()) {
                 null -> done()
@@ -1444,6 +1468,8 @@ public open class Output(
      */
     public var stderr: List<UByte>,
 ) {
+    public open fun clone(): Output = Output(status, stdout, stderr)
+
     /**
      * Returns an error if a nonzero exit status was received.
      *
@@ -1510,9 +1536,9 @@ public open class Output(
  * [stderr]: Command.stderr
  */
 public open class Stdio(
-    public var value: Stdio,
-) : FromInner<Stdio, Stdio> {
-    public var field0: Stdio
+    public var value: io.github.kotlinmania.rustlang.std.sys.process.unsupported.Stdio,
+) : FromInner<io.github.kotlinmania.rustlang.std.sys.process.unsupported.Stdio, Stdio> {
+    public var field0: io.github.kotlinmania.rustlang.std.sys.process.unsupported.Stdio
         get() = value
         set(v) {
             value = v
@@ -1535,7 +1561,7 @@ public open class Stdio(
      */
     public open fun makesPipe(): Boolean =
         when (this.value) {
-            Stdio.MakePipe -> true
+            io.github.kotlinmania.rustlang.std.sys.process.unsupported.Stdio.MakePipe -> true
             else -> false
         }
 
@@ -1582,7 +1608,7 @@ public open class Stdio(
          * its entire stdin before writing more than a pipe buffer's worth of output.
          * The size of a pipe buffer varies on different targets.
          */
-        public fun piped(): Stdio = Stdio(Stdio.MakePipe)
+        public fun piped(): Stdio = Stdio(io.github.kotlinmania.rustlang.std.sys.process.unsupported.Stdio.MakePipe)
 
         /**
          * The child inherits from the corresponding parent descriptor.
@@ -1612,7 +1638,7 @@ public open class Stdio(
          * io.stdout().writeAll(output.stdout).getOrElse { return Result.failure(it) }
          * ```
          */
-        public fun inherit(): Stdio = Stdio(Stdio.Inherit)
+        public fun inherit(): Stdio = Stdio(io.github.kotlinmania.rustlang.std.sys.process.unsupported.Stdio.Inherit)
 
         /**
          * This stream will be ignored. This is the equivalent of attaching the
@@ -1644,9 +1670,9 @@ public open class Stdio(
          * // Ignores any piped-in input
          * ```
          */
-        public fun nullVal(): Stdio = Stdio(Stdio.Null)
+        public fun nullVal(): Stdio = Stdio(io.github.kotlinmania.rustlang.std.sys.process.unsupported.Stdio.Null)
 
-        public fun fromInner(inner: Stdio): Stdio = Stdio(inner)
+        public fun fromInner(inner: io.github.kotlinmania.rustlang.std.sys.process.unsupported.Stdio): Stdio = Stdio(inner)
 
         /**
          * Converts a [ChildStdin] into a [Stdio].
@@ -1728,6 +1754,7 @@ public open class Stdio(
          * # Examples
          *
          * ```kotlin
+         * import std.io
          * import std.process.Command
          *
          * @feature(exitStatusError)
@@ -1747,6 +1774,7 @@ public open class Stdio(
          * # Examples
          *
          * ```kotlin
+         * import std.io
          * import std.process.Command
          *
          * @feature(exitStatusError)
@@ -1799,13 +1827,15 @@ public open class Stdio(
  * [wait]: Child.wait
  */
 public open class ExitStatus(
-    public var value: ExitStatus,
-) : AsInner<ExitStatus>, FromInner<ExitStatus, ExitStatus> {
-    public var field0: ExitStatus
+    public var value: io.github.kotlinmania.rustlang.std.sys.process.unsupported.ExitStatus,
+) : AsInner<io.github.kotlinmania.rustlang.std.sys.process.unsupported.ExitStatus>, FromInner<io.github.kotlinmania.rustlang.std.sys.process.unsupported.ExitStatus, ExitStatus> {
+    public var field0: io.github.kotlinmania.rustlang.std.sys.process.unsupported.ExitStatus
         get() = value
         set(v) {
             value = v
         }
+
+    public open fun clone(): ExitStatus = ExitStatus(value)
 
     /**
      * Was termination successful?  Returns a `Result`.
@@ -1873,7 +1903,7 @@ public open class ExitStatus(
      */
     public open fun code(): Int? = this.value.code()
 
-    public override fun asInner(): ExitStatus = this.value
+    public override fun asInner(): io.github.kotlinmania.rustlang.std.sys.process.unsupported.ExitStatus = this.value
 
     public open fun fmt(f: StringBuilder) {
         this.value.fmt(f)
@@ -1885,10 +1915,10 @@ public open class ExitStatus(
          */
         public fun default(): ExitStatus {
             // Ideally this would be done by ExitCode.default().into() but that is complicated.
-            return ExitStatus.fromInner(ExitStatus.default())
+            return ExitStatus.fromInner(io.github.kotlinmania.rustlang.std.sys.process.unsupported.ExitStatus.default())
         }
 
-        public fun fromInner(s: ExitStatus): ExitStatus = ExitStatus(s)
+        public fun fromInner(s: io.github.kotlinmania.rustlang.std.sys.process.unsupported.ExitStatus): ExitStatus = ExitStatus(s)
 
         public fun from(error: ExitStatusError): ExitStatus = ExitStatus(error.value.into())
     }
@@ -1921,13 +1951,15 @@ public open class ExitStatus(
  * ```
  */
 public open class ExitStatusError(
-    public var value: ExitStatusError,
+    public var value: io.github.kotlinmania.rustlang.std.sys.process.unsupported.ExitStatusError,
 ) {
-    public var field0: ExitStatusError
+    public var field0: io.github.kotlinmania.rustlang.std.sys.process.unsupported.ExitStatusError
         get() = value
         set(v) {
             value = v
         }
+
+    public open fun clone(): ExitStatusError = ExitStatusError(value)
 
     /**
      * Reports the exit code, if applicable, from an `ExitStatusError`.
@@ -2048,13 +2080,15 @@ public open class ExitStatusError(
  * ```
  */
 public open class ExitCode(
-    public var value: ExitCode,
-) : AsInner<ExitCode>, FromInner<ExitCode, ExitCode>, Termination {
-    public var field0: ExitCode
+    public var value: io.github.kotlinmania.rustlang.std.sys.process.unsupported.ExitCode,
+) : AsInner<io.github.kotlinmania.rustlang.std.sys.process.unsupported.ExitCode>, FromInner<io.github.kotlinmania.rustlang.std.sys.process.unsupported.ExitCode, ExitCode>, Termination {
+    public var field0: io.github.kotlinmania.rustlang.std.sys.process.unsupported.ExitCode
         get() = value
         set(v) {
             value = v
         }
+
+    public open fun clone(): ExitCode = ExitCode(value)
 
     /**
      * Exit the current process with the given `ExitCode`.
@@ -2109,7 +2143,7 @@ public open class ExitCode(
      */
     public open fun toI32(): Int = this.value.asI32()
 
-    public override fun asInner(): ExitCode = this.value
+    public override fun asInner(): io.github.kotlinmania.rustlang.std.sys.process.unsupported.ExitCode = this.value
 
     public override fun report(): ExitCode = this
 
@@ -2121,7 +2155,7 @@ public open class ExitCode(
          * termination, so there's no need to return this from `main` unless
          * you're also returning other possible codes.
          */
-        public val SUCCESS: ExitCode = ExitCode(ExitCode.SUCCESS)
+        public val SUCCESS: ExitCode = ExitCode(io.github.kotlinmania.rustlang.std.sys.process.unsupported.ExitCode.SUCCESS)
 
         /**
          * The canonical `ExitCode` for unsuccessful termination on this platform.
@@ -2130,7 +2164,7 @@ public open class ExitCode(
          * instead returning `Err(_)` and `Ok(())` respectively, which will
          * return the same codes (but will also `eprintln` the error).
          */
-        public val FAILURE: ExitCode = ExitCode(ExitCode.FAILURE)
+        public val FAILURE: ExitCode = ExitCode(io.github.kotlinmania.rustlang.std.sys.process.unsupported.ExitCode.FAILURE)
 
         /**
          * The default value is [ExitCode.Success]
@@ -2140,9 +2174,9 @@ public open class ExitCode(
         /**
          * Constructs an `ExitCode` from an arbitrary u8 value.
          */
-        public fun from(code: UByte): ExitCode = ExitCode(ExitCode.from(code))
+        public fun from(code: UByte): ExitCode = ExitCode(io.github.kotlinmania.rustlang.std.sys.process.unsupported.ExitCode.from(code))
 
-        public fun fromInner(s: ExitCode): ExitCode = ExitCode(s)
+        public fun fromInner(s: io.github.kotlinmania.rustlang.std.sys.process.unsupported.ExitCode): ExitCode = ExitCode(s)
     }
 }
 
@@ -2187,6 +2221,8 @@ public open class ExitCode(
  * on Windows:
  *
  * ```kotlin
+ * import std.process
+ *
  * exit(0x0100)
  * ```
  *
@@ -2250,6 +2286,8 @@ public fun exit(code: Int): Nothing {
  * # Examples
  *
  * ```kotlin
+ * import std.process
+ *
  * fun main() {
  *     println("aborting")
  *     abort()
@@ -2261,6 +2299,8 @@ public fun exit(code: Int): Nothing {
  * get run on the example below:
  *
  * ```kotlin
+ * import std.process
+ *
  * open class HasDrop {
  *     public open fun drop() {
  *         println("This will never be printed!")
@@ -2283,6 +2323,8 @@ public fun abort(): Nothing {
  * # Examples
  *
  * ```kotlin
+ * import std.process
+ *
  * println("My pid is ${id()}")
  * ```
  */
@@ -2321,6 +2363,6 @@ public fun <T : Termination, E> Result<T, E>.report(): ExitCode =
         value.report()
     }; is Result.Err<*> -> {
         val err = this.error
-        io.attemptPrintToStderr(formatArgsNl("Error: {err:?}"))
+        attemptPrintToStderr(formatArgsNl("Error: {err:?}"))
         ExitCode.FAILURE
     } }

@@ -1,6 +1,5 @@
 package io.github.kotlinmania.rustlang.alloc.vec
 
-import io.github.kotlinmania.ops.DerefPure
 import io.github.kotlinmania.rustlang.alloc.alloc.Global
 import io.github.kotlinmania.rustlang.alloc.collections.TryReserveError
 import io.github.kotlinmania.rustlang.alloc.rawvec.RawVec
@@ -19,7 +18,7 @@ import io.github.kotlinmania.rustlang.alloc.vec.sveretain.chunkedRetain
 import io.github.kotlinmania.rustlang.alloc.wtf8.cloneInto
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
-import io.github.kotlinmania.rustlang.core.iter.adapters.zip.index
+import io.github.kotlinmania.rustlang.core.hint.unlikely
 import io.github.kotlinmania.rustlang.core.marker.Freeze
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
@@ -27,20 +26,28 @@ import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignOf
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
+import io.github.kotlinmania.rustlang.core.ops.deref.DerefPure
+import io.github.kotlinmania.rustlang.core.ops.range.Range
 import io.github.kotlinmania.rustlang.core.ops.range.RangeBounds
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.hash
+import io.github.kotlinmania.rustlang.core.ptr.copy
+import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
+import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
+import io.github.kotlinmania.rustlang.core.ptr.write
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
+import io.github.kotlinmania.rustlang.core.slice.iter.Iter
+import io.github.kotlinmania.rustlang.core.slice.raw.fromRawParts
 import io.github.kotlinmania.rustlang.core.slice.rawMutSliceList
 import io.github.kotlinmania.rustlang.core.slice.rawSliceList
-import io.github.kotlinmania.ubchecks.assertUnsafePrecondition
+import io.github.kotlinmania.rustlang.core.ubchecks.assertUnsafePrecondition
 
 /**
  * A contiguous growable array type, written as `List<T>`, short for 'vector'.
@@ -280,7 +287,7 @@ public open class Vec<T, A : Allocator> internal constructor(
     public var buf: RawVec<T, A> = bufCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<T> = this.intoIter().iterator()
+    override fun iterator(): Iterator<T> = this.intoIter().iterator()
 
     /**
      * Appends an element to the back of a collection.
@@ -452,9 +459,11 @@ public open class Vec<T, A : Allocator> internal constructor(
      * A vector with zero-sized elements will always have a capacity of usize.Max:
      *
      * ```kotlin
-     * open class ZeroSized
+     * open class ZeroSized {
+     *     public open fun clone(): ZeroSized = ZeroSized()
+     * }
      * fun main() {
-     *     check(sizeOf<ZeroSized>(typeLayoutT = ZeroSized.typeLayout()) == 0)
+     *     check(mem.sizeOf<ZeroSized>(typeLayoutT = ZeroSized.typeLayout()) == 0)
      *     val v = mutableListOf(ZeroSized(), 0)
      *     check(v.capacity() == Int.MAX_VALUE)
      * }
@@ -1021,8 +1030,8 @@ public open class Vec<T, A : Allocator> internal constructor(
      * var v = mutableListOf(0, 1, 2)
      * val ptr = v.asMutPtr()
      * val capacity = v.capacity()
-     * val slicePtr: MutPtr = sliceFromRawPartsMut(ptr.cast(), capacity)
-     * drop(Holder.fromRaw(slicePtr))
+     * val slicePtr: MutPtr = ptr.sliceFromRawPartsMut(ptr.cast(), capacity)
+     * (Holder.fromRaw(slicePtr)).let { }
      * ```
      *
      * [asMutPtr]: Vec.asMutPtr
@@ -1408,6 +1417,8 @@ public open class Vec<T, A : Allocator> internal constructor(
      * external state may be used to decide which elements to keep.
      *
      * ```kotlin
+     * import core.iter
+     *
      * var vec = mutableListOf(1, 2, 3, 4, 5)
      * val keep = booleanArrayOf(false, true, true, false, true)
      * var iter = keep.iter()
@@ -1656,6 +1667,8 @@ public open class Vec<T, A : Allocator> internal constructor(
      * This allows merging elements by mutating `p` and returning `true`:
      *
      * ```kotlin
+     * import core.cmp
+     *
      * var ranges = mutableListOf(1 until 2, 2 until 4, 2 until 5, 8 until 9)
      * // Sort ranges by start, and if equal, by end (lexicographically)
      * // Sorting in reverse instead (`x.start.cmp(p.start) ...`) would later fail
@@ -1814,6 +1827,8 @@ public open class Vec<T, A : Allocator> internal constructor(
      * A manual, panic-free alternative to [FromIterator]:
      *
      * ```kotlin
+     * import core.iter
+     *
      * @feature(vecPushWithinCapacity)
      * public fun doctestEntry(): Result<Unit> {
      *     fun <T> fromIterFallible(iter: Any): Result<Vec<T>> {
@@ -2046,7 +2061,7 @@ public open class Vec<T, A : Allocator> internal constructor(
         // the hole, and the vector length is restored to the new length.
         //
         val len = this.len()
-        val structVal = range(range, 0 until len)
+        val structVal = Range(range, 0 until len)
         val start = structVal.start
         val end = structVal.end
         // ignore-tidy-undocumented-unchecked
@@ -2205,7 +2220,7 @@ public open class Vec<T, A : Allocator> internal constructor(
     public open fun resizeWith(newLen: Int, f: () -> T) {
         val len = this.len()
         if (newLen > len) {
-            this.extendTrusted(iter.repeatWith(f).take(newLen - len))
+            this.extendTrusted(Iter.repeatWith(f).take(newLen - len))
         } else {
             this.truncate(newLen)
         }
@@ -2307,6 +2322,8 @@ public open class Vec<T, A : Allocator> internal constructor(
      * # Examples
      *
      * ```kotlin
+     * import core.iter
+     *
      * @feature(vecSplitAtSpare)
      * public fun doctestEntry() {
      *     var v = mutableListOf(1, 1, 2)
@@ -2432,41 +2449,34 @@ public open class Vec<T, A : Allocator> internal constructor(
      *
      * The `Recyclable` bound prevents this method from being called when `T` and `U` have different sizes; e.g.:
      *
-     *  ```kotlin
-     *  @file:OptIn(ExperimentalUnsignedTypes.cls)
-     *
-     *  @feature(vecRecycle, transmutability)
-     *  public fun doctestEntry() {
-     *      val vec: Vec<UByteArray> = Vec.new()
-     *      val unused: Vec<UByteArray> = vec.recycle()
-     *  }
+     *  ```compile_fail,E0277
+     * @file:feature(vecRecycle, transmutability)
+     * let vec: Vec<[u8; 2]> = Vec.new();
+     * let _: Vec<[u8; 1]> = vec.recycle();
      * ```
      * ...or different alignments:
      *
-     *  ```kotlin
-     *  @file:OptIn(ExperimentalUnsignedTypes.cls)
-     *
-     *  @feature(vecRecycle, transmutability)
-     *  public fun doctestEntry() {
-     *      val vec: Vec<UShortArray> = Vec.new()
-     *      val unused: Vec<UByteArray> = vec.recycle()
-     *  }
+     *  ```compile_fail,E0277
+     * @file:feature(vecRecycle, transmutability)
+     * let vec: Vec<[u16; 0]> = Vec.new();
+     * let _: Vec<[u8; 0]> = vec.recycle();
      * ```
      *
      * However, due to temporary implementation limitations of `Recyclable`,
      * this method is not yet callable when `T` or `U` are slices, trait objects,
      * or other exotic types; e.g.:
      *
-     * ```kotlin
-     * @feature(vecRecycle, transmutability)
-     * public fun doctestEntry() {
-     *     var storage: Vec<List<String>> = Vec.new()
-     *     for (input in inputs) {
-     *         var buffer: Vec<String> = storage.recycle()
-     *         buffer.extend(input.split(" "))
-     *         process(buffer)
-     *         storage = buffer.recycle()
-     *     }
+     * ```compile_fail,E0277
+     * @file:feature(vecRecycle, transmutability)
+     * # let inputs = ["a b c", "d e f"];
+     * # fn process(_: &[&str]) {}
+     * let mut storage: Vec<&[&str]> = Vec.new();
+     *
+     * for input in inputs {
+     *     let mut buffer: Vec<&str> = storage.recycle();
+     *     buffer.extend(input.split(" "));
+     *     process(&buffer);
+     *     storage = buffer.recycle();
      * }
      * ```
      */
@@ -2578,7 +2588,7 @@ public open class Vec<T, A : Allocator> internal constructor(
      * ```
      */
     public open fun <R> extendFromWithin(src: R) where R : RangeBounds<Int> {
-        val range = range(src, 0 until this.len())
+        val range = Range(src, 0 until this.len())
         this.reserve(range.len())
         // SAFETY:
         // - `slice.range` guarantees that the given range is valid for indexing self
@@ -2634,7 +2644,7 @@ public open class Vec<T, A : Allocator> internal constructor(
         // SAFETY:
         // - caller guarantees that src is a valid index
         val toClone = thisRef.getUnchecked(src)
-        iter.zip(toClone, spare).map({ (src1, dst) -> dst.write(src1.clone()) }).forEach({ len += 1 })
+        Iter.zip(toClone, spare).map({ (src1, dst) -> dst.write(src1.clone()) }).forEach({ len += 1 })
     }
 
     public open fun specExtendFromWithinExtendFromWithinSpec(src: IntRange) {
@@ -3133,6 +3143,7 @@ public open class Vec<T, A : Allocator> internal constructor(
          *
          * ```kotlin
          * import std.alloc.System
+         * import std.ptr
          *
          * var v = Vec.withCapacityIn(3, System)
          * v.push(1)
@@ -3405,6 +3416,8 @@ public fun <T> Vec.Companion.tryWithCapacity(capacity: Int): Result<Vec<T>, TryR
  * # Examples
  *
  * ```kotlin
+ * import std.ptr
+ *
  * val v = mutableListOf(1, 2, 3)
  * // Deconstruct the vector into parts.
  * val (p, len, cap) = v.intoRawParts()
@@ -3657,7 +3670,7 @@ public fun <T> Vec<T>.constMakeGlobal(): List<T> where T : Freeze {
     }
 }
 
-internal fun <A : Allocator> Vec<UByte, A>.tryExtendFromSliceOfBytes(other: List<UByte>): Result<Unit, TryReserveError> {
+public fun <A : Allocator> Vec<UByte, A>.tryExtendFromSliceOfBytes(other: List<UByte>): Result<Unit, TryReserveError> {
     // ignore-tidy-undocumented-unchecked
     return this.tryAppendElements(other)
 }
@@ -3771,7 +3784,7 @@ public fun <T> defaultVecT(): Vec<T> = Vec.new()
  * check(Vec.from(listOf(1, 2, 3)) == mutableListOf(1, 2, 3))
  * ```
  */
-public fun <T> fromVecT(s: List<T>): Vec<T> = s.toVec()
+public fun <T> fromVecT(s: List<T>): Vec<T> = s.toMutableList()
 
 /**
  * Allocates a `List<T>` and fills it by cloning `s`s items.
@@ -3782,7 +3795,7 @@ public fun <T> fromVecT(s: List<T>): Vec<T> = s.toVec()
  * check(Vec.from(listOf(1, 2, 3)) == mutableListOf(1, 2, 3))
  * ```
  */
-public fun <T> fromVecT(s: MutableList<T>): Vec<T> = s.toVec()
+public fun <T> fromVecT(s: MutableList<T>): Vec<T> = s.toMutableList()
 
 /**
  * Allocates a `List<T>` and fills it by cloning `s`s items.

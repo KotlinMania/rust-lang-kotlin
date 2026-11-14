@@ -12,6 +12,7 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 import io.github.kotlinmania.rustlang.std.sync.mpmc.select.Selected
 import io.github.kotlinmania.rustlang.std.sync.mpmc.waker.currentThreadId
 import io.github.kotlinmania.rustlang.std.thread.LocalKey
+import io.github.kotlinmania.rustlang.std.thread.current.currentOrUnnamed
 import io.github.kotlinmania.rustlang.std.thread.localimpl.threadLocalInner
 import io.github.kotlinmania.rustlang.std.thread.thread.Thread
 import io.github.kotlinmania.rustlang.std.time.Instant
@@ -21,9 +22,11 @@ import io.github.kotlinmania.rustlang.std.time.Instant
 /**
  * Thread-local context.
  */
-internal open class Context(
+public open class Context(
     public var inner: Inner,
 ) {
+    public open fun clone(): Context = Context(inner)
+
     /**
      * Resets `select` and `packet`.
      */
@@ -37,14 +40,14 @@ internal open class Context(
      *
      * On failure, the previously selected operation is returned.
      */
-    internal open fun trySelect(select: Selected): Result<Unit, Selected> = this.inner.select.compareExchange(Selected.Waiting.into(), select.into(), Ordering.AcqRel, Ordering.Acquire).map({ Unit }).mapErr({ e -> e.into() })
+    public open fun trySelect(select: Selected): Result<Unit, Selected> = this.inner.select.compareExchange(Selected.Waiting.into(), select.into(), Ordering.AcqRel, Ordering.Acquire).map({ Unit }).mapErr({ e -> e.into() })
 
     /**
      * Stores a packet.
      *
      * This method must be called after `trySelect` succeeds and there is a packet to provide.
      */
-    internal open fun storePacket(packet: MutPtr) {
+    public open fun storePacket(packet: MutPtr) {
         if (!((packet).rawAddress == 0L)) {
             this.inner.packet.store(packet, Ordering.Release)
         }
@@ -58,7 +61,7 @@ internal open class Context(
      * # Safety
      * This may only be called from the thread this `Context` belongs to.
      */
-    internal open fun waitUntil(deadline: Instant?): Selected {
+    public open fun waitUntil(deadline: Instant?): Selected {
         while (true) {
             // Check whether an operation has been selected.
             val sel = Selected.from(this.inner.select.load(Ordering.Acquire))
@@ -94,20 +97,20 @@ internal open class Context(
     /**
      * Unparks the thread this context belongs to.
      */
-    internal open fun unpark() {
+    public open fun unpark() {
         this.inner.thread.unpark()
     }
 
     /**
      * Returns the id of the thread this context belongs to.
      */
-    internal open fun threadId(): Int = this.inner.threadId
+    public open fun threadId(): Int = this.inner.threadId
 
     public companion object {
         /**
          * Creates a new context for the duration of the closure.
          */
-        internal fun <R> with(f: (Context) -> R): R {
+        public fun <R> with(f: (Context) -> R): R {
             /**
              * Cached thread-local context.
              */
@@ -133,7 +136,7 @@ internal open class Context(
         /**
          * Creates a new `Context`.
          */
-        public fun new(): Context = Context(inner = Inner(select = AtomicUsize.new(Selected.Waiting.into()), packet = AtomicPtr.new(MutPtr(0L)), thread = thread.currentOrUnnamed(), threadId = currentThreadId()))
+        public fun new(): Context = Context(inner = Inner(select = AtomicUsize.new(Selected.Waiting.into()), packet = AtomicPtr.new(MutPtr(0L)), thread = currentOrUnnamed(), threadId = currentThreadId()))
     }
 }
 

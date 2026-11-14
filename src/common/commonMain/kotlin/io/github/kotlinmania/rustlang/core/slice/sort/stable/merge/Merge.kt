@@ -7,6 +7,7 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 
 // This module contains logic for performing a merge of two sorted sub-slices.
@@ -56,7 +57,7 @@ public fun <T> merge(v: MutableList<T>, scratch: MutableList<MaybeUninit<T>>, mi
             } else {
                 rightLen
             }
-        ptr.copyNonoverlapping(saveBase, buf, saveLen)
+        copyNonoverlapping(saveBase, buf, saveLen)
         val mergeState = MergeState(start = buf, end = buf.add(saveLen), dst = saveBase)
         if (leftIsShorter) {
             mergeState.mergeUp(vMid, vEnd, isLess)
@@ -95,7 +96,7 @@ public open class MergeState<T>(
                     } else {
                         right1
                     }
-                ptr.copyNonoverlapping(src, (typeLayoutT).readNative((out).rawAddress), 1)
+                copyNonoverlapping(src, (typeLayoutT).readNative((out).rawAddress), 1)
                 (typeLayoutT).writeNative((left).rawAddress, MutPtr((left).rawAddress + ((consumeLeft.toInt()).toLong() * (typeLayoutT).strideBytes)))
                 right1 = ConstPtr((right1).rawAddress + (((if (!consumeLeft) 1 else 0)).toLong() * (typeLayoutT).strideBytes))
                 (typeLayoutT).writeNative((out).rawAddress, MutPtr((out).rawAddress + ((1).toLong() * (typeLayoutT).strideBytes)))
@@ -124,7 +125,7 @@ public open class MergeState<T>(
                 } else {
                     right
                 }
-            ptr.copyNonoverlapping(src, out1, 1)
+            copyNonoverlapping(src, out1, 1)
             this.dst = MutPtr((left).rawAddress + (((if (!consumeLeft) 1 else 0)).toLong() * (typeLayoutT).strideBytes))
             this.end = MutPtr((right).rawAddress + ((consumeLeft.toInt()).toLong() * (typeLayoutT).strideBytes))
             if ((((this.dst).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }).rawAddress.toULong() == (leftEnd).rawAddress.toULong()) || (((this.end).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }).rawAddress.toULong() == (rightEnd).rawAddress.toULong())) {
@@ -141,36 +142,36 @@ public open class MergeState<T>(
         // modifications observed.
         run {
             val len = this.end.offsetFromUnsigned(this.start)
-            ptr.copyNonoverlapping(this.start, this.dst, len)
+            copyNonoverlapping(this.start, this.dst, len)
         }
     }
 
     public companion object {
-        public fun <T> typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<MergeState<T>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<MergeState<T>> {
+        public fun <T> typeLayout(): TypeLayout<MergeState<T>> =
+            object : TypeLayout<MergeState<T>> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 24L
                 override fun readNative(addr: Long): MergeState<T> =
                     MergeState(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).readNative(addr + 8L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).readNative(addr + 16L),
+                        (PrimitiveLayouts.mutPtrLayout(64)).readNative(addr),
+                        (PrimitiveLayouts.mutPtrLayout(64)).readNative(addr + 8L),
+                        (PrimitiveLayouts.mutPtrLayout(64)).readNative(addr + 16L),
                     )
                 override fun writeNative(addr: Long, value: MergeState<T>) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).writeNative(addr, value.start)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).writeNative(addr + 8L, value.end)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).writeNative(addr + 16L, value.dst)
+                    (PrimitiveLayouts.mutPtrLayout(64)).writeNative(addr, value.start)
+                    (PrimitiveLayouts.mutPtrLayout(64)).writeNative(addr + 8L, value.end)
+                    (PrimitiveLayouts.mutPtrLayout(64)).writeNative(addr + 16L, value.dst)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): MergeState<T> =
                     MergeState(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).readBytes(buf, offset + 8),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).readBytes(buf, offset + 16),
+                        (PrimitiveLayouts.mutPtrLayout(64)).readBytes(buf, offset),
+                        (PrimitiveLayouts.mutPtrLayout(64)).readBytes(buf, offset + 8),
+                        (PrimitiveLayouts.mutPtrLayout(64)).readBytes(buf, offset + 16),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: MergeState<T>) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).writeBytes(buf, offset, value.start)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).writeBytes(buf, offset + 8, value.end)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).writeBytes(buf, offset + 16, value.dst)
+                    (PrimitiveLayouts.mutPtrLayout(64)).writeBytes(buf, offset, value.start)
+                    (PrimitiveLayouts.mutPtrLayout(64)).writeBytes(buf, offset + 8, value.end)
+                    (PrimitiveLayouts.mutPtrLayout(64)).writeBytes(buf, offset + 16, value.dst)
                 }
             }
     }

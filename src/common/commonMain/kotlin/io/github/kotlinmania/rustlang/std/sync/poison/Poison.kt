@@ -7,8 +7,7 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
-import io.github.kotlinmania.rustlang.std.fmt
-import io.github.kotlinmania.rustlang.std.sys.thread.unix.Thread
+import io.github.kotlinmania.rustlang.std.thread.functions.panicking
 
 // Synchronization objects that employ poisoning.
 //
@@ -90,9 +89,12 @@ public class DebugStruct(
     }
 }
 
-internal open class Flag(
-    public var failed: Atomic<Boolean>,
+public open class Flag internal constructor(
+    failedCtorArg: Atomic<Boolean>,
 ) {
+    public var failed: Atomic<Boolean> = failedCtorArg
+        internal set
+
     // Note that the Ordering uses to access the `failed` field of `Flag` below is
     // always `Relaxed`, and that's because this isn't actually protecting any data,
     // it's just a flag whether we've panicked or not.
@@ -107,7 +109,7 @@ internal open class Flag(
     /**
      * Checks the flag for an unguarded borrow, where we only care about existing poison.
      */
-    internal open fun borrow(): LockResult<Unit> =
+    public open fun borrow(): LockResult<Unit> =
         if (this.get()) {
             Result.Err(PoisonError.new())
         } else {
@@ -117,8 +119,8 @@ internal open class Flag(
     /**
      * Checks the flag for a guarded borrow, where we may also set poison when `done`.
      */
-    internal open fun guard(): LockResult<Guard> {
-        val ret = Guard(panicking = Thread.panicking())
+    public open fun guard(): LockResult<Guard> {
+        val ret = Guard(panicking = panicking())
         return if (this.get()) {
             Result.Err(PoisonError.new(ret))
         } else {
@@ -126,44 +128,52 @@ internal open class Flag(
         }
     }
 
-    internal open fun done(guard: Guard) {
-        if (!guard.panicking && Thread.panicking()) {
+    public open fun done(guard: Guard) {
+        if (!guard.panicking && panicking()) {
             this.failed.store(true, Ordering.Relaxed)
         }
     }
 
-    internal open fun get(): Boolean = this.failed.load(Ordering.Relaxed)
+    public open fun get(): Boolean = this.failed.load(Ordering.Relaxed)
 
-    internal open fun clear() {
+    public open fun clear() {
         this.failed.store(false, Ordering.Relaxed)
     }
 
     public companion object {
-        internal fun new(): Flag = Flag(failed = AtomicBool.new(false))
+        public operator fun invoke(
+            failed: Atomic<Boolean>,
+        ): Flag = Flag(
+            failedCtorArg = failed,
+        )
+
+        public fun new(): Flag = Flag(failed = AtomicBool.new(false))
     }
 }
 
-internal open class Guard(
+public open class Guard(
     public var panicking: Boolean,
 ) {
+    public open fun clone(): Guard = Guard(panicking)
+
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Guard> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Guard> {
+        public fun typeLayout(): TypeLayout<Guard> =
+            object : TypeLayout<Guard> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 1L
                 override fun readNative(addr: Long): Guard =
                     Guard(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr),
+                        (PrimitiveLayouts.BOOL).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: Guard) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr, value.panicking)
+                    (PrimitiveLayouts.BOOL).writeNative(addr, value.panicking)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Guard =
                     Guard(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Guard) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset, value.panicking)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset, value.panicking)
                 }
             }
     }
@@ -181,6 +191,7 @@ internal open class Guard(
  *
  * ```kotlin
  * import std.sync.Mutex
+ * import std.thread
  *
  * val mutex = Mutex.new(1)
  * // poison the mutex
@@ -222,6 +233,7 @@ public open class PoisonError<T>(
      *
      * ```kotlin
      * import std.sync.Mutex
+     * import std.thread
      *
      * val mutex = Mutex.new(mutableSetOf())
      * // poison the mutex
@@ -333,7 +345,7 @@ public typealias LockResult<T> = Result<T, PoisonError<T>>
  */
 public typealias TryLockResult<Guard> = Result<Guard, TryLockError<Guard>>
 
-internal fun <T, U> mapResult(result: LockResult<T>, f: (T) -> U): LockResult<U> =
+public fun <T, U> mapResult(result: LockResult<T>, f: (T) -> U): LockResult<U> =
     when {
         result is Result.Ok<*> -> {
             val t = (result as Result.Ok<*>).value

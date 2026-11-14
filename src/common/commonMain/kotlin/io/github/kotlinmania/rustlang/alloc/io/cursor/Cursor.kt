@@ -1,11 +1,13 @@
 // port-lint: source io/cursor.rs
 package io.github.kotlinmania.rustlang.alloc.io.cursor
 
-import io.github.kotlinmania.rustlang.alloc.collections.linkedlist.Cursor
+import io.github.kotlinmania.rustlang.alloc.io.Error
+import io.github.kotlinmania.rustlang.alloc.io.constError
 import io.github.kotlinmania.rustlang.alloc.string.String
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.intrinsics.kmCopy
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
+import io.github.kotlinmania.rustlang.core.io.cursor.Cursor
 import io.github.kotlinmania.rustlang.core.io.cursor.sliceWrite
 import io.github.kotlinmania.rustlang.core.io.cursor.sliceWriteAll
 import io.github.kotlinmania.rustlang.core.io.cursor.sliceWriteAllVectored
@@ -72,16 +74,16 @@ public fun Cursor<T>.readToEnd(buf: List<UByte>): Result<Int> {
     val content = Cursor.split(this).second
     val len = content.len()
     when (val tryResult = buf.tryReserve(len)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-    cfgSelect(noGlobalOomHandling, buf, tryExtendFromSliceOfBytes, content, buf, extendFromSlice, content)
+    when (val tryResult = buf.tryExtendFromSliceOfBytes(content)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
     this.setPosition(this.position() + len.toULong())
     return Result.Ok(len)
 }
 
 public fun Cursor<T>.readToString(buf: String): Result<Int> {
-    val content = when (val tryResult = fromUtf8(Cursor.split(this).second).mapErr({ io.Error.INVALID_UTF8 })) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    val content = when (val tryResult = fromUtf8(Cursor.split(this).second).mapErr({ Error.INVALID_UTF8 })) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
     val len = content.len()
     when (val tryResult = buf.tryReserve(len)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-    cfgSelect(noGlobalOomHandling, buf, tryPushStr, content, buf, pushStr, content)
+    when (val tryResult = buf.tryPushStr(content)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
     this.setPosition(this.position() + len.toULong())
     return Result.Ok(len)
 }
@@ -98,17 +100,13 @@ public fun Cursor<T>.consume(amt: Int) {
 public fun <A : Allocator> reserveAndPad(posMut: RustMutableReference<ULong>, vec: List<UByte>, bufLen: Int): Result<Int> {
     val pos: Int =
         when (val tryResult = (posMut).read().tryInto().mapErr({
-            io.constError(ErrorKind.InvalidInput, "cursor position exceeds maximum possible vector length")
+            constError(ErrorKind.InvalidInput, "cursor position exceeds maximum possible vector length")
         })) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
     // For safety reasons, we don't want these numbers to overflow
     // otherwise our allocation won't be enough
     val desiredCap = rustSaturatingAdd(pos, bufLen)
     if (desiredCap > vec.capacity()) {
-        // We want our vec's total capacity
-        // to have room for (pos+bufLen) bytes. Reserve allocates
-        // based on additional elements from the length, so we need to
-        // reserve the difference
-        cfgSelect(noGlobalOomHandling, vec, tryReserve, desiredCap, vec, len, vec, reserve, desiredCap, vec, len)
+        when (val tryResult = vec.tryReserve(desiredCap - vec.size)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
     }
     // Pad if pos is above the current len.
     if (pos > vec.size) {

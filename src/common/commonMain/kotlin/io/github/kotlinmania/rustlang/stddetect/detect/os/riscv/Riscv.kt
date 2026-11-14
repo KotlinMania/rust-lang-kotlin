@@ -3,7 +3,7 @@
 
 package io.github.kotlinmania.rustlang.stddetect.detect.os.riscv
 
-import io.github.kotlinmania.rustlang.stddetect.detect.Feature
+import io.github.kotlinmania.rustlang.stddetect.detect.arch.Feature
 import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.s390x.cache
 
 // Run-time feature detection utility for RISC-V.
@@ -26,7 +26,7 @@ import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.s390x.cache
  * inconsistencies is the responsibility of the feature detection logic and
  * its provider(s).
  */
-internal fun implyFeatures(value: cache.Initializer): cache.Initializer {
+public fun implyFeatures(value: cache.Initializer): cache.Initializer {
     while (true) {
         // Expect that the optimizer turns repeated operations into
         // a fewer number of bit-manipulation operations.
@@ -213,8 +213,15 @@ internal fun implyFeatures(value: cache.Initializer): cache.Initializer {
         if (uintArrayOf((Feature::c).toUInt(), (Feature::f).toUInt()).all({ x -> value.test(x) })) {
             value.set((Feature::zcf).toUInt())
         }
-        // (to "C"; defined as superset)
-        cfgSelect(targetArch, "riscv32", value, test, Feature, d, imply, zcf, zcd, c, value, test, Feature, f, imply, zcf, c, imply, zca, c, value, test, Feature, d, imply, zcd, c, imply, zca, c)
+        if (value.test((Feature::d).toUInt())) {
+            if (uintArrayOf((Feature::zcd).toUInt()).any({ x -> value.test(x) })) {
+                value.set((Feature::c).toUInt())
+            }
+        } else {
+            if (uintArrayOf((Feature::zca).toUInt()).any({ x -> value.test(x) })) {
+                value.set((Feature::c).toUInt())
+            }
+        }
         if (uintArrayOf((Feature::zicntr).toUInt(), (Feature::zihpm).toUInt(), (Feature::f).toUInt(), (Feature::zfinx).toUInt(), (Feature::zve32x).toUInt()).any({ x -> value.test(x) })) {
             value.set((Feature::zicsr).toUInt())
         }

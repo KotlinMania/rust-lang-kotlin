@@ -6,26 +6,32 @@ package io.github.kotlinmania.rustlang.std.os.unix.fs.dirs
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.env.SplitPathsRef
+import io.github.kotlinmania.rustlang.std.env.homeDir
 import io.github.kotlinmania.rustlang.std.env.joinPaths
 import io.github.kotlinmania.rustlang.std.env.varOs
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.std.fs.dirs.HomeDirs
 import io.github.kotlinmania.rustlang.std.fs.dirs.MediaDirs
+import io.github.kotlinmania.rustlang.std.fs.read
 import io.github.kotlinmania.rustlang.std.io.constError
+import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.path.PathBuf
-import io.github.kotlinmania.rustlang.std.sys.env.unix.env
 
 public open class ExtraHomeDirs(
     public var runtime: PathBuf?,
     public var configPath: OsString?,
     public var dataPath: OsString?,
-)
+) {
+    public open fun clone(): ExtraHomeDirs = ExtraHomeDirs(runtime, configPath, dataPath)
+}
 
 public open class ExtraMediaDirs(
     public var templates: PathBuf?,
-)
+) {
+    public open fun clone(): ExtraMediaDirs = ExtraMediaDirs(templates)
+}
 
 /**
  * XDG-specific extensions to [`fs.HomeDirs`](HomeDirs).
@@ -88,7 +94,7 @@ public interface HomeDirsExt<T> {
      * [configDirs]: HomeDirsExt.configDirs
      * [dataDirs]: HomeDirsExt.dataDirs
      */
-    public fun xdg(): Result<T>
+    public fun xdg(): Result<T, Error>
 
     /**
      * A base directory relative to which user-specific runtime files
@@ -164,6 +170,54 @@ public interface HomeDirsExt<T> {
      * Panics if any of the provided paths are not absolute.
      */
     public fun setDataDirs(paths: OsString): T
+
+    public companion object {
+        /**
+         * Load the user directory paths according to the
+         * [XDG Base Directory Specification][xdg-basedir].
+         *
+         * Each base directory path is set to the value of its corresponding
+         * `XDG_ *` environment variable (if it is set and non-empty), else to
+         * the default value defined by the specification.
+         *
+         * | Field | Environment Variable | Default Value |
+         * | ----- | -------------------- | ------------- |
+         * | [cacheHome] | `XDG_CACHE_HOME` | `$ HOME /.cache` |
+         * | [configHome] | `XDG_CONFIG_HOME` | `$ HOME /.config` |
+         * | [dataHome] | `XDG_DATA_HOME` | `$ HOME /.local / share` |
+         * | [stateHome] | `XDG_STATE_HOME` | `$ HOME /.local / state` |
+         * | [runtimeHome] | `XDG_RUNTIME_DIR` | (see method docs) |
+         * | [configDirs] | `XDG_CONFIG_DIRS` | `/ etc / xdg` |
+         * | [dataDirs] | `XDG_DATA_DIRS` | `/ usr / local / share /`, `/ usr / share /` |
+         *
+         * Note that `$ HOME` here means [env.homeDir], which uses
+         * `$ HOME` if set and non-empty, but falls back to the system password
+         * database if it isn't set.
+         *
+         * All paths are required to be absolute. If a relative path is configured
+         * by the environment, it is ignored and the default value is used instead.
+         *
+         * `configDirs` and `dataDirs` are a list of delimited paths using the
+         * [env.splitPaths] delimiter. If some but not all paths in the list are
+         * relative, those relative paths are ignored and the remaining absolute
+         * paths are used. If there are no valid absolute paths, the default value
+         * is used instead.
+         *
+         * # Errors
+         *
+         * Errors if the user's home directory cannot be determined.
+         *
+         * [xdg-basedir]: https://specifications.freedesktop.org/basedir/
+         * [cacheHome]: HomeDirs.cacheHome
+         * [configHome]: HomeDirs.configHome
+         * [dataHome]: HomeDirs.dataHome
+         * [stateHome]: HomeDirs.stateHome
+         * [runtimeHome]: HomeDirsExt.runtimeHome
+         * [configDirs]: HomeDirsExt.configDirs
+         * [dataDirs]: HomeDirsExt.dataDirs
+         */
+        public fun xdg(): Result<HomeDirs, Error> = homeDirsExtXdgHomeDirs()
+    }
 }
 
 /**
@@ -222,7 +276,7 @@ public interface MediaDirsExt<T> {
      *
      * [xdg-user-dirs]: https://www.freedesktop.org/wiki/Software/xdg-user-dirs/
      */
-    public fun xdg(): Result<T>
+    public fun xdg(): Result<T, Error>
 
     /**
      * The OS-privileged user "Templates" directory, often the `Templates`
@@ -241,6 +295,48 @@ public interface MediaDirsExt<T> {
      * Panics if the provided path is not absolute.
      */
     public fun setTemplates(path: PathBuf): T
+
+    public companion object {
+        /**
+         * Load the user directory paths according to the [xdg-user-dirs] tool.
+         *
+         * This directly reads and parses the `$ XDG_CONFIG_HOME / user - dirs.dirs`
+         * file as defined and maintained by the [xdg-user-dirs] tool.
+         *
+         * # Errors
+         *
+         * Errors if the user's home directory cannot be determined or if the
+         * `$ XDG_CONFIG_HOME / user - dirs.dirs` file cannot be read.
+         *
+         * # Implementation-specific behavior
+         *
+         * Only the format maintained by xdg-user-dirs-update is supported. Any
+         * configuration that does not match the expected format will result in
+         * loading an unspecified path or `None` for that directory. To be more
+         * specific:
+         *
+         * - Any line not in the format of `XDG_ { NAME } _DIR = { path }` where `{ NAME }`
+         *   is one of `DESKTOP`, `DOWNLOAD`, `TEMPLATES`, `PUBLICSHARE`,
+         *   `DOCUMENTS`, `MUSIC`, `PICTURES`, or `VIDEOS` is ignored.
+         * - `{ path }` must be a `"`-quoted shell-escaped path.
+         * - `{ path }` may only start with `/` or `$ HOME /`. A home-relative path
+         *   is returned relative to [env.homeDir]; shell expansion is not
+         *   performed.
+         * - A directory set to just `$ HOME` marks it as removed, and results in
+         *   a `None` value for that path.
+         * - If shell expansion syntax other than a leading `$ HOME` is present,
+         *   the produced directory path is unspecified. This is invalid config
+         *   according to the xdg-user-dirs tooling.
+         *
+         * This behavior may change in the future. One example change that we
+         * explicitly reserve the right to make is to load paths that we currently
+         * ignore, such as path formats that are not canonically supported by
+         * xdg-user-dirs but which may occur in manually-edited `user - dirs.dirs`.
+         *
+         * [xdg-user-dirs]: https://www.freedesktop.org/wiki/Software/xdg-user-dirs/
+         */
+        public fun xdg(): Result<MediaDirs, Error> = mediaDirsExtXdgMediaDirs()
+    }
 }
 
 public open class XdgDirs(
@@ -252,7 +348,7 @@ public open class XdgDirs(
             value = v
         }
 
-    override fun iterator(): kotlin.collections.Iterator<Path> = object : AbstractIterator<Path>() {
+    override fun iterator(): Iterator<Path> = object : AbstractIterator<Path>() {
         override fun computeNext() {
             when (val v = this@XdgDirs.next()) {
                 null -> done()
@@ -268,7 +364,7 @@ public open class XdgDirs(
     }
 }
 
-public fun homeDirsExtXdgHomeDirs(): Result<HomeDirs> {
+public fun homeDirsExtXdgHomeDirs(): Result<HomeDirs, Error> {
     val dirs = HomeDirs.empty()
     val userHome = when (val tryResult = userHome()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
     dirs.setCacheHome(dirOrElse({ userHome.join(".cache") }, "XDG_CACHE_HOME"))
@@ -315,12 +411,12 @@ public fun HomeDirs.setDataDirs(paths: OsString): HomeDirs {
     return this
 }
 
-public fun mediaDirsExtXdgMediaDirs(): Result<MediaDirs> {
+public fun mediaDirsExtXdgMediaDirs(): Result<MediaDirs, Error> {
     val userHome = when (val tryResult = userHome()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
     val configHome = dirOrElse({ userHome.join(".config") }, "XDG_CONFIG_HOME")
     val spec1 =
         run {
-            val matchVal = fs.read(configHome.join("user-dirs.dirs"))
+            val matchVal = read(configHome.join("user-dirs.dirs"))
             when {
                 matchVal is Result.Ok<*> -> {
                     val spec = (matchVal as Result.Ok<*>).value
@@ -349,12 +445,12 @@ public fun MediaDirs.setTemplates(path: PathBuf): MediaDirs {
 
 public fun splitPathsRef(paths: OsStr): SplitPathsRef {
     // returns Some on cfg(unix)
-    return env.splitPathsRef(paths).unwrap()
+    return io.github.kotlinmania.rustlang.std.env.splitPathsRef(paths).unwrap()
 }
 
-public fun userHome(): Result<PathBuf> = env.homeDir().filter({ p -> p.isAbsolute() }).okOr(constError(ErrorKind.InvalidData, "user home directory path not absolute"))
+public fun userHome(): Result<PathBuf, Error> = (homeDir().filter({ p -> p.isAbsolute() })?.let { Result.Ok(it) } ?: Result.Err(constError(ErrorKind.InvalidData, "user home directory path not absolute")))
 
-public fun dir(env: String): PathBuf? = varOs(env).filter({ s -> !s.isEmpty() }).map(PathBuf::from).filter({ path -> path.isAbsolute() })
+public fun dir(env: String): PathBuf? = varOs(env).filter({ s -> !s.isEmpty() })?.let(PathBuf::from).filter({ path -> path.isAbsolute() })
 
 public fun dirOrElse(fallback: () -> PathBuf, env: String): PathBuf = (dir(env) ?: fallback())
 
@@ -374,7 +470,7 @@ public fun dirs(env: String): OsString? {
     if (splitPathsRef(dirs).all({ p -> p.isAbsolute() })) {
         return dirs
     }
-    val paths = splitPathsRef(dirs).filter({ p -> p.isAbsolute() }).map({ DerefAsRef(it) })
+    val paths = splitPathsRef(dirs).filter({ p -> p.isAbsolute() })?.let({ DerefAsRef(it) })
     return joinPaths(paths).ok().filter({ s -> !s.isEmpty() })
 }
 

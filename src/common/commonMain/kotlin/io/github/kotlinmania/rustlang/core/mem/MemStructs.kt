@@ -1,8 +1,8 @@
 package io.github.kotlinmania.rustlang.core.mem
 
 import io.github.kotlinmania.rustlang.core.clone.TrivialClone
+import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 
 public class DebugTuple(
     private val out: StringBuilder,

@@ -2,7 +2,6 @@ package io.github.kotlinmania.rustlang.std.sync.mpmc
 
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.time.Duration
-import io.github.kotlinmania.rustlang.std.fmt
 import io.github.kotlinmania.rustlang.std.sync.mpsc.RecvError
 import io.github.kotlinmania.rustlang.std.sync.mpsc.RecvTimeoutError
 import io.github.kotlinmania.rustlang.std.sync.mpsc.SendError
@@ -48,6 +47,8 @@ public class DebugStruct(
  * # Examples
  *
  * ```kotlin
+ * import std.thread
+ *
  * @feature(mpmcChannel)
  * public fun doctestEntry() {
  *     val (sender, receiver) = channel()
@@ -140,7 +141,7 @@ public open class Sender<T>(
      *     // This send is always successful
      *     tx.send(1).unwrap()
      *     // This send will fail because the receiver is gone
-     *     drop(rx)
+     *     (rx).let { }
      *     check(tx.send(1).isErr())
      * }
      * ```
@@ -248,6 +249,7 @@ public open class Sender<T>(
      *
      * ```kotlin
      * import std.sync.mpmc
+     * import std.thread
      *
      * @feature(mpmcChannel)
      * public fun doctestEntry() {
@@ -288,6 +290,7 @@ public open class Sender<T>(
      *
      * ```kotlin
      * import std.sync.mpmc
+     * import std.thread
      *
      * @feature(mpmcChannel)
      * public fun doctestEntry() {
@@ -325,6 +328,7 @@ public open class Sender<T>(
      *
      * ```kotlin
      * import std.sync.mpmc
+     * import std.thread
      *
      * @feature(mpmcChannel)
      * public fun doctestEntry() {
@@ -362,6 +366,7 @@ public open class Sender<T>(
      *
      * ```kotlin
      * import std.sync.mpmc
+     * import std.thread
      *
      * @feature(mpmcChannel)
      * public fun doctestEntry() {
@@ -446,7 +451,7 @@ public open class Sender<T>(
      * public fun doctestEntry() {
      *     val (tx, rx) = channel<Int>()
      *     check(!tx.isDisconnected())
-     *     drop(rx)
+     *     (rx).let { }
      *     check(tx.isDisconnected())
      * }
      * ```
@@ -519,6 +524,7 @@ public open class Sender<T>(
  * # Examples
  *
  * ```kotlin
+ * import std.thread
  * import time.Duration
  *
  * @feature(mpmcChannel)
@@ -546,7 +552,7 @@ public open class Sender<T>(
 public open class Receiver<T>(
     public var flavor: ReceiverFlavor<T>,
 ) : Iterable<T> {
-    override fun iterator(): kotlin.collections.Iterator<T> = this.intoIter().iterator()
+    override fun iterator(): Iterator<T> = this.intoIter().iterator()
 
     public open fun intoIter(): Iter<T> = this.iter()
 
@@ -617,6 +623,7 @@ public open class Receiver<T>(
      *
      * ```kotlin
      * import std.sync.mpmc
+     * import std.thread
      *
      * @feature(mpmcChannel)
      * public fun doctestEntry() {
@@ -634,6 +641,7 @@ public open class Receiver<T>(
      * ```kotlin
      * import std.sync.mpmc
      * import std.sync.mpmc.RecvError
+     * import std.thread
      *
      * @feature(mpmcChannel)
      * public fun doctestEntry() {
@@ -642,7 +650,7 @@ public open class Receiver<T>(
      *         send.send(1u.toUByte()).unwrap()
      *         send.send(2).unwrap()
      *         send.send(3).unwrap()
-     *         drop(send)
+     *         (send).let { }
      *     })
      *     // wait for the thread to join so we ensure the sender is dropped
      *     handle.join().unwrap()
@@ -690,6 +698,7 @@ public open class Receiver<T>(
      *
      * ```kotlin
      * import std.sync.mpmc
+     * import std.thread
      * import time.Duration
      *
      * @feature(mpmcChannel)
@@ -706,6 +715,7 @@ public open class Receiver<T>(
      *
      * ```kotlin
      * import std.sync.mpmc
+     * import std.thread
      * import time.Duration
      *
      * @feature(mpmcChannel)
@@ -750,6 +760,7 @@ public open class Receiver<T>(
      *
      * ```kotlin
      * import std.sync.mpmc
+     * import std.thread
      * import time.Duration
      * import time.Instant
      *
@@ -767,6 +778,7 @@ public open class Receiver<T>(
      *
      * ```kotlin
      * import std.sync.mpmc
+     * import std.thread
      * import time.Duration
      * import time.Instant
      *
@@ -806,6 +818,7 @@ public open class Receiver<T>(
      * # Examples
      *
      * ```kotlin
+     * import std.thread
      * import time.Duration
      *
      * @feature(mpmcChannel)
@@ -842,6 +855,7 @@ public open class Receiver<T>(
      *
      * ```kotlin
      * import std.sync.mpmc
+     * import std.thread
      *
      * @feature(mpmcChannel)
      * public fun doctestEntry() {
@@ -880,6 +894,7 @@ public open class Receiver<T>(
      *
      * ```kotlin
      * import std.sync.mpmc
+     * import std.thread
      *
      * @feature(mpmcChannel)
      * public fun doctestEntry() {
@@ -916,6 +931,7 @@ public open class Receiver<T>(
      *
      * ```kotlin
      * import std.sync.mpmc
+     * import std.thread
      *
      * @feature(mpmcChannel)
      * public fun doctestEntry() {
@@ -952,6 +968,7 @@ public open class Receiver<T>(
      *
      * ```kotlin
      * import std.sync.mpmc
+     * import std.thread
      *
      * @feature(mpmcChannel)
      * public fun doctestEntry() {
@@ -1028,6 +1045,8 @@ public open class Receiver<T>(
      * # Examples
      *
      * ```kotlin
+     * import std.thread
+     *
      * @feature(mpmcChannel)
      * public fun doctestEntry() {
      *     val (send, recv) = channel()
@@ -1060,7 +1079,7 @@ public open class Receiver<T>(
      * public fun doctestEntry() {
      *     val (tx, rx) = channel<Int>()
      *     check(!rx.isDisconnected())
-     *     drop(tx)
+     *     (tx).let { }
      *     check(rx.isDisconnected())
      * }
      * ```
@@ -1135,6 +1154,8 @@ public open class Receiver<T>(
  * # Examples
  *
  * ```kotlin
+ * import std.thread
+ *
  * @feature(mpmcChannel)
  * public fun doctestEntry() {
  *     val (send, recv) = channel()
@@ -1152,7 +1173,7 @@ public open class Receiver<T>(
 public open class Iter<T>(
     public var rx: Receiver<T>,
 ) : Iterable<T> {
-    override fun iterator(): kotlin.collections.Iterator<T> = object : AbstractIterator<T>() {
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@Iter.next()) {
                 null -> done()
@@ -1181,6 +1202,7 @@ public open class Iter<T>(
  * # Examples
  *
  * ```kotlin
+ * import std.thread
  * import time.Duration
  *
  * @feature(mpmcChannel)
@@ -1206,7 +1228,7 @@ public open class Iter<T>(
 public open class TryIter<T>(
     public var rx: Receiver<T>,
 ) : Iterable<T> {
-    override fun iterator(): kotlin.collections.Iterator<T> = object : AbstractIterator<T>() {
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@TryIter.next()) {
                 null -> done()
@@ -1232,6 +1254,8 @@ public open class TryIter<T>(
  * # Examples
  *
  * ```kotlin
+ * import std.thread
+ *
  * @feature(mpmcChannel)
  * public fun doctestEntry() {
  *     val (send, recv) = channel()
@@ -1249,7 +1273,7 @@ public open class TryIter<T>(
 public open class IntoIter<T>(
     public var rx: Receiver<T>,
 ) : Iterable<T> {
-    override fun iterator(): kotlin.collections.Iterator<T> = object : AbstractIterator<T>() {
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@IntoIter.next()) {
                 null -> done()

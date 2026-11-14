@@ -1,27 +1,25 @@
 // port-lint: source num/f32.rs
 package io.github.kotlinmania.rustlang.std.num.f32
 
-import io.github.kotlinmania.intrinsics.log
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
-import io.github.kotlinmania.rustlang.std.cmath.acosf
-import io.github.kotlinmania.rustlang.std.cmath.acoshf
-import io.github.kotlinmania.rustlang.std.cmath.asinf
-import io.github.kotlinmania.rustlang.std.cmath.asinhf
-import io.github.kotlinmania.rustlang.std.cmath.atan2f
-import io.github.kotlinmania.rustlang.std.cmath.atanf
-import io.github.kotlinmania.rustlang.std.cmath.coshf
-import io.github.kotlinmania.rustlang.std.cmath.sinhf
-import io.github.kotlinmania.rustlang.std.cmath.tanf
-import io.github.kotlinmania.rustlang.std.cmath.tanhf
-import io.github.kotlinmania.rustlang.std.intrinsics
+import io.github.kotlinmania.rustlang.std.sys.cmath.acosf
+import io.github.kotlinmania.rustlang.std.sys.cmath.acoshf
+import io.github.kotlinmania.rustlang.std.sys.cmath.asinf
+import io.github.kotlinmania.rustlang.std.sys.cmath.asinhf
+import io.github.kotlinmania.rustlang.std.sys.cmath.atan2f
+import io.github.kotlinmania.rustlang.std.sys.cmath.atanf
+import io.github.kotlinmania.rustlang.std.sys.cmath.coshf
 import io.github.kotlinmania.rustlang.std.sys.cmath.erfcf
 import io.github.kotlinmania.rustlang.std.sys.cmath.erff
 import io.github.kotlinmania.rustlang.std.sys.cmath.expm1f
 import io.github.kotlinmania.rustlang.std.sys.cmath.hypotf
 import io.github.kotlinmania.rustlang.std.sys.cmath.lgammafR
 import io.github.kotlinmania.rustlang.std.sys.cmath.log1pf
+import io.github.kotlinmania.rustlang.std.sys.cmath.sinhf
+import io.github.kotlinmania.rustlang.std.sys.cmath.tanf
+import io.github.kotlinmania.rustlang.std.sys.cmath.tanhf
 import io.github.kotlinmania.rustlang.std.sys.cmath.tgammaf
 import kotlin.math.cos
 import kotlin.math.ln
@@ -310,7 +308,7 @@ public fun Float.powi(n: Int): Float = Float.powi(this, n)
  * check(Float.powf(0.0, 0.0) == 1.0)
  * ```
  */
-public fun Float.powf(n: Float): Float = io.github.kotlinmania.intrinsics.powf(this, n)
+public fun Float.powf(n: Float): Float = powf(this, n)
 
 /**
  * Returns the square root of a number.
@@ -355,7 +353,7 @@ public fun Float.sqrt(): Float = Float.sqrt(this)
  * check(absDifference <= 1e-6)
  * ```
  */
-public fun Float.exp(): Float = io.github.kotlinmania.intrinsics.exp(this)
+public fun Float.exp(): Float = exp(this)
 
 /**
  * Returns `2 ^(self)`.
@@ -374,7 +372,7 @@ public fun Float.exp(): Float = io.github.kotlinmania.intrinsics.exp(this)
  * check(absDifference <= 1e-5)
  * ```
  */
-public fun Float.exp2(): Float = io.github.kotlinmania.intrinsics.exp2(this)
+public fun Float.exp2(): Float = exp2(this)
 
 /**
  * Returns the natural logarithm of the number.
@@ -461,7 +459,7 @@ public fun Float.log(base: Float): Float = ln(this) / ln(base)
  * check((-42.0f).log2().isNan())
  * ```
  */
-public fun Float.log2(): Float = io.github.kotlinmania.intrinsics.log2(this)
+public fun Float.log2(): Float = log2(this)
 
 /**
  * Returns the base 10 logarithm of the number.
@@ -488,7 +486,7 @@ public fun Float.log2(): Float = io.github.kotlinmania.intrinsics.log2(this)
  * check((-42.0f).log10().isNan())
  * ```
  */
-public fun Float.log10(): Float = io.github.kotlinmania.intrinsics.log10(this)
+public fun Float.log10(): Float = log10(this)
 
 /**
  * The positive difference of two numbers.
@@ -578,7 +576,7 @@ public fun Float.hypot(other: Float): Float = hypotf(this, other)
  * check(absDifference <= 1e-6)
  * ```
  */
-public fun Float.sin(): Float = io.github.kotlinmania.intrinsics.sin(this)
+public fun Float.sin(): Float = sin(this)
 
 /**
  * Computes the cosine of a number (in radians).
@@ -596,7 +594,7 @@ public fun Float.sin(): Float = io.github.kotlinmania.intrinsics.sin(this)
  * check(absDifference <= 1e-6)
  * ```
  */
-public fun Float.cos(): Float = io.github.kotlinmania.intrinsics.cos(this)
+public fun Float.cos(): Float = cos(this)
 
 /**
  * Computes the tangent of a number (in radians).
@@ -1007,11 +1005,11 @@ public fun Float.lnGamma(): Pair<Float, Int> {
  *         return (x * 0.70710677f).erf() * 100.0f
  *     }
  *     // 68% of a normal distribution is within one standard deviation
- *     check((withinStandardDeviations(1.0f) - 68.269).abs() < 0.01)
+ *     check((withinStandardDeviations(1.0f) - 68.269f).abs() < 0.01)
  *     // 95% of a normal distribution is within two standard deviations
- *     check((withinStandardDeviations(2.0f) - 95.450).abs() < 0.01)
+ *     check((withinStandardDeviations(2.0f) - 95.450f).abs() < 0.01)
  *     // 99.7% of a normal distribution is within three standard deviations
- *     check((withinStandardDeviations(3.0f) - 99.730).abs() < 0.01)
+ *     check((withinStandardDeviations(3.0f) - 99.730f).abs() < 0.01)
  * }
  * ```
  */

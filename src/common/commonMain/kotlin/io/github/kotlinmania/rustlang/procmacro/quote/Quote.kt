@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.procmacro.quote
 
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.procmacro.BitOr
 import io.github.kotlinmania.rustlang.procmacro.Delimiter
 import io.github.kotlinmania.rustlang.procmacro.Group
@@ -13,7 +14,7 @@ import io.github.kotlinmania.rustlang.procmacro.Span
 import io.github.kotlinmania.rustlang.procmacro.TokenStream
 import io.github.kotlinmania.rustlang.procmacro.TokenTree
 import io.github.kotlinmania.rustlang.procmacro.totokens.ToTokens
-import io.github.kotlinmania.slice.Iter
+import io.github.kotlinmania.rustlang.std.path.Iter
 import io.github.kotlinmania.rustlang.procmacro.quote.HasIterator as HasIter
 import io.github.kotlinmania.rustlang.procmacro.quote.ThereIsNoIteratorInRepetition as DoesNotHaveIter
 
@@ -37,8 +38,8 @@ public open class HasIterator : BitOr<ThereIsNoIteratorInRepetition, Any?, HasIt
     public open fun bitor(rhs: HasIterator): HasIterator = HasIterator()
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<HasIterator> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<HasIterator> {
+        public fun typeLayout(): TypeLayout<HasIterator> =
+            object : TypeLayout<HasIterator> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): HasIterator =
@@ -61,8 +62,8 @@ public open class ThereIsNoIteratorInRepetition : BitOr<ThereIsNoIteratorInRepet
     public open fun bitor(rhs: HasIterator): HasIterator = HasIterator()
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<ThereIsNoIteratorInRepetition> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<ThereIsNoIteratorInRepetition> {
+        public fun typeLayout(): TypeLayout<ThereIsNoIteratorInRepetition> =
+            object : TypeLayout<ThereIsNoIteratorInRepetition> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): ThereIsNoIteratorInRepetition =
@@ -112,7 +113,7 @@ public fun <T> List<T>.quoteIntoIter(): Pair<ArrayDeque<T>, HasIter> = Pair(this
 
 public fun <T> List<T>.quoteIntoIterFromTArrayn(n: Int): Pair<ArrayDeque<T>, HasIter> = Pair(this.iter(), HasIter)
 
-public fun <T> MutableSet<T>.quoteIntoIter(): Pair<btreeset.Iter<T>, HasIter> = Pair(this.iter(), HasIter)
+public fun <T> MutableSet<T>.quoteIntoIter(): Pair<Iter<T>, HasIter> = Pair(this.iter(), HasIter)
 
 public fun <T : RepAsIteratorExt<Any?>> RepInterp<T>.quoteIntoIter(): Pair<Iter, HasIter> = this.value.quoteIntoIter()
 
@@ -127,7 +128,7 @@ public open class RepInterp<T>(
             value = v
         }
 
-    override fun iterator(): kotlin.collections.Iterator<Item> = object : AbstractIterator<Item>() {
+    override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
         override fun computeNext() {
             when (val v = this@RepInterp.next()) {
                 null -> done()
@@ -151,10 +152,10 @@ public open class RepInterp<T>(
     }
 
     public companion object {
-        public fun <T> typeLayout(typeLayoutT: io.github.kotlinmania.rustlang.core.mem.TypeLayout<T>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<RepInterp<T>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<RepInterp<T>> {
+        public fun <T> typeLayout(typeLayoutT: TypeLayout<T>): TypeLayout<RepInterp<T>> =
+            object : TypeLayout<RepInterp<T>> {
                 override val alignBytes: Long = listOf(1L, typeLayoutT.alignBytes).max()
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(typeLayoutT.sizeBytes, alignBytes)
+                override val sizeBytes: Long = alignUpBytes(typeLayoutT.sizeBytes, alignBytes)
                 override fun readNative(addr: Long): RepInterp<T> =
                     RepInterp(
                         (typeLayoutT).readNative(addr),

@@ -1,7 +1,6 @@
 // port-lint: source float/extend.rs
 package io.github.kotlinmania.rustlang.compilerbuiltins.float.extend
 
-import io.github.kotlinmania.f16.fromBits
 import io.github.kotlinmania.rustlang.compilerbuiltins.support.Float
 import io.github.kotlinmania.rustlang.compilerbuiltins.support.Int
 import io.github.kotlinmania.rustlang.core.F128
@@ -70,7 +69,7 @@ public fun extendsfdf2(a: Float): Double = extend(a)
 
 public fun extendhfsf2(a: F16): Float = extend(a)
 
-public fun gnuH2fIeee(a: UShort): UInt = (extend<F16, Float>(fromBits(a)).toBits()).toUInt()
+public fun gnuH2fIeee(a: UShort): UInt = (extend<F16, Float>(F16.fromBits(a)).toBits()).toUInt()
 
 public fun extendhfdf2(a: F16): Double = extend(a)
 

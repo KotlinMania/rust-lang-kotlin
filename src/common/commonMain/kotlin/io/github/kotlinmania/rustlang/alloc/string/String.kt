@@ -1,7 +1,6 @@
 // port-lint: source string.rs
 package io.github.kotlinmania.rustlang.alloc.string
 
-import io.github.kotlinmania.ops.DerefPure
 import io.github.kotlinmania.rustlang.alloc.borrow.Cow
 import io.github.kotlinmania.rustlang.alloc.collections.TryReserveError
 import io.github.kotlinmania.rustlang.alloc.fmt.format
@@ -12,10 +11,11 @@ import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.fmt.Arguments
-import io.github.kotlinmania.rustlang.core.io.error.error
+import io.github.kotlinmania.rustlang.core.hint.unlikely
 import io.github.kotlinmania.rustlang.core.iter.sources.fromfn.fromFn
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.copy
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
@@ -24,9 +24,12 @@ import io.github.kotlinmania.rustlang.core.num.rustSaturatingSub
 import io.github.kotlinmania.rustlang.core.num.saturating.Saturating
 import io.github.kotlinmania.rustlang.core.ops.arith.Add
 import io.github.kotlinmania.rustlang.core.ops.arith.AddAssign
+import io.github.kotlinmania.rustlang.core.ops.deref.DerefPure
+import io.github.kotlinmania.rustlang.core.ops.range.Range
 import io.github.kotlinmania.rustlang.core.ops.range.RangeBounds
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
@@ -201,10 +204,11 @@ public class DebugTuple(
  * Due to these ambiguities/restrictions, indexing with a `Int` is simply
  * forbidden:
  *
- * ```kotlin
- * val s = "hello"
+ * ```compile_fail,E0277
+ * let s = "hello";
+ *
  * // The following will not compile
- * println("The first letter of s is ${s[0]}")
+ * println("The first letter of s is {}", s[0]);
  * ```
  *
  * It is more clear, however, how `s[i .. j]` should work (that is,
@@ -252,11 +256,15 @@ public class DebugTuple(
  * would need to make two implicit conversions, which Rust doesn't have the
  * means to do. For that reason, the following example will not compile.
  *
- * ```kotlin
- * interface TraitExample
- * fun <A : TraitExample> exampleFunc(exampleArg: A) {}
- * val exampleString = "exampleString"
- * exampleFunc(exampleString)
+ * ```compile_fail,E0277
+ * trait TraitExample {}
+ *
+ * impl<a> TraitExample for &a str {}
+ *
+ * fn exampleFunc<A: TraitExample>(exampleArg: A) {}
+ *
+ * let exampleString = String.from("exampleString");
+ * exampleFunc(&exampleString);
  * ```
  *
  * There are two options that would work instead. The first would be to
@@ -461,7 +469,7 @@ public open class String(
      * Appends a given string slice onto the end of this `String`, returning
      * [TryReserveError] otherwise.
      */
-    internal open fun tryPushStr(string: String): Result<Unit, TryReserveError> = this.vec.tryExtendFromSliceOfBytes(string.encodeToByteArray().map { it.toUByte() })
+    public open fun tryPushStr(string: String): Result<Unit, TryReserveError> = this.vec.tryExtendFromSliceOfBytes(string.encodeToByteArray().map { it.toUByte() })
 
     public open fun pushStrSlice(slice: List<String>) {
         // use saturating arithmetic to ensure that in the case of an overflow, reserve() throws OOM
@@ -502,7 +510,7 @@ public open class String(
      * ```
      */
     public open fun <R> extendFromWithin(src: R) where R : RangeBounds<Int> {
-        val src1 = slice.range(src, 0 until this.length)
+        val src1 = Range(src, 0 until this.length)
         check(this.isCharBoundary(start))
         check(this.isCharBoundary(end))
         this.vec.extendFromWithin(src1)
@@ -848,7 +856,7 @@ public open class String(
         // Both pointers are valid for `len - next` bytes.
         // * new length is less than old length.
         run {
-            ptr.copy(ConstPtr((this.vec.asPtr()).rawAddress + ((next).toLong() * (PrimitiveLayouts.U8).strideBytes)), MutPtr((this.vec.asMutPtr()).rawAddress + ((idx).toLong() * (PrimitiveLayouts.U8).strideBytes)), len - next)
+            copy(ConstPtr((this.vec.asPtr()).rawAddress + ((next).toLong() * (PrimitiveLayouts.U8).strideBytes)), MutPtr((this.vec.asMutPtr()).rawAddress + ((idx).toLong() * (PrimitiveLayouts.U8).strideBytes)), len - next)
             this.vec.setLen(len - (next - idx))
         }
         return ch1
@@ -914,7 +922,7 @@ public open class String(
                 // covering the whole haystack, and laying on utf8
                 // boundaries.
                 run {
-                    ptr.copy(MutPtr((ptr).rawAddress + ((start).toLong() * (PrimitiveLayouts.U8).strideBytes)), MutPtr((ptr).rawAddress + ((len).toLong() * (PrimitiveLayouts.U8).strideBytes)), count)
+                    copy(MutPtr((ptr).rawAddress + ((start).toLong() * (PrimitiveLayouts.U8).strideBytes)), MutPtr((ptr).rawAddress + ((len).toLong() * (PrimitiveLayouts.U8).strideBytes)), count)
                 }
             }
             len += count
@@ -973,11 +981,11 @@ public open class String(
         var (read, write) =
             while (true) {
                 val (idx, ch) = chars.next() ?: return
-                if (hint.unlikely(!f(ch))) {
+                if (unlikely(!f(ch))) {
                     break
                 }
             }
-        drop(chars)
+        (chars).let { }
         // Slow path: at least one character is going to be removed.
         val g = PanicGuard(s = this, write = write)
         while (read < len) {
@@ -1000,14 +1008,14 @@ public open class String(
                 // within bounds because it is always behind `read`.
                 run {
                     val ptr = g.s.vec.asMutPtr()
-                    ptr.copy(MutPtr((ptr).rawAddress + ((read).toLong() * (PrimitiveLayouts.U8).strideBytes)), MutPtr((ptr).rawAddress + ((g.write).toLong() * (PrimitiveLayouts.U8).strideBytes)), chLen)
+                    copy(MutPtr((ptr).rawAddress + ((read).toLong() * (PrimitiveLayouts.U8).strideBytes)), MutPtr((ptr).rawAddress + ((g.write).toLong() * (PrimitiveLayouts.U8).strideBytes)), chLen)
                 }
                 g.write += chLen
             }
             read += chLen
         }
         // All bytes processed; commit the final length by dropping the guard.
-        drop(g)
+        (g).let { }
     }
 
     /**
@@ -1043,7 +1051,7 @@ public open class String(
         // bytes ahead. This is safe because sufficient capacity was reserved, and `idx`
         // is a char boundary.
         run {
-            ptr.copy(ConstPtr((this.vec.asPtr()).rawAddress + ((idx).toLong() * (PrimitiveLayouts.U8).strideBytes)), MutPtr((this.vec.asMutPtr()).rawAddress + ((idx + chLen).toLong() * (PrimitiveLayouts.U8).strideBytes)), len - idx)
+            copy(ConstPtr((this.vec.asPtr()).rawAddress + ((idx).toLong() * (PrimitiveLayouts.U8).strideBytes)), MutPtr((this.vec.asMutPtr()).rawAddress + ((idx + chLen).toLong() * (PrimitiveLayouts.U8).strideBytes)), len - idx)
         }
         // SAFETY: Encode the character into the vacated region if `idx != len`,
         // or into the uninitialized spare capacity otherwise.
@@ -1087,13 +1095,13 @@ public open class String(
         // ahead. This is safe because sufficient capacity was just reserved, and `idx`
         // is a char boundary.
         run {
-            ptr.copy(ConstPtr((this.vec.asPtr()).rawAddress + ((idx).toLong() * (PrimitiveLayouts.U8).strideBytes)), MutPtr((this.vec.asMutPtr()).rawAddress + ((idx + amt).toLong() * (PrimitiveLayouts.U8).strideBytes)), len - idx)
+            copy(ConstPtr((this.vec.asPtr()).rawAddress + ((idx).toLong() * (PrimitiveLayouts.U8).strideBytes)), MutPtr((this.vec.asMutPtr()).rawAddress + ((idx + amt).toLong() * (PrimitiveLayouts.U8).strideBytes)), len - idx)
         }
         // SAFETY: Copy the new string slice into the vacated region if `idx != len`,
         // or into the uninitialized spare capacity otherwise. The borrow checker
         // ensures that the source and destination do not overlap.
         run {
-            ptr.copyNonoverlapping(string.asPtr(), MutPtr((this.vec.asMutPtr()).rawAddress + ((idx).toLong() * (PrimitiveLayouts.U8).strideBytes)), amt)
+            copyNonoverlapping(string.asPtr(), MutPtr((this.vec.asMutPtr()).rawAddress + ((idx).toLong() * (PrimitiveLayouts.U8).strideBytes)), amt)
         }
         // SAFETY: Update the length to include the newly added bytes.
         run {
@@ -1249,7 +1257,7 @@ public open class String(
         // of the vector version. The data is just plain bytes.
         // Because the range removal happens in Drop, if the Drain iterator is leaked,
         // the removal will not happen.
-        val structVal = slice.range(range, 0 until this.length)
+        val structVal = Range(range, 0 until this.length)
         val start = structVal.start
         val end = structVal.end
         check(this.isCharBoundary(start))
@@ -1327,7 +1335,7 @@ public open class String(
      */
     public open fun <R> replaceRange(range: R, replaceWith: String) where R : RangeBounds<Int> {
         // We avoid #81138 (nondeterministic RangeBounds impls) because we only use `range` once, here.
-        val checkedRange = slice.range(range, 0 until this.length)
+        val checkedRange = Range(range, 0 until this.length)
         check(this.isCharBoundary(checkedRange.start)) { "start of range should be a character boundary" }
         check(this.isCharBoundary(checkedRange.end)) { "end of range should be a character boundary" }
         if (replaceWith.length > checkedRange.len()) {
@@ -1522,15 +1530,11 @@ public open class String(
         this += s
     }
 
-    public open fun <I : Iterable<ascii.Char>> extendCharChar(iter: I) {
+    public open fun <I : Iterable<Char>> extendCharChar(iter: I) {
         this.vec.extend(iter.iterator().map({ c -> c.toU8() }))
     }
 
-    public open fun extendOne(c: ascii.Char) {
-        this.vec.add(c.toU8())
-    }
-
-    public open fun extendOneChar(c: ascii.Char) {
+    public open fun extendOneCharChar(c: Char) {
         this.vec.add(c.toU8())
     }
 
@@ -1649,7 +1653,7 @@ public open class String(
         return String.from(s)
     }
 
-    public open fun extendFromEscapeDefault(escaper: str.EscapeDefault) {
+    public open fun extendFromEscapeDefault(escaper: EscapeDefault) {
         val (front, middle, tail) = escaper.intoParts()
         val lengths = front.asRef().mapOrDefault({ f -> f.sizeHint().first }) + middle.asRef().mapOrDefault({ m -> m.sizeHint().first }) + tail.asRef().mapOrDefault({ t -> t.sizeHint().first })
         this.reserve(lengths)
@@ -1705,7 +1709,7 @@ public open class String(
                         // SAFETY: We only let the function write ascii chars, so it remains valid utf8.
                         // and it returns the number of bytes written, so so withSpare ensures the rest for us.
                         run {
-                            withSpare<ascii.Char>(this.asMutVec(), { spare ->
+                            withSpare<Char>(this.asMutVec(), { spare ->
                                 escapeUnicodeInto(spare, c1)
                             }, 10)
                         }
@@ -2324,8 +2328,8 @@ public open class String(
             }
         }
 
-        public fun <I : Iterable<ascii.Char>> fromIterCharChar(iter: I): String {
-            val buf = iter.iterator().map(ascii.Char::toU8).joinToString("")
+        public fun <I : Iterable<Char>> fromIterCharChar(iter: I): String {
+            val buf = iter.iterator().map(Char::toU8).joinToString("")
             // SAFETY: `buf` is guaranteed to be valid UTF-8 because the `core.ascii.Char` type
             // only contains ASCII values (0x00-0x7F), which are valid UTF-8.
             return String.fromUtf8Unchecked(buf)
@@ -2511,7 +2515,7 @@ public open class FromUtf8Error(
     public open fun intoUtf8Lossy(): String {
         val REPLACEMENT: String = "�"
         var res = run {
-            val v = ArrayList(this.bytes.size)
+            val v = ArrayList<UByte>(this.bytes.size)
             // `Utf8Error.validUpTo` returns the maximum index of validated
             // UTF-8 bytes. Copy the valid bytes into the output buffer.
             v.addAll(((this.bytes).slice(0 until this.error.validUpTo())))
@@ -2614,7 +2618,7 @@ public interface FromCharIterSpec : Iterator<Char> {
     public fun next(): Char?
 }
 
-public fun str.EscapeDefault.toStringSpec(): String {
+public fun EscapeDefault.toStringSpec(): String {
     // go through the ToString specialization
     return this.toString()
 }
@@ -2630,7 +2634,7 @@ public fun <T : Iterable<Char>> T.specExtendInto(target: String) {
     iterator.forEach({ c -> target += c })
 }
 
-public fun str.EscapeDefault.specExtendInto(target: String) {
+public fun EscapeDefault.specExtendInto(target: String) {
     target.extendFromEscapeDefault(this)
 }
 
@@ -2716,9 +2720,7 @@ public fun <T> T.specToString(): String {
     return buf
 }
 
-public fun ascii.Char.specToStringChar(): String = this.asStr().toOwned()
-
-public fun Char.specToStringChar(): String = String.from(this.encodeUtf8(List((Char.MAX_LEN_UTF8).toInt()) { 0 }))
+public fun Char.specToStringChar(): String = this.asStr().toOwned()
 
 public fun Boolean.specToString(): String =
     String.from(if (this) {
@@ -2848,15 +2850,15 @@ public fun String.specToString(): String {
 
 public fun Arguments.specToString(): String = format(this)
 
-public fun str.EscapeDefault.specToString(): String {
+public fun EscapeDefault.specToString(): String {
     val s = String.new()
     s.extendFromEscapeDefault(this.clone())
     return s
 }
 
 // adapted from core.escape.escapeUnicode, but it's left-aligned instead of right-aligned.
-public fun escapeUnicodeInto(output: List<MaybeUninit<ascii.Char>>, c: Char): Int {
-    val HEX_DIGITS: List<ascii.Char> = "0123456789abcdef".encodeToByteArray().asAscii().unwrap()
+public fun escapeUnicodeInto(output: List<MaybeUninit<Char>>, c: Char): Int {
+    val HEX_DIGITS: List<Char> = "0123456789abcdef".encodeToByteArray().asAscii().unwrap()
     val c1 = c.toUInt()
     // OR-ing `1` ensures that for `c == 0` the code computes that
     // one digit should be printed.
@@ -2869,10 +2871,10 @@ public fun escapeUnicodeInto(output: List<MaybeUninit<ascii.Char>>, c: Char): In
     output[rustSaturatingSub(6, prefixSkip)].write(HEX_DIGITS[((c1 shr 8) and 15u).toInt()])
     output[rustSaturatingSub(7, prefixSkip)].write(HEX_DIGITS[((c1 shr 4) and 15u).toInt()])
     output[rustSaturatingSub(8, prefixSkip)].write(HEX_DIGITS[(c1 and 15u).toInt()])
-    output[0].write(ascii.Char.ReverseSolidus)
-    output[1].write(ascii.Char.SmallU)
-    output[2].write(ascii.Char.LeftCurlyBracket)
-    output[9 - prefixSkip].write(ascii.Char.RightCurlyBracket)
+    output[0].write(Char.ReverseSolidus)
+    output[1].write(Char.SmallU)
+    output[2].write(Char.LeftCurlyBracket)
+    output[9 - prefixSkip].write(Char.RightCurlyBracket)
     return 10 - prefixSkip
 }
 
@@ -2932,7 +2934,7 @@ public fun fromVecUByte(string: String): List<UByte> = string.intoBytes()
 public open class IntoChars(
     public var bytes: ArrayDeque<UByte>,
 ) : FromCharIterSpec, Iterable<Char> {
-    override fun iterator(): kotlin.collections.Iterator<Char> = object : AbstractIterator<Char>() {
+    override fun iterator(): Iterator<Char> = object : AbstractIterator<Char>() {
         override fun computeNext() {
             when (val v = this@IntoChars.next()) {
                 null -> done()
@@ -2962,7 +2964,7 @@ public open class IntoChars(
      */
     public open fun asStr(): String {
         // SAFETY: `bytes` is a valid UTF-8 string.
-        return String.fromUtf8Unchecked(this.bytes.asSlice())
+        return String.fromUtf8Unchecked(this.bytes.toList())
     }
 
     /**
@@ -3056,7 +3058,7 @@ public open class Drain internal constructor(
     public var string: MutPtr = stringCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<Char> = object : AbstractIterator<Char>() {
+    override fun iterator(): Iterator<Char> = object : AbstractIterator<Char>() {
         override fun computeNext() {
             when (val v = this@Drain.next()) {
                 null -> done()

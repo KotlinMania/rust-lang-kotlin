@@ -1,13 +1,14 @@
 // port-lint: source iter/adapters/fuse.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.fuse
 
-import io.github.kotlinmania.rustlang.core.iter.TrustedFused
-import io.github.kotlinmania.rustlang.core.iter.TrustedLen
-import io.github.kotlinmania.rustlang.core.iter.TrustedRandomAccess
-import io.github.kotlinmania.rustlang.core.iter.TrustedRandomAccessNoCoerce
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
+import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccess
+import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccessNoCoerce
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.tryGetUnchecked
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedFused
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
 
 public typealias Source<I> = I.Source
@@ -25,7 +26,7 @@ public open class Fuse<I>(
     // See rust-lang/rust#85863
     public var iter: I?,
 ) : TrustedFused, TrustedLen<Fuse<I>>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, FuseImpl<I, Any?, Item>, SourceIter<Any?, Source>, Iterable<Item> {
-    override fun iterator(): kotlin.collections.Iterator<Item> = object : AbstractIterator<Item>() {
+    override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
         override fun computeNext() {
             when (val v = this@Fuse.next()) {
                 null -> done()
@@ -36,7 +37,7 @@ public open class Fuse<I>(
 
     public open fun clone(): Fuse<I> = Fuse(iter)
 
-    internal open fun intoInner(): I? = this.iter
+    public open fun intoInner(): I? = this.iter
 
     // Any specialized implementation here is made internal
     // to avoid exposing default fns outside this trait.
@@ -313,7 +314,7 @@ public open class Fuse<I>(
     }
 
     public companion object {
-        internal fun <I> new(iter: I): Fuse<I> = Fuse(iter = iter)
+        public fun <I> new(iter: I): Fuse<I> = Fuse(iter = iter)
 
         /**
          * Creates a `Fuse` iterator from the default value of `I`.
@@ -329,7 +330,7 @@ public open class Fuse<I>(
          *
          * ```kotlin
          * open class Fourever : Iterable<UInt> {
-         *     override fun iterator(): kotlin.collections.Iterator<UInt> = object : AbstractIterator<UInt>() {
+         *     override fun iterator(): Iterator<UInt> = object : AbstractIterator<UInt>() {
          *         override fun computeNext() {
          *             when (val v = this@Fourever.next()) {
          *                 null -> done()

@@ -51,9 +51,11 @@ import io.github.kotlinmania.rustlang.core.result.Result
  * ```
  */
 public open class Utf8Error(
-    internal var validUpTo: Int,
-    internal var errorLen: UByte?,
+    public var validUpTo: Int,
+    public var errorLen: UByte?,
 ) {
+    public open fun clone(): Utf8Error = Utf8Error(validUpTo, errorLen)
+
     /**
      * Returns the index in the given string up to which valid UTF-8 was
      * verified.
@@ -66,6 +68,8 @@ public open class Utf8Error(
      * Basic usage:
      *
      * ```kotlin
+     * import std.str
+     *
      * // some invalid bytes, in a vector
      * val sparkleHeart = mutableListOf(0, 159, 146, 150)
      * // std.str.fromUtf8 returns a Utf8Error
@@ -120,11 +124,13 @@ public open class Utf8Error(
  * An error returned when parsing a `Boolean` using [fromStr] fails
  */
 public open class ParseBoolError {
+    public open fun clone(): ParseBoolError = ParseBoolError()
+
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = "provided string was not `true` or `false`".fmt(f)
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<ParseBoolError> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<ParseBoolError> {
+        public fun typeLayout(): TypeLayout<ParseBoolError> =
+            object : TypeLayout<ParseBoolError> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): ParseBoolError =

@@ -18,20 +18,35 @@ import io.github.kotlinmania.rustlang.std.thread.localimpl.threadLocalInner
 /**
  * Represents a thread blocked on a specific channel operation.
  */
-internal open class Entry(
+public open class Entry internal constructor(
     /**
      * The operation.
      */
-    internal var oper: Operation,
-    /**
-     * Optional packet.
-     */
-    internal var packet: MutPtr,
+    public var oper: Operation,
+    packetCtorArg: MutPtr,
     /**
      * Context associated with the thread owning this operation.
      */
-    internal var cx: Context,
-)
+    public var cx: Context,
+) {
+    /**
+     * Optional packet.
+     */
+    public var packet: MutPtr = packetCtorArg
+        internal set
+
+    public companion object {
+        public operator fun invoke(
+            oper: Operation,
+            packet: MutPtr,
+            cx: Context,
+        ): Entry = Entry(
+            oper = oper,
+            packetCtorArg = packet,
+            cx = cx,
+        )
+    }
+}
 
 /**
  * A queue of threads blocked on channel operations.
@@ -39,7 +54,7 @@ internal open class Entry(
  * This data structure is used by threads to register blocking operations and get woken up once
  * an operation becomes ready.
  */
-internal open class Waker(
+public open class Waker(
     /**
      * A list of select operations.
      */
@@ -52,21 +67,21 @@ internal open class Waker(
     /**
      * Registers a select operation.
      */
-    internal open fun register(oper: Operation, cx: Context) {
+    public open fun register(oper: Operation, cx: Context) {
         this.registerWithPacket(oper, MutPtr(0L), cx)
     }
 
     /**
      * Registers a select operation and a packet.
      */
-    internal open fun registerWithPacket(oper: Operation, packet: MutPtr, cx: Context) {
+    public open fun registerWithPacket(oper: Operation, packet: MutPtr, cx: Context) {
         this.selectors.add(Entry(oper = oper, packet = packet, cx = cx.clone()))
     }
 
     /**
      * Unregisters a select operation.
      */
-    internal open fun unregister(oper: Operation): Entry? =
+    public open fun unregister(oper: Operation): Entry? =
         when (val matchVal = this.selectors.mapIndexed { index, item -> Pair(index, item) }.indexOf({ (_, entry) -> entry.oper == oper }).takeIf { it >= 0 }) {
             null -> {
                 null
@@ -81,7 +96,7 @@ internal open class Waker(
     /**
      * Attempts to find another thread's entry, select the operation, and wake it up.
      */
-    internal open fun trySelect(): Entry? =
+    public open fun trySelect(): Entry? =
         if (this.selectors.isEmpty()) {
             null
         } else {
@@ -102,7 +117,7 @@ internal open class Waker(
     /**
      * Notifies all operations waiting to be ready.
      */
-    internal open fun notify() {
+    public open fun notify() {
         for (entry in this.observers.drain(0 until 0)) {
             if (entry.cx.trySelect(Selected.Operation(entry.oper)).isOk()) {
                 entry.cx.unpark()
@@ -113,7 +128,7 @@ internal open class Waker(
     /**
      * Notifies all registered operations that the channel is disconnected.
      */
-    internal open fun disconnect() {
+    public open fun disconnect() {
         for (entry in ArrayDeque(this.selectors)) {
             if (entry.cx.trySelect(Selected.Disconnected).isOk()) {
                 // Wake the thread up.
@@ -136,7 +151,7 @@ internal open class Waker(
         /**
          * Creates a new `Waker`.
          */
-        internal fun new(): Waker = Waker(selectors = mutableListOf(), observers = mutableListOf())
+        public fun new(): Waker = Waker(selectors = mutableListOf(), observers = mutableListOf())
     }
 }
 
@@ -145,20 +160,26 @@ internal open class Waker(
  *
  * This is a simple wrapper around `Waker` that internally uses a mutex for synchronization.
  */
-internal open class SyncWaker(
+public open class SyncWaker internal constructor(
+    innerCtorArg: Mutex<Waker>,
+    isEmptyCtorArg: Atomic<Boolean>,
+) {
     /**
      * The inner `Waker`.
      */
-    public var inner: Mutex<Waker>,
+    public var inner: Mutex<Waker> = innerCtorArg
+        internal set
+
     /**
      * `true` if the waker is empty.
      */
-    public var isEmpty: Atomic<Boolean>,
-) {
+    public var isEmpty: Atomic<Boolean> = isEmptyCtorArg
+        internal set
+
     /**
      * Registers the current thread with an operation.
      */
-    internal open fun register(oper: Operation, cx: Context) {
+    public open fun register(oper: Operation, cx: Context) {
         val inner = this.inner.lock().unwrap()
         inner.register(oper, cx)
         this.isEmpty.store(inner.selectors.isEmpty() && inner.observers.isEmpty(), Ordering.SeqCst)
@@ -167,7 +188,7 @@ internal open class SyncWaker(
     /**
      * Unregisters an operation previously registered by the current thread.
      */
-    internal open fun unregister(oper: Operation): Entry? {
+    public open fun unregister(oper: Operation): Entry? {
         val inner = this.inner.lock().unwrap()
         val entry = inner.unregister(oper)
         this.isEmpty.store(inner.selectors.isEmpty() && inner.observers.isEmpty(), Ordering.SeqCst)
@@ -177,7 +198,7 @@ internal open class SyncWaker(
     /**
      * Attempts to find one thread (not the current one), select its operation, and wake it up.
      */
-    internal open fun notify() {
+    public open fun notify() {
         if (!this.isEmpty.load(Ordering.SeqCst)) {
             val inner = this.inner.lock().unwrap()
             if (!this.isEmpty.load(Ordering.SeqCst)) {
@@ -191,7 +212,7 @@ internal open class SyncWaker(
     /**
      * Notifies all threads that the channel is disconnected.
      */
-    internal open fun disconnect() {
+    public open fun disconnect() {
         val inner = this.inner.lock().unwrap()
         inner.disconnect()
         this.isEmpty.store(inner.selectors.isEmpty() && inner.observers.isEmpty(), Ordering.SeqCst)
@@ -202,17 +223,25 @@ internal open class SyncWaker(
     }
 
     public companion object {
+        public operator fun invoke(
+            inner: Mutex<Waker>,
+            isEmpty: Atomic<Boolean>,
+        ): SyncWaker = SyncWaker(
+            innerCtorArg = inner,
+            isEmptyCtorArg = isEmpty,
+        )
+
         /**
          * Creates a new `SyncWaker`.
          */
-        internal fun new(): SyncWaker = SyncWaker(inner = Mutex.new(Waker.new()), isEmpty = AtomicBool.new(true))
+        public fun new(): SyncWaker = SyncWaker(inner = Mutex.new(Waker.new()), isEmpty = AtomicBool.new(true))
     }
 }
 
 /**
  * Returns a unique id for the current thread.
  */
-internal fun currentThreadId(): Int {
+public fun currentThreadId(): Int {
     val DUMMY: LocalKey<UByte> = threadLocalInner(key, 0)
     return DUMMY.with({ x -> ((constPtrFromRustCast(x))).rawAddress.toInt() })
 }

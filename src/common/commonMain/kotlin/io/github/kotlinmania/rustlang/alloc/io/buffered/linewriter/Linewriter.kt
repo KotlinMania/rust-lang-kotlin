@@ -1,12 +1,12 @@
 // port-lint: source io/buffered/linewriter.rs
 package io.github.kotlinmania.rustlang.alloc.io.buffered.linewriter
 
+import io.github.kotlinmania.rustlang.alloc.fmt.Arguments
 import io.github.kotlinmania.rustlang.alloc.io.buffered.IntoInnerError
 import io.github.kotlinmania.rustlang.alloc.io.buffered.bufwriter.BufWriter
 import io.github.kotlinmania.rustlang.alloc.io.buffered.linewritershim.LineWriterShim
-import io.github.kotlinmania.rustlang.alloc.io.write
-import io.github.kotlinmania.rustlang.core.fmt.Arguments
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
+import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.result.Result
 
 public class DebugStruct(

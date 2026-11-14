@@ -5,6 +5,8 @@ package io.github.kotlinmania.rustlang.panicunwind.seh
 
 import io.github.kotlinmania.rustlang.alloc.panicking.PanicPayload
 import io.github.kotlinmania.rustlang.core.RustAny
+import io.github.kotlinmania.rustlang.core.intrinsics.kmAllocZeroed
+import io.github.kotlinmania.rustlang.core.intrinsics.kmDealloc
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
@@ -12,6 +14,7 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.panicunwind.rustDropPanic
 import io.github.kotlinmania.rustlang.panicunwind.rustForeignException
 
 // Windows SEH
@@ -138,31 +141,31 @@ public open class TypeDescriptor internal constructor(
         internal set
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<TypeDescriptor> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<TypeDescriptor> {
+        public fun typeLayout(): TypeLayout<TypeDescriptor> =
+            object : TypeLayout<TypeDescriptor> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 32L
                 override fun readNative(addr: Long): TypeDescriptor =
                     TypeDescriptor(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.constPtrLayout(64)).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).readNative(addr + 8L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uByteArray(11)).readNative(addr + 16L),
+                        (PrimitiveLayouts.constPtrLayout(64)).readNative(addr),
+                        (PrimitiveLayouts.mutPtrLayout(64)).readNative(addr + 8L),
+                        (PrimitiveArrayLayouts.uByteArray(11)).readNative(addr + 16L),
                     )
                 override fun writeNative(addr: Long, value: TypeDescriptor) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.constPtrLayout(64)).writeNative(addr, value.pVFTable)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).writeNative(addr + 8L, value.spare)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uByteArray(11)).writeNative(addr + 16L, value.name)
+                    (PrimitiveLayouts.constPtrLayout(64)).writeNative(addr, value.pVFTable)
+                    (PrimitiveLayouts.mutPtrLayout(64)).writeNative(addr + 8L, value.spare)
+                    (PrimitiveArrayLayouts.uByteArray(11)).writeNative(addr + 16L, value.name)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): TypeDescriptor =
                     TypeDescriptor(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.constPtrLayout(64)).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).readBytes(buf, offset + 8),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uByteArray(11)).readBytes(buf, offset + 16),
+                        (PrimitiveLayouts.constPtrLayout(64)).readBytes(buf, offset),
+                        (PrimitiveLayouts.mutPtrLayout(64)).readBytes(buf, offset + 8),
+                        (PrimitiveArrayLayouts.uByteArray(11)).readBytes(buf, offset + 16),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: TypeDescriptor) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.constPtrLayout(64)).writeBytes(buf, offset, value.pVFTable)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).writeBytes(buf, offset + 8, value.spare)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uByteArray(11)).writeBytes(buf, offset + 16, value.name)
+                    (PrimitiveLayouts.constPtrLayout(64)).writeBytes(buf, offset, value.pVFTable)
+                    (PrimitiveLayouts.mutPtrLayout(64)).writeBytes(buf, offset + 8, value.spare)
+                    (PrimitiveArrayLayouts.uByteArray(11)).writeBytes(buf, offset + 16, value.name)
                 }
             }
 
@@ -201,10 +204,26 @@ public expect val TYPE_INFO_VTABLE: UByte
 // to match TypeDescriptors rather than pointer equality.
 public var TYPE_DESCRIPTOR: TypeDescriptor = TypeDescriptor(pVFTable = addrOf(TYPE_INFO_VTABLE), spare = MutPtr(0L), name = TYPE_NAME)
 
-internal fun panic(data: PanicPayload): UInt = throwException(data.takeBox())
+public fun exceptionCleanup(e: MutPtr) {
+    run {
+        val matchVal = (ObjectSlotLayout<Exception>()).readNative((e).rawAddress)
+        if (matchVal.data != null) {
+            val b = matchVal.data
+            (b).let { }
+            rustDropPanic()
+        }
+    }
+}
+
+public fun exceptionCopy(dest: MutPtr, src: MutPtr): MutPtr =
+    run {
+        throwException(null)
+    }
+
+public fun panic(data: PanicPayload): UInt = throwException(data.takeBox())
 
 public fun throwException(data: RustAny?): Nothing {
-    fun cxxThrowException(pExceptionObject: MutPtr, pThrowInfo: ConstPtr): Nothing = null as Nothing
+    fun cxxThrowException(pExceptionObject: MutPtr, pThrowInfo: ConstPtr): Nothing = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nothing>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nothing>()).alignBytes)); val res = (ObjectSlotLayout<Nothing>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nothing>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nothing>()).alignBytes)); res }
     // _CxxThrowException executes entirely on this stack frame, so there's no
     // need to otherwise transfer `data` to the heap. We just pass a stack
     // pointer to this function.
@@ -215,12 +234,12 @@ public fun throwException(data: RustAny?): Nothing {
     val localStorageL207C4 = AddressableLocal(Exception(canary = addrOf(TYPE_DESCRIPTOR), data = data), ObjectSlotLayout<Any?>())
     val throwInfo: ConstPtr
     return run {
-        asm(cfgSelect(targetArch, "x86", "lea {}, [2f]", targetArch, "x86_64", "lea {}, [rip + 2f]", targetArch, "arm", concat, "movw {0}, :lower16:2f\n", "movt {0}, :upper16:2f", any, targetArch, "aarch64", targetArch, "arm64ec", concat, "adrp {0}, 2f\n", "add {0}, {0}, :lo12:2f"), ".pushsection .rdata,\"dr\"", ".p2align 2", "2:", ".long 0", imgrel("{cleanup}"), ".long 0", imgrel("3f"), "3:", ".long 1", imgrel("4f"), "4:", ".long 0", imgrel("{type_desc}"), ".long 0", ".long -1", ".long 0", ".long {exception_size}", imgrel("{copy}"), ".popsection", out, reg, throwInfo, cleanup, sym, exceptionCleanup, typeDesc, sym, TYPE_DESCRIPTOR, exceptionSize, sizeOf, Exception, copy, sym, exceptionCopy, options(readonly, nostack))
+        Unit
         cxxThrowException((localStorageL207C4.asMutPtr()), throwInfo)
     }
 }
 
-internal fun cleanup(payload: MutPtr): RustAny {
+public fun cleanup(payload: MutPtr): RustAny {
     // A null payload here means that we got here from the catch (...) of
     // __rust_try. This happens when a non-Rust foreign exception is caught.
     if (((payload).rawAddress == 0L)) {

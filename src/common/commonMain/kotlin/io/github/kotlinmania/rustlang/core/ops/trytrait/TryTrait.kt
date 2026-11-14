@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.core.ops.trytrait
 
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -226,7 +227,7 @@ public interface Residual<O, out TryType>
  */
 public fun <R : Residual<O, Any?>, O> residualIntoTryType(r: R): TryType = FromResidual.FromResidual(r)
 
-internal typealias ChangeOutputType<T : Try<T, Any?, Any?>, V, Output, Residual> = TryType
+public typealias ChangeOutputType<T : Try<T, Any?, Any?>, V, Output, Residual> = TryType
 
 /**
  * An adapter for implementing non-try methods via the `Try` implementation.
@@ -237,7 +238,7 @@ internal typealias ChangeOutputType<T : Try<T, Any?, Any?>, V, Output, Residual>
  *
  * Not currently planned to be exposed publicly, so just `public(crate)`.
  */
-internal open class NeverShortCircuit<T>(
+public open class NeverShortCircuit<T>(
     public val fieldStorage: MutPtr,
     public val fieldLayout: TypeLayout<T>,
 ) : Try<NeverShortCircuit<T>, Any?, Any?, T, NeverShortCircuitResidual>, FromResidual<Residual, NeverShortCircuit<T>> {
@@ -264,9 +265,9 @@ internal open class NeverShortCircuit<T>(
          * This is useful for implementing infallible functions in terms of the `try_` ones,
          * without accidentally capturing extra generic parameters in a closure.
          */
-        internal fun <T, A> wrapMut1(f: (A) -> T, fieldLayout: TypeLayout<T>): (A) -> NeverShortCircuit<T> = { a -> NeverShortCircuit(f(a), fieldLayout = fieldLayout) }
+        public fun <T, A> wrapMut1(f: (A) -> T, fieldLayout: TypeLayout<T>): (A) -> NeverShortCircuit<T> = { a -> NeverShortCircuit(f(a), fieldLayout = fieldLayout) }
 
-        internal fun <T, A, B> wrapMut2(f: (A, B) -> T, fieldLayout: TypeLayout<T>): (A, B) -> NeverShortCircuit<T> = { a, b -> NeverShortCircuit(f(a, b), fieldLayout = fieldLayout) }
+        public fun <T, A, B> wrapMut2(f: (A, B) -> T, fieldLayout: TypeLayout<T>): (A, B) -> NeverShortCircuit<T> = { a, b -> NeverShortCircuit(f(a, b), fieldLayout = fieldLayout) }
 
         public fun <T> fromOutput(x: T, fieldLayout: TypeLayout<T>): NeverShortCircuit<T> = NeverShortCircuit(x, fieldLayout = fieldLayout)
 
@@ -274,7 +275,7 @@ internal open class NeverShortCircuit<T>(
     }
 }
 
-internal object NeverShortCircuitResidual : Residual<T, Any?, NeverShortCircuit<T>>
+public object NeverShortCircuitResidual : Residual<T, Any?, NeverShortCircuit<T>>
 
 /**
  * Implement `FromResidual<Yeet<T>>` on your type to enable
@@ -290,10 +291,10 @@ public open class Yeet<T>(
         }
 
     public companion object {
-        public fun <T> typeLayout(typeLayoutT: io.github.kotlinmania.rustlang.core.mem.TypeLayout<T>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Yeet<T>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Yeet<T>> {
+        public fun <T> typeLayout(typeLayoutT: TypeLayout<T>): TypeLayout<Yeet<T>> =
+            object : TypeLayout<Yeet<T>> {
                 override val alignBytes: Long = listOf(1L, typeLayoutT.alignBytes).max()
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(typeLayoutT.sizeBytes, alignBytes)
+                override val sizeBytes: Long = alignUpBytes(typeLayoutT.sizeBytes, alignBytes)
                 override fun readNative(addr: Long): Yeet<T> =
                     Yeet(
                         (typeLayoutT).readNative(addr),

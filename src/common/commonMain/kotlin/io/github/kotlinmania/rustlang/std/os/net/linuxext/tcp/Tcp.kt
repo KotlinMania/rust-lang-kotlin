@@ -1,9 +1,10 @@
 // port-lint: source os/net/linux_ext/tcp.rs
 package io.github.kotlinmania.rustlang.std.os.net.linuxext.tcp
 
+import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.time.Duration
+import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.net.tcp.TcpStream
-import io.github.kotlinmania.rustlang.std.thread.Result
 
 // Linux and Android-specific tcp extensions to primitives in the [std.net] module.
 
@@ -36,7 +37,7 @@ public interface TcpStreamExt {
      * stream.setQuickack(true).expect("setQuickack call failed");
      * ```kotlin
      */
-    public fun setQuickack(quickack: Boolean): Result<Unit>
+    public fun setQuickack(quickack: Boolean): Result<Unit, Error>
 
     /**
      * Gets the value of the `TCP_QUICKACK` option on this socket.
@@ -57,7 +58,7 @@ public interface TcpStreamExt {
      * assertEq(stream.quickack().unwrapOr(false), true);
      * ```kotlin
      */
-    public fun quickack(): Result<Boolean>
+    public fun quickack(): Result<Boolean, Error>
 
     /**
      * A socket listener will be awakened solely when data arrives.
@@ -86,7 +87,7 @@ public interface TcpStreamExt {
      * }
      * ```
      */
-    public fun setDeferaccept(accept: Duration): Result<Unit>
+    public fun setDeferaccept(accept: Duration): Result<Unit, Error>
 
     /**
      * Gets the accept delay value of the `TCP_DEFER_ACCEPT` option.
@@ -106,13 +107,13 @@ public interface TcpStreamExt {
      * assertEq(stream.deferaccept().unwrap(), Duration.fromSecs(1u64));
      * ```kotlin
      */
-    public fun deferaccept(): Result<Duration>
+    public fun deferaccept(): Result<Duration, Error>
 }
 
-public fun TcpStream.setQuickack(quickack: Boolean): Result<Unit> = this.asInner().asInner().setQuickack(quickack)
+public fun TcpStream.setQuickack(quickack: Boolean): Result<Unit, Error> = this.asInner().asInner().setQuickack(quickack)
 
-public fun TcpStream.quickack(): Result<Boolean> = this.asInner().asInner().quickack()
+public fun TcpStream.quickack(): Result<Boolean, Error> = this.asInner().asInner().quickack()
 
-public fun TcpStream.setDeferaccept(accept: Duration): Result<Unit> = this.asInner().asInner().setDeferaccept(accept)
+public fun TcpStream.setDeferaccept(accept: Duration): Result<Unit, Error> = this.asInner().asInner().setDeferaccept(accept)
 
-public fun TcpStream.deferaccept(): Result<Duration> = this.asInner().asInner().deferaccept()
+public fun TcpStream.deferaccept(): Result<Duration, Error> = this.asInner().asInner().deferaccept()

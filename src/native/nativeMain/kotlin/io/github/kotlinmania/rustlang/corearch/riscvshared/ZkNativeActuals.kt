@@ -1,4 +1,4 @@
-@file:OptIn(kotlinx.cinterop.ExperimentalForeignApi::class, kotlin.ExperimentalUnsignedTypes::class)
+@file:OptIn(ExperimentalForeignApi::class, ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.corearch.riscvshared
 
@@ -12,6 +12,7 @@ import io.github.kotlinmania.rustlang.corearch.riscvshared.cinterop.corearchRisc
 import io.github.kotlinmania.rustlang.corearch.riscvshared.cinterop.corearchRiscvsharedZkSm4ks
 import io.github.kotlinmania.rustlang.corearch.riscvshared.cinterop.corearchRiscvsharedZkXperm464
 import io.github.kotlinmania.rustlang.corearch.riscvshared.cinterop.corearchRiscvsharedZkXperm864
+import kotlinx.cinterop.ExperimentalForeignApi
 
 public actual fun sm4ed(rs1: Int, rs2: Int, bs: Int): Int =
     corearchRiscvsharedZkSm4ed(rs1, rs2, bs)

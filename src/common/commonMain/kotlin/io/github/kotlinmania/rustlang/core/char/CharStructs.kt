@@ -3,9 +3,9 @@ package io.github.kotlinmania.rustlang.core.char
 import io.github.kotlinmania.rustlang.core.escape.AlwaysEscaped
 import io.github.kotlinmania.rustlang.core.escape.EscapeIterInner
 import io.github.kotlinmania.rustlang.core.escape.MaybeEscaped
-import io.github.kotlinmania.rustlang.core.iter.TrustedLen
-import io.github.kotlinmania.rustlang.core.iter.TrustedRandomAccess
-import io.github.kotlinmania.rustlang.core.iter.TrustedRandomAccessNoCoerce
+import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccess
+import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccessNoCoerce
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
@@ -33,7 +33,7 @@ public open class EscapeUnicode internal constructor(
             value = v
         }
 
-    override fun iterator(): kotlin.collections.Iterator<Char> = object : AbstractIterator<Char>() {
+    override fun iterator(): Iterator<Char> = object : AbstractIterator<Char>() {
         override fun computeNext() {
             when (val v = this@EscapeUnicode.next()) {
                 null -> done()
@@ -41,6 +41,8 @@ public open class EscapeUnicode internal constructor(
             }
         }
     }
+
+    public open fun clone(): EscapeUnicode = EscapeUnicode(value)
 
     public open fun next(): Char? = this.value.next()?.let(Char::from)
 
@@ -90,7 +92,7 @@ public open class EscapeDefault internal constructor(
             value = v
         }
 
-    override fun iterator(): kotlin.collections.Iterator<Char> = object : AbstractIterator<Char>() {
+    override fun iterator(): Iterator<Char> = object : AbstractIterator<Char>() {
         override fun computeNext() {
             when (val v = this@EscapeDefault.next()) {
                 null -> done()
@@ -98,6 +100,8 @@ public open class EscapeDefault internal constructor(
             }
         }
     }
+
+    public open fun clone(): EscapeDefault = EscapeDefault(value)
 
     public open fun next(): Char? = this.value.next()?.let(Char::from)
 
@@ -151,7 +155,7 @@ public open class EscapeDebug internal constructor(
             value = v
         }
 
-    override fun iterator(): kotlin.collections.Iterator<Char> = object : AbstractIterator<Char>() {
+    override fun iterator(): Iterator<Char> = object : AbstractIterator<Char>() {
         override fun computeNext() {
             when (val v = this@EscapeDebug.next()) {
                 null -> done()
@@ -159,6 +163,8 @@ public open class EscapeDebug internal constructor(
             }
         }
     }
+
+    public open fun clone(): EscapeDebug = EscapeDebug(value)
 
     public open fun next(): Char? = this.value.next()
 
@@ -205,7 +211,7 @@ public open class ToUppercase(
             value = v
         }
 
-    override fun iterator(): kotlin.collections.Iterator<Char> = object : AbstractIterator<Char>() {
+    override fun iterator(): Iterator<Char> = object : AbstractIterator<Char>() {
         override fun computeNext() {
             when (val v = this@ToUppercase.next()) {
                 null -> done()
@@ -213,6 +219,8 @@ public open class ToUppercase(
             }
         }
     }
+
+    public open fun clone(): ToUppercase = ToUppercase(value)
 
     public override fun next(): Char? = this.value.next()
 
@@ -262,7 +270,7 @@ public open class ToTitlecase(
             value = v
         }
 
-    override fun iterator(): kotlin.collections.Iterator<Char> = object : AbstractIterator<Char>() {
+    override fun iterator(): Iterator<Char> = object : AbstractIterator<Char>() {
         override fun computeNext() {
             when (val v = this@ToTitlecase.next()) {
                 null -> done()
@@ -270,6 +278,8 @@ public open class ToTitlecase(
             }
         }
     }
+
+    public open fun clone(): ToTitlecase = ToTitlecase(value)
 
     public override fun next(): Char? = this.value.next()
 
@@ -319,7 +329,7 @@ public open class ToLowercase(
             value = v
         }
 
-    override fun iterator(): kotlin.collections.Iterator<Char> = object : AbstractIterator<Char>() {
+    override fun iterator(): Iterator<Char> = object : AbstractIterator<Char>() {
         override fun computeNext() {
             when (val v = this@ToLowercase.next()) {
                 null -> done()
@@ -327,6 +337,8 @@ public open class ToLowercase(
             }
         }
     }
+
+    public open fun clone(): ToLowercase = ToLowercase(value)
 
     public override fun next(): Char? = this.value.next()
 
@@ -376,7 +388,7 @@ public open class ToCasefold(
             value = v
         }
 
-    override fun iterator(): kotlin.collections.Iterator<Char> = object : AbstractIterator<Char>() {
+    override fun iterator(): Iterator<Char> = object : AbstractIterator<Char>() {
         override fun computeNext() {
             when (val v = this@ToCasefold.next()) {
                 null -> done()
@@ -384,6 +396,8 @@ public open class ToCasefold(
             }
         }
     }
+
+    public open fun clone(): ToCasefold = ToCasefold(value)
 
     public override fun next(): Char? = this.value.next()
 
@@ -428,7 +442,7 @@ public open class CaseMappingIter internal constructor(
             value = v
         }
 
-    override fun iterator(): kotlin.collections.Iterator<Char> = object : AbstractIterator<Char>() {
+    override fun iterator(): Iterator<Char> = object : AbstractIterator<Char>() {
         override fun computeNext() {
             when (val v = this@CaseMappingIter.next()) {
                 null -> done()
@@ -436,6 +450,8 @@ public open class CaseMappingIter internal constructor(
             }
         }
     }
+
+    public open fun clone(): CaseMappingIter = CaseMappingIter(value)
 
     public override fun next(): Char? = this.value.next()
 
@@ -504,7 +520,7 @@ public open class CaseMappingIter internal constructor(
  * The error type returned when a checked char conversion fails.
  */
 public open class TryFromCharError(
-    internal var value: Unit,
+    public var value: Unit,
 ) {
     public var field0: Unit
         get() = value
@@ -512,26 +528,28 @@ public open class TryFromCharError(
             value = v
         }
 
+    public open fun clone(): TryFromCharError = TryFromCharError(value)
+
     public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> = "unicode code point out of range".fmt(fmt)
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<TryFromCharError> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<TryFromCharError> {
+        public fun typeLayout(): TypeLayout<TryFromCharError> =
+            object : TypeLayout<TryFromCharError> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): TryFromCharError =
                     TryFromCharError(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.UNIT).readNative(addr),
+                        (PrimitiveLayouts.UNIT).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: TryFromCharError) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.UNIT).writeNative(addr, value.value)
+                    (PrimitiveLayouts.UNIT).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): TryFromCharError =
                     TryFromCharError(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.UNIT).readBytes(buf, offset),
+                        (PrimitiveLayouts.UNIT).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: TryFromCharError) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.UNIT).writeBytes(buf, offset, value.value)
+                    (PrimitiveLayouts.UNIT).writeBytes(buf, offset, value.value)
                 }
             }
     }

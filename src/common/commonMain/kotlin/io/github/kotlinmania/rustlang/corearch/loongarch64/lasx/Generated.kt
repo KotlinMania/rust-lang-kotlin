@@ -9,7 +9,6 @@ import io.github.kotlinmania.rustlang.corearch.loongarch64.lsx.M128i
 import io.github.kotlinmania.rustlang.corearch.loongarch64.lsx.V2f64
 import io.github.kotlinmania.rustlang.corearch.loongarch64.lsx.V2i64
 import io.github.kotlinmania.rustlang.corearch.loongarch64.lsx.V4f32
-import io.github.kotlinmania.rustlang.corearch.mem.transmute
 
 public expect fun lasxXvsrarB(a: V32i8, b: V32i8): V32i8
 

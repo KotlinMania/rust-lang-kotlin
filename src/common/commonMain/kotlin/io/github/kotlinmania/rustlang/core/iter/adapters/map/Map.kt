@@ -1,15 +1,17 @@
 // port-lint: source iter/adapters/map.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.map
 
-import io.github.kotlinmania.rustlang.core.iter.InPlaceIterable
-import io.github.kotlinmania.rustlang.core.iter.TrustedFused
-import io.github.kotlinmania.rustlang.core.iter.TrustedLen
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
-import io.github.kotlinmania.rustlang.core.iter.adapters.TrustedRandomAccess
-import io.github.kotlinmania.rustlang.core.iter.adapters.TrustedRandomAccessNoCoerce
+import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccess
+import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccessNoCoerce
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.tryGetUnchecked
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.InPlaceIterable
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedFused
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
 
 public class DebugStruct(
@@ -93,10 +95,10 @@ public typealias Source<I> = I.Source
  */
 public open class Map<I, F>(
     // Used for `SplitWhitespace` and `SplitAsciiWhitespace` `asStr` methods
-    internal var iter: I,
+    public var iter: I,
     public var f: F,
 ) : TrustedFused, TrustedLen<Map<I, F>>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, SourceIter<Any?, Source>, InPlaceIterable, Iterable<B> {
-    override fun iterator(): kotlin.collections.Iterator<B> = object : AbstractIterator<B>() {
+    override fun iterator(): Iterator<B> = object : AbstractIterator<B>() {
         override fun computeNext() {
             when (val v = this@Map.next()) {
                 null -> done()
@@ -107,7 +109,7 @@ public open class Map<I, F>(
 
     public open fun clone(): Map<I, F> = Map(iter, f)
 
-    internal open fun intoInner(): I = this.iter
+    public open fun intoInner(): I = this.iter
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "Map").field("iter", this.iter).finish()
 
@@ -141,11 +143,11 @@ public open class Map<I, F>(
     }
 
     public companion object {
-        public fun <I, F> typeLayout(typeLayoutI: io.github.kotlinmania.rustlang.core.mem.TypeLayout<I>, typeLayoutF: io.github.kotlinmania.rustlang.core.mem.TypeLayout<F>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Map<I, F>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Map<I, F>> {
+        public fun <I, F> typeLayout(typeLayoutI: TypeLayout<I>, typeLayoutF: TypeLayout<F>): TypeLayout<Map<I, F>> =
+            object : TypeLayout<Map<I, F>> {
                 override val alignBytes: Long = listOf(1L, typeLayoutI.alignBytes, typeLayoutF.alignBytes).max()
-                private val off1: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(typeLayoutI.sizeBytes, typeLayoutF.alignBytes)
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes((off1 + typeLayoutF.sizeBytes), alignBytes)
+                private val off1: Long = alignUpBytes(typeLayoutI.sizeBytes, typeLayoutF.alignBytes)
+                override val sizeBytes: Long = alignUpBytes((off1 + typeLayoutF.sizeBytes), alignBytes)
                 override fun readNative(addr: Long): Map<I, F> =
                     Map(
                         (typeLayoutI).readNative(addr),
@@ -166,7 +168,7 @@ public open class Map<I, F>(
                 }
             }
 
-        internal fun <I, F> new(iter: I, f: F): Map<I, F> = Map(iter = iter, f = f)
+        public fun <I, F> new(iter: I, f: F): Map<I, F> = Map(iter = iter, f = f)
 
         public val MAY_HAVE_SIDE_EFFECT: Boolean = true
 

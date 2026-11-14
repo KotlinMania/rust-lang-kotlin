@@ -97,6 +97,7 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering.*
 // import std.sync.atomic.AtomicU16
 // import std.sync.atomic.AtomicU8
 // import std.sync.atomic.Ordering
+// import std.thread
 //
 // val atomic = AtomicU16.new(0)
 // thread.scope({ s ->
@@ -224,27 +225,27 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering.*
 //
 // A simple spinlock:
 //
-// ```kotlin
-// import io.github.kotlinmania.rustlang.core.intrinsics.kmSpinLoopHint
-// import std.sync.atomic.AtomicUsize
-// import std.sync.atomic.Ordering
+// ```ignore-wasm
+// use std.sync.Arc;
+// use std.sync.atomic::{AtomicUsize, Ordering};
+// use std::{hint, thread};
 //
-// fun main() {
-//     val spinlock = AtomicUsize.new(1)
-//     val spinlockClone = spinlock
-//     val thread = thread.spawn({
-//         spinlockClone.store(0, Ordering.Release)
-//     })
+// fn main() {
+//     let spinlock = Arc.new(AtomicUsize.new(1));
+//
+//     let spinlockClone = Arc.clone(&spinlock);
+//
+//     let thread = thread.spawn(move || {
+//         spinlockClone.store(0, Ordering.Release);
+//     });
+//
 //     // Wait for the other thread to release the lock
-//     while (spinlock.load(Ordering.Acquire) != 0) {
-//         kmSpinLoopHint()
+//     while spinlock.load(Ordering.Acquire) != 0 {
+//         hint.spinLoop();
 //     }
-//     when (val matchVal = thread.join()) {
-//         is Err -> {
-//             val (panic) = matchVal
-//             println("Thread had an error: $panic")
-//         }
-//         else -> {}
+//
+//     if let Err(panic) = thread.join() {
+//         println("Thread had an error: {panic:?}");
 //     }
 // }
 // ```
@@ -584,7 +585,7 @@ public fun AtomicBool.Companion.new(v: Boolean): AtomicBool {
  * // since the reference to the atomic ended its scope in the block above
  * check((PrimitiveLayouts.BOOL).readNative((ptr).rawAddress) == true)
  * // Deallocate the value
- * drop(Holder.fromRaw(ptr))
+ * (Holder.fromRaw(ptr)).let { }
  * ```
  *
  * # Safety
@@ -667,22 +668,24 @@ public fun AtomicBool.Companion.fromMut(v: RustMutableReference<Boolean>): Atomi
  *
  * # Examples
  *
- * ```kotlin
- * import std.sync.atomic.AtomicBool
- * import std.sync.atomic.Ordering
+ * ```ignore-wasm
+ * use std.sync.atomic::{AtomicBool, Ordering};
  *
- * var someBools = MutableList(10) { AtomicBool.new(false) }
- * val view: MutableList<Boolean> = AtomicBool.getMutSlice(someBools)
- * check(view == MutableList(10) { false })
- * run { val dstTmp0 = view; val srcTmp0 = (BooleanArray(5) { true }); for (idxTmp0 in srcTmp0.indices) dstTmp0[idxTmp0] = srcTmp0[idxTmp0] }
- * scope({ s ->
- *     for (t in someBools[0 until 5]) {
- *         s.spawn({ check(t.load(Ordering.Relaxed) == true) })
+ * let mut someBools = [const { AtomicBool.new(false) }; 10];
+ *
+ * let view: [bool] = AtomicBool.getMutSlice(someBools);
+ * assertEq(view, [false; 10]);
+ * view[..5].copyFromSlice(&[true; 5]);
+ *
+ * std.thread.scope(|s| {
+ *     for t in &someBools[..5] {
+ *         s.spawn(move || assertEq(t.load(Ordering.Relaxed), true));
  *     }
- *     for (f in someBools[5 until someBools.size]) {
- *         s.spawn({ check(f.load(Ordering.Relaxed) == false) })
+ *
+ *     for f in &someBools[5..] {
+ *         s.spawn(move || assertEq(f.load(Ordering.Relaxed), false));
  *     }
- * })
+ * });
  * ```
  */
 public fun AtomicBool.Companion.getMutSlice(thisRef: MutableList<AtomicBool>): MutableList<Boolean> {
@@ -695,18 +698,17 @@ public fun AtomicBool.Companion.getMutSlice(thisRef: MutableList<AtomicBool>): M
  *
  * # Examples
  *
- * ```kotlin
- * import std.sync.atomic.AtomicBool
- * import std.sync.atomic.Ordering
+ * ```rust,ignore-wasm
+ * use std.sync.atomic::{AtomicBool, Ordering};
  *
- * var someBools = BooleanArray(10) { false }
- * val a = AtomicBool.fromMutSlice(someBools)
- * scope({ s ->
- *     for (i in 0 until a.len()) {
- *         s.spawn({ a[i].store(true, Ordering.Relaxed) })
+ * let mut someBools = [false; 10];
+ * let a = &*AtomicBool.fromMutSlice(someBools);
+ * std.thread.scope(|s| {
+ *     for i in 0..a.len() {
+ *         s.spawn(move || a[i].store(true, Ordering.Relaxed));
  *     }
- * })
- * check((someBools).contentEquals(BooleanArray(10) { true }))
+ * });
+ * assertEq(someBools, [true; 10]);
  * ```
  */
 public fun AtomicBool.Companion.fromMutSlice(v: MutableList<Boolean>): MutableList<AtomicBool> {
@@ -1342,15 +1344,19 @@ public fun AtomicBool.fetchNot(order: Ordering): Boolean = this.fetchXor(true, o
  *
  * # Examples
  *
- * ```kotlin
- * import io.github.kotlinmania.rustlang.core.ptr.MutPtr
- * import std.sync.atomic.AtomicBool
+ * ```ignore (extern-declaration)
+ * # fn main() {
+ * use std.sync.atomic.AtomicBool;
  *
- * fun myAtomicOp(arg: MutPtr) {}
- * var atomic = AtomicBool.new(true)
- * run {
- *     myAtomicOp(atomic.asPtr())
+ * extern "C" {
+ *     fn myAtomicOp(arg: *mut bool);
  * }
+ *
+ * let mut atomic = AtomicBool.new(true);
+ * unchecked {
+ *     myAtomicOp(atomic.asPtr());
+ * }
+ * # }
  * ```
  *
  * [memory model]: self#memory-model-for-atomic-accesses
@@ -1542,7 +1548,7 @@ public fun AtomicPtr.Companion.new(p: MutPtr): AtomicPtr {
  * // since the reference to the atomic ended its scope in the block above
  * check(!(((PrimitiveLayouts.mutPtrLayout(64L)).readNative((ptr).rawAddress)).rawAddress == 0L))
  * // Deallocate the value
- * drop(Holder.fromRaw(ptr))
+ * (Holder.fromRaw(ptr)).let { }
  * ```
  *
  * # Safety
@@ -1656,26 +1662,30 @@ public fun AtomicPtr.Companion.fromMut(v: RustMutableReference<MutPtr>): AtomicP
  *
  * # Examples
  *
- * ```kotlin
- * import io.github.kotlinmania.rustlang.core.ptr.MutPtr
- * import std.ptr.nullMut
- * import std.sync.atomic.AtomicPtr
- * import std.sync.atomic.Ordering
+ * ```ignore-wasm
+ * use std.ptr.nullMut;
+ * use std.sync.atomic::{AtomicPtr, Ordering};
  *
- * var somePtrs = MutableList(10) { AtomicPtr.new(MutPtr(0L)) }
- * val view: MutableList<MutPtr> = AtomicPtr.getMutSlice(somePtrs)
- * check(view == MutableList(10) { MutPtr(0L) })
- * view.mapIndexed { index, item -> Pair(index, item) }.forEach({ (i, ptr) -> ptr = Holder.intoRaw("iteration#$i") })
- * scope({ s ->
- *     for (ptr in somePtrs) {
- *         s.spawn({
- *             val ptr1 = ptr.load(Ordering.Relaxed)
- *             check(!ptr1.isNull())
- *             val name = Holder.fromRaw(ptr1)
- *             println("Hello, $name!")
- *         })
+ * let mut somePtrs = [const { AtomicPtr.new(nullMut::<String>()) }; 10];
+ *
+ * let view: [*mut String] = AtomicPtr.getMutSlice(somePtrs);
+ * assertEq(view, [nullMut::<String>(); 10]);
+ * view
+ *     .iterMut()
+ *     .enumerate()
+ *     .forEach(|(i, ptr)| *ptr = Box.intoRaw(Box.new(format("iteration#{i}"))));
+ *
+ * std.thread.scope(|s| {
+ *     for ptr in &somePtrs {
+ *         s.spawn(move || {
+ *             let ptr = ptr.load(Ordering.Relaxed);
+ *             assert(!ptr.isNull());
+ *
+ *             let name = unchecked { Box.fromRaw(ptr) };
+ *             println("Hello, {name}!");
+ *         });
  *     }
- * })
+ * });
  * ```
  */
 public fun <T> AtomicPtr.Companion.getMutSlice(thisRef: MutableList<AtomicPtr>, typeLayoutT: TypeLayout<T>): MutableList<MutPtr> {
@@ -1690,26 +1700,24 @@ public fun <T> AtomicPtr.Companion.getMutSlice(thisRef: MutableList<AtomicPtr>, 
  *
  * # Examples
  *
- * ```kotlin
- * import io.github.kotlinmania.rustlang.core.ptr.MutPtr
- * import std.ptr.nullMut
- * import std.sync.atomic.AtomicPtr
- * import std.sync.atomic.Ordering
+ * ```ignore-wasm
+ * use std.ptr.nullMut;
+ * use std.sync.atomic::{AtomicPtr, Ordering};
  *
- * var somePtrs = MutableList(10) { MutPtr(0L) }
- * val a = AtomicPtr.fromMutSlice(somePtrs)
- * scope({ s ->
- *     for (i in 0 until a.len()) {
- *         s.spawn({
- *             val name = "thread$i"
- *             a[i].store(Holder.intoRaw(name), Ordering.Relaxed)
- *         })
+ * let mut somePtrs = [nullMut::<String>(); 10];
+ * let a = &*AtomicPtr.fromMutSlice(somePtrs);
+ * std.thread.scope(|s| {
+ *     for i in 0..a.len() {
+ *         s.spawn(move || {
+ *             let name = Box.new(format("thread{i}"));
+ *             a[i].store(Box.intoRaw(name), Ordering.Relaxed);
+ *         });
  *     }
- * })
- * for (p in somePtrs) {
- *     check(!p.isNull())
- *     val name = Holder.fromRaw(p)
- *     println("Hello, $name!")
+ * });
+ * for p in somePtrs {
+ *     assert(!p.isNull());
+ *     let name = unchecked { Box.fromRaw(p) };
+ *     println("Hello, {name}!");
  * }
  * ```
  */
@@ -1810,6 +1818,7 @@ public fun AtomicPtr.load(order: Ordering): MutPtr {
  *
  * ```kotlin
  * import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+ * import std.ptr
  * import std.sync.atomic.AtomicPtr
  * import std.sync.atomic.Ordering
  * import std.sync.atomic.fence
@@ -1903,6 +1912,7 @@ public fun AtomicPtr.store(ptr: MutPtr, order: Ordering) {
  *
  * ```kotlin
  * import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+ * import std.ptr
  * import std.sync.atomic.AtomicPtr
  * import std.sync.atomic.Ordering
  * import std.sync.atomic.fence
@@ -2641,19 +2651,19 @@ public fun AtomicPtr.fetchXor(value: Int, order: Ordering): MutPtr {
  *
  * # Examples
  *
- * ```kotlin
- * import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
- * import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
- * import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
- * import io.github.kotlinmania.rustlang.core.ptr.MutPtr
- * import std.sync.atomic.AtomicPtr
+ * ```ignore (extern-declaration)
+ * use std.sync.atomic.AtomicPtr;
  *
- * fun myAtomicOp(arg: MutPtr) {}
- * val localStorageL9C0 = AddressableLocal(17, PrimitiveLayouts.I32)
- * val atomic = AtomicPtr.new(RustMutableReference(localStorageL9C0.asMutPtr(), localStorageL9C0.layout))
+ * extern "C" {
+ *     fn myAtomicOp(arg: *mut *mut u32);
+ * }
+ *
+ * let mut value = 17;
+ * let atomic = AtomicPtr.new(value);
+ *
  * // SAFETY: Safe as long as `myAtomicOp` is atomic.
- * run {
- *     myAtomicOp(atomic.asPtr())
+ * unchecked {
+ *     myAtomicOp(atomic.asPtr());
  * }
  * ```
  *
@@ -3420,11 +3430,17 @@ public fun AtomicI8.fetchMin(value: Byte, order: Ordering): Byte = atomicMin(thi
  *
  * # Examples
  *
- * ```kotlin
- * // SAFETY: Safe as long as `myAtomicOp` is atomic.
- * run {
- *     myAtomicOp(atomic.asPtr())
+ * ```ignore (extern-declaration)
+ * # fn main() {
+ *
+ * extern "C" {
  * }
+ *
+ * // SAFETY: Safe as long as `myAtomicOp` is atomic.
+ * unchecked {
+ *     myAtomicOp(atomic.asPtr());
+ * }
+ * # }
  * ```
  *
  * [memory model]: self#memory-model-for-atomic-accesses
@@ -4171,11 +4187,17 @@ public fun AtomicU8.fetchMin(value: UByte, order: Ordering): UByte = atomicUmin(
  *
  * # Examples
  *
- * ```kotlin
- * // SAFETY: Safe as long as `myAtomicOp` is atomic.
- * run {
- *     myAtomicOp(atomic.asPtr())
+ * ```ignore (extern-declaration)
+ * # fn main() {
+ *
+ * extern "C" {
  * }
+ *
+ * // SAFETY: Safe as long as `myAtomicOp` is atomic.
+ * unchecked {
+ *     myAtomicOp(atomic.asPtr());
+ * }
+ * # }
  * ```
  *
  * [memory model]: self#memory-model-for-atomic-accesses
@@ -4922,11 +4944,17 @@ public fun AtomicI16.fetchMin(value: Short, order: Ordering): Short = atomicMin(
  *
  * # Examples
  *
- * ```kotlin
- * // SAFETY: Safe as long as `myAtomicOp` is atomic.
- * run {
- *     myAtomicOp(atomic.asPtr())
+ * ```ignore (extern-declaration)
+ * # fn main() {
+ *
+ * extern "C" {
  * }
+ *
+ * // SAFETY: Safe as long as `myAtomicOp` is atomic.
+ * unchecked {
+ *     myAtomicOp(atomic.asPtr());
+ * }
+ * # }
  * ```
  *
  * [memory model]: self#memory-model-for-atomic-accesses
@@ -5673,11 +5701,17 @@ public fun AtomicU16.fetchMin(value: UShort, order: Ordering): UShort = atomicUm
  *
  * # Examples
  *
- * ```kotlin
- * // SAFETY: Safe as long as `myAtomicOp` is atomic.
- * run {
- *     myAtomicOp(atomic.asPtr())
+ * ```ignore (extern-declaration)
+ * # fn main() {
+ *
+ * extern "C" {
  * }
+ *
+ * // SAFETY: Safe as long as `myAtomicOp` is atomic.
+ * unchecked {
+ *     myAtomicOp(atomic.asPtr());
+ * }
+ * # }
  * ```
  *
  * [memory model]: self#memory-model-for-atomic-accesses
@@ -6424,11 +6458,17 @@ public fun AtomicI32.fetchMin(value: Int, order: Ordering): Int = atomicMin(this
  *
  * # Examples
  *
- * ```kotlin
- * // SAFETY: Safe as long as `myAtomicOp` is atomic.
- * run {
- *     myAtomicOp(atomic.asPtr())
+ * ```ignore (extern-declaration)
+ * # fn main() {
+ *
+ * extern "C" {
  * }
+ *
+ * // SAFETY: Safe as long as `myAtomicOp` is atomic.
+ * unchecked {
+ *     myAtomicOp(atomic.asPtr());
+ * }
+ * # }
  * ```
  *
  * [memory model]: self#memory-model-for-atomic-accesses
@@ -7175,11 +7215,17 @@ public fun AtomicU32.fetchMin(value: UInt, order: Ordering): UInt = atomicUmin(t
  *
  * # Examples
  *
- * ```kotlin
- * // SAFETY: Safe as long as `myAtomicOp` is atomic.
- * run {
- *     myAtomicOp(atomic.asPtr())
+ * ```ignore (extern-declaration)
+ * # fn main() {
+ *
+ * extern "C" {
  * }
+ *
+ * // SAFETY: Safe as long as `myAtomicOp` is atomic.
+ * unchecked {
+ *     myAtomicOp(atomic.asPtr());
+ * }
+ * # }
  * ```
  *
  * [memory model]: self#memory-model-for-atomic-accesses
@@ -7926,11 +7972,17 @@ public fun AtomicI64.fetchMin(value: Long, order: Ordering): Long = atomicMin(th
  *
  * # Examples
  *
- * ```kotlin
- * // SAFETY: Safe as long as `myAtomicOp` is atomic.
- * run {
- *     myAtomicOp(atomic.asPtr())
+ * ```ignore (extern-declaration)
+ * # fn main() {
+ *
+ * extern "C" {
  * }
+ *
+ * // SAFETY: Safe as long as `myAtomicOp` is atomic.
+ * unchecked {
+ *     myAtomicOp(atomic.asPtr());
+ * }
+ * # }
  * ```
  *
  * [memory model]: self#memory-model-for-atomic-accesses
@@ -8677,11 +8729,17 @@ public fun AtomicU64.fetchMin(value: ULong, order: Ordering): ULong = atomicUmin
  *
  * # Examples
  *
- * ```kotlin
- * // SAFETY: Safe as long as `myAtomicOp` is atomic.
- * run {
- *     myAtomicOp(atomic.asPtr())
+ * ```ignore (extern-declaration)
+ * # fn main() {
+ *
+ * extern "C" {
  * }
+ *
+ * // SAFETY: Safe as long as `myAtomicOp` is atomic.
+ * unchecked {
+ *     myAtomicOp(atomic.asPtr());
+ * }
+ * # }
  * ```
  *
  * [memory model]: self#memory-model-for-atomic-accesses
@@ -9428,11 +9486,17 @@ public fun AtomicI128.fetchMin(value: I128, order: Ordering): I128 = atomicMin(t
  *
  * # Examples
  *
- * ```kotlin
- * // SAFETY: Safe as long as `myAtomicOp` is atomic.
- * run {
- *     myAtomicOp(atomic.asPtr())
+ * ```ignore (extern-declaration)
+ * # fn main() {
+ *
+ * extern "C" {
  * }
+ *
+ * // SAFETY: Safe as long as `myAtomicOp` is atomic.
+ * unchecked {
+ *     myAtomicOp(atomic.asPtr());
+ * }
+ * # }
  * ```
  *
  * [memory model]: self#memory-model-for-atomic-accesses
@@ -10179,11 +10243,17 @@ public fun AtomicU128.fetchMin(value: U128, order: Ordering): U128 = atomicUmin(
  *
  * # Examples
  *
- * ```kotlin
- * // SAFETY: Safe as long as `myAtomicOp` is atomic.
- * run {
- *     myAtomicOp(atomic.asPtr())
+ * ```ignore (extern-declaration)
+ * # fn main() {
+ *
+ * extern "C" {
  * }
+ *
+ * // SAFETY: Safe as long as `myAtomicOp` is atomic.
+ * unchecked {
+ *     myAtomicOp(atomic.asPtr());
+ * }
+ * # }
  * ```
  *
  * [memory model]: self#memory-model-for-atomic-accesses
@@ -10930,11 +11000,17 @@ public fun AtomicIsize.fetchMin(value: Int, order: Ordering): Int = atomicMin(th
  *
  * # Examples
  *
- * ```kotlin
- * // SAFETY: Safe as long as `myAtomicOp` is atomic.
- * run {
- *     myAtomicOp(atomic.asPtr())
+ * ```ignore (extern-declaration)
+ * # fn main() {
+ *
+ * extern "C" {
  * }
+ *
+ * // SAFETY: Safe as long as `myAtomicOp` is atomic.
+ * unchecked {
+ *     myAtomicOp(atomic.asPtr());
+ * }
+ * # }
  * ```
  *
  * [memory model]: self#memory-model-for-atomic-accesses
@@ -11681,11 +11757,17 @@ public fun AtomicUsize.fetchMin(value: Int, order: Ordering): Int = atomicUmin(t
  *
  * # Examples
  *
- * ```kotlin
- * // SAFETY: Safe as long as `myAtomicOp` is atomic.
- * run {
- *     myAtomicOp(atomic.asPtr())
+ * ```ignore (extern-declaration)
+ * # fn main() {
+ *
+ * extern "C" {
  * }
+ *
+ * // SAFETY: Safe as long as `myAtomicOp` is atomic.
+ * unchecked {
+ *     myAtomicOp(atomic.asPtr());
+ * }
+ * # }
  * ```
  *
  * [memory model]: self#memory-model-for-atomic-accesses

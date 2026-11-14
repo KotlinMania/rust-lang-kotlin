@@ -1,7 +1,8 @@
 package io.github.kotlinmania.rustlang.std.os.unix.io
 
-import io.github.kotlinmania.rustlang.std.os.solid.io.OwnedFd
-import io.github.kotlinmania.rustlang.std.thread.Result
+import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.std.io.error.Error
+import io.github.kotlinmania.rustlang.std.os.fd.OwnedFd
 
 public interface StdioExt {
     /**
@@ -34,7 +35,7 @@ public interface StdioExt {
      * }
      * ```kotlin
      */
-    public fun setFd(fd: OwnedFd): Result<Unit>
+    public fun setFd(fd: OwnedFd): Result<Unit, Error>
 
     /**
      * Redirects the stdio file descriptor and returns a new `OwnedFd`
@@ -44,7 +45,7 @@ public interface StdioExt {
      *
      * [setFd]: StdioExt.setFd
      */
-    public fun replaceFd(replaceWith: OwnedFd): Result<OwnedFd>
+    public fun replaceFd(replaceWith: OwnedFd): Result<OwnedFd, Error>
 
     /**
      * Redirects the stdio file descriptor to the null device (`/ dev / null`)
@@ -58,5 +59,5 @@ public interface StdioExt {
      *
      * [setFd]: StdioExt.setFd
      */
-    public fun takeFd(): Result<OwnedFd>
+    public fun takeFd(): Result<OwnedFd, Error>
 }

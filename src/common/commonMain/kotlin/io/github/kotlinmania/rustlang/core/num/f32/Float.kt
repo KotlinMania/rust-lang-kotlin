@@ -3,8 +3,8 @@
 
 package io.github.kotlinmania.rustlang.core.num.f32
 
-import io.github.kotlinmania.rustlang.core.cfgSelect
-import io.github.kotlinmania.rustlang.core.cmp.ClampBounds
+import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.cmp.clamp.ClampBounds
 import io.github.kotlinmania.rustlang.core.intrinsics.copysignf32
 import io.github.kotlinmania.rustlang.core.intrinsics.fabs
 import io.github.kotlinmania.rustlang.core.intrinsics.faddAlgebraic
@@ -19,14 +19,14 @@ import io.github.kotlinmania.rustlang.core.intrinsics.maximumf32
 import io.github.kotlinmania.rustlang.core.intrinsics.minimumNumberNszF32
 import io.github.kotlinmania.rustlang.core.intrinsics.minimumf32
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.FpCategory
+import io.github.kotlinmania.rustlang.core.num.imp.libm.cbrtf
+import io.github.kotlinmania.rustlang.core.num.imp.libm.fdimf
 import io.github.kotlinmania.rustlang.core.num.rustClassifyFloat
 import io.github.kotlinmania.rustlang.core.num.rustIsSignNegative
 import io.github.kotlinmania.rustlang.core.panic.constAssert
-import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
-import io.github.kotlinmania.rustlang.libm.cbrtf
-import io.github.kotlinmania.rustlang.libm.fdimf
 import kotlin.math.abs
 
 // Constants for the `Float` single-precision floating point type.
@@ -840,7 +840,7 @@ public fun kotlin.Float.minimum(other: kotlin.Float): kotlin.Float = minimumf32(
  * check((-5.5f).midpoint(8.0) == 1.25)
  * ```
  */
-public fun kotlin.Float.midpoint(other: kotlin.Float): kotlin.Float = cfgSelect(any, targetArch, "x86_64", targetArch, "aarch64", all, any, targetArch, "riscv32", targetArch, "riscv64", targetFeature, "d", all, targetArch, "loongarch64", targetFeature, "d", all, targetArch, "arm", targetFeature, "vfp2", targetArch, "wasm32", targetArch, "wasm64", this, other, 0.5, HI, MAX, 0.5, a, b, this, other, absA, a, abs, absB, b, abs, absA, HI, absB, HI, a, b, 0.5, a, 0.5, b, 0.5)
+public fun kotlin.Float.midpoint(other: kotlin.Float): kotlin.Float = ((this.toDouble() + other.toDouble()) * 0.5).toFloat()
 
 /**
  * Rounds toward zero and converts to any primitive integer type,
@@ -957,7 +957,7 @@ public inline fun <reified Int> kotlin.Float.toIntStrict(): Int = (this.toIntChe
  */
 public fun kotlin.Float.toBits(): UInt {
     // SAFETY: `UInt` is a plain old datatype so we can always reinterpret to it.
-    return mem.transmute(this)
+    return transmute(this)
 }
 
 /**
@@ -1660,7 +1660,7 @@ public fun fract(x: kotlin.Float): kotlin.Float = x - trunc(x)
  *
  * [f32.mulAdd]: ../../../std/primitive.f32.html#method.mulAdd
  */
-public fun mulAdd(x: kotlin.Float, y: kotlin.Float, z: kotlin.Float): kotlin.Float = fma(x, y, z)
+public fun mulAdd(x: kotlin.Float, y: kotlin.Float, z: kotlin.Float): kotlin.Float = fma(x.toDouble(), y.toDouble(), z.toDouble()).toFloat()
 
 /**
  * Experimental version of `divEuclid` in `core`. See [f32.divEuclid] for details.

@@ -1,12 +1,11 @@
 package io.github.kotlinmania.rustlang.procmacro.bridge
 
-import io.github.kotlinmania.rustlang.core.ffi.CStr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.procmacro.Span
 import io.github.kotlinmania.rustlang.procmacro.bridge.client.TokenStream
 import io.github.kotlinmania.rustlang.procmacro.bridge.symbol.Symbol
 
-internal sealed class ApiTags {
+public sealed class ApiTags {
     public data object TrackEnvVar : ApiTags()
     public data object TrackPath : ApiTags()
     public data object LiteralFromStr : ApiTags()

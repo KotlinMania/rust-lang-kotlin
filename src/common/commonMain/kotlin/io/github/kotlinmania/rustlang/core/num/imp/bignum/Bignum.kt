@@ -5,17 +5,17 @@ package io.github.kotlinmania.rustlang.core.num.imp.bignum
 
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.clone.UseCloned
+import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.fmt.Formatter
 import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
+import io.github.kotlinmania.rustlang.core.iter.adapters.zip.zip
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.num.rustTrailingZeros
 import io.github.kotlinmania.rustlang.core.option.Option
-import io.github.kotlinmania.rustlang.core.result.Iter
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 
 // Custom arbitrary-precision number (bignum) implementation.
 //
@@ -185,9 +185,9 @@ public open class Big64x20(
      * Adds `other` to itself and returns its own mutable reference.
      */
     public open fun add(other: Big64x20): Big64x20 {
-        var sz = cmp.max(this.size, other.size)
+        var sz = max(this.size, other.size)
         var carry = false
-        for ((a, b) in run { val subSlice0 = this.base.sliceArray(0 until sz); val subCall0 = Iter.zip(subSlice0, ((other.base).sliceArray(0 until sz))); subSlice0.copyInto(this.base, destinationOffset = 0); subCall0 }) {
+        for ((a, b) in run { val subSlice0 = this.base.sliceArray(0 until sz); val subCall0 = zip(subSlice0, ((other.base).sliceArray(0 until sz))); subSlice0.copyInto(this.base, destinationOffset = 0); subCall0 }) {
             val (v, c) = a.carryingAdd(b, carry)
             a = v
             carry = c
@@ -220,9 +220,9 @@ public open class Big64x20(
      * Subtracts `other` from itself and returns its own mutable reference.
      */
     public open fun sub(other: Big64x20): Big64x20 {
-        val sz = cmp.max(this.size, other.size)
+        val sz = max(this.size, other.size)
         var noborrow = true
-        for ((a, b) in run { val subSlice0 = this.base.sliceArray(0 until sz); val subCall0 = Iter.zip(subSlice0, ((other.base).sliceArray(0 until sz))); subSlice0.copyInto(this.base, destinationOffset = 0); subCall0 }) {
+        for ((a, b) in run { val subSlice0 = this.base.sliceArray(0 until sz); val subCall0 = zip(subSlice0, ((other.base).sliceArray(0 until sz))); subSlice0.copyInto(this.base, destinationOffset = 0); subCall0 }) {
             val (v, c) = a.carryingAdd(!b, noborrow)
             a = v
             noborrow = c
@@ -394,27 +394,27 @@ public open class Big64x20(
     }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Big64x20> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Big64x20> {
+        public fun typeLayout(): TypeLayout<Big64x20> =
+            object : TypeLayout<Big64x20> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 168L
                 override fun readNative(addr: Long): Big64x20 =
                     Big64x20(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uLongArray(20)).readNative(addr + 8L),
+                        (PrimitiveLayouts.USIZE64).readNative(addr),
+                        (PrimitiveArrayLayouts.uLongArray(20)).readNative(addr + 8L),
                     )
                 override fun writeNative(addr: Long, value: Big64x20) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeNative(addr, value.size)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uLongArray(20)).writeNative(addr + 8L, value.base)
+                    (PrimitiveLayouts.USIZE64).writeNative(addr, value.size)
+                    (PrimitiveArrayLayouts.uLongArray(20)).writeNative(addr + 8L, value.base)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Big64x20 =
                     Big64x20(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uLongArray(20)).readBytes(buf, offset + 8),
+                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset),
+                        (PrimitiveArrayLayouts.uLongArray(20)).readBytes(buf, offset + 8),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Big64x20) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeBytes(buf, offset, value.size)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uLongArray(20)).writeBytes(buf, offset + 8, value.base)
+                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset, value.size)
+                    (PrimitiveArrayLayouts.uLongArray(20)).writeBytes(buf, offset + 8, value.base)
                 }
             }
 
@@ -516,9 +516,9 @@ public open class Big8x3(
      * Adds `other` to itself and returns its own mutable reference.
      */
     public open fun add(other: Big8x3): Big8x3 {
-        var sz = cmp.max(this.size, other.size)
+        var sz = max(this.size, other.size)
         var carry = false
-        for ((a, b) in run { val subSlice0 = this.base.sliceArray(0 until sz); val subCall0 = Iter.zip(subSlice0, ((other.base).sliceArray(0 until sz))); subSlice0.copyInto(this.base, destinationOffset = 0); subCall0 }) {
+        for ((a, b) in run { val subSlice0 = this.base.sliceArray(0 until sz); val subCall0 = zip(subSlice0, ((other.base).sliceArray(0 until sz))); subSlice0.copyInto(this.base, destinationOffset = 0); subCall0 }) {
             val (v, c) = a.carryingAdd(b, carry)
             a = v
             carry = c
@@ -551,9 +551,9 @@ public open class Big8x3(
      * Subtracts `other` from itself and returns its own mutable reference.
      */
     public open fun sub(other: Big8x3): Big8x3 {
-        val sz = cmp.max(this.size, other.size)
+        val sz = max(this.size, other.size)
         var noborrow = true
-        for ((a, b) in run { val subSlice0 = this.base.sliceArray(0 until sz); val subCall0 = Iter.zip(subSlice0, ((other.base).sliceArray(0 until sz))); subSlice0.copyInto(this.base, destinationOffset = 0); subCall0 }) {
+        for ((a, b) in run { val subSlice0 = this.base.sliceArray(0 until sz); val subCall0 = zip(subSlice0, ((other.base).sliceArray(0 until sz))); subSlice0.copyInto(this.base, destinationOffset = 0); subCall0 }) {
             val (v, c) = a.carryingAdd(!b, noborrow)
             a = v
             noborrow = c
@@ -725,27 +725,27 @@ public open class Big8x3(
     }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Big8x3> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Big8x3> {
+        public fun typeLayout(): TypeLayout<Big8x3> =
+            object : TypeLayout<Big8x3> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): Big8x3 =
                     Big8x3(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uByteArray(3)).readNative(addr + 8L),
+                        (PrimitiveLayouts.USIZE64).readNative(addr),
+                        (PrimitiveArrayLayouts.uByteArray(3)).readNative(addr + 8L),
                     )
                 override fun writeNative(addr: Long, value: Big8x3) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeNative(addr, value.size)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uByteArray(3)).writeNative(addr + 8L, value.base)
+                    (PrimitiveLayouts.USIZE64).writeNative(addr, value.size)
+                    (PrimitiveArrayLayouts.uByteArray(3)).writeNative(addr + 8L, value.base)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Big8x3 =
                     Big8x3(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uByteArray(3)).readBytes(buf, offset + 8),
+                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset),
+                        (PrimitiveArrayLayouts.uByteArray(3)).readBytes(buf, offset + 8),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Big8x3) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeBytes(buf, offset, value.size)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uByteArray(3)).writeBytes(buf, offset + 8, value.base)
+                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset, value.size)
+                    (PrimitiveArrayLayouts.uByteArray(3)).writeBytes(buf, offset + 8, value.base)
                 }
             }
 

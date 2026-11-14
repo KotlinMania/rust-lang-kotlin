@@ -6,6 +6,7 @@ package io.github.kotlinmania.rustlang.core.num.imp.dec2flt.decimalseq
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.num.imp.dec2flt.common.is8digits
 
 // Arbitrary-precision decimal type used by fallback algorithms.
@@ -40,6 +41,8 @@ public open class DecimalSeq(
      */
     public var digits: UByteArray,
 ) {
+    public open fun clone(): DecimalSeq = DecimalSeq(numDigits, decimalPoint, truncated, digits)
+
     // Note(tgross35): it may be better for this to return an option
     // Note(tgross35): incrementing the digit counter even if we don't push anything
     // seems incorrect.
@@ -47,7 +50,7 @@ public open class DecimalSeq(
     /**
      * Append a digit to the buffer if it fits.
      */
-    internal open fun tryAddDigit(digit: UByte) {
+    public open fun tryAddDigit(digit: UByte) {
         if (this.numDigits < DecimalSeq.MAX_DIGITS) {
             this.digits[this.numDigits] = digit
         }
@@ -68,7 +71,7 @@ public open class DecimalSeq(
         }
     }
 
-    internal open fun round(): ULong {
+    public open fun round(): ULong {
         if (this.numDigits == 0 || this.decimalPoint < 0) {
             return 0uL
         } else if (this.decimalPoint >= DecimalSeq.MAX_DIGITS_WITHOUT_OVERFLOW.toInt()) {
@@ -98,7 +101,7 @@ public open class DecimalSeq(
     /**
      * Computes decimal * 2^shift.
      */
-    internal open fun leftShift(shift: Int) {
+    public open fun leftShift(shift: Int) {
         if (this.numDigits == 0) {
             return
         }
@@ -141,7 +144,7 @@ public open class DecimalSeq(
     /**
      * Computes decimal * 2^-shift.
      */
-    internal open fun rightShift(shift: Int) {
+    public open fun rightShift(shift: Int) {
         var readIndex = 0
         var writeIndex = 0
         var n = 0uL
@@ -190,35 +193,35 @@ public open class DecimalSeq(
     }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<DecimalSeq> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<DecimalSeq> {
+        public fun typeLayout(): TypeLayout<DecimalSeq> =
+            object : TypeLayout<DecimalSeq> {
                 override val alignBytes: Long = 8L
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes((13L + ((DecimalSeq.MAX_DIGITS).toLong() * (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U8).strideBytes)), 8L)
+                override val sizeBytes: Long = alignUpBytes((13L + ((DecimalSeq.MAX_DIGITS).toLong() * (PrimitiveLayouts.U8).strideBytes)), 8L)
                 override fun readNative(addr: Long): DecimalSeq =
                     DecimalSeq(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I32).readNative(addr + 8L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 12L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uByteArray((DecimalSeq.MAX_DIGITS).toInt())).readNative(addr + 13L),
+                        (PrimitiveLayouts.USIZE64).readNative(addr),
+                        (PrimitiveLayouts.I32).readNative(addr + 8L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 12L),
+                        (PrimitiveArrayLayouts.uByteArray((DecimalSeq.MAX_DIGITS).toInt())).readNative(addr + 13L),
                     )
                 override fun writeNative(addr: Long, value: DecimalSeq) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeNative(addr, value.numDigits)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I32).writeNative(addr + 8L, value.decimalPoint)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 12L, value.truncated)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uByteArray((DecimalSeq.MAX_DIGITS).toInt())).writeNative(addr + 13L, value.digits)
+                    (PrimitiveLayouts.USIZE64).writeNative(addr, value.numDigits)
+                    (PrimitiveLayouts.I32).writeNative(addr + 8L, value.decimalPoint)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 12L, value.truncated)
+                    (PrimitiveArrayLayouts.uByteArray((DecimalSeq.MAX_DIGITS).toInt())).writeNative(addr + 13L, value.digits)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): DecimalSeq =
                     DecimalSeq(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I32).readBytes(buf, offset + 8),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 12),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uByteArray((DecimalSeq.MAX_DIGITS).toInt())).readBytes(buf, offset + 13),
+                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset),
+                        (PrimitiveLayouts.I32).readBytes(buf, offset + 8),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 12),
+                        (PrimitiveArrayLayouts.uByteArray((DecimalSeq.MAX_DIGITS).toInt())).readBytes(buf, offset + 13),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: DecimalSeq) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeBytes(buf, offset, value.numDigits)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I32).writeBytes(buf, offset + 8, value.decimalPoint)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 12, value.truncated)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uByteArray((DecimalSeq.MAX_DIGITS).toInt())).writeBytes(buf, offset + 13, value.digits)
+                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset, value.numDigits)
+                    (PrimitiveLayouts.I32).writeBytes(buf, offset + 8, value.decimalPoint)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 12, value.truncated)
+                    (PrimitiveArrayLayouts.uByteArray((DecimalSeq.MAX_DIGITS).toInt())).writeBytes(buf, offset + 13, value.digits)
                 }
             }
 
@@ -255,9 +258,9 @@ public open class DecimalSeq(
         /**
          * The max decimal digits that can be exactly represented in a 64-bit integer.
          */
-        internal val MAX_DIGITS_WITHOUT_OVERFLOW: Int = 19
+        public val MAX_DIGITS_WITHOUT_OVERFLOW: Int = 19
 
-        internal val DECIMAL_POINT_RANGE: Int = 2047
+        public val DECIMAL_POINT_RANGE: Int = 2047
     }
 }
 

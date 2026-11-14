@@ -1,12 +1,12 @@
-@file:OptIn(kotlin.ExperimentalUnsignedTypes::class)
+@file:OptIn(ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.std.sys.fs.unix
 
-import io.github.kotlinmania.libc.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CSizeT
-import io.github.kotlinmania.rustlang.core.ffi.CSsizeT
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CSizeT
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CSsizeT
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.libc.CInt
 
 private object SysFsUnixJniBridge {
     init {
@@ -30,9 +30,9 @@ private object SysFsUnixJniBridge {
             }
         val libFileName =
             when (hostPlatform) {
-                "windows" -> "std_jni.dll"
-                "macos" -> "libstd_jni.dylib"
-                else -> "libstd_jni.so"
+                "windows" -> "kmcore_jni.dll"
+                "macos" -> "libkmcore_jni.dylib"
+                else -> "libkmcore_jni.so"
             }
         val pathSep = System.getProperty("path.separator", ":")
         val libPathProp = System.getProperty("java.library.path", "")
@@ -48,7 +48,7 @@ private object SysFsUnixJniBridge {
         val stream = SysFsUnixJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
-            val extracted = java.nio.file.Files.createTempFile("std_jni-", suffix).toFile()
+            val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
             extracted.deleteOnExit()
             stream.use { input ->
                 extracted.outputStream().use { output ->
@@ -58,7 +58,7 @@ private object SysFsUnixJniBridge {
             System.load(extracted.absolutePath)
             return
         }
-        System.loadLibrary("std_jni")
+        System.loadLibrary("kmcore_jni")
     }
 
     @JvmStatic

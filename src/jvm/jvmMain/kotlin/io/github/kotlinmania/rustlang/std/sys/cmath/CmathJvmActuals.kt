@@ -1,4 +1,4 @@
-@file:OptIn(kotlin.ExperimentalUnsignedTypes::class)
+@file:OptIn(ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.std.sys.cmath
 
@@ -27,9 +27,9 @@ private object SysCmathJniBridge {
             }
         val libFileName =
             when (hostPlatform) {
-                "windows" -> "std_jni.dll"
-                "macos" -> "libstd_jni.dylib"
-                else -> "libstd_jni.so"
+                "windows" -> "kmcore_jni.dll"
+                "macos" -> "libkmcore_jni.dylib"
+                else -> "libkmcore_jni.so"
             }
         val pathSep = System.getProperty("path.separator", ":")
         val libPathProp = System.getProperty("java.library.path", "")
@@ -45,7 +45,7 @@ private object SysCmathJniBridge {
         val stream = SysCmathJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
-            val extracted = java.nio.file.Files.createTempFile("std_jni-", suffix).toFile()
+            val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
             extracted.deleteOnExit()
             stream.use { input ->
                 extracted.outputStream().use { output ->
@@ -55,7 +55,7 @@ private object SysCmathJniBridge {
             System.load(extracted.absolutePath)
             return
         }
-        System.loadLibrary("std_jni")
+        System.loadLibrary("kmcore_jni")
     }
 
     @JvmStatic
@@ -123,6 +123,36 @@ private object SysCmathJniBridge {
 
     @JvmStatic
     external fun stdSysCmathErfcf(n: Float): Float
+
+    @JvmStatic
+    external fun stdSysCmathAcosf(n: Float): Float
+
+    @JvmStatic
+    external fun stdSysCmathAcoshf(n: Float): Float
+
+    @JvmStatic
+    external fun stdSysCmathAsinf(n: Float): Float
+
+    @JvmStatic
+    external fun stdSysCmathAsinhf(n: Float): Float
+
+    @JvmStatic
+    external fun stdSysCmathAtan2f(a: Float, b: Float): Float
+
+    @JvmStatic
+    external fun stdSysCmathAtanf(n: Float): Float
+
+    @JvmStatic
+    external fun stdSysCmathCoshf(n: Float): Float
+
+    @JvmStatic
+    external fun stdSysCmathSinhf(n: Float): Float
+
+    @JvmStatic
+    external fun stdSysCmathTanf(n: Float): Float
+
+    @JvmStatic
+    external fun stdSysCmathTanhf(n: Float): Float
 }
 
 public actual fun acos(n: Double): Double =
@@ -198,55 +228,85 @@ public actual fun erfcf(n: Float): Float =
     SysCmathJniBridge.stdSysCmathErfcf(n)
 
 public actual fun acosf128(n: F128): F128 =
-    null as F128
+    F128()
 
 public actual fun acoshf128(n: F128): F128 =
-    null as F128
+    F128()
 
 public actual fun asinf128(n: F128): F128 =
-    null as F128
+    F128()
 
 public actual fun asinhf128(n: F128): F128 =
-    null as F128
+    F128()
 
 public actual fun atanf128(n: F128): F128 =
-    null as F128
+    F128()
 
 public actual fun atan2f128(a: F128, b: F128): F128 =
-    null as F128
+    F128()
 
 public actual fun cbrtf128(n: F128): F128 =
-    null as F128
+    F128()
 
 public actual fun coshf128(n: F128): F128 =
-    null as F128
+    F128()
 
 public actual fun expm1f128(n: F128): F128 =
-    null as F128
+    F128()
 
 public actual fun hypotf128(x: F128, y: F128): F128 =
-    null as F128
+    F128()
 
 public actual fun log1pf128(n: F128): F128 =
-    null as F128
+    F128()
 
 public actual fun sinhf128(n: F128): F128 =
-    null as F128
+    F128()
 
 public actual fun tanf128(n: F128): F128 =
-    null as F128
+    F128()
 
 public actual fun tanhf128(n: F128): F128 =
-    null as F128
+    F128()
 
 public actual fun tgammaf128(n: F128): F128 =
-    null as F128
+    F128()
 
 public actual fun lgammaf128R(n: F128, s: RustMutableReference<Int>): F128 =
-    null as F128
+    F128()
 
 public actual fun erff128(n: F128): F128 =
-    null as F128
+    F128()
 
 public actual fun erfcf128(n: F128): F128 =
-    null as F128
+    F128()
+
+public actual fun acosf(n: Float): Float =
+    SysCmathJniBridge.stdSysCmathAcosf(n)
+
+public actual fun acoshf(n: Float): Float =
+    SysCmathJniBridge.stdSysCmathAcoshf(n)
+
+public actual fun asinf(n: Float): Float =
+    SysCmathJniBridge.stdSysCmathAsinf(n)
+
+public actual fun asinhf(n: Float): Float =
+    SysCmathJniBridge.stdSysCmathAsinhf(n)
+
+public actual fun atan2f(a: Float, b: Float): Float =
+    SysCmathJniBridge.stdSysCmathAtan2f(a, b)
+
+public actual fun atanf(n: Float): Float =
+    SysCmathJniBridge.stdSysCmathAtanf(n)
+
+public actual fun coshf(n: Float): Float =
+    SysCmathJniBridge.stdSysCmathCoshf(n)
+
+public actual fun sinhf(n: Float): Float =
+    SysCmathJniBridge.stdSysCmathSinhf(n)
+
+public actual fun tanf(n: Float): Float =
+    SysCmathJniBridge.stdSysCmathTanf(n)
+
+public actual fun tanhf(n: Float): Float =
+    SysCmathJniBridge.stdSysCmathTanhf(n)

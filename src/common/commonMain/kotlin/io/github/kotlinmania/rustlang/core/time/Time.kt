@@ -4,20 +4,21 @@
 package io.github.kotlinmania.rustlang.core.time
 
 import io.github.kotlinmania.rustlang.core.U128
-import io.github.kotlinmania.rustlang.core.iter.Sum
+import io.github.kotlinmania.rustlang.core.fmt.Alignment
+import io.github.kotlinmania.rustlang.core.iter.traits.accum.Sum
 import io.github.kotlinmania.rustlang.core.num.f32.MIN_EXP
 import io.github.kotlinmania.rustlang.core.num.nichetypes.Nanoseconds
 import io.github.kotlinmania.rustlang.core.num.rustCheckedAdd
 import io.github.kotlinmania.rustlang.core.num.rustCheckedMul
 import io.github.kotlinmania.rustlang.core.num.rustCheckedSub
-import io.github.kotlinmania.rustlang.core.ops.Add
-import io.github.kotlinmania.rustlang.core.ops.AddAssign
-import io.github.kotlinmania.rustlang.core.ops.Div
-import io.github.kotlinmania.rustlang.core.ops.DivAssign
-import io.github.kotlinmania.rustlang.core.ops.Mul
-import io.github.kotlinmania.rustlang.core.ops.MulAssign
-import io.github.kotlinmania.rustlang.core.ops.Sub
-import io.github.kotlinmania.rustlang.core.ops.SubAssign
+import io.github.kotlinmania.rustlang.core.ops.arith.Add
+import io.github.kotlinmania.rustlang.core.ops.arith.AddAssign
+import io.github.kotlinmania.rustlang.core.ops.arith.Div
+import io.github.kotlinmania.rustlang.core.ops.arith.DivAssign
+import io.github.kotlinmania.rustlang.core.ops.arith.Mul
+import io.github.kotlinmania.rustlang.core.ops.arith.MulAssign
+import io.github.kotlinmania.rustlang.core.ops.arith.Sub
+import io.github.kotlinmania.rustlang.core.ops.arith.SubAssign
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.core.str.converts.fromUtf8Unchecked
@@ -99,6 +100,8 @@ public open class Duration(
     public var secs: ULong,
     public var nanos: Nanoseconds,
 ) : Add<Duration, Any?, Duration>, AddAssign<Duration>, Sub<Duration, Any?, Duration>, SubAssign<Duration>, Mul<UInt, Any?, Duration>, MulAssign<UInt>, Div<UInt, Any?, Duration>, DivAssign<UInt>, Sum<Duration, Duration> {
+    public open fun clone(): Duration = Duration(secs, nanos)
+
     /**
      * Returns true if this `Duration` spans no time.
      *
@@ -1788,7 +1791,7 @@ public fun fmtDecimal(f: StringBuilder, integerPart: ULong, fractionalPart: UInt
                 emitWithoutPadding(f)
             } else {
                 // We need to add padding. Use the `Formatter.padding` helper function.
-                val defaultAlign = fmt.Alignment.Left
+                val defaultAlign = Alignment.Left
                 val postPadding = f.padding((requestedW - actualW).toUShort(), defaultAlign)
                 emitWithoutPadding(f)
                 postPadding.write(f)
@@ -1860,6 +1863,8 @@ public open class DisplaySeconds(
 public open class TryFromFloatSecsError(
     public var kind: TryFromFloatSecsErrorKind,
 ) {
+    public open fun clone(): TryFromFloatSecsError = TryFromFloatSecsError(kind)
+
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> =
         when (this.kind) {
             TryFromFloatSecsErrorKind.Negative -> {

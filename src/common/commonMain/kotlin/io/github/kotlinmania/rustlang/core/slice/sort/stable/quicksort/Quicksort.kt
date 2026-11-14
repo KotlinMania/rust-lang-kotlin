@@ -10,6 +10,8 @@ import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.num.rustSaturatingSub
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
+import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.sort.shared.pivot.choosePivot
@@ -47,7 +49,7 @@ public fun <T> quicksort(v: MutableList<T>, scratch: MutableList<MaybeUninit<T>>
         // self-modifications via `isLess` would not be observed and this would
         // be unsound. Our temporary copy does not escape this scope.
         // We use `MaybeUninit` to avoid re-tag issues. Note: use `MaybeDangling`.
-        val pivotCopy = ptr.read(ConstPtr(((addrOf(v1[pivotPos]))).rawAddress))
+        val pivotCopy = read(ConstPtr(((addrOf(v1[pivotPos]))).rawAddress))
         val pivotRef = (!hasDirectInteriorMutability<T>()).thenSome(pivotCopy.asPtr())
         // We choose a pivot, and check if this pivot is equal to our left
         // ancestor. If true, we do a partition putting equal elements on the
@@ -140,7 +142,7 @@ public fun <T> stablePartition(v: MutableList<T>, scratch: MutableList<MaybeUnin
         // `pivot` must be copied into its correct position again, because a
         // comparison operator might have modified it.
         if (hasDirectInteriorMutability<T>()) {
-            ptr.copyNonoverlapping(pivot, pivotInScratch, 1)
+            copyNonoverlapping(pivot, pivotInScratch, 1)
         }
         // SAFETY: partitionOne being called exactly len times guarantees that scratch
         // is initialized with a permuted copy of `v`, and that numLeft <= v.len().
@@ -149,10 +151,10 @@ public fun <T> stablePartition(v: MutableList<T>, scratch: MutableList<MaybeUnin
         // semantically act as moves, permuting `v`.
         // Copy all the elements < p directly from swap to v.
         val vBase1 = v.asMutPtr()
-        ptr.copyNonoverlapping(scratchBase, vBase1, state.numLeft)
+        copyNonoverlapping(scratchBase, vBase1, state.numLeft)
         // Copy the elements >= p in reverse order.
         for (i in 0 until len - state.numLeft) {
-            ptr.copyNonoverlapping(scratchBase.add(len - 1 - i), MutPtr((vBase1).rawAddress + ((state.numLeft + i).toLong() * (typeLayoutT).strideBytes)), 1)
+            copyNonoverlapping(scratchBase.add(len - 1 - i), MutPtr((vBase1).rawAddress + ((state.numLeft + i).toLong() * (typeLayoutT).strideBytes)), 1)
         }
         state.numLeft
     }
@@ -197,7 +199,7 @@ public open class PartitionState<T>(
                     this.scratchRev
                 }
             val dst = MutPtr((dstBase).rawAddress + ((this.numLeft).toLong() * (ObjectSlotLayout<T>()).strideBytes))
-            ptr.copyNonoverlapping(this.scan, dst, 1)
+            copyNonoverlapping(this.scan, dst, 1)
             this.numLeft += towardsLeft.toInt()
             this.scan = ConstPtr((this.scan).rawAddress + ((1).toLong() * (ObjectSlotLayout<T>()).strideBytes))
             dst
@@ -205,35 +207,35 @@ public open class PartitionState<T>(
     }
 
     public companion object {
-        public fun <T> typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<PartitionState<T>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<PartitionState<T>> {
+        public fun <T> typeLayout(): TypeLayout<PartitionState<T>> =
+            object : TypeLayout<PartitionState<T>> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 32L
                 override fun readNative(addr: Long): PartitionState<T> =
                     PartitionState(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.constPtrLayout(64)).readNative(addr + 8L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readNative(addr + 16L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).readNative(addr + 24L),
+                        (PrimitiveLayouts.mutPtrLayout(64)).readNative(addr),
+                        (PrimitiveLayouts.constPtrLayout(64)).readNative(addr + 8L),
+                        (PrimitiveLayouts.USIZE64).readNative(addr + 16L),
+                        (PrimitiveLayouts.mutPtrLayout(64)).readNative(addr + 24L),
                     )
                 override fun writeNative(addr: Long, value: PartitionState<T>) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).writeNative(addr, value.scratchBase)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.constPtrLayout(64)).writeNative(addr + 8L, value.scan)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeNative(addr + 16L, value.numLeft)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).writeNative(addr + 24L, value.scratchRev)
+                    (PrimitiveLayouts.mutPtrLayout(64)).writeNative(addr, value.scratchBase)
+                    (PrimitiveLayouts.constPtrLayout(64)).writeNative(addr + 8L, value.scan)
+                    (PrimitiveLayouts.USIZE64).writeNative(addr + 16L, value.numLeft)
+                    (PrimitiveLayouts.mutPtrLayout(64)).writeNative(addr + 24L, value.scratchRev)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): PartitionState<T> =
                     PartitionState(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.constPtrLayout(64)).readBytes(buf, offset + 8),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readBytes(buf, offset + 16),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).readBytes(buf, offset + 24),
+                        (PrimitiveLayouts.mutPtrLayout(64)).readBytes(buf, offset),
+                        (PrimitiveLayouts.constPtrLayout(64)).readBytes(buf, offset + 8),
+                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset + 16),
+                        (PrimitiveLayouts.mutPtrLayout(64)).readBytes(buf, offset + 24),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: PartitionState<T>) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).writeBytes(buf, offset, value.scratchBase)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.constPtrLayout(64)).writeBytes(buf, offset + 8, value.scan)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeBytes(buf, offset + 16, value.numLeft)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).writeBytes(buf, offset + 24, value.scratchRev)
+                    (PrimitiveLayouts.mutPtrLayout(64)).writeBytes(buf, offset, value.scratchBase)
+                    (PrimitiveLayouts.constPtrLayout(64)).writeBytes(buf, offset + 8, value.scan)
+                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset + 16, value.numLeft)
+                    (PrimitiveLayouts.mutPtrLayout(64)).writeBytes(buf, offset + 24, value.scratchRev)
                 }
             }
 

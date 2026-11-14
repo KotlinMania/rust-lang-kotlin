@@ -93,6 +93,8 @@ public open class Argument internal constructor(
 
     public fun pointerLayout(): TypeLayout<Argument> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Argument(ptr, layout) }, { it.ty })
 
+    public open fun clone(): Argument = Argument(ty, fieldLayout)
+
     /**
      * Format this Note argument.
      *
@@ -100,7 +102,7 @@ public open class Argument internal constructor(
      *
      * This argument must actually be a Note argument.
      */
-    internal open fun fmt(f: Formatter): Result =
+    public open fun fmt(f: Formatter): Result =
         when (val matchVal = this.ty) {
             // SAFETY:
             // Because of the invariant that if `formatter` had the type
@@ -118,7 +120,7 @@ public open class Argument internal constructor(
             is ArgumentType.Count -> unreachableUnchecked()
         }
 
-    internal open fun asU16(): UShort? =
+    public open fun asU16(): UShort? =
         when (val matchVal = this.ty) {
             is ArgumentType.Count -> {
                 val (count) = matchVal

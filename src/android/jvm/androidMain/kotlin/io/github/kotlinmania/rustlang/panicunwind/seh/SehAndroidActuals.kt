@@ -1,10 +1,10 @@
-@file:OptIn(kotlin.ExperimentalUnsignedTypes::class)
+@file:OptIn(ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.panicunwind.seh
 
 private object SehJniBridge {
     init {
-        System.loadLibrary("panicunwind_jni")
+        System.loadLibrary("kmcore_jni")
     }
 
     @JvmStatic

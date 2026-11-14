@@ -16,6 +16,7 @@ import io.github.kotlinmania.rustlang.core.io.error.Result
  *
  * ```kotlin
  * import std.fs.File
+ * import std.io
  * import std.io.SeekFrom
  * import std.io.prelude.*
  *

@@ -2,11 +2,10 @@
 package io.github.kotlinmania.rustlang.alloc.rcs.rc
 
 import io.github.kotlinmania.rustlang.alloc.alloc.Global
+import io.github.kotlinmania.rustlang.alloc.alloc.handleAllocError
 import io.github.kotlinmania.rustlang.alloc.borrow.Cow
 import io.github.kotlinmania.rustlang.alloc.borrow.ToOwned
 import io.github.kotlinmania.rustlang.alloc.boxed.Box
-import io.github.kotlinmania.rustlang.alloc.collections.btree.node.B
-import io.github.kotlinmania.rustlang.alloc.handleAllocError
 import io.github.kotlinmania.rustlang.alloc.string.String
 import io.github.kotlinmania.rustlang.alloc.vec.Vec
 import io.github.kotlinmania.rustlang.core.RustAny
@@ -23,13 +22,14 @@ import io.github.kotlinmania.rustlang.core.clone.Share
 import io.github.kotlinmania.rustlang.core.clone.UseCloned
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.fmt.Pointer
+import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignOf
 import io.github.kotlinmania.rustlang.core.mem.alignment.Alignment
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.mem.manuallydrop.ManuallyDrop
+import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
@@ -40,8 +40,12 @@ import io.github.kotlinmania.rustlang.core.pin.Pin
 import io.github.kotlinmania.rustlang.core.pin.PinSafePointer
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.addrEq
+import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
+import io.github.kotlinmania.rustlang.core.ptr.eq
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
+import io.github.kotlinmania.rustlang.core.ptr.write
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 import io.github.kotlinmania.rustlang.core.slice.asPtr
@@ -143,7 +147,7 @@ import io.github.kotlinmania.rustlang.core.slice.rawMutSliceList
 //     val gadget1 = Gadget(id = 1, owner = gadgetOwner)
 //     val gadget2 = Gadget(id = 2, owner = gadgetOwner)
 //     // Dispose of our local variable `gadgetOwner`.
-//     drop(gadgetOwner)
+//     (gadgetOwner).let { }
 //     // Despite dropping `gadgetOwner`, we're still able to print out the name
 //     // of the `Owner` of the `Gadget`s. This is because we've only dropped a
 //     // single `Rc<Owner>`, not the `Owner` it points to. As long as there are
@@ -309,7 +313,7 @@ public open class Rc<T, A : Allocator> internal constructor(
         // We cannot use `getMutUnchecked` here, because `self.alloc` is borrowed.
         // SAFETY: `self.ptr` is *not* borrowed.
         run {
-            ptr.dropInPlace(this.ptr.asPtr().value)
+            dropInPlace(this.ptr.asPtr().value)
         }
     }
 
@@ -340,9 +344,9 @@ public open class Rc<T, A : Allocator> internal constructor(
      * }
      * val foo = Foo()
      * val foo2 = foo
-     * drop(foo)
+     * (foo).let { }
      * // Doesn't print anything
-     * drop(foo2)
+     * (foo2).let { }
      * // Prints "dropped!"
      * ```
      */
@@ -390,9 +394,9 @@ public open class Rc<T, A : Allocator> internal constructor(
      *
      * We can only do this when `T: Eq` as a `PartialEq` might be deliberately irreflexive.
      */
-    public open fun eqTA(other: Rc<T, A>): Boolean = ptr.eq(this.ptr.asPtr(), other.ptr.asPtr()) || this == other
+    public open fun eqTA(other: Rc<T, A>): Boolean = io.github.kotlinmania.rustlang.core.ptr.eq(this.ptr.asPtr(), other.ptr.asPtr()) || this == other
 
-    public open fun neTA(other: Rc<T, A>): Boolean = !ptr.eq(this.ptr.asPtr(), other.ptr.asPtr()) && this != other
+    public open fun neTA(other: Rc<T, A>): Boolean = !eq(this.ptr.asPtr(), other.ptr.asPtr()) && this != other
 
     /**
      * Equality for two `Rc`s.
@@ -534,7 +538,7 @@ public open class Rc<T, A : Allocator> internal constructor(
     }
 
     public open fun fmtPointer(f: StringBuilder) {
-        fmt.Pointer.fmt((this), f)
+        Pointer.fmt((this), f)
     }
 
     public open fun borrow(): T = this
@@ -581,9 +585,9 @@ public open class Rc<T, A : Allocator> internal constructor(
         )
 
         public fun <T, A : Allocator> intoInnerWithAllocator(thisRef: Rc<T, A>): Pair<NonNull, A> {
-            val thisRef1 = mem.ManuallyDrop.new(thisRef)
+            val thisRef1 = thisRef
             // SAFETY: Pulling out the allocator we already own.
-            return Pair(thisRef1.ptr, ptr.read(thisRef1.alloc))
+            return Pair(thisRef1.ptr, read(thisRef1.alloc))
         }
 
         public fun <T, A : Allocator> fromInnerIn(ptr: NonNull, alloc: A): Rc<T, A> = Rc(ptr = ptr, phantom = Unit, alloc = alloc)
@@ -721,7 +725,7 @@ public open class Rc<T, A : Allocator> internal constructor(
             // ignore-tidy-undocumented-unchecked
             return run {
                 val inner = initPtr.asPtr()
-                ptr.write(addrOfMut(inner.value), data)
+                write(addrOfMut(inner.value), data)
                 val prevValue = inner.strong.get()
                 check(prevValue == 0)
                 inner.strong.set(1)
@@ -847,7 +851,7 @@ public open class Rc<T, A : Allocator> internal constructor(
             if (Rc.strongCount(thisRef) == 1) {
                 val thisRef1 = thisRef
                 // ignore-tidy-undocumented-unchecked
-                val value: T = ptr.read(thisRef1)
+                val value: T = read(thisRef1)
                 // copy the contained object
                 // ignore-tidy-undocumented-unchecked
                 // copy the allocator
@@ -1061,10 +1065,10 @@ public open class Rc<T, A : Allocator> internal constructor(
          * ```
          */
         public fun <T, A : Allocator> intoRawWithAllocator(thisRef: Rc<T, A>): Pair<ConstPtr, A> {
-            val thisRef1 = mem.ManuallyDrop.new(thisRef)
+            val thisRef1 = thisRef
             val ptr = Rc.asPtr(thisRef1)
             // SAFETY: `this` is ManuallyDrop so the allocator will not be double-dropped
-            val alloc = ptr.read(thisRef1.alloc)
+            val alloc = read(thisRef1.alloc)
             return Pair(ptr, alloc)
         }
 
@@ -1288,7 +1292,7 @@ public open class Rc<T, A : Allocator> internal constructor(
          */
         public fun <A : Allocator> decrementStrongCountIn(ptr: ConstPtr, alloc: A) {
             // SAFETY: Upheld by caller.
-            drop(Rc.fromRawIn(ptr, alloc))
+            (Rc.fromRawIn(ptr, alloc)).let { }
         }
 
         /**
@@ -1311,7 +1315,7 @@ public open class Rc<T, A : Allocator> internal constructor(
          * check(Rc.isUnique(x))
          * val y = x
          * check(!Rc.isUnique(x))
-         * drop(y)
+         * (y).let { }
          * // Weak references also count, because they could be upgraded at any time.
          * val z = Rc.downgrade(x)
          * check(!Rc.isUnique(x))
@@ -1457,7 +1461,7 @@ public open class Rc<T, A : Allocator> internal constructor(
          * check(!Rc.ptrEq(five, otherFive))
          * ```
          */
-        public fun <T, A : Allocator> ptrEq(thisRef: Rc<T, A>, other: Rc<T, A>): Boolean = ptr.addrEq(thisRef.ptr.asPtr(), other.ptr.asPtr())
+        public fun <T, A : Allocator> ptrEq(thisRef: Rc<T, A>, other: Rc<T, A>): Boolean = addrEq(thisRef.ptr.asPtr(), other.ptr.asPtr())
 
         /**
          * Makes a mutable reference into the given `Rc`.
@@ -1521,7 +1525,7 @@ public open class Rc<T, A : Allocator> internal constructor(
                     // Initialize `inProgress` with move of **this.
                     // We have to express this in terms of bytes because `T: ? Sized`; there is no
                     // operation that just copies a value based on its `sizeOfVal()`.
-                    ptr.copyNonoverlapping(thisRef1.cast(), inProgress.dataPtr().cast(), sizeOfVal)
+                    copyNonoverlapping(thisRef1.cast(), inProgress.dataPtr().cast(), sizeOfVal)
                     // This leaves us with 0 strong refs, so the data has
                     // effectively been moved to the new rc.
                     thisRef1.inner().decStrong()
@@ -1531,7 +1535,7 @@ public open class Rc<T, A : Allocator> internal constructor(
                     // Last chance to not accidentally forget the allocator.
                     // Only drop at the end of the scope to avoid panics.
                     // Replace `this` with newly constructed Rc that has the moved data.
-                    ptr.write(thisRef1, inProgress.intoRc())
+                    write(thisRef1, inProgress.intoRc())
                 }
             }
             // SAFETY: We're guaranteed that the pointer
@@ -1586,11 +1590,11 @@ public open class Rc<T, A : Allocator> internal constructor(
             return run {
                 val ptr = Rc.allocateForPtrIn(src, Box.allocator(src))
                 // Copy value as bytes
-                ptr.copyNonoverlapping(((src)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, ((addrOfMut((ObjectSlotLayout<RcInner<T>>()).readNative((ptr).rawAddress).value))).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, valueSize, typeLayoutT = PrimitiveLayouts.U8)
+                copyNonoverlapping(((src)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, ((addrOfMut((ObjectSlotLayout<RcInner<T>>()).readNative((ptr).rawAddress).value))).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, valueSize, typeLayoutT = PrimitiveLayouts.U8)
                 // Free the allocation without dropping its contents
                 val (bptr, alloc) = Box.intoRawWithAllocator(src)
                 val src1 = Box.fromRawIn(mutPtrFromRustCast(bptr), alloc)
-                drop(src1)
+                (src1).let { }
                 Rc.fromPtrIn(ptr, alloc)
             }
         }
@@ -2307,7 +2311,7 @@ public fun <T> Rc.Companion.copyFromSlice(v: List<T>): Rc<List<T>> {
     // ignore-tidy-undocumented-unchecked
     return run {
         val ptr = Rc.allocateForSlice(v.size)
-        ptr.copyNonoverlapping(v.asPtr(), mutPtrFromRustCast((addrOfMut(ptr.value))), v.size)
+        copyNonoverlapping(v.asPtr(), mutPtrFromRustCast((addrOfMut(ptr.value))), v.size)
         Rc.fromPtr(ptr)
     }
 }
@@ -2331,7 +2335,7 @@ public fun <T> Rc.Companion.fromIterExact(iter: Any, len: Int): Rc<List<T>> {
             // ignore-tidy-undocumented-unchecked
             run {
                 val slice = rawMutSliceList(this.elems, this.nElems.toInt(), ObjectSlotLayout<T>())
-                ptr.dropInPlace(slice)
+                dropInPlace(slice)
                 Global.deallocate(this.mem, this.layout)
             }
         }
@@ -2345,11 +2349,11 @@ public fun <T> Rc.Companion.fromIterExact(iter: Any, len: Int): Rc<List<T>> {
         val elems = mutPtrFromRustCast((addrOfMut(ptr.value)))
         val guard = Guard(mem = NonNull.newUnchecked(mem), elems = elems, layout = layout, nElems = 0)
         for ((i, item) in iter.mapIndexed { index, item -> Pair(index, item) }) {
-            ptr.write(MutPtr((elems).rawAddress + ((i).toLong() * (ObjectSlotLayout<T>()).strideBytes)), item, typeLayoutT = ObjectSlotLayout<T>())
+            write(MutPtr((elems).rawAddress + ((i).toLong() * (ObjectSlotLayout<T>()).strideBytes)), item, typeLayoutT = ObjectSlotLayout<T>())
             guard.nElems += 1
         }
         // All clear. Forget the guard so it doesn't free the new RcInner.
-        mem.forget(guard)
+        forget(guard)
         Rc.fromPtr(ptr)
     }
 }
@@ -2422,7 +2426,7 @@ public interface RcEqIdent<T, A : Allocator> {
 }
 
 // Note to allow specializing on `Eq` even though `Eq` has a method.
-internal interface MarkerEq
+public interface MarkerEq
 
 /**
  * Converts a generic type `T` into an `Rc<T>`
@@ -2513,7 +2517,7 @@ public fun <T, A : AllocatorNightly> fromRcTSliceA(v: List<T>): Rc<List<T>, A> {
     return run {
         val (vecPtr, len, cap, alloc) = v.intoRawPartsWithAllocator()
         val rcPtr = Rc.allocateForSliceIn(len, alloc)
-        ptr.copyNonoverlapping(vecPtr, mutPtrFromRustCast((addrOfMut(rcPtr.value))), len)
+        copyNonoverlapping(vecPtr, mutPtrFromRustCast((addrOfMut(rcPtr.value))), len)
         // Create a `List<T, A>` with length 0, to deallocate the buffer
         // without dropping its contents or the allocator
         Vec.fromRawPartsIn(vecPtr, 0, cap, alloc)
@@ -2684,13 +2688,15 @@ public open class Weak<T, A : Allocator> internal constructor(
      * # Examples
      *
      * ```kotlin
+     * import std.ptr
+     *
      * val strong = "hello".toOwned()
      * val weak = Rc.downgrade(strong)
      * // Both point to the same object
      * check(ptr.eq(strong, weak.asPtr()))
      * // The strong here keeps it alive, so we can still access the object.
      * check("hello" == weak.asPtr())
-     * drop(strong)
+     * (strong).let { }
      * // But not any more. We can do weak.asPtr(), but accessing the pointer would lead to
      * // undefined behavior.
      * // assertEq("hello", unchecked { &*weak.asPtr() });
@@ -2735,7 +2741,7 @@ public open class Weak<T, A : Allocator> internal constructor(
      *     val (raw, alloc) = weak.intoRawWithAllocator()
      *     check(1 == Rc.weakCount(strong))
      *     check("hello" == raw)
-     *     drop(Weak.fromRawIn(raw, alloc))
+     *     (Weak.fromRawIn(raw, alloc)).let { }
      *     check(0 == Rc.weakCount(strong))
      * }
      * ```
@@ -2744,10 +2750,10 @@ public open class Weak<T, A : Allocator> internal constructor(
      * [asPtr]: Weak.asPtr
      */
     public open fun intoRawWithAllocator(): Pair<ConstPtr, A> {
-        val thisRef = mem.ManuallyDrop.new(this)
+        val thisRef = this
         val result = thisRef.asPtr()
         // SAFETY: `this` is ManuallyDrop so the allocator will not be double-dropped
-        val alloc = ptr.read(thisRef.alloc)
+        val alloc = read(thisRef.alloc)
         return Pair(result, alloc)
     }
 
@@ -2771,8 +2777,8 @@ public open class Weak<T, A : Allocator> internal constructor(
      * val strongFive: Rc? = weakFive.upgrade()
      * check(strongFive != null)
      * // Destroy all strong pointers.
-     * drop(strongFive)
-     * drop(five)
+     * (strongFive).let { }
+     * (five).let { }
      * check(weakFive.upgrade() == null)
      * ```
      */
@@ -2879,7 +2885,7 @@ public open class Weak<T, A : Allocator> internal constructor(
      * check(!first.ptrEq(third))
      * ```
      */
-    public open fun ptrEq(other: Weak<T, A>): Boolean = ptr.addrEq(this.ptr.asPtr(), other.ptr.asPtr())
+    public open fun ptrEq(other: Weak<T, A>): Boolean = addrEq(this.ptr.asPtr(), other.ptr.asPtr())
 
     /**
      * Drops the `Weak` pointer.
@@ -2897,9 +2903,9 @@ public open class Weak<T, A : Allocator> internal constructor(
      * val foo = Foo()
      * val weakFoo = Rc.downgrade(foo)
      * val otherWeakFoo = Weak.clone(weakFoo)
-     * drop(weakFoo)
+     * (weakFoo).let { }
      * // Doesn't print anything
-     * drop(foo)
+     * (foo).let { }
      * // Prints "dropped!"
      * check(otherWeakFoo.upgrade() == null)
      * ```
@@ -3010,7 +3016,7 @@ public open class Weak<T, A : Allocator> internal constructor(
          * check(2 == Rc.weakCount(strong))
          * check("hello" == Weak.fromRaw(raw1).upgrade().unwrap())
          * check(1 == Rc.weakCount(strong))
-         * drop(strong)
+         * (strong).let { }
          * // Decrement the last weak count.
          * check(Weak.fromRaw(raw2).upgrade() == null)
          * ```
@@ -3058,7 +3064,7 @@ public open class Weak<T, A : Allocator> internal constructor(
  */
 public fun <T> Weak.Companion.new(): Weak<T> = Weak(ptr = NonNull.withoutProvenance(NonZeroUsize.MAX), alloc = Global)
 
-internal fun isDangling(ptr: ConstPtr): Boolean = ((ConstPtr((ptr).rawAddress))).rawAddress.toInt() == Int.MAX_VALUE
+public fun isDangling(ptr: ConstPtr): Boolean = ((ConstPtr((ptr).rawAddress))).rawAddress.toInt() == Int.MAX_VALUE
 
 /**
  * Helper type to allow accessing the reference counts without
@@ -3119,7 +3125,7 @@ public open class WeakInner internal constructor(
  * check(2 == Rc.weakCount(strong))
  * check("hello" == Weak.fromRaw(raw1).upgrade().unwrap())
  * check(1 == Rc.weakCount(strong))
- * drop(strong)
+ * (strong).let { }
  * // Decrement the last weak count.
  * check(Weak.fromRaw(raw2).upgrade() == null)
  * ```
@@ -3153,14 +3159,14 @@ public fun <T> Weak.Companion.fromRaw(ptr: ConstPtr): Weak<T> {
  * val raw = weak.intoRaw()
  * check(1 == Rc.weakCount(strong))
  * check("hello" == raw)
- * drop(Weak.fromRaw(raw))
+ * (Weak.fromRaw(raw)).let { }
  * check(0 == Rc.weakCount(strong))
  * ```
  *
  * [fromRaw]: Weak.fromRaw
  * [asPtr]: Weak.asPtr
  */
-public fun <T> Weak<T>.intoRaw(): ConstPtr = mem.ManuallyDrop.new(this).asPtr()
+public fun <T> Weak<T>.intoRaw(): ConstPtr = this.asPtr()
 
 /**
  * Constructs a new `Weak<T>`, without allocating any memory.
@@ -3201,7 +3207,7 @@ public interface RcInnerPtr {
         // SAFETY: The reference count will never be zero when this is
         // called.
         run {
-            hint.assertUnchecked(strong != 0)
+            assertUnchecked(strong != 0)
         }
         val strong1 = strong.wrappingAdd(1)
         this.strongRef().set(strong1)
@@ -3209,7 +3215,7 @@ public interface RcInnerPtr {
         // Checking for overflow after the store instead of before
         // allows for slightly better code generation.
         if (strong1 == 0) {
-            intrinsics.abortImmediate()
+            abortImmediate()
         }
     }
 
@@ -3226,7 +3232,7 @@ public interface RcInnerPtr {
         // SAFETY: The reference count will never be zero when this is
         // called.
         run {
-            hint.assertUnchecked(weak != 0)
+            assertUnchecked(weak != 0)
         }
         val weak1 = weak.wrappingAdd(1)
         this.weakRef().set(weak1)
@@ -3234,7 +3240,7 @@ public interface RcInnerPtr {
         // Checking for overflow after the store instead of before
         // allows for slightly better code generation.
         if (weak1 == 0) {
-            intrinsics.abortImmediate()
+            abortImmediate()
         }
     }
 
@@ -3291,7 +3297,7 @@ public fun dataOffsetAlignment(alignment: Alignment): Int {
  *         rc.me = UniqueRc.downgrade(rc)
  *         return UniqueRc.intoRc(rc)
  *     }
- *     createGadget().unwrap()
+ *     createGadget()!!
  * }
  * ```
  *
@@ -3333,7 +3339,7 @@ public open class UniqueRc<T, A : Allocator> internal constructor(
     }
 
     public open fun fmtPointer(f: StringBuilder) {
-        fmt.Pointer.fmt((this), f)
+        Pointer.fmt((this), f)
     }
 
     public open fun borrow(): T = this
@@ -3585,7 +3591,7 @@ public open class UniqueRc<T, A : Allocator> internal constructor(
             // We do not use the data inside ever again.
             val value = dataPtr.read()
             // Drop the strong-weak ref
-            drop(Weak(ptr = innerPtr, alloc = alloc))
+            (Weak(ptr = innerPtr, alloc = alloc)).let { }
             return Pair(value, alloc)
         }
 
@@ -3682,7 +3688,7 @@ public open class UniqueRc<T, A : Allocator> internal constructor(
         public fun <T, A : Allocator> intoRawWithAllocator(thisRef: UniqueRc<T, A>): Pair<ConstPtr, A> {
             val thisRef1 = thisRef
             // SAFETY: The copy of the allocator stored in `this` is forgotten
-            return Pair(UniqueRc.asPtr(thisRef1), ptr.read(thisRef1.alloc))
+            return Pair(UniqueRc.asPtr(thisRef1), read(thisRef1.alloc))
         }
 
         /**
@@ -3699,7 +3705,7 @@ public open class UniqueRc<T, A : Allocator> internal constructor(
             // Move the allocator out.
             // SAFETY: `this.alloc` will not be accessed again, nor dropped because it is in
             // a `ManuallyDrop`.
-            val alloc: A = ptr.read(thisRef1.alloc)
+            val alloc: A = read(thisRef1.alloc)
             // SAFETY: This pointer was allocated at creation time so we know it is valid.
             return run {
                 // Convert our weak reference into a strong reference
@@ -3719,9 +3725,9 @@ public open class UniqueRc<T, A : Allocator> internal constructor(
         }
 
         public fun <T, A : Allocator> intoInnerWithAllocator(thisRef: UniqueRc<T, A>): Pair<NonNull, A> {
-            val thisRef1 = mem.ManuallyDrop.new(thisRef)
+            val thisRef1 = thisRef
             // SAFETY: Pointer is valid for reads.
-            return Pair(thisRef1.ptr, ptr.read(thisRef1.alloc))
+            return Pair(thisRef1.ptr, read(thisRef1.alloc))
         }
 
         public fun <T, A : Allocator> fromInnerIn(ptr: NonNull, alloc: A): UniqueRc<T, A> = UniqueRc(ptr = ptr, marker = Unit, marker2 = Unit, alloc = alloc)

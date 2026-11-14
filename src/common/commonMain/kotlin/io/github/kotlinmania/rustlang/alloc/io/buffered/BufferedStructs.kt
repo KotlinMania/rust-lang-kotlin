@@ -10,6 +10,7 @@ import io.github.kotlinmania.rustlang.core.io.error.Error
  * # Examples
  *
  * ```kotlin
+ * import core.error
  * import std.io.BufWriter
  * import std.net.TcpStream
  *
@@ -38,7 +39,8 @@ public open class IntoInnerError<W>(
      * adapters that wrap other adapters
      */
     public open fun <W2> newWrapped(f: (W) -> W2): IntoInnerError<W2> {
-        val (writer, error) = this
+        val writer = this.field0
+        val error = this.field1
         return IntoInnerError.new(f(writer), error)
     }
 
@@ -51,6 +53,7 @@ public open class IntoInnerError<W>(
      * # Examples
      *
      * ```kotlin
+     * import core.error
      * import std.io.BufWriter
      * import std.net.TcpStream
      *

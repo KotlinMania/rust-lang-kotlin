@@ -3,7 +3,6 @@ package io.github.kotlinmania.rustlang.std.os.unix.ffi.osstr
 
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
-import io.github.kotlinmania.rustlang.std.mem
 import io.github.kotlinmania.rustlang.std.sys.FromInner
 import io.github.kotlinmania.rustlang.std.sys.osstr.bytes.Buf
 
@@ -27,6 +26,10 @@ public interface OsStringExt<T> {
      * See the module documentation for an example.
      */
     public fun intoVec(): List<UByte>
+
+    public companion object {
+        public fun fromVec(vec: List<UByte>): OsString = osStringExtFromVecOsString(vec)
+    }
 }
 
 public fun osStringExtFromVecOsString(vec: List<UByte>): OsString = FromInner.fromInner(Buf(inner = vec))
@@ -50,8 +53,12 @@ public interface OsStrExt<T> {
      * See the module documentation for an example.
      */
     public fun asBytes(): List<UByte>
+
+    public companion object {
+        public fun fromBytes(slice: List<UByte>): OsStr = osStrExtFromBytesOsStr(slice)
+    }
 }
 
-public fun osStrExtFromBytesOsStr(slice: List<UByte>): OsStr = mem.transmute(slice)
+public fun osStrExtFromBytesOsStr(slice: List<UByte>): OsStr = transmute(slice)
 
 public fun OsStr.asBytes(): List<UByte> = this.asInner().inner

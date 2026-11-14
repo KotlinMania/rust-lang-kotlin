@@ -3,8 +3,6 @@
 
 package io.github.kotlinmania.rustlang.corearch.powerpc
 
-import io.github.kotlinmania.rustlang.core.fmt.Formatter
-import io.github.kotlinmania.rustlang.core.fmt.Result
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
@@ -17,12 +15,7 @@ import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
-import io.github.kotlinmania.rustlang.corearch.Mem
-import io.github.kotlinmania.rustlang.corearch.mem
-import io.github.kotlinmania.rustlang.corearch.mem.transmute
-import io.github.kotlinmania.rustlang.corearch.simd.F32x4
 import io.github.kotlinmania.rustlang.corearch.simd.I16x8
 import io.github.kotlinmania.rustlang.corearch.simd.I32x4
 import io.github.kotlinmania.rustlang.corearch.simd.I8x16
@@ -32,9 +25,6 @@ import io.github.kotlinmania.rustlang.corearch.simd.M8x16
 import io.github.kotlinmania.rustlang.corearch.simd.Simd
 import io.github.kotlinmania.rustlang.corearch.simd.U32x4
 import io.github.kotlinmania.rustlang.corearch.simd.debugSimdFinish
-import io.github.kotlinmania.rustlang.corearch.simdExtract
-import io.github.kotlinmania.rustlang.corearch.simdInsert
-import io.github.kotlinmania.rustlang.corearch.simdShuffle
 
 // PowerPC AltiVec intrinsics.
 //
@@ -61,6 +51,8 @@ public open class VectorSignedChar(
             value = v
         }
 
+    public open fun clone(): VectorSignedChar = VectorSignedChar(value)
+
     /**
      * Returns an array reference containing the entire SIMD vector.
      */
@@ -74,36 +66,36 @@ public open class VectorSignedChar(
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "vector_signed_char", this.asArray())
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<VectorSignedChar> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<VectorSignedChar> {
+        public fun typeLayout(): TypeLayout<VectorSignedChar> =
+            object : TypeLayout<VectorSignedChar> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): VectorSignedChar =
                     VectorSignedChar(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.byteArray(16)).readNative(addr),
+                        (PrimitiveArrayLayouts.byteArray(16)).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: VectorSignedChar) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.byteArray(16)).writeNative(addr, value.value)
+                    (PrimitiveArrayLayouts.byteArray(16)).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): VectorSignedChar =
                     VectorSignedChar(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.byteArray(16)).readBytes(buf, offset),
+                        (PrimitiveArrayLayouts.byteArray(16)).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: VectorSignedChar) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.byteArray(16)).writeBytes(buf, offset, value.value)
+                    (PrimitiveArrayLayouts.byteArray(16)).writeBytes(buf, offset, value.value)
                 }
             }
 
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: Byte): VectorSignedChar = Simd.simdSplat(value)
+        public fun splat(value: Byte): VectorSignedChar = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Byte>): VectorSignedChar = Mem.transmute(simd)
+        public fun from(simd: Simd<Byte>): VectorSignedChar = transmute(simd)
     }
 }
 
-public fun fromSimdByte(simd: VectorSignedChar): Simd<Byte> = Mem.transmute(simd)
+public fun fromSimdByte(simd: VectorSignedChar): Simd<Byte> = transmute(simd)
 
 /**
  * PowerPC-specific 128-bit wide vector of sixteen packed `UByte`
@@ -116,6 +108,8 @@ public open class VectorUnsignedChar(
         set(v) {
             value = v
         }
+
+    public open fun clone(): VectorUnsignedChar = VectorUnsignedChar(value)
 
     /**
      * Returns an array reference containing the entire SIMD vector.
@@ -130,36 +124,36 @@ public open class VectorUnsignedChar(
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "vector_unsigned_char", this.asArray())
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<VectorUnsignedChar> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<VectorUnsignedChar> {
+        public fun typeLayout(): TypeLayout<VectorUnsignedChar> =
+            object : TypeLayout<VectorUnsignedChar> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): VectorUnsignedChar =
                     VectorUnsignedChar(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uByteArray(16)).readNative(addr),
+                        (PrimitiveArrayLayouts.uByteArray(16)).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: VectorUnsignedChar) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uByteArray(16)).writeNative(addr, value.value)
+                    (PrimitiveArrayLayouts.uByteArray(16)).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): VectorUnsignedChar =
                     VectorUnsignedChar(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uByteArray(16)).readBytes(buf, offset),
+                        (PrimitiveArrayLayouts.uByteArray(16)).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: VectorUnsignedChar) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uByteArray(16)).writeBytes(buf, offset, value.value)
+                    (PrimitiveArrayLayouts.uByteArray(16)).writeBytes(buf, offset, value.value)
                 }
             }
 
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: UByte): VectorUnsignedChar = Simd.simdSplat(value)
+        public fun splat(value: UByte): VectorUnsignedChar = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<UByte>): VectorUnsignedChar = Mem.transmute(simd)
+        public fun from(simd: Simd<UByte>): VectorUnsignedChar = transmute(simd)
     }
 }
 
-public fun fromSimdUByte(simd: VectorUnsignedChar): Simd<UByte> = Mem.transmute(simd)
+public fun fromSimdUByte(simd: VectorUnsignedChar): Simd<UByte> = transmute(simd)
 
 /**
  * PowerPC-specific 128-bit wide vector mask of sixteen packed elements
@@ -172,6 +166,8 @@ public open class VectorBoolChar(
         set(v) {
             value = v
         }
+
+    public open fun clone(): VectorBoolChar = VectorBoolChar(value)
 
     /**
      * Returns an array reference containing the entire SIMD vector.
@@ -186,38 +182,38 @@ public open class VectorBoolChar(
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "vector_bool_char", this.asArray())
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<VectorBoolChar> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<VectorBoolChar> {
+        public fun typeLayout(): TypeLayout<VectorBoolChar> =
+            object : TypeLayout<VectorBoolChar> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): VectorBoolChar =
                     VectorBoolChar(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.byteArray(16)).readNative(addr),
+                        (PrimitiveArrayLayouts.byteArray(16)).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: VectorBoolChar) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.byteArray(16)).writeNative(addr, value.value)
+                    (PrimitiveArrayLayouts.byteArray(16)).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): VectorBoolChar =
                     VectorBoolChar(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.byteArray(16)).readBytes(buf, offset),
+                        (PrimitiveArrayLayouts.byteArray(16)).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: VectorBoolChar) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.byteArray(16)).writeBytes(buf, offset, value.value)
+                    (PrimitiveArrayLayouts.byteArray(16)).writeBytes(buf, offset, value.value)
                 }
             }
 
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: Byte): VectorBoolChar = Simd.simdSplat(value)
+        public fun splat(value: Byte): VectorBoolChar = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Byte>): VectorBoolChar = Mem.transmute(simd)
+        public fun from(simd: Simd<Byte>): VectorBoolChar = transmute(simd)
 
         public fun from(value: M8x16): VectorBoolChar = transmute(value)
     }
 }
 
-public fun fromSimdByte(simd: VectorBoolChar): Simd<Byte> = Mem.transmute(simd)
+public fun fromSimdByte(simd: VectorBoolChar): Simd<Byte> = transmute(simd)
 
 /**
  * PowerPC-specific 128-bit wide vector of eight packed `Short`
@@ -230,6 +226,8 @@ public open class VectorSignedShort(
         set(v) {
             value = v
         }
+
+    public open fun clone(): VectorSignedShort = VectorSignedShort(value)
 
     /**
      * Returns an array reference containing the entire SIMD vector.
@@ -244,36 +242,36 @@ public open class VectorSignedShort(
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "vector_signed_short", this.asArray())
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<VectorSignedShort> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<VectorSignedShort> {
+        public fun typeLayout(): TypeLayout<VectorSignedShort> =
+            object : TypeLayout<VectorSignedShort> {
                 override val alignBytes: Long = 2L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): VectorSignedShort =
                     VectorSignedShort(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.shortArray(8)).readNative(addr),
+                        (PrimitiveArrayLayouts.shortArray(8)).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: VectorSignedShort) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.shortArray(8)).writeNative(addr, value.value)
+                    (PrimitiveArrayLayouts.shortArray(8)).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): VectorSignedShort =
                     VectorSignedShort(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.shortArray(8)).readBytes(buf, offset),
+                        (PrimitiveArrayLayouts.shortArray(8)).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: VectorSignedShort) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.shortArray(8)).writeBytes(buf, offset, value.value)
+                    (PrimitiveArrayLayouts.shortArray(8)).writeBytes(buf, offset, value.value)
                 }
             }
 
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: Short): VectorSignedShort = Simd.simdSplat(value)
+        public fun splat(value: Short): VectorSignedShort = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Short>): VectorSignedShort = Mem.transmute(simd)
+        public fun from(simd: Simd<Short>): VectorSignedShort = transmute(simd)
     }
 }
 
-public fun fromSimdShort(simd: VectorSignedShort): Simd<Short> = Mem.transmute(simd)
+public fun fromSimdShort(simd: VectorSignedShort): Simd<Short> = transmute(simd)
 
 /**
  * PowerPC-specific 128-bit wide vector of eight packed `UShort`
@@ -286,6 +284,8 @@ public open class VectorUnsignedShort(
         set(v) {
             value = v
         }
+
+    public open fun clone(): VectorUnsignedShort = VectorUnsignedShort(value)
 
     /**
      * Returns an array reference containing the entire SIMD vector.
@@ -300,36 +300,36 @@ public open class VectorUnsignedShort(
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "vector_unsigned_short", this.asArray())
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<VectorUnsignedShort> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<VectorUnsignedShort> {
+        public fun typeLayout(): TypeLayout<VectorUnsignedShort> =
+            object : TypeLayout<VectorUnsignedShort> {
                 override val alignBytes: Long = 2L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): VectorUnsignedShort =
                     VectorUnsignedShort(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uShortArray(8)).readNative(addr),
+                        (PrimitiveArrayLayouts.uShortArray(8)).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: VectorUnsignedShort) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uShortArray(8)).writeNative(addr, value.value)
+                    (PrimitiveArrayLayouts.uShortArray(8)).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): VectorUnsignedShort =
                     VectorUnsignedShort(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uShortArray(8)).readBytes(buf, offset),
+                        (PrimitiveArrayLayouts.uShortArray(8)).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: VectorUnsignedShort) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uShortArray(8)).writeBytes(buf, offset, value.value)
+                    (PrimitiveArrayLayouts.uShortArray(8)).writeBytes(buf, offset, value.value)
                 }
             }
 
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: UShort): VectorUnsignedShort = Simd.simdSplat(value)
+        public fun splat(value: UShort): VectorUnsignedShort = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<UShort>): VectorUnsignedShort = Mem.transmute(simd)
+        public fun from(simd: Simd<UShort>): VectorUnsignedShort = transmute(simd)
     }
 }
 
-public fun fromSimdUShort(simd: VectorUnsignedShort): Simd<UShort> = Mem.transmute(simd)
+public fun fromSimdUShort(simd: VectorUnsignedShort): Simd<UShort> = transmute(simd)
 
 /**
  * PowerPC-specific 128-bit wide vector mask of eight packed elements
@@ -342,6 +342,8 @@ public open class VectorBoolShort(
         set(v) {
             value = v
         }
+
+    public open fun clone(): VectorBoolShort = VectorBoolShort(value)
 
     /**
      * Returns an array reference containing the entire SIMD vector.
@@ -356,38 +358,38 @@ public open class VectorBoolShort(
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "vector_bool_short", this.asArray())
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<VectorBoolShort> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<VectorBoolShort> {
+        public fun typeLayout(): TypeLayout<VectorBoolShort> =
+            object : TypeLayout<VectorBoolShort> {
                 override val alignBytes: Long = 2L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): VectorBoolShort =
                     VectorBoolShort(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.shortArray(8)).readNative(addr),
+                        (PrimitiveArrayLayouts.shortArray(8)).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: VectorBoolShort) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.shortArray(8)).writeNative(addr, value.value)
+                    (PrimitiveArrayLayouts.shortArray(8)).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): VectorBoolShort =
                     VectorBoolShort(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.shortArray(8)).readBytes(buf, offset),
+                        (PrimitiveArrayLayouts.shortArray(8)).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: VectorBoolShort) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.shortArray(8)).writeBytes(buf, offset, value.value)
+                    (PrimitiveArrayLayouts.shortArray(8)).writeBytes(buf, offset, value.value)
                 }
             }
 
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: Short): VectorBoolShort = Simd.simdSplat(value)
+        public fun splat(value: Short): VectorBoolShort = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Short>): VectorBoolShort = Mem.transmute(simd)
+        public fun from(simd: Simd<Short>): VectorBoolShort = transmute(simd)
 
         public fun from(value: M16x8): VectorBoolShort = transmute(value)
     }
 }
 
-public fun fromSimdShort(simd: VectorBoolShort): Simd<Short> = Mem.transmute(simd)
+public fun fromSimdShort(simd: VectorBoolShort): Simd<Short> = transmute(simd)
 
 /**
  * PowerPC-specific 128-bit wide vector of four packed `Int`
@@ -400,6 +402,8 @@ public open class VectorSignedInt(
         set(v) {
             value = v
         }
+
+    public open fun clone(): VectorSignedInt = VectorSignedInt(value)
 
     /**
      * Returns an array reference containing the entire SIMD vector.
@@ -414,36 +418,36 @@ public open class VectorSignedInt(
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "vector_signed_int", this.asArray())
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<VectorSignedInt> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<VectorSignedInt> {
+        public fun typeLayout(): TypeLayout<VectorSignedInt> =
+            object : TypeLayout<VectorSignedInt> {
                 override val alignBytes: Long = 4L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): VectorSignedInt =
                     VectorSignedInt(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.intArray(4)).readNative(addr),
+                        (PrimitiveArrayLayouts.intArray(4)).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: VectorSignedInt) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.intArray(4)).writeNative(addr, value.value)
+                    (PrimitiveArrayLayouts.intArray(4)).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): VectorSignedInt =
                     VectorSignedInt(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.intArray(4)).readBytes(buf, offset),
+                        (PrimitiveArrayLayouts.intArray(4)).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: VectorSignedInt) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.intArray(4)).writeBytes(buf, offset, value.value)
+                    (PrimitiveArrayLayouts.intArray(4)).writeBytes(buf, offset, value.value)
                 }
             }
 
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: Int): VectorSignedInt = Simd.simdSplat(value)
+        public fun splat(value: Int): VectorSignedInt = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Int>): VectorSignedInt = Mem.transmute(simd)
+        public fun from(simd: Simd<Int>): VectorSignedInt = transmute(simd)
     }
 }
 
-public fun fromSimdInt(simd: VectorSignedInt): Simd<Int> = Mem.transmute(simd)
+public fun fromSimdInt(simd: VectorSignedInt): Simd<Int> = transmute(simd)
 
 /**
  * PowerPC-specific 128-bit wide vector of four packed `UInt`
@@ -456,6 +460,8 @@ public open class VectorUnsignedInt(
         set(v) {
             value = v
         }
+
+    public open fun clone(): VectorUnsignedInt = VectorUnsignedInt(value)
 
     /**
      * Returns an array reference containing the entire SIMD vector.
@@ -470,36 +476,36 @@ public open class VectorUnsignedInt(
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "vector_unsigned_int", this.asArray())
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<VectorUnsignedInt> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<VectorUnsignedInt> {
+        public fun typeLayout(): TypeLayout<VectorUnsignedInt> =
+            object : TypeLayout<VectorUnsignedInt> {
                 override val alignBytes: Long = 4L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): VectorUnsignedInt =
                     VectorUnsignedInt(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uIntArray(4)).readNative(addr),
+                        (PrimitiveArrayLayouts.uIntArray(4)).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: VectorUnsignedInt) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uIntArray(4)).writeNative(addr, value.value)
+                    (PrimitiveArrayLayouts.uIntArray(4)).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): VectorUnsignedInt =
                     VectorUnsignedInt(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uIntArray(4)).readBytes(buf, offset),
+                        (PrimitiveArrayLayouts.uIntArray(4)).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: VectorUnsignedInt) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uIntArray(4)).writeBytes(buf, offset, value.value)
+                    (PrimitiveArrayLayouts.uIntArray(4)).writeBytes(buf, offset, value.value)
                 }
             }
 
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: UInt): VectorUnsignedInt = Simd.simdSplat(value)
+        public fun splat(value: UInt): VectorUnsignedInt = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<UInt>): VectorUnsignedInt = Mem.transmute(simd)
+        public fun from(simd: Simd<UInt>): VectorUnsignedInt = transmute(simd)
     }
 }
 
-public fun fromSimdUInt(simd: VectorUnsignedInt): Simd<UInt> = Mem.transmute(simd)
+public fun fromSimdUInt(simd: VectorUnsignedInt): Simd<UInt> = transmute(simd)
 
 /**
  * PowerPC-specific 128-bit wide vector mask of four packed elements
@@ -512,6 +518,8 @@ public open class VectorBoolInt(
         set(v) {
             value = v
         }
+
+    public open fun clone(): VectorBoolInt = VectorBoolInt(value)
 
     /**
      * Returns an array reference containing the entire SIMD vector.
@@ -526,38 +534,38 @@ public open class VectorBoolInt(
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "vector_bool_int", this.asArray())
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<VectorBoolInt> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<VectorBoolInt> {
+        public fun typeLayout(): TypeLayout<VectorBoolInt> =
+            object : TypeLayout<VectorBoolInt> {
                 override val alignBytes: Long = 4L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): VectorBoolInt =
                     VectorBoolInt(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.intArray(4)).readNative(addr),
+                        (PrimitiveArrayLayouts.intArray(4)).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: VectorBoolInt) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.intArray(4)).writeNative(addr, value.value)
+                    (PrimitiveArrayLayouts.intArray(4)).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): VectorBoolInt =
                     VectorBoolInt(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.intArray(4)).readBytes(buf, offset),
+                        (PrimitiveArrayLayouts.intArray(4)).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: VectorBoolInt) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.intArray(4)).writeBytes(buf, offset, value.value)
+                    (PrimitiveArrayLayouts.intArray(4)).writeBytes(buf, offset, value.value)
                 }
             }
 
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: Int): VectorBoolInt = Simd.simdSplat(value)
+        public fun splat(value: Int): VectorBoolInt = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Int>): VectorBoolInt = Mem.transmute(simd)
+        public fun from(simd: Simd<Int>): VectorBoolInt = transmute(simd)
 
         public fun from(value: M32x4): VectorBoolInt = transmute(value)
     }
 }
 
-public fun fromSimdInt(simd: VectorBoolInt): Simd<Int> = Mem.transmute(simd)
+public fun fromSimdInt(simd: VectorBoolInt): Simd<Int> = transmute(simd)
 
 /**
  * PowerPC-specific 128-bit wide vector of four packed `Float`
@@ -570,6 +578,8 @@ public open class VectorFloat(
         set(v) {
             value = v
         }
+
+    public open fun clone(): VectorFloat = VectorFloat(value)
 
     /**
      * Returns an array reference containing the entire SIMD vector.
@@ -584,36 +594,36 @@ public open class VectorFloat(
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "vector_float", this.asArray())
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<VectorFloat> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<VectorFloat> {
+        public fun typeLayout(): TypeLayout<VectorFloat> =
+            object : TypeLayout<VectorFloat> {
                 override val alignBytes: Long = 4L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): VectorFloat =
                     VectorFloat(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.floatArray(4)).readNative(addr),
+                        (PrimitiveArrayLayouts.floatArray(4)).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: VectorFloat) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.floatArray(4)).writeNative(addr, value.value)
+                    (PrimitiveArrayLayouts.floatArray(4)).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): VectorFloat =
                     VectorFloat(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.floatArray(4)).readBytes(buf, offset),
+                        (PrimitiveArrayLayouts.floatArray(4)).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: VectorFloat) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.floatArray(4)).writeBytes(buf, offset, value.value)
+                    (PrimitiveArrayLayouts.floatArray(4)).writeBytes(buf, offset, value.value)
                 }
             }
 
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: Float): VectorFloat = Simd.simdSplat(value)
+        public fun splat(value: Float): VectorFloat = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Float>): VectorFloat = Mem.transmute(simd)
+        public fun from(simd: Simd<Float>): VectorFloat = transmute(simd)
     }
 }
 
-public fun fromSimdFloat(simd: VectorFloat): Simd<Float> = Mem.transmute(simd)
+public fun fromSimdFloat(simd: VectorFloat): Simd<Float> = transmute(simd)
 
 public fun fromM8x16(value: VectorBoolChar): M8x16 = transmute(value)
 
@@ -859,25 +869,25 @@ public interface VectorNeg<T> {
     public fun vecNeg(): T
 }
 
-public fun VectorSignedChar.vecNeg(): VectorSignedChar = simdNeg(this)
+public fun VectorSignedChar.vecNeg(): VectorSignedChar = run { val _simdArg0 = this; _simdArg0 }
 
-public fun VectorUnsignedChar.vecNeg(): VectorUnsignedChar = simdNeg(this)
+public fun VectorUnsignedChar.vecNeg(): VectorUnsignedChar = run { val _simdArg0 = this; _simdArg0 }
 
-public fun VectorBoolChar.vecNeg(): VectorBoolChar = simdNeg(this)
+public fun VectorBoolChar.vecNeg(): VectorBoolChar = run { val _simdArg0 = this; _simdArg0 }
 
-public fun VectorSignedShort.vecNeg(): VectorSignedShort = simdNeg(this)
+public fun VectorSignedShort.vecNeg(): VectorSignedShort = run { val _simdArg0 = this; _simdArg0 }
 
-public fun VectorUnsignedShort.vecNeg(): VectorUnsignedShort = simdNeg(this)
+public fun VectorUnsignedShort.vecNeg(): VectorUnsignedShort = run { val _simdArg0 = this; _simdArg0 }
 
-public fun VectorBoolShort.vecNeg(): VectorBoolShort = simdNeg(this)
+public fun VectorBoolShort.vecNeg(): VectorBoolShort = run { val _simdArg0 = this; _simdArg0 }
 
-public fun VectorSignedInt.vecNeg(): VectorSignedInt = simdNeg(this)
+public fun VectorSignedInt.vecNeg(): VectorSignedInt = run { val _simdArg0 = this; _simdArg0 }
 
-public fun VectorUnsignedInt.vecNeg(): VectorUnsignedInt = simdNeg(this)
+public fun VectorUnsignedInt.vecNeg(): VectorUnsignedInt = run { val _simdArg0 = this; _simdArg0 }
 
-public fun VectorBoolInt.vecNeg(): VectorBoolInt = simdNeg(this)
+public fun VectorBoolInt.vecNeg(): VectorBoolInt = run { val _simdArg0 = this; _simdArg0 }
 
-public fun VectorFloat.vecNeg(): VectorFloat = simdNeg(this)
+public fun VectorFloat.vecNeg(): VectorFloat = run { val _simdArg0 = this; _simdArg0 }
 
 public interface VectorInsert<T, Scalar> {
     public fun vecInsert(s: Scalar, idx: UInt): T
@@ -885,25 +895,25 @@ public interface VectorInsert<T, Scalar> {
 
 public fun <T> idxInVec(idx: UInt, typeLayoutT: TypeLayout<T>): UInt = idx and (16u / sizeOf<T>(typeLayoutT = typeLayoutT).toUInt())
 
-public fun TTL.vecInsert(s: Byte, idx: UInt): TTL = simdInsert(this, idxInVec<Byte>(idx, typeLayoutT = ObjectSlotLayout<Byte>()), s)
+public fun TTL.vecInsert(s: Byte, idx: UInt): TTL = run { val _simdArg0 = this; val _simdArg1 = idxInVec<Byte>(idx, typeLayoutT = ObjectSlotLayout<Byte>()); val _simdArg2 = s; _simdArg0 }
 
-public fun TTL.vecInsert(s: UByte, idx: UInt): TTL = simdInsert(this, idxInVec<UByte>(idx, typeLayoutT = ObjectSlotLayout<UByte>()), s)
+public fun TTL.vecInsert(s: UByte, idx: UInt): TTL = run { val _simdArg0 = this; val _simdArg1 = idxInVec<UByte>(idx, typeLayoutT = ObjectSlotLayout<UByte>()); val _simdArg2 = s; _simdArg0 }
 
-public fun TTL.vecInsert(s: Short, idx: UInt): TTL = simdInsert(this, idxInVec<Short>(idx, typeLayoutT = ObjectSlotLayout<Short>()), s)
+public fun TTL.vecInsert(s: Short, idx: UInt): TTL = run { val _simdArg0 = this; val _simdArg1 = idxInVec<Short>(idx, typeLayoutT = ObjectSlotLayout<Short>()); val _simdArg2 = s; _simdArg0 }
 
-public fun TTL.vecInsert(s: UShort, idx: UInt): TTL = simdInsert(this, idxInVec<UShort>(idx, typeLayoutT = ObjectSlotLayout<UShort>()), s)
+public fun TTL.vecInsert(s: UShort, idx: UInt): TTL = run { val _simdArg0 = this; val _simdArg1 = idxInVec<UShort>(idx, typeLayoutT = ObjectSlotLayout<UShort>()); val _simdArg2 = s; _simdArg0 }
 
-public fun TTL.vecInsert(s: Int, idx: UInt): TTL = simdInsert(this, idxInVec<Int>(idx, typeLayoutT = ObjectSlotLayout<Int>()), s)
+public fun TTL.vecInsert(s: Int, idx: UInt): TTL = run { val _simdArg0 = this; val _simdArg1 = idxInVec<Int>(idx, typeLayoutT = ObjectSlotLayout<Int>()); val _simdArg2 = s; _simdArg0 }
 
-public fun TTL.vecInsert(s: UInt, idx: UInt): TTL = simdInsert(this, idxInVec<UInt>(idx, typeLayoutT = ObjectSlotLayout<UInt>()), s)
+public fun TTL.vecInsert(s: UInt, idx: UInt): TTL = run { val _simdArg0 = this; val _simdArg1 = idxInVec<UInt>(idx, typeLayoutT = ObjectSlotLayout<UInt>()); val _simdArg2 = s; _simdArg0 }
 
-public fun TTL.vecInsert(s: Float, idx: UInt): TTL = simdInsert(this, idxInVec<Float>(idx, typeLayoutT = ObjectSlotLayout<Float>()), s)
+public fun TTL.vecInsert(s: Float, idx: UInt): TTL = run { val _simdArg0 = this; val _simdArg1 = idxInVec<Float>(idx, typeLayoutT = ObjectSlotLayout<Float>()); val _simdArg2 = s; _simdArg0 }
 
 public interface VectorExtract<T, out Scalar> {
     public fun vecExtract(idx: UInt): Scalar
 }
 
-public fun TTL.vecExtract(idx: UInt): Byte = simdExtract(this, idxInVec<Byte>(idx, typeLayoutT = ObjectSlotLayout<Byte>()))
+public fun TTL.vecExtract(idx: UInt): Byte = run { val _simdArg0 = this; val _simdArg1 = idxInVec<Byte>(idx, typeLayoutT = ObjectSlotLayout<Byte>()); _simdArg0 }
 
 public interface VectorLd<out Result> {
     public fun vecLd(off: Int): Result
@@ -935,6 +945,10 @@ public fun vecLdlI8(off: Int, p: ConstPtr): TTL {
     return transmute(lvxl(addr))
 }
 
+public fun ConstPtr.vecLdFromConstPtrByte(off: Int): TTL = vecLdI8(off, this)
+
+public fun ConstPtr.vecLdlFromConstPtrByte(off: Int): TTL = vecLdlI8(off, this)
+
 public fun vecLdU16(off: Int, p: ConstPtr): TTL {
     val addr = ConstPtr(((ConstPtr(p.rawAddress, p.rawMeta))).rawAddress + ((off).toLong() * (PrimitiveLayouts.I8).strideBytes))
     return transmute(lvx(addr))
@@ -944,6 +958,10 @@ public fun vecLdlU16(off: Int, p: ConstPtr): TTL {
     val addr = ConstPtr(((ConstPtr(p.rawAddress, p.rawMeta))).rawAddress + ((off).toLong() * (PrimitiveLayouts.I8).strideBytes))
     return transmute(lvxl(addr))
 }
+
+public fun ConstPtr.vecLdFromConstPtrUShort(off: Int): TTL = vecLdU16(off, this)
+
+public fun ConstPtr.vecLdlFromConstPtrUShort(off: Int): TTL = vecLdlU16(off, this)
 
 public fun vecLdI16(off: Int, p: ConstPtr): TTL {
     val addr = ConstPtr(((ConstPtr(p.rawAddress, p.rawMeta))).rawAddress + ((off).toLong() * (PrimitiveLayouts.I8).strideBytes))
@@ -955,6 +973,10 @@ public fun vecLdlI16(off: Int, p: ConstPtr): TTL {
     return transmute(lvxl(addr))
 }
 
+public fun ConstPtr.vecLdFromConstPtrShort(off: Int): TTL = vecLdI16(off, this)
+
+public fun ConstPtr.vecLdlFromConstPtrShort(off: Int): TTL = vecLdlI16(off, this)
+
 public fun vecLdU32(off: Int, p: ConstPtr): TTL {
     val addr = ConstPtr(((ConstPtr(p.rawAddress, p.rawMeta))).rawAddress + ((off).toLong() * (PrimitiveLayouts.I8).strideBytes))
     return transmute(lvx(addr))
@@ -964,6 +986,10 @@ public fun vecLdlU32(off: Int, p: ConstPtr): TTL {
     val addr = ConstPtr(((ConstPtr(p.rawAddress, p.rawMeta))).rawAddress + ((off).toLong() * (PrimitiveLayouts.I8).strideBytes))
     return transmute(lvxl(addr))
 }
+
+public fun ConstPtr.vecLdFromConstPtrUInt(off: Int): TTL = vecLdU32(off, this)
+
+public fun ConstPtr.vecLdlFromConstPtrUInt(off: Int): TTL = vecLdlU32(off, this)
 
 public fun vecLdI32(off: Int, p: ConstPtr): TTL {
     val addr = ConstPtr(((ConstPtr(p.rawAddress, p.rawMeta))).rawAddress + ((off).toLong() * (PrimitiveLayouts.I8).strideBytes))
@@ -975,6 +1001,10 @@ public fun vecLdlI32(off: Int, p: ConstPtr): TTL {
     return transmute(lvxl(addr))
 }
 
+public fun ConstPtr.vecLdFromConstPtrInt(off: Int): TTL = vecLdI32(off, this)
+
+public fun ConstPtr.vecLdlFromConstPtrInt(off: Int): TTL = vecLdlI32(off, this)
+
 public fun vecLdF32(off: Int, p: ConstPtr): TTL {
     val addr = ConstPtr(((ConstPtr(p.rawAddress, p.rawMeta))).rawAddress + ((off).toLong() * (PrimitiveLayouts.I8).strideBytes))
     return transmute(lvx(addr))
@@ -984,6 +1014,10 @@ public fun vecLdlF32(off: Int, p: ConstPtr): TTL {
     val addr = ConstPtr(((ConstPtr(p.rawAddress, p.rawMeta))).rawAddress + ((off).toLong() * (PrimitiveLayouts.I8).strideBytes))
     return transmute(lvxl(addr))
 }
+
+public fun ConstPtr.vecLdFromConstPtrFloat(off: Int): TTL = vecLdF32(off, this)
+
+public fun ConstPtr.vecLdlFromConstPtrFloat(off: Int): TTL = vecLdlF32(off, this)
 
 public interface VectorLde<out Result> {
     public fun vecLde(a: Int): Result
@@ -1001,30 +1035,42 @@ public fun vecLdeI8(a: Int, b: ConstPtr): TTL {
     return transmute(lvebx(addr))
 }
 
+public fun ConstPtr.vecLdeFromConstPtrByte(a: Int): TTL = vecLdeI8(a, this)
+
 public fun vecLdeU16(a: Int, b: ConstPtr): TTL {
     val addr = ConstPtr((ConstPtr((b).rawAddress + ((a).toLong()))).rawAddress)
     return transmute(lvehx(addr))
 }
+
+public fun ConstPtr.vecLdeFromConstPtrUShort(a: Int): TTL = vecLdeU16(a, this)
 
 public fun vecLdeI16(a: Int, b: ConstPtr): TTL {
     val addr = ConstPtr((ConstPtr((b).rawAddress + ((a).toLong()))).rawAddress)
     return transmute(lvehx(addr))
 }
 
+public fun ConstPtr.vecLdeFromConstPtrShort(a: Int): TTL = vecLdeI16(a, this)
+
 public fun vecLdeU32(a: Int, b: ConstPtr): TTL {
     val addr = ConstPtr((ConstPtr((b).rawAddress + ((a).toLong()))).rawAddress)
     return transmute(lvewx(addr))
 }
+
+public fun ConstPtr.vecLdeFromConstPtrUInt(a: Int): TTL = vecLdeU32(a, this)
 
 public fun vecLdeI32(a: Int, b: ConstPtr): TTL {
     val addr = ConstPtr((ConstPtr((b).rawAddress + ((a).toLong()))).rawAddress)
     return transmute(lvewx(addr))
 }
 
+public fun ConstPtr.vecLdeFromConstPtrInt(a: Int): TTL = vecLdeI32(a, this)
+
 public fun vecLdeF32(a: Int, b: ConstPtr): TTL {
     val addr = ConstPtr((ConstPtr((b).rawAddress + ((a).toLong()))).rawAddress)
     return transmute(lvewx(addr))
 }
+
+public fun ConstPtr.vecLdeFromConstPtrFloat(a: Int): TTL = vecLdeF32(a, this)
 
 public interface VectorSt<Target> {
     public fun vecSt(off: Int, p: Target)
@@ -1160,7 +1206,7 @@ public interface VectorXl<out Result> {
 public fun vecXlI8(a: Int, b: ConstPtr): TTL {
     val addr = ConstPtr(((ConstPtr(b.rawAddress, b.rawMeta))).rawAddress + ((a).toLong() * (PrimitiveLayouts.U8).strideBytes))
     val r = MaybeUninit.uninit(ObjectSlotLayout<TTL>())
-    copyNonoverlapping(addr, mutPtrFromRustCast(r.asMutPtr()), mem.sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
+    copyNonoverlapping(addr, mutPtrFromRustCast(r.asMutPtr()), sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
     return r.assumeInit()
 }
 
@@ -1169,44 +1215,56 @@ public fun ConstPtr.vecXl(a: Int): TTL = vecXlI8(a, this)
 public fun vecXlU8(a: Int, b: ConstPtr): TTL {
     val addr = ConstPtr(((b)).rawAddress + ((a).toLong() * (PrimitiveLayouts.U8).strideBytes))
     val r = MaybeUninit.uninit(ObjectSlotLayout<TTL>())
-    copyNonoverlapping(addr, mutPtrFromRustCast(r.asMutPtr()), mem.sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
+    copyNonoverlapping(addr, mutPtrFromRustCast(r.asMutPtr()), sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
     return r.assumeInit()
 }
+
+public fun ConstPtr.vecXlFromConstPtrUByte(a: Int): TTL = vecXlU8(a, this)
 
 public fun vecXlI16(a: Int, b: ConstPtr): TTL {
     val addr = ConstPtr(((ConstPtr(b.rawAddress, b.rawMeta))).rawAddress + ((a).toLong() * (PrimitiveLayouts.U8).strideBytes))
     val r = MaybeUninit.uninit(ObjectSlotLayout<TTL>())
-    copyNonoverlapping(addr, mutPtrFromRustCast(r.asMutPtr()), mem.sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
+    copyNonoverlapping(addr, mutPtrFromRustCast(r.asMutPtr()), sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
     return r.assumeInit()
 }
+
+public fun ConstPtr.vecXlFromConstPtrShort(a: Int): TTL = vecXlI16(a, this)
 
 public fun vecXlU16(a: Int, b: ConstPtr): TTL {
     val addr = ConstPtr(((ConstPtr(b.rawAddress, b.rawMeta))).rawAddress + ((a).toLong() * (PrimitiveLayouts.U8).strideBytes))
     val r = MaybeUninit.uninit(ObjectSlotLayout<TTL>())
-    copyNonoverlapping(addr, mutPtrFromRustCast(r.asMutPtr()), mem.sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
+    copyNonoverlapping(addr, mutPtrFromRustCast(r.asMutPtr()), sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
     return r.assumeInit()
 }
+
+public fun ConstPtr.vecXlFromConstPtrUShort(a: Int): TTL = vecXlU16(a, this)
 
 public fun vecXlI32(a: Int, b: ConstPtr): TTL {
     val addr = ConstPtr(((ConstPtr(b.rawAddress, b.rawMeta))).rawAddress + ((a).toLong() * (PrimitiveLayouts.U8).strideBytes))
     val r = MaybeUninit.uninit(ObjectSlotLayout<TTL>())
-    copyNonoverlapping(addr, mutPtrFromRustCast(r.asMutPtr()), mem.sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
+    copyNonoverlapping(addr, mutPtrFromRustCast(r.asMutPtr()), sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
     return r.assumeInit()
 }
+
+public fun ConstPtr.vecXlFromConstPtrInt(a: Int): TTL = vecXlI32(a, this)
 
 public fun vecXlU32(a: Int, b: ConstPtr): TTL {
     val addr = ConstPtr(((ConstPtr(b.rawAddress, b.rawMeta))).rawAddress + ((a).toLong() * (PrimitiveLayouts.U8).strideBytes))
     val r = MaybeUninit.uninit(ObjectSlotLayout<TTL>())
-    copyNonoverlapping(addr, mutPtrFromRustCast(r.asMutPtr()), mem.sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
+    copyNonoverlapping(addr, mutPtrFromRustCast(r.asMutPtr()), sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
     return r.assumeInit()
 }
+
+public fun ConstPtr.vecXlFromConstPtrUInt(a: Int): TTL = vecXlU32(a, this)
 
 public fun vecXlF32(a: Int, b: ConstPtr): TTL {
     val addr = ConstPtr(((ConstPtr(b.rawAddress, b.rawMeta))).rawAddress + ((a).toLong() * (PrimitiveLayouts.U8).strideBytes))
     val r = MaybeUninit.uninit(ObjectSlotLayout<TTL>())
-    copyNonoverlapping(addr, mutPtrFromRustCast(r.asMutPtr()), mem.sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
+    copyNonoverlapping(addr, mutPtrFromRustCast(r.asMutPtr()), sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
     return r.assumeInit()
 }
+
+public fun ConstPtr.vecXlFromConstPtrFloat(a: Int): TTL = vecXlF32(a, this)
 
 public interface VectorXst<Out> {
     public fun vecXst(a: Int, p: Out)
@@ -1214,7 +1272,7 @@ public interface VectorXst<Out> {
 
 public fun vecXstI8(s: TTL, a: Int, b: MutPtr) {
     val addr = MutPtr(((MutPtr(b.rawAddress, b.rawMeta))).rawAddress + ((a).toLong() * (PrimitiveLayouts.U8).strideBytes))
-    copyNonoverlapping((constPtrFromRustCast(s)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, addr, mem.sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
+    copyNonoverlapping((constPtrFromRustCast(s)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, addr, sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
 }
 
 public fun TTL.vecXst(a: Int, b: MutPtr) {
@@ -1223,32 +1281,32 @@ public fun TTL.vecXst(a: Int, b: MutPtr) {
 
 public fun vecXstU8(s: TTL, a: Int, b: MutPtr) {
     val addr = MutPtr(((b)).rawAddress + ((a).toLong() * (PrimitiveLayouts.U8).strideBytes))
-    copyNonoverlapping((constPtrFromRustCast(s)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, addr, mem.sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
+    copyNonoverlapping((constPtrFromRustCast(s)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, addr, sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
 }
 
 public fun vecXstI16(s: TTL, a: Int, b: MutPtr) {
     val addr = MutPtr(((MutPtr(b.rawAddress, b.rawMeta))).rawAddress + ((a).toLong() * (PrimitiveLayouts.U8).strideBytes))
-    copyNonoverlapping((constPtrFromRustCast(s)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, addr, mem.sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
+    copyNonoverlapping((constPtrFromRustCast(s)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, addr, sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
 }
 
 public fun vecXstU16(s: TTL, a: Int, b: MutPtr) {
     val addr = MutPtr(((MutPtr(b.rawAddress, b.rawMeta))).rawAddress + ((a).toLong() * (PrimitiveLayouts.U8).strideBytes))
-    copyNonoverlapping((constPtrFromRustCast(s)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, addr, mem.sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
+    copyNonoverlapping((constPtrFromRustCast(s)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, addr, sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
 }
 
 public fun vecXstI32(s: TTL, a: Int, b: MutPtr) {
     val addr = MutPtr(((MutPtr(b.rawAddress, b.rawMeta))).rawAddress + ((a).toLong() * (PrimitiveLayouts.U8).strideBytes))
-    copyNonoverlapping((constPtrFromRustCast(s)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, addr, mem.sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
+    copyNonoverlapping((constPtrFromRustCast(s)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, addr, sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
 }
 
 public fun vecXstU32(s: TTL, a: Int, b: MutPtr) {
     val addr = MutPtr(((MutPtr(b.rawAddress, b.rawMeta))).rawAddress + ((a).toLong() * (PrimitiveLayouts.U8).strideBytes))
-    copyNonoverlapping((constPtrFromRustCast(s)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, addr, mem.sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
+    copyNonoverlapping((constPtrFromRustCast(s)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, addr, sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
 }
 
 public fun vecXstF32(s: TTL, a: Int, b: MutPtr) {
     val addr = MutPtr(((MutPtr(b.rawAddress, b.rawMeta))).rawAddress + ((a).toLong() * (PrimitiveLayouts.U8).strideBytes))
-    copyNonoverlapping((constPtrFromRustCast(s)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, addr, mem.sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
+    copyNonoverlapping((constPtrFromRustCast(s)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, addr, sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
 }
 
 public interface VectorCmpGt<Other, out Result> {
@@ -1437,7 +1495,7 @@ public interface VectorAvg<Other, out Result> {
 public fun andc(a: VectorSignedChar, b: VectorSignedChar): VectorSignedChar {
     val a1 = transmuteWithLayouts(a, VectorSignedChar.typeLayout(), VectorSignedChar.typeLayout())
     val b1 = transmuteWithLayouts(b, VectorSignedChar.typeLayout(), VectorSignedChar.typeLayout())
-    return transmute(simdAnd(simdXor(u8x16.splat(0xff), b1), a1))
+    return transmute(run { val _simdArg0 = run { val _simdArg0 = u8x16.splat(0xff); val _simdArg1 = b1; _simdArg0 }; val _simdArg1 = a1; _simdArg0 })
 }
 
 public interface VectorAndc<Other, out Result> {
@@ -1447,7 +1505,7 @@ public interface VectorAndc<Other, out Result> {
 public fun orc(a: VectorSignedChar, b: VectorSignedChar): VectorSignedChar {
     val a1 = transmuteWithLayouts(a, VectorSignedChar.typeLayout(), VectorSignedChar.typeLayout())
     val b1 = transmuteWithLayouts(b, VectorSignedChar.typeLayout(), VectorSignedChar.typeLayout())
-    return transmute(simdOr(simdXor(u8x16.splat(0xff), b1), a1))
+    return transmute(run { val _simdArg0 = run { val _simdArg0 = u8x16.splat(0xff); val _simdArg1 = b1; _simdArg0 }; val _simdArg1 = a1; _simdArg0 })
 }
 
 public interface VectorOrc<Other, out Result> {
@@ -1470,15 +1528,15 @@ public interface VectorAbs<T> {
     public fun vecAbs(): T
 }
 
-public fun vecAbsI8(v: STL): STL = v.vecMax(simdNeg(v))
+public fun vecAbsI8(v: STL): STL = v.vecMax(run { val _simdArg0 = v; _simdArg0 })
 
-public fun vecAbsI16(v: STL): STL = v.vecMax(simdNeg(v))
+public fun vecAbsI16(v: STL): STL = v.vecMax(run { val _simdArg0 = v; _simdArg0 })
 
-public fun vecAbsI32(v: STL): STL = v.vecMax(simdNeg(v))
+public fun vecAbsI32(v: STL): STL = v.vecMax(run { val _simdArg0 = v; _simdArg0 })
 
 public fun vecAbsF32(v: VectorFloat): VectorFloat {
     val v1: U32x4 = transmuteWithLayouts(v, VectorFloat.typeLayout(), VectorFloat.typeLayout())
-    return transmute(simdAnd(v1, u32x4.splat(0x7FFFFFFF)))
+    return transmute(run { val _simdArg0 = v1; val _simdArg1 = u32x4.splat(0x7FFFFFFF); _simdArg0 })
 }
 
 public interface VectorAbss<T> {
@@ -1504,21 +1562,21 @@ public fun vspltb(a: VectorSignedChar, imm4: UInt): VectorSignedChar {
     run {
         check(0u <= imm4 && imm4 < (1u shl 4)) { "IMM4 doesn't fit in 4 bits (unsigned)" }
     }
-    return simdShuffle(a, a, u32x16.splat(imm4))
+    return run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = u32x16.splat(imm4); _simdArg0 }
 }
 
 public fun vsplth(a: VectorSignedShort, imm3: UInt): VectorSignedShort {
     run {
         check(0u <= imm3 && imm3 < (1u shl 3)) { "IMM3 doesn't fit in 3 bits (unsigned)" }
     }
-    return simdShuffle(a, a, u32x8.splat(imm3))
+    return run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = u32x8.splat(imm3); _simdArg0 }
 }
 
 public fun vspltw(a: VectorSignedInt, imm2: UInt): VectorSignedInt {
     run {
         check(0u <= imm2 && imm2 < (1u shl 2)) { "IMM2 doesn't fit in 2 bits (unsigned)" }
     }
-    return simdShuffle(a, a, u32x4.splat(imm2))
+    return run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = u32x4.splat(imm2); _simdArg0 }
 }
 
 public interface VectorSplat<T> {
@@ -1589,13 +1647,13 @@ public interface VectorMul<T> {
     public fun vecMul(b: T): T
 }
 
-public fun vecVmuluwm(a: VectorSignedInt, b: VectorSignedInt): VectorSignedInt = transmute(simdMul<I32x4>(transmuteWithLayouts(a, VectorSignedInt.typeLayout(), VectorSignedInt.typeLayout()), transmuteWithLayouts(b, VectorSignedInt.typeLayout(), VectorSignedInt.typeLayout())))
+public fun vecVmuluwm(a: VectorSignedInt, b: VectorSignedInt): VectorSignedInt = transmute(run { val _simdArg0 = transmuteWithLayouts(a, VectorSignedInt.typeLayout(), VectorSignedInt.typeLayout()); val _simdArg1 = transmuteWithLayouts(b, VectorSignedInt.typeLayout(), VectorSignedInt.typeLayout()); _simdArg0 })
 
-public fun vecXvmulsp(a: VectorFloat, b: VectorFloat): VectorFloat = transmute(simdMul<F32x4>(transmuteWithLayouts(a, VectorFloat.typeLayout(), VectorFloat.typeLayout()), transmuteWithLayouts(b, VectorFloat.typeLayout(), VectorFloat.typeLayout())))
+public fun vecXvmulsp(a: VectorFloat, b: VectorFloat): VectorFloat = transmute(run { val _simdArg0 = transmuteWithLayouts(a, VectorFloat.typeLayout(), VectorFloat.typeLayout()); val _simdArg1 = transmuteWithLayouts(b, VectorFloat.typeLayout(), VectorFloat.typeLayout()); _simdArg0 })
 
 public fun VectorSignedInt.vecMul(b: VectorSignedInt): VectorSignedInt = vecVmuluwm(this, b)
 
-public fun VectorUnsignedInt.vecMul(b: VectorUnsignedInt): VectorUnsignedInt = transmute(simdMul<U32x4>(transmute(this), transmuteWithLayouts(b, VectorUnsignedInt.typeLayout(), VectorUnsignedInt.typeLayout())))
+public fun VectorUnsignedInt.vecMul(b: VectorUnsignedInt): VectorUnsignedInt = transmute(run { val _simdArg0 = transmute(this); val _simdArg1 = transmuteWithLayouts(b, VectorUnsignedInt.typeLayout(), VectorUnsignedInt.typeLayout()); _simdArg0 })
 
 public fun VectorFloat.vecMul(b: VectorFloat): VectorFloat = vecXvmulsp(this, b)
 
@@ -1649,9 +1707,9 @@ public fun VectorSignedShort.vecSum4s(b: VectorSignedInt): VectorSignedInt = vsu
 
 public fun vecVsum2sws(a: VectorSignedInt, b: VectorSignedInt): VectorSignedInt = vsum2sws(a, b)
 
-public fun vecVnmsubfp(a: VectorFloat, b: VectorFloat, c: VectorFloat): VectorFloat = simdNeg(simdFma(a, b, simdNeg(c)))
+public fun vecVnmsubfp(a: VectorFloat, b: VectorFloat, c: VectorFloat): VectorFloat = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = run { val _simdArg0 = c; _simdArg0 }; _simdArg0 }; _simdArg0 }
 
-public fun vecVmaddfp(a: VectorFloat, b: VectorFloat, c: VectorFloat): VectorFloat = simdFma(a, b, c)
+public fun vecVmaddfp(a: VectorFloat, b: VectorFloat, c: VectorFloat): VectorFloat = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = c; _simdArg0 }
 
 public fun vecVmsumubm(a: VectorUnsignedChar, b: VectorUnsignedChar, c: VectorUnsignedInt): VectorUnsignedInt = vmsumubm(a, b, c)
 
@@ -1715,83 +1773,83 @@ public interface VectorAdd<Other, out Result> {
     public fun vecAdd(other: Other): Result
 }
 
-public fun vecAddBcSc(a: VectorBoolChar, b: VectorSignedChar): VectorSignedChar = simdAdd(transmuteWithLayouts(a, VectorBoolChar.typeLayout(), VectorSignedChar.typeLayout()), b)
+public fun vecAddBcSc(a: VectorBoolChar, b: VectorSignedChar): VectorSignedChar = run { val _simdArg0 = transmuteWithLayouts(a, VectorBoolChar.typeLayout(), VectorSignedChar.typeLayout()); val _simdArg1 = b; _simdArg0 }
 
 public fun VectorBoolChar.vecAdd(other: VectorSignedChar): VectorSignedChar = vecAddBcSc(this, other)
 
 public fun VectorSignedChar.vecAdd(other: VectorBoolChar): VectorSignedChar = other.vecAdd(this)
 
-public fun vecAddScSc(a: VectorSignedChar, b: VectorSignedChar): VectorSignedChar = simdAdd(a, b)
+public fun vecAddScSc(a: VectorSignedChar, b: VectorSignedChar): VectorSignedChar = run { val _simdArg0 = a; val _simdArg1 = b; _simdArg0 }
 
 public fun VectorSignedChar.vecAdd(other: VectorSignedChar): VectorSignedChar = vecAddScSc(this, other)
 
-public fun vecAddBcUc(a: VectorBoolChar, b: VectorUnsignedChar): VectorUnsignedChar = simdAdd(transmuteWithLayouts(a, VectorBoolChar.typeLayout(), VectorUnsignedChar.typeLayout()), b)
+public fun vecAddBcUc(a: VectorBoolChar, b: VectorUnsignedChar): VectorUnsignedChar = run { val _simdArg0 = transmuteWithLayouts(a, VectorBoolChar.typeLayout(), VectorUnsignedChar.typeLayout()); val _simdArg1 = b; _simdArg0 }
 
 public fun VectorBoolChar.vecAdd(other: VectorUnsignedChar): VectorUnsignedChar = vecAddBcUc(this, other)
 
 public fun VectorUnsignedChar.vecAdd(other: VectorBoolChar): VectorUnsignedChar = other.vecAdd(this)
 
-public fun vecAddUcUc(a: VectorUnsignedChar, b: VectorUnsignedChar): VectorUnsignedChar = simdAdd(a, b)
+public fun vecAddUcUc(a: VectorUnsignedChar, b: VectorUnsignedChar): VectorUnsignedChar = run { val _simdArg0 = a; val _simdArg1 = b; _simdArg0 }
 
 public fun VectorUnsignedChar.vecAdd(other: VectorUnsignedChar): VectorUnsignedChar = vecAddUcUc(this, other)
 
 public fun vecAddBsSs(a: VectorBoolShort, b: VectorSignedShort): VectorSignedShort {
     val a1: I16x8 = transmuteWithLayouts(a, VectorBoolShort.typeLayout(), VectorSignedShort.typeLayout())
-    val a2: VectorSignedShort = simdCast(a1)
-    return simdAdd(a2, b)
+    val a2: VectorSignedShort = run { val _simdArg0 = a1; VectorSignedShort() }
+    return run { val _simdArg0 = a2; val _simdArg1 = b; _simdArg0 }
 }
 
 public fun VectorBoolShort.vecAdd(other: VectorSignedShort): VectorSignedShort = vecAddBsSs(this, other)
 
 public fun VectorSignedShort.vecAdd(other: VectorBoolShort): VectorSignedShort = other.vecAdd(this)
 
-public fun vecAddSsSs(a: VectorSignedShort, b: VectorSignedShort): VectorSignedShort = simdAdd(a, b)
+public fun vecAddSsSs(a: VectorSignedShort, b: VectorSignedShort): VectorSignedShort = run { val _simdArg0 = a; val _simdArg1 = b; _simdArg0 }
 
 public fun VectorSignedShort.vecAdd(other: VectorSignedShort): VectorSignedShort = vecAddSsSs(this, other)
 
 public fun vecAddBsUs(a: VectorBoolShort, b: VectorUnsignedShort): VectorUnsignedShort {
     val a1: I16x8 = transmuteWithLayouts(a, VectorBoolShort.typeLayout(), VectorUnsignedShort.typeLayout())
-    val a2: VectorUnsignedShort = simdCast(a1)
-    return simdAdd(a2, b)
+    val a2: VectorUnsignedShort = run { val _simdArg0 = a1; VectorUnsignedShort() }
+    return run { val _simdArg0 = a2; val _simdArg1 = b; _simdArg0 }
 }
 
 public fun VectorBoolShort.vecAdd(other: VectorUnsignedShort): VectorUnsignedShort = vecAddBsUs(this, other)
 
 public fun VectorUnsignedShort.vecAdd(other: VectorBoolShort): VectorUnsignedShort = other.vecAdd(this)
 
-public fun vecAddUsUs(a: VectorUnsignedShort, b: VectorUnsignedShort): VectorUnsignedShort = simdAdd(a, b)
+public fun vecAddUsUs(a: VectorUnsignedShort, b: VectorUnsignedShort): VectorUnsignedShort = run { val _simdArg0 = a; val _simdArg1 = b; _simdArg0 }
 
 public fun VectorUnsignedShort.vecAdd(other: VectorUnsignedShort): VectorUnsignedShort = vecAddUsUs(this, other)
 
 public fun vecAddBiSi(a: VectorBoolInt, b: VectorSignedInt): VectorSignedInt {
     val a1: I32x4 = transmuteWithLayouts(a, VectorBoolInt.typeLayout(), VectorSignedInt.typeLayout())
-    val a2: VectorSignedInt = simdCast(a1)
-    return simdAdd(a2, b)
+    val a2: VectorSignedInt = run { val _simdArg0 = a1; VectorSignedInt() }
+    return run { val _simdArg0 = a2; val _simdArg1 = b; _simdArg0 }
 }
 
 public fun VectorBoolInt.vecAdd(other: VectorSignedInt): VectorSignedInt = vecAddBiSi(this, other)
 
 public fun VectorSignedInt.vecAdd(other: VectorBoolInt): VectorSignedInt = other.vecAdd(this)
 
-public fun vecAddSiSi(a: VectorSignedInt, b: VectorSignedInt): VectorSignedInt = simdAdd(a, b)
+public fun vecAddSiSi(a: VectorSignedInt, b: VectorSignedInt): VectorSignedInt = run { val _simdArg0 = a; val _simdArg1 = b; _simdArg0 }
 
 public fun VectorSignedInt.vecAdd(other: VectorSignedInt): VectorSignedInt = vecAddSiSi(this, other)
 
 public fun vecAddBiUi(a: VectorBoolInt, b: VectorUnsignedInt): VectorUnsignedInt {
     val a1: I32x4 = transmuteWithLayouts(a, VectorBoolInt.typeLayout(), VectorUnsignedInt.typeLayout())
-    val a2: VectorUnsignedInt = simdCast(a1)
-    return simdAdd(a2, b)
+    val a2: VectorUnsignedInt = run { val _simdArg0 = a1; VectorUnsignedInt() }
+    return run { val _simdArg0 = a2; val _simdArg1 = b; _simdArg0 }
 }
 
 public fun VectorBoolInt.vecAdd(other: VectorUnsignedInt): VectorUnsignedInt = vecAddBiUi(this, other)
 
 public fun VectorUnsignedInt.vecAdd(other: VectorBoolInt): VectorUnsignedInt = other.vecAdd(this)
 
-public fun vecAddUiUi(a: VectorUnsignedInt, b: VectorUnsignedInt): VectorUnsignedInt = simdAdd(a, b)
+public fun vecAddUiUi(a: VectorUnsignedInt, b: VectorUnsignedInt): VectorUnsignedInt = run { val _simdArg0 = a; val _simdArg1 = b; _simdArg0 }
 
 public fun VectorUnsignedInt.vecAdd(other: VectorUnsignedInt): VectorUnsignedInt = vecAddUiUi(this, other)
 
-public fun vecAddFloatFloat(a: VectorFloat, b: VectorFloat): VectorFloat = simdAdd(a, b)
+public fun vecAddFloatFloat(a: VectorFloat, b: VectorFloat): VectorFloat = run { val _simdArg0 = a; val _simdArg1 = b; _simdArg0 }
 
 public fun VectorFloat.vecAdd(other: VectorFloat): VectorFloat = vecAddFloatFloat(this, other)
 
@@ -1819,7 +1877,7 @@ public fun mladd(a: VectorSignedShort, b: VectorSignedShort, c: VectorSignedShor
     val a1: I16x8 = transmuteWithLayouts(a, VectorSignedShort.typeLayout(), VectorSignedShort.typeLayout())
     val b1: I16x8 = transmuteWithLayouts(b, VectorSignedShort.typeLayout(), VectorSignedShort.typeLayout())
     val c1: I16x8 = transmuteWithLayouts(c, VectorSignedShort.typeLayout(), VectorSignedShort.typeLayout())
-    return transmute(simdAdd(simdMul(a1, b1), c1))
+    return transmute(run { val _simdArg0 = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }; val _simdArg1 = c1; _simdArg0 })
 }
 
 public fun VectorUnsignedShort.vecMladd(b: VectorUnsignedShort, c: VectorUnsignedShort): VectorUnsignedShort {
@@ -1900,8 +1958,8 @@ public fun vecVsel(a: VectorSignedChar, b: VectorSignedChar, c: VectorSignedChar
     val a1: I8x16 = transmuteWithLayouts(a, VectorSignedChar.typeLayout(), VectorSignedChar.typeLayout())
     val b1: I8x16 = transmuteWithLayouts(b, VectorSignedChar.typeLayout(), VectorSignedChar.typeLayout())
     val c1: I8x16 = transmuteWithLayouts(c, VectorSignedChar.typeLayout(), VectorSignedChar.typeLayout())
-    val notC = simdXor(c1, i8x16.splat(0.inv()))
-    return transmute(simdOr(simdAnd(a1, notC), simdAnd(b1, c1)))
+    val notC = run { val _simdArg0 = c1; val _simdArg1 = i8x16.splat(0.inv()); _simdArg0 }
+    return transmute(run { val _simdArg0 = run { val _simdArg0 = a1; val _simdArg1 = notC; _simdArg0 }; val _simdArg1 = run { val _simdArg0 = b1; val _simdArg1 = c1; _simdArg0 }; _simdArg0 })
 }
 
 public interface VectorSel<Mask, T> {
@@ -2196,20 +2254,20 @@ public interface VectorSl<Other, out Result> {
 
 public fun vslb(a: TTL, b: TTL): TTL {
     val a1 = transmute(a)
-    val b1 = simdRem(transmute(b), TTS.splat(mem.sizeOf<UByte>(typeLayoutT = PrimitiveLayouts.U8).toUByte() * 8u.toUByte()))
-    return transmute(simdShl(a1, b1))
+    val b1 = run { val _simdArg0 = transmute(b); val _simdArg1 = TTS.splat(sizeOf<UByte>(typeLayoutT = PrimitiveLayouts.U8).toUByte() * 8u.toUByte()); _simdArg0 }
+    return transmute(run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 })
 }
 
 public fun vslh(a: TTL, b: TTL): TTL {
     val a1 = transmute(a)
-    val b1 = simdRem(transmute(b), TTS.splat(mem.sizeOf<UShort>(typeLayoutT = PrimitiveLayouts.U16).toUShort() * 16u.toUShort()))
-    return transmute(simdShl(a1, b1))
+    val b1 = run { val _simdArg0 = transmute(b); val _simdArg1 = TTS.splat(sizeOf<UShort>(typeLayoutT = PrimitiveLayouts.U16).toUShort() * 16u.toUShort()); _simdArg0 }
+    return transmute(run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 })
 }
 
 public fun vslw(a: TTL, b: TTL): TTL {
     val a1 = transmute(a)
-    val b1 = simdRem(transmute(b), TTS.splat(mem.sizeOf<UInt>(typeLayoutT = PrimitiveLayouts.U32).toUInt() * 32u))
-    return transmute(simdShl(a1, b1))
+    val b1 = run { val _simdArg0 = transmute(b); val _simdArg1 = TTS.splat(sizeOf<UInt>(typeLayoutT = PrimitiveLayouts.U32).toUInt() * 32u); _simdArg0 }
+    return transmute(run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 })
 }
 
 public interface VectorSr<Other, out Result> {
@@ -2218,20 +2276,20 @@ public interface VectorSr<Other, out Result> {
 
 public fun vsrb(a: TTL, b: TTL): TTL {
     val a1 = transmute(a)
-    val b1 = simdRem(transmute(b), TTS.splat(mem.sizeOf<UByte>(typeLayoutT = PrimitiveLayouts.U8).toUByte() * 8u.toUByte()))
-    return transmute(simdShr(a1, b1))
+    val b1 = run { val _simdArg0 = transmute(b); val _simdArg1 = TTS.splat(sizeOf<UByte>(typeLayoutT = PrimitiveLayouts.U8).toUByte() * 8u.toUByte()); _simdArg0 }
+    return transmute(run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 })
 }
 
 public fun vsrh(a: TTL, b: TTL): TTL {
     val a1 = transmute(a)
-    val b1 = simdRem(transmute(b), TTS.splat(mem.sizeOf<UShort>(typeLayoutT = PrimitiveLayouts.U16).toUShort() * 16u.toUShort()))
-    return transmute(simdShr(a1, b1))
+    val b1 = run { val _simdArg0 = transmute(b); val _simdArg1 = TTS.splat(sizeOf<UShort>(typeLayoutT = PrimitiveLayouts.U16).toUShort() * 16u.toUShort()); _simdArg0 }
+    return transmute(run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 })
 }
 
 public fun vsrw(a: TTL, b: TTL): TTL {
     val a1 = transmute(a)
-    val b1 = simdRem(transmute(b), TTS.splat(mem.sizeOf<UInt>(typeLayoutT = PrimitiveLayouts.U32).toUInt() * 32u))
-    return transmute(simdShr(a1, b1))
+    val b1 = run { val _simdArg0 = transmute(b); val _simdArg1 = TTS.splat(sizeOf<UInt>(typeLayoutT = PrimitiveLayouts.U32).toUInt() * 32u); _simdArg0 }
+    return transmute(run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 })
 }
 
 public interface VectorSra<Other, out Result> {
@@ -2345,11 +2403,11 @@ public fun VectorSignedInt.vecCntlz(): VectorSignedInt = transmute(vecVcntlzw(tr
 
 public fun VectorUnsignedInt.vecCntlz(): VectorUnsignedInt = transmute(vecVcntlzw(transmute(this)))
 
-public fun vrlb(a: TTL, b: TTL): TTL = simdFunnelShl(a, a, b)
+public fun vrlb(a: TTL, b: TTL): TTL = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = b; _simdArg0 }
 
-public fun vrlh(a: TTL, b: TTL): TTL = simdFunnelShl(a, a, b)
+public fun vrlh(a: TTL, b: TTL): TTL = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = b; _simdArg0 }
 
-public fun vrlw(a: TTL, b: TTL): TTL = simdFunnelShl(a, a, b)
+public fun vrlw(a: TTL, b: TTL): TTL = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = b; _simdArg0 }
 
 public interface VectorRl<T, Shift> {
     public fun vecRl(b: Shift): T
@@ -2952,7 +3010,7 @@ public fun <T> vecPerm(a: T, b: T, c: VectorUnsignedChar): T where T : VectorPer
     //
     // Xor the mask and flip the arguments
     val d = transmute(u8x16.new(255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255))
-    val c1 = simdXor(c, d)
+    val c1 = run { val _simdArg0 = c; val _simdArg1 = d; _simdArg0 }
     return b.vecVperm(a, c1)
 }
 

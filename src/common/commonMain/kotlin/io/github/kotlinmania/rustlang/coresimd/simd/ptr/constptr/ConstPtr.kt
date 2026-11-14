@@ -91,12 +91,12 @@ public fun Simd<ConstPtr, N>.cast(n: Int): Simd<ConstPtr> {
     check(sizeOf<Metadata>(typeLayoutT = ObjectSlotLayout<Metadata>()) == 0)
     check(sizeOf<Metadata>(typeLayoutT = ObjectSlotLayout<Metadata>()) == 0)
     // Safety: pointers can be cast
-    return simd.simdCastPtr(this)
+    return run { val _simdArg0 = this; _simdArg0 }
 }
 
 public fun Simd<ConstPtr, N>.castMut(n: Int): Simd<MutPtr> {
     // Safety: pointers can be cast
-    return simd.simdCastPtr(this)
+    return run { val _simdArg0 = this; _simdArg0 }
 }
 
 public fun Simd<ConstPtr, N>.addr(n: Int): Simd<Int> {
@@ -117,12 +117,12 @@ public fun Simd<ConstPtr, N>.withAddr(addr: Simd<Int, N>, n: Int): Simd<ConstPtr
 
 public fun Simd<ConstPtr, N>.exposeProvenance(n: Int): Simd<Int> {
     // Safety: `self` is a pointer vector
-    return simd.simdExposeProvenance(this)
+    return run { val _simdArg0 = this; _simdArg0 }
 }
 
 public fun Simd<ConstPtr, N>.wrappingOffset(count: Simd<Int, N>, n: Int): Simd<ConstPtr, N> {
     // Safety: simdArithOffset takes a vector of pointers and a vector of offsets
-    return simd.simdArithOffset(this, count)
+    return run { val _simdArg0 = this; val _simdArg1 = count; _simdArg0 }
 }
 
 public fun Simd<ConstPtr, N>.wrappingAdd(count: Simd<Int, N>, n: Int): Simd<ConstPtr, N> = this.wrappingOffset(count.cast())

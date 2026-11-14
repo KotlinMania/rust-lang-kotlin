@@ -3,8 +3,10 @@ package io.github.kotlinmania.rustlang.core.index
 
 import io.github.kotlinmania.rustlang.core.intrinsics.sliceGetUnchecked
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.range.Range
 import io.github.kotlinmania.rustlang.core.slice.SliceIndex
 
 // Helper types for indexing slices.
@@ -39,10 +41,10 @@ public open class Clamp<Idx>(
         }
 
     public companion object {
-        public fun <Idx> typeLayout(typeLayoutIdx: io.github.kotlinmania.rustlang.core.mem.TypeLayout<Idx>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Clamp<Idx>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Clamp<Idx>> {
+        public fun <Idx> typeLayout(typeLayoutIdx: TypeLayout<Idx>): TypeLayout<Clamp<Idx>> =
+            object : TypeLayout<Clamp<Idx>> {
                 override val alignBytes: Long = listOf(1L, typeLayoutIdx.alignBytes).max()
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(typeLayoutIdx.sizeBytes, alignBytes)
+                override val sizeBytes: Long = alignUpBytes(typeLayoutIdx.sizeBytes, alignBytes)
                 override fun readNative(addr: Long): Clamp<Idx> =
                     Clamp(
                         (typeLayoutIdx).readNative(addr),
@@ -105,8 +107,8 @@ public open class Last : SliceIndex<List<T>, Any?, T> {
     }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Last> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Last> {
+        public fun typeLayout(): TypeLayout<Last> =
+            object : TypeLayout<Last> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): Last =
@@ -139,39 +141,39 @@ public fun <T> Clamp<Int>.index(slice: List<T>): T = slice[minOf(this.value, sli
 
 public fun <T> Clamp<Int>.indexMut(slice: MutableList<T>): T = slice[minOf(this.value, slice.size - 1)]
 
-public fun <T> Clamp<IntRange>.getTSlice(slice: List<T>): List<T>? {
+public fun <T> Clamp<Range<Int>>.getTSlice(slice: List<T>): List<T>? {
     val start = minOf(this.value.start, slice.size)
     val end = minOf(this.value.end, slice.size)
     return (start until end).get(slice)
 }
 
-public fun <T> Clamp<IntRange>.getMutTSlice(slice: MutableList<T>): List<T>? {
+public fun <T> Clamp<Range<Int>>.getMutTSlice(slice: MutableList<T>): List<T>? {
     val start = minOf(this.value.start, slice.size)
     val end = minOf(this.value.end, slice.size)
     return (start until end).getMut(slice)
 }
 
-public fun Clamp<IntRange>.getUncheckedTSlice(slice: ConstPtr): ConstPtr {
+public fun Clamp<Range<Int>>.getUncheckedTSlice(slice: ConstPtr): ConstPtr {
     val start = minOf(this.value.start, slice.len())
     val end = minOf(this.value.end, slice.len())
     // SAFETY: a range ending before len is always valid
     return (start until end).getUnchecked(slice)
 }
 
-public fun Clamp<IntRange>.getUncheckedMutTSlice(slice: MutPtr): MutPtr {
+public fun Clamp<Range<Int>>.getUncheckedMutTSlice(slice: MutPtr): MutPtr {
     val start = minOf(this.value.start, slice.len())
     val end = minOf(this.value.end, slice.len())
     // SAFETY: a range ending before len is always valid
     return (start until end).getUncheckedMut(slice)
 }
 
-public fun <T> Clamp<IntRange>.indexTSlice(slice: List<T>): List<T> {
+public fun <T> Clamp<Range<Int>>.indexTSlice(slice: List<T>): List<T> {
     val start = minOf(this.value.start, slice.size)
     val end = minOf(this.value.end, slice.size)
     return (start until end).index(slice)
 }
 
-public fun <T> Clamp<IntRange>.indexMutTSlice(slice: MutableList<T>): List<T> {
+public fun <T> Clamp<Range<Int>>.indexMutTSlice(slice: MutableList<T>): List<T> {
     val start = minOf(this.value.start, slice.size)
     val end = minOf(this.value.end, slice.size)
     return (start until end).indexMut(slice)

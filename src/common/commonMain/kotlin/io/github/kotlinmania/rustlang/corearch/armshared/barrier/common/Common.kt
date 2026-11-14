@@ -24,8 +24,8 @@ public open class SY : Sealed.Dmb, Sealed.Dsb, Sealed.Isb {
     }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<SY> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<SY> {
+        public fun typeLayout(): TypeLayout<SY> =
+            object : TypeLayout<SY> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): SY =

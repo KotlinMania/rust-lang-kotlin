@@ -1,9 +1,10 @@
-@file:OptIn(kotlinx.cinterop.ExperimentalForeignApi::class, kotlin.ExperimentalUnsignedTypes::class)
+@file:OptIn(ExperimentalForeignApi::class, ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.corearch.wasm32
 
 import io.github.kotlinmania.rustlang.corearch.wasm32.cinterop.corearchWasm32MemoryLlvmMemoryGrow
 import io.github.kotlinmania.rustlang.corearch.wasm32.cinterop.corearchWasm32MemoryLlvmMemorySize
+import kotlinx.cinterop.ExperimentalForeignApi
 
 public actual fun llvmMemoryGrow(mem: UInt, pages: ULong): ULong =
     corearchWasm32MemoryLlvmMemoryGrow(mem, pages)

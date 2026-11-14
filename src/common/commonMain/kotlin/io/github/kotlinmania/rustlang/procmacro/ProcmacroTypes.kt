@@ -169,7 +169,7 @@ public open class IntoIter internal constructor(
             value = v
         }
 
-    override fun iterator(): kotlin.collections.Iterator<TokenTree> = object : AbstractIterator<TokenTree>() {
+    override fun iterator(): Iterator<TokenTree> = object : AbstractIterator<TokenTree>() {
         override fun computeNext() {
             when (val v = this@IntoIter.next()) {
                 null -> done()
@@ -177,6 +177,8 @@ public open class IntoIter internal constructor(
             }
         }
     }
+
+    public open fun clone(): IntoIter = IntoIter(value)
 
     public open fun next(): TokenTree? =
         this.value.next()?.let({ tree -> when (tree) {
@@ -198,7 +200,7 @@ public open class IntoIter internal constructor(
             }
         } })
 
-    public open fun sizeHint(): Pair<Int, Int?> = this.value.sizeHint()
+    public open fun sizeHint(): Pair<Int, Int?> = run { val n = this.value.size; Pair(n, n) }
 
     public open fun count(): Int = this.value.count()
 

@@ -1,8 +1,8 @@
 // port-lint: source iter/traits/exact_size.rs
 package io.github.kotlinmania.rustlang.core.iter.traits.exactsize
 
+import io.github.kotlinmania.rustlang.core.cmp.Eq
 import io.github.kotlinmania.rustlang.core.option.Option
-import io.github.kotlinmania.rustlang.core.panicking.AssertKind
 import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 
 /**
@@ -100,7 +100,7 @@ public interface ExactSizeIterator<T> {
                 val leftVal = matchVal.first
                 val rightVal = matchVal.second
                 if (!(leftVal == rightVal)) {
-                    val kind = AssertKind.Eq
+                    val kind = Eq
                     assertFailed(kind, leftVal, rightVal, Option.None)
                 }
             }

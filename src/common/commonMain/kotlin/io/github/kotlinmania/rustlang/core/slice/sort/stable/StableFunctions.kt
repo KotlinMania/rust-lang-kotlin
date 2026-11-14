@@ -1,10 +1,10 @@
 package io.github.kotlinmania.rustlang.core.slice.sort.stable
 
-import io.github.kotlinmania.rustlang.core.cfgSelect
+import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.slice.sort.shared.smallsort.SMALL_SORT_GENERAL_SCRATCH_LEN
-import io.github.kotlinmania.rustlang.core.slice.sort.shared.smallsort.insertionSortShiftLeft
+import io.github.kotlinmania.rustlang.core.slice.sort.stable.tiny.mergesort
 
 /**
  * Stable sort called driftsort by Orson Peters and Lukas Bergdoll.
@@ -14,7 +14,7 @@ import io.github.kotlinmania.rustlang.core.slice.sort.shared.smallsort.insertion
  * Upholds all safety properties outlined here:
  * <https://github.com/Voultapher/sort-research-rs/blob/main/writeup/sortSafety/text.md>
  */
-public fun <T, BufT : BufGuard<T, BufT>> sort(v: MutableList<T>, isLess: (T, T) -> Boolean) {
+public fun <T, BufT : BufGuard<T, BufT>> sort(v: MutableList<T>, isLess: (T, T) -> Boolean, withCapacityBufTFn: (Int) -> BufT) {
     // Arrays of zero-sized types are always all-equal, and thus sorted.
     if (T.IS_ZST) {
         return
@@ -25,7 +25,22 @@ public fun <T, BufT : BufGuard<T, BufT>> sort(v: MutableList<T>, isLess: (T, T) 
     if (len < 2) {
         return
     }
-    cfgSelect(any, feature, "optimize_for_size", targetPointerWidth, "16", allocLen, len, 2, cfgSelect, targetPointerWidth, "16", heapBuf, BufT, withCapacity, allocLen, scratch, heapBuf, asUninitSliceMut, stackBuf, AlignedStorage, T, 4096, new, stackScratch, stackBuf, asUninitSliceMut, heapBuf, scratch, stackScratch, len, allocLen, stackScratch, heapBuf, BufT, withCapacity, allocLen, heapBuf, asUninitSliceMut, tiny, mergesort, v, scratch, isLess, MAX_LEN_ALWAYS_INSERTION_SORT, 20, intrinsics, likely, len, MAX_LEN_ALWAYS_INSERTION_SORT, insertionSortShiftLeft, v, 1, isLess, driftsortMain, T, F, BufT, v, isLess)
+    // Unlike driftsort, mergesort only requires len / 2,
+    // not len - len / 2.
+    val allocLen = len / 2
+    // For small inputs 4KiB of stack storage suffices, which allows us to avoid
+    // calling the (de-)allocator. Benchmarks showed this was quite beneficial.
+    val stackBuf = AlignedStorage.new()
+    val stackScratch = stackBuf.asUninitSliceMut()
+    var heapBuf: Any?
+    val scratch =
+        if (stackScratch.len() >= allocLen) {
+            stackScratch
+        } else {
+            heapBuf = withCapacityBufTFn(allocLen)
+            heapBuf.asUninitSliceMut()
+        }
+    mergesort(v, scratch, isLess)
 }
 
 /**

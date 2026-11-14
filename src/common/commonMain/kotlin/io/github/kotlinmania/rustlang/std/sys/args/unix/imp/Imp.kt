@@ -1,9 +1,9 @@
 // port-lint: source sys/args/unix.rs
 package io.github.kotlinmania.rustlang.std.sys.args.unix.imp
 
-import io.github.kotlinmania.libc.nsgetArgc
-import io.github.kotlinmania.libc.nsgetArgv
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
+import io.github.kotlinmania.rustlang.libc.nsgetArgc
+import io.github.kotlinmania.rustlang.libc.nsgetArgv
 
 public fun init(argc: Int, argv: ConstPtr) {
     // No need to initialize anything in here, `libdyld.dylib` has already

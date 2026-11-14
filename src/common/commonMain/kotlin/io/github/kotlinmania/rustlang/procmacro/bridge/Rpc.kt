@@ -10,11 +10,11 @@ import io.github.kotlinmania.rustlang.procmacro.buffer.Buffer
 
 // Serialization for client-server communication.
 
-internal interface Encode<S> {
+public interface Encode<S> {
     public fun encode(w: Buffer, s: S)
 }
 
-internal interface Decode<S, T> {
+public interface Decode<S, T> {
     public fun decode(r: List<UByte>, s: S): T
 }
 

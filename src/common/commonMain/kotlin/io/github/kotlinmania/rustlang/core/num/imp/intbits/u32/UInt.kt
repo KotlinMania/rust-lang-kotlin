@@ -25,7 +25,7 @@ public fun prepare(sparse: UInt): UIntArray {
     return masks
 }
 
-internal fun extractImpl(x: UInt, sparse: UInt): UInt {
+public fun extractImpl(x: UInt, sparse: UInt): UInt {
     var x1 = x
     val masks = prepare(sparse)
     x1 = x1 and sparse
@@ -44,7 +44,7 @@ internal fun extractImpl(x: UInt, sparse: UInt): UInt {
     return x1
 }
 
-internal fun depositImpl(x: UInt, sparse: UInt): UInt {
+public fun depositImpl(x: UInt, sparse: UInt): UInt {
     var x1 = x
     val masks = prepare(sparse)
     var stage = STAGES

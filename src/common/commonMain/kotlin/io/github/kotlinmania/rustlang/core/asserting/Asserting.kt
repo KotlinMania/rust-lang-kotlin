@@ -3,7 +3,7 @@ package io.github.kotlinmania.rustlang.core.asserting
 
 import io.github.kotlinmania.rustlang.core.fmt.Formatter
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.num.f128.consts.E
+import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 
 // ***** TryCapture - Generic *****
@@ -13,8 +13,8 @@ import io.github.kotlinmania.rustlang.core.result.Result
  */
 public open class TryCaptureWithoutDebug {
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<TryCaptureWithoutDebug> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<TryCaptureWithoutDebug> {
+        public fun typeLayout(): TypeLayout<TryCaptureWithoutDebug> =
+            object : TypeLayout<TryCaptureWithoutDebug> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): TryCaptureWithoutDebug =
@@ -50,8 +50,8 @@ public fun <E> Capture<E, TryCaptureWithoutDebug>.fmt(f: Formatter): Result<Unit
  */
 public open class TryCaptureWithDebug {
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<TryCaptureWithDebug> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<TryCaptureWithDebug> {
+        public fun typeLayout(): TypeLayout<TryCaptureWithDebug> =
+            object : TypeLayout<TryCaptureWithDebug> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): TryCaptureWithDebug =
@@ -116,10 +116,10 @@ public open class Wrapper<T>(
         }
 
     public companion object {
-        public fun <T> typeLayout(typeLayoutT: io.github.kotlinmania.rustlang.core.mem.TypeLayout<T>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Wrapper<T>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Wrapper<T>> {
+        public fun <T> typeLayout(typeLayoutT: TypeLayout<T>): TypeLayout<Wrapper<T>> =
+            object : TypeLayout<Wrapper<T>> {
                 override val alignBytes: Long = listOf(1L, typeLayoutT.alignBytes).max()
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(typeLayoutT.sizeBytes, alignBytes)
+                override val sizeBytes: Long = alignUpBytes(typeLayoutT.sizeBytes, alignBytes)
                 override fun readNative(addr: Long): Wrapper<T> =
                     Wrapper(
                         (typeLayoutT).readNative(addr),

@@ -1,13 +1,16 @@
 // port-lint: source slice/sort/unstable/quicksort.rs
 package io.github.kotlinmania.rustlang.core.slice.sort.unstable.quicksort
 
-import io.github.kotlinmania.rustlang.core.cfgSelect
 import io.github.kotlinmania.rustlang.core.intrinsics.abortImmediate
 import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.copy
+import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
+import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.sort.shared.pivot.choosePivot
 import io.github.kotlinmania.rustlang.core.slice.sort.unstable.heapsort.heapsort
@@ -22,7 +25,7 @@ import io.github.kotlinmania.rustlang.core.slice.sort.unstable.heapsort.heapsort
  * `limit` is the number of allowed imbalanced partitions before switching to `heapsort`. If zero,
  * this function will immediately switch to heapsort.
  */
-internal fun <T> quicksort(v: MutableList<T>, ancestorPivot: T?, limit: UInt, isLess: (T, T) -> Boolean, smallSortThresholdTFn: () -> T, smallSortTFn: (MutableList<T>, (T, T) -> Boolean) -> Unit) {
+public fun <T> quicksort(v: MutableList<T>, ancestorPivot: T?, limit: UInt, isLess: (T, T) -> Boolean, smallSortThresholdTFn: () -> T, smallSortTFn: (MutableList<T>, (T, T) -> Boolean) -> Unit) {
     var v1 = v
     var ancestorPivot1 = ancestorPivot
     var limit1 = limit
@@ -83,7 +86,7 @@ internal fun <T> quicksort(v: MutableList<T>, ancestorPivot: T?, limit: UInt, is
  * interior mutability will be observable. Same is true if `isLess` panics or `v.len()`
  * exceeds `scratch.len()`.
  */
-internal fun <T> partition(v: MutableList<T>, pivot: Int, isLess: (T, T) -> Boolean, typeLayoutT: TypeLayout<T>): Int {
+public fun <T> partition(v: MutableList<T>, pivot: Int, isLess: (T, T) -> Boolean, typeLayoutT: TypeLayout<T>): Int {
     val len = v.size
     // Allows for panic-free code-gen by proving this property to the compiler.
     if (len == 0) {
@@ -175,15 +178,15 @@ public fun <T> partitionHoareBranchyCyclic(v: MutableList<T>, pivot: T, isLess: 
             // Swap the found pair of out-of-order elements via cyclic permutation.
             val isFirstSwapPair = gapOpt == null
             if (isFirstSwapPair) {
-                gapOpt = GapGuard(pos = right, value = ptr.read(left))
+                gapOpt = GapGuard(pos = right, value = read(left))
             }
             val gap = gapOpt.unwrapUnchecked()
             // Single place where we instantiate ptr.copyNonoverlapping in the partition.
             if (!isFirstSwapPair) {
-                ptr.copyNonoverlapping(left, gap.pos, 1)
+                copyNonoverlapping(left, gap.pos, 1)
             }
             gap.pos = right
-            ptr.copyNonoverlapping(right, left, 1)
+            copyNonoverlapping(right, left, 1)
             left = MutPtr((left).rawAddress + ((1).toLong() * (ObjectSlotLayout<T>()).strideBytes))
         }
         left.offsetFromUnsigned(vBase)
@@ -232,8 +235,8 @@ public fun <T> partitionLomutoBranchlessCyclic(v: MutableList<T>, pivot: T, isLe
             { state: PartitionState<T> ->
                 val rightIsLt = isLess(state.right, pivot)
                 val left = MutPtr((vBase).rawAddress + ((state.numLt).toLong() * (typeLayoutT).strideBytes))
-                ptr.copy(left, state.gap.pos, 1)
-                ptr.copyNonoverlapping(state.right, left, 1)
+                copy(left, state.gap.pos, 1)
+                copyNonoverlapping(state.right, left, 1)
                 state.gap.pos = state.right
                 state.numLt += rightIsLt.toInt()
                 state.right = state.right.add(1)
@@ -243,7 +246,7 @@ public fun <T> partitionLomutoBranchlessCyclic(v: MutableList<T>, pivot: T, isLe
         // to the parent struct that contains the gap value, invalidating the reference pointer
         // created from a reference to the gap value in the cleanup loop. This is only an issue
         // under Stacked Borrows, Tree Borrows accepts the intuitive code using GapGuard as valid.
-        val gapValue = ptr.read(vBase)
+        val gapValue = read(vBase)
         val state = PartitionState(numLt = 0, right = MutPtr((vBase).rawAddress + ((1).toLong() * (typeLayoutT).strideBytes)), gap = GapGuardRaw(pos = vBase, value = gapValue))
         // Manual unrolling that works well on x86, Arm and with opt-level=s without murdering
         // compile-times. Leaving this to the compiler yields ok to bad results.
@@ -274,7 +277,7 @@ public fun <T> partitionLomutoBranchlessCyclic(v: MutableList<T>, pivot: T, isLe
             }
             loopBody(state)
             if (isDone) {
-                mem.forget(state.gap)
+                forget(state.gap)
                 break
             }
         }
@@ -304,7 +307,7 @@ public open class GapGuard<T>(
         // SAFETY: `self` MUST be constructed in a way that makes copying the gap value into
         // `self.pos` sound.
         run {
-            ptr.copyNonoverlapping(this.value, this.pos, 1)
+            copyNonoverlapping(this.value, this.pos, 1)
         }
     }
 }
@@ -321,32 +324,32 @@ public open class GapGuardRaw<T>(
         // SAFETY: `self` MUST be constructed in a way that makes copying the gap value into
         // `self.pos` sound.
         run {
-            ptr.copyNonoverlapping(this.value, this.pos, 1)
+            copyNonoverlapping(this.value, this.pos, 1)
         }
     }
 
     public companion object {
-        public fun <T> typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<GapGuardRaw<T>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<GapGuardRaw<T>> {
+        public fun <T> typeLayout(): TypeLayout<GapGuardRaw<T>> =
+            object : TypeLayout<GapGuardRaw<T>> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): GapGuardRaw<T> =
                     GapGuardRaw(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).readNative(addr + 8L),
+                        (PrimitiveLayouts.mutPtrLayout(64)).readNative(addr),
+                        (PrimitiveLayouts.mutPtrLayout(64)).readNative(addr + 8L),
                     )
                 override fun writeNative(addr: Long, value: GapGuardRaw<T>) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).writeNative(addr, value.pos)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).writeNative(addr + 8L, value.value)
+                    (PrimitiveLayouts.mutPtrLayout(64)).writeNative(addr, value.pos)
+                    (PrimitiveLayouts.mutPtrLayout(64)).writeNative(addr + 8L, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): GapGuardRaw<T> =
                     GapGuardRaw(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).readBytes(buf, offset + 8),
+                        (PrimitiveLayouts.mutPtrLayout(64)).readBytes(buf, offset),
+                        (PrimitiveLayouts.mutPtrLayout(64)).readBytes(buf, offset + 8),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: GapGuardRaw<T>) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).writeBytes(buf, offset, value.pos)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).writeBytes(buf, offset + 8, value.value)
+                    (PrimitiveLayouts.mutPtrLayout(64)).writeBytes(buf, offset, value.pos)
+                    (PrimitiveLayouts.mutPtrLayout(64)).writeBytes(buf, offset + 8, value.value)
                 }
             }
     }

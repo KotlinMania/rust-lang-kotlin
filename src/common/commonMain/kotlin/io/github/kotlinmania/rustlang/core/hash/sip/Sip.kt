@@ -1,16 +1,17 @@
 // port-lint: source hash/sip.rs
 package io.github.kotlinmania.rustlang.core.hash.sip
 
+import io.github.kotlinmania.rustlang.core.cmp.Eq
 import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.num.rustRotateLeft
 import io.github.kotlinmania.rustlang.core.option.Option
-import io.github.kotlinmania.rustlang.core.panicking.AssertKind
 import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 
 // An implementation of SipHash.
@@ -35,6 +36,8 @@ public open class SipHasher13 internal constructor(
 ) {
     public var hasher: Hasher<Sip13Rounds> = hasherCtorArg
         internal set
+
+    public open fun clone(): SipHasher13 = SipHasher13(hasher)
 
     public open fun write(msg: List<UByte>) {
         this.hasher.write(msg)
@@ -76,6 +79,8 @@ public open class SipHasher24 internal constructor(
     public var hasher: Hasher<Sip24Rounds> = hasherCtorArg
         internal set
 
+    public open fun clone(): SipHasher24 = SipHasher24(hasher)
+
     public companion object {
         public operator fun invoke(
             hasher: Hasher<Sip24Rounds>,
@@ -107,6 +112,8 @@ public open class SipHasher(
         set(v) {
             value = v
         }
+
+    public open fun clone(): SipHasher = SipHasher(value)
 
     public open fun write(msg: List<UByte>) {
         this.value.hasher.write(msg)
@@ -194,7 +201,7 @@ public open class Hasher<S : Sip>(
                     }
                     val localStorageL1C0 = AddressableLocal(0.toULong(), PrimitiveLayouts.U64)
                     val data by localStorageL1C0
-                    ptr.copyNonoverlapping(ConstPtr((msg.asPtr()).rawAddress + ((i).toLong() * (PrimitiveLayouts.U8).strideBytes)), (MutPtr(localStorageL1C0.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, sizeOf<ULong>(typeLayoutT = PrimitiveLayouts.U64))
+                    copyNonoverlapping(ConstPtr((msg.asPtr()).rawAddress + ((i).toLong() * (PrimitiveLayouts.U8).strideBytes)), (MutPtr(localStorageL1C0.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, sizeOf<ULong>(typeLayoutT = PrimitiveLayouts.U64))
                     data
                 }
             this.state.v3 = this.state.v3 xor mi
@@ -253,36 +260,38 @@ public open class State(
     public var v1: ULong,
     public var v3: ULong,
 ) {
+    public open fun clone(): State = State(v0, v2, v1, v3)
+
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<State> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<State> {
+        public fun typeLayout(): TypeLayout<State> =
+            object : TypeLayout<State> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 32L
                 override fun readNative(addr: Long): State =
                     State(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).readNative(addr + 8L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).readNative(addr + 16L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).readNative(addr + 24L),
+                        (PrimitiveLayouts.U64).readNative(addr),
+                        (PrimitiveLayouts.U64).readNative(addr + 8L),
+                        (PrimitiveLayouts.U64).readNative(addr + 16L),
+                        (PrimitiveLayouts.U64).readNative(addr + 24L),
                     )
                 override fun writeNative(addr: Long, value: State) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).writeNative(addr, value.v0)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).writeNative(addr + 8L, value.v2)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).writeNative(addr + 16L, value.v1)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).writeNative(addr + 24L, value.v3)
+                    (PrimitiveLayouts.U64).writeNative(addr, value.v0)
+                    (PrimitiveLayouts.U64).writeNative(addr + 8L, value.v2)
+                    (PrimitiveLayouts.U64).writeNative(addr + 16L, value.v1)
+                    (PrimitiveLayouts.U64).writeNative(addr + 24L, value.v3)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): State =
                     State(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).readBytes(buf, offset + 8),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).readBytes(buf, offset + 16),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).readBytes(buf, offset + 24),
+                        (PrimitiveLayouts.U64).readBytes(buf, offset),
+                        (PrimitiveLayouts.U64).readBytes(buf, offset + 8),
+                        (PrimitiveLayouts.U64).readBytes(buf, offset + 16),
+                        (PrimitiveLayouts.U64).readBytes(buf, offset + 24),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: State) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).writeBytes(buf, offset, value.v0)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).writeBytes(buf, offset + 8, value.v2)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).writeBytes(buf, offset + 16, value.v1)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).writeBytes(buf, offset + 24, value.v3)
+                    (PrimitiveLayouts.U64).writeBytes(buf, offset, value.v0)
+                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 8, value.v2)
+                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 16, value.v1)
+                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 24, value.v3)
                 }
             }
     }
@@ -312,7 +321,7 @@ public fun u8to64Le(buf: List<UByte>, start: Int, len: Int): ULong {
             }
             val localStorageL1C0 = AddressableLocal(0.toUInt(), PrimitiveLayouts.U32)
             val data by localStorageL1C0
-            ptr.copyNonoverlapping(ConstPtr((buf.asPtr()).rawAddress + ((start + i).toLong() * (PrimitiveLayouts.U8).strideBytes)), (MutPtr(localStorageL1C0.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, sizeOf<UInt>(typeLayoutT = PrimitiveLayouts.U32))
+            copyNonoverlapping(ConstPtr((buf.asPtr()).rawAddress + ((start + i).toLong() * (PrimitiveLayouts.U8).strideBytes)), (MutPtr(localStorageL1C0.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, sizeOf<UInt>(typeLayoutT = PrimitiveLayouts.U32))
             data
         }).toULong()
         i += 4
@@ -325,7 +334,7 @@ public fun u8to64Le(buf: List<UByte>, start: Int, len: Int): ULong {
             }
             val localStorageL1C0 = AddressableLocal(0.toUShort(), PrimitiveLayouts.U16)
             val data1 by localStorageL1C0
-            ptr.copyNonoverlapping(ConstPtr((buf.asPtr()).rawAddress + ((start + i).toLong() * (PrimitiveLayouts.U8).strideBytes)), (MutPtr(localStorageL1C0.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, sizeOf<UShort>(typeLayoutT = PrimitiveLayouts.U16))
+            copyNonoverlapping(ConstPtr((buf.asPtr()).rawAddress + ((start + i).toLong() * (PrimitiveLayouts.U8).strideBytes)), (MutPtr(localStorageL1C0.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, sizeOf<UShort>(typeLayoutT = PrimitiveLayouts.U16))
             data1
         }).toULong()) shl (i * 8).toInt())
         i += 2
@@ -341,7 +350,7 @@ public fun u8to64Le(buf: List<UByte>, start: Int, len: Int): ULong {
                 val leftVal = matchVal.first
                 val rightVal = matchVal.second
                 if (!(leftVal == rightVal)) {
-                    val kind = AssertKind.Eq
+                    val kind = Eq
                     assertFailed(kind, leftVal, rightVal, Option.None)
                 }
             }
@@ -357,9 +366,11 @@ public interface Sip {
 }
 
 public open class Sip13Rounds : Sip {
+    public open fun clone(): Sip13Rounds = Sip13Rounds()
+
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Sip13Rounds> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Sip13Rounds> {
+        public fun typeLayout(): TypeLayout<Sip13Rounds> =
+            object : TypeLayout<Sip13Rounds> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): Sip13Rounds =
@@ -445,9 +456,11 @@ public open class Sip13Rounds : Sip {
 }
 
 public open class Sip24Rounds : Sip {
+    public open fun clone(): Sip24Rounds = Sip24Rounds()
+
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Sip24Rounds> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Sip24Rounds> {
+        public fun typeLayout(): TypeLayout<Sip24Rounds> =
+            object : TypeLayout<Sip24Rounds> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): Sip24Rounds =

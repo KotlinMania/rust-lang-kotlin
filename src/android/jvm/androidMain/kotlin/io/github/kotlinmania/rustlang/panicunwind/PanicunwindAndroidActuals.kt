@@ -1,10 +1,10 @@
-@file:OptIn(kotlin.ExperimentalUnsignedTypes::class)
+@file:OptIn(ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.panicunwind
 
 private object PanicunwindJniBridge {
     init {
-        System.loadLibrary("panicunwind_jni")
+        System.loadLibrary("kmcore_jni")
     }
 
     @JvmStatic

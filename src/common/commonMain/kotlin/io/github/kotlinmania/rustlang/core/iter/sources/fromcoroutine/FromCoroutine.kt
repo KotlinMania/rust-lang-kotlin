@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.core.iter.sources.fromcoroutine
 
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.ops.coroutine.Coroutine
 import io.github.kotlinmania.rustlang.core.ops.coroutine.CoroutineState
 import io.github.kotlinmania.rustlang.core.pin.Pin
@@ -72,7 +73,7 @@ public open class FromCoroutine<G>(
             value = v
         }
 
-    override fun iterator(): kotlin.collections.Iterator<Yield> = object : AbstractIterator<Yield>() {
+    override fun iterator(): Iterator<Yield> = object : AbstractIterator<Yield>() {
         override fun computeNext() {
             when (val v = this@FromCoroutine.next()) {
                 null -> done()
@@ -95,10 +96,10 @@ public open class FromCoroutine<G>(
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "FromCoroutine").finish()
 
     public companion object {
-        public fun <G> typeLayout(typeLayoutG: io.github.kotlinmania.rustlang.core.mem.TypeLayout<G>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<FromCoroutine<G>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<FromCoroutine<G>> {
+        public fun <G> typeLayout(typeLayoutG: TypeLayout<G>): TypeLayout<FromCoroutine<G>> =
+            object : TypeLayout<FromCoroutine<G>> {
                 override val alignBytes: Long = listOf(1L, typeLayoutG.alignBytes).max()
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(typeLayoutG.sizeBytes, alignBytes)
+                override val sizeBytes: Long = alignUpBytes(typeLayoutG.sizeBytes, alignBytes)
                 override fun readNative(addr: Long): FromCoroutine<G> =
                     FromCoroutine(
                         (typeLayoutG).readNative(addr),
