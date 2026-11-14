@@ -12,7 +12,7 @@ import io.github.kotlinmania.rustlang.stddetect.detect.checkFor
  * PLEASE: do not use this, it is an implementation detail subject
  * to change.
  */
-internal sealed class Feature {
+public sealed class Feature {
     /**
      * RV32I Base Integer Instruction Set
      */
@@ -370,7 +370,7 @@ internal sealed class Feature {
      */
     public data object P : Feature()
 
-    internal open fun toStr(): String =
+    public open fun toStr(): String =
         when (this) {
             Feature.rv32i -> "rv32i"
             Feature.rv32e -> "rv32e"
@@ -464,9 +464,9 @@ internal sealed class Feature {
         }
 
     public companion object {
-        internal val ALL: List<Feature> = listOf(Feature::rv32i, Feature::rv32e, Feature::rv64i, Feature::rv128i, Feature::unalignedScalarMem, Feature::unalignedVectorMem, Feature::zicsr, Feature::zicntr, Feature::zihpm, Feature::zifencei, Feature::zihintntl, Feature::zihintpause, Feature::zimop, Feature::zicbom, Feature::zicboz, Feature::zicond, Feature::m, Feature::zmmul, Feature::a, Feature::zalrsc, Feature::zaamo, Feature::zawrs, Feature::zabha, Feature::zacas, Feature::zam, Feature::ztso, Feature::f, Feature::d, Feature::q, Feature::zfh, Feature::zfhmin, Feature::zfa, Feature::zfbfmin, Feature::zfinx, Feature::zdinx, Feature::zhinx, Feature::zhinxmin, Feature::c, Feature::zca, Feature::zcf, Feature::zcd, Feature::zcb, Feature::zcmop, Feature::b, Feature::zba, Feature::zbb, Feature::zbc, Feature::zbs, Feature::zbkb, Feature::zbkc, Feature::zbkx, Feature::zknd, Feature::zkne, Feature::zknh, Feature::zksed, Feature::zksh, Feature::zkr, Feature::zkn, Feature::zks, Feature::zk, Feature::zkt, Feature::v, Feature::zve32x, Feature::zve32f, Feature::zve64x, Feature::zve64f, Feature::zve64d, Feature::zvfh, Feature::zvfhmin, Feature::zvfbfmin, Feature::zvfbfwma, Feature::zvbb, Feature::zvbc, Feature::zvkb, Feature::zvkg, Feature::zvkned, Feature::zvknha, Feature::zvknhb, Feature::zvksed, Feature::zvksh, Feature::zvkn, Feature::zvknc, Feature::zvkng, Feature::zvks, Feature::zvksc, Feature::zvksg, Feature::zvkt, Feature::j, Feature::p)
+        public val ALL: List<Feature> = listOf(Feature::rv32i, Feature::rv32e, Feature::rv64i, Feature::rv128i, Feature::unalignedScalarMem, Feature::unalignedVectorMem, Feature::zicsr, Feature::zicntr, Feature::zihpm, Feature::zifencei, Feature::zihintntl, Feature::zihintpause, Feature::zimop, Feature::zicbom, Feature::zicboz, Feature::zicond, Feature::m, Feature::zmmul, Feature::a, Feature::zalrsc, Feature::zaamo, Feature::zawrs, Feature::zabha, Feature::zacas, Feature::zam, Feature::ztso, Feature::f, Feature::d, Feature::q, Feature::zfh, Feature::zfhmin, Feature::zfa, Feature::zfbfmin, Feature::zfinx, Feature::zdinx, Feature::zhinx, Feature::zhinxmin, Feature::c, Feature::zca, Feature::zcf, Feature::zcd, Feature::zcb, Feature::zcmop, Feature::b, Feature::zba, Feature::zbb, Feature::zbc, Feature::zbs, Feature::zbkb, Feature::zbkc, Feature::zbkx, Feature::zknd, Feature::zkne, Feature::zknh, Feature::zksed, Feature::zksh, Feature::zkr, Feature::zkn, Feature::zks, Feature::zk, Feature::zkt, Feature::v, Feature::zve32x, Feature::zve32f, Feature::zve64x, Feature::zve64f, Feature::zve64d, Feature::zvfh, Feature::zvfhmin, Feature::zvfbfmin, Feature::zvfbfwma, Feature::zvbb, Feature::zvbc, Feature::zvkb, Feature::zvkg, Feature::zvkned, Feature::zvknha, Feature::zvknhb, Feature::zvksed, Feature::zvksh, Feature::zvkn, Feature::zvknc, Feature::zvkng, Feature::zvks, Feature::zvksc, Feature::zvksg, Feature::zvkt, Feature::j, Feature::p)
 
-        internal fun fromStr(s: String): Result<Feature, Unit> =
+        public fun fromStr(s: String): Result<Feature, Unit> =
             when (s) {
                 "rv32i" -> Result.Ok(Feature::rv32i)
                 "rv32e" -> Result.Ok(Feature::rv32e)

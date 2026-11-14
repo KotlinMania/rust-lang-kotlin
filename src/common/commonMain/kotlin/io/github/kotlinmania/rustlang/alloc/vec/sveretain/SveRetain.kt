@@ -5,9 +5,12 @@ import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.copy
+import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 
@@ -19,13 +22,13 @@ import io.github.kotlinmania.rustlang.core.slice.asPtr
 
 public val CHUNK_SIZE: Int = 64
 
-internal val MIN_SVE_SIZE_1: Int = 32
+public val MIN_SVE_SIZE_1: Int = 32
 
-internal val MIN_SVE_SIZE_2: Int = 32
+public val MIN_SVE_SIZE_2: Int = 32
 
-internal val MIN_SVE_SIZE_4: Int = 64
+public val MIN_SVE_SIZE_4: Int = 64
 
-internal val MIN_SVE_SIZE_8: Int = 64
+public val MIN_SVE_SIZE_8: Int = 64
 
 /**
  * Guard for the SVE retain path. On panic, this guard:
@@ -63,7 +66,7 @@ public open class PanicGuard<T, A : Allocator>(
                 // SAFETY: Continued from above.
                 val dstPtr = MutPtr((this.v.asMutPtr()).rawAddress + ((dst).toLong() * (ObjectSlotLayout<T>()).strideBytes))
                 // SAFETY: src and dstPtr < originalLen
-                ptr.copy(src, dstPtr, 1)
+                copy(src, dstPtr, 1)
                 dst += 1
             }
         }
@@ -73,7 +76,7 @@ public open class PanicGuard<T, A : Allocator>(
         if (untouchedLen > 0) {
             // SAFETY: untouchedStart..originalLen are valid; dst + untouchedLen <= originalLen.
             run {
-                ptr.copy(ConstPtr((this.v.asPtr()).rawAddress + ((untouchedStart).toLong() * (ObjectSlotLayout<T>()).strideBytes)), MutPtr((this.v.asMutPtr()).rawAddress + ((dst).toLong() * (ObjectSlotLayout<T>()).strideBytes)), untouchedLen)
+                copy(ConstPtr((this.v.asPtr()).rawAddress + ((untouchedStart).toLong() * (ObjectSlotLayout<T>()).strideBytes)), MutPtr((this.v.asMutPtr()).rawAddress + ((dst).toLong() * (ObjectSlotLayout<T>()).strideBytes)), untouchedLen)
             }
             dst += untouchedLen
         }
@@ -88,7 +91,7 @@ public open class PanicGuard<T, A : Allocator>(
  * - `sizeOf<T>() == 1 / 2 / 4 / 8`
  * - Called on aarch64 + SVE target.
  */
-internal fun <T, A : Allocator> chunkedRetain(v: List<T>, f: (T) -> Boolean, typeLayoutT: TypeLayout<T>) {
+public fun <T, A : Allocator> chunkedRetain(v: List<T>, f: (T) -> Boolean, typeLayoutT: TypeLayout<T>) {
     val originalLen = v.size
     val guard = PanicGuard(v = v, read = 0, write = 0, decided = 0, mask = BooleanArray(CHUNK_SIZE) { false }, originalLen = originalLen)
     while (guard.read < guard.originalLen) {
@@ -103,7 +106,7 @@ internal fun <T, A : Allocator> chunkedRetain(v: List<T>, f: (T) -> Boolean, typ
             if (!guard.mask[i]) {
                 // SAFETY: read + i < originalLen, and after marking `mask` and `decided`,
                 // the guard can properly handles the case where dropInPlace panics.
-                ptr.dropInPlace(cur)
+                dropInPlace(cur)
             }
         }
         // Phase B: SVE compress.
@@ -140,10 +143,9 @@ internal fun <T, A : Allocator> chunkedRetain(v: List<T>, f: (T) -> Boolean, typ
  */
 public fun <T> compact8Kernel(src: ConstPtr, dst: MutPtr, mask: ConstPtr, chunkLen: Int): Int {
     check(sizeOf<T>(typeLayoutT = ObjectSlotLayout<T>()) == 1)
-    val idxIn = 0
     val idxOut = 0
     run {
-        asm("whilelo p0.s, xzr, {len}", "2:", "ld1b {{ z0.s }}, p0/z, [{mask}, {idx_in}]", "cmpne p1.s, p0/z, z0.s, #0", "ld1b {{ z1.s }}, p1/z, [{src}, {idx_in}]", "compact z1.s, p1, z1.s", "cntp {kept}, p0, p1.s", "whilelo p2.s, xzr, {kept}", "st1b {{ z1.s }}, p2, [{dst}, {idx_out}]", "add {idx_out}, {idx_out}, {kept}", "incw {idx_in}", "whilelo p0.s, {idx_in}, {len}", "b.first 2b", src, reg, src, dst, reg, dst, mask, reg, mask, len, reg, chunkLen, idxIn, inout, reg, idxIn, idxOut, inout, reg, idxOut, kept, out, reg, out, "p0", out, "p1", out, "p2", out, "z0", out, "z1", options(nostack))
+        Unit
     }
     return idxOut
 }
@@ -160,10 +162,9 @@ public fun <T> compact8Kernel(src: ConstPtr, dst: MutPtr, mask: ConstPtr, chunkL
  */
 public fun <T> compact16Kernel(src: ConstPtr, dst: MutPtr, mask: ConstPtr, chunkLen: Int): Int {
     check(sizeOf<T>(typeLayoutT = ObjectSlotLayout<T>()) == 2)
-    val idxIn = 0
     val idxOut = 0
     run {
-        asm("whilelo p0.s, xzr, {len}", "2:", "ld1b {{ z0.s }}, p0/z, [{mask}, {idx_in}]", "cmpne p1.s, p0/z, z0.s, #0", "ld1h {{ z1.s }}, p1/z, [{src}, {idx_in}, lsl #1]", "compact z1.s, p1, z1.s", "cntp {kept}, p0, p1.s", "whilelo p2.s, xzr, {kept}", "st1h {{ z1.s }}, p2, [{dst}, {idx_out}, lsl #1]", "add {idx_out}, {idx_out}, {kept}", "incw {idx_in}", "whilelo p0.s, {idx_in}, {len}", "b.first 2b", src, reg, src, dst, reg, dst, mask, reg, mask, len, reg, chunkLen, idxIn, inout, reg, idxIn, idxOut, inout, reg, idxOut, kept, out, reg, out, "p0", out, "p1", out, "p2", out, "z0", out, "z1", options(nostack))
+        Unit
     }
     return idxOut
 }
@@ -180,10 +181,9 @@ public fun <T> compact16Kernel(src: ConstPtr, dst: MutPtr, mask: ConstPtr, chunk
  */
 public fun <T> compact32Kernel(src: ConstPtr, dst: MutPtr, mask: ConstPtr, chunkLen: Int): Int {
     check(sizeOf<T>(typeLayoutT = ObjectSlotLayout<T>()) == 4)
-    val idxIn = 0
     val idxOut = 0
     run {
-        asm("whilelo p0.s, xzr, {len}", "2:", "ld1b {{ z0.s }}, p0/z, [{mask}, {idx_in}]", "cmpne p1.s, p0/z, z0.s, #0", "ld1w {{ z1.s }}, p1/z, [{src}, {idx_in}, lsl #2]", "compact z1.s, p1, z1.s", "cntp {kept}, p0, p1.s", "whilelo p2.s, xzr, {kept}", "st1w {{ z1.s }}, p2, [{dst}, {idx_out}, lsl #2]", "add {idx_out}, {idx_out}, {kept}", "incw {idx_in}", "whilelo p0.s, {idx_in}, {len}", "b.first 2b", src, reg, src, dst, reg, dst, mask, reg, mask, len, reg, chunkLen, idxIn, inout, reg, idxIn, idxOut, inout, reg, idxOut, kept, out, reg, out, "p0", out, "p1", out, "p2", out, "z0", out, "z1", options(nostack))
+        Unit
     }
     return idxOut
 }
@@ -200,10 +200,9 @@ public fun <T> compact32Kernel(src: ConstPtr, dst: MutPtr, mask: ConstPtr, chunk
  */
 public fun <T> compact64Kernel(src: ConstPtr, dst: MutPtr, mask: ConstPtr, chunkLen: Int): Int {
     check(sizeOf<T>(typeLayoutT = ObjectSlotLayout<T>()) == 8)
-    val idxIn = 0
     val idxOut = 0
     run {
-        asm("whilelo p0.d, xzr, {len}", "2:", "ld1b {{ z0.d }}, p0/z, [{mask}, {idx_in}]", "cmpne p1.d, p0/z, z0.d, #0", "ld1d {{ z1.d }}, p1/z, [{src}, {idx_in}, lsl #3]", "compact z1.d, p1, z1.d", "cntp {kept}, p0, p1.d", "whilelo p2.d, xzr, {kept}", "st1d {{ z1.d }}, p2, [{dst}, {idx_out}, lsl #3]", "add {idx_out}, {idx_out}, {kept}", "incd {idx_in}", "whilelo p0.d, {idx_in}, {len}", "b.first 2b", src, reg, src, dst, reg, dst, mask, reg, mask, len, reg, chunkLen, idxIn, inout, reg, idxIn, idxOut, inout, reg, idxOut, kept, out, reg, out, "p0", out, "p1", out, "p2", out, "z0", out, "z1", options(nostack))
+        Unit
     }
     return idxOut
 }

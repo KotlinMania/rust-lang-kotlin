@@ -1,7 +1,6 @@
 // port-lint: source sys/env/unix.rs
 package io.github.kotlinmania.rustlang.std.sys.env.unix
 
-import io.github.kotlinmania.libc.nsgetEnviron
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
@@ -12,6 +11,7 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.memchr.memchr
+import io.github.kotlinmania.rustlang.libc.nsgetEnviron
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.std.io.error.Error
@@ -99,7 +99,7 @@ public fun getenv(k: OsStr): OsString? {
     // always None as well
     return runWithCstr(k.asBytes(), { k1 ->
         val guard = envReadLock()
-        val v = constPtrFromRustCast(io.github.kotlinmania.libc.getenv(k1.asPtr()))
+        val v = constPtrFromRustCast(io.github.kotlinmania.rustlang.libc.getenv(k1.asPtr()))
         if (((v).rawAddress == 0L)) {
             Result.Ok(null)
         } else {
@@ -114,12 +114,12 @@ public fun setenv(k: OsStr, v: OsStr): Result<Unit, Error> =
     runWithCstr(k.asBytes(), { k1 ->
         runWithCstr(v.asBytes(), { v1 ->
             val guard = ENV_LOCK.write()
-            cvt(io.github.kotlinmania.libc.setenv(k1.asPtr(), v1.asPtr(), 1)).map({ Unit })
+            cvt(io.github.kotlinmania.rustlang.libc.setenv(k1.asPtr(), v1.asPtr(), 1)).map({ Unit })
         })
     })
 
 public fun unsetenv(n: OsStr): Result<Unit, Error> =
     runWithCstr(n.asBytes(), { nbuf ->
         val guard = ENV_LOCK.write()
-        cvt(io.github.kotlinmania.libc.unsetenv(nbuf.asPtr())).map({ Unit })
+        cvt(io.github.kotlinmania.rustlang.libc.unsetenv(nbuf.asPtr())).map({ Unit })
     })

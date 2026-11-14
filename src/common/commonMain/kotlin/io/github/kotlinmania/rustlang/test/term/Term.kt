@@ -1,8 +1,7 @@
 // port-lint: source term.rs
 package io.github.kotlinmania.rustlang.test.term
 
-import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.std.io.error.Error
+import io.github.kotlinmania.rustlang.std.thread.Result
 import io.github.kotlinmania.rustlang.test.term.terminfo.TerminfoTerminal
 
 // Terminal formatting module.
@@ -20,40 +19,40 @@ import io.github.kotlinmania.rustlang.test.term.terminfo.TerminfoTerminal
 /**
  * Alias for stdout terminals.
  */
-internal typealias StdoutTerminal = Terminal
+public typealias StdoutTerminal = Terminal
 
 /**
  * Returns a Terminal wrapping stdout, or None if a terminal couldn't be
  * opened.
  */
-internal fun stdout(): StdoutTerminal? = TerminfoTerminal.new(stdout()).map({ t -> ((t as Any?) as StdoutTerminal) })
+public fun stdout(): StdoutTerminal? = TerminfoTerminal.new(io.github.kotlinmania.rustlang.std.io.stdio.stdout()).map({ t -> ((t as Any?) as StdoutTerminal) })
 
 /**
  * Number for a terminal color
  */
-internal typealias Color = UInt
+public typealias Color = UInt
 
-internal val BLACK: Color = 0u
+public val BLACK: Color = 0u
 
-internal val RED: Color = 1u
+public val RED: Color = 1u
 
-internal val GREEN: Color = 2u
+public val GREEN: Color = 2u
 
-internal val YELLOW: Color = 3u
+public val YELLOW: Color = 3u
 
-internal val BLUE: Color = 4u
+public val BLUE: Color = 4u
 
-internal val MAGENTA: Color = 5u
+public val MAGENTA: Color = 5u
 
-internal val CYAN: Color = 6u
+public val CYAN: Color = 6u
 
-internal val WHITE: Color = 7u
+public val WHITE: Color = 7u
 
 /**
  * A terminal with similar capabilities to an ANSI Terminal
  * (foreground/background colors etc).
  */
-internal interface Terminal : Write {
+public interface Terminal : Write {
     /**
      * Sets the foreground color to the given color.
      *
@@ -63,7 +62,7 @@ internal interface Terminal : Write {
      * Returns `Ok(true)` if the color was set, `Ok(false)` otherwise, and `Err(e)`
      * if there was an I/O error.
      */
-    public fun fg(color: Color): Result<Boolean, Error>
+    public fun fg(color: Color): Result<Boolean>
 
     /**
      * Resets all terminal attributes and colors to their defaults.
@@ -77,5 +76,5 @@ internal interface Terminal : Write {
      * else that might flush stdout's buffer (e.g., writing a line of text), you should flush after
      * calling reset.
      */
-    public fun reset(): Result<Boolean, Error>
+    public fun reset(): Result<Boolean>
 }

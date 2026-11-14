@@ -2,7 +2,6 @@
 package io.github.kotlinmania.rustlang.core.bool
 
 import io.github.kotlinmania.rustlang.core.intrinsics.disjointBitor
-import io.github.kotlinmania.rustlang.core.num.f128.consts.E
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.ubchecks.assertUnsafePrecondition
 import io.github.kotlinmania.rustlang.core.ubchecks.checkLanguageUb

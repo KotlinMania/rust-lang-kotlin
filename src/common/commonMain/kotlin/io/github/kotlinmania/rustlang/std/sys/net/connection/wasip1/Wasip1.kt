@@ -24,14 +24,14 @@ import io.github.kotlinmania.rustlang.std.sys.IntoInner
 import io.github.kotlinmania.rustlang.std.sys.fd.unix.FileDesc
 import io.github.kotlinmania.rustlang.std.sys.pal.unsupported.unsupported
 import io.github.kotlinmania.rustlang.std.sys.pal.wasi.err2io
-import io.github.kotlinmania.rustlang.std.wasip1.FDFLAGS_NONBLOCK
-import io.github.kotlinmania.rustlang.std.wasip1.Fd
-import io.github.kotlinmania.rustlang.std.wasip1.SDFLAGS_RD
-import io.github.kotlinmania.rustlang.std.wasip1.SDFLAGS_WR
-import io.github.kotlinmania.rustlang.std.wasip1.fdFdstatGet
-import io.github.kotlinmania.rustlang.std.wasip1.fdFdstatSetFlags
-import io.github.kotlinmania.rustlang.std.wasip1.sockAccept
-import io.github.kotlinmania.rustlang.std.wasip1.sockShutdown
+import io.github.kotlinmania.rustlang.wasip1.FDFLAGS_NONBLOCK
+import io.github.kotlinmania.rustlang.wasip1.Fd
+import io.github.kotlinmania.rustlang.wasip1.SDFLAGS_RD
+import io.github.kotlinmania.rustlang.wasip1.SDFLAGS_WR
+import io.github.kotlinmania.rustlang.wasip1.fdFdstatGet
+import io.github.kotlinmania.rustlang.wasip1.fdFdstatSetFlags
+import io.github.kotlinmania.rustlang.wasip1.sockAccept
+import io.github.kotlinmania.rustlang.wasip1.sockShutdown
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -147,7 +147,7 @@ public open class TcpStream(
 
     public open fun hopLimitV6(): Result<UByte, Error> = unsupported()
 
-    public open fun takeError(): Result<io.github.kotlinmania.rustlang.core.io.error.Error?, Error> = unsupported()
+    public open fun takeError(): Result<io.github.kotlinmania.rustlang.std.io.Error?, Error> = unsupported()
 
     public open fun setNonblocking(state: Boolean): Result<Unit, Error> {
         val fdstat = when (val tryResult = fdFdstatGet(((this.socket().asInner().asRawFd() as Any?) as Fd)).mapErr(err2io)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
@@ -201,7 +201,7 @@ public open class TcpListener(
 
     public open fun onlyV6(): Result<Boolean, Error> = unsupported()
 
-    public open fun takeError(): Result<io.github.kotlinmania.rustlang.core.io.error.Error?, Error> = unsupported()
+    public open fun takeError(): Result<io.github.kotlinmania.rustlang.std.io.Error?, Error> = unsupported()
 
     public open fun setNonblocking(state: Boolean): Result<Unit, Error> {
         val fdstat = when (val tryResult = fdFdstatGet(((this.socket().asInner().asRawFd() as Any?) as Fd)).mapErr(err2io)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
@@ -292,7 +292,7 @@ public open class UdpSocket(
 
     public open fun multicastHopLimitV6(): Result<UByte, Error> = unsupported()
 
-    public open fun takeError(): Result<io.github.kotlinmania.rustlang.core.io.error.Error?, Error> = unsupported()
+    public open fun takeError(): Result<io.github.kotlinmania.rustlang.std.io.Error?, Error> = unsupported()
 
     public open fun setNonblocking(arg0: Boolean): Result<Unit, Error> = unsupported()
 

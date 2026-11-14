@@ -3,7 +3,6 @@
 
 package io.github.kotlinmania.rustlang.libm.math.generic.sqrt
 
-import io.github.kotlinmania.rustlang.libm.math.ktan.T
 import io.github.kotlinmania.rustlang.libm.math.support.coldPath
 import io.github.kotlinmania.rustlang.libm.math.support.env.FpResult
 import io.github.kotlinmania.rustlang.libm.math.support.env.Round

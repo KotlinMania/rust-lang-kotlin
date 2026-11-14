@@ -201,7 +201,7 @@ public open class PanicHookInfo(
     }
 
     public companion object {
-        internal fun new(location: Location, payload: RustAny, canUnwind: Boolean, forceNoBacktrace: Boolean): PanicHookInfo = PanicHookInfo(payload = payload, location = location, canUnwind = canUnwind, forceNoBacktrace = forceNoBacktrace)
+        public fun new(location: Location, payload: RustAny, canUnwind: Boolean, forceNoBacktrace: Boolean): PanicHookInfo = PanicHookInfo(payload = payload, location = location, canUnwind = canUnwind, forceNoBacktrace = forceNoBacktrace)
     }
 }
 
@@ -289,7 +289,7 @@ public fun <M> panicAny(msg: M): Nothing {
  * check(result1.isErr())
  * ```
  */
-public fun <R> catchUnwind(f: () -> R): Result<R> = catchUnwind(f)
+public fun <R> catchUnwind(f: () -> R): Result<R> = io.github.kotlinmania.rustlang.std.panicking.catchUnwind(f)
 
 /**
  * Triggers a panic without invoking the panic hook.
@@ -320,7 +320,7 @@ public fun <R> catchUnwind(f: () -> R): Result<R> = catchUnwind(f)
  * }
  * ```
  */
-public fun resumeUnwind(payload: RustAny): Nothing = resumeUnwind(payload)
+public fun resumeUnwind(payload: RustAny): Nothing = io.github.kotlinmania.rustlang.std.panicking.resumeUnwind(payload)
 
 /**
  * Makes all future panics abort directly without running the panic hook or unwinding.
@@ -388,7 +388,7 @@ public sealed class BacktraceStyle {
         }
 
     public companion object {
-        internal fun full(): BacktraceStyle? =
+        public fun full(): BacktraceStyle? =
             if (false) {
                 BacktraceStyle.Full
             } else {

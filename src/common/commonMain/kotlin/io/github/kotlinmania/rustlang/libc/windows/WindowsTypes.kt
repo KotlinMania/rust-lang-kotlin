@@ -1,0 +1,39 @@
+package io.github.kotlinmania.rustlang.libc.windows
+
+import io.github.kotlinmania.rustlang.core.ffi.CInt
+import io.github.kotlinmania.rustlang.libc.*
+
+public typealias IntmaxT = Long
+
+public typealias UintmaxT = ULong
+
+public typealias SizeT = ULong
+
+public typealias PtrdiffT = Long
+
+public typealias IntptrT = Long
+
+public typealias UintptrT = ULong
+
+public typealias SsizeT = Long
+
+public typealias SighandlerT = ULong
+
+public typealias WcharT = UShort
+
+public typealias ClockT = Int
+
+public typealias ErrnoT = CInt
+
+// Special handling for all print and scan type functions because of https://github.com/rust-lang/libc/issues/2860
+public typealias TimeT = Long
+
+public typealias OffT = Int
+
+public typealias DevT = UInt
+
+public typealias InoT = UShort
+
+public typealias Time64T = Long
+
+public typealias Socket = io.github.kotlinmania.rustlang.libc.UintptrT

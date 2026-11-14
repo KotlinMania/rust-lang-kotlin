@@ -6,10 +6,7 @@ import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.std.sync.lazylock.LazyLock
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.LOAD_LIBRARY_SEARCH_SYSTEM32
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.getModuleHandleA
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.getProcAddress
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.loadLibraryExA
+import io.github.kotlinmania.rustlang.std.sys.c
 
 // A "compatibility layer" for supporting older versions of Windows
 //
@@ -45,7 +42,7 @@ import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.loadLibra
  *
  * Panics if the slice is not null terminated or contains nulls, except as the last item
  */
-internal fun constCstrFromBytes(bytes: List<UByte>): CStr {
+public fun constCstrFromBytes(bytes: List<UByte>): CStr {
     if (!when (val matchVal = bytes.last()) {
         0 -> true
         else -> false
@@ -70,9 +67,12 @@ internal fun constCstrFromBytes(bytes: List<UByte>): CStr {
  * Note that the modules std depends on must not be unloaded.
  * Therefore a `Module` is always valid for the scope of std.
  */
-internal open class Module(
-    public var value: NonNull,
+public open class Module internal constructor(
+    valueCtorArg: NonNull,
 ) {
+    public var value: NonNull = valueCtorArg
+        internal set
+
     public var field0: NonNull
         get() = value
         set(v) {
@@ -87,12 +87,18 @@ internal open class Module(
             // SAFETY:
             // `self.0` will always be a valid module.
             // A CStr is always null terminated.
-            val proc = getProcAddress(this.value.asPtr(), name.asPtr().cast())
+            val proc = c.GetProcAddress(this.value.asPtr(), name.asPtr().cast())
             // SAFETY: `GetProcAddress` returns None on null.
             proc.map({ p -> NonNull.newUnchecked(mutPtrFromRustCast(p)) })
         }
 
     public companion object {
+        public operator fun invoke(
+            value: NonNull,
+        ): Module = Module(
+            valueCtorArg = value,
+        )
+
         /**
          * Try to get a handle to a loaded module.
          *
@@ -104,7 +110,7 @@ internal open class Module(
         public fun new(name: CStr): Module? {
             // SAFETY: A CStr is always null terminated.
             return run {
-                val module = getModuleHandleA(name.asPtr().cast())
+                val module = c.GetModuleHandleA(name.asPtr().cast())
                 NonNull.new(module).map({ Module(it) })
             }
         }
@@ -119,7 +125,7 @@ internal open class Module(
         public fun load(name: CStr): Module? {
             // SAFETY: A CStr is always null terminated.
             return run {
-                val module = loadLibraryExA(name.asPtr().cast(), MutPtr(0L), LOAD_LIBRARY_SEARCH_SYSTEM32)
+                val module = c.LoadLibraryExA(name.asPtr().cast(), MutPtr(0L), c.LOAD_LIBRARY_SEARCH_SYSTEM32)
                 NonNull.new(module).map({ Module(it) })
             }
         }
@@ -136,9 +142,12 @@ public fun lazyLoadModule(name: CStr): LazyLoadModule = { Module.load(name) }
  * Note that the modules std depends on must not be unloaded.
  * Therefore a `Module` is always valid for the scope of std.
  */
-internal open class LazyModule(
-    public var value: LazyLock<Module?, LazyLoadModule>,
+public open class LazyModule internal constructor(
+    valueCtorArg: LazyLock<Module?, LazyLoadModule>,
 ) {
+    public var value: LazyLock<Module?, LazyLoadModule> = valueCtorArg
+        internal set
+
     public var field0: LazyLock<Module?, LazyLoadModule>
         get() = value
         set(v) {
@@ -151,6 +160,12 @@ internal open class LazyModule(
     public open fun load(): Module? = LazyLock.force(this.value)
 
     public companion object {
+        public operator fun invoke(
+            value: LazyLock<Module?, LazyLoadModule>,
+        ): LazyModule = LazyModule(
+            valueCtorArg = value,
+        )
+
         /**
          *  Create a lazy-loaded handle to a module.
          */

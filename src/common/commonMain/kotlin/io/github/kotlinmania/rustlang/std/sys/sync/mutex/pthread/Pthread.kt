@@ -6,14 +6,17 @@ import io.github.kotlinmania.rustlang.core.pin.Pin
 import io.github.kotlinmania.rustlang.std.sys.sync.oncebox.OnceBox
 import io.github.kotlinmania.rustlang.std.sys.pal.sync as pal
 
-public open class Mutex(
-    internal var pal: OnceBox<Mutex>,
+public open class Mutex internal constructor(
+    palCtorArg: OnceBox<pal.Mutex>,
 ) {
-    public open fun get(): Pin<Mutex> {
+    public var pal: OnceBox<pal.Mutex> = palCtorArg
+        internal set
+
+    public open fun get(): Pin<pal.Mutex> {
         // If the initialization race is lost, the new mutex is destroyed.
         // This is sound however, as it cannot have been locked.
         return this.pal.getOrInit({
-            var pal = Box.pin(Mutex.new())
+            var pal = Box.pin(pal.Mutex.new())
             // SAFETY: we only call `init` once per `pal.Mutex`, namely here.
             pal.asMut().init()
             pal
@@ -47,7 +50,7 @@ public open class Mutex(
         // so check first if it's unlocked.
         if (pal.asRef().tryLock()) {
             pal.asRef().unlock()
-            drop(pal)
+            (pal).let { }
         } else {
             // The mutex is locked. This happens if a MutexGuard is leaked.
             // In this case, we just leak the Mutex too.
@@ -56,6 +59,12 @@ public open class Mutex(
     }
 
     public companion object {
+        public operator fun invoke(
+            pal: OnceBox<pal.Mutex>,
+        ): Mutex = Mutex(
+            palCtorArg = pal,
+        )
+
         public fun new(): Mutex = Mutex(pal = OnceBox.new())
     }
 }

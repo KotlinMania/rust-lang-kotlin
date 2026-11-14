@@ -64,7 +64,7 @@ public val C6: Double = -1.13596475577881948265e-11
 // expression for cos().  Retention happens in all cases tested
 // under FreeBSD, so don't pessimize things by forcibly clipping
 // any extra precision in w.
-internal fun kCos(x: Double, y: Double): Double {
+public fun kCos(x: Double, y: Double): Double {
     val z = x * x
     val w = z * z
     val r = z * (C1 + z * (C2 + z * C3)) + w * w * (C4 + z * (C5 + z * C6))

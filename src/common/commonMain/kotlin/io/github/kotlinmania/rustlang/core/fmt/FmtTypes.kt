@@ -41,7 +41,7 @@ public sealed class Alignment {
  * check("$pythagoreanTriple" == "(3, 4, 5)")
  * ```
  */
-public typealias Result = Result<Unit, Error>
+public typealias Result = io.github.kotlinmania.rustlang.core.result.Result<Unit, Error>
 
 /**
  * A trait for writing or formatting into Unicode-accepting buffers or streams.
@@ -190,31 +190,31 @@ public sealed class DebugAsHex {
     public fun rustEquals(other: DebugAsHex): Boolean = this == other
 }
 
-internal val SIGN_PLUS_FLAG: UInt = 1u shl 21
+public val SIGN_PLUS_FLAG: UInt = 1u shl 21
 
-internal val SIGN_MINUS_FLAG: UInt = 1u shl 22
+public val SIGN_MINUS_FLAG: UInt = 1u shl 22
 
-internal val ALTERNATE_FLAG: UInt = 1u shl 23
+public val ALTERNATE_FLAG: UInt = 1u shl 23
 
-internal val SIGN_AWARE_ZERO_PAD_FLAG: UInt = 1u shl 24
+public val SIGN_AWARE_ZERO_PAD_FLAG: UInt = 1u shl 24
 
-internal val DEBUG_LOWER_HEX_FLAG: UInt = 1u shl 25
+public val DEBUG_LOWER_HEX_FLAG: UInt = 1u shl 25
 
-internal val DEBUG_UPPER_HEX_FLAG: UInt = 1u shl 26
+public val DEBUG_UPPER_HEX_FLAG: UInt = 1u shl 26
 
-internal val WIDTH_FLAG: UInt = 1u shl 27
+public val WIDTH_FLAG: UInt = 1u shl 27
 
-internal val PRECISION_FLAG: UInt = 1u shl 28
+public val PRECISION_FLAG: UInt = 1u shl 28
 
-internal val ALIGN_BITS: UInt = 0x3u shl 29
+public val ALIGN_BITS: UInt = 0x3u shl 29
 
-internal val ALIGN_LEFT: UInt = 0u shl 29
+public val ALIGN_LEFT: UInt = 0u shl 29
 
-internal val ALIGN_RIGHT: UInt = 1u shl 29
+public val ALIGN_RIGHT: UInt = 1u shl 29
 
-internal val ALIGN_CENTER: UInt = 2u shl 29
+public val ALIGN_CENTER: UInt = 2u shl 29
 
-internal val ALIGN_UNKNOWN: UInt = 3u shl 29
+public val ALIGN_UNKNOWN: UInt = 3u shl 29
 
 /**
  * `?` formatting.

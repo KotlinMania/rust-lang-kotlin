@@ -71,7 +71,7 @@ public fun run() {
                 else -> {
                     val t = matchVal.first
                     val dtor = matchVal.second
-                    drop(dtors)
+                    (dtors).let { }
                     run {
                         dtor(t)
                     }

@@ -156,7 +156,7 @@ public fun <T> spawn(f: () -> T): JoinHandle<T> = Builder.new().spawn(f).expect(
  * [join]: JoinHandle.join
  */
 public fun yieldNow() {
-    yieldNow()
+    io.github.kotlinmania.rustlang.std.sys.thread.unix.yieldNow()
 }
 
 /**
@@ -272,7 +272,7 @@ public fun sleepMs(ms: UInt) {
  * ```
  */
 public fun sleep(dur: Duration) {
-    sleep(dur)
+    io.github.kotlinmania.rustlang.std.sys.thread.unix.sleep(dur)
 }
 
 /**
@@ -361,7 +361,7 @@ public fun sleep(dur: Duration) {
  * ```
  */
 public fun sleepUntil(deadline: Instant) {
-    sleepUntil(deadline)
+    io.github.kotlinmania.rustlang.std.sys.thread.sleepUntil(deadline)
 }
 
 /**
@@ -694,4 +694,4 @@ public fun parkTimeout(dur: Duration) {
  * }
  * ```
  */
-public fun availableParallelism(): Result<NonZero<Int>, Error> = availableParallelism()
+public fun availableParallelism(): Result<NonZero<Int>, Error> = io.github.kotlinmania.rustlang.std.sys.thread.unix.availableParallelism()

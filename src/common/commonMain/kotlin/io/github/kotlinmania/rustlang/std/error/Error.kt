@@ -2,7 +2,7 @@
 package io.github.kotlinmania.rustlang.std.error
 
 import io.github.kotlinmania.rustlang.core.error.requestRef
-import io.github.kotlinmania.rustlang.core.io.error.error
+import io.github.kotlinmania.rustlang.core.fmt.Write
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes

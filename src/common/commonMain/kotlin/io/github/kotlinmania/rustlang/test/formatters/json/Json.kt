@@ -5,7 +5,6 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.str.rustStrChars
-import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.test.TestDesc
 import io.github.kotlinmania.rustlang.test.console.ConsoleTestDiscoveryState
 import io.github.kotlinmania.rustlang.test.console.ConsoleTestState
@@ -14,10 +13,10 @@ import io.github.kotlinmania.rustlang.test.formatters.OutputFormatter
 import io.github.kotlinmania.rustlang.test.testresult.TestResult
 import io.github.kotlinmania.rustlang.test.time.TestExecTime
 
-internal open class JsonFormatter<T>(
+public open class JsonFormatter<T>(
     public var out: OutputLocation<T>,
 ) : OutputFormatter {
-    public open fun writelnMessage(s: String): Result<Unit, Error> {
+    public open fun writelnMessage(s: String): Result<Unit> {
         // self.out will take a lock, but that lock is released when writeAll returns. This
         // results in a race condition and json output may not end with a new line. We avoid this
         // by issuing `writeAll` calls line-by-line.
@@ -25,7 +24,7 @@ internal open class JsonFormatter<T>(
         return this.out.writeAll(s)
     }
 
-    public open fun writeEvent(ty: String, name: String, event: String, execTime: TestExecTime?, stdout: String?, extra: String?): Result<Unit, Error> {
+    public open fun writeEvent(ty: String, name: String, event: String, execTime: TestExecTime?, stdout: String?, extra: String?): Result<Unit> {
         // A doc test's name includes a filename which must be escaped for correct json.
         val execTimeJson =
             if (execTime != null) {
@@ -51,9 +50,9 @@ internal open class JsonFormatter<T>(
         return this.writelnMessage("{ \"type\": \"$ty\", \"name\": \"$name\", \"event\": \"$event\"$execTimeJson$stdoutJson$extraJson }$newline")
     }
 
-    public override fun writeDiscoveryStart(): Result<Unit, Error> = this.writelnMessage("{ \"type\": \"suite\", \"event\": \"discovery\" }\n")
+    public override fun writeDiscoveryStart(): Result<Unit> = this.writelnMessage("{ \"type\": \"suite\", \"event\": \"discovery\" }\n")
 
-    public override fun writeTestDiscovered(desc: TestDesc, testType: String): Result<Unit, Error> {
+    public override fun writeTestDiscovered(desc: TestDesc, testType: String): Result<Unit> {
         val name = desc.name
         val ignore = desc.ignore
         val ignoreMessage = desc.ignoreMessage
@@ -67,7 +66,7 @@ internal open class JsonFormatter<T>(
         return this.writelnMessage("{ \"type\": \"$testType\", \"event\": \"discovered\", \"name\": \"$name\", \"ignore\": $ignore, \"ignore_message\": \"$ignoreMessage\", \"source_path\": \"$sourcePath\", \"start_line\": $startLine, \"start_col\": $startCol, \"end_line\": $endLine, \"end_col\": $endCol }$newline")
     }
 
-    public override fun writeDiscoveryFinish(state: ConsoleTestDiscoveryState): Result<Unit, Error> {
+    public override fun writeDiscoveryFinish(state: ConsoleTestDiscoveryState): Result<Unit> {
         val tests = state.tests
         val benchmarks = state.benchmarks
         val ignored = state.ignored
@@ -76,7 +75,7 @@ internal open class JsonFormatter<T>(
         return this.writelnMessage("{ \"type\": \"suite\", \"event\": \"completed\", \"tests\": $tests, \"benchmarks\": $benchmarks, \"total\": $total, \"ignored\": $ignored }$newline")
     }
 
-    public override fun writeRunStart(testCount: Int, shuffleSeed: ULong?): Result<Unit, Error> {
+    public override fun writeRunStart(testCount: Int, shuffleSeed: ULong?): Result<Unit> {
         val shuffleSeedJson =
             if (shuffleSeed != null) {
                 ", \"shuffle_seed\": $shuffleSeed"
@@ -87,13 +86,13 @@ internal open class JsonFormatter<T>(
         return this.writelnMessage("{ \"type\": \"suite\", \"event\": \"started\", \"test_count\": $testCount$shuffleSeedJson }$newline")
     }
 
-    public override fun writeTestStart(desc: TestDesc): Result<Unit, Error> {
+    public override fun writeTestStart(desc: TestDesc): Result<Unit> {
         val name = EscapedString(desc.name.asSlice())
         val newline = "\n"
         return this.writelnMessage("{ \"type\": \"test\", \"event\": \"started\", \"name\": \"$name\" }$newline")
     }
 
-    public override fun writeResult(desc: TestDesc, result: TestResult, execTime: TestExecTime?, stdout: List<UByte>, state: ConsoleTestState): Result<Unit, Error> {
+    public override fun writeResult(desc: TestDesc, result: TestResult, execTime: TestExecTime?, stdout: List<UByte>, state: ConsoleTestState): Result<Unit> {
         val displayStdout = state.options.displayOutput || result != TestResult.TrOk
         val stdout1 =
             if (displayStdout && !stdout.isEmpty()) {
@@ -130,13 +129,13 @@ internal open class JsonFormatter<T>(
         }
     }
 
-    public override fun writeTimeout(desc: TestDesc): Result<Unit, Error> {
+    public override fun writeTimeout(desc: TestDesc): Result<Unit> {
         val name = EscapedString(desc.name.asSlice())
         val newline = "\n"
         return this.writelnMessage("{ \"type\": \"test\", \"event\": \"timeout\", \"name\": \"$name\" }$newline")
     }
 
-    public override fun writeRunFinish(state: ConsoleTestState): Result<Boolean, Error> {
+    public override fun writeRunFinish(state: ConsoleTestState): Result<Boolean> {
         val event =
             if (state.failed == 0) {
                 "ok"
@@ -163,13 +162,13 @@ internal open class JsonFormatter<T>(
         return Result.Ok(state.failed == 0)
     }
 
-    public override fun writeMergedDoctestsTimes(totalTime: Double, compilationTime: Double): Result<Unit, Error> {
+    public override fun writeMergedDoctestsTimes(totalTime: Double, compilationTime: Double): Result<Unit> {
         val newline = "\n"
         return this.writelnMessage("{ \"type\": \"report\", \"total_time\": $totalTime, \"compilation_time\": $compilationTime }$newline")
     }
 
     public companion object {
-        internal fun <T> new(out: OutputLocation<T>): JsonFormatter<T> = JsonFormatter(out = out)
+        public fun <T> new(out: OutputLocation<T>): JsonFormatter<T> = JsonFormatter(out = out)
     }
 }
 

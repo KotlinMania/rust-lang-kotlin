@@ -6,6 +6,7 @@ import io.github.kotlinmania.rustlang.alloc.collections.TryReserveError
 import io.github.kotlinmania.rustlang.alloc.collections.TryReserveErrorKind.*
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
+import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignment.Alignment
@@ -43,15 +44,18 @@ import io.github.kotlinmania.rustlang.core.slice.asPtr
  * `Int.MAX`. This means that you need to be careful when round-tripping this type with a
  * `Holder<[T]>`, since `capacity()` won't yield the length.
  */
-internal open class RawVec<T, A : Allocator>(
-    public var inner: RawVecInner<A>,
+public open class RawVec<T, A : Allocator> internal constructor(
+    innerCtorArg: RawVecInner<A>,
     public var marker: Unit,
 ) {
+    public var inner: RawVecInner<A> = innerCtorArg
+        internal set
+
     /**
      * A specialized version of `self.reserve(len, 1)` which requires the
      * caller to ensure `len == self.capacity()`.
      */
-    internal open fun growOne() {
+    public open fun growOne() {
         // SAFETY: All calls on self.inner pass T.Layout as the elemLayout
         this.inner.growOne(T.LAYOUT)
     }
@@ -70,7 +74,7 @@ internal open class RawVec<T, A : Allocator>(
      * Note, that the requested capacity and `self.capacity()` could differ, as
      * an allocator could overallocate and return a greater memory block than requested.
      */
-    internal open fun intoBox(len: Int): List<MaybeUninit<T>> {
+    public open fun intoBox(len: Int): List<MaybeUninit<T>> {
         // Sanity-check one half of the safety requirement (we cannot check the other half).
         check(len <= this.capacity()) { "`len` must be smaller than or equal to `self.capacity()`" }
         val me = this
@@ -92,21 +96,21 @@ internal open class RawVec<T, A : Allocator>(
      * `NonNull.dangling()` if `capacity == 0` or `T` is zero-sized. In the former case, you must
      * be careful.
      */
-    internal open fun ptr(): MutPtr = this.inner.ptr()
+    public open fun ptr(): MutPtr = this.inner.ptr()
 
-    internal open fun nonNull(): NonNull = this.inner.nonNull()
+    public open fun nonNull(): NonNull = this.inner.nonNull()
 
     /**
      * Gets the capacity of the allocation.
      *
      * This will always be `Int.MAX` if `T` is zero-sized.
      */
-    internal open fun capacity(typeLayoutT: TypeLayout<T>): Int = this.inner.capacity(sizeOf<T>(typeLayoutT = typeLayoutT))
+    public open fun capacity(typeLayoutT: TypeLayout<T>): Int = this.inner.capacity(sizeOf<T>(typeLayoutT = typeLayoutT))
 
     /**
      * Returns a shared reference to the allocator backing this `RawVec`.
      */
-    internal open fun allocator(): A = this.inner.allocator()
+    public open fun allocator(): A = this.inner.allocator()
 
     /**
      * Ensures that the buffer contains at least enough space to hold `len +
@@ -129,7 +133,7 @@ internal open class RawVec<T, A : Allocator>(
      *
      * Aborts on OOM.
      */
-    internal open fun reserve(len: Int, additional: Int) {
+    public open fun reserve(len: Int, additional: Int) {
         // SAFETY: All calls on self.inner pass T.Layout as the elemLayout
         this.inner.reserve(len, additional, T.LAYOUT)
     }
@@ -137,7 +141,7 @@ internal open class RawVec<T, A : Allocator>(
     /**
      * The same as `reserve`, but returns on errors instead of panicking or aborting.
      */
-    internal open fun tryReserve(len: Int, additional: Int): Result<Unit, TryReserveError> {
+    public open fun tryReserve(len: Int, additional: Int): Result<Unit, TryReserveError> {
         // SAFETY: All calls on self.inner pass T.Layout as the elemLayout
         return this.inner.tryReserve(len, additional, T.LAYOUT)
     }
@@ -161,7 +165,7 @@ internal open class RawVec<T, A : Allocator>(
      *
      * Aborts on OOM.
      */
-    internal open fun reserveExact(len: Int, additional: Int) {
+    public open fun reserveExact(len: Int, additional: Int) {
         // SAFETY: All calls on self.inner pass T.Layout as the elemLayout
         this.inner.reserveExact(len, additional, T.LAYOUT)
     }
@@ -169,7 +173,7 @@ internal open class RawVec<T, A : Allocator>(
     /**
      * The same as `reserveExact`, but returns on errors instead of panicking or aborting.
      */
-    internal open fun tryReserveExact(len: Int, additional: Int): Result<Unit, TryReserveError> {
+    public open fun tryReserveExact(len: Int, additional: Int): Result<Unit, TryReserveError> {
         // SAFETY: All calls on self.inner pass T.Layout as the elemLayout
         return this.inner.tryReserveExact(len, additional, T.LAYOUT)
     }
@@ -186,7 +190,7 @@ internal open class RawVec<T, A : Allocator>(
      *
      * Aborts on OOM.
      */
-    internal open fun shrinkToFit(cap: Int) {
+    public open fun shrinkToFit(cap: Int) {
         // SAFETY: All calls on self.inner pass T.Layout as the elemLayout
         this.inner.shrinkToFit(cap, T.LAYOUT)
     }
@@ -203,7 +207,7 @@ internal open class RawVec<T, A : Allocator>(
      *
      * Panics if the given amount is *larger* than the current capacity.
      */
-    internal open fun tryShrinkToFit(cap: Int): Result<Unit, TryReserveError> {
+    public open fun tryShrinkToFit(cap: Int): Result<Unit, TryReserveError> {
         // SAFETY: Layout is valid for T.
         return this.inner.tryShrinkToFit(cap, T.LAYOUT)
     }
@@ -217,19 +221,27 @@ internal open class RawVec<T, A : Allocator>(
     }
 
     public companion object {
+        public operator fun <T, A : Allocator> invoke(
+            inner: RawVecInner<A>,
+            marker: Unit,
+        ): RawVec<T, A> = RawVec<T, A>(
+            innerCtorArg = inner,
+            marker = marker,
+        )
+
         /**
          * Like `withCapacity`, but parameterized over the choice of
          * allocator for the returned `RawVec`.
          */
-        internal fun <T, A : Allocator> withCapacityIn(capacity: Int, alloc: A): RawVec<T, A> = RawVec(inner = RawVecInner.withCapacityIn(capacity, alloc, T.LAYOUT), marker = Unit)
+        public fun <T, A : Allocator> withCapacityIn(capacity: Int, alloc: A): RawVec<T, A> = RawVec(inner = RawVecInner.withCapacityIn(capacity, alloc, T.LAYOUT), marker = Unit)
 
-        internal val MIN_NON_ZERO_CAP: Int = minNonZeroCap(sizeOf<T>(typeLayoutT = ObjectSlotLayout<T>()))
+        public val MIN_NON_ZERO_CAP: Int = minNonZeroCap(sizeOf<T>(typeLayoutT = ObjectSlotLayout<T>()))
 
         /**
          * Like `new`, but parameterized over the choice of allocator for
          * the returned `RawVec`.
          */
-        internal fun <T, A : Allocator> newIn(alloc: A): RawVec<T, A> {
+        public fun <T, A : Allocator> newIn(alloc: A): RawVec<T, A> {
             // Check assumption made in `currentMemory`
             check(T.LAYOUT.size() % T.LAYOUT.align() == 0)
             return RawVec(inner = RawVecInner.newIn(alloc, Alignment.of<T>()), marker = Unit)
@@ -239,7 +251,7 @@ internal open class RawVec<T, A : Allocator>(
          * Like `tryWithCapacity`, but parameterized over the choice of
          * allocator for the returned `RawVec`.
          */
-        internal fun <T, A : Allocator> tryWithCapacityIn(capacity: Int, alloc: A): Result<RawVec<T, A>, TryReserveError> =
+        public fun <T, A : Allocator> tryWithCapacityIn(capacity: Int, alloc: A): Result<RawVec<T, A>, TryReserveError> =
             run {
                 val matchVal = RawVecInner.tryWithCapacityIn(capacity, alloc, T.LAYOUT)
                 when (matchVal) { is Result.Ok<*> -> {
@@ -255,7 +267,7 @@ internal open class RawVec<T, A : Allocator>(
          * Like `withCapacityZeroed`, but parameterized over the choice
          * of allocator for the returned `RawVec`.
          */
-        internal fun <T, A : Allocator> withCapacityZeroedIn(capacity: Int, alloc: A): RawVec<T, A> = RawVec(inner = RawVecInner.withCapacityZeroedIn(capacity, alloc, T.LAYOUT), marker = Unit)
+        public fun <T, A : Allocator> withCapacityZeroedIn(capacity: Int, alloc: A): RawVec<T, A> = RawVec(inner = RawVecInner.withCapacityZeroedIn(capacity, alloc, T.LAYOUT), marker = Unit)
 
         /**
          * Reconstitutes a `RawVec` from a pointer, capacity, and allocator.
@@ -269,7 +281,7 @@ internal open class RawVec<T, A : Allocator>(
          * If the `ptr` and `capacity` come from a `RawVec` created via `alloc`, then this is
          * guaranteed.
          */
-        internal fun <T, A : Allocator> fromRawPartsIn(ptr: MutPtr, capacity: Int, alloc: A): RawVec<T, A> {
+        public fun <T, A : Allocator> fromRawPartsIn(ptr: MutPtr, capacity: Int, alloc: A): RawVec<T, A> {
             // SAFETY: Precondition passed to the caller
             return run {
                 val ptr1 = ptr
@@ -285,7 +297,7 @@ internal open class RawVec<T, A : Allocator>(
          *
          * See [RawVec.fromRawPartsIn].
          */
-        internal fun <T, A : Allocator> fromNonnullIn(ptr: NonNull, capacity: Int, alloc: A): RawVec<T, A> {
+        public fun <T, A : Allocator> fromNonnullIn(ptr: NonNull, capacity: Int, alloc: A): RawVec<T, A> {
             // SAFETY: Precondition passed to the caller
             return run {
                 val ptr1 = ptr.cast()
@@ -303,7 +315,7 @@ internal open class RawVec<T, A : Allocator>(
  * `RawVec` with capacity `Int.MAX`. Useful for implementing
  * delayed allocation.
  */
-internal fun <T> RawVec.Companion.new(): RawVec<T, Global> = RawVec.newIn(Global)
+public fun <T> RawVec.Companion.new(): RawVec<T, Global> = RawVec.newIn(Global)
 
 /**
  * Creates a `RawVec` (on the system heap) with exactly the
@@ -322,12 +334,12 @@ internal fun <T> RawVec.Companion.new(): RawVec<T, Global> = RawVec.newIn(Global
  *
  * Aborts on OOM.
  */
-internal fun <T> RawVec.Companion.withCapacity(capacity: Int): RawVec<T, Global> = RawVec(inner = RawVecInner.withCapacity(capacity, T.LAYOUT), marker = Unit)
+public fun <T> RawVec.Companion.withCapacity(capacity: Int): RawVec<T, Global> = RawVec(inner = RawVecInner.withCapacity(capacity, T.LAYOUT), marker = Unit)
 
 /**
  * Like `withCapacity`, but guarantees the buffer is zeroed.
  */
-internal fun <T> RawVec.Companion.withCapacityZeroed(capacity: Int): RawVec<T, Global> = RawVec(inner = RawVecInner.withCapacityZeroedIn(capacity, Global, T.LAYOUT), marker = Unit)
+public fun <T> RawVec.Companion.withCapacityZeroed(capacity: Int): RawVec<T, Global> = RawVec(inner = RawVecInner.withCapacityZeroedIn(capacity, Global, T.LAYOUT), marker = Unit)
 
 /**
  * Like a `RawVec`, but only generic over the allocator, not the type.

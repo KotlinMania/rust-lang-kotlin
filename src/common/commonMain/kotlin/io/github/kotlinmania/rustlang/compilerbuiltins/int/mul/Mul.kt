@@ -12,7 +12,7 @@ public interface Mul<T> : DInt, Int {
     public fun mul(rhs: T): T
 }
 
-internal interface UMulo<T> : DInt, Int {
+public interface UMulo<T> : DInt, Int {
     public fun mulo(rhs: T): Pair<T, Boolean> =
         run {
             val matchVal = Pair(this.hi().isZero(), rhs.hi().isZero())

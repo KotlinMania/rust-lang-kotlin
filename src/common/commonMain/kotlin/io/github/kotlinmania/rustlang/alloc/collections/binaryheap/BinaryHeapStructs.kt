@@ -7,12 +7,14 @@ import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedFused
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.swap
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.num.rustLeadingZeros
 import io.github.kotlinmania.rustlang.core.num.rustSaturatingSub
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 
@@ -466,7 +468,7 @@ public open class BinaryHeap<T, A : Allocator>(
             hole.moveTo(child)
         }
         pos1 = hole.pos()
-        drop(hole)
+        (hole).let { }
         // SAFETY: pos is the position in the hole and was already proven
         // to be a valid index.
         this.siftUp(start, pos1)
@@ -563,7 +565,7 @@ public open class BinaryHeap<T, A : Allocator>(
      * public fun doctestEntry() {
      *     var heap = BinaryHeap.from(listOf(1, 2, 3, 4, 5))
      *     check(heap.len() == 5)
-     *     drop(heap.drainSorted())
+     *     (heap.drainSorted()).let { }
      *     // removes all elements in heap order
      *     check(heap.len() == 0)
      * }
@@ -1421,7 +1423,7 @@ public open class Hole<T>(
         public fun <T> new(data: MutableList<T>, pos: Int): Hole<T> {
             check(pos < data.size)
             // SAFETY: Caller ensures pos is inside the slice.
-            val elt = read(data.getUnchecked(pos))
+            val elt = ptr.read(data.getUnchecked(pos))
             return Hole(data = data, elt = elt, pos = pos)
         }
     }
@@ -1584,9 +1586,9 @@ public open class IntoIterSorted<T, A : Allocator> internal constructor(
  * [drain]: BinaryHeap.drain
  */
 public open class Drain<T, A : Allocator> internal constructor(
-    iterCtorArg: Drain<T, A>,
+    iterCtorArg: io.github.kotlinmania.rustlang.alloc.vec.drain.Drain<T, A>,
 ) : Iterable<T> {
-    public var iter: Drain<T, A> = iterCtorArg
+    public var iter: io.github.kotlinmania.rustlang.alloc.vec.drain.Drain<T, A> = iterCtorArg
         internal set
 
     override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
@@ -1613,7 +1615,7 @@ public open class Drain<T, A : Allocator> internal constructor(
 
     public companion object {
         public operator fun <T, A : Allocator> invoke(
-            iter: Drain<T, A>,
+            iter: io.github.kotlinmania.rustlang.alloc.vec.drain.Drain<T, A>,
         ): Drain<T, A> = Drain<T, A>(
             iterCtorArg = iter,
         )
@@ -1670,7 +1672,7 @@ public open class DrainSorted<T, A : Allocator> internal constructor(
             if (matchVal == null) break
             val item = matchVal
             val guard = DropGuard(this)
-            drop(item)
+            (item).let { }
             forget(guard)
         }
     }

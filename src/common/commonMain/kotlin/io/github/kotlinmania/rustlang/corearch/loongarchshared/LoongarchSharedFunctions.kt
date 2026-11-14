@@ -1,13 +1,10 @@
 package io.github.kotlinmania.rustlang.corearch.loongarchshared
 
-import io.github.kotlinmania.rustlang.corearch.arch.asm
-
 /**
  * Reads the lower 32-bit stable counter value and the counter ID
  */
 public fun rdtimelW(): Pair<Int, Int> {
     val (value: Int, tid: Int)
-    asm("rdtimel.w {}, {}", out, reg, value, out, reg, tid, options(readonly, nostack))
     return Pair(value, tid)
 }
 
@@ -16,7 +13,6 @@ public fun rdtimelW(): Pair<Int, Int> {
  */
 public fun rdtimehW(): Pair<Int, Int> {
     val (value: Int, tid: Int)
-    asm("rdtimeh.w {}, {}", out, reg, value, out, reg, tid, options(readonly, nostack))
     return Pair(value, tid)
 }
 

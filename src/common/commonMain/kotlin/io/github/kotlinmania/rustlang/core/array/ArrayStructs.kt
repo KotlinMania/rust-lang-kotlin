@@ -3,7 +3,6 @@ package io.github.kotlinmania.rustlang.core.array
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
-import io.github.kotlinmania.rustlang.core.ops.index
 import io.github.kotlinmania.rustlang.core.result.Result
 
 /**
@@ -77,7 +76,7 @@ public open class Guard<T>(
      *
      * No more than N elements must be initialized.
      */
-    internal open fun pushUnchecked(item: T) {
+    public open fun pushUnchecked(item: T) {
         // SAFETY: If `initialized` was correct before and the caller does not
         // invoke this method more than N times, then writes will be in-bounds
         // and slots will not be initialized more than once.
@@ -126,7 +125,7 @@ public open class GuardBack<T>(
      *
      * No more than N elements must be initialized.
      */
-    internal open fun pushUnchecked(item: T) {
+    public open fun pushUnchecked(item: T) {
         // SAFETY: If `initialized` was correct before and the caller does not
         // invoke this method more than N times, then writes will be in-bounds
         // and slots will not be initialized more than once.

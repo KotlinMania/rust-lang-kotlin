@@ -57,13 +57,13 @@ public interface SimdOrd<T> : SimdPartialOrd<T> {
     public fun simdClamp(min: T, max: T): T
 }
 
-public fun Simd<UByte, N>.simdLt(other: Simd<UByte, N>, n: Int): Mask = Mask.fromSimdUnchecked(simd.simdLt(this, other))
+public fun Simd<UByte, N>.simdLt(other: Simd<UByte, N>, n: Int): Mask = Mask.fromSimdUnchecked(run { val _simdArg0 = this; val _simdArg1 = other; _simdArg0 })
 
-public fun Simd<UByte, N>.simdLe(other: Simd<UByte, N>, n: Int): Mask = Mask.fromSimdUnchecked(simd.simdLe(this, other))
+public fun Simd<UByte, N>.simdLe(other: Simd<UByte, N>, n: Int): Mask = Mask.fromSimdUnchecked(run { val _simdArg0 = this; val _simdArg1 = other; _simdArg0 })
 
-public fun Simd<UByte, N>.simdGt(other: Simd<UByte, N>, n: Int): Mask = Mask.fromSimdUnchecked(simd.simdGt(this, other))
+public fun Simd<UByte, N>.simdGt(other: Simd<UByte, N>, n: Int): Mask = Mask.fromSimdUnchecked(run { val _simdArg0 = this; val _simdArg1 = other; _simdArg0 })
 
-public fun Simd<UByte, N>.simdGe(other: Simd<UByte, N>, n: Int): Mask = Mask.fromSimdUnchecked(simd.simdGe(this, other))
+public fun Simd<UByte, N>.simdGe(other: Simd<UByte, N>, n: Int): Mask = Mask.fromSimdUnchecked(run { val _simdArg0 = this; val _simdArg1 = other; _simdArg0 })
 
 public fun Simd<UByte, N>.simdMax(other: Simd<UByte, N>, n: Int): Simd<UByte, N> = this.simdLt(other).select(other, this)
 

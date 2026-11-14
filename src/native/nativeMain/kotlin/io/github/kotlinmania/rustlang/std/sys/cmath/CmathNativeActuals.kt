@@ -111,58 +111,58 @@ public actual fun erfcf(n: Float): Float =
     stdSysCmathErfcf(n)
 
 public actual fun acosf128(n: F128): F128 =
-    null as F128
+    F128()
 
 public actual fun acoshf128(n: F128): F128 =
-    null as F128
+    F128()
 
 public actual fun asinf128(n: F128): F128 =
-    null as F128
+    F128()
 
 public actual fun asinhf128(n: F128): F128 =
-    null as F128
+    F128()
 
 public actual fun atanf128(n: F128): F128 =
-    null as F128
+    F128()
 
 public actual fun atan2f128(a: F128, b: F128): F128 =
-    null as F128
+    F128()
 
 public actual fun cbrtf128(n: F128): F128 =
-    null as F128
+    F128()
 
 public actual fun coshf128(n: F128): F128 =
-    null as F128
+    F128()
 
 public actual fun expm1f128(n: F128): F128 =
-    null as F128
+    F128()
 
 public actual fun hypotf128(x: F128, y: F128): F128 =
-    null as F128
+    F128()
 
 public actual fun log1pf128(n: F128): F128 =
-    null as F128
+    F128()
 
 public actual fun sinhf128(n: F128): F128 =
-    null as F128
+    F128()
 
 public actual fun tanf128(n: F128): F128 =
-    null as F128
+    F128()
 
 public actual fun tanhf128(n: F128): F128 =
-    null as F128
+    F128()
 
 public actual fun tgammaf128(n: F128): F128 =
-    null as F128
+    F128()
 
 public actual fun lgammaf128R(n: F128, s: RustMutableReference<Int>): F128 =
-    null as F128
+    F128()
 
 public actual fun erff128(n: F128): F128 =
-    null as F128
+    F128()
 
 public actual fun erfcf128(n: F128): F128 =
-    null as F128
+    F128()
 
 public actual fun acosf(n: Float): Float =
     stdSysCmathAcosf(n)

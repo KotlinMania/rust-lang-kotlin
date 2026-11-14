@@ -4,8 +4,9 @@ package io.github.kotlinmania.rustlang.core.iter.traits.iterator
 import io.github.kotlinmania.rustlang.core.array.iter.IntoIter
 import io.github.kotlinmania.rustlang.core.array.iterNextChunk
 import io.github.kotlinmania.rustlang.core.cmp.KeyAndValue
-import io.github.kotlinmania.rustlang.core.iter.Product
-import io.github.kotlinmania.rustlang.core.iter.Sum
+import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.cmp.maxBy
+import io.github.kotlinmania.rustlang.core.cmp.minBy
 import io.github.kotlinmania.rustlang.core.iter.adapters.arraychunks.ArrayChunks
 import io.github.kotlinmania.rustlang.core.iter.adapters.byrefsized.ByRefSized
 import io.github.kotlinmania.rustlang.core.iter.adapters.chain.Chain
@@ -34,17 +35,19 @@ import io.github.kotlinmania.rustlang.core.iter.adapters.take.Take
 import io.github.kotlinmania.rustlang.core.iter.adapters.takewhile.TakeWhile
 import io.github.kotlinmania.rustlang.core.iter.adapters.tryProcess
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.Zip
-import io.github.kotlinmania.rustlang.core.iter.traits.TrustedLen
+import io.github.kotlinmania.rustlang.core.iter.traits.accum.Product
+import io.github.kotlinmania.rustlang.core.iter.traits.accum.Sum
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.swap
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
-import io.github.kotlinmania.rustlang.core.ops.ChangeOutputType
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
+import io.github.kotlinmania.rustlang.core.ops.trytrait.ChangeOutputType
 import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 
 public fun assertIsDynCompatible(arg0: Iterator<Unit>) {}
 

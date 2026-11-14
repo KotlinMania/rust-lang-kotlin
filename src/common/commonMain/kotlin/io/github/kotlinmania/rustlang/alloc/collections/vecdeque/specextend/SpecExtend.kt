@@ -9,7 +9,7 @@ import io.github.kotlinmania.rustlang.core.iter.adapters.rev.Rev
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 
 // Specialization trait used for VecDeque.extend
-internal interface SpecExtend<T, I> {
+public interface SpecExtend<T, I> {
     public fun specExtend(iter: I)
 }
 
@@ -78,7 +78,7 @@ public fun <T, A : Allocator> VecDeque<T, A>.specExtendTIterT(iterator: ArrayDeq
 }
 
 // Specialization trait used for VecDeque.extendFront
-internal interface SpecExtendFront<T, I> {
+public interface SpecExtendFront<T, I> {
     public fun specExtendFront(iter: I)
 }
 

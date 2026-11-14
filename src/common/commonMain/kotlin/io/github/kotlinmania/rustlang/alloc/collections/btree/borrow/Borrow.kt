@@ -16,7 +16,7 @@ import io.github.kotlinmania.rustlang.core.slice.asPtr
  * yourself, while still expressing its stacked nature, and encapsulating
  * the raw pointer code needed to do this without undefined behavior.
  */
-internal open class DormantMutRef<T>(
+public open class DormantMutRef<T>(
     public var ptr: NonNull,
     public var marker: Unit,
 ) {
@@ -28,7 +28,7 @@ internal open class DormantMutRef<T>(
      * The reborrow must have ended, i.e., the reference returned by `new` and
      * all pointers and references derived from it, must not be used anymore.
      */
-    internal open fun awaken(): T {
+    public open fun awaken(): T {
         // SAFETY: our own safety conditions imply this reference is again unique.
         return this.ptr.asPtr()
     }
@@ -41,7 +41,7 @@ internal open class DormantMutRef<T>(
      * The reborrow must have ended, i.e., the reference returned by `new` and
      * all pointers and references derived from it, must not be used anymore.
      */
-    internal open fun reborrow(): T {
+    public open fun reborrow(): T {
         // SAFETY: our own safety conditions imply this reference is again unique.
         return this.ptr.asPtr()
     }
@@ -54,7 +54,7 @@ internal open class DormantMutRef<T>(
      * The reborrow must have ended, i.e., the reference returned by `new` and
      * all pointers and references derived from it, must not be used anymore.
      */
-    internal open fun reborrowShared(): T {
+    public open fun reborrowShared(): T {
         // SAFETY: our own safety conditions imply this reference is again unique.
         return this.ptr.asPtr()
     }
@@ -65,7 +65,7 @@ internal open class DormantMutRef<T>(
          * the scope of the new reference is the same as the scope of the
          * original reference, but you promise to use it for a shorter period.
          */
-        internal fun <T> new(t: T): Pair<T, DormantMutRef<T>> {
+        public fun <T> new(t: T): Pair<T, DormantMutRef<T>> {
             val ptr = NonNull.from(t)
             // SAFETY: we hold the borrow throughout a via `_marker`, and we expose
             // only this reference, so it is unique.

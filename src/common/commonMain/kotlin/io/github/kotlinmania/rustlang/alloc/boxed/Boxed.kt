@@ -2,7 +2,7 @@
 package io.github.kotlinmania.rustlang.alloc.boxed
 
 import io.github.kotlinmania.rustlang.alloc.alloc.Global
-import io.github.kotlinmania.rustlang.alloc.handleAllocError
+import io.github.kotlinmania.rustlang.alloc.alloc.handleAllocError
 import io.github.kotlinmania.rustlang.alloc.rawvec.RawVec
 import io.github.kotlinmania.rustlang.alloc.vec.Vec
 import io.github.kotlinmania.rustlang.core.I128
@@ -16,13 +16,15 @@ import io.github.kotlinmania.rustlang.core.borrow.Borrow
 import io.github.kotlinmania.rustlang.core.borrow.BorrowMut
 import io.github.kotlinmania.rustlang.core.clone.CloneToUninit
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.error.Error
+import io.github.kotlinmania.rustlang.core.error.Request
 import io.github.kotlinmania.rustlang.core.fmt.Pointer
 import io.github.kotlinmania.rustlang.core.future.future.Future
-import io.github.kotlinmania.rustlang.core.io.error.error
 import io.github.kotlinmania.rustlang.core.marker.Tuple
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignOf
+import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
@@ -39,6 +41,7 @@ import io.github.kotlinmania.rustlang.core.pin.PinSafePointer
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
+import io.github.kotlinmania.rustlang.core.ptr.write
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
@@ -433,7 +436,7 @@ public open class Box<T, A : Allocator>(
 
     public open fun fmtPointer(f: StringBuilder) {
         val ptr: ConstPtr = this
-        fmt.Pointer.fmt(ptr, f)
+        Pointer.fmt(ptr, f)
     }
 
     public open fun deref(): T = this
@@ -2240,7 +2243,7 @@ public fun <T> Box.Companion.fromNonNull(ptr: NonNull): Box<T> {
  * val x = "Hello"
  * val ptr = Holder.intoRaw(x)
  * run {
- *     drop(Holder.fromRaw(ptr))
+ *     (Holder.fromRaw(ptr)).let { }
  * }
  * ```
  *
@@ -2308,7 +2311,7 @@ public fun <T> Box.Companion.intoRaw(b: Box<T>): MutPtr {
  * val x = "Hello"
  * val nonNull = Holder.intoNonNull(x)
  * run {
- *     drop(Holder.fromNonNull(nonNull))
+ *     (Holder.fromNonNull(nonNull)).let { }
  * }
  * ```
  *

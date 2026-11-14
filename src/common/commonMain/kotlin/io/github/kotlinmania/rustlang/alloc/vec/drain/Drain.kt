@@ -5,6 +5,9 @@ import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.take
+import io.github.kotlinmania.rustlang.core.ptr.copy
+import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
@@ -44,21 +47,24 @@ public class DebugTuple(
  * val iter: Drain = v.drain(0 until 0)
  * ```
  */
-public open class Drain<T, A : Allocator>(
+public open class Drain<T, A : Allocator> internal constructor(
     /**
      * Index of tail to preserve
      */
-    internal var tailStart: Int,
+    public var tailStart: Int,
     /**
      * Length of tail
      */
-    internal var tailLen: Int,
+    public var tailLen: Int,
     /**
      * Current remaining range to remove
      */
-    internal var iter: ArrayDeque<T>,
-    internal var vec: NonNull,
+    public var iter: ArrayDeque<T>,
+    vecCtorArg: NonNull,
 ) : AsRef<List<T>>, TrustedLen, Iterable<T> {
+    public var vec: NonNull = vecCtorArg
+        internal set
+
     override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@Drain.next()) {
@@ -239,4 +245,18 @@ public open class Drain<T, A : Allocator>(
     }
 
     public open fun isEmpty(): Boolean = this.iter.isEmpty()
+
+    public companion object {
+        public operator fun <T, A : Allocator> invoke(
+            tailStart: Int,
+            tailLen: Int,
+            iter: ArrayDeque<T>,
+            vec: NonNull,
+        ): Drain<T, A> = Drain<T, A>(
+            tailStart = tailStart,
+            tailLen = tailLen,
+            iter = iter,
+            vecCtorArg = vec,
+        )
+    }
 }

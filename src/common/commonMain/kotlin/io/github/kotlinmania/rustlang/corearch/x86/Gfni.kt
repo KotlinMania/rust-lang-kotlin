@@ -1,8 +1,6 @@
 // port-lint: source x86/gfni.rs
 package io.github.kotlinmania.rustlang.corearch.x86
 
-import io.github.kotlinmania.rustlang.corearch.intrinsics.simd.simdSelectBitmask
-import io.github.kotlinmania.rustlang.corearch.mem.transmute
 import io.github.kotlinmania.rustlang.corearch.simd.I8x16
 import io.github.kotlinmania.rustlang.corearch.simd.I8x32
 import io.github.kotlinmania.rustlang.corearch.simd.I8x64
@@ -62,7 +60,7 @@ public fun mm512Gf2p8mulEpi8(a: M512i, b: M512i): M512i = transmute(vgf2p8mulb51
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_gf2p8mul_epi8)
  */
-public fun mm512MaskGf2p8mulEpi8(src: M512i, k: Mmask64, a: M512i, b: M512i): M512i = transmute(simdSelectBitmask(k, vgf2p8mulb512(a.asI8x64(), b.asI8x64()), src.asI8x64()))
+public fun mm512MaskGf2p8mulEpi8(src: M512i, k: Mmask64, a: M512i, b: M512i): M512i = transmute(run { val _simdArg0 = k; val _simdArg1 = vgf2p8mulb512(a.asI8x64(), b.asI8x64()); val _simdArg2 = src.asI8x64(); _simdArg1 })
 
 /**
  * Performs a multiplication in GF(2^8) on the packed bytes.
@@ -76,7 +74,7 @@ public fun mm512MaskGf2p8mulEpi8(src: M512i, k: Mmask64, a: M512i, b: M512i): M5
  */
 public fun mm512MaskzGf2p8mulEpi8(k: Mmask64, a: M512i, b: M512i): M512i {
     val zero = I8x64.ZERO
-    return transmute(simdSelectBitmask(k, vgf2p8mulb512(a.asI8x64(), b.asI8x64()), zero))
+    return transmute(run { val _simdArg0 = k; val _simdArg1 = vgf2p8mulb512(a.asI8x64(), b.asI8x64()); val _simdArg2 = zero; _simdArg1 })
 }
 
 /**
@@ -98,7 +96,7 @@ public fun mm256Gf2p8mulEpi8(a: M256i, b: M256i): M256i = transmute(vgf2p8mulb25
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_gf2p8mul_epi8)
  */
-public fun mm256MaskGf2p8mulEpi8(src: M256i, k: Mmask32, a: M256i, b: M256i): M256i = transmute(simdSelectBitmask(k, vgf2p8mulb256(a.asI8x32(), b.asI8x32()), src.asI8x32()))
+public fun mm256MaskGf2p8mulEpi8(src: M256i, k: Mmask32, a: M256i, b: M256i): M256i = transmute(run { val _simdArg0 = k; val _simdArg1 = vgf2p8mulb256(a.asI8x32(), b.asI8x32()); val _simdArg2 = src.asI8x32(); _simdArg1 })
 
 /**
  * Performs a multiplication in GF(2^8) on the packed bytes.
@@ -112,7 +110,7 @@ public fun mm256MaskGf2p8mulEpi8(src: M256i, k: Mmask32, a: M256i, b: M256i): M2
  */
 public fun mm256MaskzGf2p8mulEpi8(k: Mmask32, a: M256i, b: M256i): M256i {
     val zero = I8x32.ZERO
-    return transmute(simdSelectBitmask(k, vgf2p8mulb256(a.asI8x32(), b.asI8x32()), zero))
+    return transmute(run { val _simdArg0 = k; val _simdArg1 = vgf2p8mulb256(a.asI8x32(), b.asI8x32()); val _simdArg2 = zero; _simdArg1 })
 }
 
 /**
@@ -134,7 +132,7 @@ public fun mmGf2p8mulEpi8(a: M128i, b: M128i): M128i = transmute(vgf2p8mulb128(a
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_gf2p8mul_epi8)
  */
-public fun mmMaskGf2p8mulEpi8(src: M128i, k: Mmask16, a: M128i, b: M128i): M128i = transmute(simdSelectBitmask(k, vgf2p8mulb128(a.asI8x16(), b.asI8x16()), src.asI8x16()))
+public fun mmMaskGf2p8mulEpi8(src: M128i, k: Mmask16, a: M128i, b: M128i): M128i = transmute(run { val _simdArg0 = k; val _simdArg1 = vgf2p8mulb128(a.asI8x16(), b.asI8x16()); val _simdArg2 = src.asI8x16(); _simdArg1 })
 
 /**
  * Performs a multiplication in GF(2^8) on the packed bytes.
@@ -149,7 +147,7 @@ public fun mmMaskGf2p8mulEpi8(src: M128i, k: Mmask16, a: M128i, b: M128i): M128i
 public fun mmMaskzGf2p8mulEpi8(k: Mmask16, a: M128i, b: M128i): M128i =
     run {
         val zero = I8x16.ZERO
-        transmute(simdSelectBitmask(k, vgf2p8mulb128(a.asI8x16(), b.asI8x16()), zero))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = vgf2p8mulb128(a.asI8x16(), b.asI8x16()); val _simdArg2 = zero; _simdArg1 })
     }
 
 /**
@@ -194,7 +192,7 @@ public fun mm512MaskzGf2p8affineEpi64Epi8(k: Mmask64, x: M512i, a: M512i, b: Int
     val a1 = a.asI8x64()
     return run {
         val r = vgf2p8affineqb512(x1, a1, b)
-        transmute(simdSelectBitmask(k, r, zero))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = zero; _simdArg1 })
     }
 }
 
@@ -218,7 +216,7 @@ public fun mm512MaskGf2p8affineEpi64Epi8(src: M512i, k: Mmask64, x: M512i, a: M5
     val a1 = a.asI8x64()
     return run {
         val r = vgf2p8affineqb512(x1, a1, b)
-        transmute(simdSelectBitmask(k, r, src.asI8x64()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = src.asI8x64(); _simdArg1 })
     }
 }
 
@@ -264,7 +262,7 @@ public fun mm256MaskzGf2p8affineEpi64Epi8(k: Mmask32, x: M256i, a: M256i, b: Int
     val a1 = a.asI8x32()
     return run {
         val r = vgf2p8affineqb256(x1, a1, b)
-        transmute(simdSelectBitmask(k, r, zero))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = zero; _simdArg1 })
     }
 }
 
@@ -288,7 +286,7 @@ public fun mm256MaskGf2p8affineEpi64Epi8(src: M256i, k: Mmask32, x: M256i, a: M2
     val a1 = a.asI8x32()
     return run {
         val r = vgf2p8affineqb256(x1, a1, b)
-        transmute(simdSelectBitmask(k, r, src.asI8x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = src.asI8x32(); _simdArg1 })
     }
 }
 
@@ -334,7 +332,7 @@ public fun mmMaskzGf2p8affineEpi64Epi8(k: Mmask16, x: M128i, a: M128i, b: Int): 
     val a1 = a.asI8x16()
     return run {
         val r = vgf2p8affineqb128(x1, a1, b)
-        transmute(simdSelectBitmask(k, r, zero))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = zero; _simdArg1 })
     }
 }
 
@@ -358,7 +356,7 @@ public fun mmMaskGf2p8affineEpi64Epi8(src: M128i, k: Mmask16, x: M128i, a: M128i
     val a1 = a.asI8x16()
     return run {
         val r = vgf2p8affineqb128(x1, a1, b)
-        transmute(simdSelectBitmask(k, r, src.asI8x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = src.asI8x16(); _simdArg1 })
     }
 }
 
@@ -408,7 +406,7 @@ public fun mm512MaskzGf2p8affineinvEpi64Epi8(k: Mmask64, x: M512i, a: M512i, b: 
     val a1 = a.asI8x64()
     return run {
         val r = vgf2p8affineinvqb512(x1, a1, b)
-        transmute(simdSelectBitmask(k, r, zero))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = zero; _simdArg1 })
     }
 }
 
@@ -434,7 +432,7 @@ public fun mm512MaskGf2p8affineinvEpi64Epi8(src: M512i, k: Mmask64, x: M512i, a:
     val a1 = a.asI8x64()
     return run {
         val r = vgf2p8affineinvqb512(x1, a1, b)
-        transmute(simdSelectBitmask(k, r, src.asI8x64()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = src.asI8x64(); _simdArg1 })
     }
 }
 
@@ -484,7 +482,7 @@ public fun mm256MaskzGf2p8affineinvEpi64Epi8(k: Mmask32, x: M256i, a: M256i, b: 
     val a1 = a.asI8x32()
     return run {
         val r = vgf2p8affineinvqb256(x1, a1, b)
-        transmute(simdSelectBitmask(k, r, zero))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = zero; _simdArg1 })
     }
 }
 
@@ -510,7 +508,7 @@ public fun mm256MaskGf2p8affineinvEpi64Epi8(src: M256i, k: Mmask32, x: M256i, a:
     val a1 = a.asI8x32()
     return run {
         val r = vgf2p8affineinvqb256(x1, a1, b)
-        transmute(simdSelectBitmask(k, r, src.asI8x32()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = src.asI8x32(); _simdArg1 })
     }
 }
 
@@ -560,7 +558,7 @@ public fun mmMaskzGf2p8affineinvEpi64Epi8(k: Mmask16, x: M128i, a: M128i, b: Int
     val a1 = a.asI8x16()
     return run {
         val r = vgf2p8affineinvqb128(x1, a1, b)
-        transmute(simdSelectBitmask(k, r, zero))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = zero; _simdArg1 })
     }
 }
 
@@ -586,6 +584,6 @@ public fun mmMaskGf2p8affineinvEpi64Epi8(src: M128i, k: Mmask16, x: M128i, a: M1
     val a1 = a.asI8x16()
     return run {
         val r = vgf2p8affineinvqb128(x1, a1, b)
-        transmute(simdSelectBitmask(k, r, src.asI8x16()))
+        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = src.asI8x16(); _simdArg1 })
     }
 }

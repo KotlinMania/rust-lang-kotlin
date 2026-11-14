@@ -3,8 +3,8 @@ package io.github.kotlinmania.rustlang.core.iter.adapters.filter
 
 import io.github.kotlinmania.rustlang.core.array.iter.IntoIter
 import io.github.kotlinmania.rustlang.core.array.iterNextChunk
-import io.github.kotlinmania.rustlang.core.iter.InPlaceIterable
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.InPlaceIterable
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
@@ -12,6 +12,7 @@ import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.needsDrop
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
 
@@ -53,7 +54,7 @@ public typealias Source<I> = I.Source
  */
 public open class Filter<I, P>(
     // Used for `SplitWhitespace` and `SplitAsciiWhitespace` `asStr` methods
-    internal var iter: I,
+    public var iter: I,
     public var predicate: P,
 ) : SourceIter<Any?, Source>, InPlaceIterable, Iterable<Item> {
     override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
@@ -180,7 +181,7 @@ public open class Filter<I, P>(
                 }
             }
 
-        internal fun <I, P> new(iter: I, predicate: P): Filter<I, P> = Filter(iter = iter, predicate = predicate)
+        public fun <I, P> new(iter: I, predicate: P): Filter<I, P> = Filter(iter = iter, predicate = predicate)
 
         public val EXPAND_BY: NonZero<Int>? = I.EXPAND_BY
 

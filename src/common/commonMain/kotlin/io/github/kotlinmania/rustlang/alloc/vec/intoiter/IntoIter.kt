@@ -1,7 +1,6 @@
 // port-lint: source vec/into_iter.rs
 package io.github.kotlinmania.rustlang.alloc.vec.intoiter
 
-import io.github.kotlinmania.rustlang.alloc.collections.btree.node.B
 import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.VecDeque
 import io.github.kotlinmania.rustlang.alloc.rawvec.RawVec
 import io.github.kotlinmania.rustlang.alloc.vec.Vec
@@ -19,6 +18,8 @@ import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
+import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
@@ -63,20 +64,20 @@ public typealias Source = Any
  * ```
  */
 public open class IntoIter<T, A : Allocator>(
-    internal var buf: NonNull,
-    internal var phantom: Unit,
-    internal var cap: Int,
+    public var buf: NonNull,
+    public var phantom: Unit,
+    public var cap: Int,
     // the drop impl reconstructs a RawVec from buf, cap and alloc
     // to avoid dropping the allocator twice we need to wrap it into ManuallyDrop
-    internal var alloc: A,
-    internal var ptr: NonNull,
+    public var alloc: A,
+    public var ptr: NonNull,
     /**
      * If T is a ZST, this is actually ptr+len. This encoding is picked so that
      * ptr == end is a quick test for the Iterator being empty, that works
      * for both ZST and non-ZST.
      * For non-ZSTs the pointer is treated as `NonNull<T>`
      */
-    internal var end: ConstPtr,
+    public var end: ConstPtr,
 ) : AsRef<List<T>>, TrustedFused, TrustedLen, TrustedRandomAccessNoCoerce, InPlaceIterable, SourceIter, Iterable<T> {
     override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
@@ -156,7 +157,7 @@ public open class IntoIter<T, A : Allocator>(
      * This method is used by in-place iteration, refer to the vec.inPlaceCollect
      * documentation for an overview.
      */
-    internal open fun forgetAllocationDropRemaining() {
+    public open fun forgetAllocationDropRemaining() {
         val remaining = this.asRawMutSlice()
         // overwrite the individual fields instead of creating a new
         // struct and then overwriting self.
@@ -180,7 +181,7 @@ public open class IntoIter<T, A : Allocator>(
      * If consuming `self` is possible, consider calling
      * [Self.forgetRemainingElementsAndDealloc] instead.
      */
-    internal open fun forgetRemainingElements() {
+    public open fun forgetRemainingElements() {
         // For the ZST case, it is crucial that we mutate `end` here, not `ptr`.
         // `ptr` must stay aligned, while `end` may be unaligned.
         this.end = this.ptr.asPtr()
@@ -193,7 +194,7 @@ public open class IntoIter<T, A : Allocator>(
      * This can be used in place of `drop(self)` when `self` is known to be exhausted,
      * to avoid producing a needless `dropInPlace<[T]>()`.
      */
-    internal open fun forgetRemainingElementsAndDealloc() {
+    public open fun forgetRemainingElementsAndDealloc() {
         val thisRef = this
         // SAFETY: `this` is in ManuallyDrop, so it will not be double-freed.
         run {
@@ -221,7 +222,7 @@ public open class IntoIter<T, A : Allocator>(
         RawVec.fromNonnullIn(this.buf, this.cap, alloc)
     }
 
-    internal open fun intoVecdeque(): VecDeque<T, A> {
+    public open fun intoVecdeque(): VecDeque<T, A> {
         // Keep our `Drop` impl from dropping the elements and the allocator
         val thisRef = this
         val buf = thisRef.buf.asPtr()
@@ -322,7 +323,7 @@ public open class IntoIter<T, A : Allocator>(
             if (len < n) {
                 this.forgetRemainingElements()
                 // SAFETY: ZSTs can be conjured ex nihilo, only the amount has to be correct
-                return Result.Err(IntoIter.newUnchecked(rawAry, 0 until len))
+                return Result.Err(io.github.kotlinmania.rustlang.core.array.iter.IntoIter.newUnchecked(rawAry, 0 until len))
             }
             this.end = ConstPtr((this.end).rawAddress - ((n).toLong()))
             // SAFETY: ditto
@@ -334,7 +335,7 @@ public open class IntoIter<T, A : Allocator>(
             run {
                 copyNonoverlapping(this.ptr.asPtr(), mutPtrFromRustCast(rawAry.asMutPtr()), len)
                 this.forgetRemainingElements()
-                return Result.Err(IntoIter.newUnchecked(rawAry, 0 until len))
+                return Result.Err(io.github.kotlinmania.rustlang.core.array.iter.IntoIter.newUnchecked(rawAry, 0 until len))
             }
         }
         // SAFETY: `len` is larger than the array size. Copy a fixed amount here to fully initialize
@@ -441,7 +442,7 @@ public open class IntoIter<T, A : Allocator>(
             if (len < n) {
                 this.forgetRemainingElements()
                 // SAFETY: ZSTs can be conjured ex nihilo, only the amount has to be correct
-                return Result.Err(IntoIter.newUnchecked(rawAry, n - len until n))
+                return Result.Err(io.github.kotlinmania.rustlang.core.array.iter.IntoIter.newUnchecked(rawAry, n - len until n))
             }
             this.end = ConstPtr((this.end).rawAddress - ((n).toLong()))
             // SAFETY: ditto
@@ -453,7 +454,7 @@ public open class IntoIter<T, A : Allocator>(
             run {
                 copyNonoverlapping(this.ptr.asPtr(), mutPtrFromRustCast(rawAry.asMutPtr()), len)
                 this.forgetRemainingElements()
-                return Result.Err(IntoIter.newUnchecked(rawAry, 0 until len))
+                return Result.Err(io.github.kotlinmania.rustlang.core.array.iter.IntoIter.newUnchecked(rawAry, 0 until len))
             }
         }
         // SAFETY: `len` is larger than the array size. Copy a fixed amount here to fully initialize

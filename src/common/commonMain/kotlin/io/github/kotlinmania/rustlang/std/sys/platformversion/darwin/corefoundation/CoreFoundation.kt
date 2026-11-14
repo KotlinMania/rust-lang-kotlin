@@ -1,12 +1,6 @@
 // port-lint: source sys/platform_version/darwin/core_foundation.rs
 package io.github.kotlinmania.rustlang.std.sys.platformversion.darwin.corefoundation
 
-import io.github.kotlinmania.libc.dlclose
-import io.github.kotlinmania.libc.dlerror
-import io.github.kotlinmania.libc.dlopen
-import io.github.kotlinmania.libc.dlsym
-import io.github.kotlinmania.libc.fuchsia.RTLD_LAZY
-import io.github.kotlinmania.libc.fuchsia.RTLD_LOCAL
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -14,7 +8,12 @@ import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.std.Mem
+import io.github.kotlinmania.rustlang.libc.dlclose
+import io.github.kotlinmania.rustlang.libc.dlerror
+import io.github.kotlinmania.rustlang.libc.dlopen
+import io.github.kotlinmania.rustlang.libc.dlsym
+import io.github.kotlinmania.rustlang.libc.unix.bsd.RTLD_LAZY
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.RTLD_LOCAL
 import io.github.kotlinmania.rustlang.std.sys.helpers.smallcstring.runPathWithCstr
 import io.github.kotlinmania.rustlang.std.sys.platformversion.darwin.rootRelative
 
@@ -53,43 +52,43 @@ public fun interface FnCallback7 {
 }
 
 // MacTypes.h
-internal typealias Boolean = UByte
+public typealias Boolean = UByte
 
 // CoreFoundation/CFBase.h
-internal typealias CFTypeID = ULong
+public typealias CFTypeID = ULong
 
-internal typealias CFOptionFlags = ULong
+public typealias CFOptionFlags = ULong
 
-internal typealias CFIndex = Long
+public typealias CFIndex = Long
 
-internal typealias CFTypeRef = MutPtr
+public typealias CFTypeRef = MutPtr
 
-internal typealias CFAllocatorRef = CFTypeRef
+public typealias CFAllocatorRef = CFTypeRef
 
 // CoreFoundation/CFPropertyList.h
-internal val K_CF_PROPERTY_LIST_IMMUTABLE: CFOptionFlags = 0uL
+public val K_CF_PROPERTY_LIST_IMMUTABLE: CFOptionFlags = 0uL
 
 // CoreFoundation/CFError.h
-internal typealias CFErrorRef = CFTypeRef
+public typealias CFErrorRef = CFTypeRef
 
 // CoreFoundation/CFData.h
-internal typealias CFDataRef = CFTypeRef
+public typealias CFDataRef = CFTypeRef
 
-internal val K_CF_STRING_ENCODING_UTF8: CFStringEncoding = 0x08000100u
+public val K_CF_STRING_ENCODING_UTF8: CFStringEncoding = 0x08000100u
 
-internal typealias CFPropertyListFormat = CFIndex
+public typealias CFPropertyListFormat = CFIndex
 
-internal typealias CFPropertyListRef = CFTypeRef
+public typealias CFPropertyListRef = CFTypeRef
 
 // CoreFoundation/CFString.h
-internal typealias CFStringRef = CFTypeRef
+public typealias CFStringRef = CFTypeRef
 
-internal typealias CFStringEncoding = UInt
+public typealias CFStringEncoding = UInt
 
-internal val K_CF_ALLOCATOR_DEFAULT: CFAllocatorRef = MutPtr(0L)
+public val K_CF_ALLOCATOR_DEFAULT: CFAllocatorRef = MutPtr(0L)
 
 // CoreFoundation/CFDictionary.h
-internal typealias CFDictionaryRef = CFTypeRef
+public typealias CFDictionaryRef = CFTypeRef
 
 /**
  * An open handle to the dynamically loaded CoreFoundation framework.
@@ -101,16 +100,19 @@ internal typealias CFDictionaryRef = CFTypeRef
  * It is also faster to look up symbols directly via this handle than with
  * `RTLD_DEFAULT`.
  */
-internal open class CFHandle(
-    public var value: MutPtr,
+public open class CFHandle internal constructor(
+    valueCtorArg: MutPtr,
 ) {
+    public var value: MutPtr = valueCtorArg
+        internal set
+
     public var field0: MutPtr
         get() = value
         set(v) {
             value = v
         }
 
-    internal open fun kCFAllocatorNull(): CFAllocatorRef {
+    public open fun kCFAllocatorNull(): CFAllocatorRef {
         // Available: in all CF versions.
         val staticPtr = dlsym(this.value, "kCFAllocatorNull".asPtr())
         if (staticPtr.isNull()) {
@@ -120,93 +122,93 @@ internal open class CFHandle(
         return staticPtr.cast()
     }
 
-    internal open fun cFRelease(cf: CFTypeRef) {
+    public open fun cFRelease(cf: CFTypeRef) {
         val ptr = dlsym(this.value, ("CFRelease\u0000").encodeToByteArray().map { it.toUByte() }.asPtr())
         if (ptr.isNull()) {
             val err = CStr.fromPtr(dlerror())
             error("could not find function " + ("CFRelease").toString() + ": " + (err).toString())
         }
-        val fnptr = Mem.transmute<MutPtr, FnCallback>(ptr)
+        val fnptr = transmute<MutPtr, FnCallback>(ptr)
         fnptr(cf)
     }
 
-    internal open fun cFGetTypeID(cf: CFTypeRef): CFTypeID {
+    public open fun cFGetTypeID(cf: CFTypeRef): CFTypeID {
         val ptr = dlsym(this.value, ("CFGetTypeID\u0000").encodeToByteArray().map { it.toUByte() }.asPtr())
         if (ptr.isNull()) {
             val err = CStr.fromPtr(dlerror())
             error("could not find function " + ("CFGetTypeID").toString() + ": " + (err).toString())
         }
-        val fnptr = Mem.transmute<MutPtr, FnCallback1>(ptr)
+        val fnptr = transmute<MutPtr, FnCallback1>(ptr)
         return fnptr(cf)
     }
 
-    internal open fun cFDataCreateWithBytesNoCopy(allocator: CFAllocatorRef, bytes: ConstPtr, length: CFIndex, bytesDeallocator: CFAllocatorRef): CFDataRef {
+    public open fun cFDataCreateWithBytesNoCopy(allocator: CFAllocatorRef, bytes: ConstPtr, length: CFIndex, bytesDeallocator: CFAllocatorRef): CFDataRef {
         val ptr = dlsym(this.value, ("CFDataCreateWithBytesNoCopy\u0000").encodeToByteArray().map { it.toUByte() }.asPtr())
         if (ptr.isNull()) {
             val err = CStr.fromPtr(dlerror())
             error("could not find function " + ("CFDataCreateWithBytesNoCopy").toString() + ": " + (err).toString())
         }
-        val fnptr = Mem.transmute<MutPtr, FnCallback2>(ptr)
+        val fnptr = transmute<MutPtr, FnCallback2>(ptr)
         return fnptr(allocator, bytes, length, bytesDeallocator)
     }
 
-    internal open fun cFPropertyListCreateWithData(allocator: CFAllocatorRef, data: CFDataRef, options: CFOptionFlags, format: MutPtr, error: MutPtr): CFPropertyListRef {
+    public open fun cFPropertyListCreateWithData(allocator: CFAllocatorRef, data: CFDataRef, options: CFOptionFlags, format: MutPtr, error: MutPtr): CFPropertyListRef {
         val ptr = dlsym(this.value, ("CFPropertyListCreateWithData\u0000").encodeToByteArray().map { it.toUByte() }.asPtr())
         if (ptr.isNull()) {
             val err = CStr.fromPtr(dlerror())
             error("could not find function " + ("CFPropertyListCreateWithData").toString() + ": " + (err).toString())
         }
-        val fnptr = Mem.transmute<MutPtr, FnCallback3>(ptr)
+        val fnptr = transmute<MutPtr, FnCallback3>(ptr)
         return fnptr(allocator, data, options, format, error)
     }
 
-    internal open fun cFStringGetTypeID(): CFTypeID {
+    public open fun cFStringGetTypeID(): CFTypeID {
         val ptr = dlsym(this.value, ("CFStringGetTypeID\u0000").encodeToByteArray().map { it.toUByte() }.asPtr())
         if (ptr.isNull()) {
             val err = CStr.fromPtr(dlerror())
             error("could not find function " + ("CFStringGetTypeID").toString() + ": " + (err).toString())
         }
-        val fnptr = Mem.transmute<MutPtr, FnCallback4>(ptr)
+        val fnptr = transmute<MutPtr, FnCallback4>(ptr)
         return fnptr()
     }
 
-    internal open fun cFStringCreateWithCStringNoCopy(alloc: CFAllocatorRef, cStr: ConstPtr, encoding: CFStringEncoding, contentsDeallocator: CFAllocatorRef): CFStringRef {
+    public open fun cFStringCreateWithCStringNoCopy(alloc: CFAllocatorRef, cStr: ConstPtr, encoding: CFStringEncoding, contentsDeallocator: CFAllocatorRef): CFStringRef {
         val ptr = dlsym(this.value, ("CFStringCreateWithCStringNoCopy\u0000").encodeToByteArray().map { it.toUByte() }.asPtr())
         if (ptr.isNull()) {
             val err = CStr.fromPtr(dlerror())
             error("could not find function " + ("CFStringCreateWithCStringNoCopy").toString() + ": " + (err).toString())
         }
-        val fnptr = Mem.transmute<MutPtr, FnCallback5>(ptr)
+        val fnptr = transmute<MutPtr, FnCallback5>(ptr)
         return fnptr(alloc, cStr, encoding, contentsDeallocator)
     }
 
-    internal open fun cFStringGetCString(theString: CFStringRef, buffer: MutPtr, bufferSize: CFIndex, encoding: CFStringEncoding): Boolean {
+    public open fun cFStringGetCString(theString: CFStringRef, buffer: MutPtr, bufferSize: CFIndex, encoding: CFStringEncoding): Boolean {
         val ptr = dlsym(this.value, ("CFStringGetCString\u0000").encodeToByteArray().map { it.toUByte() }.asPtr())
         if (ptr.isNull()) {
             val err = CStr.fromPtr(dlerror())
             error("could not find function " + ("CFStringGetCString").toString() + ": " + (err).toString())
         }
-        val fnptr = Mem.transmute<MutPtr, FnCallback6>(ptr)
+        val fnptr = transmute<MutPtr, FnCallback6>(ptr)
         return fnptr(theString, buffer, bufferSize, encoding)
     }
 
-    internal open fun cFDictionaryGetTypeID(): CFTypeID {
+    public open fun cFDictionaryGetTypeID(): CFTypeID {
         val ptr = dlsym(this.value, ("CFDictionaryGetTypeID\u0000").encodeToByteArray().map { it.toUByte() }.asPtr())
         if (ptr.isNull()) {
             val err = CStr.fromPtr(dlerror())
             error("could not find function " + ("CFDictionaryGetTypeID").toString() + ": " + (err).toString())
         }
-        val fnptr = Mem.transmute<MutPtr, FnCallback4>(ptr)
+        val fnptr = transmute<MutPtr, FnCallback4>(ptr)
         return fnptr()
     }
 
-    internal open fun cFDictionaryGetValue(theDict: CFDictionaryRef, key: ConstPtr): ConstPtr {
+    public open fun cFDictionaryGetValue(theDict: CFDictionaryRef, key: ConstPtr): ConstPtr {
         val ptr = dlsym(this.value, ConstPtr((("CFDictionaryGetValue\u0000").encodeToByteArray().map { it.toUByte() }.asPtr()).rawAddress))
         if (ptr.isNull()) {
             val err = CStr.fromPtr(dlerror())
             error("could not find function " + ("CFDictionaryGetValue").toString() + ": " + (err).toString())
         }
-        val fnptr = Mem.transmute<MutPtr, FnCallback7>(ptr)
+        val fnptr = transmute<MutPtr, FnCallback7>(ptr)
         return fnptr(theDict, key)
     }
 
@@ -237,10 +239,16 @@ internal open class CFHandle(
                 }
             }
 
+        public operator fun invoke(
+            value: MutPtr,
+        ): CFHandle = CFHandle(
+            valueCtorArg = value,
+        )
+
         /**
          * Link to the CoreFoundation dylib, and look up symbols from that.
          */
-        internal fun new(): CFHandle {
+        public fun new(): CFHandle {
             // We explicitly use non-versioned path here, to allow this to work on older iOS devices.
             val cfPath = rootRelative("/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation")
             val handle = runPathWithCstr(cfPath, { path -> Result.Ok(dlopen(path.asPtr(), RTLD_LAZY or RTLD_LOCAL)) }).expect("failed allocating string")

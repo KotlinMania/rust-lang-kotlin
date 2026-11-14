@@ -1,8 +1,6 @@
 // port-lint: source math/support/float_traits.rs
 package io.github.kotlinmania.rustlang.libm.math.support.floattraits
 
-import io.github.kotlinmania.f16.fromBits
-import io.github.kotlinmania.f16.toBits
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.U128
@@ -10,14 +8,14 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.rustIsSignNegative
 import io.github.kotlinmania.rustlang.core.num.rustLeadingZeros
-import io.github.kotlinmania.rustlang.core.ops.Add
-import io.github.kotlinmania.rustlang.core.ops.AddAssign
-import io.github.kotlinmania.rustlang.core.ops.Div
-import io.github.kotlinmania.rustlang.core.ops.Mul
-import io.github.kotlinmania.rustlang.core.ops.MulAssign
-import io.github.kotlinmania.rustlang.core.ops.Neg
-import io.github.kotlinmania.rustlang.core.ops.Rem
-import io.github.kotlinmania.rustlang.core.ops.Sub
+import io.github.kotlinmania.rustlang.core.ops.arith.Add
+import io.github.kotlinmania.rustlang.core.ops.arith.AddAssign
+import io.github.kotlinmania.rustlang.core.ops.arith.Div
+import io.github.kotlinmania.rustlang.core.ops.arith.Mul
+import io.github.kotlinmania.rustlang.core.ops.arith.MulAssign
+import io.github.kotlinmania.rustlang.core.ops.arith.Neg
+import io.github.kotlinmania.rustlang.core.ops.arith.Rem
+import io.github.kotlinmania.rustlang.core.ops.arith.Sub
 import io.github.kotlinmania.rustlang.libm.math.arch.aarch64.fma.fmaf
 import io.github.kotlinmania.rustlang.libm.math.floor.floorf
 import io.github.kotlinmania.rustlang.libm.math.floor.floorf128
@@ -52,7 +50,7 @@ public val MIPS_NAN: Boolean = false || false || false || false
 /**
  * Trait for some basic operations on floats
  */
-public interface Float<T, Int, SignedInt> : DisplayHex, AddAssign<T>, MulAssign<T>, Add<T, T>, Sub<T, T>, Mul<T, T>, Div<T, T>, Rem<T, T>, Neg<T> {
+public interface Float<T, Int, SignedInt> : DisplayHex, AddAssign, MulAssign, Add<T>, Sub<T>, Mul<T>, Div<T>, Rem<T>, Neg<T> {
     public val ZERO: T
 
     public val NEG_ZERO: T
@@ -332,13 +330,13 @@ public interface Float<T, Int, SignedInt> : DisplayHex, AddAssign<T>, MulAssign<
  */
 public typealias IntTy<F> = Int
 
-public val ZERO: F16 = 0.0
+public val ZERO: F16 = F16.fromFloat(0.0f)
 
-public val NEG_ZERO: F16 = -0.0
+public val NEG_ZERO: F16 = -F16.fromFloat(0.0f)
 
-public val ONE: F16 = 1.0
+public val ONE: F16 = F16.fromFloat(1.0f)
 
-public val NEG_ONE: F16 = -1.0
+public val NEG_ONE: F16 = -F16.fromFloat(1.0f)
 
 public val INFINITY: F16 = F16.INFINITY
 
@@ -346,43 +344,43 @@ public val NEG_INFINITY: F16 = F16.NEG_INFINITY
 
 public val MAX: F16 = -F16.MIN
 
-public val MIN: F16 = fromBits(F16.Int.MAX and (1 shl F16.SIG_BITS.toInt()).inv())
+public val MIN: F16 = F16.fromBits((F16.Int.MAX and ((1u.toUInt() shl (F16.SIG_BITS.toInt())).toUShort()).inv()).toUShort())
 
-public val NAN: F16 = fromBits(if (MIPS_NAN) {
-    F16.EXP_MASK or (F16.SIG_TOP_BIT - 1)
+public val NAN: F16 = F16.fromBits((if (MIPS_NAN) {
+    F16.EXP_MASK or (F16.SIG_TOP_BIT - 1u)
 } else {
     F16.EXP_MASK or F16.SIG_TOP_BIT
-})
+}).toUShort())
 
-public val SNAN: F16 = fromBits(if (MIPS_NAN) {
+public val SNAN: F16 = F16.fromBits((if (MIPS_NAN) {
     F16.EXP_MASK or F16.SIG_MASK
 } else {
-    F16.EXP_MASK or (F16.SIG_TOP_BIT shr 1)
-})
+    F16.EXP_MASK or ((F16.SIG_TOP_BIT.toUInt() shr 1).toUShort())
+}).toUShort())
 
 public val QSNAN: F16 = if (MIPS_NAN) {
     F16.NAN
 } else {
-    fromBits(toBits(F16.SNAN) or F16.SIG_TOP_BIT)
+    F16.fromBits((F16.SNAN.toBits() or F16.SIG_TOP_BIT).toUShort())
 }
 
-public val NEG_NAN: F16 = fromBits(toBits(F16.NAN) or F16.SIGN_MASK)
+public val NEG_NAN: F16 = F16.fromBits((F16.NAN.toBits() or F16.SIGN_MASK).toUShort())
 
-public val NEG_SNAN: F16 = fromBits(toBits(F16.SNAN) or F16.SIGN_MASK)
+public val NEG_SNAN: F16 = F16.fromBits((F16.SNAN.toBits() or F16.SIGN_MASK).toUShort())
 
-public val NEG_QSNAN: F16 = fromBits(toBits(F16.QSNAN) or F16.SIGN_MASK)
+public val NEG_QSNAN: F16 = F16.fromBits((F16.QSNAN.toBits() or F16.SIGN_MASK).toUShort())
 
 public val EPSILON: F16 = F16.EPSILON
 
-public val MIN_POSITIVE_NORMAL: F16 = fromBits(1 shl F16.SIG_BITS.toInt())
+public val MIN_POSITIVE_NORMAL: F16 = F16.fromBits((1u.toUInt() shl (F16.SIG_BITS.toInt())).toUShort())
 
-public val MIN_POSITIVE_SUBNORMAL: F16 = fromBits(1)
+public val MIN_POSITIVE_SUBNORMAL: F16 = F16.fromBits(1u.toUShort())
 
-public val PI: F16 = PI
+public val PI: F16 = F16.fromFloat(3.1415927f)
 
 public val NEG_PI: F16 = -F16.PI
 
-public val FRAC_PI_2: F16 = FRAC_PI_2
+public val FRAC_PI_2: F16 = F16.fromFloat(1.5707964f)
 
 public val BITS: UInt = 16u
 
@@ -401,24 +399,24 @@ public val SIG_TOP_BIT: UShort = (F16.IMPLICIT_BIT.toUInt() shr 1).toUShort()
 public fun F16.toBitsFloat(): UShort = this.toBits()
 
 public fun F16.eqRepr(rhs: F16): Boolean {
-    fun isNan(x: F16): Boolean = x.isNan()
+    fun isNan(x: F16): Boolean = x.isNaN()
     return if (isNan(this) && isNan(rhs)) {
         true
     } else {
-        this.toBits() == rhs.toBits().toUShort()
+        this.toBits() == rhs.toBits()
     }
 }
 
-public fun F16.isNanFloat(): Boolean = this.isNan()
+public fun F16.isNanFloat(): Boolean = this.isNaN()
 
 public fun F16.isInfiniteFloat(): Boolean = this.isInfinite()
 
 public fun F16.isSignNegativeFloat(): Boolean = this.isSignNegative()
 
-public fun floatFromBitsF16(a: UShort): F16 = F16.fromBits(a.toInt())
+public fun floatFromBitsF16(a: UShort): F16 = F16.fromBits(a)
 
 public fun F16.absFloat(): F16 {
-    this.abs()
+    F16.fromFloat(abs(this.toFloat()))
     return fabs(this)
 }
 
@@ -428,12 +426,12 @@ public fun F16.copysignFloat(other: F16): F16 {
 }
 
 public fun F16.fma(y: F16, z: F16): F16 {
-    fma(this, y, z)
+    fma(this.toDouble(), y.toDouble(), z.toDouble())
     return fmaf16(this, y, z)
 }
 
 public fun F16.floor(): F16 {
-    floor(this)
+    floor(this.toDouble())
     return floorf16(this)
 }
 
@@ -677,13 +675,13 @@ public fun floatNormalizeDouble(significand: ULong): Pair<Int, ULong> {
     return Pair((1 - (shift.toInt())), significand shl shift.toInt())
 }
 
-public val ZERO3: F128 = 0.0
+public val ZERO3: F128 = F128.fromDouble(0.0)
 
-public val NEG_ZERO3: F128 = -0.0
+public val NEG_ZERO3: F128 = -F128.fromDouble(0.0)
 
-public val ONE3: F128 = 1.0
+public val ONE3: F128 = F128.fromDouble(1.0)
 
-public val NEG_ONE3: F128 = -1.0
+public val NEG_ONE3: F128 = -F128.fromDouble(1.0)
 
 public val INFINITY3: F128 = F128.INFINITY
 
@@ -691,15 +689,15 @@ public val NEG_INFINITY3: F128 = F128.NEG_INFINITY
 
 public val MAX3: F128 = -F128.MIN
 
-public val MIN3: F128 = io.github.kotlinmania.f128.fromBits(F128.Int.MAX and (1 shl F128.SIG_BITS.toInt()).inv())
+public val MIN3: F128 = F128.fromBits(F128.Int.MAX and (U128(0x0uL, 0x1uL) shl F128.SIG_BITS.toInt()).inv())
 
-public val NAN3: F128 = io.github.kotlinmania.f128.fromBits(if (MIPS_NAN) {
-    F128.EXP_MASK or (F128.SIG_TOP_BIT - 1)
+public val NAN3: F128 = F128.fromBits(if (MIPS_NAN) {
+    F128.EXP_MASK or (F128.SIG_TOP_BIT - U128(0x0uL, 0x1uL))
 } else {
     F128.EXP_MASK or F128.SIG_TOP_BIT
 })
 
-public val SNAN3: F128 = io.github.kotlinmania.f128.fromBits(if (MIPS_NAN) {
+public val SNAN3: F128 = F128.fromBits(if (MIPS_NAN) {
     F128.EXP_MASK or F128.SIG_MASK
 } else {
     F128.EXP_MASK or (F128.SIG_TOP_BIT shr 1)
@@ -708,26 +706,26 @@ public val SNAN3: F128 = io.github.kotlinmania.f128.fromBits(if (MIPS_NAN) {
 public val QSNAN3: F128 = if (MIPS_NAN) {
     F128.NAN
 } else {
-    io.github.kotlinmania.f128.fromBits(io.github.kotlinmania.f128.toBits(F128.SNAN) or F128.SIG_TOP_BIT)
+    F128.fromBits(F128.SNAN.toBits() or F128.SIG_TOP_BIT)
 }
 
-public val NEG_NAN3: F128 = io.github.kotlinmania.f128.fromBits(io.github.kotlinmania.f128.toBits(F128.NAN) or F128.SIGN_MASK)
+public val NEG_NAN3: F128 = F128.fromBits(F128.NAN.toBits() or F128.SIGN_MASK)
 
-public val NEG_SNAN3: F128 = io.github.kotlinmania.f128.fromBits(io.github.kotlinmania.f128.toBits(F128.SNAN) or F128.SIGN_MASK)
+public val NEG_SNAN3: F128 = F128.fromBits(F128.SNAN.toBits() or F128.SIGN_MASK)
 
-public val NEG_QSNAN3: F128 = io.github.kotlinmania.f128.fromBits(io.github.kotlinmania.f128.toBits(F128.QSNAN) or F128.SIGN_MASK)
+public val NEG_QSNAN3: F128 = F128.fromBits(F128.QSNAN.toBits() or F128.SIGN_MASK)
 
 public val EPSILON3: F128 = F128.EPSILON
 
-public val MIN_POSITIVE_NORMAL3: F128 = io.github.kotlinmania.f128.fromBits(1 shl F128.SIG_BITS.toInt())
+public val MIN_POSITIVE_NORMAL3: F128 = F128.fromBits(U128(0x0uL, 0x1uL) shl F128.SIG_BITS.toInt())
 
-public val MIN_POSITIVE_SUBNORMAL3: F128 = io.github.kotlinmania.f128.fromBits(1)
+public val MIN_POSITIVE_SUBNORMAL3: F128 = F128.fromBits(U128(0x0uL, 0x1uL))
 
-public val PI3: F128 = PI
+public val PI3: F128 = F128.fromDouble(kotlin.math.PI)
 
 public val NEG_PI3: F128 = -F128.PI
 
-public val FRAC_PI_23: F128 = FRAC_PI_2
+public val FRAC_PI_23: F128 = F128.fromDouble(1.5707963267948966)
 
 public val BITS3: UInt = 128u
 
@@ -746,7 +744,7 @@ public val SIG_TOP_BIT3: U128 = F128.IMPLICIT_BIT shr 1
 public fun F128.toBitsFloat(): U128 = this.toBits()
 
 public fun F128.eqRepr(rhs: F128): Boolean {
-    fun isNan(x: F128): Boolean = x.isNan()
+    fun isNan(x: F128): Boolean = x.isNaN()
     return if (isNan(this) && isNan(rhs)) {
         true
     } else {
@@ -754,16 +752,16 @@ public fun F128.eqRepr(rhs: F128): Boolean {
     }
 }
 
-public fun F128.isNanFloat(): Boolean = this.isNan()
+public fun F128.isNanFloat(): Boolean = this.isNaN()
 
 public fun F128.isInfiniteFloat(): Boolean = this.isInfinite()
 
 public fun F128.isSignNegativeFloat(): Boolean = this.isSignNegative()
 
-public fun floatFromBitsF128(a: U128): F128 = F128.fromBits(a.toInt())
+public fun floatFromBitsF128(a: U128): F128 = F128.fromBits(a)
 
 public fun F128.absFloat(): F128 {
-    this.abs()
+    F128.fromDouble(abs(this.toDouble()))
     return fabs(this)
 }
 
@@ -773,12 +771,12 @@ public fun F128.copysignFloat(other: F128): F128 {
 }
 
 public fun F128.fma(y: F128, z: F128): F128 {
-    fma(this, y, z)
+    fma(this.toDouble(), y.toDouble(), z.toDouble())
     return fmaf128(this, y, z)
 }
 
 public fun F128.floor(): F128 {
-    floor(this)
+    floor(this.toDouble())
     return floorf128(this)
 }
 
@@ -857,7 +855,7 @@ public interface NarrowFloat<T, out D> : Float<T, Any?, Any?> {
 
 public fun Double.narrow(): kotlin.Float = this.toFloat()
 
-public fun kotlin.Float.narrow(): F16 = ((this as Any?) as F16)
+public fun kotlin.Float.narrow(): F16 = F16.fromFloat(this)
 
 public fun F128.narrow(): Double = this.toDouble()
 
@@ -865,4 +863,4 @@ public fun kotlin.Float.widen(): Double = this.toDouble()
 
 public fun F16.widen(): kotlin.Float = this.toFloat()
 
-public fun Double.widen(): F128 = ((this as Any?) as F128)
+public fun Double.widen(): F128 = F128.fromDouble(this)

@@ -1,9 +1,10 @@
 package io.github.kotlinmania.rustlang.std.sys.net.connection
 
-import io.github.kotlinmania.rustlang.core.io.error.error
+import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.net.socketaddr.SocketAddr
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.std.io.error.Error
+import io.github.kotlinmania.rustlang.std.io.ErrorKind
+import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.net.socketaddr.ToSocketAddrs
 import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.lookupHost
 
@@ -31,10 +32,10 @@ public fun <Iter, A : ToSocketAddrs<Any?>, T> eachAddr(addr: A, f: (SocketAddr) 
 }
 
 // Default implementation, may be overridden by platform-specific implementations.
-internal fun lookupHostString(addr: String): Result<Any, Error> {
+public fun lookupHostString(addr: String): Result<Any, Error> {
     // Split the string by ':' and convert the second part to u16...
-    val (host, portStr) = addr.let { s -> val idx = s.lastIndexOf(':'); if (idx < 0) null else Pair(s.substring(0, idx), s.substring(idx + 1)) } ?: return Result.Err(io.constError(ErrorKind.InvalidInput, "invalid socket address"))
-    val port = (portStr.toUShortOrNull()?.let { Result.Ok(it) } ?: Result.Err("failed to parse UShort")) ?: return Result.Err(io.constError(ErrorKind.InvalidInput, "invalid port value"))
+    val (host, portStr) = addr.let { s -> val idx = s.lastIndexOf(':'); if (idx < 0) null else Pair(s.substring(0, idx), s.substring(idx + 1)) } ?: return Result.Err(constError(ErrorKind.InvalidInput, "invalid socket address"))
+    val port = (portStr.toUShortOrNull()?.let { Result.Ok(it) } ?: Result.Err("failed to parse UShort")) ?: return Result.Err(constError(ErrorKind.InvalidInput, "invalid port value"))
     // ... and make the system look up the host.
     return lookupHost(host, port)
 }

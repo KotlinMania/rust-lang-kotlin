@@ -67,7 +67,7 @@ public fun getenv(k: OsStr): OsString? {
     // always None as well
     return runWithCstr(k.asBytes(), { k1 ->
         val guard = envReadLock()
-        val v = constPtrFromRustCast(io.github.kotlinmania.libc.getenv(k1.asPtr()))
+        val v = constPtrFromRustCast(io.github.kotlinmania.rustlang.libc.getenv(k1.asPtr()))
         if (((v).rawAddress == 0L)) {
             Result.Ok(null)
         } else {
@@ -81,11 +81,11 @@ public fun getenv(k: OsStr): OsString? {
 public fun setenv(k: OsStr, v: OsStr): Result<Unit, Error> =
     runWithCstr(k.asBytes(), { k1 ->
         runWithCstr(v.asBytes(), { v1 -> run {
-            cvt(io.github.kotlinmania.libc.setenv(k1.asPtr(), v1.asPtr(), 1)).map({ Unit })
+            cvt(io.github.kotlinmania.rustlang.libc.setenv(k1.asPtr(), v1.asPtr(), 1)).map({ Unit })
         } })
     })
 
 public fun unsetenv(n: OsStr): Result<Unit, Error> =
     runWithCstr(n.asBytes(), { nbuf -> run {
-        cvt(io.github.kotlinmania.libc.unsetenv(nbuf.asPtr())).map({ Unit })
+        cvt(io.github.kotlinmania.rustlang.libc.unsetenv(nbuf.asPtr())).map({ Unit })
     } })

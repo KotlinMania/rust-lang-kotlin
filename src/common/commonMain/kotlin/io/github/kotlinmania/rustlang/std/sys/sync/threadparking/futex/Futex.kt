@@ -4,12 +4,16 @@ package io.github.kotlinmania.rustlang.std.sys.sync.threadparking.futex
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.time.Duration
+import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Acquire
+import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Release
+import io.github.kotlinmania.rustlang.std.sys.sync.futex.unix.SmallFutex
+import io.github.kotlinmania.rustlang.std.sys.sync.futex.unix.SmallPrimitive
 import io.github.kotlinmania.rustlang.std.sys.sync.futex.unix.futexWait
 import io.github.kotlinmania.rustlang.std.sys.sync.futex.unix.futexWake
 
-public typealias Futex = futex.SmallFutex
+public typealias Futex = SmallFutex
 
-public typealias State = futex.SmallPrimitive
+public typealias State = SmallPrimitive
 
 public val PARKED: State = State.MAX_VALUE
 

@@ -13,17 +13,30 @@ public fun interface ClosureCallCallback {
     public operator fun invoke(arg0: MutPtr, arg1: Buffer): Buffer
 }
 
-internal open class Closure(
+public open class Closure internal constructor(
     public var call: ClosureCallCallback,
-    public var env: MutPtr,
+    envCtorArg: MutPtr,
     // Prevent Send and Sync impls.
     //
     // The `a` scope parameter represents the scope of `Env`.
     public var marker: Unit,
 ) {
-    internal open fun call(arg: Buffer): Buffer = (this.call)(this.env, arg)
+    public var env: MutPtr = envCtorArg
+        internal set
+
+    public open fun call(arg: Buffer): Buffer = (this.call)(this.env, arg)
 
     public companion object {
+        public operator fun invoke(
+            call: ClosureCallCallback,
+            env: MutPtr,
+            marker: Unit,
+        ): Closure = Closure(
+            call = call,
+            envCtorArg = env,
+            marker = marker,
+        )
+
         public fun from(f: (Buffer) -> Buffer): Closure {
             fun call(env: MutPtr, arg: Buffer, typeLayoutF: TypeLayout<F>): Buffer = (ObjectSlotLayout<(Buffer) -> Buffer>()).readNative((((env).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)(arg)
             return Closure(call = call<(Buffer) -> Buffer>, env = (mutPtrFromRustCast(f)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, marker = Unit)

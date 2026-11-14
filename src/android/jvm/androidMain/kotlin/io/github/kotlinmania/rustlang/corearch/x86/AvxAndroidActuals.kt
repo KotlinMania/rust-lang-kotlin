@@ -11,7 +11,7 @@ import io.github.kotlinmania.rustlang.corearch.simd.I8x32
 
 private object X86AvxJniBridge {
     init {
-        System.loadLibrary("corearch_jni")
+        System.loadLibrary("kmcore_jni")
     }
 
     @JvmStatic

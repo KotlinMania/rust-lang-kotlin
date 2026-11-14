@@ -50,7 +50,7 @@ public val PIO4: Double = 7.85398163397448278999e-01
 public val PIO4_LO: Double = 3.06161699786838301793e-17
 
 // 3C81A626, 33145C07
-internal fun kTan(x: Double, y: Double, odd: Int): Double {
+public fun kTan(x: Double, y: Double, odd: Int): Double {
     var x1 = x
     var y1 = y
     val hx = (x1.toRawBits().toULong() shr 32).toUInt()

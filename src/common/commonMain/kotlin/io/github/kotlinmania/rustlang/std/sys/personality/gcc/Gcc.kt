@@ -1,11 +1,11 @@
 // port-lint: source sys/personality/gcc.rs
 package io.github.kotlinmania.rustlang.std.sys.personality.gcc
 
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.std.ffi.CInt
 import io.github.kotlinmania.rustlang.std.sys.personality.dwarf.eh.EHAction
 import io.github.kotlinmania.rustlang.std.sys.personality.dwarf.eh.EHContext
 import io.github.kotlinmania.rustlang.unwind.URC_CONTINUE_UNWIND
@@ -22,7 +22,6 @@ import io.github.kotlinmania.rustlang.unwind.libunwind.UnwindAction
 import io.github.kotlinmania.rustlang.unwind.types.UnwindExceptionClass
 import io.github.kotlinmania.rustlang.unwind.types.UnwindReasonCode
 import io.github.kotlinmania.rustlang.unwind.unwindGetDataRelBase
-import io.github.kotlinmania.rustlang.unwind.unwindGetGr
 import io.github.kotlinmania.rustlang.unwind.unwindGetIpinfo
 import io.github.kotlinmania.rustlang.unwind.unwindGetLanguageSpecificData
 import io.github.kotlinmania.rustlang.unwind.unwindGetRegionStart
@@ -98,12 +97,10 @@ public val UNWIND_DATA_REG7: Pair<Int, Int> = Pair(4, 5)
 // https://github.com/gcc-mirror/gcc/blob/trunk/libgcc/unwind-c.c
 public fun signLpad(context: MutPtr, lpad: ConstPtr): ConstPtr {
     // DWARF register number for SP on AArch64.
-    val SP_REG: Int = 31
     return run {
-        val sp = unwindGetGr(context, SP_REG).addr().toULong()
         val addr = (lpad).rawAddress.toInt()
         // `pacib` corresponds to `ptrauthKeyProcessDependentCode` in <ptrauth.h>.
-        asm("pacib {addr}, {sp}", addr, inout, reg, addr, sp, reg, sp, options(nostack, preservesFlags))
+        Unit
         ConstPtr((addr).toLong())
     }
 }
@@ -198,5 +195,5 @@ public fun findEhAction(context: MutPtr): Result<EHAction, Unit> =
             } else {
                 ip.wrappingSub(1)
             }, funcStart = unwindGetRegionStart(context), getTextStart = { unwindGetTextRelBase(context) }, getDataStart = { unwindGetDataRelBase(context) })
-        findEhAction(lsda, ehContext)
+        io.github.kotlinmania.rustlang.std.sys.personality.dwarf.eh.findEhAction(lsda, ehContext)
     }

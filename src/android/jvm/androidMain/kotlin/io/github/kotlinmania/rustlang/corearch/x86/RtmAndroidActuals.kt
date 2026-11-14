@@ -4,7 +4,7 @@ package io.github.kotlinmania.rustlang.corearch.x86
 
 private object X86RtmJniBridge {
     init {
-        System.loadLibrary("corearch_jni")
+        System.loadLibrary("kmcore_jni")
     }
 
     @JvmStatic

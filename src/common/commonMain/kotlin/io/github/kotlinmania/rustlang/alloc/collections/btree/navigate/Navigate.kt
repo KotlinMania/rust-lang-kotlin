@@ -2,35 +2,38 @@
 package io.github.kotlinmania.rustlang.alloc.collections.btree.navigate
 
 import io.github.kotlinmania.rustlang.alloc.collections.btree.mem.replace
-import io.github.kotlinmania.rustlang.alloc.collections.btree.node.B
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.ForceResult.*
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.Handle
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.NodeRef
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.BorrowType
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.Dying
-import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.Edge
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.Immut
-import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.Internal
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.KV
-import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.Leaf
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.LeafOrInternal
 import io.github.kotlinmania.rustlang.alloc.collections.btree.search.SearchBound
 import io.github.kotlinmania.rustlang.core.alloc.AllocatorClone
 import io.github.kotlinmania.rustlang.core.borrow.Borrow
+import io.github.kotlinmania.rustlang.core.hint.unreachableUnchecked
 import io.github.kotlinmania.rustlang.core.ops.range.RangeBounds
 import io.github.kotlinmania.rustlang.core.result.Result
 
 // `front` and `back` are always both `None` or both `Some`.
-internal open class LeafRange<BorrowType, K, V>(
-    public var front: Handle<NodeRef<BorrowType, K, V, Leaf>, Edge>?,
-    public var back: Handle<NodeRef<BorrowType, K, V, Leaf>, Edge>?,
+public open class LeafRange<BorrowType, K, V> internal constructor(
+    frontCtorArg: Handle<NodeRef<BorrowType, K, V, Leaf>, Edge>?,
+    backCtorArg: Handle<NodeRef<BorrowType, K, V, Leaf>, Edge>?,
 ) {
+    public var front: Handle<NodeRef<BorrowType, K, V, Leaf>, Edge>? = frontCtorArg
+        internal set
+
+    public var back: Handle<NodeRef<BorrowType, K, V, Leaf>, Edge>? = backCtorArg
+        internal set
+
     public open fun isEmpty(): Boolean = this.front == this.back
 
     /**
      * Temporarily takes out another, immutable equivalent of the same range.
      */
-    internal open fun reborrow(): LeafRange<Immut, K, V> = LeafRange(front = this.front?.let({ f -> f.reborrow() }), back = this.back?.let({ b -> b.reborrow() }))
+    public open fun reborrow(): LeafRange<Immut, K, V> = LeafRange(front = this.front?.let({ f -> f.reborrow() }), back = this.back?.let({ b -> b.reborrow() }))
 
     /**
      * If possible, extract some result from the following KV and move to the edge beyond it.
@@ -55,7 +58,15 @@ internal open class LeafRange<BorrowType, K, V>(
         }
 
     public companion object {
-        internal fun <BorrowType, K, V> none(): LeafRange<BorrowType, K, V> = LeafRange(front = null, back = null)
+        public operator fun <BorrowType, K, V> invoke(
+            front: Handle<NodeRef<BorrowType, K, V, Leaf>, Edge>?,
+            back: Handle<NodeRef<BorrowType, K, V, Leaf>, Edge>?,
+        ): LeafRange<BorrowType, K, V> = LeafRange<BorrowType, K, V>(
+            frontCtorArg = front,
+            backCtorArg = back,
+        )
+
+        public fun <BorrowType, K, V> none(): LeafRange<BorrowType, K, V> = LeafRange(front = null, back = null)
     }
 }
 
@@ -63,9 +74,9 @@ public fun <K, V> LeafRange<Immut, K, V>.clone(): LeafRange<Immut, K, V> = LeafR
 
 public fun <B, K, V> defaultLeafRangeBKV(): LeafRange<B, K, V> = LeafRange(front = null, back = null)
 
-internal fun <K, V> LeafRange<Immut, K, V>.nextChecked(): Pair<K, V>? = this.performNextChecked({ kv -> kv.intoKv() })
+public fun <K, V> LeafRange<Immut, K, V>.nextChecked(): Pair<K, V>? = this.performNextChecked({ kv -> kv.intoKv() })
 
-internal fun <K, V> LeafRange<Immut, K, V>.nextBackChecked(): Pair<K, V>? = this.performNextBackChecked({ kv -> kv.intoKv() })
+public fun <K, V> LeafRange<Immut, K, V>.nextBackChecked(): Pair<K, V>? = this.performNextBackChecked({ kv -> kv.intoKv() })
 
 public sealed class LazyLeafHandle<BorrowType, K, V> {
     public class Root<BorrowType, K, V> internal constructor(valueCtorArg: NodeRef<BorrowType, K, V, LeafOrInternal>) : LazyLeafHandle<BorrowType, K, V>() {
@@ -146,14 +157,14 @@ public fun <K, V> LazyLeafHandle<Immut, K, V>.clone(): LazyLeafHandle<Immut, K, 
     }
 
 // `front` and `back` are always both `None` or both `Some`.
-internal open class LazyLeafRange<BorrowType, K, V>(
+public open class LazyLeafRange<BorrowType, K, V>(
     public var front: LazyLeafHandle<BorrowType, K, V>?,
     public var back: LazyLeafHandle<BorrowType, K, V>?,
 ) {
     /**
      * Temporarily takes out another, immutable equivalent of the same range.
      */
-    internal open fun reborrow(): LazyLeafRange<Immut, K, V> = LazyLeafRange(front = this.front?.let({ f -> f.reborrow() }), back = this.back?.let({ b -> b.reborrow() }))
+    public open fun reborrow(): LazyLeafRange<Immut, K, V> = LazyLeafRange(front = this.front?.let({ f -> f.reborrow() }), back = this.back?.let({ b -> b.reborrow() }))
 
     public open fun initFront(): Handle<NodeRef<BorrowType, K, V, Leaf>, Edge>? {
         when (val matchVal = this.front) {
@@ -196,7 +207,7 @@ internal open class LazyLeafRange<BorrowType, K, V>(
     }
 
     public companion object {
-        internal fun <BorrowType, K, V> none(): LazyLeafRange<BorrowType, K, V> = LazyLeafRange(front = null, back = null)
+        public fun <BorrowType, K, V> none(): LazyLeafRange<BorrowType, K, V> = LazyLeafRange(front = null, back = null)
     }
 }
 
@@ -204,12 +215,12 @@ public fun <B, K, V> defaultLazyLeafRangeBKV(): LazyLeafRange<B, K, V> = LazyLea
 
 public fun <K, V> LazyLeafRange<Immut, K, V>.clone(): LazyLeafRange<Immut, K, V> = LazyLeafRange(front = this.front, back = this.back)
 
-internal fun <K, V> LazyLeafRange<Immut, K, V>.nextUnchecked(): Pair<K, V> {
+public fun <K, V> LazyLeafRange<Immut, K, V>.nextUnchecked(): Pair<K, V> {
     // SAFETY: Upheld by caller.
     return this.initFront()!!.nextUnchecked()
 }
 
-internal fun <K, V> LazyLeafRange<Immut, K, V>.nextBackUnchecked(): Pair<K, V> {
+public fun <K, V> LazyLeafRange<Immut, K, V>.nextBackUnchecked(): Pair<K, V> {
     // SAFETY: Upheld by caller.
     return this.initBack()!!.nextBackUnchecked()
 }
@@ -227,21 +238,21 @@ public fun <K, V> LazyLeafRange<Dying, K, V>.takeFront(): Handle<NodeRef<Dying, 
     }
 }
 
-internal fun <K, V, A : AllocatorClone> LazyLeafRange<Dying, K, V>.deallocatingNextUnchecked(alloc: A): Handle<NodeRef<Dying, K, V, LeafOrInternal>, KV> {
+public fun <K, V, A : AllocatorClone> LazyLeafRange<Dying, K, V>.deallocatingNextUnchecked(alloc: A): Handle<NodeRef<Dying, K, V, LeafOrInternal>, KV> {
     check(this.front != null)
     val front = this.initFront()!!
     // ignore-tidy-undocumented-unchecked
     return front.deallocatingNextUnchecked(alloc)
 }
 
-internal fun <K, V, A : AllocatorClone> LazyLeafRange<Dying, K, V>.deallocatingNextBackUnchecked(alloc: A): Handle<NodeRef<Dying, K, V, LeafOrInternal>, KV> {
+public fun <K, V, A : AllocatorClone> LazyLeafRange<Dying, K, V>.deallocatingNextBackUnchecked(alloc: A): Handle<NodeRef<Dying, K, V, LeafOrInternal>, KV> {
     check(this.back != null)
     val back = this.initBack()!!
     // ignore-tidy-undocumented-unchecked
     return back.deallocatingNextBackUnchecked(alloc)
 }
 
-internal fun <K, V, A : AllocatorClone> LazyLeafRange<Dying, K, V>.deallocatingEnd(alloc: A) {
+public fun <K, V, A : AllocatorClone> LazyLeafRange<Dying, K, V>.deallocatingEnd(alloc: A) {
     when (val matchVal = this.takeFront()) {
         null -> {}
         else -> {
@@ -313,7 +324,7 @@ public fun <BorrowType, K, V> fullRange(root1: NodeRef<BorrowType, K, V, LeafOrI
  * The result is meaningful only if the tree is ordered by key, like the tree
  * in a `BTreeMap` is.
  */
-internal fun <K, V, Q, R> NodeRef<Immut, K, V, LeafOrInternal>.rangeSearch(range: R): LeafRange<Immut, K, V> where K : Borrow<Q>, R : RangeBounds<Q> {
+public fun <K, V, Q, R> NodeRef<Immut, K, V, LeafOrInternal>.rangeSearch(range: R): LeafRange<Immut, K, V> where K : Borrow<Q>, R : RangeBounds<Q> {
     // SAFETY: our borrow type is immutable.
     return this.findLeafEdgesSpanningRange(range)
 }
@@ -321,14 +332,14 @@ internal fun <K, V, Q, R> NodeRef<Immut, K, V, LeafOrInternal>.rangeSearch(range
 /**
  * Finds the pair of leaf edges delimiting an entire tree.
  */
-internal fun <K, V> NodeRef<Immut, K, V, LeafOrInternal>.fullRange(): LazyLeafRange<Immut, K, V> = fullRange(this, this)
+public fun <K, V> NodeRef<Immut, K, V, LeafOrInternal>.fullRange(): LazyLeafRange<Immut, K, V> = fullRange(this, this)
 
 /**
  * Given a leaf edge handle, returns [Result.Ok] with a handle to the neighboring KV
  * on the right side, which is either in the same leaf node or in an ancestor node.
  * If the leaf edge is the last one in the tree, returns [Result.Err] with the root node.
  */
-internal fun <BorrowType, K, V> Handle<NodeRef<BorrowType, K, V, Leaf>, Edge>.nextKv(): Result<Handle<NodeRef<BorrowType, K, V, LeafOrInternal>, KV>, NodeRef<BorrowType, K, V, LeafOrInternal>> {
+public fun <BorrowType, K, V> Handle<NodeRef<BorrowType, K, V, Leaf>, Edge>.nextKv(): Result<Handle<NodeRef<BorrowType, K, V, LeafOrInternal>, KV>, NodeRef<BorrowType, K, V, LeafOrInternal>> {
     var edge = this.forgetNodeType()
     while (true) {
         edge = run {
@@ -358,7 +369,7 @@ internal fun <BorrowType, K, V> Handle<NodeRef<BorrowType, K, V, Leaf>, Edge>.ne
  * on the left side, which is either in the same leaf node or in an ancestor node.
  * If the leaf edge is the first one in the tree, returns [Result.Err] with the root node.
  */
-internal fun <BorrowType, K, V> Handle<NodeRef<BorrowType, K, V, Leaf>, Edge>.nextBackKv(): Result<Handle<NodeRef<BorrowType, K, V, LeafOrInternal>, KV>, NodeRef<BorrowType, K, V, LeafOrInternal>> {
+public fun <BorrowType, K, V> Handle<NodeRef<BorrowType, K, V, Leaf>, Edge>.nextBackKv(): Result<Handle<NodeRef<BorrowType, K, V, LeafOrInternal>, KV>, NodeRef<BorrowType, K, V, LeafOrInternal>> {
     var edge = this.forgetNodeType()
     while (true) {
         edge = run {
@@ -600,7 +611,7 @@ public fun <K, V, A : AllocatorClone> Handle<NodeRef<Dying, K, V, Leaf>, Edge>.d
  * Returns the leftmost leaf edge in or underneath a node - in other words, the edge
  * you need first when navigating forward (or last when navigating backward).
  */
-internal fun <BorrowType, K, V> NodeRef<BorrowType, K, V, LeafOrInternal>.firstLeafEdge(): Handle<NodeRef<BorrowType, K, V, Leaf>, Edge> {
+public fun <BorrowType, K, V> NodeRef<BorrowType, K, V, LeafOrInternal>.firstLeafEdge(): Handle<NodeRef<BorrowType, K, V, Leaf>, Edge> {
     var node = this
     while (true) {
         when (val matchVal = node.force()) {
@@ -620,7 +631,7 @@ internal fun <BorrowType, K, V> NodeRef<BorrowType, K, V, LeafOrInternal>.firstL
  * Returns the rightmost leaf edge in or underneath a node - in other words, the edge
  * you need last when navigating forward (or first when navigating backward).
  */
-internal fun <BorrowType, K, V> NodeRef<BorrowType, K, V, LeafOrInternal>.lastLeafEdge(): Handle<NodeRef<BorrowType, K, V, Leaf>, Edge> {
+public fun <BorrowType, K, V> NodeRef<BorrowType, K, V, LeafOrInternal>.lastLeafEdge(): Handle<NodeRef<BorrowType, K, V, Leaf>, Edge> {
     var node = this
     while (true) {
         when (val matchVal = node.force()) {
@@ -636,9 +647,57 @@ internal fun <BorrowType, K, V> NodeRef<BorrowType, K, V, LeafOrInternal>.lastLe
     }
 }
 
-internal sealed class Position<BorrowType, K, V> {
-    public data class Leaf<BorrowType, K, V>(public var value: NodeRef<BorrowType, K, V, Leaf>) : Position<BorrowType, K, V>()
-    public data class Internal<BorrowType, K, V>(public var value: NodeRef<BorrowType, K, V, Internal>) : Position<BorrowType, K, V>()
+public sealed class Position<BorrowType, K, V> {
+    public class Leaf<BorrowType, K, V> internal constructor(valueCtorArg: NodeRef<BorrowType, K, V, Leaf>) : Position<BorrowType, K, V>() {
+        public var value: NodeRef<BorrowType, K, V, Leaf> = valueCtorArg
+            internal set
+
+        public operator fun component1(): NodeRef<BorrowType, K, V, Leaf> = this.value
+
+        public fun copy(value: NodeRef<BorrowType, K, V, Leaf> = this.value): Leaf<BorrowType, K, V> = Leaf<BorrowType, K, V>(valueCtorArg = value)
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is Leaf<*, *, *>) return false
+            if (this.value != other.value) return false
+            return true
+        }
+
+        override fun hashCode(): Int = this.value.hashCode()
+
+        public companion object {
+            public operator fun <BorrowType, K, V> invoke(
+                value: NodeRef<BorrowType, K, V, Leaf>,
+            ): Leaf<BorrowType, K, V> = Leaf<BorrowType, K, V>(
+                valueCtorArg = value,
+            )
+        }
+    }
+    public class Internal<BorrowType, K, V> internal constructor(valueCtorArg: NodeRef<BorrowType, K, V, Internal>) : Position<BorrowType, K, V>() {
+        public var value: NodeRef<BorrowType, K, V, Internal> = valueCtorArg
+            internal set
+
+        public operator fun component1(): NodeRef<BorrowType, K, V, Internal> = this.value
+
+        public fun copy(value: NodeRef<BorrowType, K, V, Internal> = this.value): Internal<BorrowType, K, V> = Internal<BorrowType, K, V>(valueCtorArg = value)
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is Internal<*, *, *>) return false
+            if (this.value != other.value) return false
+            return true
+        }
+
+        override fun hashCode(): Int = this.value.hashCode()
+
+        public companion object {
+            public operator fun <BorrowType, K, V> invoke(
+                value: NodeRef<BorrowType, K, V, Internal>,
+            ): Internal<BorrowType, K, V> = Internal<BorrowType, K, V>(
+                valueCtorArg = value,
+            )
+        }
+    }
     public class InternalKV<BorrowType, K, V>() : Position<BorrowType, K, V>()
 }
 
@@ -647,7 +706,7 @@ internal sealed class Position<BorrowType, K, V> {
  * visits internal nodes as a whole in a depth first order, meaning that
  * internal nodes precede their individual KVs and their child nodes.
  */
-internal fun <K, V> NodeRef<Immut, K, V, LeafOrInternal>.visitNodesInOrder(visit: (Position<Immut, K, V>) -> Unit) {
+public fun <K, V> NodeRef<Immut, K, V, LeafOrInternal>.visitNodesInOrder(visit: (Position<Immut, K, V>) -> Unit) {
     when (val matchVal = this.force()) {
         is Leaf -> {
             val (leaf) = matchVal
@@ -687,7 +746,7 @@ internal fun <K, V> NodeRef<Immut, K, V, LeafOrInternal>.visitNodesInOrder(visit
 /**
  * Calculates the number of elements in a (sub)tree.
  */
-internal fun <K, V> NodeRef<Immut, K, V, LeafOrInternal>.calcLength(): Int {
+public fun <K, V> NodeRef<Immut, K, V, LeafOrInternal>.calcLength(): Int {
     var result = 0
     this.visitNodesInOrder({ pos -> when (pos) {
         is Position.Leaf -> {
@@ -706,7 +765,7 @@ internal fun <K, V> NodeRef<Immut, K, V, LeafOrInternal>.calcLength(): Int {
 /**
  * Returns the leaf edge closest to a KV for forward navigation.
  */
-internal fun <BorrowType, K, V> Handle<NodeRef<BorrowType, K, V, LeafOrInternal>, KV>.nextLeafEdge(): Handle<NodeRef<BorrowType, K, V, Leaf>, Edge> =
+public fun <BorrowType, K, V> Handle<NodeRef<BorrowType, K, V, LeafOrInternal>, KV>.nextLeafEdge(): Handle<NodeRef<BorrowType, K, V, Leaf>, Edge> =
     when (val matchVal = this.force()) {
         is Leaf -> {
             val (leafKv) = matchVal
@@ -722,7 +781,7 @@ internal fun <BorrowType, K, V> Handle<NodeRef<BorrowType, K, V, LeafOrInternal>
 /**
  * Returns the leaf edge closest to a KV for backward navigation.
  */
-internal fun <BorrowType, K, V> Handle<NodeRef<BorrowType, K, V, LeafOrInternal>, KV>.nextBackLeafEdge(): Handle<NodeRef<BorrowType, K, V, Leaf>, Edge> =
+public fun <BorrowType, K, V> Handle<NodeRef<BorrowType, K, V, LeafOrInternal>, KV>.nextBackLeafEdge(): Handle<NodeRef<BorrowType, K, V, Leaf>, Edge> =
     when (val matchVal = this.force()) {
         is Leaf -> {
             val (leafKv) = matchVal
@@ -739,7 +798,7 @@ internal fun <BorrowType, K, V> Handle<NodeRef<BorrowType, K, V, LeafOrInternal>
  * Returns the leaf edge corresponding to the first point at which the
  * given bound is true.
  */
-internal fun <BorrowType, K, V, Q> NodeRef<BorrowType, K, V, LeafOrInternal>.lowerBound(bound: SearchBound<Q>): Handle<NodeRef<BorrowType, K, V, Leaf>, Edge> where K : Borrow<Q> {
+public fun <BorrowType, K, V, Q> NodeRef<BorrowType, K, V, LeafOrInternal>.lowerBound(bound: SearchBound<Q>): Handle<NodeRef<BorrowType, K, V, Leaf>, Edge> where K : Borrow<Q> {
     var bound1 = bound
     var node = this
     while (true) {
@@ -762,7 +821,7 @@ internal fun <BorrowType, K, V, Q> NodeRef<BorrowType, K, V, LeafOrInternal>.low
  * Returns the leaf edge corresponding to the last point at which the
  * given bound is true.
  */
-internal fun <BorrowType, K, V, Q> NodeRef<BorrowType, K, V, LeafOrInternal>.upperBound(bound: SearchBound<Q>): Handle<NodeRef<BorrowType, K, V, Leaf>, Edge> where K : Borrow<Q> {
+public fun <BorrowType, K, V, Q> NodeRef<BorrowType, K, V, LeafOrInternal>.upperBound(bound: SearchBound<Q>): Handle<NodeRef<BorrowType, K, V, Leaf>, Edge> where K : Borrow<Q> {
     var bound1 = bound
     var node = this
     while (true) {
@@ -786,7 +845,7 @@ internal fun <BorrowType, K, V, Q> NodeRef<BorrowType, K, V, LeafOrInternal>.upp
  * - `self` must be the root.
  * - The tree shouldn't be accessed anymore.
  */
-internal fun <K, V, A : AllocatorClone> NodeRef<Dying, K, V, LeafOrInternal>.dropTree(alloc: A) {
+public fun <K, V, A : AllocatorClone> NodeRef<Dying, K, V, LeafOrInternal>.dropTree(alloc: A) {
     /**
      * Deallocates `node` and returns the next node in postorder traversal
      *

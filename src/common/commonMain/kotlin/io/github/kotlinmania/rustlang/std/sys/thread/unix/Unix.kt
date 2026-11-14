@@ -3,33 +3,11 @@
 
 package io.github.kotlinmania.rustlang.std.sys.thread.unix
 
-import io.github.kotlinmania.libc.CInt
-import io.github.kotlinmania.libc.clockNanosleep
-import io.github.kotlinmania.libc.fuchsia.CpuSetT
-import io.github.kotlinmania.libc.fuchsia.EINTR
-import io.github.kotlinmania.libc.fuchsia.EINVAL
-import io.github.kotlinmania.libc.fuchsia.PTHREAD_STACK_MIN
-import io.github.kotlinmania.libc.fuchsia.PidT
-import io.github.kotlinmania.libc.fuchsia.PthreadT
-import io.github.kotlinmania.libc.fuchsia.SC_NPROCESSORS_ONLN
-import io.github.kotlinmania.libc.fuchsia.TIMER_ABSTIME
-import io.github.kotlinmania.libc.fuchsia.TimeT
-import io.github.kotlinmania.libc.prctl
-import io.github.kotlinmania.libc.pthreadAttrDestroy
-import io.github.kotlinmania.libc.pthreadAttrInit
-import io.github.kotlinmania.libc.pthreadAttrSetstacksize
-import io.github.kotlinmania.libc.pthreadCreate
-import io.github.kotlinmania.libc.pthreadDetach
-import io.github.kotlinmania.libc.pthreadJoin
-import io.github.kotlinmania.libc.schedGetaffinity
-import io.github.kotlinmania.libc.schedYield
-import io.github.kotlinmania.libc.sysconf
-import io.github.kotlinmania.libc.teeos.cpuCount
-import io.github.kotlinmania.libc.timespec.default
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.dropguard.DropGuard
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
@@ -41,14 +19,39 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.andThen
 import io.github.kotlinmania.rustlang.core.str.converts.fromUtf8
 import io.github.kotlinmania.rustlang.core.time.Duration
+import io.github.kotlinmania.rustlang.libc.CInt
+import io.github.kotlinmania.rustlang.libc.CPU_COUNT
+import io.github.kotlinmania.rustlang.libc.clockNanosleep
+import io.github.kotlinmania.rustlang.libc.helenos.PidT
+import io.github.kotlinmania.rustlang.libc.prctl
+import io.github.kotlinmania.rustlang.libc.pthreadAttrDestroy
+import io.github.kotlinmania.rustlang.libc.pthreadAttrInit
+import io.github.kotlinmania.rustlang.libc.pthreadAttrSetstacksize
+import io.github.kotlinmania.rustlang.libc.pthreadCreate
+import io.github.kotlinmania.rustlang.libc.pthreadDetach
+import io.github.kotlinmania.rustlang.libc.pthreadJoin
+import io.github.kotlinmania.rustlang.libc.schedGetaffinity
+import io.github.kotlinmania.rustlang.libc.schedYield
+import io.github.kotlinmania.rustlang.libc.sysconf
+import io.github.kotlinmania.rustlang.libc.timespec.default
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.CpuSetT
+import io.github.kotlinmania.rustlang.libc.wasi.EINTR
+import io.github.kotlinmania.rustlang.libc.wasi.EINVAL
+import io.github.kotlinmania.rustlang.libc.wasi.PTHREAD_STACK_MIN
+import io.github.kotlinmania.rustlang.libc.wasi.PthreadT
+import io.github.kotlinmania.rustlang.libc.wasi.SC_NPROCESSORS_ONLN
+import io.github.kotlinmania.rustlang.libc.wasi.TIMER_ABSTIME
+import io.github.kotlinmania.rustlang.libc.wasi.TimeT
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.std.fs.File
 import io.github.kotlinmania.rustlang.std.fs.exists
+import io.github.kotlinmania.rustlang.std.io.ErrorKind
+import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.path.PathBuf
 import io.github.kotlinmania.rustlang.std.sys.helpers.copaque.COpaque
-import io.github.kotlinmania.rustlang.std.sys.pal.unix.conf.pageSize
+import io.github.kotlinmania.rustlang.std.sys.pal.Conf
 import io.github.kotlinmania.rustlang.std.sys.pal.weak.syscall
 import io.github.kotlinmania.rustlang.std.sys.weak.dlsym
 import io.github.kotlinmania.rustlang.std.thread.lifecycle.ThreadInit
@@ -70,7 +73,7 @@ public open class Thread(
     public open fun join() {
         val id = this.intoId()
         val ret = pthreadJoin(id, MutPtr(0L))
-        check(ret == 0) { "failed to join thread: ${Error.fromRawOsError(ret)}" }
+        check(ret == 0) { "failed to join thread: ${io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(ret)}" }
     }
 
     public open fun id(): PthreadT = this.id
@@ -134,7 +137,7 @@ public open class Thread(
                         // multiple of the system page size. Because it's definitely
                         // >= PTHREAD_STACK_MIN, it must be an alignment issue.
                         // Round up to the nearest page and try again.
-                        val pageSize = pageSize()
+                        val pageSize = Conf.pageSize()
                         val stackSize1 = stackSize.checkedNextMultipleOf(pageSize)
                         // Some libc implementations, e.g. musl, place an upper bound
                         // on the stack size, in which case we can only gracefully return
@@ -142,21 +145,22 @@ public open class Thread(
                         if (stackSize1.isNoneOr({ stackSize2 ->
                             pthreadAttrSetstacksize(attr2.get(), stackSize2) != 0
                         })) {
-                            return Result.Err(io.constError(ErrorKind.InvalidInput, "invalid stack size"))
+                            return Result.Err(constError(ErrorKind.InvalidInput, "invalid stack size"))
                         }
                     }
                 }
             }
             val data1 = Box.intoRaw(data)
-            val native: PthreadT?  = null
-            val ret = pthreadCreate(native, attr2.get(), ::threadStart, mutPtrFromRustCast(data1))
+            val localStorageL107C8 = AddressableLocal(0L, ObjectSlotLayout<PthreadT>())
+            val native by localStorageL107C8
+            val ret = pthreadCreate(RustMutableReference(localStorageL107C8.asMutPtr(), localStorageL107C8.layout), attr2.get(), ::threadStart, mutPtrFromRustCast(data1))
             return if (ret == 0) {
                 Result.Ok(Thread(id = native))
             } else {
                 // The thread failed to start and as a result `data` was not consumed.
                 // Therefore, it is safe to reconstruct the box so that it gets deallocated.
-                drop(Box.fromRaw(data1))
-                Result.Err(Error.fromRawOsError(ret))
+                (Box.fromRaw(data1)).let { }
+                Result.Err(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(ret))
             }
         }
     }
@@ -166,9 +170,10 @@ public fun availableParallelism(): Result<NonZero<Int>, Error> {
     var quota = Int.MAX_VALUE
     run {
         quota = quota().max(1)
-        val set: CpuSetT?  = null
-        if (schedGetaffinity(0, sizeOf<CpuSetT>(typeLayoutT = ObjectSlotLayout<CpuSetT>()), set) == 0) {
-            val count = cpuCount(set).toInt()
+        val localStorageL178C16 = AddressableLocal(CpuSetT(), ObjectSlotLayout<CpuSetT>())
+        val set by localStorageL178C16
+        if (schedGetaffinity(0, sizeOf<CpuSetT>(typeLayoutT = ObjectSlotLayout<CpuSetT>()), RustMutableReference(localStorageL178C16.asMutPtr(), localStorageL178C16.layout)) == 0) {
+            val count = CPU_COUNT(set).toInt()
             val count1 = count.min(quota)
             // According to schedGetaffinity's API it should always be non-zero, but
             // some old MIPS kernels were buggy and zero-initialized the mask if
@@ -184,8 +189,8 @@ public fun availableParallelism(): Result<NonZero<Int>, Error> {
         }
     }
     return when (val matchVal1 = sysconf(SC_NPROCESSORS_ONLN)) {
-        -1 -> Result.Err(Error.lastOsError())
-        0 -> Result.Err(Error.UNKNOWN_THREAD_COUNT)
+        -1 -> Result.Err(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
+        0 -> Result.Err(io.github.kotlinmania.rustlang.std.io.Error.UNKNOWN_THREAD_COUNT)
         else -> {
             val cpus = matchVal1
             val count3 = cpus.toInt()
@@ -321,7 +326,7 @@ public sealed class Cgroup {
  * Returns cgroup CPU quota in core-equivalents, rounded down or usize.Max if the quota cannot
  * be determined or is not set.
  */
-internal fun quota(): Int {
+public fun quota(): Int {
     var quota = Int.MAX_VALUE
     if (false) {
         // Attempting to open a file fails under default flags due to isolation.

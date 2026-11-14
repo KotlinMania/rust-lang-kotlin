@@ -1,13 +1,13 @@
 // port-lint: source sys/pal/windows/winsock.rs
 package io.github.kotlinmania.rustlang.std.sys.pal.windows.winsock
 
-import io.github.kotlinmania.rustlang.core.io.error.Error
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.std.ffi.CInt
+import io.github.kotlinmania.rustlang.std.io.Error
 import io.github.kotlinmania.rustlang.std.sync.once.Once
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.WSAGetLastError
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.WSAStartup
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.Wsadata
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.wSAGetLastError
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.wSAStartup
 
 public var WSA_INIT: Once = Once.new()
 
@@ -23,8 +23,8 @@ public fun startup() {
 
 public fun wsaStartup() {
     run {
-        val data: Wsadata?  = null
-        val ret = wSAStartup(0x202u, data)
+        val data: Wsadata  = Wsadata()
+        val ret = WSAStartup(0x202, data)
         check(ret == 0)
     }
 }
@@ -38,7 +38,7 @@ public fun cleanup() {
 /**
  * Returns the last error from the Windows socket interface.
  */
-public fun lastError(): Error = Error.fromRawOsError(wSAGetLastError())
+public fun lastError(): Error = Error.fromRawOsError(WSAGetLastError())
 
 public interface IsMinusOne {
     public fun isMinusOne(): Boolean

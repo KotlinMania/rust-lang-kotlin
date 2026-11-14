@@ -4,7 +4,7 @@ package io.github.kotlinmania.rustlang.corearch.powerpc
 
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 
-// The host must provide the C companion wrapper exports in import module corearch.
+// The host must provide the C companion wrapper exports in import module kmcore.
 public actual fun lvx(p: ConstPtr): VectorUnsignedInt =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchPowerpcAltivecLvx")
 

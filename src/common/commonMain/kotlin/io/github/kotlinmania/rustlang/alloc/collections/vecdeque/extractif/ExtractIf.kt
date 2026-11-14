@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.alloc.collections.vecdeque.extractif
 
 import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.VecDeque
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
+import io.github.kotlinmania.rustlang.core.ops.range.Range
 import io.github.kotlinmania.rustlang.core.ops.range.RangeBounds
 
 public class DebugStruct(
@@ -171,9 +172,9 @@ public open class ExtractIf<T, F, A : Allocator> internal constructor(
             pred = pred,
         )
 
-        internal fun <T, F, A : Allocator, R : RangeBounds<Int>> new(vec: VecDeque<T, A>, pred: F, range: R): ExtractIf<T, F, A> {
+        public fun <T, F, A : Allocator, R : RangeBounds<Int>> new(vec: VecDeque<T, A>, pred: F, range: R): ExtractIf<T, F, A> {
             val oldLen = vec.len()
-            val structVal = slice.range(range, 0 until oldLen)
+            val structVal = Range(range, 0 until oldLen)
             val start = structVal.start
             val end = structVal.end
             // Guard against the deque getting leaked (leak amplification)

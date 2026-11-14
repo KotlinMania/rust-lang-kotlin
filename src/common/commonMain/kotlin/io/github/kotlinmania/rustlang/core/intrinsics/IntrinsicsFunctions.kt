@@ -3,8 +3,6 @@ package io.github.kotlinmania.rustlang.core.intrinsics
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.cmp.compareNaturalOrder
-import io.github.kotlinmania.rustlang.core.f16.SIGN_MASK
-import io.github.kotlinmania.rustlang.core.f16.fromBits
 import io.github.kotlinmania.rustlang.core.ffi.valist.VaList
 import io.github.kotlinmania.rustlang.core.intrinsics.bounds.FloatPrimitive
 import io.github.kotlinmania.rustlang.core.intrinsics.bounds.IntegerPrimitive
@@ -19,6 +17,7 @@ import io.github.kotlinmania.rustlang.core.num.rustIsSignPositive
 import io.github.kotlinmania.rustlang.core.panicking.panicNounwind
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.swapNonoverlapping
 
 /**
  * The `prefetch` intrinsic is a hint to the code generator to insert a prefetch instruction
@@ -628,7 +627,7 @@ public fun <Ret> contractCheckEnsures(cond: (Ret) -> Boolean?, ret: Ret): Ret =
  * The stabilized version of this intrinsic is [f16.min].
  */
 public fun minimumNumberNszF16(x: F16, y: F16): F16 =
-    if (x.isNan() || y <= x) {
+    if (x.isNaN() || y <= x) {
         y
     } else {
         // Either y > x or y is a NaN.
@@ -700,7 +699,7 @@ public fun minimumNumberNszF64(x: Double, y: Double): Double =
  * The stabilized version of this intrinsic is [f128.min].
  */
 public fun minimumNumberNszF128(x: F128, y: F128): F128 =
-    if (x.isNan() || y <= x) {
+    if (x.isNaN() || y <= x) {
         y
     } else {
         // Either y > x or y is a NaN.
@@ -836,7 +835,7 @@ public fun minimumf128(x: F128, y: F128): F128 =
  * The stabilized version of this intrinsic is [f16.max].
  */
 public fun maximumNumberNszF16(x: F16, y: F16): F16 =
-    if (x.isNan() || y >= x) {
+    if (x.isNaN() || y >= x) {
         y
     } else {
         // Either y < x or y is a NaN.
@@ -908,7 +907,7 @@ public fun maximumNumberNszF64(x: Double, y: Double): Double =
  * The stabilized version of this intrinsic is [f128.max].
  */
 public fun maximumNumberNszF128(x: F128, y: F128): F128 =
-    if (x.isNan() || y >= x) {
+    if (x.isNaN() || y >= x) {
         y
     } else {
         // Either y < x or y is a NaN.
@@ -1039,7 +1038,7 @@ public fun <UInt, T : FloatPrimitive<T, Any?>> fabs(x: T, fromBitsTFn: (UInt) ->
  * The stabilized version of this intrinsic is
  * [`f16.copysign`](../../std/primitive.f16.html#method.copysign)
  */
-public fun copysignf16(x: F16, y: F16): F16 = fromBits((x.toBits() and SIGN_MASK.inv()) or (y.toBits() and SIGN_MASK))
+public fun copysignf16(x: F16, y: F16): F16 = F16.fromBits((x.toBits() and (F16.SIGN_MASK.inv()).toUShort()) or (y.toBits() and F16.SIGN_MASK.toUShort()))
 
 /**
  * Copies the sign from `y` to `x` for `Float` values.
@@ -1063,7 +1062,7 @@ public fun copysignf64(x: Double, y: Double): Double = Double.fromBits(((x.toRaw
  * The stabilized version of this intrinsic is
  * [`f128.copysign`](../../std/primitive.f128.html#method.copysign)
  */
-public fun copysignf128(x: F128, y: F128): F128 = io.github.kotlinmania.rustlang.core.f128.fromBits((x.toBits() and io.github.kotlinmania.rustlang.core.f128.SIGN_MASK.inv()) or (y.toBits() and io.github.kotlinmania.rustlang.core.f128.SIGN_MASK))
+public fun copysignf128(x: F128, y: F128): F128 = F128.fromBits((x.toBits() and F128.SIGN_MASK.inv()) or (y.toBits() and F128.SIGN_MASK))
 
 /**
  * Duplicates a variable argument list. The returned list is initially at the same position as

@@ -203,7 +203,7 @@ public open class VaList(
     }
 
     // Helper used in the implementation of the `vaCopy` intrinsic.
-    internal open fun duplicate(): VaList = VaList(inner = this.inner, marker = this.marker)
+    public open fun duplicate(): VaList = VaList(inner = this.inner, marker = this.marker)
 
     /**
      * Clone the [VaList], producing a second independent cursor into the variable argument list.

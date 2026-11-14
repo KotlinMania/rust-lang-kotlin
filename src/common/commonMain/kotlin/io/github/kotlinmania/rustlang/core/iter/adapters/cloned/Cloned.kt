@@ -1,15 +1,16 @@
 // port-lint: source iter/adapters/cloned.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.cloned
 
-import io.github.kotlinmania.rustlang.core.iter.InPlaceIterable
-import io.github.kotlinmania.rustlang.core.iter.TrustedLen
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
-import io.github.kotlinmania.rustlang.core.iter.adapters.TrustedRandomAccess
-import io.github.kotlinmania.rustlang.core.iter.adapters.TrustedRandomAccessNoCoerce
+import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccess
+import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccessNoCoerce
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.tryGetUnchecked
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.InPlaceIterable
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 
 public typealias Source<I> = I.Source
 
@@ -86,7 +87,7 @@ public open class Cloned<I>(
                 }
             }
 
-        internal fun <I> new(it: I): Cloned<I> = Cloned(it = it)
+        public fun <I> new(it: I): Cloned<I> = Cloned(it = it)
 
         public val MAY_HAVE_SIDE_EFFECT: Boolean = true
 

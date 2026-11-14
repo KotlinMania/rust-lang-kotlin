@@ -1,8 +1,8 @@
 // port-lint: source ops/control_flow.rs
 package io.github.kotlinmania.rustlang.core.ops.controlflow
 
-import io.github.kotlinmania.rustlang.core.ops.FromResidual
-import io.github.kotlinmania.rustlang.core.ops.Try
+import io.github.kotlinmania.rustlang.core.ops.trytrait.FromResidual
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
 
 public typealias TryType<B, C> = ControlFlow<B, C>
@@ -400,7 +400,7 @@ public fun <T> ControlFlow<T, T>.intoValue(): T =
 /**
  * Creates a `ControlFlow` from any type implementing `Try`.
  */
-internal fun <Output, Residual, R : Try<R, Any?, Any?>> ControlFlow.Companion.fromTry(r: R, branchRFn: (R) -> ControlFlow<Residual, Output>, fromResidualRFn: (R) -> R): ControlFlow<R, R.Output> where R : Try<R, Any?, Any?> =
+public fun <Output, Residual, R : Try<R, Any?, Any?>> ControlFlow.Companion.fromTry(r: R, branchRFn: (R) -> ControlFlow<Residual, Output>, fromResidualRFn: (R) -> R): ControlFlow<R, R.Output> where R : Try<R, Any?, Any?> =
     when (val matchVal = branchRFn(r)) {
         is ControlFlow.Continue -> {
             val (v) = matchVal
@@ -415,7 +415,7 @@ internal fun <Output, Residual, R : Try<R, Any?, Any?>> ControlFlow.Companion.fr
 /**
  * Converts a `ControlFlow` into any type implementing `Try`.
  */
-internal fun <Output, Residual, R : Try<R, Any?, Any?>> ControlFlow<R, R.Output>.intoTry(fromOutputRFn: (Output) -> R): R where R : Try<R, Any?, Any?> =
+public fun <Output, Residual, R : Try<R, Any?, Any?>> ControlFlow<R, R.Output>.intoTry(fromOutputRFn: (Output) -> R): R where R : Try<R, Any?, Any?> =
     when (this) {
         is ControlFlow.Continue -> {
             val (v) = this

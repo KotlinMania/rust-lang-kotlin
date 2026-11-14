@@ -5,477 +5,477 @@ package io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 
-@JsFun("() => { if (typeof globalThis.__km_napi_std !== 'undefined') return globalThis.__km_napi_std !== null; if (typeof process === 'undefined' || !process.versions || !process.versions.node) { globalThis.__km_napi_std = null; return false; } var mod = process.getBuiltinModule ? process.getBuiltinModule('module') : (process.mainModule && process.mainModule.constructor); var req = (mod && mod.createRequire) ? mod.createRequire((process.cwd ? process.cwd() : '.') + '/package.json') : (process.mainModule ? process.mainModule.require : null); if (!req) { globalThis.__km_napi_std = null; return false; } try { globalThis.__km_napi_std = req('@kotlinmania/std-native-bindings'); return true; } catch (_) {} var fs = req('fs'); var path = req('path'); var dir = process.cwd ? process.cwd() : '.'; var rels = ['std_native.node', 'build/node-ffi/std_native.node', 'build/node-ffi/release/std_native.node', 'build/node-ffi/debug/std_native.node', 'src/js/node-std/build/Release/std_native.node', 'src/js/node-std/build/Debug/std_native.node', 'src/js/node-std/dist/build/Release/std_native.node', 'src/js/node-std/dist/build/Debug/std_native.node']; for (var d = 0; d < 8; d++) { for (var i = 0; i < rels.length; i++) { var c = path.resolve(dir, rels[i]); if (fs.existsSync(c)) { globalThis.__km_napi_std = req(c); return true; } } var parent = path.dirname(dir); if (parent === dir) break; dir = parent; } globalThis.__km_napi_std = null; return false; }")
+@JsFun("() => { if (typeof globalThis.__km_napi_kmcore !== 'undefined') return globalThis.__km_napi_kmcore !== null; if (typeof process === 'undefined' || !process.versions || !process.versions.node) { globalThis.__km_napi_kmcore = null; return false; } var mod = process.getBuiltinModule ? process.getBuiltinModule('module') : (process.mainModule && process.mainModule.constructor); var req = (mod && mod.createRequire) ? mod.createRequire((process.cwd ? process.cwd() : '.') + '/package.json') : (process.mainModule ? process.mainModule.require : null); if (!req) { globalThis.__km_napi_kmcore = null; return false; } try { globalThis.__km_napi_kmcore = req('@kotlinmania/kmcore-native-bindings'); return true; } catch (_) {} var fs = req('fs'); var path = req('path'); var dir = process.cwd ? process.cwd() : '.'; var rels = ['kmcore_native.node', 'build/node-ffi/kmcore_native.node', 'build/node-ffi/release/kmcore_native.node', 'build/node-ffi/debug/kmcore_native.node', 'src/js/node-kmcore/build/Release/kmcore_native.node', 'src/js/node-kmcore/build/Debug/kmcore_native.node', 'src/js/node-kmcore/dist/build/Release/kmcore_native.node', 'src/js/node-kmcore/dist/build/Debug/kmcore_native.node']; for (var d = 0; d < 8; d++) { for (var i = 0; i < rels.length; i++) { var c = path.resolve(dir, rels[i]); if (fs.existsSync(c)) { globalThis.__km_napi_kmcore = req(c); return true; } } var parent = path.dirname(dir); if (parent === dir) break; dir = parent; } globalThis.__km_napi_kmcore = null; return false; }")
 private external fun initSysPalWindowsCWindowssysWindowsSysNapiAddon(): Boolean
 
 private val sysPalWindowsCWindowssysWindowsSysNapiAvailable: Boolean = initSysPalWindowsCWindowssysWindowsSysNapiAddon()
 
-@JsFun("(p0) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysAcquireSRWLockExclusive(p0)")
+@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysAcquireSRWLockExclusive(p0)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysAcquireSRWLockExclusive(p0: String)
 
-@JsFun("(p0) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysAcquireSRWLockShared(p0)")
+@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysAcquireSRWLockShared(p0)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysAcquireSRWLockShared(p0: String)
 
-@JsFun("(p0, p1) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysAddVectoredExceptionHandler(p0, p1)")
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysAddVectoredExceptionHandler(p0, p1)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysAddVectoredExceptionHandler(p0: Int, p1: String): String
 
-@JsFun("(p0) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysCancelIo(p0)")
+@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysCancelIo(p0)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysCancelIo(p0: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysCloseHandle(p0)")
+@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysCloseHandle(p0)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysCloseHandle(p0: String): Int
 
-@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysCompareStringOrdinal(p0, p1, p2, p3, p4)")
+@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysCompareStringOrdinal(p0, p1, p2, p3, p4)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysCompareStringOrdinal(p0: String, p1: Int, p2: String, p3: Int, p4: Int): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysCopyFileExW(p0, p1, p2, p3, p4, p5)")
+@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysCopyFileExW(p0, p1, p2, p3, p4, p5)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysCopyFileExW(p0: String, p1: String, p2: String, p3: String, p4: String, p5: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysCreateDirectoryW(p0, p1)")
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysCreateDirectoryW(p0, p1)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysCreateDirectoryW(p0: String, p1: String): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysCreateEventW(p0, p1, p2, p3)")
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysCreateEventW(p0, p1, p2, p3)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysCreateEventW(p0: String, p1: Int, p2: Int, p3: String): String
 
-@JsFun("(p0, p1, p2, p3, p4, p5, p6) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysCreateFileW(p0, p1, p2, p3, p4, p5, p6)")
+@JsFun("(p0, p1, p2, p3, p4, p5, p6) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysCreateFileW(p0, p1, p2, p3, p4, p5, p6)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysCreateFileW(p0: String, p1: Int, p2: Int, p3: String, p4: Int, p5: Int, p6: String): String
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysCreateHardLinkW(p0, p1, p2)")
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysCreateHardLinkW(p0, p1, p2)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysCreateHardLinkW(p0: String, p1: String, p2: String): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5, p6, p7) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysCreateNamedPipeW(p0, p1, p2, p3, p4, p5, p6, p7)")
+@JsFun("(p0, p1, p2, p3, p4, p5, p6, p7) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysCreateNamedPipeW(p0, p1, p2, p3, p4, p5, p6, p7)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysCreateNamedPipeW(p0: String, p1: Int, p2: Int, p3: Int, p4: Int, p5: Int, p6: Int, p7: String): String
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysCreatePipe(p0, p1, p2, p3)")
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysCreatePipe(p0, p1, p2, p3)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysCreatePipe(p0: String, p1: String, p2: String, p3: Int): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysCreateProcessW(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9)")
+@JsFun("(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysCreateProcessW(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysCreateProcessW(p0: String, p1: String, p2: String, p3: String, p4: Int, p5: Int, p6: String, p7: String, p8: String, p9: String): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysCreateSymbolicLinkW(p0, p1, p2)")
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysCreateSymbolicLinkW(p0, p1, p2)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysCreateSymbolicLinkW(p0: String, p1: String, p2: Int): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysCreateThread(p0, p1, p2, p3, p4, p5)")
+@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysCreateThread(p0, p1, p2, p3, p4, p5)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysCreateThread(p0: String, p1: String, p2: String, p3: String, p4: Int, p5: String): String
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysCreateWaitableTimerExW(p0, p1, p2, p3)")
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysCreateWaitableTimerExW(p0, p1, p2, p3)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysCreateWaitableTimerExW(p0: String, p1: String, p2: Int, p3: Int): String
 
-@JsFun("(p0) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysDeleteFileW(p0)")
+@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysDeleteFileW(p0)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysDeleteFileW(p0: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysDeleteProcThreadAttributeList(p0)")
+@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysDeleteProcThreadAttributeList(p0)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysDeleteProcThreadAttributeList(p0: String)
 
-@JsFun("(p0, p1, p2, p3, p4, p5, p6, p7) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysDeviceIoControl(p0, p1, p2, p3, p4, p5, p6, p7)")
+@JsFun("(p0, p1, p2, p3, p4, p5, p6, p7) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysDeviceIoControl(p0, p1, p2, p3, p4, p5, p6, p7)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysDeviceIoControl(p0: String, p1: Int, p2: String, p3: Int, p4: String, p5: Int, p6: String, p7: String): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5, p6) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysDuplicateHandle(p0, p1, p2, p3, p4, p5, p6)")
+@JsFun("(p0, p1, p2, p3, p4, p5, p6) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysDuplicateHandle(p0, p1, p2, p3, p4, p5, p6)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysDuplicateHandle(p0: String, p1: String, p2: String, p3: String, p4: Int, p5: Int, p6: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysExitProcess(p0)")
+@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysExitProcess(p0)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysExitProcess(p0: Int)
 
-@JsFun("(p0) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysFindClose(p0)")
+@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysFindClose(p0)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysFindClose(p0: String): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysFindFirstFileExW(p0, p1, p2, p3, p4, p5)")
+@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysFindFirstFileExW(p0, p1, p2, p3, p4, p5)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysFindFirstFileExW(p0: String, p1: Int, p2: String, p3: Int, p4: String, p5: Int): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysFindNextFileW(p0, p1)")
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysFindNextFileW(p0, p1)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysFindNextFileW(p0: String, p1: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysFlsAlloc(p0)")
+@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysFlsAlloc(p0)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysFlsAlloc(p0: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysFlsFree(p0)")
+@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysFlsFree(p0)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysFlsFree(p0: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysFlsGetValue(p0)")
+@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysFlsGetValue(p0)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysFlsGetValue(p0: Int): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysFlsSetValue(p0, p1)")
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysFlsSetValue(p0, p1)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysFlsSetValue(p0: Int, p1: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysFlushFileBuffers(p0)")
+@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysFlushFileBuffers(p0)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysFlushFileBuffers(p0: String): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5, p6) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysFormatMessageW(p0, p1, p2, p3, p4, p5, p6)")
+@JsFun("(p0, p1, p2, p3, p4, p5, p6) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysFormatMessageW(p0, p1, p2, p3, p4, p5, p6)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysFormatMessageW(p0: Int, p1: String, p2: Int, p3: Int, p4: String, p5: Int, p6: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysFreeEnvironmentStringsW(p0)")
+@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysFreeEnvironmentStringsW(p0)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysFreeEnvironmentStringsW(p0: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysGetActiveProcessorCount(p0)")
+@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetActiveProcessorCount(p0)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetActiveProcessorCount(p0: Int): Int
 
-@JsFun("() => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysGetCommandLineW()")
+@JsFun("() => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetCommandLineW()")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetCommandLineW(): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysGetConsoleMode(p0, p1)")
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetConsoleMode(p0, p1)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetConsoleMode(p0: String, p1: String): Int
 
-@JsFun("() => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysGetConsoleOutputCP()")
+@JsFun("() => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetConsoleOutputCP()")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetConsoleOutputCP(): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysGetCurrentDirectoryW(p0, p1)")
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetCurrentDirectoryW(p0, p1)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetCurrentDirectoryW(p0: Int, p1: String): Int
 
-@JsFun("() => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysGetCurrentProcess()")
+@JsFun("() => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetCurrentProcess()")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetCurrentProcess(): String
 
-@JsFun("() => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysGetCurrentProcessId()")
+@JsFun("() => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetCurrentProcessId()")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetCurrentProcessId(): Int
 
-@JsFun("() => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysGetCurrentThread()")
+@JsFun("() => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetCurrentThread()")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetCurrentThread(): String
 
-@JsFun("() => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysGetCurrentThreadId()")
+@JsFun("() => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetCurrentThreadId()")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetCurrentThreadId(): Int
 
-@JsFun("() => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysGetEnvironmentStringsW()")
+@JsFun("() => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetEnvironmentStringsW()")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetEnvironmentStringsW(): String
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysGetEnvironmentVariableW(p0, p1, p2)")
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetEnvironmentVariableW(p0, p1, p2)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetEnvironmentVariableW(p0: String, p1: String, p2: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysGetExitCodeProcess(p0, p1)")
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetExitCodeProcess(p0, p1)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetExitCodeProcess(p0: String, p1: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysGetFileAttributesW(p0)")
+@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetFileAttributesW(p0)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetFileAttributesW(p0: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysGetFileInformationByHandle(p0, p1)")
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetFileInformationByHandle(p0, p1)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetFileInformationByHandle(p0: String, p1: String): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysGetFileInformationByHandleEx(p0, p1, p2, p3)")
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetFileInformationByHandleEx(p0, p1, p2, p3)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetFileInformationByHandleEx(p0: String, p1: Int, p2: String, p3: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysGetFileSizeEx(p0, p1)")
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetFileSizeEx(p0, p1)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetFileSizeEx(p0: String, p1: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysGetFileType(p0)")
+@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetFileType(p0)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetFileType(p0: String): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysGetFinalPathNameByHandleW(p0, p1, p2, p3)")
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetFinalPathNameByHandleW(p0, p1, p2, p3)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetFinalPathNameByHandleW(p0: String, p1: String, p2: Int, p3: Int): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysGetFullPathNameW(p0, p1, p2, p3)")
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetFullPathNameW(p0, p1, p2, p3)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetFullPathNameW(p0: String, p1: Int, p2: String, p3: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysGetHostNameW(p0, p1)")
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetHostNameW(p0, p1)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetHostNameW(p0: String, p1: Int): Int
 
-@JsFun("() => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysGetLastError()")
+@JsFun("() => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetLastError()")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetLastError(): Int
 
-@JsFun("() => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysGetLogicalDrives()")
+@JsFun("() => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetLogicalDrives()")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetLogicalDrives(): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysGetModuleFileNameW(p0, p1, p2)")
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetModuleFileNameW(p0, p1, p2)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetModuleFileNameW(p0: String, p1: String, p2: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysGetModuleHandleA(p0)")
+@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetModuleHandleA(p0)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetModuleHandleA(p0: String): String
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysGetModuleHandleExW(p0, p1, p2)")
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetModuleHandleExW(p0, p1, p2)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetModuleHandleExW(p0: Int, p1: String, p2: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysGetModuleHandleW(p0)")
+@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetModuleHandleW(p0)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetModuleHandleW(p0: String): String
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysGetOverlappedResult(p0, p1, p2, p3)")
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetOverlappedResult(p0, p1, p2, p3)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetOverlappedResult(p0: String, p1: String, p2: String, p3: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysGetProcAddress(p0, p1)")
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetProcAddress(p0, p1)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetProcAddress(p0: String, p1: String): String
 
-@JsFun("(p0) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysGetProcessId(p0)")
+@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetProcessId(p0)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetProcessId(p0: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysGetStdHandle(p0)")
+@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetStdHandle(p0)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetStdHandle(p0: Int): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysGetSystemDirectoryW(p0, p1)")
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetSystemDirectoryW(p0, p1)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetSystemDirectoryW(p0: String, p1: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysGetSystemInfo(p0)")
+@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetSystemInfo(p0)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetSystemInfo(p0: String)
 
-@JsFun("(p0) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysGetSystemTimeAsFileTime(p0)")
+@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetSystemTimeAsFileTime(p0)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetSystemTimeAsFileTime(p0: String)
 
-@JsFun("(p0) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysGetSystemTimePreciseAsFileTime(p0)")
+@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetSystemTimePreciseAsFileTime(p0)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetSystemTimePreciseAsFileTime(p0: String)
 
-@JsFun("(p0, p1) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysGetTempPathW(p0, p1)")
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetTempPathW(p0, p1)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetTempPathW(p0: Int, p1: String): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysGetUserProfileDirectoryW(p0, p1, p2)")
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetUserProfileDirectoryW(p0, p1, p2)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetUserProfileDirectoryW(p0: String, p1: String, p2: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysGetWindowsDirectoryW(p0, p1)")
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetWindowsDirectoryW(p0, p1)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetWindowsDirectoryW(p0: String, p1: Int): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysInitOnceBeginInitialize(p0, p1, p2, p3)")
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysInitOnceBeginInitialize(p0, p1, p2, p3)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysInitOnceBeginInitialize(p0: String, p1: Int, p2: String, p3: String): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysInitOnceComplete(p0, p1, p2)")
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysInitOnceComplete(p0, p1, p2)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysInitOnceComplete(p0: String, p1: Int, p2: String): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysInitializeProcThreadAttributeList(p0, p1, p2, p3)")
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysInitializeProcThreadAttributeList(p0, p1, p2, p3)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysInitializeProcThreadAttributeList(p0: String, p1: Int, p2: Int, p3: String): Int
 
-@JsFun("() => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysIsThreadAFiber()")
+@JsFun("() => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysIsThreadAFiber()")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysIsThreadAFiber(): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysLoadLibraryExA(p0, p1, p2)")
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysLoadLibraryExA(p0, p1, p2)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysLoadLibraryExA(p0: String, p1: String, p2: Int): String
 
-@JsFun("(p0) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysLocalFree(p0)")
+@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysLocalFree(p0)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysLocalFree(p0: String): String
 
-@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysLockFileEx(p0, p1, p2, p3, p4, p5)")
+@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysLockFileEx(p0, p1, p2, p3, p4, p5)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysLockFileEx(p0: String, p1: Int, p2: Int, p3: Int, p4: Int, p5: String): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysMoveFileExW(p0, p1, p2)")
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysMoveFileExW(p0, p1, p2)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysMoveFileExW(p0: String, p1: String, p2: Int): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysMultiByteToWideChar(p0, p1, p2, p3, p4, p5)")
+@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysMultiByteToWideChar(p0, p1, p2, p3, p4, p5)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysMultiByteToWideChar(p0: Int, p1: Int, p2: String, p3: Int, p4: String, p5: Int): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysNtCreateFile(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10)")
+@JsFun("(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysNtCreateFile(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysNtCreateFile(p0: String, p1: Int, p2: String, p3: String, p4: String, p5: Int, p6: Int, p7: Int, p8: Int, p9: String, p10: Int): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysNtOpenFile(p0, p1, p2, p3, p4, p5)")
+@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysNtOpenFile(p0, p1, p2, p3, p4, p5)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysNtOpenFile(p0: String, p1: Int, p2: String, p3: String, p4: Int, p5: Int): Int
 
-@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysNtQueryVolumeInformationFile(p0, p1, p2, p3, p4)")
+@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysNtQueryVolumeInformationFile(p0, p1, p2, p3, p4)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysNtQueryVolumeInformationFile(p0: String, p1: String, p2: String, p3: Int, p4: Int): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5, p6, p7, p8) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysNtReadFile(p0, p1, p2, p3, p4, p5, p6, p7, p8)")
+@JsFun("(p0, p1, p2, p3, p4, p5, p6, p7, p8) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysNtReadFile(p0, p1, p2, p3, p4, p5, p6, p7, p8)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysNtReadFile(p0: String, p1: String, p2: String, p3: String, p4: String, p5: String, p6: Int, p7: String, p8: String): Int
 
-@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysNtSetInformationFile(p0, p1, p2, p3, p4)")
+@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysNtSetInformationFile(p0, p1, p2, p3, p4)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysNtSetInformationFile(p0: String, p1: String, p2: String, p3: Int, p4: Int): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5, p6, p7, p8) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysNtWriteFile(p0, p1, p2, p3, p4, p5, p6, p7, p8)")
+@JsFun("(p0, p1, p2, p3, p4, p5, p6, p7, p8) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysNtWriteFile(p0, p1, p2, p3, p4, p5, p6, p7, p8)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysNtWriteFile(p0: String, p1: String, p2: String, p3: String, p4: String, p5: String, p6: Int, p7: String, p8: String): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysOpenProcessToken(p0, p1, p2)")
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysOpenProcessToken(p0, p1, p2)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysOpenProcessToken(p0: String, p1: Int, p2: String): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysQueryDosDeviceW(p0, p1, p2)")
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysQueryDosDeviceW(p0, p1, p2)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysQueryDosDeviceW(p0: String, p1: String, p2: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysQueryPerformanceCounter(p0)")
+@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysQueryPerformanceCounter(p0)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysQueryPerformanceCounter(p0: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysQueryPerformanceFrequency(p0)")
+@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysQueryPerformanceFrequency(p0)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysQueryPerformanceFrequency(p0: String): Int
 
-@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysReadConsoleW(p0, p1, p2, p3, p4)")
+@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysReadConsoleW(p0, p1, p2, p3, p4)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysReadConsoleW(p0: String, p1: String, p2: Int, p3: String, p4: String): Int
 
-@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysReadFile(p0, p1, p2, p3, p4)")
+@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysReadFile(p0, p1, p2, p3, p4)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysReadFile(p0: String, p1: String, p2: Int, p3: String, p4: String): Int
 
-@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysReadFileEx(p0, p1, p2, p3, p4)")
+@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysReadFileEx(p0, p1, p2, p3, p4)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysReadFileEx(p0: String, p1: String, p2: Int, p3: String, p4: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysReleaseSRWLockExclusive(p0)")
+@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysReleaseSRWLockExclusive(p0)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysReleaseSRWLockExclusive(p0: String)
 
-@JsFun("(p0) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysReleaseSRWLockShared(p0)")
+@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysReleaseSRWLockShared(p0)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysReleaseSRWLockShared(p0: String)
 
-@JsFun("(p0) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysRemoveDirectoryW(p0)")
+@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysRemoveDirectoryW(p0)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysRemoveDirectoryW(p0: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysRtlGenRandom(p0, p1)")
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysRtlGenRandom(p0, p1)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysRtlGenRandom(p0: String, p1: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysRtlNtStatusToDosError(p0)")
+@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysRtlNtStatusToDosError(p0)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysRtlNtStatusToDosError(p0: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysSetCurrentDirectoryW(p0)")
+@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysSetCurrentDirectoryW(p0)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysSetCurrentDirectoryW(p0: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysSetEnvironmentVariableW(p0, p1)")
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysSetEnvironmentVariableW(p0, p1)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysSetEnvironmentVariableW(p0: String, p1: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysSetFileAttributesW(p0, p1)")
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysSetFileAttributesW(p0, p1)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysSetFileAttributesW(p0: String, p1: Int): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysSetFileInformationByHandle(p0, p1, p2, p3)")
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysSetFileInformationByHandle(p0, p1, p2, p3)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysSetFileInformationByHandle(p0: String, p1: Int, p2: String, p3: Int): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysSetFilePointerEx(p0, p1, p2, p3)")
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysSetFilePointerEx(p0, p1, p2, p3)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysSetFilePointerEx(p0: String, p1: String, p2: String, p3: Int): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysSetFileTime(p0, p1, p2, p3)")
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysSetFileTime(p0, p1, p2, p3)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysSetFileTime(p0: String, p1: String, p2: String, p3: String): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysSetHandleInformation(p0, p1, p2)")
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysSetHandleInformation(p0, p1, p2)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysSetHandleInformation(p0: String, p1: Int, p2: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysSetLastError(p0)")
+@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysSetLastError(p0)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysSetLastError(p0: Int)
 
-@JsFun("(p0, p1) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysSetStdHandle(p0, p1)")
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysSetStdHandle(p0, p1)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysSetStdHandle(p0: Int, p1: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysSetThreadStackGuarantee(p0)")
+@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysSetThreadStackGuarantee(p0)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysSetThreadStackGuarantee(p0: String): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysSetWaitableTimer(p0, p1, p2, p3, p4, p5)")
+@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysSetWaitableTimer(p0, p1, p2, p3, p4, p5)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysSetWaitableTimer(p0: String, p1: String, p2: Int, p3: String, p4: String, p5: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysSleep(p0)")
+@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysSleep(p0)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysSleep(p0: Int)
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysSleepConditionVariableSRW(p0, p1, p2, p3)")
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysSleepConditionVariableSRW(p0, p1, p2, p3)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysSleepConditionVariableSRW(p0: String, p1: String, p2: Int, p3: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysSleepEx(p0, p1)")
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysSleepEx(p0, p1)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysSleepEx(p0: Int, p1: Int): Int
 
-@JsFun("() => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysSwitchToThread()")
+@JsFun("() => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysSwitchToThread()")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysSwitchToThread(): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysTerminateProcess(p0, p1)")
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysTerminateProcess(p0, p1)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysTerminateProcess(p0: String, p1: Int): Int
 
-@JsFun("() => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysTlsAlloc()")
+@JsFun("() => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysTlsAlloc()")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysTlsAlloc(): Int
 
-@JsFun("(p0) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysTlsFree(p0)")
+@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysTlsFree(p0)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysTlsFree(p0: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysTlsGetValue(p0)")
+@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysTlsGetValue(p0)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysTlsGetValue(p0: Int): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysTlsSetValue(p0, p1)")
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysTlsSetValue(p0, p1)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysTlsSetValue(p0: Int, p1: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysTryAcquireSRWLockExclusive(p0)")
+@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysTryAcquireSRWLockExclusive(p0)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysTryAcquireSRWLockExclusive(p0: String): Int
 
-@JsFun("(p0) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysTryAcquireSRWLockShared(p0)")
+@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysTryAcquireSRWLockShared(p0)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysTryAcquireSRWLockShared(p0: String): Int
 
-@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysUnlockFile(p0, p1, p2, p3, p4)")
+@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysUnlockFile(p0, p1, p2, p3, p4)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysUnlockFile(p0: String, p1: Int, p2: Int, p3: Int, p4: Int): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5, p6) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysUpdateProcThreadAttribute(p0, p1, p2, p3, p4, p5, p6)")
+@JsFun("(p0, p1, p2, p3, p4, p5, p6) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysUpdateProcThreadAttribute(p0, p1, p2, p3, p4, p5, p6)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysUpdateProcThreadAttribute(p0: String, p1: Int, p2: String, p3: String, p4: String, p5: String, p6: String): Int
 
-@JsFun("() => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysWSACleanup()")
+@JsFun("() => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysWSACleanup()")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysWSACleanup(): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysWSADuplicateSocketW(p0, p1, p2)")
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysWSADuplicateSocketW(p0, p1, p2)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysWSADuplicateSocketW(p0: String, p1: Int, p2: String): Int
 
-@JsFun("() => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysWSAGetLastError()")
+@JsFun("() => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysWSAGetLastError()")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysWSAGetLastError(): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5, p6) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysWSARecv(p0, p1, p2, p3, p4, p5, p6)")
+@JsFun("(p0, p1, p2, p3, p4, p5, p6) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysWSARecv(p0, p1, p2, p3, p4, p5, p6)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysWSARecv(p0: String, p1: String, p2: Int, p3: String, p4: String, p5: String, p6: String): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5, p6) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysWSASend(p0, p1, p2, p3, p4, p5, p6)")
+@JsFun("(p0, p1, p2, p3, p4, p5, p6) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysWSASend(p0, p1, p2, p3, p4, p5, p6)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysWSASend(p0: String, p1: String, p2: Int, p3: String, p4: Int, p5: String, p6: String): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysWSASocketW(p0, p1, p2, p3, p4, p5)")
+@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysWSASocketW(p0, p1, p2, p3, p4, p5)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysWSASocketW(p0: Int, p1: Int, p2: Int, p3: String, p4: Int, p5: Int): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysWSAStartup(p0, p1)")
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysWSAStartup(p0, p1)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysWSAStartup(p0: Int, p1: String): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysWaitForMultipleObjects(p0, p1, p2, p3)")
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysWaitForMultipleObjects(p0, p1, p2, p3)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysWaitForMultipleObjects(p0: Int, p1: String, p2: Int, p3: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysWaitForSingleObject(p0, p1)")
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysWaitForSingleObject(p0, p1)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysWaitForSingleObject(p0: String, p1: Int): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysWaitOnAddress(p0, p1, p2, p3)")
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysWaitOnAddress(p0, p1, p2, p3)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysWaitOnAddress(p0: String, p1: String, p2: String, p3: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysWakeAllConditionVariable(p0)")
+@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysWakeAllConditionVariable(p0)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysWakeAllConditionVariable(p0: String)
 
-@JsFun("(p0) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysWakeByAddressAll(p0)")
+@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysWakeByAddressAll(p0)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysWakeByAddressAll(p0: String)
 
-@JsFun("(p0) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysWakeByAddressSingle(p0)")
+@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysWakeByAddressSingle(p0)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysWakeByAddressSingle(p0: String)
 
-@JsFun("(p0) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysWakeConditionVariable(p0)")
+@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysWakeConditionVariable(p0)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysWakeConditionVariable(p0: String)
 
-@JsFun("(p0, p1, p2, p3, p4, p5, p6, p7) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysWideCharToMultiByte(p0, p1, p2, p3, p4, p5, p6, p7)")
+@JsFun("(p0, p1, p2, p3, p4, p5, p6, p7) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysWideCharToMultiByte(p0, p1, p2, p3, p4, p5, p6, p7)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysWideCharToMultiByte(p0: Int, p1: Int, p2: String, p3: Int, p4: String, p5: Int, p6: String, p7: String): Int
 
-@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysWriteConsoleW(p0, p1, p2, p3, p4)")
+@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysWriteConsoleW(p0, p1, p2, p3, p4)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysWriteConsoleW(p0: String, p1: String, p2: Int, p3: String, p4: String): Int
 
-@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysWriteFileEx(p0, p1, p2, p3, p4)")
+@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysWriteFileEx(p0, p1, p2, p3, p4)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysWriteFileEx(p0: String, p1: String, p2: Int, p3: String, p4: String): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysAccept(p0, p1, p2)")
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysAccept(p0, p1, p2)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysAccept(p0: String, p1: String, p2: String): String
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysBind(p0, p1, p2)")
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysBind(p0, p1, p2)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysBind(p0: String, p1: String, p2: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysClosesocket(p0)")
+@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysClosesocket(p0)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysClosesocket(p0: String): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysConnect(p0, p1, p2)")
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysConnect(p0, p1, p2)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysConnect(p0: String, p1: String, p2: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysFreeaddrinfo(p0)")
+@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysFreeaddrinfo(p0)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysFreeaddrinfo(p0: String)
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysGetaddrinfo(p0, p1, p2, p3)")
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetaddrinfo(p0, p1, p2, p3)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetaddrinfo(p0: String, p1: String, p2: String, p3: String): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysGetpeername(p0, p1, p2)")
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetpeername(p0, p1, p2)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetpeername(p0: String, p1: String, p2: String): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysGetsockname(p0, p1, p2)")
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetsockname(p0, p1, p2)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetsockname(p0: String, p1: String, p2: String): Int
 
-@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysGetsockopt(p0, p1, p2, p3, p4)")
+@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysGetsockopt(p0, p1, p2, p3, p4)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysGetsockopt(p0: String, p1: Int, p2: Int, p3: String, p4: String): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysIoctlsocket(p0, p1, p2)")
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysIoctlsocket(p0, p1, p2)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysIoctlsocket(p0: String, p1: Int, p2: String): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysListen(p0, p1)")
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysListen(p0, p1)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysListen(p0: String, p1: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysLstrlenW(p0)")
+@JsFun("(p0) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysLstrlenW(p0)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysLstrlenW(p0: String): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysRecv(p0, p1, p2, p3)")
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysRecv(p0, p1, p2, p3)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysRecv(p0: String, p1: String, p2: Int, p3: Int): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysRecvfrom(p0, p1, p2, p3, p4, p5)")
+@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysRecvfrom(p0, p1, p2, p3, p4, p5)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysRecvfrom(p0: String, p1: String, p2: Int, p3: Int, p4: String, p5: String): Int
 
-@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysSelect(p0, p1, p2, p3, p4)")
+@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysSelect(p0, p1, p2, p3, p4)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysSelect(p0: Int, p1: String, p2: String, p3: String, p4: String): Int
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysSend(p0, p1, p2, p3)")
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysSend(p0, p1, p2, p3)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysSend(p0: String, p1: String, p2: Int, p3: Int): Int
 
-@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysSendto(p0, p1, p2, p3, p4, p5)")
+@JsFun("(p0, p1, p2, p3, p4, p5) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysSendto(p0, p1, p2, p3, p4, p5)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysSendto(p0: String, p1: String, p2: Int, p3: Int, p4: String, p5: Int): Int
 
-@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysSetsockopt(p0, p1, p2, p3, p4)")
+@JsFun("(p0, p1, p2, p3, p4) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysSetsockopt(p0, p1, p2, p3, p4)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysSetsockopt(p0: String, p1: Int, p2: Int, p3: String, p4: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_std.stdSysPalWindowsCWindowssysWindowsSysShutdown(p0, p1)")
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.stdSysPalWindowsCWindowssysWindowsSysShutdown(p0, p1)")
 private external fun wasmStdSysPalWindowsCWindowssysWindowsSysShutdown(p0: String, p1: Int): Int
 
 public actual fun acquireSRWLockExclusive(srwlock: MutPtr) {

@@ -12,6 +12,8 @@ import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.time.Duration
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
+import io.github.kotlinmania.rustlang.std.io.ErrorKind
+import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.path.PathBuf
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.api.WinError
@@ -19,14 +21,14 @@ import io.github.kotlinmania.rustlang.std.sys.pal.windows.api.getLastError
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.api.wideStr
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.ERROR_INSUFFICIENT_BUFFER
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.INFINITE
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.setLastError
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.SetLastError
 import io.github.kotlinmania.rustlang.std.sys.thread.windows.setNameWide
 
 // SAFETY: must be called only once during runtime initialization.
 // NOTE: this is not guaranteed to run, for example when Rust code is called externally.
 public fun init(argc: Int, argv: ConstPtr, sigpipe: UByte) {
     run {
-        io.github.kotlinmania.rustlang.std.sys.pal.windows.stackoverflow.init()
+        io.github.kotlinmania.rustlang.std.sys.pal.windows.stackoverflowuwp.init()
         // Normally, `thread.spawn` will call `setName` but since this thread already
         // exists, we have to call it ourselves.
         setNameWide(wideStr("main"))
@@ -153,13 +155,13 @@ public fun <T> fillUtf16Buf(f1: (MutPtr, UInt) -> UInt, f2: (List<UShort>) -> T)
             // then check it again if we get the "0 error value". If the "last
             // error" is still 0 then we interpret it as a 0 length buffer and
             // not an actual error.
-            setLastError(0u)
+            SetLastError(0)
             val k =
                 (run {
                     val matchVal = f1(MutPtr((buf.asMutPtr()).rawAddress), n.toUInt())
                     when {
                         matchVal == 0 && getLastError().code == 0 -> 0
-                        matchVal == 0 -> { return Result.Err(Error.lastOsError()) }
+                        matchVal == 0 -> { return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.lastOsError()) }
                         else -> {
                             val n1 = matchVal
                             n1
@@ -206,7 +208,7 @@ public fun ensureNoNuls(s: OsStr): Result<OsStr, Error> =
 
 public fun <I : IsZero> cvt(i: I): Result<I, Error> =
     if (i.isZero()) {
-        Result.Err(Error.lastOsError())
+        Result.Err(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
     } else {
         Result.Ok(i)
     }
@@ -251,10 +253,10 @@ public fun dur2timeout(dur: Duration): UInt {
  */
 public fun abortInternal(): Nothing =
     run {
-        asm("int \$\$0x29", "ecx", c, FAST_FAIL_FATAL_APP_EXIT, options(noreturn, nostack))
+        Unit
     }
 
-public fun <T> Result<T, WinError>.ioResult(): Result<T, Error> = this.mapErr({ e -> Error.fromRawOsError(e.code) })
+public fun <T> Result<T, WinError>.ioResult(): Result<T, Error> = this.mapErr({ e -> io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(e.code) })
 
 public fun Byte.isZero(): Boolean = (this == 0.toByte()).toUByte()
 

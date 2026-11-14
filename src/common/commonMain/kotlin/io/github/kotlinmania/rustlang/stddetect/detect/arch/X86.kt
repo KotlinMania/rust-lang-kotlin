@@ -27,7 +27,7 @@ import io.github.kotlinmania.rustlang.stddetect.detect.checkFor
  * PLEASE: do not use this, it is an implementation detail subject
  * to change.
  */
-internal sealed class Feature {
+public sealed class Feature {
     /**
      * AES (Advanced Encryption Standard New Instructions AES-NI)
      */
@@ -341,7 +341,7 @@ internal sealed class Feature {
      */
     public data object Xop : Feature()
 
-    internal open fun toStr(): String =
+    public open fun toStr(): String =
         when (this) {
             Feature.aes -> "aes"
             Feature.pclmulqdq -> "pclmulqdq"
@@ -424,9 +424,9 @@ internal sealed class Feature {
         }
 
     public companion object {
-        internal val ALL: List<Feature> = listOf(Feature::aes, Feature::pclmulqdq, Feature::rdrand, Feature::rdseed, Feature::tsc, Feature::mmx, Feature::sse, Feature::sse2, Feature::sse3, Feature::ssse3, Feature::sse41, Feature::sse42, Feature::sse4a, Feature::sha, Feature::avx, Feature::avx2, Feature::sha512, Feature::sm3, Feature::sm4, Feature::avx512f, Feature::avx512cd, Feature::avx512er, Feature::avx512pf, Feature::avx512bw, Feature::avx512dq, Feature::avx512vl, Feature::avx512ifma, Feature::avx512vbmi, Feature::avx512vpopcntdq, Feature::avx512vbmi2, Feature::gfni, Feature::vaes, Feature::vpclmulqdq, Feature::avx512vnni, Feature::avx512bitalg, Feature::avx512bf16, Feature::avx512vp2intersect, Feature::avx512fp16, Feature::avxifma, Feature::avxneconvert, Feature::avxvnni, Feature::avxvnniint16, Feature::avxvnniint8, Feature::amxTile, Feature::amxInt8, Feature::amxBf16, Feature::amxFp16, Feature::amxComplex, Feature::amxAvx512, Feature::amxFp8, Feature::amxMovrs, Feature::apxf, Feature::avx101, Feature::avx102, Feature::f16c, Feature::fma, Feature::bmi1, Feature::bmi2, Feature::lzcnt, Feature::tbm, Feature::popcnt, Feature::fxsr, Feature::xsave, Feature::xsaveopt, Feature::xsaves, Feature::xsavec, Feature::cmpxchg16b, Feature::clflushopt, Feature::kl, Feature::widekl, Feature::adx, Feature::rtm, Feature::movbe, Feature::movdir64b, Feature::movdiri, Feature::movrs, Feature::ermsb, Feature::xop)
+        public val ALL: List<Feature> = listOf(Feature::aes, Feature::pclmulqdq, Feature::rdrand, Feature::rdseed, Feature::tsc, Feature::mmx, Feature::sse, Feature::sse2, Feature::sse3, Feature::ssse3, Feature::sse41, Feature::sse42, Feature::sse4a, Feature::sha, Feature::avx, Feature::avx2, Feature::sha512, Feature::sm3, Feature::sm4, Feature::avx512f, Feature::avx512cd, Feature::avx512er, Feature::avx512pf, Feature::avx512bw, Feature::avx512dq, Feature::avx512vl, Feature::avx512ifma, Feature::avx512vbmi, Feature::avx512vpopcntdq, Feature::avx512vbmi2, Feature::gfni, Feature::vaes, Feature::vpclmulqdq, Feature::avx512vnni, Feature::avx512bitalg, Feature::avx512bf16, Feature::avx512vp2intersect, Feature::avx512fp16, Feature::avxifma, Feature::avxneconvert, Feature::avxvnni, Feature::avxvnniint16, Feature::avxvnniint8, Feature::amxTile, Feature::amxInt8, Feature::amxBf16, Feature::amxFp16, Feature::amxComplex, Feature::amxAvx512, Feature::amxFp8, Feature::amxMovrs, Feature::apxf, Feature::avx101, Feature::avx102, Feature::f16c, Feature::fma, Feature::bmi1, Feature::bmi2, Feature::lzcnt, Feature::tbm, Feature::popcnt, Feature::fxsr, Feature::xsave, Feature::xsaveopt, Feature::xsaves, Feature::xsavec, Feature::cmpxchg16b, Feature::clflushopt, Feature::kl, Feature::widekl, Feature::adx, Feature::rtm, Feature::movbe, Feature::movdir64b, Feature::movdiri, Feature::movrs, Feature::ermsb, Feature::xop)
 
-        internal fun fromStr(s: String): Result<Feature, Unit> =
+        public fun fromStr(s: String): Result<Feature, Unit> =
             when (s) {
                 "aes" -> Result.Ok(Feature::aes)
                 "pclmulqdq" -> Result.Ok(Feature::pclmulqdq)

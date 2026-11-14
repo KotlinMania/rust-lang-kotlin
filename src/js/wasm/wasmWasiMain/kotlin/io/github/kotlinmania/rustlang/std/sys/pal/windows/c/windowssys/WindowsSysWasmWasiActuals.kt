@@ -5,7 +5,7 @@ package io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 
-// The host must provide the C companion wrapper exports in import module std.
+// The host must provide the C companion wrapper exports in import module kmcore.
 public actual fun acquireSRWLockExclusive(srwlock: MutPtr) {
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for stdSysPalWindowsCWindowssysWindowsSysAcquireSRWLockExclusive")
 }
@@ -72,7 +72,7 @@ public actual fun deviceIoControl(hdevice: Handle, dwiocontrolcode: UInt, lpinbu
 public actual fun duplicateHandle(hsourceprocesshandle: Handle, hsourcehandle: Handle, htargetprocesshandle: Handle, lptargethandle: MutPtr, dwdesiredaccess: UInt, binherithandle: Bool, dwoptions: UInt): Bool =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for stdSysPalWindowsCWindowssysWindowsSysDuplicateHandle")
 
-@kotlin.wasm.WasmImport("std", "stdSysPalWindowsCWindowssysWindowsSysExitProcess")
+@kotlin.wasm.WasmImport("kmcore", "stdSysPalWindowsCWindowssysWindowsSysExitProcess")
 private external fun wasiStdSysPalWindowsCWindowssysWindowsSysExitProcess(uexitcode: Int): Unit
 
 public actual fun exitProcess(uexitcode: UInt): Nothing {
@@ -92,7 +92,7 @@ public actual fun findNextFileW(hfindfile: Handle, lpfindfiledata: MutPtr): Bool
 public actual fun flsAlloc(lpcallback: PflsCallbackFunction): UInt =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for stdSysPalWindowsCWindowssysWindowsSysFlsAlloc")
 
-@kotlin.wasm.WasmImport("std", "stdSysPalWindowsCWindowssysWindowsSysFlsFree")
+@kotlin.wasm.WasmImport("kmcore", "stdSysPalWindowsCWindowssysWindowsSysFlsFree")
 private external fun wasiStdSysPalWindowsCWindowssysWindowsSysFlsFree(dwflsindex: Int): Int
 
 public actual fun flsFree(dwflsindex: UInt): Bool =
@@ -113,7 +113,7 @@ public actual fun formatMessageW(dwflags: UInt, lpsource: ConstPtr, dwmessageid:
 public actual fun freeEnvironmentStringsW(penv: ConstPtr): Bool =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for stdSysPalWindowsCWindowssysWindowsSysFreeEnvironmentStringsW")
 
-@kotlin.wasm.WasmImport("std", "stdSysPalWindowsCWindowssysWindowsSysGetActiveProcessorCount")
+@kotlin.wasm.WasmImport("kmcore", "stdSysPalWindowsCWindowssysWindowsSysGetActiveProcessorCount")
 private external fun wasiStdSysPalWindowsCWindowssysWindowsSysGetActiveProcessorCount(groupnumber: Int): Int
 
 public actual fun getActiveProcessorCount(groupnumber: UShort): UInt =
@@ -125,7 +125,7 @@ public actual fun getCommandLineW(): Pwstr =
 public actual fun getConsoleMode(hconsolehandle: Handle, lpmode: MutPtr): Bool =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for stdSysPalWindowsCWindowssysWindowsSysGetConsoleMode")
 
-@kotlin.wasm.WasmImport("std", "stdSysPalWindowsCWindowssysWindowsSysGetConsoleOutputCP")
+@kotlin.wasm.WasmImport("kmcore", "stdSysPalWindowsCWindowssysWindowsSysGetConsoleOutputCP")
 private external fun wasiStdSysPalWindowsCWindowssysWindowsSysGetConsoleOutputCP(): Int
 
 public actual fun getConsoleOutputCP(): UInt =
@@ -137,7 +137,7 @@ public actual fun getCurrentDirectoryW(nbufferlength: UInt, lpbuffer: Pwstr): UI
 public actual fun getCurrentProcess(): Handle =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for stdSysPalWindowsCWindowssysWindowsSysGetCurrentProcess")
 
-@kotlin.wasm.WasmImport("std", "stdSysPalWindowsCWindowssysWindowsSysGetCurrentProcessId")
+@kotlin.wasm.WasmImport("kmcore", "stdSysPalWindowsCWindowssysWindowsSysGetCurrentProcessId")
 private external fun wasiStdSysPalWindowsCWindowssysWindowsSysGetCurrentProcessId(): Int
 
 public actual fun getCurrentProcessId(): UInt =
@@ -146,7 +146,7 @@ public actual fun getCurrentProcessId(): UInt =
 public actual fun getCurrentThread(): Handle =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for stdSysPalWindowsCWindowssysWindowsSysGetCurrentThread")
 
-@kotlin.wasm.WasmImport("std", "stdSysPalWindowsCWindowssysWindowsSysGetCurrentThreadId")
+@kotlin.wasm.WasmImport("kmcore", "stdSysPalWindowsCWindowssysWindowsSysGetCurrentThreadId")
 private external fun wasiStdSysPalWindowsCWindowssysWindowsSysGetCurrentThreadId(): Int
 
 public actual fun getCurrentThreadId(): UInt =
@@ -185,13 +185,13 @@ public actual fun getFullPathNameW(lpfilename: Pcwstr, nbufferlength: UInt, lpbu
 public actual fun getHostNameW(name: Pwstr, namelen: Int): Int =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for stdSysPalWindowsCWindowssysWindowsSysGetHostNameW")
 
-@kotlin.wasm.WasmImport("std", "stdSysPalWindowsCWindowssysWindowsSysGetLastError")
+@kotlin.wasm.WasmImport("kmcore", "stdSysPalWindowsCWindowssysWindowsSysGetLastError")
 private external fun wasiStdSysPalWindowsCWindowssysWindowsSysGetLastError(): Int
 
 public actual fun getLastError(): UInt =
     wasiStdSysPalWindowsCWindowssysWindowsSysGetLastError().toUInt()
 
-@kotlin.wasm.WasmImport("std", "stdSysPalWindowsCWindowssysWindowsSysGetLogicalDrives")
+@kotlin.wasm.WasmImport("kmcore", "stdSysPalWindowsCWindowssysWindowsSysGetLogicalDrives")
 private external fun wasiStdSysPalWindowsCWindowssysWindowsSysGetLogicalDrives(): Int
 
 public actual fun getLogicalDrives(): UInt =
@@ -254,7 +254,7 @@ public actual fun initOnceComplete(lpinitonce: LpinitOnce, dwflags: UInt, lpcont
 public actual fun initializeProcThreadAttributeList(lpattributelist: MutPtr, dwattributecount: UInt, dwflags: UInt, lpsize: MutPtr): Bool =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for stdSysPalWindowsCWindowssysWindowsSysInitializeProcThreadAttributeList")
 
-@kotlin.wasm.WasmImport("std", "stdSysPalWindowsCWindowssysWindowsSysIsThreadAFiber")
+@kotlin.wasm.WasmImport("kmcore", "stdSysPalWindowsCWindowssysWindowsSysIsThreadAFiber")
 private external fun wasiStdSysPalWindowsCWindowssysWindowsSysIsThreadAFiber(): Int
 
 public actual fun isThreadAFiber(): Bool =
@@ -328,7 +328,7 @@ public actual fun removeDirectoryW(lppathname: Pcwstr): Bool =
 public actual fun rtlGenRandom(randombuffer: MutPtr, randombufferlength: UInt): Boolean =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for stdSysPalWindowsCWindowssysWindowsSysRtlGenRandom")
 
-@kotlin.wasm.WasmImport("std", "stdSysPalWindowsCWindowssysWindowsSysRtlNtStatusToDosError")
+@kotlin.wasm.WasmImport("kmcore", "stdSysPalWindowsCWindowssysWindowsSysRtlNtStatusToDosError")
 private external fun wasiStdSysPalWindowsCWindowssysWindowsSysRtlNtStatusToDosError(status: Int): Int
 
 public actual fun rtlNtStatusToDosError(status: Ntstatus): UInt =
@@ -355,7 +355,7 @@ public actual fun setFileTime(hfile: Handle, lpcreationtime: ConstPtr, lplastacc
 public actual fun setHandleInformation(hobject: Handle, dwmask: UInt, dwflags: UInt): Bool =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for stdSysPalWindowsCWindowssysWindowsSysSetHandleInformation")
 
-@kotlin.wasm.WasmImport("std", "stdSysPalWindowsCWindowssysWindowsSysSetLastError")
+@kotlin.wasm.WasmImport("kmcore", "stdSysPalWindowsCWindowssysWindowsSysSetLastError")
 private external fun wasiStdSysPalWindowsCWindowssysWindowsSysSetLastError(dwerrcode: Int): Unit
 
 public actual fun setLastError(dwerrcode: UInt): Unit =
@@ -370,7 +370,7 @@ public actual fun setThreadStackGuarantee(stacksizeinbytes: MutPtr): Bool =
 public actual fun setWaitableTimer(htimer: Handle, lpduetime: ConstPtr, lperiod: Int, pfncompletionroutine: Ptimerapcroutine, lpargtocompletionroutine: ConstPtr, fresume: Bool): Bool =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for stdSysPalWindowsCWindowssysWindowsSysSetWaitableTimer")
 
-@kotlin.wasm.WasmImport("std", "stdSysPalWindowsCWindowssysWindowsSysSleep")
+@kotlin.wasm.WasmImport("kmcore", "stdSysPalWindowsCWindowssysWindowsSysSleep")
 private external fun wasiStdSysPalWindowsCWindowssysWindowsSysSleep(dwmilliseconds: Int): Unit
 
 public actual fun sleep(dwmilliseconds: UInt): Unit =
@@ -379,13 +379,13 @@ public actual fun sleep(dwmilliseconds: UInt): Unit =
 public actual fun sleepConditionVariableSRW(conditionvariable: MutPtr, srwlock: MutPtr, dwmilliseconds: UInt, flags: UInt): Bool =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for stdSysPalWindowsCWindowssysWindowsSysSleepConditionVariableSRW")
 
-@kotlin.wasm.WasmImport("std", "stdSysPalWindowsCWindowssysWindowsSysSleepEx")
+@kotlin.wasm.WasmImport("kmcore", "stdSysPalWindowsCWindowssysWindowsSysSleepEx")
 private external fun wasiStdSysPalWindowsCWindowssysWindowsSysSleepEx(dwmilliseconds: Int, balertable: Int): Int
 
 public actual fun sleepEx(dwmilliseconds: UInt, balertable: Bool): UInt =
     wasiStdSysPalWindowsCWindowssysWindowsSysSleepEx(dwmilliseconds.toInt(), balertable).toUInt()
 
-@kotlin.wasm.WasmImport("std", "stdSysPalWindowsCWindowssysWindowsSysSwitchToThread")
+@kotlin.wasm.WasmImport("kmcore", "stdSysPalWindowsCWindowssysWindowsSysSwitchToThread")
 private external fun wasiStdSysPalWindowsCWindowssysWindowsSysSwitchToThread(): Int
 
 public actual fun switchToThread(): Bool =
@@ -394,13 +394,13 @@ public actual fun switchToThread(): Bool =
 public actual fun terminateProcess(hprocess: Handle, uexitcode: UInt): Bool =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for stdSysPalWindowsCWindowssysWindowsSysTerminateProcess")
 
-@kotlin.wasm.WasmImport("std", "stdSysPalWindowsCWindowssysWindowsSysTlsAlloc")
+@kotlin.wasm.WasmImport("kmcore", "stdSysPalWindowsCWindowssysWindowsSysTlsAlloc")
 private external fun wasiStdSysPalWindowsCWindowssysWindowsSysTlsAlloc(): Int
 
 public actual fun tlsAlloc(): UInt =
     wasiStdSysPalWindowsCWindowssysWindowsSysTlsAlloc().toUInt()
 
-@kotlin.wasm.WasmImport("std", "stdSysPalWindowsCWindowssysWindowsSysTlsFree")
+@kotlin.wasm.WasmImport("kmcore", "stdSysPalWindowsCWindowssysWindowsSysTlsFree")
 private external fun wasiStdSysPalWindowsCWindowssysWindowsSysTlsFree(dwtlsindex: Int): Int
 
 public actual fun tlsFree(dwtlsindex: UInt): Bool =
@@ -424,7 +424,7 @@ public actual fun unlockFile(hfile: Handle, dwfileoffsetlow: UInt, dwfileoffseth
 public actual fun updateProcThreadAttribute(lpattributelist: MutPtr, dwflags: UInt, attribute: ULong, lpvalue: ConstPtr, cbsize: ULong, lppreviousvalue: MutPtr, lpreturnsize: ConstPtr): Bool =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for stdSysPalWindowsCWindowssysWindowsSysUpdateProcThreadAttribute")
 
-@kotlin.wasm.WasmImport("std", "stdSysPalWindowsCWindowssysWindowsSysWSACleanup")
+@kotlin.wasm.WasmImport("kmcore", "stdSysPalWindowsCWindowssysWindowsSysWSACleanup")
 private external fun wasiStdSysPalWindowsCWindowssysWindowsSysWSACleanup(): Int
 
 public actual fun wSACleanup(): Int =
@@ -433,7 +433,7 @@ public actual fun wSACleanup(): Int =
 public actual fun wSADuplicateSocketW(s: Socket, dwprocessid: UInt, lpprotocolinfo: MutPtr): Int =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for stdSysPalWindowsCWindowssysWindowsSysWSADuplicateSocketW")
 
-@kotlin.wasm.WasmImport("std", "stdSysPalWindowsCWindowssysWindowsSysWSAGetLastError")
+@kotlin.wasm.WasmImport("kmcore", "stdSysPalWindowsCWindowssysWindowsSysWSAGetLastError")
 private external fun wasiStdSysPalWindowsCWindowssysWindowsSysWSAGetLastError(): Int
 
 public actual fun wSAGetLastError(): Int =
@@ -491,7 +491,7 @@ public actual fun accept(s: Socket, addr: MutPtr, addrlen: MutPtr): Socket =
 public actual fun bind(s: Socket, name: ConstPtr, namelen: Int): Int =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for stdSysPalWindowsCWindowssysWindowsSysBind")
 
-@kotlin.wasm.WasmImport("std", "stdSysPalWindowsCWindowssysWindowsSysClosesocket")
+@kotlin.wasm.WasmImport("kmcore", "stdSysPalWindowsCWindowssysWindowsSysClosesocket")
 private external fun wasiStdSysPalWindowsCWindowssysWindowsSysClosesocket(s: Long): Int
 
 public actual fun closesocket(s: Socket): Int =
@@ -519,7 +519,7 @@ public actual fun getsockopt(s: Socket, level: Int, optname: Int, optval: MutPtr
 public actual fun ioctlsocket(s: Socket, cmd: Int, argp: MutPtr): Int =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for stdSysPalWindowsCWindowssysWindowsSysIoctlsocket")
 
-@kotlin.wasm.WasmImport("std", "stdSysPalWindowsCWindowssysWindowsSysListen")
+@kotlin.wasm.WasmImport("kmcore", "stdSysPalWindowsCWindowssysWindowsSysListen")
 private external fun wasiStdSysPalWindowsCWindowssysWindowsSysListen(s: Long, backlog: Int): Int
 
 public actual fun listen(s: Socket, backlog: Int): Int =
@@ -546,7 +546,7 @@ public actual fun sendto(s: Socket, buf: ConstPtr, len: Int, flags: Int, to: Con
 public actual fun setsockopt(s: Socket, level: Int, optname: Int, optval: ConstPtr, optlen: Int): Int =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for stdSysPalWindowsCWindowssysWindowsSysSetsockopt")
 
-@kotlin.wasm.WasmImport("std", "stdSysPalWindowsCWindowssysWindowsSysShutdown")
+@kotlin.wasm.WasmImport("kmcore", "stdSysPalWindowsCWindowssysWindowsSysShutdown")
 private external fun wasiStdSysPalWindowsCWindowssysWindowsSysShutdown(s: Long, how: Int): Int
 
 public actual fun shutdown(s: Socket, how: Int): Int =

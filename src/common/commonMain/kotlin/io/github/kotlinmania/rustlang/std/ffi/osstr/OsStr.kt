@@ -1,9 +1,6 @@
 // port-lint: source ffi/os_str.rs
 package io.github.kotlinmania.rustlang.std.ffi.osstr
 
-import io.github.kotlinmania.cmp.Ordering
-import io.github.kotlinmania.ops.RangeBounds
-import io.github.kotlinmania.ops.RangeFull
 import io.github.kotlinmania.rustlang.alloc.borrow.Cow
 import io.github.kotlinmania.rustlang.alloc.collections.TryReserveError
 import io.github.kotlinmania.rustlang.core.borrow.Borrow
@@ -11,6 +8,7 @@ import io.github.kotlinmania.rustlang.core.char.isAscii
 import io.github.kotlinmania.rustlang.core.char.toAsciiLowercase
 import io.github.kotlinmania.rustlang.core.char.toAsciiUppercase
 import io.github.kotlinmania.rustlang.core.clone.CloneToUninit
+import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
@@ -23,7 +21,6 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.str.error.Utf8Error
 import io.github.kotlinmania.rustlang.core.str.traits.FromStr
-import io.github.kotlinmania.rustlang.std.ops.range
 import io.github.kotlinmania.rustlang.std.rc.Rc
 import io.github.kotlinmania.rustlang.std.sync.Arc
 import io.github.kotlinmania.rustlang.std.sys.AsInner
@@ -465,7 +462,7 @@ public open class OsString(
      * `self` must not end with a leading surrogate half, or `other` must not
      * start with a trailing surrogate half.
      */
-    internal open fun extendFromSliceUnchecked(other: List<UByte>) {
+    public open fun extendFromSliceUnchecked(other: List<UByte>) {
         // SAFETY: Guaranteed by caller.
         this.inner.extendFromSliceUnchecked(other)
     }

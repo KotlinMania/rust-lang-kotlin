@@ -1,8 +1,8 @@
 // port-lint: source cli.rs
 package io.github.kotlinmania.rustlang.test.cli
 
-import io.github.kotlinmania.getopts.Matches
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.getopts.Matches
 import io.github.kotlinmania.rustlang.std.path.PathBuf
 import io.github.kotlinmania.rustlang.test.options.ColorConfig
 import io.github.kotlinmania.rustlang.test.options.Options
@@ -49,7 +49,7 @@ public open class TestOpts(
 /**
  * Result of parsing the options.
  */
-internal typealias OptRes = Result<TestOpts, String>
+public typealias OptRes = Result<TestOpts, String>
 
 /**
  * Result of parsing the option part.
@@ -157,7 +157,7 @@ public fun isNightly(): Boolean {
     // Whether the current rustc version should allow unstable features
     val enableUnstableFeatures = false
     // The runtime override for unstable features
-    val bootstrap = variable("RUSTC_BOOTSTRAP").isOk()
+    val bootstrap = Env.variable("RUSTC_BOOTSTRAP").isOk()
     return bootstrap || enableUnstableFeatures
 }
 
@@ -198,7 +198,7 @@ public fun getShuffle(matches: Matches, allowUnstable: Boolean): OptPartRes<Bool
     }
     if (!shuffle && allowUnstable) {
         shuffle = run {
-            val matchVal = variable("RUST_TEST_SHUFFLE")
+            val matchVal = Env.variable("RUST_TEST_SHUFFLE")
             when (matchVal) { is Result.Ok<*> -> {
                 val value = matchVal.value
                 value != "0"
@@ -236,7 +236,7 @@ public fun getShuffleSeed(matches: Matches, allowUnstable: Boolean): OptPartRes<
         }
     if (shuffleSeed == null && allowUnstable) {
         shuffleSeed = run {
-            val matchVal2 = variable("RUST_TEST_SHUFFLE_SEED")
+            val matchVal2 = Env.variable("RUST_TEST_SHUFFLE_SEED")
             when (matchVal2) { is Result.Ok<*> -> {
                 val value = matchVal2.value
                 run {
@@ -327,7 +327,7 @@ public fun getNocapture(matches: Matches): OptPartRes<Boolean> {
     var nocapture = matches.optPresent("nocapture") || matches.optPresent("no-capture")
     if (!nocapture) {
         nocapture = run {
-            val matchVal = variable("RUST_TEST_NOCAPTURE")
+            val matchVal = Env.variable("RUST_TEST_NOCAPTURE")
             when (matchVal) { is Result.Ok<*> -> {
                 val value = matchVal.value
                 value != "0"

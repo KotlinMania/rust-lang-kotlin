@@ -2,12 +2,12 @@
 
 package io.github.kotlinmania.rustlang.backtrace.backtrace.libunwind
 
-import io.github.kotlinmania.libc.fuchsia.UintptrT
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.libc.helenos.UintptrT
 
 private object BacktraceLibunwindJniBridge {
     init {
-        System.loadLibrary("backtrace_jni")
+        System.loadLibrary("kmcore_jni")
     }
 
     @JvmStatic

@@ -68,7 +68,7 @@ public val U8_ISQRT_WITH_REMAINDER: List<Pair<UByte, UByte>> =
  * https://en.wikipedia.org/wiki/IntegerSquareRoot) of any [`u8`](prim@u8)
  * input.
  */
-internal fun u8(n: UByte): UByte = U8_ISQRT_WITH_REMAINDER[n.toInt()].first
+public fun u8(n: UByte): UByte = U8_ISQRT_WITH_REMAINDER[n.toInt()].first
 
 /**
  * Takes the normalized [`u16`](prim@u16) input and gets its normalized
@@ -375,7 +375,7 @@ public fun u128Stages(n: U128): U128 {
  * https://en.wikipedia.org/wiki/IntegerSquareRoot) of any
  * input.
  */
-internal fun u16(n: UShort): UShort {
+public fun u16(n: UShort): UShort {
     var n1 = n
     return if (n1 <= UByte.MAX_VALUE.toUShort()) {
         u8(n1.toUByte()).toUShort()
@@ -394,7 +394,7 @@ internal fun u16(n: UShort): UShort {
  * https://en.wikipedia.org/wiki/IntegerSquareRoot) of any
  * input.
  */
-internal fun u32(n: UInt): UInt {
+public fun u32(n: UInt): UInt {
     var n1 = n
     return if (n1 <= UShort.MAX_VALUE.toUInt()) {
         u16(n1.toUShort()).toUInt()
@@ -413,7 +413,7 @@ internal fun u32(n: UInt): UInt {
  * https://en.wikipedia.org/wiki/IntegerSquareRoot) of any
  * input.
  */
-internal fun u64(n: ULong): ULong {
+public fun u64(n: ULong): ULong {
     var n1 = n
     return if (n1 <= UInt.MAX_VALUE.toULong()) {
         u32(n1.toUInt()).toULong()
@@ -432,7 +432,7 @@ internal fun u64(n: ULong): ULong {
  * https://en.wikipedia.org/wiki/IntegerSquareRoot) of any
  * input.
  */
-internal fun u128(n: U128): U128 {
+public fun u128(n: U128): U128 {
     var n1 = n
     return if (n1 <= U128.fromULong(ULong.MAX_VALUE)) {
         U128.fromULong(u64(n1.toULong()))
@@ -450,6 +450,6 @@ internal fun u128(n: U128): U128 {
  * Instantiate this panic logic once, rather than for all the isqrt methods
  * on every single primitive type.
  */
-internal fun panicForNegativeArgument(): Nothing {
+public fun panicForNegativeArgument(): Nothing {
     error("argument of integer square root cannot be negative")
 }

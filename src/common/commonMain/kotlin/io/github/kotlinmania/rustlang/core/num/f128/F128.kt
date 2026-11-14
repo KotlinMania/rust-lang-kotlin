@@ -4,14 +4,14 @@
 package io.github.kotlinmania.rustlang.core.num.f128
 
 import io.github.kotlinmania.rustlang.core.F128
-import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
-import io.github.kotlinmania.rustlang.core.cmp.ClampBounds
-import io.github.kotlinmania.rustlang.core.f128.max
+import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.cmp.clamp.ClampBounds
 import io.github.kotlinmania.rustlang.core.intrinsics.copysignf128
 import io.github.kotlinmania.rustlang.core.intrinsics.fabs
 import io.github.kotlinmania.rustlang.core.intrinsics.faddAlgebraic
 import io.github.kotlinmania.rustlang.core.intrinsics.fdivAlgebraic
+import io.github.kotlinmania.rustlang.core.intrinsics.fma
 import io.github.kotlinmania.rustlang.core.intrinsics.fmulAlgebraic
 import io.github.kotlinmania.rustlang.core.intrinsics.fmuladd
 import io.github.kotlinmania.rustlang.core.intrinsics.fremAlgebraic
@@ -20,12 +20,13 @@ import io.github.kotlinmania.rustlang.core.intrinsics.maximumNumberNszF128
 import io.github.kotlinmania.rustlang.core.intrinsics.maximumf128
 import io.github.kotlinmania.rustlang.core.intrinsics.minimumNumberNszF128
 import io.github.kotlinmania.rustlang.core.intrinsics.minimumf128
+import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.FpCategory
-import io.github.kotlinmania.rustlang.core.num.f32.INFINITY
-import io.github.kotlinmania.rustlang.core.num.f32.NEG_INFINITY
-import io.github.kotlinmania.rustlang.core.num.imp.libm.fma
 import io.github.kotlinmania.rustlang.core.panic.constAssert
-import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
+import kotlin.math.abs
+import kotlin.math.truncate
 
 // Constants for the `f128` quadruple-precision floating point type.
 //
@@ -43,151 +44,151 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 /**
  * Archimedes' constant (π)
  */
-public val PI: F128 = 3.14159265358979323846264338327950288419716939937510582097494
+public val PI: F128 = F128.fromDouble(3.14159265358979323846264338327950288419716939937510582097494)
 
 /**
  * The full circle constant (τ)
  *
  * Equal to 2π.
  */
-public val TAU: F128 = 6.28318530717958647692528676655900576839433879875021164194989
+public val TAU: F128 = F128.fromDouble(6.28318530717958647692528676655900576839433879875021164194989)
 
 /**
  * The golden ratio (φ)
  */
-public val GOLDEN_RATIO: F128 = 1.61803398874989484820458683436563811772030917980576286213545
+public val GOLDEN_RATIO: F128 = F128.fromDouble(1.61803398874989484820458683436563811772030917980576286213545)
 
 /**
  * The Euler-Mascheroni constant (γ)
  */
-public val EULER_GAMMA: F128 = 0.577215664901532860606512090082402431042159335939923598805767
+public val EULER_GAMMA: F128 = F128.fromDouble(0.577215664901532860606512090082402431042159335939923598805767)
 
 /**
  * π/2
  */
-public val FRAC_PI_2: F128 = 1.57079632679489661923132169163975144209858469968755291048747
+public val FRAC_PI_2: F128 = F128.fromDouble(1.57079632679489661923132169163975144209858469968755291048747)
 
 /**
  * π/3
  */
-public val FRAC_PI_3: F128 = 1.04719755119659774615421446109316762806572313312503527365831
+public val FRAC_PI_3: F128 = F128.fromDouble(1.04719755119659774615421446109316762806572313312503527365831)
 
 /**
  * π/4
  */
-public val FRAC_PI_4: F128 = 0.785398163397448309615660845819875721049292349843776455243736
+public val FRAC_PI_4: F128 = F128.fromDouble(0.785398163397448309615660845819875721049292349843776455243736)
 
 /**
  * π/6
  */
-public val FRAC_PI_6: F128 = 0.523598775598298873077107230546583814032861566562517636829157
+public val FRAC_PI_6: F128 = F128.fromDouble(0.523598775598298873077107230546583814032861566562517636829157)
 
 /**
  * π/8
  */
-public val FRAC_PI_8: F128 = 0.392699081698724154807830422909937860524646174921888227621868
+public val FRAC_PI_8: F128 = F128.fromDouble(0.392699081698724154807830422909937860524646174921888227621868)
 
 /**
  * 1/π
  */
-public val FRAC_1_PI: F128 = 0.318309886183790671537767526745028724068919291480912897495335
+public val FRAC_1_PI: F128 = F128.fromDouble(0.318309886183790671537767526745028724068919291480912897495335)
 
 // Also, @unstable(feature = "moreFloatConstants", issue = "146939")
 
 /**
  * 1/sqrt(π)
  */
-public val FRAC_1_SQRT_PI: F128 = 0.564189583547756286948079451560772585844050629328998856844086
+public val FRAC_1_SQRT_PI: F128 = F128.fromDouble(0.564189583547756286948079451560772585844050629328998856844086)
 
 // Also, @unstable(feature = "moreFloatConstants", issue = "146939")
 
 /**
  * 1/sqrt(2π)
  */
-public val FRAC_1_SQRT_2PI: F128 = 0.398942280401432677939946059934381868475858631164934657665926
+public val FRAC_1_SQRT_2PI: F128 = F128.fromDouble(0.398942280401432677939946059934381868475858631164934657665926)
 
 /**
  * 2/π
  */
-public val FRAC_2_PI: F128 = 0.636619772367581343075535053490057448137838582961825794990669
+public val FRAC_2_PI: F128 = F128.fromDouble(0.636619772367581343075535053490057448137838582961825794990669)
 
 /**
  * 2/sqrt(π)
  */
-public val FRAC_2_SQRT_PI: F128 = 1.12837916709551257389615890312154517168810125865799771368817
+public val FRAC_2_SQRT_PI: F128 = F128.fromDouble(1.12837916709551257389615890312154517168810125865799771368817)
 
 /**
  * sqrt(2)
  */
-public val SQRT_2: F128 = 1.41421356237309504880168872420969807856967187537694807317668
+public val SQRT_2: F128 = F128.fromDouble(1.41421356237309504880168872420969807856967187537694807317668)
 
 /**
  * 1/sqrt(2)
  */
-public val FRAC_1_SQRT_2: F128 = 0.707106781186547524400844362104849039284835937688474036588340
+public val FRAC_1_SQRT_2: F128 = F128.fromDouble(0.707106781186547524400844362104849039284835937688474036588340)
 
 // Also, @unstable(feature = "moreFloatConstants", issue = "146939")
 
 /**
  * sqrt(3)
  */
-public val SQRT_3: F128 = 1.73205080756887729352744634150587236694280525381038062805581
+public val SQRT_3: F128 = F128.fromDouble(1.73205080756887729352744634150587236694280525381038062805581)
 
 // Also, @unstable(feature = "moreFloatConstants", issue = "146939")
 
 /**
  * 1/sqrt(3)
  */
-public val FRAC_1_SQRT_3: F128 = 0.577350269189625764509148780501957455647601751270126876018602
+public val FRAC_1_SQRT_3: F128 = F128.fromDouble(0.577350269189625764509148780501957455647601751270126876018602)
 
 // Also, @unstable(feature = "f128", issue = "116909")
 
 /**
  * sqrt(5)
  */
-public val SQRT_5: F128 = 2.23606797749978969640917366873127623544061835961152572427089
+public val SQRT_5: F128 = F128.fromDouble(2.23606797749978969640917366873127623544061835961152572427089)
 
 // Also, @unstable(feature = "f128", issue = "116909")
 
 /**
  * 1/sqrt(5)
  */
-public val FRAC_1_SQRT_5: F128 = 0.447213595499957939281834733746255247088123671922305144854179
+public val FRAC_1_SQRT_5: F128 = F128.fromDouble(0.447213595499957939281834733746255247088123671922305144854179)
 
 /**
  * Euler's number (e)
  */
-public val E: F128 = 2.71828182845904523536028747135266249775724709369995957496697
+public val E: F128 = F128.fromDouble(2.71828182845904523536028747135266249775724709369995957496697)
 
 /**
  * log<sub>2</sub>(10)
  */
-public val LOG2_10: F128 = 3.32192809488736234787031942948939017586483139302458061205476
+public val LOG2_10: F128 = F128.fromDouble(3.32192809488736234787031942948939017586483139302458061205476)
 
 /**
  * log<sub>2</sub>(e)
  */
-public val LOG2_E: F128 = 1.44269504088896340735992468100189213742664595415298593413545
+public val LOG2_E: F128 = F128.fromDouble(1.44269504088896340735992468100189213742664595415298593413545)
 
 /**
  * log<sub>10</sub>(2)
  */
-public val LOG10_2: F128 = 0.301029995663981195213738894724493026768189881462108541310427
+public val LOG10_2: F128 = F128.fromDouble(0.301029995663981195213738894724493026768189881462108541310427)
 
 /**
  * log<sub>10</sub>(e)
  */
-public val LOG10_E: F128 = 0.434294481903251827651128918916605082294397005803666566114454
+public val LOG10_E: F128 = F128.fromDouble(0.434294481903251827651128918916605082294397005803666566114454)
 
 /**
  * ln(2)
  */
-public val LN_2: F128 = 0.693147180559945309417232121458176568075500134360255254120680
+public val LN_2: F128 = F128.fromDouble(0.693147180559945309417232121458176568075500134360255254120680)
 
 /**
  * ln(10)
  */
-public val LN_10: F128 = 2.30258509299404568401799145468436420760110148862877297603333
+public val LN_10: F128 = F128.fromDouble(2.30258509299404568401799145468436420760110148862877297603333)
 
 // > if you intended to check if the operand is NaN, use `.isNan()` instead :)
 
@@ -195,10 +196,12 @@ public val LN_10: F128 = 2.30258509299404568401799145468436420760110148862877297
  * Returns `true` if this value is NaN.
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val nan = NAN
- *     val f = 7.0
+ *     val nan = F128.NAN
+ *     val f = F128.fromDouble(7.0)
  *     check(nan.isNan())
  *     check(!f.isNan())
  * }
@@ -211,12 +214,14 @@ public fun F128.isNan(): Boolean = this != this
  * `false` otherwise.
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val f = 7.0
- *     val inf = INFINITY
- *     val negInf = NEG_INFINITY
- *     val nan = NAN
+ *     val f = F128.fromDouble(7.0)
+ *     val inf = F128.INFINITY
+ *     val negInf = F128.NEG_INFINITY
+ *     val nan = F128.NAN
  *     check(!f.isInfinite())
  *     check(!nan.isInfinite())
  *     check(inf.isInfinite())
@@ -224,7 +229,7 @@ public fun F128.isNan(): Boolean = this != this
  * }
  * ```
  */
-public fun F128.isInfinite(): Boolean = (this == INFINITY) or (this == NEG_INFINITY)
+public fun F128.isInfinite(): Boolean = (this == F128.INFINITY) or (this == F128.NEG_INFINITY)
 
 /**
  * Returns `true` if this number is neither infinite nor NaN.
@@ -234,10 +239,10 @@ public fun F128.isInfinite(): Boolean = (this == INFINITY) or (this == NEG_INFIN
  *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val f = 7.0
- *     val inf: F128 = INFINITY
- *     val negInf: F128 = NEG_INFINITY
- *     val nan: F128 = NAN
+ *     val f = F128.fromDouble(7.0)
+ *     val inf: F128 = F128.INFINITY
+ *     val negInf: F128 = F128.NEG_INFINITY
+ *     val nan: F128 = F128.NAN
  *     check(f.isFinite())
  *     check(!nan.isFinite())
  *     check(!inf.isFinite())
@@ -248,25 +253,27 @@ public fun F128.isInfinite(): Boolean = (this == INFINITY) or (this == NEG_INFIN
 public fun F128.isFinite(): Boolean {
     // There's no need to handle NaN separately: if self is NaN,
     // the comparison is not true, exactly as desired.
-    return this.abs() < F128.INFINITY
+    return F128.fromDouble(abs(this.toDouble())) < F128.INFINITY
 }
 
 /**
  * Returns `true` if the number is [subnormal].
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val min = MIN_POSITIVE
+ *     val min = F128.MIN_POSITIVE
  *     // 3.362103143e-4932f128
- *     val max = MAX
- *     val lowerThanMin = 1.0e-4960
- *     val zero = 0.0
+ *     val max = F128.MAX
+ *     val lowerThanMin = F128.fromDouble(1.0e-4960)
+ *     val zero = F128.fromDouble(0.0)
  *     check(!min.isSubnormal())
  *     check(!max.isSubnormal())
  *     check(!zero.isSubnormal())
- *     check(!NAN.isSubnormal())
- *     check(!INFINITY.isSubnormal())
+ *     check(!F128.NAN.isSubnormal())
+ *     check(!F128.INFINITY.isSubnormal())
  *     // Values between `0` and `min` are Subnormal.
  *     check(lowerThanMin.isSubnormal())
  * }
@@ -284,18 +291,20 @@ public fun F128.isSubnormal(): Boolean =
  * Returns `true` if the number is neither zero, infinite, [subnormal], or NaN.
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val min = MIN_POSITIVE
+ *     val min = F128.MIN_POSITIVE
  *     // 3.362103143e-4932f128
- *     val max = MAX
- *     val lowerThanMin = 1.0e-4960
- *     val zero = 0.0
+ *     val max = F128.MAX
+ *     val lowerThanMin = F128.fromDouble(1.0e-4960)
+ *     val zero = F128.fromDouble(0.0)
  *     check(min.isNormal())
  *     check(max.isNormal())
  *     check(!zero.isNormal())
- *     check(!NAN.isNormal())
- *     check(!INFINITY.isNormal())
+ *     check(!F128.NAN.isNormal())
+ *     check(!F128.INFINITY.isNormal())
  *     // Values between `0` and `min` are Subnormal.
  *     check(!lowerThanMin.isNormal())
  * }
@@ -315,12 +324,13 @@ public fun F128.isNormal(): Boolean =
  * predicate instead.
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
  * import std.num.FpCategory
  *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val num = 12.4
- *     val inf = INFINITY
+ *     val num = F128.fromDouble(12.4)
+ *     val inf = F128.INFINITY
  *     check(num.classify() == FpCategory.Normal)
  *     check(inf.classify() == FpCategory.Infinite)
  * }
@@ -352,10 +362,12 @@ public fun F128.classify(): FpCategory {
  * if you need fully portable behavior (evaluates to `false` for all NaNs).
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val f = 7.0
- *     val g = -7.0
+ *     val f = F128.fromDouble(7.0)
+ *     val g = -F128.fromDouble(7.0)
  *     check(f.isSignPositive())
  *     check(!g.isSignPositive())
  * }
@@ -375,10 +387,12 @@ public fun F128.isSignPositive(): Boolean = !this.isSignNegative()
  * if you need fully portable behavior (evaluates to `false` for all NaNs).
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val f = 7.0
- *     val g = -7.0
+ *     val f = F128.fromDouble(7.0)
+ *     val g = -F128.fromDouble(7.0)
  *     check(!f.isSignNegative())
  *     check(g.isSignNegative())
  * }
@@ -406,13 +420,15 @@ public fun F128.isSignNegative(): Boolean {
  * is finite `x == x.nextUp().nextDown()` also holds.
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
  *     // f128.Epsilon is the difference between 1.0 and the next number up.
- *     check(1.0.nextUp() == 1.0 + EPSILON)
+ *     check(F128.fromDouble(1.0).nextUp() == F128.fromDouble(1.0) + F128.EPSILON)
  *     // But not for most numbers.
- *     check(0.1.nextUp() < 0.1 + EPSILON)
- *     check(4611686018427387904.nextUp() == 4611686018427387904.000000000000001)
+ *     check(F128.fromDouble(0.1).nextUp() < F128.fromDouble(0.1) + F128.EPSILON)
+ *     check(F128.fromDouble(4611686018427387904.0).nextUp() == 4611686018427387904.000000000000001)
  * }
  * ```
  *
@@ -428,7 +444,7 @@ public fun F128.nextUp(): F128 {
     // denormals to zero. This is in general unsound and unsupported, but here
     // we do our best to still produce the correct result on such targets.
     val bits = this.toBits()
-    if (this.isNan() || bits == F128.INFINITY.toBits()) {
+    if (this.isNaN() || bits == F128.INFINITY.toBits()) {
         return this
     }
     val abs = bits and F128.SIGN_MASK.inv()
@@ -458,11 +474,13 @@ public fun F128.nextUp(): F128 {
  * is finite `x == x.nextDown().nextUp()` also holds.
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val x = 1.0
+ *     val x = F128.fromDouble(1.0)
  *     // Clamp value into range [0, 1).
- *     val clamped = x.clamp(0.0, 1.0.nextDown())
+ *     val clamped = x.clamp(0.0, F128.fromDouble(1.0).nextDown())
  *     check(clamped < 1.0)
  *     check(clamped.nextUp() == 1.0)
  * }
@@ -480,7 +498,7 @@ public fun F128.nextDown(): F128 {
     // denormals to zero. This is in general unsound and unsupported, but here
     // we do our best to still produce the correct result on such targets.
     val bits = this.toBits()
-    if (this.isNan() || bits == F128.NEG_INFINITY.toBits()) {
+    if (this.isNaN() || bits == F128.NEG_INFINITY.toBits()) {
         return this
     }
     val abs = bits and F128.SIGN_MASK.inv()
@@ -499,15 +517,17 @@ public fun F128.nextDown(): F128 {
  * Takes the reciprocal (inverse) of a number, `1 / x`.
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val x = 2.0
- *     val absDifference = (x.recip() - (1.0 / x)).abs()
- *     check(absDifference <= EPSILON)
+ *     val x = F128.fromDouble(2.0)
+ *     val absDifference = (x.recip() - (F128.fromDouble(1.0) / x)).abs()
+ *     check(absDifference <= F128.EPSILON)
  * }
  * ```
  */
-public fun F128.recip(): F128 = 1.0 / this
+public fun F128.recip(): F128 = F128.fromDouble(1.0) / this
 
 /**
  * Converts radians to degrees.
@@ -520,11 +540,13 @@ public fun F128.recip(): F128 = 1.0 / this
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val angle = PI
+ *     val angle = F128.fromDouble(kotlin.math.PI)
  *     val absDifference = (angle.toDegrees() - 180.0).abs()
- *     check(absDifference <= EPSILON)
+ *     check(absDifference <= F128.EPSILON)
  * }
  * ```
  */
@@ -532,7 +554,7 @@ public fun F128.toDegrees(): F128 {
     // The division here is correctly rounded with respect to the true value of 180/π.
     // Although π is irrational and already rounded, the double rounding happens
     // to produce correct result for f128.
-    val PIS_IN_180: F128 = 180.0 / PI
+    val PIS_IN_180: F128 = F128.fromDouble(180.0) / PI
     return this * PIS_IN_180
 }
 
@@ -547,10 +569,12 @@ public fun F128.toDegrees(): F128 {
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val angle = 180.0
- *     val absDifference = (angle.toRadians() - PI).abs()
+ *     val angle = F128.fromDouble(180.0)
+ *     val absDifference = (angle.toRadians() - F128.fromDouble(kotlin.math.PI)).abs()
  *     check(absDifference <= 1e-30)
  * }
  * ```
@@ -558,7 +582,7 @@ public fun F128.toDegrees(): F128 {
 public fun F128.toRadians(): F128 {
     // Use a literal to avoid double rounding, consts.PI is already rounded,
     // and dividing would round again.
-    val RADS_PER_DEG: F128 = 0.0174532925199432957692369076848861271344287188854172545609719
+    val RADS_PER_DEG: F128 = F128.fromDouble(0.0174532925199432957692369076848861271344287188854172545609719)
     return this * RADS_PER_DEG
 }
 
@@ -576,12 +600,14 @@ public fun F128.toRadians(): F128 {
  * follows the IEEE 754-2008 semantics for `maxNum`.
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val x = 1.0
- *     val y = 2.0
+ *     val x = F128.fromDouble(1.0)
+ *     val y = F128.fromDouble(2.0)
  *     check(x.max(y) == y)
- *     check(x.max(NAN) == x)
+ *     check(x.max(F128.NAN) == x)
  * }
  * ```
  */
@@ -601,12 +627,14 @@ public fun F128.max(other: F128): F128 = maximumNumberNszF128(this, other)
  * follows the IEEE 754-2008 semantics for `minNum`.
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val x = 1.0
- *     val y = 2.0
+ *     val x = F128.fromDouble(1.0)
+ *     val y = F128.fromDouble(2.0)
  *     check(x.min(y) == x)
- *     check(x.min(NAN) == x)
+ *     check(x.min(F128.NAN) == x)
  * }
  * ```
  */
@@ -628,13 +656,15 @@ public fun F128.min(other: F128): F128 = minimumNumberNszF128(this, other)
  * This follows the IEEE 754-2019 semantics for `maximum`.
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * @feature(floatMinimumMaximum)
  * public fun doctestEntry() {
- *     val x = 1.0
- *     val y = 2.0
+ *     val x = F128.fromDouble(1.0)
+ *     val y = F128.fromDouble(2.0)
  *     check(x.maximum(y) == y)
- *     check(x.maximum(NAN).isNan())
+ *     check(x.maximum(F128.NAN).isNan())
  * }
  * ```
  */
@@ -656,13 +686,15 @@ public fun F128.maximum(other: F128): F128 = maximumf128(this, other)
  * This follows the IEEE 754-2019 semantics for `minimum`.
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * @feature(floatMinimumMaximum)
  * public fun doctestEntry() {
- *     val x = 1.0
- *     val y = 2.0
+ *     val x = F128.fromDouble(1.0)
+ *     val y = F128.fromDouble(2.0)
  *     check(x.minimum(y) == x)
- *     check(x.minimum(NAN).isNan())
+ *     check(x.minimum(F128.NAN).isNan())
  * }
  * ```
  */
@@ -677,23 +709,25 @@ public fun F128.minimum(other: F128): F128 = minimumf128(this, other)
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     check(1.midpoint(4.0) == 2.5)
- *     check((-5.5).midpoint(8.0) == 1.25)
+ *     check(F128.fromDouble(1.0).midpoint(4.0) == 2.5)
+ *     check((-F128.fromDouble(5.5)).midpoint(8.0) == 1.25)
  * }
  * ```
  */
 public fun F128.midpoint(other: F128): F128 {
-    val HI: F128 = max * 0.5
+    val HI: F128 = F128.MAX * F128.fromDouble(0.5)
     val (a, b) = Pair(this, other)
-    val absA = a.abs()
-    val absB = b.abs()
+    val absA = F128.fromDouble(abs(a.toDouble()))
+    val absB = F128.fromDouble(abs(b.toDouble()))
     return if (absA <= HI && absB <= HI) {
         // Overflow is impossible
-        (a + b) * 0.5
+        (a + b) * F128.fromDouble(0.5)
     } else {
-        (a * 0.5) + (b * 0.5)
+        (a * F128.fromDouble(0.5)) + (b * F128.fromDouble(0.5))
     }
 }
 
@@ -702,12 +736,14 @@ public fun F128.midpoint(other: F128): F128 {
  * assuming that the value is finite and fits in that type.
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val value = 4.6
+ *     val value = F128.fromDouble(4.6)
  *     val rounded = value.toIntUnchecked<UShort>()
  *     check(rounded == 4)
- *     val value1 = -128.9
+ *     val value1 = -F128.fromDouble(128.9)
  *     val rounded1 = value1.toIntUnchecked<Byte>()
  *     check(rounded1 == Byte.MIN_VALUE)
  * }
@@ -734,9 +770,11 @@ public inline fun <reified Int> F128.toIntUnchecked(): Int {
  * produce an infinity.
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(floatConversions, f128)
  * public fun doctestEntry() {
- *     val x = 1.5
+ *     val x = F128.fromDouble(1.5)
  *     check(x.cast() == 1.5)
  * }
  * ```
@@ -750,10 +788,12 @@ public inline fun <reified Flt> F128.cast(): Flt = this.cast()
  * This is equivalent to `self as Int`.
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(floatConversions, f128)
  * public fun doctestEntry() {
- *     check(4.6.toIntSaturating<UByte>() == 4)
- *     check(NAN.toIntSaturating<UByte>() == 0)
+ *     check(F128.fromDouble(4.6).toIntSaturating<UByte>() == 4)
+ *     check(F128.NAN.toIntSaturating<UByte>() == 0)
  * }
  * ```
  */
@@ -764,10 +804,12 @@ public inline fun <reified Int> F128.toIntSaturating(): Int = this.toIntSaturati
  * `None` if the value is `NaN`, infinite, or does not fit in the target type.
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(floatConversions, f128)
  * public fun doctestEntry() {
- *     check(4.6.toIntChecked<UByte>() == 4)
- *     check(NAN.toIntChecked<UByte>() == null)
+ *     check(F128.fromDouble(4.6).toIntChecked<UByte>() == 4)
+ *     check(F128.NAN.toIntChecked<UByte>() == null)
  * }
  * ```
  */
@@ -783,9 +825,11 @@ public inline fun <reified Int> F128.toIntChecked(): Int? = this.toIntChecked()
  * Panics if the value is `NaN`, infinite, or does not fit in the target type.
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(floatConversions, f128)
  * public fun doctestEntry() {
- *     check(4.6.toIntStrict<UByte>() == 4)
+ *     check(F128.fromDouble(4.6).toIntStrict<UByte>() == 4)
  * }
  * ```
  */
@@ -803,11 +847,13 @@ public inline fun <reified Int> F128.toIntStrict(): Int = (this.toIntChecked<Int
  * preserve the *numeric* value, and not the bitwise value.
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     check((1).toBits() != U128.fromLong(1.toLong()))
+ *     check((F128.fromDouble(1.0)).toBits() != U128.fromLong((F128.fromDouble(1.0)).toLong()))
  *     // toBits() is not casting!
- *     check((12.5).toBits() == U128(0x4002900000000000uL, 0x0uL))
+ *     check((F128.fromDouble(12.5)).toBits() == U128(0x4002900000000000uL, 0x0uL))
  * }
  * ```
  */
@@ -848,17 +894,19 @@ public fun F128.toBits(): U128 {
  * preserve the *numeric* value, and not the bitwise value.
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val v = fromBits(U128(0x4002900000000000uL, 0x0uL))
- *     check(v == 12.5)
+ *     val v = F128.fromBits(U128(0x4002900000000000uL, 0x0uL))
+ *     check(v == F128.fromDouble(12.5))
  * }
  * ```
  */
 public fun F128.Companion.fromBits(v: U128): F128 {
     // It turns out the safety issues with sNaN were overblown! Hooray!
     // SAFETY: `ULong` is a plain old datatype so we can always reinterpret from it.
-    return transmute(v)
+    return transmuteWithLayouts(v, PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), PrimitiveLayouts.F128_LAYOUT)
 }
 
 /**
@@ -873,9 +921,11 @@ public fun F128.Companion.fromBits(v: U128): F128 {
  * ```kotlin
  * @file:OptIn(ExperimentalUnsignedTypes.cls)
  *
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val bytes = 12.5.toBeBytes()
+ *     val bytes = (F128.fromDouble(12.5)).toBeBytes()
  *     check(bytes == ubyteArrayOf(0x40u, 0x02u, 0x90u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u))
  * }
  * ```
@@ -894,9 +944,11 @@ public fun F128.toBeBytes(): UByteArray = this.toBits().toBeBytes()
  * ```kotlin
  * @file:OptIn(ExperimentalUnsignedTypes.cls)
  *
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val bytes = 12.5.toLeBytes()
+ *     val bytes = (F128.fromDouble(12.5)).toLeBytes()
  *     check(bytes == ubyteArrayOf(0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x90u, 0x02u, 0x40u))
  * }
  * ```
@@ -919,9 +971,11 @@ public fun F128.toLeBytes(): UByteArray = this.toBits().toLeBytes()
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val bytes = 12.5.toNeBytes()
+ *     val bytes = (F128.fromDouble(12.5)).toLeBytes()
  *     check(bytes == if (false) {
  *         listOf(0x40, 0x02, 0x90, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00)
  *     } else {
@@ -941,10 +995,14 @@ public fun F128.toNeBytes(): UByteArray = this.toBits().toLeBytes()
  * # Examples
  *
  * ```kotlin
+ * @file:OptIn(ExperimentalUnsignedTypes.cls)
+ *
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val value = fromBeBytes(listOf(0x40, 0x02, 0x90, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00))
- *     check(value == 12.5)
+ *     val value = F128.fromBeBytes(ubyteArrayOf(0x40u, 0x02u, 0x90u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u))
+ *     check(value == F128.fromDouble(12.5))
  * }
  * ```
  */
@@ -959,10 +1017,14 @@ public fun F128.Companion.fromBeBytes(bytes: UByteArray): F128 = F128.fromBits(U
  * # Examples
  *
  * ```kotlin
+ * @file:OptIn(ExperimentalUnsignedTypes.cls)
+ *
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val value = fromLeBytes(listOf(0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x90, 0x02, 0x40))
- *     check(value == 12.5)
+ *     val value = F128.fromLeBytes(ubyteArrayOf(0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x90u, 0x02u, 0x40u))
+ *     check(value == F128.fromDouble(12.5))
  * }
  * ```
  */
@@ -984,14 +1046,18 @@ public fun F128.Companion.fromLeBytes(bytes: UByteArray): F128 = F128.fromBits(U
  * # Examples
  *
  * ```kotlin
+ * @file:OptIn(ExperimentalUnsignedTypes.cls)
+ *
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val value = fromNeBytes(if (false) {
- *         listOf(0x40, 0x02, 0x90, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00)
+ *     val value = F128.fromLeBytes(if (false) {
+ *         ubyteArrayOf(0x40u, 0x02u, 0x90u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u)
  *     } else {
- *         listOf(0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x90, 0x02, 0x40)
+ *         ubyteArrayOf(0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x90u, 0x02u, 0x40u)
  *     })
- *     check(value == 12.5)
+ *     check(value == F128.fromDouble(12.5))
  * }
  * ```
  */
@@ -1035,20 +1101,20 @@ public fun F128.Companion.fromNeBytes(bytes: UByteArray): F128 = F128.fromBits(U
  * @feature(f128)
  * public fun doctestEntry() {
  *     open class GoodBoy(public var name: String, public var weight: F128)
- *     var bois = mutableListOf(GoodBoy(name = "Pucci", weight = 0.1), GoodBoy(name = "Woofer", weight = 99.0), GoodBoy(name = "Yapper", weight = 10.0), GoodBoy(name = "Chonk", weight = INFINITY), GoodBoy(name = "Abs. Unit", weight = NAN), GoodBoy(name = "Floaty", weight = -5.0))
+ *     var bois = mutableListOf(GoodBoy(name = "Pucci", weight = F128.fromDouble(0.1)), GoodBoy(name = "Woofer", weight = F128.fromDouble(99.0)), GoodBoy(name = "Yapper", weight = F128.fromDouble(10.0)), GoodBoy(name = "Chonk", weight = F128.INFINITY), GoodBoy(name = "Abs. Unit", weight = F128.NAN), GoodBoy(name = "Floaty", weight = -F128.fromDouble(5.0)))
  *     bois.sortBy({ a, b -> a.weight.totalCmp(b.weight) })
  *     // `f128.NAN` could be positive or negative, which will affect the sort order.
- *     if (NAN.isSignNegative()) {
- *         (ArrayDeque((ArrayDeque(bois)).map({ b -> b.weight })).zip(listOf(NAN, -5.0, 0.1, 10.0, 99.0, INFINITY).iter())).forEach({ (a, b) -> check(a.toBits() == b.toBits()) })
+ *     if (F128.NAN.isSignNegative()) {
+ *         (ArrayDeque((ArrayDeque(bois)).map({ b -> b.weight })).zip(listOf(F128.NAN, -5.0, 0.1, 10.0, 99.0, F128.INFINITY))).forEach({ (a, b) -> check(a.toBits() == b.toBits()) })
  *     } else {
- *         (ArrayDeque((ArrayDeque(bois)).map({ b -> b.weight })).zip(listOf(-5.0, 0.1, 10.0, 99.0, INFINITY, NAN).iter())).forEach({ (a, b) -> check(a.toBits() == b.toBits()) })
+ *         (ArrayDeque((ArrayDeque(bois)).map({ b -> b.weight })).zip(listOf(-5.0, 0.1, 10.0, 99.0, F128.INFINITY, F128.NAN))).forEach({ (a, b) -> check(a.toBits() == b.toBits()) })
  *     }
  * }
  * ```
  */
 public fun F128.totalCmp(other: F128): Ordering {
     var left = this.toBits().toI128()
-    var right = I128.fromULong(other.toBits())
+    var right = other.toBits().toI128()
     // In case of negatives, flip all the bits except the sign
     // to achieve a similar layout as two's complement integers
     //
@@ -1093,22 +1159,24 @@ public fun F128.totalCmp(other: F128): Ordering {
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     check((-3.0).clamp(-2.0, 1.0) == -2.0)
- *     check((0.0).clamp(-2.0, 1.0) == 0.0)
- *     check((2.0).clamp(-2.0, 1.0) == 1.0)
- *     check((NAN).clamp(-2.0, 1.0).isNan())
+ *     check((-F128.fromDouble(3.0)).clamp(-2.0, 1.0) == -2.0)
+ *     check((F128.fromDouble(0.0)).clamp(-2.0, 1.0) == 0.0)
+ *     check((F128.fromDouble(2.0)).clamp(-2.0, 1.0) == 1.0)
+ *     check((F128.NAN).clamp(-2.0, 1.0).isNan())
  *     // These always returns zero, but the sign (which is ignored by `==`) is non-deterministic.
- *     check((0.0).clamp(-0.0, -0.0) == 0.0)
- *     check((1.0).clamp(-0.0, 0.0) == 0.0)
+ *     check((F128.fromDouble(0.0)).clamp(-0.0, -0.0) == 0.0)
+ *     check((F128.fromDouble(1.0)).clamp(-0.0, 0.0) == 0.0)
  *     // This is definitely a negative zero.
- *     check((-1.0).clamp(-0.0, 1.0).isSignNegative())
+ *     check((-F128.fromDouble(1.0)).clamp(-0.0, 1.0).isSignNegative())
  * }
  * ```
  */
 public fun F128.clamp(min: F128, max: F128): F128 {
-    constAssert(min <= max, "min > max, or either was NaN", "min > max, or either was NaN. min = {min:?}, max = {max:?}", min, f128, max, f128)
+    constAssert(min <= max, "min > max, or either was NaN", "min > max, or either was NaN. min = {min:?}, max = {max:?}", min, max)
     if (this < min) {
         this = min
     }
@@ -1133,19 +1201,21 @@ public fun F128.clamp(min: F128, max: F128): F128 {
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * @feature(clampMagnitude)
  * public fun doctestEntry() {
- *     check(5.0.clampMagnitude(3.0) == 3.0)
- *     check((-5.0).clampMagnitude(3.0) == -3.0)
- *     check(2.0.clampMagnitude(3.0) == 2.0)
- *     check((-2.0).clampMagnitude(3.0) == -2.0)
+ *     check(F128.fromDouble(5.0).clampMagnitude(3.0) == 3.0)
+ *     check((-F128.fromDouble(5.0)).clampMagnitude(3.0) == -3.0)
+ *     check(F128.fromDouble(2.0).clampMagnitude(3.0) == 2.0)
+ *     check((-F128.fromDouble(2.0)).clampMagnitude(3.0) == -2.0)
  * }
  * ```
  */
 public fun F128.clampMagnitude(limit: F128): F128 {
-    check(limit >= 0.0) { "limit must be non-negative and not NaN" }
-    val limit1 = limit.abs()
+    check(limit >= F128.fromDouble(0.0)) { "limit must be non-negative and not NaN" }
+    val limit1 = F128.fromDouble(abs(limit.toDouble()))
     // Canonicalises -0.0 to 0.0
     return this.clamp(-limit1, limit1)
 }
@@ -1169,13 +1239,15 @@ public fun F128.clampMagnitude(limit: F128): F128 {
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128, clampTo)
  * public fun doctestEntry() {
- *     check((-3.0).clampTo(-2.0..1.0) == -2.0)
- *     check(0.0.clampTo(-2.0..1.0) == 0.0)
- *     check(2.0.clampTo(0..1.0) == 1.0)
- *     check(5.0.clampTo(7.0 until Int.MAX_VALUE) == 7.0)
- *     check(NAN.clampTo(1.0..2.0).isNan())
+ *     check((-F128.fromDouble(3.0)).clampTo(-2.0..1.0) == -2.0)
+ *     check(F128.fromDouble(0.0).clampTo(-2.0..1.0) == 0.0)
+ *     check(F128.fromDouble(2.0).clampTo(0..1.0) == 1.0)
+ *     check(F128.fromDouble(5.0).clampTo(7.0 until Int.MAX_VALUE) == 7.0)
+ *     check(F128.NAN.clampTo(1.0..2.0).isNan())
  * }
  * ```
  */
@@ -1189,13 +1261,15 @@ public fun <R> F128.clampTo(range: R): F128 where R : ClampBounds<F128> = range.
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val x = 3.5
- *     val y = -3.5
+ *     val x = F128.fromDouble(3.5)
+ *     val y = -F128.fromDouble(3.5)
  *     check(x.abs() == x)
  *     check(y.abs() == -y)
- *     check(NAN.abs().isNan())
+ *     check(F128.NAN.abs().isNan())
  * }
  * ```
  */
@@ -1211,20 +1285,22 @@ public fun F128.abs(): F128 = fabs(this)
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val f = 3.5
+ *     val f = F128.fromDouble(3.5)
  *     check(f.signum() == 1.0)
- *     check(NEG_INFINITY.signum() == -1.0)
- *     check(NAN.signum().isNan())
+ *     check(F128.NEG_INFINITY.signum() == -1.0)
+ *     check(F128.NAN.signum().isNan())
  * }
  * ```
  */
 public fun F128.signum(): F128 =
-    if (this.isNan()) {
+    if (this.isNaN()) {
         F128.NAN
     } else {
-        1.0.copysign(this)
+        F128.fromDouble(1.0).copysign(this)
     }
 
 /**
@@ -1245,14 +1321,16 @@ public fun F128.signum(): F128 =
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val f = 3.5
- *     check(f.copysign(0.42) == 3.5)
- *     check(f.copysign(-0.42) == -3.5)
- *     check((-f).copysign(0.42) == 3.5)
- *     check((-f).copysign(-0.42) == -3.5)
- *     check(NAN.copysign(1.0).isNan())
+ *     val f = F128.fromDouble(3.5)
+ *     check(f.copysign(0.42) == F128.fromDouble(3.5))
+ *     check(f.copysign(-0.42) == -F128.fromDouble(3.5))
+ *     check((-f).copysign(0.42) == F128.fromDouble(3.5))
+ *     check((-f).copysign(-0.42) == -F128.fromDouble(3.5))
+ *     check(F128.NAN.copysign(1.0).isNan())
  * }
  * ```
  */
@@ -1300,20 +1378,22 @@ public fun F128.algebraicRem(rhs: F128): F128 = fremAlgebraic(this, rhs)
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * @feature(floatNanTo)
  * public fun doctestEntry() {
- *     val n = NAN
- *     val x = 2.0
- *     val y = INFINITY
- *     check(n.nanTo(0.0) == 0.0)
- *     check(x.nanTo(0.0) == 2.0)
- *     check(y.nanTo(0.0) == INFINITY)
+ *     val n = F128.NAN
+ *     val x = F128.fromDouble(2.0)
+ *     val y = F128.INFINITY
+ *     check(n.nanTo(F128.fromDouble(0.0)) == F128.fromDouble(0.0))
+ *     check(x.nanTo(F128.fromDouble(0.0)) == F128.fromDouble(2.0))
+ *     check(y.nanTo(F128.fromDouble(0.0)) == F128.INFINITY)
  * }
  * ```
  */
 public fun F128.nanTo(replacement: F128): F128 =
-    if (this.isNan()) {
+    if (this.isNaN()) {
         replacement
     } else {
         this
@@ -1330,18 +1410,20 @@ public fun F128.nanTo(replacement: F128): F128 =
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val f = 3.7
- *     val g = 3.0
- *     val h = -3.7
+ *     val f = F128.fromDouble(3.7)
+ *     val g = F128.fromDouble(3.0)
+ *     val h = -F128.fromDouble(3.7)
  *     check(f.floor() == 3.0)
  *     check(g.floor() == 3.0)
  *     check(h.floor() == -4.0)
  * }
  * ```
  */
-public fun F128.floor(): F128 = io.github.kotlinmania.rustlang.core.num.f32.math.floor(this)
+public fun F128.floor(): F128 = io.github.kotlinmania.rustlang.core.intrinsics.floor(this)
 
 /**
  * Returns the smallest integer greater than or equal to `self`.
@@ -1351,16 +1433,18 @@ public fun F128.floor(): F128 = io.github.kotlinmania.rustlang.core.num.f32.math
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val f = 3.01
- *     val g = 4.0
+ *     val f = F128.fromDouble(3.01)
+ *     val g = F128.fromDouble(4.0)
  *     check(f.ceil() == 4.0)
  *     check(g.ceil() == 4.0)
  * }
  * ```
  */
-public fun F128.ceil(): F128 = io.github.kotlinmania.rustlang.core.num.f32.math.ceil(this)
+public fun F128.ceil(): F128 = io.github.kotlinmania.rustlang.core.intrinsics.ceil(this)
 
 /**
  * Returns the nearest integer to `self`. If a value is half-way between two
@@ -1371,13 +1455,15 @@ public fun F128.ceil(): F128 = io.github.kotlinmania.rustlang.core.num.f32.math.
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val f = 3.3
- *     val g = -3.3
- *     val h = -3.7
- *     val i = 3.5
- *     val j = 4.5
+ *     val f = F128.fromDouble(3.3)
+ *     val g = -F128.fromDouble(3.3)
+ *     val h = -F128.fromDouble(3.7)
+ *     val i = F128.fromDouble(3.5)
+ *     val j = F128.fromDouble(4.5)
  *     check(f.round() == 3.0)
  *     check(g.round() == -3.0)
  *     check(h.round() == -4.0)
@@ -1386,7 +1472,7 @@ public fun F128.ceil(): F128 = io.github.kotlinmania.rustlang.core.num.f32.math.
  * }
  * ```
  */
-public fun F128.round(): F128 = io.github.kotlinmania.rustlang.core.num.f32.math.round(this)
+public fun F128.round(): F128 = io.github.kotlinmania.rustlang.core.intrinsics.round(this)
 
 /**
  * Returns the nearest integer to a number. Rounds half-way cases to the number
@@ -1397,12 +1483,14 @@ public fun F128.round(): F128 = io.github.kotlinmania.rustlang.core.num.f32.math
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val f = 3.3
- *     val g = -3.3
- *     val h = 3.5
- *     val i = 4.5
+ *     val f = F128.fromDouble(3.3)
+ *     val g = -F128.fromDouble(3.3)
+ *     val h = F128.fromDouble(3.5)
+ *     val i = F128.fromDouble(4.5)
  *     check(f.roundTiesEven() == 3.0)
  *     check(g.roundTiesEven() == -3.0)
  *     check(h.roundTiesEven() == 4.0)
@@ -1410,7 +1498,7 @@ public fun F128.round(): F128 = io.github.kotlinmania.rustlang.core.num.f32.math
  * }
  * ```
  */
-public fun F128.roundTiesEven(): F128 = io.github.kotlinmania.rustlang.core.num.f32.math.roundTiesEven(this)
+public fun F128.roundTiesEven(): F128 = io.github.kotlinmania.rustlang.core.intrinsics.roundTiesEven(this)
 
 /**
  * Returns the integer part of `self`.
@@ -1421,18 +1509,20 @@ public fun F128.roundTiesEven(): F128 = io.github.kotlinmania.rustlang.core.num.
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val f = 3.7
- *     val g = 3.0
- *     val h = -3.7
+ *     val f = F128.fromDouble(3.7)
+ *     val g = F128.fromDouble(3.0)
+ *     val h = -F128.fromDouble(3.7)
  *     check(f.trunc() == 3.0)
  *     check(g.trunc() == 3.0)
  *     check(h.trunc() == -3.0)
  * }
  * ```
  */
-public fun F128.trunc(): F128 = io.github.kotlinmania.rustlang.core.num.f32.math.trunc(this)
+public fun F128.trunc(): F128 = io.github.kotlinmania.rustlang.core.intrinsics.trunc(this)
 
 /**
  * Returns the fractional part of `self`.
@@ -1442,18 +1532,20 @@ public fun F128.trunc(): F128 = io.github.kotlinmania.rustlang.core.num.f32.math
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val x = 3.6
- *     val y = -3.6
+ *     val x = F128.fromDouble(3.6)
+ *     val y = -F128.fromDouble(3.6)
  *     val absDifferenceX = (x.fract() - 0.6).abs()
  *     val absDifferenceY = (y.fract() - (-0.6)).abs()
- *     check(absDifferenceX <= EPSILON)
- *     check(absDifferenceY <= EPSILON)
+ *     check(absDifferenceX <= F128.EPSILON)
+ *     check(absDifferenceY <= F128.EPSILON)
  * }
  * ```
  */
-public fun F128.fract(): F128 = this - this.trunc()
+public fun F128.fract(): F128 = this - F128.fromDouble(truncate(this.toDouble()))
 
 /**
  * Fused multiply-add. Computes `(self * a) + b` with only one rounding
@@ -1473,24 +1565,26 @@ public fun F128.fract(): F128 = this - this.trunc()
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val m = 10.0
- *     val x = 4.0
- *     val b = 60.0
+ *     val m = F128.fromDouble(10.0)
+ *     val x = F128.fromDouble(4.0)
+ *     val b = F128.fromDouble(60.0)
  *     check(m.mulAdd(x, b) == 100.0)
- *     check(m * x + b == 100.0)
- *     val onePlusEps = 1.0 + EPSILON
- *     val oneMinusEps = 1.0 - EPSILON
- *     val minusOne = -1.0
+ *     check(m * x + b == F128.fromDouble(100.0))
+ *     val onePlusEps = F128.fromDouble(1.0) + F128.EPSILON
+ *     val oneMinusEps = F128.fromDouble(1.0) - F128.EPSILON
+ *     val minusOne = -F128.fromDouble(1.0)
  *     // The exact result (1 + eps) * (1 - eps) = 1 - eps * eps.
- *     check(onePlusEps.mulAdd(oneMinusEps, minusOne) == -EPSILON * EPSILON)
+ *     check(onePlusEps.mulAdd(oneMinusEps, minusOne) == -F128.EPSILON * F128.EPSILON)
  *     // Different rounding with the non-fused multiply and add.
- *     check(onePlusEps * oneMinusEps + minusOne == 0.0)
+ *     check(onePlusEps * oneMinusEps + minusOne == F128.fromDouble(0.0))
  * }
  * ```
  */
-public fun F128.mulAdd(a: F128, b: F128): F128 = fma(this, a, b)
+public fun F128.mulAdd(a: F128, b: F128): F128 = F128.fromDouble(fma(this.toDouble(), a.toDouble(), b.toDouble()))
 
 /**
  * Computes `(self * a) + b` with nondeterministic rounding.
@@ -1508,6 +1602,8 @@ public fun F128.mulAdd(a: F128, b: F128): F128 = fma(this, a, b)
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * @feature(floatMulAddRelaxed)
  * public fun doctestEntry() {
@@ -1515,7 +1611,7 @@ public fun F128.mulAdd(a: F128, b: F128): F128 = fma(this, a, b)
  *     // result may be returned:
  *     // - 7.824090399073145653039910391751267e-37 is the fused result (one rounding)
  *     // - 1.5046327690525280101999827676444745e-36 is the unfused result (two roundings)
- *     val r = 0.1.mulAddRelaxed(0.1, -0.01)
+ *     val r = F128.fromDouble(0.1).mulAddRelaxed(F128.fromDouble(0.1), -F128.fromDouble(0.01))
  *     check(r == 7.824090399073145653039910391751267e-37 || r == 1.5046327690525280101999827676444745e-36)
  * }
  * ```
@@ -1542,7 +1638,7 @@ public fun F128.mulAddRelaxed(a: F128, b: F128): F128 = fmuladd(this, a, b)
  *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val a: F128 = 7.0
+ *     val a: F128 = F128.fromDouble(7.0)
  *     val b = 4.0
  *     check(a.divEuclid(b) == 1.0)
  *     // 7.0 > 4.0 * 1.0
@@ -1556,12 +1652,12 @@ public fun F128.mulAddRelaxed(a: F128, b: F128): F128 = fmuladd(this, a, b)
  * ```
  */
 public fun F128.divEuclid(rhs: F128): F128 {
-    val q = (this / rhs).trunc()
-    if (this % rhs < 0.0) {
-        return if (rhs > 0.0) {
-            q - 1.0
+    val q = F128.fromDouble(truncate((this / rhs).toDouble()))
+    if (this % rhs < F128.fromDouble(0.0)) {
+        return if (rhs > F128.fromDouble(0.0)) {
+            q - F128.fromDouble(1.0)
         } else {
-            q + 1.0
+            q + F128.fromDouble(1.0)
         }
     }
     return q
@@ -1592,21 +1688,21 @@ public fun F128.divEuclid(rhs: F128): F128 {
  *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val a: F128 = 7.0
+ *     val a: F128 = F128.fromDouble(7.0)
  *     val b = 4.0
  *     check(a.remEuclid(b) == 3.0)
  *     check((-a).remEuclid(b) == 1.0)
  *     check(a.remEuclid(-b) == 3.0)
  *     check((-a).remEuclid(-b) == 1.0)
  *     // limitation due to round-off error
- *     check((-EPSILON).remEuclid(3.0) != 0.0)
+ *     check((-F128.EPSILON).remEuclid(F128.fromDouble(3.0)) != 0.0)
  * }
  * ```
  */
 public fun F128.remEuclid(rhs: F128): F128 {
     val r = this % rhs
-    return if (r < 0.0) {
-        r + rhs.abs()
+    return if (r < F128.fromDouble(0.0)) {
+        r + F128.fromDouble(abs(rhs.toDouble()))
     } else {
         r
     }
@@ -1632,17 +1728,19 @@ public fun F128.remEuclid(rhs: F128): F128 {
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val x = 2.0
+ *     val x = F128.fromDouble(2.0)
  *     val absDifference = (x.powi(2) - (x * x)).abs()
  *     check(absDifference <= 1e-9)
- *     check(powi(NAN, 0) == 1.0)
- *     check(powi(0.0, 0) == 1.0)
+ *     check(F128.powi(F128.NAN, 0) == 1.0)
+ *     check(F128.powi(0.0, 0) == 1.0)
  * }
  * ```
  */
-public fun F128.powi(n: Int): F128 = io.github.kotlinmania.rustlang.core.num.f32.math.powi(this, n)
+public fun F128.powi(n: Int): F128 = io.github.kotlinmania.rustlang.core.intrinsics.powi(this, n)
 
 /**
  * Returns the square root of a number.
@@ -1658,15 +1756,17 @@ public fun F128.powi(n: Int): F128 = io.github.kotlinmania.rustlang.core.num.f32
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F128
+ *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val positive = 4.0
- *     val negative = -4.0
- *     val negativeZero = -0.0
+ *     val positive = F128.fromDouble(4.0)
+ *     val negative = -F128.fromDouble(4.0)
+ *     val negativeZero = -F128.fromDouble(0.0)
  *     check(positive.sqrt() == 2.0)
  *     check(negative.sqrt().isNan())
  *     check(negativeZero.sqrt() == negativeZero)
  * }
  * ```
  */
-public fun F128.sqrt(): F128 = io.github.kotlinmania.rustlang.core.num.f32.math.sqrt(this)
+public fun F128.sqrt(): F128 = io.github.kotlinmania.rustlang.core.intrinsics.sqrt(this)

@@ -219,7 +219,7 @@ public fun customOwnerFromBox(kind: ErrorKind, error: Any): CustomOwner {
      */
     fun dropBoxRaw(ptr: NonNull) {
         // SAFETY: Caller ensures `ptr` is valid to pass into `Holder.fromRaw`.
-        drop(Box.fromNonNull(ptr))
+        (Box.fromNonNull(ptr)).let { }
     }
     val error1 = Box.intoNonNull(error)
     // SAFETY:

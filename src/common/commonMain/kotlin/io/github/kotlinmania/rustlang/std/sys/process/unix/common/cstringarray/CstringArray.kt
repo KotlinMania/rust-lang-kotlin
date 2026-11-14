@@ -6,7 +6,6 @@ import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.iter.Iter
-import io.github.kotlinmania.rustlang.std.ops.index
 
 /**
  * Helper type to manage ownership of the strings within a C-style array.
@@ -32,7 +31,7 @@ public open class CStringArray internal constructor(
         // `CStringArray` owns all of its strings, and they were all transformed
         // into pointers using `CString.intoRaw`. Also, this is not the null
         // pointer since the indexing above would have failed.
-        drop(CString.fromRaw(old.castMut()))
+        (CString.fromRaw(old.castMut())).let { }
     }
 
     /**
@@ -78,7 +77,7 @@ public open class CStringArray internal constructor(
         // SAFETY:
         // `CStringArray` owns all of its strings, and they were all transformed
         // into pointers using `CString.intoRaw`.
-        ((this.ptrs).slice(0 until this.ptrs.size - 1)).forEach({ p -> drop(CString.fromRaw(p.castMut())) })
+        ((this.ptrs).slice(0 until this.ptrs.size - 1)).forEach({ p -> (CString.fromRaw(p.castMut())).let { } })
     }
 
     public companion object {

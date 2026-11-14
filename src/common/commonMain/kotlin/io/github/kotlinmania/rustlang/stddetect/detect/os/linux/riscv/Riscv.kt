@@ -1,16 +1,16 @@
 // port-lint: source detect/os/linux/riscv.rs
 package io.github.kotlinmania.rustlang.stddetect.detect.os.linux.riscv
 
-import io.github.kotlinmania.libc.CInt
-import io.github.kotlinmania.libc.CLong
-import io.github.kotlinmania.libc.CUint
-import io.github.kotlinmania.libc.fuchsia.SizeT
-import io.github.kotlinmania.libc.prctl
-import io.github.kotlinmania.libc.syscall
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
+import io.github.kotlinmania.rustlang.libc.CInt
+import io.github.kotlinmania.rustlang.libc.CLong
+import io.github.kotlinmania.rustlang.libc.CUint
+import io.github.kotlinmania.rustlang.libc.helenos.SizeT
+import io.github.kotlinmania.rustlang.libc.new.glibc.sysdeps.unix.linux.bits.types.siginfot.syscall
+import io.github.kotlinmania.rustlang.libc.prctl
 import io.github.kotlinmania.rustlang.stddetect.detect.arch.Feature
 import io.github.kotlinmania.rustlang.stddetect.detect.bit.test
 import io.github.kotlinmania.rustlang.stddetect.detect.cache.Cache
@@ -218,7 +218,7 @@ public fun riscvHwprobe(out: MutableList<RiscvHwprobe>): Boolean {
  * Read list of supported features from (1) the auxiliary vector
  * and (2) the results of `riscvHwprobe` and `prctl` system calls.
  */
-internal fun detectFeatures(): Initializer {
+public fun detectFeatures(): Initializer {
     var value = Cache.Initializer.default()
     var enableFeature =
         { feature, enable ->

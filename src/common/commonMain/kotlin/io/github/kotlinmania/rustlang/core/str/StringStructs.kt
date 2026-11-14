@@ -4,6 +4,9 @@ import io.github.kotlinmania.rustlang.core.char.isAsciiWhitespace
 import io.github.kotlinmania.rustlang.core.char.methods.EscapeDebugExtArgs
 import io.github.kotlinmania.rustlang.core.macros.builtin.line
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.ops.function.Fn
+import io.github.kotlinmania.rustlang.core.ops.function.FnMut
+import io.github.kotlinmania.rustlang.core.ops.function.FnOnce
 import io.github.kotlinmania.rustlang.core.str.converts.fromUtf8Unchecked
 import io.github.kotlinmania.rustlang.core.str.iter.EscapeDebug
 import io.github.kotlinmania.rustlang.core.str.iter.EscapeDefault
@@ -148,7 +151,7 @@ public open class IsWhitespace : Fn<Char>, FnMut<Char>, FnOnce<Char, Any?, Boole
     }
 }
 
-internal open class IsAsciiWhitespace : Fn<UByte>, FnMut<UByte>, FnOnce<UByte, Any?, Boolean> {
+public open class IsAsciiWhitespace : Fn<UByte>, FnMut<UByte>, FnOnce<UByte, Any?, Boolean> {
     public open fun clone(): IsAsciiWhitespace = IsAsciiWhitespace()
 
     public override fun call(tupleArg0: UByte): Boolean = byte.isAsciiWhitespace()
@@ -200,7 +203,7 @@ public open class IsNotEmpty : Fn<String>, FnMut<String>, FnOnce<String, Any?, B
     }
 }
 
-internal open class BytesIsNotEmpty : Fn<List<UByte>>, FnMut<List<UByte>>, FnOnce<List<UByte>, Any?, Boolean> {
+public open class BytesIsNotEmpty : Fn<List<UByte>>, FnMut<List<UByte>>, FnOnce<List<UByte>, Any?, Boolean> {
     public open fun clone(): BytesIsNotEmpty = BytesIsNotEmpty()
 
     public override fun call(tupleArg0: List<UByte>): Boolean = !s.isEmpty()

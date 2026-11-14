@@ -4,7 +4,7 @@ package io.github.kotlinmania.rustlang.alloc.alloc
 
 private object AllocJniBridge {
     init {
-        System.loadLibrary("alloc_jni")
+        System.loadLibrary("kmcore_jni")
     }
 
     @JvmStatic

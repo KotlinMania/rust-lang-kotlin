@@ -12,7 +12,7 @@ import io.github.kotlinmania.rustlang.stddetect.detect.checkFor
  * PLEASE: do not use this, it is an implementation detail subject
  * to change.
  */
-internal sealed class Feature {
+public sealed class Feature {
     /**
      * FeatAdvSimd (Advanced SIMD/NEON)
      */
@@ -306,7 +306,7 @@ internal sealed class Feature {
      */
     public data object Wfxt : Feature()
 
-    internal open fun toStr(): String =
+    public open fun toStr(): String =
         when (this) {
             Feature.asimd -> "neon"
             Feature.pmull -> "pmull"
@@ -384,9 +384,9 @@ internal sealed class Feature {
         }
 
     public companion object {
-        internal val ALL: List<Feature> = listOf(Feature::asimd, Feature::pmull, Feature::fp, Feature::aes, Feature::bf16, Feature::bti, Feature::crc, Feature::cssc, Feature::dit, Feature::dpb, Feature::dpb2, Feature::dotprod, Feature::ecv, Feature::f32mm, Feature::f64mm, Feature::faminmax, Feature::fcma, Feature::fhm, Feature::flagm, Feature::flagm2, Feature::fp16, Feature::fp8, Feature::fp8dot2, Feature::fp8dot4, Feature::fp8fma, Feature::fpmr, Feature::frintts, Feature::hbc, Feature::i8mm, Feature::jsconv, Feature::lse, Feature::lse128, Feature::lse2, Feature::lut, Feature::mops, Feature::mte, Feature::paca, Feature::pacg, Feature::pauthLr, Feature::rand, Feature::rcpc, Feature::rcpc2, Feature::rcpc3, Feature::rdm, Feature::sb, Feature::sha2, Feature::sha3, Feature::sm4, Feature::sme, Feature::sme2, Feature::sme2p1, Feature::smeB16b16, Feature::smeF16f16, Feature::smeF64f64, Feature::smeF8f16, Feature::smeF8f32, Feature::smeFa64, Feature::smeI16i64, Feature::smeLutv2, Feature::ssbs, Feature::ssveFp8dot2, Feature::ssveFp8dot4, Feature::ssveFp8fma, Feature::sve, Feature::sve2, Feature::sve2p1, Feature::sve2Aes, Feature::sveB16b16, Feature::sve2Bitperm, Feature::sve2Sha3, Feature::sve2Sm4, Feature::tme, Feature::wfxt)
+        public val ALL: List<Feature> = listOf(Feature::asimd, Feature::pmull, Feature::fp, Feature::aes, Feature::bf16, Feature::bti, Feature::crc, Feature::cssc, Feature::dit, Feature::dpb, Feature::dpb2, Feature::dotprod, Feature::ecv, Feature::f32mm, Feature::f64mm, Feature::faminmax, Feature::fcma, Feature::fhm, Feature::flagm, Feature::flagm2, Feature::fp16, Feature::fp8, Feature::fp8dot2, Feature::fp8dot4, Feature::fp8fma, Feature::fpmr, Feature::frintts, Feature::hbc, Feature::i8mm, Feature::jsconv, Feature::lse, Feature::lse128, Feature::lse2, Feature::lut, Feature::mops, Feature::mte, Feature::paca, Feature::pacg, Feature::pauthLr, Feature::rand, Feature::rcpc, Feature::rcpc2, Feature::rcpc3, Feature::rdm, Feature::sb, Feature::sha2, Feature::sha3, Feature::sm4, Feature::sme, Feature::sme2, Feature::sme2p1, Feature::smeB16b16, Feature::smeF16f16, Feature::smeF64f64, Feature::smeF8f16, Feature::smeF8f32, Feature::smeFa64, Feature::smeI16i64, Feature::smeLutv2, Feature::ssbs, Feature::ssveFp8dot2, Feature::ssveFp8dot4, Feature::ssveFp8fma, Feature::sve, Feature::sve2, Feature::sve2p1, Feature::sve2Aes, Feature::sveB16b16, Feature::sve2Bitperm, Feature::sve2Sha3, Feature::sve2Sm4, Feature::tme, Feature::wfxt)
 
-        internal fun fromStr(s: String): Result<Feature, Unit> =
+        public fun fromStr(s: String): Result<Feature, Unit> =
             when (s) {
                 "neon" -> Result.Ok(Feature::asimd)
                 "pmull" -> Result.Ok(Feature::pmull)

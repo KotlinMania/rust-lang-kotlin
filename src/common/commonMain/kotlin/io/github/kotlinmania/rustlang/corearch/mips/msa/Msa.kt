@@ -3,8 +3,6 @@
 
 package io.github.kotlinmania.rustlang.corearch.mips.msa
 
-import io.github.kotlinmania.rustlang.core.fmt.Formatter
-import io.github.kotlinmania.rustlang.core.fmt.Result
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
@@ -14,7 +12,6 @@ import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.corearch.Mem
 import io.github.kotlinmania.rustlang.corearch.simd.Simd
 import io.github.kotlinmania.rustlang.corearch.simd.debugSimdFinish
 
@@ -75,13 +72,13 @@ public open class V16i8(
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: Byte): V16i8 = Simd.simdSplat(value)
+        public fun splat(value: Byte): V16i8 = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Byte>): V16i8 = Mem.transmute(simd)
+        public fun from(simd: Simd<Byte>): V16i8 = transmute(simd)
     }
 }
 
-public fun fromSimdByte(simd: V16i8): Simd<Byte> = Mem.transmute(simd)
+public fun fromSimdByte(simd: V16i8): Simd<Byte> = transmute(simd)
 
 /**
  * MIPS-specific 128-bit wide vector of 8 packed `Short`.
@@ -133,13 +130,13 @@ public open class V8i16(
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: Short): V8i16 = Simd.simdSplat(value)
+        public fun splat(value: Short): V8i16 = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Short>): V8i16 = Mem.transmute(simd)
+        public fun from(simd: Simd<Short>): V8i16 = transmute(simd)
     }
 }
 
-public fun fromSimdShort(simd: V8i16): Simd<Short> = Mem.transmute(simd)
+public fun fromSimdShort(simd: V8i16): Simd<Short> = transmute(simd)
 
 /**
  * MIPS-specific 128-bit wide vector of 4 packed `Int`.
@@ -191,13 +188,13 @@ public open class V4i32(
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: Int): V4i32 = Simd.simdSplat(value)
+        public fun splat(value: Int): V4i32 = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Int>): V4i32 = Mem.transmute(simd)
+        public fun from(simd: Simd<Int>): V4i32 = transmute(simd)
     }
 }
 
-public fun fromSimdInt(simd: V4i32): Simd<Int> = Mem.transmute(simd)
+public fun fromSimdInt(simd: V4i32): Simd<Int> = transmute(simd)
 
 /**
  * MIPS-specific 128-bit wide vector of 2 packed `Long`.
@@ -249,13 +246,13 @@ public open class V2i64(
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: Long): V2i64 = Simd.simdSplat(value)
+        public fun splat(value: Long): V2i64 = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Long>): V2i64 = Mem.transmute(simd)
+        public fun from(simd: Simd<Long>): V2i64 = transmute(simd)
     }
 }
 
-public fun fromSimdLong(simd: V2i64): Simd<Long> = Mem.transmute(simd)
+public fun fromSimdLong(simd: V2i64): Simd<Long> = transmute(simd)
 
 /**
  * MIPS-specific 128-bit wide vector of 16 packed `UByte`.
@@ -307,13 +304,13 @@ public open class V16u8(
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: UByte): V16u8 = Simd.simdSplat(value)
+        public fun splat(value: UByte): V16u8 = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<UByte>): V16u8 = Mem.transmute(simd)
+        public fun from(simd: Simd<UByte>): V16u8 = transmute(simd)
     }
 }
 
-public fun fromSimdUByte(simd: V16u8): Simd<UByte> = Mem.transmute(simd)
+public fun fromSimdUByte(simd: V16u8): Simd<UByte> = transmute(simd)
 
 /**
  * MIPS-specific 128-bit wide vector of 8 packed `UShort`.
@@ -365,13 +362,13 @@ public open class V8u16(
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: UShort): V8u16 = Simd.simdSplat(value)
+        public fun splat(value: UShort): V8u16 = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<UShort>): V8u16 = Mem.transmute(simd)
+        public fun from(simd: Simd<UShort>): V8u16 = transmute(simd)
     }
 }
 
-public fun fromSimdUShort(simd: V8u16): Simd<UShort> = Mem.transmute(simd)
+public fun fromSimdUShort(simd: V8u16): Simd<UShort> = transmute(simd)
 
 /**
  * MIPS-specific 128-bit wide vector of 4 packed `UInt`.
@@ -423,13 +420,13 @@ public open class V4u32(
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: UInt): V4u32 = Simd.simdSplat(value)
+        public fun splat(value: UInt): V4u32 = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<UInt>): V4u32 = Mem.transmute(simd)
+        public fun from(simd: Simd<UInt>): V4u32 = transmute(simd)
     }
 }
 
-public fun fromSimdUInt(simd: V4u32): Simd<UInt> = Mem.transmute(simd)
+public fun fromSimdUInt(simd: V4u32): Simd<UInt> = transmute(simd)
 
 /**
  * MIPS-specific 128-bit wide vector of 2 packed `ULong`.
@@ -481,13 +478,13 @@ public open class V2u64(
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: ULong): V2u64 = Simd.simdSplat(value)
+        public fun splat(value: ULong): V2u64 = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<ULong>): V2u64 = Mem.transmute(simd)
+        public fun from(simd: Simd<ULong>): V2u64 = transmute(simd)
     }
 }
 
-public fun fromSimdULong(simd: V2u64): Simd<ULong> = Mem.transmute(simd)
+public fun fromSimdULong(simd: V2u64): Simd<ULong> = transmute(simd)
 
 public open class V4f32(
     public var value: FloatArray,
@@ -536,13 +533,13 @@ public open class V4f32(
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: Float): V4f32 = Simd.simdSplat(value)
+        public fun splat(value: Float): V4f32 = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Float>): V4f32 = Mem.transmute(simd)
+        public fun from(simd: Simd<Float>): V4f32 = transmute(simd)
     }
 }
 
-public fun fromSimdFloat(simd: V4f32): Simd<Float> = Mem.transmute(simd)
+public fun fromSimdFloat(simd: V4f32): Simd<Float> = transmute(simd)
 
 /**
  * MIPS-specific 128-bit wide vector of 2 packed `Double`.
@@ -594,13 +591,13 @@ public open class V2f64(
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: Double): V2f64 = Simd.simdSplat(value)
+        public fun splat(value: Double): V2f64 = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Double>): V2f64 = Mem.transmute(simd)
+        public fun from(simd: Simd<Double>): V2f64 = transmute(simd)
     }
 }
 
-public fun fromSimdDouble(simd: V2f64): Simd<Double> = Mem.transmute(simd)
+public fun fromSimdDouble(simd: V2f64): Simd<Double> = transmute(simd)
 
 public expect fun msaAddAB(a: V16i8, b: V16i8): V16i8
 

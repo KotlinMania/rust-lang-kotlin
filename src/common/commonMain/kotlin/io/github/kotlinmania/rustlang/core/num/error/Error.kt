@@ -9,7 +9,7 @@ import io.github.kotlinmania.rustlang.core.result.Result
  * The error type returned when a checked integral type conversion fails.
  */
 public open class TryFromIntError(
-    internal var value: IntErrorKind,
+    public var value: IntErrorKind,
 ) {
     public var field0: IntErrorKind
         get() = value
@@ -64,7 +64,7 @@ public open class TryFromIntError(
  * ```
  */
 public open class ParseIntError(
-    internal var kind: IntErrorKind,
+    public var kind: IntErrorKind,
 ) {
     public open fun clone(): ParseIntError = ParseIntError(kind)
 

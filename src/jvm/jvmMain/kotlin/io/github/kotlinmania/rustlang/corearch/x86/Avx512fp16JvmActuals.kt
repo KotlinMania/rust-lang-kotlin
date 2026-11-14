@@ -137,7 +137,7 @@ public actual fun vfmaddph512(a: M512h, b: M512h, c: M512h, rounding: Int): M512
     M512h()
 
 public actual fun vfmaddsh(a: F16, b: F16, c: F16, rounding: Int): F16 =
-    null as F16
+    F16()
 
 public actual fun vfmaddsubph512(a: M512h, b: M512h, c: M512h, rounding: Int): M512h =
     M512h()

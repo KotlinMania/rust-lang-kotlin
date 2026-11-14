@@ -4,7 +4,7 @@ package io.github.kotlinmania.rustlang.corearch.wasm32
 
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 
-// The host must provide the C companion wrapper exports in import module corearch.
+// The host must provide the C companion wrapper exports in import module kmcore.
 public actual fun llvmAtomicWaitI32(ptr: MutPtr, exp: Int, timeout: Long): Int =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchWasm32AtomicLlvmAtomicWaitI32")
 

@@ -31,11 +31,6 @@ import io.github.kotlinmania.rustlang.std.process.ChildStdout
 import io.github.kotlinmania.rustlang.std.sync.Arc
 import io.github.kotlinmania.rustlang.std.sys.FromInner
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.DUPLICATE_SAME_ACCESS
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.INVALID_HANDLE_VALUE
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.closeHandle
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.duplicateHandle
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.getCurrentProcess
 import io.github.kotlinmania.rustlang.std.thread.joinhandle.JoinHandle
 
 // Owned and borrowed OS handles.
@@ -118,9 +113,9 @@ public open class BorrowedHandle internal constructor(
      * Creates a new `OwnedHandle` instance that shares the same underlying
      * object as the existing `BorrowedHandle` instance.
      */
-    public open fun tryCloneToOwned(): Result<OwnedHandle, Error> = this.duplicate(0, false, DUPLICATE_SAME_ACCESS)
+    public open fun tryCloneToOwned(): Result<OwnedHandle, Error> = this.duplicate(0, false, C.DUPLICATE_SAME_ACCESS)
 
-    internal open fun duplicate(access: UInt, inherit: Boolean, options: UInt): Result<OwnedHandle, Error> {
+    public open fun duplicate(access: UInt, inherit: Boolean, options: UInt): Result<OwnedHandle, Error> {
         val handle = this.asRawHandle()
         // `Stdin`, `Stdout`, and `Stderr` can all hold null handles, such as
         // in a process with a detached console. `DuplicateHandle` would fail
@@ -131,8 +126,8 @@ public open class BorrowedHandle internal constructor(
         }
         val ret = MutPtr(0L)
         when (val tryResult = cvt(run {
-            val curProc = getCurrentProcess()
-            duplicateHandle(curProc, handle, curProc, ret, access, inherit.toInt(), options)
+            val curProc = C.GetCurrentProcess()
+            C.DuplicateHandle(curProc, handle, curProc, ret, access, inherit.toInt(), options)
         })) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         return Result.Ok(OwnedHandle.fromRawHandle(ret, fieldLayout = ObjectSlotLayout<RawHandle>()))
     }
@@ -259,7 +254,7 @@ public open class OwnedHandle internal constructor(
 
     public open fun drop() {
         run {
-            closeHandle(this.handle)
+            C.CloseHandle(this.handle)
         }
     }
 
@@ -371,7 +366,7 @@ public open class HandleOrNull internal constructor(
     public open fun drop() {
         if (this.isValid()) {
             run {
-                closeHandle(this.value)
+                C.CloseHandle(this.value)
             }
         }
     }
@@ -440,12 +435,12 @@ public open class HandleOrInvalid internal constructor(
     public open fun drop() {
         if (this.isValid()) {
             run {
-                closeHandle(this.value)
+                C.CloseHandle(this.value)
             }
         }
     }
 
-    public open fun isValid(): Boolean = (this.value != INVALID_HANDLE_VALUE).toUByte()
+    public open fun isValid(): Boolean = (this.value != C.INVALID_HANDLE_VALUE).toUByte()
 
     public companion object {
         public operator fun invoke(value: RawHandle, fieldLayout: TypeLayout<RawHandle>): HandleOrInvalid = HandleOrInvalid(value, fieldLayout)

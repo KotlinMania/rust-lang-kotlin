@@ -5,11 +5,15 @@ import io.github.kotlinmania.rustlang.core.num.rustPow
 import io.github.kotlinmania.rustlang.core.panic.unwindsafe.AssertUnwindSafe
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.time.Duration
+import io.github.kotlinmania.rustlang.std.io.stdio.setOutputCapture
 import io.github.kotlinmania.rustlang.std.panic.catchUnwind
+import io.github.kotlinmania.rustlang.std.sync.nonpoison.mutex.Mutex
 import io.github.kotlinmania.rustlang.std.time.Instant
 import io.github.kotlinmania.rustlang.test.Sender
 import io.github.kotlinmania.rustlang.test.event.CompletedTest
 import io.github.kotlinmania.rustlang.test.options.BenchMode
+import io.github.kotlinmania.rustlang.test.stats.Summary
+import io.github.kotlinmania.rustlang.test.stats.winsorize
 import io.github.kotlinmania.rustlang.test.testresult.TestResult
 import io.github.kotlinmania.rustlang.test.types.TestDesc
 import io.github.kotlinmania.rustlang.test.types.TestId
@@ -131,14 +135,14 @@ public fun <T> iter(inner: () -> T): Summary {
         for (idx in samples.indices) {
             samples[idx] = nsIterInner(inner, n).toDouble() / n.toDouble()
         }
-        stats.winsorize(samples, 5.0)
-        val summ = stats.Summary.new(samples)
+        winsorize(samples, 5.0)
+        val summ = Summary.new(samples)
         for (idx1 in samples.indices) {
             val ns = nsIterInner(inner, 5uL * n)
             samples[idx1] = ns.toDouble() / (5 * n).toDouble()
         }
-        stats.winsorize(samples, 5.0)
-        val summ5 = stats.Summary.new(samples)
+        winsorize(samples, 5.0)
+        val summ5 = Summary.new(samples)
         val loopRun = loopStart.elapsed()
         // If we've run for 100ms and seem to have converged to a
         // stable median.
@@ -184,7 +188,7 @@ public fun benchmark(id: TestId, desc: TestDesc, monitorCh: Sender<CompletedTest
                 // iter not called, so no data.
                 // Note: error in this case?
                 val samples: MutableList<Double> = MutableList(1) { 0.0 }
-                val bs2 = BenchSamples(nsIterSumm = stats.Summary.new(samples), mbS = 0)
+                val bs2 = BenchSamples(nsIterSumm = Summary.new(samples), mbS = 0)
                 TestResult.TrBench(bs2)
             }
             result is Result.Err<*> -> TestResult.TrFailed

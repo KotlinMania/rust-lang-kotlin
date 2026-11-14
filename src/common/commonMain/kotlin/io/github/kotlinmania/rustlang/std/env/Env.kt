@@ -1,31 +1,26 @@
 // port-lint: source env.rs
 package io.github.kotlinmania.rustlang.std.env
 
-import io.github.kotlinmania.envimp.Env
-import io.github.kotlinmania.envimp.env
-import io.github.kotlinmania.envimp.getenv
-import io.github.kotlinmania.envimp.setenv
-import io.github.kotlinmania.envimp.unsetenv
-import io.github.kotlinmania.pathsimp.chdir
-import io.github.kotlinmania.pathsimp.getcwd
-import io.github.kotlinmania.rustlang.core.array.iter.IntoIter
+import io.github.kotlinmania.rustlang.core.error.Error
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
-import io.github.kotlinmania.rustlang.std.env.consts.DLL_EXTENSION
-import io.github.kotlinmania.rustlang.std.env.consts.DLL_PREFIX
-import io.github.kotlinmania.rustlang.std.env.consts.DLL_SUFFIX
-import io.github.kotlinmania.rustlang.std.env.consts.EXE_EXTENSION
-import io.github.kotlinmania.rustlang.std.env.consts.EXE_SUFFIX
-import io.github.kotlinmania.rustlang.std.env.consts.FAMILY
-import io.github.kotlinmania.rustlang.std.env.consts.OS
-import io.github.kotlinmania.rustlang.std.error
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
-import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.path.PathBuf
+import io.github.kotlinmania.rustlang.std.sys.env.unix.env
+import io.github.kotlinmania.rustlang.std.sys.envconsts.os.DLL_EXTENSION
+import io.github.kotlinmania.rustlang.std.sys.envconsts.os.DLL_PREFIX
+import io.github.kotlinmania.rustlang.std.sys.envconsts.os.DLL_SUFFIX
+import io.github.kotlinmania.rustlang.std.sys.envconsts.os.EXE_EXTENSION
+import io.github.kotlinmania.rustlang.std.sys.envconsts.os.EXE_SUFFIX
+import io.github.kotlinmania.rustlang.std.sys.envconsts.os.FAMILY
+import io.github.kotlinmania.rustlang.std.sys.envconsts.os.OS
+import io.github.kotlinmania.rustlang.std.sys.paths.unix.chdir
+import io.github.kotlinmania.rustlang.std.sys.paths.unix.getcwd
+import io.github.kotlinmania.rustlang.std.sys.env.unix.env as envimp
 
 // Inspection and manipulation of the process's environment.
 //
@@ -152,7 +147,7 @@ public open class Vars(
  * [env.varsOs]: varsOs
  */
 public open class VarsOs(
-    public var inner: Env,
+    public var inner: envimp.Env,
 ) : Iterable<Pair<OsString, OsString>> {
     override fun iterator(): Iterator<Pair<OsString, OsString>> = object : AbstractIterator<Pair<OsString, OsString>>() {
         override fun computeNext() {
@@ -221,7 +216,7 @@ public fun vars(): Vars = Vars(inner = varsOs())
  * }
  * ```
  */
-public fun varsOs(): VarsOs = VarsOs(inner = env())
+public fun varsOs(): VarsOs = VarsOs(inner = envimp.env())
 
 /**
  * Fetches the environment variable `key` from the current process.
@@ -258,7 +253,7 @@ public fun varsOs(): VarsOs = VarsOs(inner = env())
  */
 public fun variable(key: OsStr): Result<String, VarError> {
     fun inner(key1: OsStr): Result<String, VarError> {
-        return when (val tryResult = getenv(key1).okOr(VarError.NotPresent)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }.intoString().mapErr({ VarError.NotUnicode(it) })
+        return when (val tryResult = envimp.getenv(key1).okOr(VarError.NotPresent)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }.intoString().mapErr({ VarError.NotUnicode(it) })
     }
     return inner(key)
 }
@@ -292,7 +287,7 @@ public fun variable(key: OsStr): Result<String, VarError> {
  * If expecting a delimited variable (such as `PATH`), [splitPaths]
  * can be used to separate items.
  */
-public fun varOs(key: OsStr): OsString? = getenv(key)
+public fun varOs(key: OsStr): OsString? = envimp.getenv(key)
 
 /**
  * The error type for operations interacting with environment variables.
@@ -380,7 +375,7 @@ public sealed class VarError {
  */
 public fun setVar(key: OsStr, value: OsStr) {
     val (key1, value1) = Pair(key, value)
-    setenv(key1, value1).unwrapOrElse({ e ->
+    envimp.setenv(key1, value1).unwrapOrElse({ e ->
         error("failed to set environment variable `$key` to `$value`: $e")
     })
 }
@@ -444,7 +439,7 @@ public fun setVar(key: OsStr, value: OsStr) {
  */
 public fun removeVar(key: OsStr) {
     val key1 = key
-    unsetenv(key1).unwrapOrElse({ e -> error("failed to remove environment variable `$key`: $e") })
+    envimp.unsetenv(key1).unwrapOrElse({ e -> error("failed to remove environment variable `$key`: $e") })
 }
 
 /**
@@ -459,7 +454,7 @@ public fun removeVar(key: OsStr) {
  * [env.splitPaths]: splitPaths
  */
 public open class SplitPaths(
-    public var inner: io.github.kotlinmania.pathsimp.SplitPaths,
+    public var inner: io.github.kotlinmania.rustlang.std.sys.paths.unix.SplitPaths,
 ) : Iterable<PathBuf> {
     override fun iterator(): Iterator<PathBuf> = object : AbstractIterator<PathBuf>() {
         override fun computeNext() {
@@ -513,7 +508,7 @@ public open class SplitPaths(
  * }
  * ```
  */
-public fun splitPaths(unparsed: OsStr): SplitPaths = SplitPaths(inner = io.github.kotlinmania.pathsimp.splitPaths(unparsed.asRef()))
+public fun splitPaths(unparsed: OsStr): SplitPaths = SplitPaths(inner = io.github.kotlinmania.rustlang.std.sys.paths.unix.splitPaths(unparsed.asRef()))
 
 /**
  * An iterator that splits an environment variable into paths according to
@@ -527,7 +522,7 @@ public fun splitPaths(unparsed: OsStr): SplitPaths = SplitPaths(inner = io.githu
  * [env.splitPathsRef]: splitPathsRef
  */
 public open class SplitPathsRef(
-    public var inner: io.github.kotlinmania.pathsimp.SplitPathsRef,
+    public var inner: io.github.kotlinmania.rustlang.std.sys.paths.unix.SplitPathsRef,
 ) : Iterable<Path> {
     override fun iterator(): Iterator<Path> = object : AbstractIterator<Path>() {
         override fun computeNext() {
@@ -563,7 +558,7 @@ public open class SplitPathsRef(
  * [changes]: io#platform-specific-behavior
  */
 public fun splitPathsRef(unparsed: OsStr): SplitPathsRef? {
-    return SplitPathsRef(inner = (io.github.kotlinmania.pathsimp.splitPathsRef(unparsed.asRef()) ?: return null))
+    return SplitPathsRef(inner = (io.github.kotlinmania.rustlang.std.sys.paths.unix.splitPathsRef(unparsed.asRef()) ?: return null))
 }
 
 /**
@@ -573,7 +568,7 @@ public fun splitPathsRef(unparsed: OsStr): SplitPathsRef? {
  * [env.joinPaths]: joinPaths
  */
 public open class JoinPathsError(
-    public var inner: io.github.kotlinmania.pathsimp.JoinPathsError,
+    public var inner: io.github.kotlinmania.rustlang.std.sys.paths.unix.JoinPathsError,
 ) {
     public open fun fmt(f: StringBuilder) {
         this.inner.fmt(f)
@@ -647,7 +642,7 @@ public open class JoinPathsError(
  *
  * [env.splitPaths]: splitPaths
  */
-public fun <I> joinPaths(paths: I): Result<OsString, JoinPathsError> where I : Iterable<OsStr> = io.github.kotlinmania.pathsimp.joinPaths(paths.iterator()).mapErr({ e -> JoinPathsError(inner = e) })
+public fun <I> joinPaths(paths: I): Result<OsString, JoinPathsError> where I : Iterable<OsStr> = io.github.kotlinmania.rustlang.std.sys.paths.unix.joinPaths(paths.iterator()).mapErr({ e -> JoinPathsError(inner = e) })
 
 /**
  * Returns the path of the current user's home directory if known.
@@ -695,7 +690,7 @@ public fun <I> joinPaths(paths: I): Result<OsString, JoinPathsError> where I : I
  * }
  * ```
  */
-public fun homeDir(): PathBuf? = io.github.kotlinmania.pathsimp.homeDir()
+public fun homeDir(): PathBuf? = io.github.kotlinmania.rustlang.std.sys.paths.unix.homeDir()
 
 /**
  * Returns the path of a temporary directory.
@@ -752,7 +747,7 @@ public fun homeDir(): PathBuf? = io.github.kotlinmania.pathsimp.homeDir()
  * }
  * ```
  */
-public fun tempDir(): PathBuf = io.github.kotlinmania.pathsimp.tempDir()
+public fun tempDir(): PathBuf = io.github.kotlinmania.rustlang.std.sys.paths.unix.tempDir()
 
 /**
  * Returns the full filesystem path of the current running executable.
@@ -812,7 +807,7 @@ public fun tempDir(): PathBuf = io.github.kotlinmania.pathsimp.tempDir()
  * }
  * ```
  */
-public fun currentExe(): Result<PathBuf, Error> = io.github.kotlinmania.pathsimp.currentExe()
+public fun currentExe(): Result<PathBuf, Error> = io.github.kotlinmania.rustlang.std.sys.paths.unix.currentExe()
 
 /**
  * An iterator over the arguments of a process, yielding a [String] value for
@@ -1009,7 +1004,7 @@ public fun argsOs(): ArgsOs = ArgsOs(inner = io.github.kotlinmania.rustlang.std.
  *
  * </details>
  */
-public val ARCH: String = io.github.kotlinmania.rustlang.std.sys.env.unix.env("STD_ENV_ARCH")
+public val ARCH: String = env("STD_ENV_ARCH")
 
 /**
  * A string describing the family of the operating system.

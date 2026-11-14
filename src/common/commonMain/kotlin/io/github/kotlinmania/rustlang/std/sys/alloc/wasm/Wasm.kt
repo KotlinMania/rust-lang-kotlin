@@ -1,10 +1,10 @@
 // port-lint: source sys/alloc/wasm.rs
 package io.github.kotlinmania.rustlang.std.sys.alloc.wasm
 
-import io.github.kotlinmania.dlmalloc.Dlmalloc
 import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
 import io.github.kotlinmania.rustlang.core.cell.SyncUnsafeCell
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.dlmalloc.Dlmalloc
 
 // This is an implementation of a global allocator on wasm targets when
 // emscripten or wasi is not in use. In that situation there's no actual runtime

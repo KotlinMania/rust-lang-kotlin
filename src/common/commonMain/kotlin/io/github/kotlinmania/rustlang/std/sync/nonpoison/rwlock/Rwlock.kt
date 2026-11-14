@@ -123,7 +123,7 @@ public open class RwLock<T>(
         if (needsDrop<T>()) {
             // If the contained value has a non-trivial destructor, we
             // call that destructor after the lock has been released.
-            drop(this.replace(value))
+            (this.replace(value)).let { }
         } else {
             this.write() = value
         }
@@ -455,7 +455,7 @@ public open class RwLock<T>(
          * }
          * ```
          */
-        public fun <T> new(t: T): RwLock<T> = RwLock(inner = io.github.kotlinmania.rustlang.std.sys.sync.rwlock.futex.RwLock.new(), data = UnsafeCell.new(t))
+        public fun <T> new(t: T): RwLock<T> = RwLock(inner = io.github.kotlinmania.rustlang.std.sys.sync.rwlock.new(), data = UnsafeCell.new(t))
 
         /**
          * Creates a new `RwLock<T>`, with the `Default` value for T.

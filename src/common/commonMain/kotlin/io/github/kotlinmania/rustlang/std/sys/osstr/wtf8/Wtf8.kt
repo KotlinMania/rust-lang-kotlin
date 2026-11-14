@@ -26,7 +26,7 @@ import io.github.kotlinmania.rustlang.std.sys.IntoInner
 // The underlying OsString/OsStr implementation on Windows is a
 // wrapper around the "WTF-8" encoding; see the `wtf8` module for more.
 
-internal open class Buf(
+public open class Buf internal constructor(
     public val fieldStorage: MutPtr,
     public val fieldLayout: TypeLayout<Wtf8Buf>,
 ) : IntoInner<Wtf8Buf>, FromInner<Wtf8Buf, Buf>, AsInner<Wtf8> {
@@ -34,7 +34,7 @@ internal open class Buf(
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    public constructor(inner: Wtf8Buf, fieldLayout: TypeLayout<Wtf8Buf>) : this(allocateNativeCell(inner, fieldLayout), fieldLayout)
+    internal constructor(inner: Wtf8Buf, fieldLayout: TypeLayout<Wtf8Buf>) : this(allocateNativeCell(inner, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<Buf> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Buf(ptr, layout) }, { it.inner })
 
@@ -152,6 +152,10 @@ internal open class Buf(
     }
 
     public companion object {
+        public operator fun invoke(inner: Wtf8Buf, fieldLayout: TypeLayout<Wtf8Buf>): Buf = Buf(inner, fieldLayout)
+
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Wtf8Buf>): Buf = Buf(fieldStorage, fieldLayout)
+
         public fun fromInner(inner: Wtf8Buf, fieldLayout: TypeLayout<Wtf8Buf>): Buf = Buf(inner = inner, fieldLayout = fieldLayout)
 
         public fun fromEncodedBytesUnchecked(s: List<UByte>, fieldLayout: TypeLayout<Wtf8Buf>): Buf = Buf(inner = Wtf8Buf.fromBytesUnchecked(s), fieldLayout = fieldLayout)
@@ -167,7 +171,7 @@ internal open class Buf(
     }
 }
 
-internal open class Slice(
+public open class Slice internal constructor(
     public val fieldStorage: MutPtr,
     public val fieldLayout: TypeLayout<Wtf8>,
 ) : CloneToUninit {
@@ -175,7 +179,7 @@ internal open class Slice(
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    public constructor(inner: Wtf8, fieldLayout: TypeLayout<Wtf8>) : this(allocateNativeCell(inner, fieldLayout), fieldLayout)
+    internal constructor(inner: Wtf8, fieldLayout: TypeLayout<Wtf8>) : this(allocateNativeCell(inner, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<Slice> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Slice(ptr, layout) }, { it.inner })
 
@@ -237,6 +241,10 @@ internal open class Slice(
     }
 
     public companion object {
+        public operator fun invoke(inner: Wtf8, fieldLayout: TypeLayout<Wtf8>): Slice = Slice(inner, fieldLayout)
+
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Wtf8>): Slice = Slice(fieldStorage, fieldLayout)
+
         public fun fromEncodedBytesUnchecked(s: List<UByte>): Slice = transmute(Wtf8.fromBytesUnchecked(s))
 
         public fun fromStr(s: String): Slice = transmute(Wtf8.fromStr(s))

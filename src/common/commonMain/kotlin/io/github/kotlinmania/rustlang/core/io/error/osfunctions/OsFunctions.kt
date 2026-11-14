@@ -11,22 +11,22 @@ import io.github.kotlinmania.rustlang.core.io.error.RawOsError
  * The provided reference must point to data that is entirely constant; it must
  * not be created during runtime.
  */
-internal fun setFunctions(f: OsFunctions) {
+public fun setFunctions(f: OsFunctions) {
     // Note: externally implementable items may allow for weak linkage, allowing
     // these methods to be overridden even when atomic pointers are not supported.
 }
 
-internal fun formatOsError(errno: RawOsError, fmt: StringBuilder) {
+public fun formatOsError(errno: RawOsError, fmt: StringBuilder) {
     val f = OsFunctions.DEFAULT
     (f.formatOsError)(errno, fmt)
 }
 
-internal fun decodeErrorKind(errno: RawOsError): ErrorKind {
+public fun decodeErrorKind(errno: RawOsError): ErrorKind {
     val f = OsFunctions.DEFAULT
     return (f.decodeErrorKind)(errno)
 }
 
-internal fun isInterrupted(errno: RawOsError): Boolean {
+public fun isInterrupted(errno: RawOsError): Boolean {
     val f = OsFunctions.DEFAULT
     return (f.isInterrupted)(errno)
 }

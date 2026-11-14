@@ -14,12 +14,13 @@ import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
+import io.github.kotlinmania.rustlang.std.io.ErrorKind
+import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.path.PathBuf
 import io.github.kotlinmania.rustlang.std.sys.api.utf16
 import io.github.kotlinmania.rustlang.std.sys.pal.c
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.getFullPathNameW
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.fillUtf16Buf
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.os2path
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.toU16s
@@ -85,9 +86,9 @@ public fun isVerbatim(path: List<UShort>): Boolean = (path.startsWith(utf16("\\\
 /**
  * Returns true if `path` looks like a lone filename.
  */
-internal fun isFileName(path: OsStr): Boolean = (!path.asEncodedBytes().iter().copied().any(isSepByte)).toUByte()
+public fun isFileName(path: OsStr): Boolean = (!path.asEncodedBytes().iter().copied().any(isSepByte)).toUByte()
 
-internal fun hasTrailingSlash(path: OsStr): Boolean {
+public fun hasTrailingSlash(path: OsStr): Boolean {
     val isVerbatim = path.asEncodedBytes().startsWith("\\\\?\\".encodeToByteArray())
     val isSeparator =
         if (isVerbatim) {
@@ -111,7 +112,7 @@ internal fun hasTrailingSlash(path: OsStr): Boolean {
  *
  * Can be used to append an extension without removing an existing extension.
  */
-internal fun appendSuffix(path: PathBuf, suffix: OsStr): PathBuf {
+public fun appendSuffix(path: PathBuf, suffix: OsStr): PathBuf {
     val path1 = OsString.from(path)
     path1.push(suffix)
     return path1.into()
@@ -122,7 +123,7 @@ internal fun appendSuffix(path: PathBuf, suffix: OsStr): PathBuf {
  *
  * This path may or may not have a verbatim prefix.
  */
-internal fun maybeVerbatim(path: Path): Result<List<UShort>, Error> {
+public fun maybeVerbatim(path: Path): Result<List<UShort>, Error> {
     val path1 = when (val tryResult = toU16s(path)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
     return getLongPath(path1, true)
 }
@@ -137,7 +138,7 @@ internal fun maybeVerbatim(path: Path): Result<List<UShort>, Error> {
  * when possible. Non-verbatim paths are better understood by users and handled
  * by more software.
  */
-internal fun getLongPath(path: List<UShort>, preferVerbatim: Boolean): Result<List<UShort>, Error> {
+public fun getLongPath(path: List<UShort>, preferVerbatim: Boolean): Result<List<UShort>, Error> {
     // Normally the MAX_PATH is 260 UTF-16 code units (including the NULL).
     // However, for APIs such as CreateDirectory[1], the limit is 248.
     //
@@ -187,7 +188,7 @@ internal fun getLongPath(path: List<UShort>, preferVerbatim: Boolean): Result<Li
     // Firstly, get the absolute path using `GetFullPathNameW`.
     // https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getfullpathnamew
     val lpfilename = path.asPtr()
-    when (val tryResult = fillUtf16Buf({ buffer, size -> getFullPathNameW(lpfilename, size, buffer, MutPtr(0L)) }, { absolute ->
+    when (val tryResult = fillUtf16Buf({ buffer, size -> c.GetFullPathNameW(lpfilename, size, buffer, MutPtr(0L)) }, { absolute ->
         path.clear()
         // Only prepend the prefix if needed.
         if (preferVerbatim || absolute.len() + 1 >= LEGACY_MAX_PATH) {
@@ -227,23 +228,23 @@ internal fun getLongPath(path: List<UShort>, preferVerbatim: Boolean): Result<Li
 /**
  * Make a Windows path absolute.
  */
-internal fun absolute(path: Path): Result<PathBuf, Error> {
+public fun absolute(path: Path): Result<PathBuf, Error> {
     val path1 = path.asOsStr()
     val prefix = parsePrefix(path1)
     // Verbatim paths should not be modified.
     if (prefix.map({ x -> x.isVerbatim() }).unwrapOr(false)) {
         // NULs in verbatim paths are rejected for consistency.
         if (path1.asEncodedBytes().contains(0)) {
-            return Result.Err(io.constError(ErrorKind.InvalidInput, "strings passed to WinAPI cannot contain NULs"))
+            return Result.Err(constError(ErrorKind.InvalidInput, "strings passed to WinAPI cannot contain NULs"))
         }
         return Result.Ok(path1.toOwned().into())
     }
     val path2 = when (val tryResult = toU16s(path1)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
     val lpfilename = path2.asPtr()
-    return fillUtf16Buf({ buffer, size -> getFullPathNameW(lpfilename, size, buffer, MutPtr(0L)) }, os2path)
+    return fillUtf16Buf({ buffer, size -> c.GetFullPathNameW(lpfilename, size, buffer, MutPtr(0L)) }, os2path)
 }
 
-internal fun isAbsolute(path: Path): Boolean = (path.hasRoot() && path.prefix() != null).toUByte()
+public fun isAbsolute(path: Path): Boolean = (path.hasRoot() && path.prefix() != null).toUByte()
 
 /**
  * Test that the path is absolute, fully qualified and unchanged when processed by the Windows API.
@@ -257,7 +258,7 @@ internal fun isAbsolute(path: Path): Boolean = (path.hasRoot() && path.prefix() 
  * This is a useful property because it means the path can be converted from and to and verbatim
  * path just by changing the prefix.
  */
-internal fun isAbsoluteExact(path: List<UShort>): Boolean {
+public fun isAbsoluteExact(path: List<UShort>): Boolean {
     // This is implemented by checking that passing the path through
     // GetFullPathNameW does not change the path in any way.
     // Windows paths are limited to i16.Max length
@@ -269,7 +270,7 @@ internal fun isAbsoluteExact(path: List<UShort>): Boolean {
     // given path, otherwise they're not equal.
     val bufferLen = path.size
     val newPath = ArrayList(bufferLen)
-    val result = getFullPathNameW(path.asPtr(), newPath.capacity().toUInt(), newPath.asMutPtr(), MutPtr(0L))
+    val result = c.GetFullPathNameW(path.asPtr(), newPath.capacity().toUInt(), newPath.asMutPtr(), MutPtr(0L))
     // Note: if non-zero, the returned result is the length of the buffer without the null termination
     return if (result == 0u || result.toInt() != bufferLen - 1) {
         false

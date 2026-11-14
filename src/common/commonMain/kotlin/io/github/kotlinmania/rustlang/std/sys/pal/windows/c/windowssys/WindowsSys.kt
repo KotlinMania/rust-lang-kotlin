@@ -447,7 +447,7 @@ public open class Arm64NtContext(
     public open fun clone(): Arm64NtContext = Arm64NtContext(contextFlags, cpsr, anonymous, sp, pc, v, fpcr, fpsr, bcr, bvr, wcr, wvr)
 
     public companion object {
-        public fun default(): Arm64NtContext = null
+        public fun default(): Arm64NtContext = Arm64NtContext()
     }
 }
 
@@ -456,7 +456,7 @@ public open class Arm64NtContext0(
     public var x: ULongArray? = null,
 ) {
     public companion object {
-        public fun default(): Arm64NtContext0 = null
+        public fun default(): Arm64NtContext0 = Arm64NtContext0()
     }
 }
 
@@ -646,7 +646,7 @@ public open class Arm64NtNeon128(
     public var b: UByteArray? = null,
 ) {
     public companion object {
-        public fun default(): Arm64NtNeon128 = null
+        public fun default(): Arm64NtNeon128 = Arm64NtNeon128()
     }
 }
 
@@ -862,7 +862,7 @@ public open class Context(
     public open fun clone(): Context = Context(p1Home, p2Home, p3Home, p4Home, p5Home, p6Home, contextFlags, mxCsr, segCs, segDs, segEs, segFs, segGs, segSs, eFlags, dr0, dr1, dr2, dr3, dr6, dr7, rax, rcx, rdx, rbx, rsp, rbp, rsi, rdi, r8, r9, r10, r11, r12, r13, r14, r15, rip, anonymous, vectorRegister, vectorControl, debugControl, lastBranchToRip, lastBranchFromRip, lastExceptionToRip, lastExceptionFromRip)
 
     public companion object {
-        public fun default(): Context = null
+        public fun default(): Context = Arm64NtContext()
     }
 }
 
@@ -871,7 +871,7 @@ public open class Context0(
     public var anonymous: Context00? = null,
 ) {
     public companion object {
-        public fun default(): Context0 = null
+        public fun default(): Context0 = Context0()
     }
 }
 
@@ -986,7 +986,7 @@ public open class Context00(
                 }
             }
 
-        public fun default(): Context00 = null
+        public fun default(): Context00 = Context00()
     }
 }
 
@@ -4906,7 +4906,7 @@ public open class ExceptionRecord internal constructor(
             exceptionInformation = exceptionInformation,
         )
 
-        public fun default(): ExceptionRecord = null
+        public fun default(): ExceptionRecord = ExceptionRecord()
     }
 }
 
@@ -5415,7 +5415,7 @@ public open class FileIdBothDirInfo(
                 }
             }
 
-        public fun default(): FileIdBothDirInfo = null
+        public fun default(): FileIdBothDirInfo = FileIdBothDirInfo()
     }
 }
 
@@ -5537,7 +5537,7 @@ public open class FileRenameInfo internal constructor(
             fileName = fileName,
         )
 
-        public fun default(): FileRenameInfo = null
+        public fun default(): FileRenameInfo = FileRenameInfo()
     }
 }
 
@@ -5546,7 +5546,7 @@ public open class FileRenameInfo0(
     public var flags: UInt? = null,
 ) {
     public companion object {
-        public fun default(): FileRenameInfo0 = null
+        public fun default(): FileRenameInfo0 = FileRenameInfo0()
     }
 }
 
@@ -5574,7 +5574,7 @@ public open class FileRenameInformation internal constructor(
             fileName = fileName,
         )
 
-        public fun default(): FileRenameInformation = null
+        public fun default(): FileRenameInformation = FileRenameInformation()
     }
 }
 
@@ -5583,7 +5583,7 @@ public open class FileRenameInformation0(
     public var flags: UInt? = null,
 ) {
     public companion object {
-        public fun default(): FileRenameInformation0 = null
+        public fun default(): FileRenameInformation0 = FileRenameInformation0()
     }
 }
 
@@ -5840,7 +5840,7 @@ public open class In6Addr(
     public open fun clone(): In6Addr = In6Addr(u)
 
     public companion object {
-        public fun default(): In6Addr = null
+        public fun default(): In6Addr = In6Addr()
     }
 }
 
@@ -5849,7 +5849,7 @@ public open class In6Addr0(
     public var word: UShortArray? = null,
 ) {
     public companion object {
-        public fun default(): In6Addr0 = null
+        public fun default(): In6Addr0 = In6Addr0()
     }
 }
 
@@ -5873,7 +5873,7 @@ public open class InAddr(
     public open fun clone(): InAddr = InAddr(sUn)
 
     public companion object {
-        public fun default(): InAddr = null
+        public fun default(): InAddr = InAddr()
     }
 }
 
@@ -5883,7 +5883,7 @@ public open class InAddr0(
     public var sAddr: UInt? = null,
 ) {
     public companion object {
-        public fun default(): InAddr0 = null
+        public fun default(): InAddr0 = InAddr0()
     }
 }
 
@@ -5974,7 +5974,7 @@ public open class IoStatusBlock(
     public open fun clone(): IoStatusBlock = IoStatusBlock(anonymous, information)
 
     public companion object {
-        public fun default(): IoStatusBlock = null
+        public fun default(): IoStatusBlock = IoStatusBlock()
     }
 }
 
@@ -5999,7 +5999,7 @@ public class IoStatusBlock0 internal constructor(
             pointerCtorArg = pointer,
         )
 
-        public fun default(): IoStatusBlock0 = null
+        public fun default(): IoStatusBlock0 = IoStatusBlock0()
     }
 }
 
@@ -6090,7 +6090,7 @@ public open class Ipv6Mreq(
     public open fun clone(): Ipv6Mreq = Ipv6Mreq(ipv6mrMultiaddr, ipv6mrInterface)
 
     public companion object {
-        public fun default(): Ipv6Mreq = null
+        public fun default(): Ipv6Mreq = Ipv6Mreq()
     }
 }
 
@@ -6113,7 +6113,7 @@ public open class IpMreq(
     public open fun clone(): IpMreq = IpMreq(imrMultiaddr, imrInterface)
 
     public companion object {
-        public fun default(): IpMreq = null
+        public fun default(): IpMreq = IpMreq()
     }
 }
 
@@ -6367,7 +6367,7 @@ public open class Overlapped internal constructor(
             hEventCtorArg = hEvent,
         )
 
-        public fun default(): Overlapped = null
+        public fun default(): Overlapped = Overlapped()
     }
 }
 
@@ -6392,7 +6392,7 @@ public class Overlapped0 internal constructor(
             pointerCtorArg = pointer,
         )
 
-        public fun default(): Overlapped0 = null
+        public fun default(): Overlapped0 = Overlapped0()
     }
 }
 
@@ -6636,7 +6636,7 @@ public class RtlRunOnce internal constructor(
             ptrCtorArg = ptr,
         )
 
-        public fun default(): RtlRunOnce = null
+        public fun default(): RtlRunOnce = RtlRunOnce()
     }
 }
 
@@ -6781,7 +6781,7 @@ public open class Sockaddr(
                 }
             }
 
-        public fun default(): Sockaddr = null
+        public fun default(): Sockaddr = Sockaddr()
     }
 }
 
@@ -6828,7 +6828,7 @@ public open class SockaddrStorageLh(
                 }
             }
 
-        public fun default(): SockaddrStorageLh = null
+        public fun default(): SockaddrStorageLh = SockaddrStorageLh()
     }
 }
 
@@ -6863,7 +6863,7 @@ public open class SockaddrUn(
                 }
             }
 
-        public fun default(): SockaddrUn = null
+        public fun default(): SockaddrUn = SockaddrUn()
     }
 }
 
@@ -7236,7 +7236,7 @@ public open class SystemInfo internal constructor(
             wProcessorRevision = wProcessorRevision,
         )
 
-        public fun default(): SystemInfo = null
+        public fun default(): SystemInfo = SystemInfo()
     }
 }
 
@@ -7245,7 +7245,7 @@ public open class SystemInfo0(
     public var anonymous: SystemInfo00? = null,
 ) {
     public companion object {
-        public fun default(): SystemInfo0 = null
+        public fun default(): SystemInfo0 = SystemInfo0()
     }
 }
 
@@ -7470,7 +7470,7 @@ public open class Win32FindDataw(
                 }
             }
 
-        public fun default(): Win32FindDataw = null
+        public fun default(): Win32FindDataw = Win32FindDataw()
     }
 }
 
@@ -7601,7 +7601,7 @@ public open class Wsadata internal constructor(
             szSystemStatus = szSystemStatus,
         )
 
-        public fun default(): Wsadata = null
+        public fun default(): Wsadata = Wsadata()
     }
 }
 
@@ -7744,7 +7744,7 @@ public open class Wsaprotocolchain(
                 }
             }
 
-        public fun default(): Wsaprotocolchain = null
+        public fun default(): Wsaprotocolchain = Wsaprotocolchain()
     }
 }
 
@@ -7869,7 +7869,7 @@ public open class WsaprotocolInfow(
                 }
             }
 
-        public fun default(): WsaprotocolInfow = null
+        public fun default(): WsaprotocolInfow = WsaprotocolInfow()
     }
 }
 
@@ -8070,7 +8070,7 @@ public open class XsaveFormat(
                 }
             }
 
-        public fun default(): XsaveFormat = null
+        public fun default(): XsaveFormat = XsaveFormat()
     }
 }
 
@@ -8139,7 +8139,7 @@ public open class FdSet(
                 }
             }
 
-        public fun default(): FdSet = null
+        public fun default(): FdSet = FdSet()
     }
 }
 

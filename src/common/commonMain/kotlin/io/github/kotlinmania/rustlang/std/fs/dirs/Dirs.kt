@@ -24,11 +24,11 @@ import io.github.kotlinmania.rustlang.std.sys.fs.common.ExtraMediaDirs
  * conventions are provided as extension traits under the `std.os` module.
  */
 public open class HomeDirs(
-    internal var cache: PathBuf?,
-    internal var config: PathBuf?,
-    internal var data: PathBuf?,
-    internal var state: PathBuf?,
-    internal var extra: ExtraHomeDirs,
+    public var cache: PathBuf?,
+    public var config: PathBuf?,
+    public var data: PathBuf?,
+    public var state: PathBuf?,
+    public var extra: ExtraHomeDirs,
 ) {
     public open fun clone(): HomeDirs = HomeDirs(cache, config, data, state, extra)
 
@@ -240,13 +240,13 @@ public open class HomeDirs(
  * conventions are provided as extension traits under the `std.os` module.
  */
 public open class MediaDirs(
-    internal var desktop: PathBuf?,
-    internal var documents: PathBuf?,
-    internal var downloads: PathBuf?,
-    internal var music: PathBuf?,
-    internal var pictures: PathBuf?,
-    internal var videos: PathBuf?,
-    internal var extra: ExtraMediaDirs,
+    public var desktop: PathBuf?,
+    public var documents: PathBuf?,
+    public var downloads: PathBuf?,
+    public var music: PathBuf?,
+    public var pictures: PathBuf?,
+    public var videos: PathBuf?,
+    public var extra: ExtraMediaDirs,
 ) {
     public open fun clone(): MediaDirs = MediaDirs(desktop, documents, downloads, music, pictures, videos, extra)
 

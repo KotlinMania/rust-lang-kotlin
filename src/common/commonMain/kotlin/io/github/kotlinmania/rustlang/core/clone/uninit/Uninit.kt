@@ -2,21 +2,24 @@
 package io.github.kotlinmania.rustlang.core.clone.uninit
 
 import io.github.kotlinmania.rustlang.core.clone.TrivialClone
+import io.github.kotlinmania.rustlang.core.cmp.Eq
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.option.Option
 import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.eq
+import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
+import io.github.kotlinmania.rustlang.core.ptr.write
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 
 /**
  * Private specialization trait used by CloneToUninit, as per
  * [the dev guide](https://std-dev-guide.rust-lang.org/policy/specialization.html).
  */
-internal interface CopySpec<T> {
+public interface CopySpec<T> {
     public fun cloneOne(src: T, dst: MutPtr)
 
     public fun cloneSlice(src: List<T>, dst: MutPtr)
@@ -40,7 +43,7 @@ public fun <T> copySpecCloneSliceT(src: List<T>, dst: MutPtr, typeLayoutT: TypeL
                 val leftVal = matchVal.first
                 val rightVal = matchVal.second
                 if (!(leftVal == rightVal)) {
-                    val kind = eq
+                    val kind = Eq
                     assertFailed(kind, leftVal, rightVal, Option.Some("clone_to_uninit() source and destination must have equal lengths"))
                 }
             }
@@ -80,7 +83,7 @@ public fun <T : TrivialClone<T>> copySpecCloneSliceT(src: List<T>, dst: MutPtr) 
                 val leftVal = matchVal.first
                 val rightVal = matchVal.second
                 if (!(leftVal == rightVal)) {
-                    val kind = eq
+                    val kind = Eq
                     assertFailed(kind, leftVal, rightVal, Option.Some("clone_to_uninit() source and destination must have equal lengths"))
                 }
             }

@@ -21,12 +21,12 @@ import io.github.kotlinmania.rustlang.std.thread.id.ThreadId
 
 public var MAIN: Atomic<ULong> = AtomicU64.new(0)
 
-internal fun get(): Any? = ThreadId.fromU64(MAIN.load(Relaxed))
+public fun get(): Any? = ThreadId.fromU64(MAIN.load(Relaxed))
 
 /**
  * # Safety
  * May only be called once.
  */
-internal fun set(id: Any) {
+public fun set(id: Any) {
     MAIN.store(id.asU64().get(), Relaxed)
 }

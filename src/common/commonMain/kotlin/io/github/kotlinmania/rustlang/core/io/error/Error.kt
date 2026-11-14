@@ -1,6 +1,7 @@
 // port-lint: source io/error.rs
 package io.github.kotlinmania.rustlang.core.io.error
 
+import io.github.kotlinmania.rustlang.core.fmt.builders.fromFn
 import io.github.kotlinmania.rustlang.core.hint.mustUse
 import io.github.kotlinmania.rustlang.core.hint.unreachableUnchecked
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind.*
@@ -12,6 +13,7 @@ import io.github.kotlinmania.rustlang.core.io.error.repr.Repr
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
+import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result as RustResult
@@ -117,7 +119,7 @@ public class DebugTuple(
  * }
  * ```
  */
-public typealias Result<T> = Result<T, Error>
+public typealias Result<T> = io.github.kotlinmania.rustlang.core.result.Result<T, Error>
 
 // Note(#74481): Hard-links required to link from `core` to `std`
 
@@ -136,7 +138,7 @@ public open class Error(
 ) {
     public open fun fmt(f: StringBuilder): RustResult<Unit, Unit> = run { f.append((this.repr).toString()); RustResult.Ok(Unit) }
 
-    public open fun intoCustomOwner(): Result<CustomOwner, Error> =
+    public open fun intoCustomOwner(): io.github.kotlinmania.rustlang.core.result.Result<CustomOwner, Error> =
         if (when (val matchVal = this.repr.data()) {
             is ErrorData.Custom -> true
             else -> false

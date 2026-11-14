@@ -3,6 +3,8 @@
 
 package io.github.kotlinmania.rustlang.backtrace.symbolize.dbghelp
 
+import io.github.kotlinmania.rustlang.backtrace.dbghelp.Init
+import io.github.kotlinmania.rustlang.backtrace.dbghelp.init
 import io.github.kotlinmania.rustlang.backtrace.symbolize.ResolveWhat
 import io.github.kotlinmania.rustlang.backtrace.symbolize.SymbolName
 import io.github.kotlinmania.rustlang.backtrace.symbolize.adjustIp
@@ -12,6 +14,7 @@ import io.github.kotlinmania.rustlang.backtrace.windowssys.CP_UTF8
 import io.github.kotlinmania.rustlang.backtrace.windowssys.ImagehlpLinew64
 import io.github.kotlinmania.rustlang.backtrace.windowssys.MAX_SYM_NAME
 import io.github.kotlinmania.rustlang.backtrace.windowssys.TRUE
+import io.github.kotlinmania.rustlang.core.marker.PhantomData
 import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.AlignedTypeLayout
@@ -187,7 +190,7 @@ public fun resolveWithInline(dbghelp: Init, addr: MutPtr, inlineContext: UInt?, 
  * - `symFromAddr`: either `SymFromAddrW` or `SymFromInlineContextW`
  * - `getLineFromAddr`: `SymGetLineFromAddrW64` or `SymGetLineFromInlineContextW`
  */
-public fun doResolve(symFromAddr: (MutPtr) -> Bool, getLineFromAddr: (ImagehlpLinew64) -> Bool, cb: (io.github.kotlinmania.rustlang.backtrace.symbolize.Symbol) -> Unit) {
+public fun doResolve(symFromAddr: (MutPtr) -> Bool, getLineFromAddr: (RustMutableReference<ImagehlpLinew64>) -> Bool, cb: (io.github.kotlinmania.rustlang.backtrace.symbolize.Symbol) -> Unit) {
     val data = MaybeUninit.zeroed(ObjectSlotLayout<Aligned8<UByteArray>>())
     val info = data.asMutPtr().cast()
     info.maxNameLen = MAX_SYM_NAME
@@ -235,7 +238,7 @@ public fun doResolve(symFromAddr: (MutPtr) -> Bool, getLineFromAddr: (ImagehlpLi
             filename = ptrFromRef(rawSliceList(base, len1.toInt(), PrimitiveLayouts.U8))
         }
     }
-    cb(io.github.kotlinmania.rustlang.backtrace.symbolize.Symbol(inner = Symbol(name = name, addr = mutPtrFromRustCast(info.address), line = lineno, filename = filename, filenameCache = cache(filename), marker = marker.PhantomData)))
+    cb(io.github.kotlinmania.rustlang.backtrace.symbolize.Symbol(inner = Symbol(name = name, addr = mutPtrFromRustCast(info.address), line = lineno, filename = filename, filenameCache = cache(filename), marker = PhantomData)))
 }
 
 public fun cache(filename: ConstPtr?): OsString? = filename?.let({ f -> OsString.fromWide(f) })

@@ -2,7 +2,6 @@
 
 package io.github.kotlinmania.rustlang.core.fmt
 
-import io.github.kotlinmania.numfmt.Formatted
 import io.github.kotlinmania.rustlang.core.fmt.builders.DebugList
 import io.github.kotlinmania.rustlang.core.fmt.builders.DebugMap
 import io.github.kotlinmania.rustlang.core.fmt.builders.DebugSet
@@ -17,6 +16,9 @@ import io.github.kotlinmania.rustlang.core.fmt.rt.Argument
 import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.num.imp.fmt.Formatted
+import io.github.kotlinmania.rustlang.core.num.imp.fmt.Part
 import io.github.kotlinmania.rustlang.core.num.rustSaturatingSub
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.slice.rawSliceList
@@ -595,7 +597,7 @@ public open class Formatter(
      * Callers are responsible for ensuring post-padding is written after the
      * thing that is being padded.
      */
-    internal open fun padding(padding: UShort, default: Alignment): Result<PostPadding, Error> {
+    public open fun padding(padding: UShort, default: Alignment): io.github.kotlinmania.rustlang.core.result.Result<PostPadding, Error> {
         val align = (this.options.getAlign() ?: default)
         val fill = this.options.getFill()
         val paddingLeft =
@@ -1724,14 +1726,14 @@ public open class Arguments internal constructor(
 /**
  * Padding after the end of something. Returned by `Formatter.padding`.
  */
-internal open class PostPadding(
+public open class PostPadding(
     public var fill: Char,
     public var padding: UShort,
 ) {
     /**
      * Writes this post padding.
      */
-    internal open fun write(f: Formatter): Result {
+    public open fun write(f: Formatter): Result {
         for (unused in 0 until this.padding) {
             f.buf.append(this.fill)
         }

@@ -25,7 +25,7 @@ public fun prepare(sparse: UByte): UByteArray {
     return masks
 }
 
-internal fun extractImpl(x: UByte, sparse: UByte): UByte {
+public fun extractImpl(x: UByte, sparse: UByte): UByte {
     var x1 = x
     val masks = prepare(sparse)
     x1 = x1 and sparse
@@ -44,7 +44,7 @@ internal fun extractImpl(x: UByte, sparse: UByte): UByte {
     return x1
 }
 
-internal fun depositImpl(x: UByte, sparse: UByte): UByte {
+public fun depositImpl(x: UByte, sparse: UByte): UByte {
     var x1 = x
     val masks = prepare(sparse)
     var stage = STAGES

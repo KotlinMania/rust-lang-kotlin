@@ -2,18 +2,18 @@ package io.github.kotlinmania.rustlang.corearch.armshared.neon
 
 import io.github.kotlinmania.rustlang.core.U128
 
-internal interface AsUnsigned<out Unsigned> {
+public interface AsUnsigned<out Unsigned> {
     public fun asUnsigned(): Unsigned
 }
 
-internal interface AsSigned<out Signed> {
+public interface AsSigned<out Signed> {
     public fun asSigned(): Signed
 }
 
-internal typealias P8 = UByte
+public typealias P8 = UByte
 
-internal typealias P16 = UShort
+public typealias P16 = UShort
 
-internal typealias P64 = ULong
+public typealias P64 = ULong
 
-internal typealias P128 = U128
+public typealias P128 = U128

@@ -1,16 +1,19 @@
 // port-lint: source mem/alignment.rs
 package io.github.kotlinmania.rustlang.core.mem.alignment
 
+import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.alignOfVal
+import io.github.kotlinmania.rustlang.core.mem.alignOfValRaw
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
-import io.github.kotlinmania.rustlang.core.num.IntErrorKind
+import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.num.error.IntErrorKind
 import io.github.kotlinmania.rustlang.core.num.error.TryFromIntError
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 import io.github.kotlinmania.rustlang.core.ubchecks.assertUnsafePrecondition
 import io.github.kotlinmania.rustlang.core.ubchecks.checkLanguageUb
 
@@ -329,7 +332,7 @@ public open class Alignment internal constructor(
         }
 
         // Note(const-Note) Remove me once `Ord.max` is usable in const
-        internal fun max(a: Alignment, b: Alignment): Alignment =
+        public fun max(a: Alignment, b: Alignment): Alignment =
             if (a.asUsize() > b.asUsize()) {
                 a
             } else {

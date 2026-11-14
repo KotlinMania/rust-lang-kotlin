@@ -1,5 +1,6 @@
 package io.github.kotlinmania.rustlang.core.num.imp.flt2dec
 
+import io.github.kotlinmania.rustlang.core.cmp.Eq
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.decoder.DecodableFloat
@@ -9,7 +10,6 @@ import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.decoder.decode
 import io.github.kotlinmania.rustlang.core.num.imp.fmt.Formatted
 import io.github.kotlinmania.rustlang.core.num.imp.fmt.Part
 import io.github.kotlinmania.rustlang.core.option.Option
-import io.github.kotlinmania.rustlang.core.panicking.AssertKind
 import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 
 /**
@@ -492,7 +492,7 @@ public fun <T> toExactFixedStr(formatExact: (Decoded, MutableList<MaybeUninit<UB
                             val leftVal = matchVal.first
                             val rightVal = matchVal.second
                             if (!(leftVal == rightVal)) {
-                                val kind = AssertKind.Eq
+                                val kind = Eq
                                 assertFailed(kind, leftVal, rightVal, Option.None)
                             }
                         }

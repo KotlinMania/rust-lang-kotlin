@@ -2,8 +2,6 @@
 
 package io.github.kotlinmania.rustlang.corearch.powerpc
 
-import io.github.kotlinmania.rustlang.core.fmt.Formatter
-import io.github.kotlinmania.rustlang.core.fmt.Result
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -18,19 +16,19 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
  */
 public open class Ppcf128 internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<io.github.kotlinmania.rustlang.core.num.imp.ppcf128.Ppcf128>,
+    public val fieldLayout: TypeLayout<Ppcf128>,
 ) {
-    public var field0: io.github.kotlinmania.rustlang.core.num.imp.ppcf128.Ppcf128
+    public var field0: Ppcf128
         get() = value
         set(v) {
             value = v
         }
 
-    public var value: io.github.kotlinmania.rustlang.core.num.imp.ppcf128.Ppcf128
+    public var value: Ppcf128
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(value: io.github.kotlinmania.rustlang.core.num.imp.ppcf128.Ppcf128, fieldLayout: TypeLayout<io.github.kotlinmania.rustlang.core.num.imp.ppcf128.Ppcf128>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(value: Ppcf128, fieldLayout: TypeLayout<Ppcf128>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<Ppcf128> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Ppcf128(ptr, layout) }, { it.value })
 
@@ -47,7 +45,7 @@ public open class Ppcf128 internal constructor(
      */
     public open fun toNeBytes(): UByteArray {
         // SAFETY: every bit pattern of a `ppcf128` is a valid `[UByte; 16]`.
-        return transmuteWithLayouts(this, TransparentTypeLayout(this.fieldLayout, { ptr, layout -> Ppcf128(ptr, layout) }, { it.value }), PrimitiveArrayLayouts.uByteArray((16).toInt()))
+        return transmuteWithLayouts(this, this.fieldLayout, PrimitiveArrayLayouts.uByteArray((16).toInt()))
     }
 
     /**
@@ -55,13 +53,13 @@ public open class Ppcf128 internal constructor(
      */
     public open fun toComponents(): Pair<Double, Double> {
         // SAFETY: every bit pattern of a `ppcf128` is a valid `[Double; 2]`.
-        val (large, small) = transmuteWithLayouts(this, TransparentTypeLayout(this.fieldLayout, { ptr, layout -> Ppcf128(ptr, layout) }, { it.value }), PrimitiveArrayLayouts.doubleArray((2).toInt()))
+        val (large, small) = transmuteWithLayouts(this, this.fieldLayout, PrimitiveArrayLayouts.doubleArray((2).toInt()))
         return Pair(large, small)
     }
 
     public companion object {
-        public operator fun invoke(value: io.github.kotlinmania.rustlang.core.num.imp.ppcf128.Ppcf128, fieldLayout: TypeLayout<io.github.kotlinmania.rustlang.core.num.imp.ppcf128.Ppcf128>): Ppcf128 = Ppcf128(value, fieldLayout)
+        public operator fun invoke(value: Ppcf128, fieldLayout: TypeLayout<Ppcf128>): Ppcf128 = Ppcf128(value, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<io.github.kotlinmania.rustlang.core.num.imp.ppcf128.Ppcf128>): Ppcf128 = Ppcf128(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Ppcf128>): Ppcf128 = Ppcf128(fieldStorage, fieldLayout)
     }
 }

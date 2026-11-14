@@ -29,7 +29,7 @@ public val C2: Double = -0.00138867637746099294692
 public val C3: Double = 0.0000243904487962774090654
 
 // 0x199342e0ee5069.0p-68
-internal fun kCosf(x: Double): kotlin.Float {
+public fun kCosf(x: Double): kotlin.Float {
     val z = x * x
     val w = z * z
     val r = C2 + z * C3

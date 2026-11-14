@@ -14,9 +14,12 @@ import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.replace
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.copy
+import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
@@ -25,9 +28,9 @@ import io.github.kotlinmania.rustlang.core.slice.index.SliceIndex
 
 public val B: Int = 6
 
-internal val CAPACITY: Int = 2 * B - 1
+public val CAPACITY: Int = 2 * B - 1
 
-internal val MIN_LEN_AFTER_SPLIT: Int = B - 1
+public val MIN_LEN_AFTER_SPLIT: Int = B - 1
 
 public val KV_IDX_CENTER: Int = B - 1
 
@@ -223,7 +226,7 @@ public typealias BoxedNode<K, V> = NonNull
  *   The methods supporting insert bend this rule by returning a raw pointer,
  *   i.e., a reference without any scope.
  */
-internal open class NodeRef<BorrowType, K, V, Type>(
+public open class NodeRef<BorrowType, K, V, Type> internal constructor(
     /**
      * The number of levels that the node and the level of leaves are apart, a
      * constant of the node that cannot be entirely described by `Type`, and that
@@ -232,20 +235,23 @@ internal open class NodeRef<BorrowType, K, V, Type>(
      * Must be zero if `Type` is `Leaf` and non-zero if `Type` is `Internal`.
      */
     public var height: Int,
+    nodeCtorArg: NonNull,
+    public var marker: Unit,
+) {
     /**
      * The pointer to the leaf or internal node. The definition of `InternalNode`
      * ensures that the pointer is valid either way.
      */
-    public var node: NonNull,
-    public var marker: Unit,
-) {
+    public var node: NonNull = nodeCtorArg
+        internal set
+
     /**
      * Finds the length of the node. This is the number of keys or values.
      * The number of edges is `len() + 1`.
      * Note that, despite being safe, calling this function can have the side effect
      * of invalidating mutable references that unchecked code has created.
      */
-    internal open fun len(): Int {
+    public open fun len(): Int {
         // SAFETY: We only access the `len` field here. If BorrowType is marker.ValMut,
         // there might be outstanding mutable references to values that we must not invalidate.
         return Int.from((ObjectSlotLayout<LeafNode<K, V>>()).readNative((NodeRef.asLeafPtr(this)).rawAddress).len)
@@ -258,12 +264,12 @@ internal open class NodeRef<BorrowType, K, V, Type>(
      * If you picture trees with leaves on top, the number says how high
      * the tree extends above the node.
      */
-    internal open fun height(): Int = this.height
+    public open fun height(): Int = this.height
 
     /**
      * Temporarily takes out another, immutable reference to the same node.
      */
-    internal open fun reborrow(): NodeRef<Immut, K, V, Type> = NodeRef(height = this.height, node = this.node, marker = Unit)
+    public open fun reborrow(): NodeRef<Immut, K, V, Type> = NodeRef(height = this.height, node = this.node, marker = Unit)
 
     /**
      * Finds the parent of the current node. Returns `Ok(handle)` if the current
@@ -276,7 +282,7 @@ internal open class NodeRef<BorrowType, K, V, Type>(
      * `edge.descend().ascend().unwrap()` and `node.ascend().unwrap().descend()` should
      * both, upon success, do nothing.
      */
-    internal open fun ascend(): Result<Handle<NodeRef<BorrowType, K, V, Internal>, Edge>, NodeRef<BorrowType, K, V, Type>> {
+    public open fun ascend(): Result<Handle<NodeRef<BorrowType, K, V, Internal>, Edge>, NodeRef<BorrowType, K, V, Type>> {
         run {
             check(BorrowType.TRAVERSAL_PERMIT)
         }
@@ -287,12 +293,12 @@ internal open class NodeRef<BorrowType, K, V, Type>(
         return ((ObjectSlotLayout<Any?>()).readNative((leafPtr).rawAddress))!!.parent.asRef().map({ parent -> Handle(node = NodeRef.fromInternal(parent, this.height + 1), idx = Int.from(((ObjectSlotLayout<Any?>()).readNative((leafPtr).rawAddress))!!.parentIdx.assumeInit()), marker = Unit) }).okOr(this)
     }
 
-    internal open fun firstEdge(): Handle<NodeRef<BorrowType, K, V, Type>, Edge> {
+    public open fun firstEdge(): Handle<NodeRef<BorrowType, K, V, Type>, Edge> {
         // ignore-tidy-undocumented-unchecked
         return Handle.newEdge(this, 0)
     }
 
-    internal open fun lastEdge(): Handle<NodeRef<BorrowType, K, V, Type>, Edge> {
+    public open fun lastEdge(): Handle<NodeRef<BorrowType, K, V, Type>, Edge> {
         val len = this.len()
         // ignore-tidy-undocumented-unchecked
         return Handle.newEdge(this, len)
@@ -301,7 +307,7 @@ internal open class NodeRef<BorrowType, K, V, Type>(
     /**
      * Note that `self` must be nonempty.
      */
-    internal open fun firstKv(): Handle<NodeRef<BorrowType, K, V, Type>, KV> {
+    public open fun firstKv(): Handle<NodeRef<BorrowType, K, V, Type>, KV> {
         val len = this.len()
         check(len > 0)
         // ignore-tidy-undocumented-unchecked
@@ -311,7 +317,7 @@ internal open class NodeRef<BorrowType, K, V, Type>(
     /**
      * Note that `self` must be nonempty.
      */
-    internal open fun lastKv(): Handle<NodeRef<BorrowType, K, V, Type>, KV> {
+    public open fun lastKv(): Handle<NodeRef<BorrowType, K, V, Type>, KV> {
         val len = this.len()
         check(len > 0)
         // ignore-tidy-undocumented-unchecked
@@ -334,6 +340,16 @@ internal open class NodeRef<BorrowType, K, V, Type>(
     }
 
     public companion object {
+        public operator fun <BorrowType, K, V, Type> invoke(
+            height: Int,
+            node: NonNull,
+            marker: Unit,
+        ): NodeRef<BorrowType, K, V, Type> = NodeRef<BorrowType, K, V, Type>(
+            height = height,
+            nodeCtorArg = node,
+            marker = marker,
+        )
+
         /**
          * Exposes the leaf portion of any leaf or internal node.
          *
@@ -353,11 +369,11 @@ internal open class NodeRef<BorrowType, K, V, Type>(
  *
  * Note that this does not have a destructor, and must be cleaned up manually.
  */
-internal typealias Root<K, V> = NodeRef<Owned, K, V, LeafOrInternal>
+public typealias Root<K, V> = NodeRef<Owned, K, V, LeafOrInternal>
 
 public fun <K, V, Type> NodeRef<Immut, K, V, Type>.clone(): NodeRef<Immut, K, V, Type> = NodeRef(this.height, this.node, this.marker)
 
-internal fun <K, V, A : AllocatorClone> NodeRef.Companion.newLeaf(alloc: A): NodeRef<Owned, K, V, Leaf> = NodeRef.fromNewLeaf(LeafNode.new(alloc))
+public fun <K, V, A : AllocatorClone> NodeRef.Companion.newLeaf(alloc: A): NodeRef<Owned, K, V, Leaf> = NodeRef.fromNewLeaf(LeafNode.new(alloc))
 
 public fun <K, V, A : AllocatorClone> NodeRef.Companion.fromNewLeaf(leaf: LeafNode<K, V>): NodeRef<Owned, K, V, Leaf> {
     // The allocator must be dropped, not leaked.  See also `BTreeMap.alloc`.
@@ -425,7 +441,7 @@ public fun <K, V, Type> NodeRef<Immut, K, V, Type>.intoLeaf(): LeafNode<K, V> {
 /**
  * Borrows a view into the keys stored in the node.
  */
-internal fun <K, V, Type> NodeRef<Immut, K, V, Type>.keys(): List<K> {
+public fun <K, V, Type> NodeRef<Immut, K, V, Type>.keys(): List<K> {
     val leaf = this.intoLeaf()
     // ignore-tidy-undocumented-unchecked
     return leaf.keys.getUnchecked(0 until Int.from(leaf.len)).assumeInitRef()
@@ -436,7 +452,7 @@ internal fun <K, V, Type> NodeRef<Immut, K, V, Type>.keys(): List<K> {
  * deallocates the current node in the process. This is unchecked because the
  * current node will still be accessible despite being deallocated.
  */
-internal fun <K, V, A : AllocatorClone> NodeRef<Dying, K, V, LeafOrInternal>.deallocateAndAscend(alloc: A, typeLayoutK: TypeLayout<K>, typeLayoutV: TypeLayout<V>): Handle<NodeRef<Dying, K, V, Internal>, Edge>? {
+public fun <K, V, A : AllocatorClone> NodeRef<Dying, K, V, LeafOrInternal>.deallocateAndAscend(alloc: A, typeLayoutK: TypeLayout<K>, typeLayoutV: TypeLayout<V>): Handle<NodeRef<Dying, K, V, Internal>, Edge>? {
     val height = this.height
     val node = this.node
     val ret = this.ascend().ok()
@@ -459,7 +475,7 @@ internal fun <K, V, A : AllocatorClone> NodeRef<Dying, K, V, LeafOrInternal>.dea
  * - kvs in the node must be initialized and must not be accessed after this call.
  * - No kvs in the node can be accessed through any other path while this function is running.
  */
-internal fun <K, V> NodeRef<Dying, K, V, LeafOrInternal>.dropKvs() {
+public fun <K, V> NodeRef<Dying, K, V, LeafOrInternal>.dropKvs() {
     open class DropGuard<K, V>(
         public var node: NodeRef<Dying, K, V, LeafOrInternal>,
         public var idx: Int,
@@ -528,7 +544,7 @@ public fun <K, V, Type> NodeRef<Mut, K, V, Type>.intoLeafMut(): LeafNode<K, V> {
  * Returns a dormant copy of this node with its scope erased which can
  * be reawakened later.
  */
-internal fun <K, V, Type> NodeRef<Mut, K, V, Type>.dormant(): NodeRef<DormantMut, K, V, Type> = NodeRef(height = this.height, node = this.node, marker = Unit)
+public fun <K, V, Type> NodeRef<Mut, K, V, Type>.dormant(): NodeRef<DormantMut, K, V, Type> = NodeRef(height = this.height, node = this.node, marker = Unit)
 
 /**
  * Revert to the unique borrow initially captured.
@@ -538,7 +554,7 @@ internal fun <K, V, Type> NodeRef<Mut, K, V, Type>.dormant(): NodeRef<DormantMut
  * The reborrow must have ended, i.e., the reference returned by `new` and
  * all pointers and references derived from it, must not be used anymore.
  */
-internal fun <K, V, Type> NodeRef<DormantMut, K, V, Type>.awaken(): NodeRef<Mut, K, V, Type> = NodeRef(height = this.height, node = this.node, marker = Unit)
+public fun <K, V, Type> NodeRef<DormantMut, K, V, Type>.awaken(): NodeRef<Mut, K, V, Type> = NodeRef(height = this.height, node = this.node, marker = Unit)
 
 /**
  * Borrows exclusive access to the leaf portion of a dying leaf or internal node.
@@ -614,7 +630,7 @@ public fun <K, V, Type> NodeRef<ValMut, K, V, Type>.intoKeyValMutAt(idx: Int): P
 /**
  * Borrows exclusive access to the length of the node.
  */
-internal fun <K, V, Type> NodeRef<Mut, K, V, Type>.lenMut(): RustMutableReference<UShort> = this.asLeafMut().len
+public fun <K, V, Type> NodeRef<Mut, K, V, Type>.lenMut(): RustMutableReference<UShort> = this.asLeafMut().len
 
 /**
  * # Safety
@@ -658,14 +674,14 @@ public fun <K, V> NodeRef<Owned, K, V, LeafOrInternal>.clearParentLink() {
 /**
  * Returns a new owned tree, with its own root node that is initially empty.
  */
-internal fun <K, V, A : AllocatorClone> NodeRef.Companion.new(alloc: A): NodeRef<Owned, K, V, LeafOrInternal> = NodeRef.newLeaf(alloc).forgetType()
+public fun <K, V, A : AllocatorClone> NodeRef.Companion.new(alloc: A): NodeRef<Owned, K, V, LeafOrInternal> = NodeRef.newLeaf(alloc).forgetType()
 
 /**
  * Adds a new internal node with a single edge pointing to the previous root node,
  * make that new node the root node, and return it. This increases the height by 1
  * and is the opposite of `popInternalLevel`.
  */
-internal fun <K, V, A : AllocatorClone> NodeRef<Owned, K, V, LeafOrInternal>.pushInternalLevel(alloc: A): NodeRef<Mut, K, V, Internal> {
+public fun <K, V, A : AllocatorClone> NodeRef<Owned, K, V, LeafOrInternal>.pushInternalLevel(alloc: A): NodeRef<Mut, K, V, Internal> {
     takeMut(this, { oldRoot -> NodeRef.newInternal(oldRoot, alloc).forgetType() })
     // `self.borrowMut()`, except that we just forgot we're internal now:
     return NodeRef(height = this.height, node = this.node, marker = Unit)
@@ -682,7 +698,7 @@ internal fun <K, V, A : AllocatorClone> NodeRef<Owned, K, V, LeafOrInternal>.pus
  *
  * Panics if there is no internal level, i.e., if the root node is a leaf.
  */
-internal fun <K, V, A : AllocatorClone> NodeRef<Owned, K, V, LeafOrInternal>.popInternalLevel(alloc: A, typeLayoutK: TypeLayout<K>, typeLayoutV: TypeLayout<V>) {
+public fun <K, V, A : AllocatorClone> NodeRef<Owned, K, V, LeafOrInternal>.popInternalLevel(alloc: A, typeLayoutK: TypeLayout<K>, typeLayoutV: TypeLayout<V>) {
     check(this.height > 0)
     val top = this.node
     // SAFETY: we asserted to be internal.
@@ -703,18 +719,18 @@ internal fun <K, V, A : AllocatorClone> NodeRef<Owned, K, V, LeafOrInternal>.pop
  * because the return value cannot be used to destroy the root, and there
  * cannot be other references to the tree.
  */
-internal fun <K, V, Type> NodeRef<Owned, K, V, Type>.borrowMut(): NodeRef<Mut, K, V, Type> = NodeRef(height = this.height, node = this.node, marker = Unit)
+public fun <K, V, Type> NodeRef<Owned, K, V, Type>.borrowMut(): NodeRef<Mut, K, V, Type> = NodeRef(height = this.height, node = this.node, marker = Unit)
 
 /**
  * Slightly mutably borrows the owned root node.
  */
-internal fun <K, V, Type> NodeRef<Owned, K, V, Type>.borrowValmut(): NodeRef<ValMut, K, V, Type> = NodeRef(height = this.height, node = this.node, marker = Unit)
+public fun <K, V, Type> NodeRef<Owned, K, V, Type>.borrowValmut(): NodeRef<ValMut, K, V, Type> = NodeRef(height = this.height, node = this.node, marker = Unit)
 
 /**
  * Irreversibly transitions to a reference that permits traversal and offers
  * destructive methods and little else.
  */
-internal fun <K, V, Type> NodeRef<Owned, K, V, Type>.intoDying(): NodeRef<Dying, K, V, Type> = NodeRef(height = this.height, node = this.node, marker = Unit)
+public fun <K, V, Type> NodeRef<Owned, K, V, Type>.intoDying(): NodeRef<Dying, K, V, Type> = NodeRef(height = this.height, node = this.node, marker = Unit)
 
 /**
  * Adds a key-value pair to the end of the node, and returns
@@ -724,7 +740,7 @@ internal fun <K, V, Type> NodeRef<Owned, K, V, Type>.intoDying(): NodeRef<Dying,
  *
  * The returned handle has an unbound scope.
  */
-internal fun <K, V> NodeRef<Mut, K, V, Leaf>.pushWithHandle(key: K, value: V): Handle<NodeRef<Mut, K, V, Leaf>, KV> {
+public fun <K, V> NodeRef<Mut, K, V, Leaf>.pushWithHandle(key: K, value: V): Handle<NodeRef<Mut, K, V, Leaf>, KV> {
     val len = this.lenMut()
     val idx = Int.from((len).read())
     check(idx < CAPACITY)
@@ -741,7 +757,7 @@ internal fun <K, V> NodeRef<Mut, K, V, Leaf>.pushWithHandle(key: K, value: V): H
  * Adds a key-value pair to the end of the node, and returns
  * the mutable reference of the inserted value.
  */
-internal fun <K, V> NodeRef<Mut, K, V, Leaf>.push(key: K, value: V): MutPtr {
+public fun <K, V> NodeRef<Mut, K, V, Leaf>.push(key: K, value: V): MutPtr {
     // SAFETY: The unbound handle is no longer accessible.
     return this.pushWithHandle(key, value).intoValMut()
 }
@@ -750,7 +766,7 @@ internal fun <K, V> NodeRef<Mut, K, V, Leaf>.push(key: K, value: V): MutPtr {
  * Adds a key-value pair, and an edge to go to the right of that pair,
  * to the end of the node.
  */
-internal fun <K, V> NodeRef<Mut, K, V, Internal>.push(key: K, value: V, edge: Root<K, V>) {
+public fun <K, V> NodeRef<Mut, K, V, Internal>.push(key: K, value: V, edge: Root<K, V>) {
     check(edge.height == this.height - 1)
     val len = this.lenMut()
     val idx = Int.from((len).read())
@@ -768,12 +784,12 @@ internal fun <K, V> NodeRef<Mut, K, V, Internal>.push(key: K, value: V, edge: Ro
 /**
  * Removes any static information asserting that this node is a `Leaf` node.
  */
-internal fun <BorrowType, K, V> NodeRef<BorrowType, K, V, Leaf>.forgetType(): NodeRef<BorrowType, K, V, LeafOrInternal> = NodeRef(height = this.height, node = this.node, marker = Unit)
+public fun <BorrowType, K, V> NodeRef<BorrowType, K, V, Leaf>.forgetType(): NodeRef<BorrowType, K, V, LeafOrInternal> = NodeRef(height = this.height, node = this.node, marker = Unit)
 
 /**
  * Checks whether a node is an `Internal` node or a `Leaf` node.
  */
-internal fun <BorrowType, K, V> NodeRef<BorrowType, K, V, LeafOrInternal>.force(): ForceResult<NodeRef<BorrowType, K, V, Leaf>, NodeRef<BorrowType, K, V, Internal>> =
+public fun <BorrowType, K, V> NodeRef<BorrowType, K, V, LeafOrInternal>.force(): ForceResult<NodeRef<BorrowType, K, V, Leaf>, NodeRef<BorrowType, K, V, Internal>> =
     if (this.height == 0) {
         ForceResult.Leaf(NodeRef(height = this.height, node = this.node, marker = Unit))
     } else {
@@ -783,7 +799,7 @@ internal fun <BorrowType, K, V> NodeRef<BorrowType, K, V, LeafOrInternal>.force(
 /**
  * Unsafely asserts to the compiler the static information that this node is a `Leaf`.
  */
-internal fun <K, V> NodeRef<Mut, K, V, LeafOrInternal>.castToLeafUnchecked(): NodeRef<Mut, K, V, Leaf> {
+public fun <K, V> NodeRef<Mut, K, V, LeafOrInternal>.castToLeafUnchecked(): NodeRef<Mut, K, V, Leaf> {
     check(this.height == 0)
     return NodeRef(height = this.height, node = this.node, marker = Unit)
 }
@@ -806,7 +822,7 @@ public fun <K, V> NodeRef<Mut, K, V, LeafOrInternal>.castToInternalUnchecked(): 
  * pairs. For example, in a node with length 2, there would be 3 possible edge locations - one
  * to the left of the node, one between the two pairs, and one at the right of the node.
  */
-internal open class Handle<Node, Type>(
+public open class Handle<Node, Type>(
     public var node: Node,
     public var idx: Int,
     public var marker: Unit,
@@ -818,29 +834,29 @@ internal open class Handle<Node, Type>(
     /**
      * Retrieves the node that contains the edge or key-value pair this handle points to.
      */
-    internal open fun intoNode(): Node = this.node
+    public open fun intoNode(): Node = this.node
 
     /**
      * Returns the position of this handle in the node.
      */
-    internal open fun idx(): Int = this.idx
+    public open fun idx(): Int = this.idx
 }
 
 /**
  * Creates a new handle to a key-value pair in `node`.
  * Unsafe because the caller must ensure that `idx<node.len()`.
  */
-internal fun <BorrowType, K, V, NodeType> Handle.Companion.newKv(node: NodeRef<BorrowType, K, V, NodeType>, idx: Int): Handle<NodeRef<BorrowType, K, V, NodeType>, KV> {
+public fun <BorrowType, K, V, NodeType> Handle.Companion.newKv(node: NodeRef<BorrowType, K, V, NodeType>, idx: Int): Handle<NodeRef<BorrowType, K, V, NodeType>, KV> {
     check(idx < node.len())
     return Handle(node = node, idx = idx, marker = Unit)
 }
 
-internal fun <BorrowType, K, V, NodeType> Handle<NodeRef<BorrowType, K, V, NodeType>, KV>.leftEdge(): Handle<NodeRef<BorrowType, K, V, NodeType>, Edge> {
+public fun <BorrowType, K, V, NodeType> Handle<NodeRef<BorrowType, K, V, NodeType>, KV>.leftEdge(): Handle<NodeRef<BorrowType, K, V, NodeType>, Edge> {
     // ignore-tidy-undocumented-unchecked
     return Handle.newEdge(this.node, this.idx)
 }
 
-internal fun <BorrowType, K, V, NodeType> Handle<NodeRef<BorrowType, K, V, NodeType>, KV>.rightEdge(): Handle<NodeRef<BorrowType, K, V, NodeType>, Edge> {
+public fun <BorrowType, K, V, NodeType> Handle<NodeRef<BorrowType, K, V, NodeType>, KV>.rightEdge(): Handle<NodeRef<BorrowType, K, V, NodeType>, Edge> {
     // ignore-tidy-undocumented-unchecked
     return Handle.newEdge(this.node, this.idx + 1)
 }
@@ -855,7 +871,7 @@ public fun <BorrowType, K, V, NodeType, HandleType> Handle<NodeRef<BorrowType, K
 /**
  * Temporarily takes out another immutable handle on the same location.
  */
-internal fun <BorrowType, K, V, NodeType, HandleType> Handle<NodeRef<BorrowType, K, V, NodeType>, HandleType>.reborrow(): Handle<NodeRef<Immut, K, V, NodeType>, HandleType> {
+public fun <BorrowType, K, V, NodeType, HandleType> Handle<NodeRef<BorrowType, K, V, NodeType>, HandleType>.reborrow(): Handle<NodeRef<Immut, K, V, NodeType>, HandleType> {
     // We can't use Handle.newKv or Handle.newEdge because we don't know our type
     return Handle(node = this.node.reborrow(), idx = this.idx, marker = Unit)
 }
@@ -867,7 +883,7 @@ internal fun <BorrowType, K, V, NodeType, HandleType> Handle<NodeRef<BorrowType,
  *
  * For details, see `NodeRef.reborrowMut`.
  */
-internal fun <K, V, NodeType, HandleType> Handle<NodeRef<Mut, K, V, NodeType>, HandleType>.reborrowMut(): Handle<NodeRef<Mut, K, V, NodeType>, HandleType> {
+public fun <K, V, NodeType, HandleType> Handle<NodeRef<Mut, K, V, NodeType>, HandleType>.reborrowMut(): Handle<NodeRef<Mut, K, V, NodeType>, HandleType> {
     // We can't use Handle.newKv or Handle.newEdge because we don't know our type
     // ignore-tidy-undocumented-unchecked
     return Handle(node = this.node.reborrowMut(), idx = this.idx, marker = Unit)
@@ -878,7 +894,7 @@ internal fun <K, V, NodeType, HandleType> Handle<NodeRef<Mut, K, V, NodeType>, H
  *
  * See `DormantMutRef` for more details.
  */
-internal fun <K, V, NodeType, HandleType> Handle<NodeRef<Mut, K, V, NodeType>, HandleType>.dormant(): Handle<NodeRef<DormantMut, K, V, NodeType>, HandleType> = Handle(node = this.node.dormant(), idx = this.idx, marker = Unit)
+public fun <K, V, NodeType, HandleType> Handle<NodeRef<Mut, K, V, NodeType>, HandleType>.dormant(): Handle<NodeRef<DormantMut, K, V, NodeType>, HandleType> = Handle(node = this.node.dormant(), idx = this.idx, marker = Unit)
 
 /**
  * Revert to the unique borrow initially captured.
@@ -888,7 +904,7 @@ internal fun <K, V, NodeType, HandleType> Handle<NodeRef<Mut, K, V, NodeType>, H
  * The reborrow must have ended, i.e., the reference returned by `new` and
  * all pointers and references derived from it, must not be used anymore.
  */
-internal fun <K, V, NodeType, HandleType> Handle<NodeRef<DormantMut, K, V, NodeType>, HandleType>.awaken(): Handle<NodeRef<Mut, K, V, NodeType>, HandleType> {
+public fun <K, V, NodeType, HandleType> Handle<NodeRef<DormantMut, K, V, NodeType>, HandleType>.awaken(): Handle<NodeRef<Mut, K, V, NodeType>, HandleType> {
     // ignore-tidy-undocumented-unchecked
     return Handle(node = this.node.awaken(), idx = this.idx, marker = Unit)
 }
@@ -897,12 +913,12 @@ internal fun <K, V, NodeType, HandleType> Handle<NodeRef<DormantMut, K, V, NodeT
  * Creates a new handle to an edge in `node`.
  * Unsafe because the caller must ensure that `idx <= node.len()`.
  */
-internal fun <BorrowType, K, V, NodeType> Handle.Companion.newEdge(node: NodeRef<BorrowType, K, V, NodeType>, idx: Int): Handle<NodeRef<BorrowType, K, V, NodeType>, Edge> {
+public fun <BorrowType, K, V, NodeType> Handle.Companion.newEdge(node: NodeRef<BorrowType, K, V, NodeType>, idx: Int): Handle<NodeRef<BorrowType, K, V, NodeType>, Edge> {
     check(idx <= node.len())
     return Handle(node = node, idx = idx, marker = Unit)
 }
 
-internal fun <BorrowType, K, V, NodeType> Handle<NodeRef<BorrowType, K, V, NodeType>, Edge>.leftKv(): Result<Handle<NodeRef<BorrowType, K, V, NodeType>, KV>, Handle<NodeRef<BorrowType, K, V, NodeType>, Edge>> =
+public fun <BorrowType, K, V, NodeType> Handle<NodeRef<BorrowType, K, V, NodeType>, Edge>.leftKv(): Result<Handle<NodeRef<BorrowType, K, V, NodeType>, KV>, Handle<NodeRef<BorrowType, K, V, NodeType>, Edge>> =
     if (this.idx > 0) {
         // ignore-tidy-undocumented-unchecked
         Result.Ok(Handle.newKv(this.node, this.idx - 1))
@@ -910,7 +926,7 @@ internal fun <BorrowType, K, V, NodeType> Handle<NodeRef<BorrowType, K, V, NodeT
         Result.Err(this)
     }
 
-internal fun <BorrowType, K, V, NodeType> Handle<NodeRef<BorrowType, K, V, NodeType>, Edge>.rightKv(): Result<Handle<NodeRef<BorrowType, K, V, NodeType>, KV>, Handle<NodeRef<BorrowType, K, V, NodeType>, Edge>> =
+public fun <BorrowType, K, V, NodeType> Handle<NodeRef<BorrowType, K, V, NodeType>, Edge>.rightKv(): Result<Handle<NodeRef<BorrowType, K, V, NodeType>, KV>, Handle<NodeRef<BorrowType, K, V, NodeType>, Edge>> =
     if (this.idx < this.node.len()) {
         // ignore-tidy-undocumented-unchecked
         Result.Ok(Handle.newKv(this.node, this.idx))
@@ -918,7 +934,7 @@ internal fun <BorrowType, K, V, NodeType> Handle<NodeRef<BorrowType, K, V, NodeT
         Result.Err(this)
     }
 
-internal sealed class LeftOrRight<T> {
+public sealed class LeftOrRight<T> {
     public data class Left<T>(public var value: T) : LeftOrRight<T>()
     public data class Right<T>(public var value: T) : LeftOrRight<T>()
 }
@@ -1068,7 +1084,7 @@ public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, Internal>, Edge>
  * The returned pointer points to the inserted value, which in the case of `SplitResult`
  * is in the `left` or `right` tree.
  */
-internal fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, Leaf>, Edge>.insertRecursing(key: K, value: V, alloc: A, splitRoot: (SplitResult<K, V, LeafOrInternal>) -> Unit): Handle<NodeRef<Mut, K, V, Leaf>, KV> {
+public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, Leaf>, Edge>.insertRecursing(key: K, value: V, alloc: A, splitRoot: (SplitResult<K, V, LeafOrInternal>) -> Unit): Handle<NodeRef<Mut, K, V, Leaf>, KV> {
     var (split1, handle2) =
         run {
             val matchVal = this.insert(key, value, alloc.clone())
@@ -1119,7 +1135,7 @@ internal fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, Leaf>, Edge>.i
  * `edge.descend().ascend().unwrap()` and `node.ascend().unwrap().descend()` should
  * both, upon success, do nothing.
  */
-internal fun <BorrowType, K, V> Handle<NodeRef<BorrowType, K, V, Internal>, Edge>.descend(): NodeRef<BorrowType, K, V, LeafOrInternal> {
+public fun <BorrowType, K, V> Handle<NodeRef<BorrowType, K, V, Internal>, Edge>.descend(): NodeRef<BorrowType, K, V, LeafOrInternal> {
     run {
         check(BorrowType.TRAVERSAL_PERMIT)
     }
@@ -1136,7 +1152,7 @@ internal fun <BorrowType, K, V> Handle<NodeRef<BorrowType, K, V, Internal>, Edge
     return NodeRef(node = node, height = this.node.height - 1, marker = Unit)
 }
 
-internal fun <K, V, NodeType> Handle<NodeRef<Immut, K, V, NodeType>, KV>.intoKv(): Pair<K, V> {
+public fun <K, V, NodeType> Handle<NodeRef<Immut, K, V, NodeType>, KV>.intoKv(): Pair<K, V> {
     check(this.idx < this.node.len())
     val leaf = this.node.intoLeaf()
     // ignore-tidy-undocumented-unchecked
@@ -1146,19 +1162,19 @@ internal fun <K, V, NodeType> Handle<NodeRef<Immut, K, V, NodeType>, KV>.intoKv(
     return Pair(k, v)
 }
 
-internal fun <K, V, NodeType> Handle<NodeRef<Mut, K, V, NodeType>, KV>.keyMut(): K {
+public fun <K, V, NodeType> Handle<NodeRef<Mut, K, V, NodeType>, KV>.keyMut(): K {
     // ignore-tidy-undocumented-unchecked
     return this.node.keyAreaMut(this.idx).assumeInitMut()
 }
 
-internal fun <K, V, NodeType> Handle<NodeRef<Mut, K, V, NodeType>, KV>.intoValMut(): V {
+public fun <K, V, NodeType> Handle<NodeRef<Mut, K, V, NodeType>, KV>.intoValMut(): V {
     check(this.idx < this.node.len())
     val leaf = this.node.intoLeafMut()
     // ignore-tidy-undocumented-unchecked
     return leaf.vals.getUncheckedMut(this.idx).assumeInitMut()
 }
 
-internal fun <K, V, NodeType> Handle<NodeRef<Mut, K, V, NodeType>, KV>.intoKvMut(): Pair<K, V> {
+public fun <K, V, NodeType> Handle<NodeRef<Mut, K, V, NodeType>, KV>.intoKvMut(): Pair<K, V> {
     check(this.idx < this.node.len())
     val leaf = this.node.intoLeafMut()
     // ignore-tidy-undocumented-unchecked
@@ -1168,12 +1184,12 @@ internal fun <K, V, NodeType> Handle<NodeRef<Mut, K, V, NodeType>, KV>.intoKvMut
     return Pair(k, v)
 }
 
-internal fun <K, V, NodeType> Handle<NodeRef<ValMut, K, V, NodeType>, KV>.intoKvValmut(): Pair<K, V> {
+public fun <K, V, NodeType> Handle<NodeRef<ValMut, K, V, NodeType>, KV>.intoKvValmut(): Pair<K, V> {
     // ignore-tidy-undocumented-unchecked
     return this.node.intoKeyValMutAt(this.idx)
 }
 
-internal fun <K, V, NodeType> Handle<NodeRef<Mut, K, V, NodeType>, KV>.kvMut(): Pair<K, V> {
+public fun <K, V, NodeType> Handle<NodeRef<Mut, K, V, NodeType>, KV>.kvMut(): Pair<K, V> {
     check(this.idx < this.node.len())
     // We cannot call separate key and value methods, because calling the second one
     // invalidates the reference returned by the first.
@@ -1189,7 +1205,7 @@ internal fun <K, V, NodeType> Handle<NodeRef<Mut, K, V, NodeType>, KV>.kvMut(): 
 /**
  * Replaces the key and value that the KV handle refers to.
  */
-internal fun <K, V, NodeType> Handle<NodeRef<Mut, K, V, NodeType>, KV>.replaceKv(k: K, v: V): Pair<K, V> {
+public fun <K, V, NodeType> Handle<NodeRef<Mut, K, V, NodeType>, KV>.replaceKv(k: K, v: V): Pair<K, V> {
     val (key, value) = this.kvMut()
     return Pair(replace(key, k), replace(value, v))
 }
@@ -1199,7 +1215,7 @@ internal fun <K, V, NodeType> Handle<NodeRef<Mut, K, V, NodeType>, KV>.replaceKv
  * # Safety
  * The node that the handle refers to must not yet have been deallocated.
  */
-internal fun <K, V, NodeType> Handle<NodeRef<Dying, K, V, NodeType>, KV>.intoKeyVal(): Pair<K, V> {
+public fun <K, V, NodeType> Handle<NodeRef<Dying, K, V, NodeType>, KV>.intoKeyVal(): Pair<K, V> {
     check(this.idx < this.node.len())
     val leaf = this.node.asLeafDying()
     // ignore-tidy-undocumented-unchecked
@@ -1215,7 +1231,7 @@ internal fun <K, V, NodeType> Handle<NodeRef<Dying, K, V, NodeType>, KV>.intoKey
  * # Safety
  * The node that the handle refers to must not yet have been deallocated.
  */
-internal fun <K, V, NodeType> Handle<NodeRef<Dying, K, V, NodeType>, KV>.dropKeyVal() {
+public fun <K, V, NodeType> Handle<NodeRef<Dying, K, V, NodeType>, KV>.dropKeyVal() {
     // Run the destructor of the value even if the destructor of the key panics.
     open class Dropper<T>(
         public var value: MaybeUninit<T>,
@@ -1274,7 +1290,7 @@ public fun <K, V, NodeType> Handle<NodeRef<Mut, K, V, NodeType>, KV>.splitLeafDa
  * - All the key-value pairs to the right of this handle are put into a newly
  *   allocated node.
  */
-internal fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, Leaf>, KV>.split(alloc: A): SplitResult<K, V, Leaf> {
+public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, Leaf>, KV>.split(alloc: A): SplitResult<K, V, Leaf> {
     val newNode = LeafNode.new(alloc)
     val kv = this.splitLeafData(newNode)
     val right = NodeRef.fromNewLeaf(newNode)
@@ -1285,7 +1301,7 @@ internal fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, Leaf>, KV>.spl
  * Removes the key-value pair pointed to by this handle and returns it, along with the edge
  * that the key-value pair collapsed into.
  */
-internal fun <K, V> Handle<NodeRef<Mut, K, V, Leaf>, KV>.remove(): Pair<Pair<K, V>, Handle<NodeRef<Mut, K, V, Leaf>, Edge>> {
+public fun <K, V> Handle<NodeRef<Mut, K, V, Leaf>, KV>.remove(): Pair<Pair<K, V>, Handle<NodeRef<Mut, K, V, Leaf>, Edge>> {
     val oldLen = this.node.len()
     // ignore-tidy-undocumented-unchecked
     return run {
@@ -1300,24 +1316,33 @@ internal fun <K, V> Handle<NodeRef<Mut, K, V, Leaf>, KV>.remove(): Pair<Pair<K, 
  * Represents a session for evaluating and performing a balancing operation
  * around an internal key-value pair.
  */
-internal open class BalancingContext<K, V>(
-    public var parent: Handle<NodeRef<Mut, K, V, Internal>, KV>,
-    public var leftChild: NodeRef<Mut, K, V, LeafOrInternal>,
-    public var rightChild: NodeRef<Mut, K, V, LeafOrInternal>,
+public open class BalancingContext<K, V> internal constructor(
+    parentCtorArg: Handle<NodeRef<Mut, K, V, Internal>, KV>,
+    leftChildCtorArg: NodeRef<Mut, K, V, LeafOrInternal>,
+    rightChildCtorArg: NodeRef<Mut, K, V, LeafOrInternal>,
 ) {
-    internal open fun leftChildLen(): Int = this.leftChild.len()
+    public var parent: Handle<NodeRef<Mut, K, V, Internal>, KV> = parentCtorArg
+        internal set
 
-    internal open fun rightChildLen(): Int = this.rightChild.len()
+    public var leftChild: NodeRef<Mut, K, V, LeafOrInternal> = leftChildCtorArg
+        internal set
 
-    internal open fun intoLeftChild(): NodeRef<Mut, K, V, LeafOrInternal> = this.leftChild
+    public var rightChild: NodeRef<Mut, K, V, LeafOrInternal> = rightChildCtorArg
+        internal set
 
-    internal open fun intoRightChild(): NodeRef<Mut, K, V, LeafOrInternal> = this.rightChild
+    public open fun leftChildLen(): Int = this.leftChild.len()
+
+    public open fun rightChildLen(): Int = this.rightChild.len()
+
+    public open fun intoLeftChild(): NodeRef<Mut, K, V, LeafOrInternal> = this.leftChild
+
+    public open fun intoRightChild(): NodeRef<Mut, K, V, LeafOrInternal> = this.rightChild
 
     /**
      * Returns whether merging is possible, i.e., whether there is enough room
      * in a node to combine the central KV with both adjacent child nodes.
      */
-    internal open fun canMerge(): Boolean = this.leftChild.len() + 1 + this.rightChild.len() <= CAPACITY
+    public open fun canMerge(): Boolean = this.leftChild.len() + 1 + this.rightChild.len() <= CAPACITY
 
     /**
      * Performs a merge and lets a closure decide what to return.
@@ -1366,7 +1391,7 @@ internal open class BalancingContext<K, V>(
      *
      * Panics unless we `.canMerge()`.
      */
-    internal open fun <A : AllocatorClone> mergeTrackingParent(alloc: A): NodeRef<Mut, K, V, Internal> = this.doMerge({ parent, child -> parent }, alloc)
+    public open fun <A : AllocatorClone> mergeTrackingParent(alloc: A): NodeRef<Mut, K, V, Internal> = this.doMerge({ parent, child -> parent }, alloc)
 
     /**
      * Merges the parent's key-value pair and both adjacent child nodes into
@@ -1374,7 +1399,7 @@ internal open class BalancingContext<K, V>(
      *
      * Panics unless we `.canMerge()`.
      */
-    internal open fun <A : AllocatorClone> mergeTrackingChild(alloc: A): NodeRef<Mut, K, V, LeafOrInternal> = this.doMerge({ parent, child -> child }, alloc)
+    public open fun <A : AllocatorClone> mergeTrackingChild(alloc: A): NodeRef<Mut, K, V, LeafOrInternal> = this.doMerge({ parent, child -> child }, alloc)
 
     /**
      * Merges the parent's key-value pair and both adjacent child nodes into
@@ -1383,7 +1408,7 @@ internal open class BalancingContext<K, V>(
      *
      * Panics unless we `.canMerge()`.
      */
-    internal open fun <A : AllocatorClone> mergeTrackingChildEdge(trackEdgeIdx: LeftOrRight<Int>, alloc: A): Handle<NodeRef<Mut, K, V, LeafOrInternal>, Edge> {
+    public open fun <A : AllocatorClone> mergeTrackingChildEdge(trackEdgeIdx: LeftOrRight<Int>, alloc: A): Handle<NodeRef<Mut, K, V, LeafOrInternal>, Edge> {
         val oldLeftLen = this.leftChild.len()
         val rightLen = this.rightChild.len()
         check(when (trackEdgeIdx) {
@@ -1418,7 +1443,7 @@ internal open class BalancingContext<K, V>(
      * Returns a handle to the edge in the right child corresponding to where the original
      * edge specified by `trackRightEdgeIdx` ended up.
      */
-    internal open fun stealLeft(trackRightEdgeIdx: Int): Handle<NodeRef<Mut, K, V, LeafOrInternal>, Edge> {
+    public open fun stealLeft(trackRightEdgeIdx: Int): Handle<NodeRef<Mut, K, V, LeafOrInternal>, Edge> {
         this.bulkStealLeft(1)
         // ignore-tidy-undocumented-unchecked
         return Handle.newEdge(this.rightChild, 1 + trackRightEdgeIdx)
@@ -1430,7 +1455,7 @@ internal open class BalancingContext<K, V>(
      * Returns a handle to the edge in the left child specified by `trackLeftEdgeIdx`,
      * which didn't move.
      */
-    internal open fun stealRight(trackLeftEdgeIdx: Int): Handle<NodeRef<Mut, K, V, LeafOrInternal>, Edge> {
+    public open fun stealRight(trackLeftEdgeIdx: Int): Handle<NodeRef<Mut, K, V, LeafOrInternal>, Edge> {
         this.bulkStealRight(1)
         // ignore-tidy-undocumented-unchecked
         return Handle.newEdge(this.leftChild, trackLeftEdgeIdx)
@@ -1439,7 +1464,7 @@ internal open class BalancingContext<K, V>(
     /**
      * This does stealing similar to `stealLeft` but steals multiple elements at once.
      */
-    internal open fun bulkStealLeft(count: Int) {
+    public open fun bulkStealLeft(count: Int) {
         check(count > 0)
         // ignore-tidy-undocumented-unchecked
         run {
@@ -1492,7 +1517,7 @@ internal open class BalancingContext<K, V>(
     /**
      * The symmetric clone of `bulkStealLeft`.
      */
-    internal open fun bulkStealRight(count: Int) {
+    public open fun bulkStealRight(count: Int) {
         check(count > 0)
         // ignore-tidy-undocumented-unchecked
         run {
@@ -1542,9 +1567,21 @@ internal open class BalancingContext<K, V>(
             }
         }
     }
+
+    public companion object {
+        public operator fun <K, V> invoke(
+            parent: Handle<NodeRef<Mut, K, V, Internal>, KV>,
+            leftChild: NodeRef<Mut, K, V, LeafOrInternal>,
+            rightChild: NodeRef<Mut, K, V, LeafOrInternal>,
+        ): BalancingContext<K, V> = BalancingContext<K, V>(
+            parentCtorArg = parent,
+            leftChildCtorArg = leftChild,
+            rightChildCtorArg = rightChild,
+        )
+    }
 }
 
-internal fun <K, V> Handle<NodeRef<Mut, K, V, Internal>, KV>.considerForBalancing(): BalancingContext<K, V> {
+public fun <K, V> Handle<NodeRef<Mut, K, V, Internal>, KV>.considerForBalancing(): BalancingContext<K, V> {
     // ignore-tidy-undocumented-unchecked
     val self1 = read(this)
     // ignore-tidy-undocumented-unchecked
@@ -1568,7 +1605,7 @@ internal fun <K, V> Handle<NodeRef<Mut, K, V, Internal>, KV>.considerForBalancin
  * the right, instead of shifting at least N of the sibling's elements to
  * the left.
  */
-internal fun <K, V> NodeRef<Mut, K, V, LeafOrInternal>.chooseParentKv(): Result<LeftOrRight<BalancingContext<K, V>>, NodeRef<Mut, K, V, LeafOrInternal>> {
+public fun <K, V> NodeRef<Mut, K, V, LeafOrInternal>.chooseParentKv(): Result<LeftOrRight<BalancingContext<K, V>>, NodeRef<Mut, K, V, LeafOrInternal>> {
     // ignore-tidy-undocumented-unchecked
     return run {
         val matchVal = read(this).ascend()
@@ -1599,7 +1636,7 @@ internal fun <K, V> NodeRef<Mut, K, V, LeafOrInternal>.chooseParentKv(): Result<
     }
 }
 
-internal fun <BorrowType, K, V> Handle<NodeRef<BorrowType, K, V, Leaf>, Edge>.forgetNodeType(): Handle<NodeRef<BorrowType, K, V, LeafOrInternal>, Edge> {
+public fun <BorrowType, K, V> Handle<NodeRef<BorrowType, K, V, Leaf>, Edge>.forgetNodeType(): Handle<NodeRef<BorrowType, K, V, LeafOrInternal>, Edge> {
     // ignore-tidy-undocumented-unchecked
     return Handle.newEdge(this.node.forgetType(), this.idx)
 }
@@ -1607,7 +1644,7 @@ internal fun <BorrowType, K, V> Handle<NodeRef<BorrowType, K, V, Leaf>, Edge>.fo
 /**
  * Checks whether the underlying node is an `Internal` node or a `Leaf` node.
  */
-internal fun <BorrowType, K, V, Type> Handle<NodeRef<BorrowType, K, V, LeafOrInternal>, Type>.force(): ForceResult<Handle<NodeRef<BorrowType, K, V, Leaf>, Type>, Handle<NodeRef<BorrowType, K, V, Internal>, Type>> =
+public fun <BorrowType, K, V, Type> Handle<NodeRef<BorrowType, K, V, LeafOrInternal>, Type>.force(): ForceResult<Handle<NodeRef<BorrowType, K, V, Leaf>, Type>, Handle<NodeRef<BorrowType, K, V, Internal>, Type>> =
     when (val matchVal = this.node.force()) {
         is ForceResult.Leaf -> {
             val (node) = matchVal
@@ -1622,7 +1659,7 @@ internal fun <BorrowType, K, V, Type> Handle<NodeRef<BorrowType, K, V, LeafOrInt
 /**
  * Unsafely asserts to the compiler the static information that the handle's node is a `Leaf`.
  */
-internal fun <K, V, Type> Handle<NodeRef<Mut, K, V, LeafOrInternal>, Type>.castToLeafUnchecked(): Handle<NodeRef<Mut, K, V, Leaf>, Type> {
+public fun <K, V, Type> Handle<NodeRef<Mut, K, V, LeafOrInternal>, Type>.castToLeafUnchecked(): Handle<NodeRef<Mut, K, V, Leaf>, Type> {
     // ignore-tidy-undocumented-unchecked
     val node = this.node.castToLeafUnchecked()
     return Handle(node = node, idx = this.idx, marker = Unit)
@@ -1632,7 +1669,7 @@ internal fun <K, V, Type> Handle<NodeRef<Mut, K, V, LeafOrInternal>, Type>.castT
  * Move the suffix after `self` from one node to another one. `right` must be empty.
  * The first edge of `right` remains unchanged.
  */
-internal fun <K, V> Handle<NodeRef<Mut, K, V, LeafOrInternal>, Edge>.moveSuffix(right: NodeRef<Mut, K, V, LeafOrInternal>) {
+public fun <K, V> Handle<NodeRef<Mut, K, V, LeafOrInternal>, Edge>.moveSuffix(right: NodeRef<Mut, K, V, LeafOrInternal>) {
     // ignore-tidy-undocumented-unchecked
     run {
         val newLeftLen = this.idx
@@ -1664,7 +1701,7 @@ internal fun <K, V> Handle<NodeRef<Mut, K, V, LeafOrInternal>, Edge>.moveSuffix(
     }
 }
 
-internal sealed class ForceResult<Leaf, Internal> {
+public sealed class ForceResult<Leaf, Internal> {
     public data class Leaf<Leaf, Internal>(public var value: Leaf) : ForceResult<Leaf, Internal>()
     public data class Internal<Leaf, Internal>(public var value: Internal) : ForceResult<Leaf, Internal>()
 }
@@ -1672,36 +1709,54 @@ internal sealed class ForceResult<Leaf, Internal> {
 /**
  * Result of insertion, when a node needed to expand beyond its capacity.
  */
-internal open class SplitResult<K, V, NodeType>(
-    // Altered node in existing tree with elements and edges that belong to the left of `kv`.
-    public var left: NodeRef<Mut, K, V, NodeType>,
+public open class SplitResult<K, V, NodeType> internal constructor(
+    leftCtorArg: NodeRef<Mut, K, V, NodeType>,
     // Some key and value that existed before and were split off, to be inserted elsewhere.
     public var kv: Pair<K, V>,
+    rightCtorArg: NodeRef<Owned, K, V, NodeType>,
+) {
+    // Altered node in existing tree with elements and edges that belong to the left of `kv`.
+    public var left: NodeRef<Mut, K, V, NodeType> = leftCtorArg
+        internal set
+
     // Owned, unattached, new node with elements and edges that belong to the right of `kv`.
-    public var right: NodeRef<Owned, K, V, NodeType>,
-)
+    public var right: NodeRef<Owned, K, V, NodeType> = rightCtorArg
+        internal set
 
-internal fun <K, V> SplitResult<K, V, Leaf>.forgetNodeType(): SplitResult<K, V, LeafOrInternal> = SplitResult(left = this.left.forgetType(), kv = this.kv, right = this.right.forgetType())
+    public companion object {
+        public operator fun <K, V, NodeType> invoke(
+            left: NodeRef<Mut, K, V, NodeType>,
+            kv: Pair<K, V>,
+            right: NodeRef<Owned, K, V, NodeType>,
+        ): SplitResult<K, V, NodeType> = SplitResult<K, V, NodeType>(
+            leftCtorArg = left,
+            kv = kv,
+            rightCtorArg = right,
+        )
+    }
+}
 
-internal open class Leaf(
+public fun <K, V> SplitResult<K, V, Leaf>.forgetNodeType(): SplitResult<K, V, LeafOrInternal> = SplitResult(left = this.left.forgetType(), kv = this.kv, right = this.right.forgetType())
+
+public open class Leaf(
     public val handle: Long = -1L,
 ) {
     public val ptr: Long get() = handle
 }
 
-internal open class Internal(
+public open class Internal(
     public val handle: Long = -1L,
 ) {
     public val ptr: Long get() = handle
 }
 
-internal open class LeafOrInternal(
+public open class LeafOrInternal(
     public val handle: Long = -1L,
 ) {
     public val ptr: Long get() = handle
 }
 
-internal object Owned : BorrowType {
+public object Owned : BorrowType {
     /**
      * Reject traversal, because it isn't needed. Instead traversal
      * happens using the result of `borrowMut`.
@@ -1711,11 +1766,11 @@ internal object Owned : BorrowType {
     public val TRAVERSAL_PERMIT: Boolean = false
 }
 
-internal object Dying : BorrowType
+public object Dying : BorrowType
 
-internal object DormantMut : BorrowType
+public object DormantMut : BorrowType
 
-internal open class Immut(
+public open class Immut(
     public var value: Unit,
 ) : BorrowType {
     public var field0: Unit
@@ -1725,7 +1780,7 @@ internal open class Immut(
         }
 }
 
-internal open class Mut(
+public open class Mut(
     public var value: Unit,
 ) : BorrowType {
     public var field0: Unit
@@ -1735,7 +1790,7 @@ internal open class Mut(
         }
 }
 
-internal open class ValMut(
+public open class ValMut(
     public var value: Unit,
 ) : BorrowType {
     public var field0: Unit
@@ -1745,7 +1800,7 @@ internal open class ValMut(
         }
 }
 
-internal interface BorrowType {
+public interface BorrowType {
     /**
      * If node references of this borrow type allow traversing to other
      * nodes in the tree, this constant is set to `true`. It can be used
@@ -1755,13 +1810,13 @@ internal interface BorrowType {
         get() = true
 }
 
-internal open class KV(
+public open class KV(
     public val handle: Long = -1L,
 ) {
     public val ptr: Long get() = handle
 }
 
-internal open class Edge(
+public open class Edge(
     public val handle: Long = -1L,
 ) {
     public val ptr: Long get() = handle

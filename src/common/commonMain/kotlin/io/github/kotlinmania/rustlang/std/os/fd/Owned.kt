@@ -1,9 +1,6 @@
 // port-lint: source os/fd/owned.rs
 package io.github.kotlinmania.rustlang.std.os.fd
 
-import io.github.kotlinmania.libc.close
-import io.github.kotlinmania.libc.fcntl
-import io.github.kotlinmania.libc.fuchsia.F_DUPFD_CLOEXEC
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -11,6 +8,9 @@ import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.libc.close
+import io.github.kotlinmania.rustlang.libc.fcntl
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.F_DUPFD_CLOEXEC
 import io.github.kotlinmania.rustlang.std.Rc
 import io.github.kotlinmania.rustlang.std.fs.File
 import io.github.kotlinmania.rustlang.std.io.IsTerminal

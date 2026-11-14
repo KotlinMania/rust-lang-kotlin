@@ -20,6 +20,8 @@ import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
+import io.github.kotlinmania.rustlang.core.ops.ControlFlow.Break
+import io.github.kotlinmania.rustlang.core.ops.ControlFlow.Continue
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.panic.constAssert
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -610,7 +612,7 @@ public open class Reverse<T>(
  *
  * Used to implement `Iterator.minByKey` as `map`+`min`, for example.
  */
-internal open class KeyAndValue<K, V>(
+public open class KeyAndValue<K, V>(
     public var key: K,
     public var value: V,
 ) : PartialEq<KeyAndValue<K, V>>, Eq, PartialOrd<KeyAndValue<K, V>>, Ord<KeyAndValue<K, V>> {

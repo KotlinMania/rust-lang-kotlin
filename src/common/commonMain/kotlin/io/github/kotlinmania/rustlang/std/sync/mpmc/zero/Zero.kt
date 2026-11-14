@@ -31,9 +31,12 @@ import io.github.kotlinmania.rustlang.std.time.Instant
 /**
  * A pointer to a packet.
  */
-internal open class ZeroToken(
-    public var value: MutPtr,
+public open class ZeroToken internal constructor(
+    valueCtorArg: MutPtr,
 ) {
+    public var value: MutPtr = valueCtorArg
+        internal set
+
     public var field0: MutPtr
         get() = value
         set(v) {
@@ -64,6 +67,12 @@ internal open class ZeroToken(
                     (PrimitiveLayouts.mutPtrLayout(64)).writeBytes(buf, offset, value.value)
                 }
             }
+
+        public operator fun invoke(
+            value: MutPtr,
+        ): ZeroToken = ZeroToken(
+            valueCtorArg = value,
+        )
 
         public fun default(): ZeroToken = ZeroToken(MutPtr(0L))
     }
@@ -143,20 +152,23 @@ public open class Inner(
 /**
  * Zero-capacity channel.
  */
-internal open class Channel<T>(
-    /**
-     * Inner representation of the channel.
-     */
-    public var inner: Mutex<Inner>,
+public open class Channel<T> internal constructor(
+    innerCtorArg: Mutex<Inner>,
     /**
      * Indicates that dropping a `Channel<T>` may drop values of type `T`.
      */
     public var marker: Unit,
 ) {
     /**
+     * Inner representation of the channel.
+     */
+    public var inner: Mutex<Inner> = innerCtorArg
+        internal set
+
+    /**
      * Writes a message into the packet.
      */
-    internal open fun write(token: Token, msg: T, typeLayoutT: TypeLayout<T>): Result<Unit, T> {
+    public open fun write(token: Token, msg: T, typeLayoutT: TypeLayout<T>): Result<Unit, T> {
         // If there is no packet, the channel is disconnected.
         if (((token.zero.value).rawAddress == 0L)) {
             return Result.Err(msg)
@@ -172,7 +184,7 @@ internal open class Channel<T>(
     /**
      * Reads a message from the packet.
      */
-    internal open fun read(token: Token, typeLayoutT: TypeLayout<T>): Result<T, Unit> {
+    public open fun read(token: Token, typeLayoutT: TypeLayout<T>): Result<T, Unit> {
         // If there is no packet, the channel is disconnected.
         if (((token.zero.value).rawAddress == 0L)) {
             return Result.Err(Unit)
@@ -191,7 +203,7 @@ internal open class Channel<T>(
             packet.waitReady()
             run {
                 val msg1 = packet.msg.get().replace(null).unwrap()
-                drop(Box.fromRaw((token.zero.value).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }))
+                (Box.fromRaw((token.zero.value).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).let { }
                 Result.Ok(msg1)
             }
         }
@@ -200,7 +212,7 @@ internal open class Channel<T>(
     /**
      * Attempts to send a message into the channel.
      */
-    internal open fun trySend(msg: T): Result<Unit, TrySendError<T>> {
+    public open fun trySend(msg: T): Result<Unit, TrySendError<T>> {
         val token = Token.default()
         val inner = this.inner.lock().unwrap()
         // If there's a waiting receiver, pair up with it.
@@ -215,7 +227,7 @@ internal open class Channel<T>(
             else -> {
                 val operation = matchVal
                 token.zero.first = operation.packet
-                drop(inner)
+                (inner).let { }
                 run {
                     this.write(token, msg).ok()!!
                 }
@@ -227,7 +239,7 @@ internal open class Channel<T>(
     /**
      * Sends a message into the channel.
      */
-    internal open fun send(msg: T, deadline: Instant?): Result<Unit, SendTimeoutError<T>> {
+    public open fun send(msg: T, deadline: Instant?): Result<Unit, SendTimeoutError<T>> {
         val token = Token.default()
         val inner = this.inner.lock().unwrap()
         // If there's a waiting receiver, pair up with it.
@@ -236,7 +248,7 @@ internal open class Channel<T>(
             else -> {
                 val operation = matchVal
                 token.zero.first = operation.packet
-                drop(inner)
+                (inner).let { }
                 run {
                     this.write(token, msg).ok()!!
                 }
@@ -252,7 +264,7 @@ internal open class Channel<T>(
             var packet = Packet.messageOnStack(msg)
             inner.senders.registerWithPacket(oper, ((addrOfMut(packet))).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, cx)
             inner.receivers.notify()
-            drop(inner)
+            (inner).let { }
             // Block the current thread.
             // SAFETY: the context belongs to the current thread.
             val sel = cx.waitUntil(deadline)
@@ -280,7 +292,7 @@ internal open class Channel<T>(
     /**
      * Attempts to receive a message without blocking.
      */
-    internal open fun tryRecv(): Result<T, TryRecvError> {
+    public open fun tryRecv(): Result<T, TryRecvError> {
         val token = Token.default()
         val inner = this.inner.lock().unwrap()
         // If there's a waiting sender, pair up with it.
@@ -295,7 +307,7 @@ internal open class Channel<T>(
             else -> {
                 val operation = matchVal
                 token.zero.first = operation.packet
-                drop(inner)
+                (inner).let { }
                 this.read(token).mapErr({ TryRecvError.Disconnected })
             }
         }
@@ -304,7 +316,7 @@ internal open class Channel<T>(
     /**
      * Receives a message from the channel.
      */
-    internal open fun recv(deadline: Instant?): Result<T, RecvTimeoutError> {
+    public open fun recv(deadline: Instant?): Result<T, RecvTimeoutError> {
         val token = Token.default()
         val inner = this.inner.lock().unwrap()
         // If there's a waiting sender, pair up with it.
@@ -313,7 +325,7 @@ internal open class Channel<T>(
             else -> {
                 val operation = matchVal
                 token.zero.first = operation.packet
-                drop(inner)
+                (inner).let { }
                 run {
                     return this.read(token).mapErr({ RecvTimeoutError.Disconnected })
                 }
@@ -328,7 +340,7 @@ internal open class Channel<T>(
             var packet = Packet.emptyOnStack()
             inner.receivers.registerWithPacket(oper, ((addrOfMut(packet))).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, cx)
             inner.senders.notify()
-            drop(inner)
+            (inner).let { }
             // Block the current thread.
             // SAFETY: the context belongs to the current thread.
             val sel = cx.waitUntil(deadline)
@@ -356,7 +368,7 @@ internal open class Channel<T>(
      *
      * Returns `true` if this call disconnected the channel.
      */
-    internal open fun disconnect(): Boolean {
+    public open fun disconnect(): Boolean {
         val inner = this.inner.lock().unwrap()
         return if (!inner.isDisconnected) {
             inner.isDisconnected = true
@@ -371,37 +383,45 @@ internal open class Channel<T>(
     /**
      * Returns the current number of messages inside the channel.
      */
-    internal open fun len(): Int = 0
+    public open fun len(): Int = 0
 
     // This is intentional.
 
     /**
      * Returns the capacity of the channel.
      */
-    internal open fun capacity(): Int? = 0
+    public open fun capacity(): Int? = 0
 
     /**
      * Returns `true` if the channel is empty.
      */
-    internal open fun isEmpty(): Boolean = true
+    public open fun isEmpty(): Boolean = true
 
     /**
      * Returns `true` if the channel is full.
      */
-    internal open fun isFull(): Boolean = true
+    public open fun isFull(): Boolean = true
 
     /**
      * Returns `true` if the channel is disconnected.
      */
-    internal open fun isDisconnected(): Boolean {
+    public open fun isDisconnected(): Boolean {
         val inner = this.inner.lock().unwrap()
         return inner.isDisconnected
     }
 
     public companion object {
+        public operator fun <T> invoke(
+            inner: Mutex<Inner>,
+            marker: Unit,
+        ): Channel<T> = Channel<T>(
+            innerCtorArg = inner,
+            marker = marker,
+        )
+
         /**
          * Constructs a new zero-capacity channel.
          */
-        internal fun <T> new(): Channel<T> = Channel(inner = Mutex.new(Inner(senders = Waker.new(), receivers = Waker.new(), isDisconnected = false)), marker = Unit)
+        public fun <T> new(): Channel<T> = Channel(inner = Mutex.new(Inner(senders = Waker.new(), receivers = Waker.new(), isDisconnected = false)), marker = Unit)
     }
 }

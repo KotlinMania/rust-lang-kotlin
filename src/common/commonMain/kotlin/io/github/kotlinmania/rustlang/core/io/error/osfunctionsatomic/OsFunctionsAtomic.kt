@@ -39,7 +39,7 @@ public fun getOsFunctions(): OsFunctions {
  * The provided reference must point to data that is entirely constant; it must
  * not be created during runtime.
  */
-internal fun setFunctions(f: OsFunctions) {
+public fun setFunctions(f: OsFunctions) {
     fun setFunctionsInner(f1: OsFunctions) {
         OS_FUNCTIONS.store((constPtrFromRustCast(f1)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, Atomic.Ordering.Relaxed)
     }
@@ -48,17 +48,17 @@ internal fun setFunctions(f: OsFunctions) {
     }
 }
 
-internal fun formatOsError(errno: RawOsError, fmt: StringBuilder) {
+public fun formatOsError(errno: RawOsError, fmt: StringBuilder) {
     val f = getOsFunctions()
     (f.formatOsError)(errno, fmt)
 }
 
-internal fun decodeErrorKind(errno: RawOsError): ErrorKind {
+public fun decodeErrorKind(errno: RawOsError): ErrorKind {
     val f = getOsFunctions()
     return (f.decodeErrorKind)(errno)
 }
 
-internal fun isInterrupted(errno: RawOsError): Boolean {
+public fun isInterrupted(errno: RawOsError): Boolean {
     val f = getOsFunctions()
     return (f.isInterrupted)(errno)
 }

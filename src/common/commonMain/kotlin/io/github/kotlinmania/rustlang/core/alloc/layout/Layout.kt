@@ -7,6 +7,8 @@ import io.github.kotlinmania.rustlang.core.intrinsics.uncheckedMul
 import io.github.kotlinmania.rustlang.core.intrinsics.uncheckedSub
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignment.Alignment
+import io.github.kotlinmania.rustlang.core.mem.sizeOfValRaw
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.num.rustCheckedMul
 import io.github.kotlinmania.rustlang.core.num.rustCheckedSub
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr

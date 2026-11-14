@@ -1,8 +1,9 @@
 // port-lint: source io/impls.rs
 package io.github.kotlinmania.rustlang.core.io.impls
 
-import io.github.kotlinmania.rustlang.core.fmt.write
+import io.github.kotlinmania.rustlang.core.io.error.WRITE_ALL_EOF
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
+import io.github.kotlinmania.rustlang.core.mem.take
 import io.github.kotlinmania.rustlang.core.result.Result
 
 // =============================================================================
@@ -51,7 +52,7 @@ public fun MutableList<UByte>.isWriteVectored(): Boolean = true
 
 public fun MutableList<UByte>.writeAll(data: List<UByte>): Result<Unit> {
     return if (when (val tryResult = this.write(data)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) } < data.size) {
-        Result.Err(Error.WRITE_ALL_EOF)
+        Result.Err(WRITE_ALL_EOF)
     } else {
         Result.Ok(Unit)
     }
@@ -60,7 +61,7 @@ public fun MutableList<UByte>.writeAll(data: List<UByte>): Result<Unit> {
 public fun MutableList<UByte>.writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit> {
     for (buf in bufs) {
         if (when (val tryResult = this.write(buf)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) } < buf.len()) {
-            return Result.Err(Error.WRITE_ALL_EOF)
+            return Result.Err(WRITE_ALL_EOF)
         }
     }
     return Result.Ok(Unit)
@@ -90,7 +91,7 @@ public fun BorrowedCursor<UByte>.isWriteVectored(): Boolean = true
 
 public fun BorrowedCursor<UByte>.writeAll(buf: List<UByte>): Result<Unit> {
     return if (when (val tryResult = this.write(buf)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) } < buf.size) {
-        Result.Err(Error.WRITE_ALL_EOF)
+        Result.Err(WRITE_ALL_EOF)
     } else {
         Result.Ok(Unit)
     }
@@ -99,7 +100,7 @@ public fun BorrowedCursor<UByte>.writeAll(buf: List<UByte>): Result<Unit> {
 public fun BorrowedCursor<UByte>.writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit> {
     for (buf in bufs) {
         if (when (val tryResult = this.write(buf)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) } < buf.len()) {
-            return Result.Err(Error.WRITE_ALL_EOF)
+            return Result.Err(WRITE_ALL_EOF)
         }
     }
     return Result.Ok(Unit)

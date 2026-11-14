@@ -12,8 +12,8 @@ import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedBuf
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
+import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.Result
-import io.github.kotlinmania.rustlang.core.io.error.error
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
 import io.github.kotlinmania.rustlang.core.io.util.Chain
 import io.github.kotlinmania.rustlang.core.io.util.Take
@@ -754,7 +754,7 @@ public val DEFAULT_BUF_SIZE: Int = 8 * 1024
  *    the function only *appends* bytes to the buffer. We'll get undefined
  *    behavior if existing bytes are overwritten to have non-UTF-8 data.
  */
-internal fun appendToString(buf: String, f: (List<UByte>) -> Result<Int>): Result<Int> {
+public fun appendToString(buf: String, f: (List<UByte>) -> Result<Int>): Result<Int> {
     val lenOriginal = buf.length
     // SAFETY: invalid UTF-8 discarded before return or unwind
     val bufVec = buf.asMutVec()
@@ -941,7 +941,7 @@ public fun defaultReadVectored(read: (MutableList<UByte>) -> Result<Int>, bufs: 
     return read(buf)
 }
 
-internal fun <R : Read<R>> defaultReadExact(thisRef: R, buf: MutableList<UByte>): Result<Unit> {
+public fun <R : Read<R>> defaultReadExact(thisRef: R, buf: MutableList<UByte>): Result<Unit> {
     var buf1 = buf
     while (!buf1.isEmpty()) {
         run {
@@ -975,7 +975,7 @@ public fun defaultReadBuf(read: (MutableList<UByte>) -> Result<Int>, cursor: Bor
     return Result.Ok(Unit)
 }
 
-internal fun <R : Read<R>> defaultReadBufExact(thisRef: R, cursor: BorrowedCursor<UByte>): Result<Unit> {
+public fun <R : Read<R>> defaultReadBufExact(thisRef: R, cursor: BorrowedCursor<UByte>): Result<Unit> {
     while (cursor.capacity() > 0) {
         val prevWritten = cursor.written()
         run {

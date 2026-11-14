@@ -4,8 +4,8 @@ package io.github.kotlinmania.rustlang.std.sys.sync.threadparking.darwin
 
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 
-// The host must provide the C companion wrapper exports in import module std.
-@kotlin.wasm.WasmImport("std", "stdSysSyncThreadparkingDarwinDispatchTime")
+// The host must provide the C companion wrapper exports in import module kmcore.
+@kotlin.wasm.WasmImport("kmcore", "stdSysSyncThreadparkingDarwinDispatchTime")
 private external fun wasiStdSysSyncThreadparkingDarwinDispatchTime(whenBranch: Long, delta: Long): Long
 
 public actual fun dispatchTime(whenBranch: DispatchTimeT, delta: Long): DispatchTimeT =

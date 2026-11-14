@@ -13,6 +13,8 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
+import io.github.kotlinmania.rustlang.std.io.ErrorKind
+import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.path.Path
 
@@ -20,7 +22,7 @@ import io.github.kotlinmania.rustlang.std.path.Path
 // https://docs.rs/compilerBuiltins/latest/compilerBuiltins/probestack/index.html
 public val MAX_STACK_ALLOCATION: Int = 384
 
-public val NUL_ERR: io.github.kotlinmania.rustlang.core.io.error.Error = io.constError(ErrorKind.InvalidInput, "file name contained an unexpected NUL byte")
+public val NUL_ERR: io.github.kotlinmania.rustlang.std.io.Error = constError(ErrorKind.InvalidInput, "file name contained an unexpected NUL byte")
 
 public fun <T> runPathWithCstr(path: Path, f: (CStr) -> Result<T, Error>): Result<T, Error> = runWithCstr(path.asOsStr().asEncodedBytes(), f)
 

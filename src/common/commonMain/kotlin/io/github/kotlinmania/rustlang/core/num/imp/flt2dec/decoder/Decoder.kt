@@ -5,7 +5,6 @@ import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.num.FpCategory
-import io.github.kotlinmania.rustlang.core.num.f32.MIN_POSITIVE
 import io.github.kotlinmania.rustlang.core.num.imp.traits.FloatExt
 
 // Decodes a floating-point value into individual parts and error ranges.
@@ -118,7 +117,7 @@ public interface DecodableFloat<T> : FloatExt<T> {
     public fun minPosNormValue(): T
 }
 
-public fun decodableFloatMinPosNormValueF16(): F16 = MIN_POSITIVE
+public fun decodableFloatMinPosNormValueF16(): F16 = F16.MIN_POSITIVE
 
 public fun decodableFloatMinPosNormValueFloat(): kotlin.Float = 1.17549435E-38f
 

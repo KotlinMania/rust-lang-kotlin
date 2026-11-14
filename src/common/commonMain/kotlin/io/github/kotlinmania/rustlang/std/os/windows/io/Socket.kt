@@ -5,6 +5,7 @@ import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
+import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.Rc
@@ -14,23 +15,10 @@ import io.github.kotlinmania.rustlang.std.net.tcp.TcpStream
 import io.github.kotlinmania.rustlang.std.net.udp.UdpSocket
 import io.github.kotlinmania.rustlang.std.os.windows.raw.AsRawSocket
 import io.github.kotlinmania.rustlang.std.os.windows.raw.FromRawSocket
-import io.github.kotlinmania.rustlang.std.os.windows.raw.Handle
 import io.github.kotlinmania.rustlang.std.os.windows.raw.IntoRawSocket
 import io.github.kotlinmania.rustlang.std.os.windows.raw.RawSocket
 import io.github.kotlinmania.rustlang.std.sync.Arc
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.HANDLE_FLAG_INHERIT
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.WSA_FLAG_NO_HANDLE_INHERIT
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.WSA_FLAG_OVERLAPPED
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.INVALID_SOCKET
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.WSAEINVAL
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.WSAEPROTOTYPE
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.closesocket
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.getCurrentProcessId
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.setHandleInformation
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.wSADuplicateSocketW
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.wSAGetLastError
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.wSASocketW
 
 // Owned and borrowed OS sockets.
 
@@ -91,19 +79,19 @@ public open class BorrowedSocket internal constructor(
      * object as the existing `BorrowedSocket` instance.
      */
     public open fun tryCloneToOwned(): Result<OwnedSocket, Error> {
-        val info = null
-        val result = wSADuplicateSocketW(this.asRawSocket().toULong(), getCurrentProcessId(), info)
+        val info = MaybeUninit.zeroed(ObjectSlotLayout<Result<OwnedSocket, Error>>()).assumeInit()
+        val result = C.WSADuplicateSocketW(((this.asRawSocket() as Any?) as C.Socket), C.GetCurrentProcessId(), info)
         when (val tryResult = cvt(result)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-        val socket = wSASocketW(info.iAddressFamily, info.iSocketType, info.iProtocol, info, 0u, WSA_FLAG_OVERLAPPED or WSA_FLAG_NO_HANDLE_INHERIT)
-        return if (socket != INVALID_SOCKET) {
+        val socket = C.WSASocketW(info.iAddressFamily, info.iSocketType, info.iProtocol, info, 0, C.WSA_FLAG_OVERLAPPED or C.WSA_FLAG_NO_HANDLE_INHERIT)
+        return if (socket != C.INVALID_SOCKET) {
             Result.Ok(OwnedSocket.fromRawSocket(((socket as Any?) as RawSocket), fieldLayout = ObjectSlotLayout<NotAllOnes<RawSocket>>()))
         } else {
-            val error = wSAGetLastError()
-            if (error != WSAEPROTOTYPE && error != WSAEINVAL) {
-                return Result.Err(Error.fromRawOsError(error))
+            val error = C.WSAGetLastError()
+            if (error != C.WSAEPROTOTYPE && error != C.WSAEINVAL) {
+                return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(error))
             }
-            val socket1 = wSASocketW(info.iAddressFamily, info.iSocketType, info.iProtocol, info, 0u, WSA_FLAG_OVERLAPPED)
-            if (socket1 == INVALID_SOCKET) {
+            val socket1 = C.WSASocketW(info.iAddressFamily, info.iSocketType, info.iProtocol, info, 0, C.WSA_FLAG_OVERLAPPED)
+            if (socket1 == C.INVALID_SOCKET) {
                 return Result.Err(lastError())
             }
             run {
@@ -173,7 +161,7 @@ public open class OwnedSocket internal constructor(
     public open fun tryClone(): Result<OwnedSocket, Error> = this.asSocket().tryCloneToOwned()
 
     // Note(strictProvenanceMagic): we defined RawSocket to be a u64 ;-;
-    internal open fun setNoInherit(): Result<Unit, Error> = cvt(setHandleInformation(((this.asRawSocket() as Any?) as Handle), HANDLE_FLAG_INHERIT, 0u)).map({ Unit })
+    public open fun setNoInherit(): Result<Unit, Error> = io.github.kotlinmania.rustlang.std.sys.pal.windows.cvt(C.SetHandleInformation(((this.asRawSocket() as Any?) as C.Handle), C.HANDLE_FLAG_INHERIT, 0)).map({ Unit })
 
     public override fun asRawSocket(): RawSocket = this.socket.asInner()
 
@@ -181,7 +169,7 @@ public open class OwnedSocket internal constructor(
 
     public open fun drop() {
         run {
-            closesocket(this.socket.asInner().toULong())
+            C.closesocket(((this.socket.asInner() as Any?) as C.Socket))
         }
     }
 
@@ -223,7 +211,7 @@ public open class OwnedSocket internal constructor(
 /**
  * Returns the last error from the Windows socket interface.
  */
-public fun lastError(): io.github.kotlinmania.rustlang.core.io.error.Error = Error.fromRawOsError(wSAGetLastError())
+public fun lastError(): io.github.kotlinmania.rustlang.std.io.Error = io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(C.WSAGetLastError())
 
 /**
  * A trait to borrow the socket from an underlying object.

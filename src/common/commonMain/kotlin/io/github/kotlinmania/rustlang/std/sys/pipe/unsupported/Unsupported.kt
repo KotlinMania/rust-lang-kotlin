@@ -44,7 +44,7 @@ public open class Pipe(
     }
 }
 
-public fun pipe(): Result<Pair<Pipe, Pipe>, Error> = Result.Err(Error.UNSUPPORTED_PLATFORM)
+public fun pipe(): Result<Pair<Pipe, Pipe>, Error> = Result.Err(io.github.kotlinmania.rustlang.std.io.Error.UNSUPPORTED_PLATFORM)
 
 public fun Pipe.asRawFd(): RawFd = this.value
 

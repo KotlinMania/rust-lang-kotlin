@@ -1,7 +1,8 @@
 // port-lint: source io/util.rs
 package io.github.kotlinmania.rustlang.alloc.io.util
 
-import io.github.kotlinmania.rustlang.alloc.collections.btree.node.B
+import io.github.kotlinmania.rustlang.alloc.io.Error
+import io.github.kotlinmania.rustlang.alloc.io.ErrorKind
 import io.github.kotlinmania.rustlang.alloc.io.bufread.BufRead
 import io.github.kotlinmania.rustlang.alloc.io.read.Read
 import io.github.kotlinmania.rustlang.alloc.string.String
@@ -370,9 +371,9 @@ public fun <R : Read<R>> inlinedSlowReadByte(reader: R): Result<UByte>? {
 
 // Used by `BufReader.specReadByte`, for which the `inline(never)` is
 // important.
-internal fun <R : Read<R>> uninlinedSlowReadByte(reader: R): Result<UByte>? = inlinedSlowReadByte(reader)
+public fun <R : Read<R>> uninlinedSlowReadByte(reader: R): Result<UByte>? = inlinedSlowReadByte(reader)
 
-internal fun <R> bytes(inner: R): Bytes<R> = Bytes(inner = inner)
+public fun <R> bytes(inner: R): Bytes<R> = Bytes(inner = inner)
 
 /**
  * An iterator over the contents of an instance of `BufRead` split on a
@@ -444,7 +445,7 @@ public open class Split<B>(
     }
 }
 
-internal fun <B> split(buf: B, delim: UByte): Split<B> = Split(buf = buf, delim = delim)
+public fun <B> split(buf: B, delim: UByte): Split<B> = Split(buf = buf, delim = delim)
 
 /**
  * An iterator over the lines of an instance of [BufRead].
@@ -512,4 +513,4 @@ public open class Lines<B>(
     }
 }
 
-internal fun <B> lines(buf: B): Lines<B> = Lines(buf = buf)
+public fun <B> lines(buf: B): Lines<B> = Lines(buf = buf)

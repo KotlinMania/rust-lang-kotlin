@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.libm.math.sqrt
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.libm.math.generic.sqrt.sqrtRound
+import io.github.kotlinmania.rustlang.libm.math.support.env.Round
 
 /**
  * The square root of `x` (f16).

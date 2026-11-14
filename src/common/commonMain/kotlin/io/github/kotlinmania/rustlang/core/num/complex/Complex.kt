@@ -7,10 +7,9 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.num.imp.libm.complex.rustDivhc3
 import io.github.kotlinmania.rustlang.core.num.imp.libm.complex.rustMulhc3
-import io.github.kotlinmania.rustlang.core.num.imp.overflowpanic.add
-import io.github.kotlinmania.rustlang.core.num.imp.overflowpanic.mul
-import io.github.kotlinmania.rustlang.core.num.imp.overflowpanic.neg
-import io.github.kotlinmania.rustlang.core.num.imp.overflowpanic.sub
+import io.github.kotlinmania.rustlang.core.ops.arith.Add
+import io.github.kotlinmania.rustlang.core.ops.arith.Neg
+import io.github.kotlinmania.rustlang.core.ops.arith.Sub
 
 /**
  * A [complex number], represented in rectangular form.

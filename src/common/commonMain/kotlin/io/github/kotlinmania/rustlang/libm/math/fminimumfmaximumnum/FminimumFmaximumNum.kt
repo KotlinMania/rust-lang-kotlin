@@ -9,7 +9,7 @@ import io.github.kotlinmania.rustlang.core.F16
  *
  * This coincides with IEEE 754-2019 `minimumNumber`. The result orders -0.0 < 0.0.
  */
-public fun fminimumNumf16(x: F16, y: F16): F16 = io.github.kotlinmania.rustlang.libm.math.generic.fminimumNum(x, y)
+public fun fminimumNumf16(x: F16, y: F16): F16 = io.github.kotlinmania.rustlang.libm.math.generic.fminimumNum(x.toDouble(), y.toDouble())
 
 /**
  * Return the lesser of two arguments or, if either argument is NaN, NaN.
@@ -30,14 +30,14 @@ public fun fminimumNum(x: Double, y: Double): Double = io.github.kotlinmania.rus
  *
  * This coincides with IEEE 754-2019 `minimumNumber`. The result orders -0.0 < 0.0.
  */
-public fun fminimumNumf128(x: F128, y: F128): F128 = io.github.kotlinmania.rustlang.libm.math.generic.fminimumNum(x, y)
+public fun fminimumNumf128(x: F128, y: F128): F128 = io.github.kotlinmania.rustlang.libm.math.generic.fminimumNum(x.toDouble(), y.toDouble())
 
 /**
  * Return the greater of two arguments or, if either argument is NaN, NaN.
  *
  * This coincides with IEEE 754-2019 `maximumNumber`. The result orders -0.0 < 0.0.
  */
-public fun fmaximumNumf16(x: F16, y: F16): F16 = io.github.kotlinmania.rustlang.libm.math.generic.fmaximumNum(x, y)
+public fun fmaximumNumf16(x: F16, y: F16): F16 = io.github.kotlinmania.rustlang.libm.math.generic.fmaximumNum(x.toDouble(), y.toDouble())
 
 /**
  * Return the greater of two arguments or, if either argument is NaN, NaN.
@@ -58,4 +58,4 @@ public fun fmaximumNum(x: Double, y: Double): Double = io.github.kotlinmania.rus
  *
  * This coincides with IEEE 754-2019 `maximumNumber`. The result orders -0.0 < 0.0.
  */
-public fun fmaximumNumf128(x: F128, y: F128): F128 = io.github.kotlinmania.rustlang.libm.math.generic.fmaximumNum(x, y)
+public fun fmaximumNumf128(x: F128, y: F128): F128 = io.github.kotlinmania.rustlang.libm.math.generic.fmaximumNum(x.toDouble(), y.toDouble())

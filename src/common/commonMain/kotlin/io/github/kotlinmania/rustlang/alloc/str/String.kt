@@ -2,7 +2,6 @@
 package io.github.kotlinmania.rustlang.alloc.str
 
 import io.github.kotlinmania.rustlang.alloc.boxed.Box
-import io.github.kotlinmania.rustlang.alloc.collections.btree.node.B
 import io.github.kotlinmania.rustlang.alloc.slice.Join
 import io.github.kotlinmania.rustlang.alloc.string.String
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
@@ -21,7 +20,9 @@ import io.github.kotlinmania.rustlang.core.str.converts.fromUtf8Unchecked
 import io.github.kotlinmania.rustlang.core.str.pattern.Pattern
 import io.github.kotlinmania.rustlang.core.str.pattern.Utf8Pattern
 import io.github.kotlinmania.rustlang.core.str.rustStrChars
-import io.github.kotlinmania.rustlang.core.wtf8.bytes
+import io.github.kotlinmania.rustlang.core.unicode.unicodedata.conversions.toCasefold
+import io.github.kotlinmania.rustlang.core.unicode.unicodedata.conversions.toLower
+import io.github.kotlinmania.rustlang.core.unicode.unicodedata.conversions.toUpper
 
 // Utilities for the `String` primitive type.
 //
@@ -456,7 +457,7 @@ public fun String.toLowercase(): String {
             s.push(sigmaLowercase)
         } else {
             run {
-                val matchVal = conversions.toLower(c)
+                val matchVal = toLower(c)
                 when {
                     matchVal.size == 3 && matchVal[1] == '\u0000' -> {
                         val a = matchVal[0]
@@ -602,7 +603,7 @@ public fun String.wordToTitlecase(): String {
             s += sigmaLowercase
         } else {
             run {
-                val matchVal = conversions.toLower(c1)
+                val matchVal = toLower(c1)
                 when {
                     matchVal.size == 3 && matchVal[1] == '\u0000' -> {
                         val a = matchVal[0]
@@ -672,7 +673,7 @@ public fun String.toUppercase(): String {
     var (s, rest) = convertWhileAscii(this, UByte::toAsciiUppercase)
     for (c in rest.chars()) {
         run {
-            val matchVal = conversions.toUpper(c)
+            val matchVal = toUpper(c)
             when {
                 matchVal.size == 3 && matchVal[1] == '\u0000' -> {
                     val a = matchVal[0]
@@ -784,7 +785,7 @@ public fun String.toCasefoldUnnormalized(): String {
     var (s, rest) = convertWhileAscii(this, UByte::toAsciiLowercase)
     for (c in rest.chars()) {
         run {
-            val matchVal = conversions.toCasefold(c)
+            val matchVal = toCasefold(c)
             when {
                 matchVal.size == 3 && matchVal[1] == '\u0000' -> {
                     val a = matchVal[0]
@@ -937,7 +938,7 @@ public fun fromBoxedUtf8Unchecked(v: List<UByte>): String {
  * Internal; same as `fromBoxedUtf8Unchecked` but allocator-generic. Name
  * probably not suitable for being made `public` as-is.
  */
-internal fun <A : Allocator> fromBoxedUtf8UncheckedIn(v: List<UByte>): String {
+public fun <A : Allocator> fromBoxedUtf8UncheckedIn(v: List<UByte>): String {
     val (ptr, alloc) = Box.intoRawWithAllocator(v)
     // SAFETY: Upheld by caller.
     return Box.fromRawIn(mutPtrFromRustCast(ptr), alloc)

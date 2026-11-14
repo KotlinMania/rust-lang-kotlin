@@ -8,7 +8,6 @@ import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
-import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.test.term.Terminal
 import io.github.kotlinmania.rustlang.test.term.color.Color
 
@@ -17,7 +16,7 @@ import io.github.kotlinmania.rustlang.test.term.color.Color
 /**
  * A Terminal implementation that uses the Win32 Console API.
  */
-internal open class WinConsole<T>(
+public open class WinConsole<T>(
     public var buf: T,
     public var defForeground: Color,
     public var defBackground: Color,
@@ -40,17 +39,17 @@ internal open class WinConsole<T>(
         }
     }
 
-    public open fun write(buf: List<UByte>): Result<Int, Error> = this.buf.write(buf)
+    public open fun write(buf: List<UByte>): Result<Int> = this.buf.write(buf)
 
-    public open fun flush(): Result<Unit, Error> = this.buf.flush()
+    public open fun flush(): Result<Unit> = this.buf.flush()
 
-    public override fun fg(color: Color): Result<Boolean, Error> {
+    public override fun fg(color: Color): Result<Boolean> {
         this.foreground = color
         this.apply()
         return Result.Ok(true)
     }
 
-    public override fun reset(): Result<Boolean, Error> {
+    public override fun reset(): Result<Boolean> {
         this.foreground = this.defForeground
         this.background = this.defBackground
         this.apply()
@@ -98,7 +97,7 @@ internal open class WinConsole<T>(
                 }
             }
 
-        internal fun <T> new(out: T): WinConsole<T> {
+        public fun <T> new(out: T): WinConsole<T> {
             val fg: Any?
             val bg: Any?
             run {

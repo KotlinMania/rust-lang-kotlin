@@ -1,16 +1,16 @@
 // port-lint: source io/pipe.rs
 package io.github.kotlinmania.rustlang.std.io.pipe
 
-import io.github.kotlinmania.rustlang.alloc.io.read.Read
-import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
-import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
-import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
-import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.std.io.BorrowedCursor
+import io.github.kotlinmania.rustlang.std.io.IoSlice
+import io.github.kotlinmania.rustlang.std.io.IoSliceMut
+import io.github.kotlinmania.rustlang.std.io.Read
+import io.github.kotlinmania.rustlang.std.io.Write
 import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.sys.FromInner
 import io.github.kotlinmania.rustlang.std.sys.IntoInner
-import io.github.kotlinmania.rustlang.std.sys.pipe.unix.Pipe
+import io.github.kotlinmania.rustlang.std.sys.pipe.unix.pipe as imp
 
 /**
  * Creates an anonymous pipe.
@@ -71,10 +71,10 @@ import io.github.kotlinmania.rustlang.std.sys.pipe.unix.Pipe
  * pingWriter.writeAll("hello".encodeToByteArray()).getOrElse { return Result.failure(it) }
  * // `cat` exits when it reads EOF from stdin, but that can't happen while any ping writer
  * // remains open. We need to drop our ping writer, or readToString will deadlock below.
- * drop(pingWriter)
+ * (pingWriter).let { }
  * // The pong reader can't report EOF while any pong writer remains open. Our Command object is
  * // holding a pong writer, and again readToString will deadlock if we don't drop it.
- * drop(echoCommand)
+ * (echoCommand).let { }
  * var buf = ""
  * // Block until `cat` closes its stdout (a pong writer).
  * pongReader.readToString(buf).getOrElse { return Result.failure(it) }
@@ -85,21 +85,24 @@ import io.github.kotlinmania.rustlang.std.sys.pipe.unix.Pipe
  * [changes]: io#platform-specific-behavior
  * [man page]: https://man7.org/linux/man-pages/man7/pipe.7.html
  */
-public fun pipe(): Result<Pair<PipeReader, PipeWriter>, Error> = pipe().map({ (reader, writer) -> Pair(PipeReader(reader), PipeWriter(writer)) })
+public fun pipe(): Result<Pair<PipeReader, PipeWriter>, Error> = imp.pipe().map({ (reader, writer) -> Pair(PipeReader(reader), PipeWriter(writer)) })
 
 /**
  * Read end of an anonymous pipe.
  */
-public open class PipeReader(
-    internal var value: Pipe,
-) : FromInner<Pipe, PipeReader>, IntoInner<Pipe>, Read {
-    public var field0: Pipe
+public open class PipeReader internal constructor(
+    valueCtorArg: imp.Pipe,
+) : FromInner<imp.Pipe, PipeReader>, IntoInner<imp.Pipe>, Read {
+    public var value: imp.Pipe = valueCtorArg
+        internal set
+
+    public var field0: imp.Pipe
         get() = value
         set(v) {
             value = v
         }
 
-    public override fun intoInner(): Pipe = this.value
+    public override fun intoInner(): imp.Pipe = this.value
 
     /**
      * Creates a new [PipeReader] instance that shares the same underlying file description.
@@ -161,23 +164,32 @@ public open class PipeReader(
     public open fun readBufRead(buf: BorrowedCursor<UByte>): Result<Unit, Error> = this.value.readBuf(buf)
 
     public companion object {
-        public fun fromInner(inner: Pipe): PipeReader = PipeReader(inner)
+        public operator fun invoke(
+            value: imp.Pipe,
+        ): PipeReader = PipeReader(
+            valueCtorArg = value,
+        )
+
+        public fun fromInner(inner: imp.Pipe): PipeReader = PipeReader(inner)
     }
 }
 
 /**
  * Write end of an anonymous pipe.
  */
-public open class PipeWriter(
-    internal var value: Pipe,
-) : FromInner<Pipe, PipeWriter>, IntoInner<Pipe>, Write {
-    public var field0: Pipe
+public open class PipeWriter internal constructor(
+    valueCtorArg: imp.Pipe,
+) : FromInner<imp.Pipe, PipeWriter>, IntoInner<imp.Pipe>, Write {
+    public var value: imp.Pipe = valueCtorArg
+        internal set
+
+    public var field0: imp.Pipe
         get() = value
         set(v) {
             value = v
         }
 
-    public override fun intoInner(): Pipe = this.value
+    public override fun intoInner(): imp.Pipe = this.value
 
     /**
      * Creates a new [PipeWriter] instance that shares the same underlying file description.
@@ -216,6 +228,12 @@ public open class PipeWriter(
     public open fun isWriteVectoredWrite(): Boolean = this.value.isWriteVectored()
 
     public companion object {
-        public fun fromInner(inner: Pipe): PipeWriter = PipeWriter(inner)
+        public operator fun invoke(
+            value: imp.Pipe,
+        ): PipeWriter = PipeWriter(
+            valueCtorArg = value,
+        )
+
+        public fun fromInner(inner: imp.Pipe): PipeWriter = PipeWriter(inner)
     }
 }

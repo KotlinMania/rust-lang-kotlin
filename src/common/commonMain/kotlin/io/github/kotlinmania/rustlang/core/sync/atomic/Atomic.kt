@@ -585,7 +585,7 @@ public fun AtomicBool.Companion.new(v: Boolean): AtomicBool {
  * // since the reference to the atomic ended its scope in the block above
  * check((PrimitiveLayouts.BOOL).readNative((ptr).rawAddress) == true)
  * // Deallocate the value
- * drop(Holder.fromRaw(ptr))
+ * (Holder.fromRaw(ptr)).let { }
  * ```
  *
  * # Safety
@@ -1548,7 +1548,7 @@ public fun AtomicPtr.Companion.new(p: MutPtr): AtomicPtr {
  * // since the reference to the atomic ended its scope in the block above
  * check(!(((PrimitiveLayouts.mutPtrLayout(64L)).readNative((ptr).rawAddress)).rawAddress == 0L))
  * // Deallocate the value
- * drop(Holder.fromRaw(ptr))
+ * (Holder.fromRaw(ptr)).let { }
  * ```
  *
  * # Safety

@@ -1,25 +1,5 @@
 package io.github.kotlinmania.rustlang.std.sys.pal.unix
 
-import io.github.kotlinmania.libc.CInt
-import io.github.kotlinmania.libc.Poll
-import io.github.kotlinmania.libc.abort
-import io.github.kotlinmania.libc.dup
-import io.github.kotlinmania.libc.fcntl
-import io.github.kotlinmania.libc.fuchsia.EAGAIN
-import io.github.kotlinmania.libc.fuchsia.EBADF
-import io.github.kotlinmania.libc.fuchsia.EINTR
-import io.github.kotlinmania.libc.fuchsia.EINVAL
-import io.github.kotlinmania.libc.fuchsia.ENOMEM
-import io.github.kotlinmania.libc.fuchsia.ENOSYS
-import io.github.kotlinmania.libc.fuchsia.F_GETFD
-import io.github.kotlinmania.libc.fuchsia.NfdsT
-import io.github.kotlinmania.libc.fuchsia.O_RDWR
-import io.github.kotlinmania.libc.fuchsia.POLLNVAL
-import io.github.kotlinmania.libc.fuchsia.Pollfd
-import io.github.kotlinmania.libc.fuchsia.SIGPIPE
-import io.github.kotlinmania.libc.fuchsia.SIG_ERR
-import io.github.kotlinmania.libc.unix.bsd.netbsdlike.netbsd.open
-import io.github.kotlinmania.libc.unix.linuxlike.android.b64.x8664.signal
 import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
@@ -27,14 +7,32 @@ import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
+import io.github.kotlinmania.rustlang.libc.CInt
+import io.github.kotlinmania.rustlang.libc.Poll
+import io.github.kotlinmania.rustlang.libc.Signal
+import io.github.kotlinmania.rustlang.libc.abort
+import io.github.kotlinmania.rustlang.libc.dup
+import io.github.kotlinmania.rustlang.libc.fcntl
+import io.github.kotlinmania.rustlang.libc.open
+import io.github.kotlinmania.rustlang.libc.unix.Pollfd
+import io.github.kotlinmania.rustlang.libc.unix.SIG_DFL
+import io.github.kotlinmania.rustlang.libc.unix.SIG_ERR
+import io.github.kotlinmania.rustlang.libc.unix.SIG_IGN
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.SIGPIPE
+import io.github.kotlinmania.rustlang.libc.wasi.EAGAIN
+import io.github.kotlinmania.rustlang.libc.wasi.EBADF
+import io.github.kotlinmania.rustlang.libc.wasi.EINTR
+import io.github.kotlinmania.rustlang.libc.wasi.EINVAL
+import io.github.kotlinmania.rustlang.libc.wasi.ENOMEM
+import io.github.kotlinmania.rustlang.libc.wasi.ENOSYS
+import io.github.kotlinmania.rustlang.libc.wasi.F_GETFD
+import io.github.kotlinmania.rustlang.libc.wasi.NfdsT
+import io.github.kotlinmania.rustlang.libc.wasi.O_RDWR
+import io.github.kotlinmania.rustlang.libc.wasi.POLLNVAL
 import io.github.kotlinmania.rustlang.std.io.error.Error
-import io.github.kotlinmania.rustlang.std.sys.io.error.generic.errno
+import io.github.kotlinmania.rustlang.std.sys.io.Errno
 import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
 import io.github.kotlinmania.rustlang.std.sys.thread.unix.setName
-import io.github.kotlinmania.sigpipe.INHERIT
-import io.github.kotlinmania.sigpipe.SIG_DFL
-import io.github.kotlinmania.sigpipe.SIG_IGN
-import io.github.kotlinmania.sigpipe.default
 
 // SAFETY: must be called only once during runtime initialization.
 // NOTE: this is not guaranteed to run, for example when Rust code is called externally.
@@ -62,7 +60,7 @@ public fun init(argc: Int, argv: ConstPtr, sigpipe: UByte) {
             }
         // fast path with a single syscall for systems with poll()
         run {
-            val localStorageL92C12 = AddressableArrayLocal.fromList(null, ObjectSlotLayout<Pollfd>())
+            val localStorageL92C12 = AddressableArrayLocal.fromList(emptyList(), ObjectSlotLayout<Pollfd>())
             val pfds by localStorageL92C12
             pfds[0].fd = 0
             pfds[0].events = 0
@@ -71,7 +69,7 @@ public fun init(argc: Int, argv: ConstPtr, sigpipe: UByte) {
             pfds[2].fd = 2
             pfds[2].events = 0
             while (Poll(localStorageL92C12.elementMutPtr(0), ((pfds.size as Any?) as NfdsT), 0) == -1) {
-                when (errno()) {
+                when (Errno()) {
                     EINTR -> { continue }
                     ENOSYS -> {
                         // Not all configurations of Unikraft enable `LIBPOSIX_EVENT`.
@@ -96,7 +94,7 @@ public fun init(argc: Int, argv: ConstPtr, sigpipe: UByte) {
         // fallback in case poll isn't available or limited by RLIMIT_NOFILE
         run {
             for (fd in 0 until 3) {
-                if (fcntl(fd, F_GETFD) == -1 && errno() == EBADF) {
+                if (fcntl(fd, F_GETFD) == -1 && Errno() == EBADF) {
                     openDevnull()
                 }
             }
@@ -110,19 +108,19 @@ public fun init(argc: Int, argv: ConstPtr, sigpipe: UByte) {
             // constants from `compiler / rustcSession / src / config / sigpipe.rs`.
             // See the other file for docs. NOTE: Make sure to keep them in
             // sync!
-            public val DEFAULT: UByte = 0u
+            val DEFAULT: UByte = 0u
 
-            public val INHERIT: UByte = 1u
+            val INHERIT: UByte = 1u
 
-            public val SIG_IGN: UByte = 2u
+            val SIG_IGN: UByte = 2u
 
-            public val SIG_DFL: UByte = 3u
+            val SIG_DFL: UByte = 3u
             val (onBrokenPipeUsed, handler) =
                 when (sigpipe1) {
-                    default -> Pair(false, io.github.kotlinmania.libc.fuchsia.SIG_IGN)
-                    INHERIT -> Pair(true, null)
-                    SIG_IGN -> Pair(true, io.github.kotlinmania.libc.fuchsia.SIG_IGN)
-                    SIG_DFL -> Pair(true, io.github.kotlinmania.libc.fuchsia.SIG_DFL)
+                    default -> Pair(false, SIG_IGN)
+                    inherit -> Pair(true, null)
+                    sigIgn -> Pair(true, SIG_IGN)
+                    sigDfl -> Pair(true, SIG_DFL)
                     else -> error("unreachable")
                 }
             if (onBrokenPipeUsed) {
@@ -130,7 +128,7 @@ public fun init(argc: Int, argv: ConstPtr, sigpipe: UByte) {
             }
             if (handler != null) {
                 val handler1 = handler
-                if (!signal(SIGPIPE, handler1) != SIG_ERR) {
+                if (!Signal(SIGPIPE, handler1) != SIG_ERR) {
                     run {
                         when (val matchVal = panicOutput()) {
                             null -> {}
@@ -173,7 +171,7 @@ public fun init(argc: Int, argv: ConstPtr, sigpipe: UByte) {
     }
 }
 
-internal fun onBrokenPipeUsed(): Boolean = ON_BROKEN_PIPE_USED.load(Ordering.Relaxed)
+public fun onBrokenPipeUsed(): Boolean = ON_BROKEN_PIPE_USED.load(Ordering.Relaxed)
 
 // SAFETY: must be called only once during runtime cleanup.
 // NOTE: this is not guaranteed to run, for example when the program aborts, and
@@ -187,7 +185,7 @@ public fun cleanup() {}
  */
 public fun <T : IsMinusOne> cvt(t: T): Result<T, Error> =
     if (t.isMinusOne()) {
-        Result.Err(Error.lastOsError())
+        Result.Err(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
     } else {
         Result.Ok(t)
     }
@@ -221,7 +219,7 @@ public fun cvtNz(error: CInt): Result<Unit, Error> =
     if (error == 0) {
         Result.Ok(Unit)
     } else {
-        Result.Err(Error.fromRawOsError(error))
+        Result.Err(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(error))
     }
 
 // libc.abort() will run the SIGABRT handler.  That's fine because anyone who

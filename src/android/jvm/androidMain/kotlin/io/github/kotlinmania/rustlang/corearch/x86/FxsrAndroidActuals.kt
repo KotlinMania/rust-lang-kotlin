@@ -7,7 +7,7 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 
 private object X86FxsrJniBridge {
     init {
-        System.loadLibrary("corearch_jni")
+        System.loadLibrary("kmcore_jni")
     }
 
     @JvmStatic

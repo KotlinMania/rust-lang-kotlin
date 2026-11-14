@@ -4,11 +4,13 @@
 package io.github.kotlinmania.rustlang.core.slice.ascii
 
 import io.github.kotlinmania.rustlang.core.ascii.EscapeDefault
+import io.github.kotlinmania.rustlang.core.ascii.escapeDefault
 import io.github.kotlinmania.rustlang.core.char.isAscii
 import io.github.kotlinmania.rustlang.core.char.isAsciiWhitespace
 import io.github.kotlinmania.rustlang.core.intrinsics.alignOf
 import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
 import io.github.kotlinmania.rustlang.core.iter.adapters.filter.Filter
+import io.github.kotlinmania.rustlang.core.iter.adapters.flatten.FlatMap
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -16,7 +18,10 @@ import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mmLoaduSi128
 import io.github.kotlinmania.rustlang.core.mmMovemaskEpi8
 import io.github.kotlinmania.rustlang.core.mmOrSi128
-import io.github.kotlinmania.rustlang.core.ops.Try
+import io.github.kotlinmania.rustlang.core.ops.function.Fn
+import io.github.kotlinmania.rustlang.core.ops.function.FnMut
+import io.github.kotlinmania.rustlang.core.ops.function.FnOnce
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
@@ -402,9 +407,12 @@ public fun List<UByte>.splitAsciiWhitespace(): SplitAsciiWhitespace {
  * [splitAsciiWhitespace]: slice.splitAsciiWhitespace
  * [byteslice]: prim@slice
  */
-public open class SplitAsciiWhitespace(
-    internal var inner: Filter<Split<UByte, IsAsciiWhitespace>, BytesIsNotEmpty>,
+public open class SplitAsciiWhitespace internal constructor(
+    innerCtorArg: Filter<Split<UByte, IsAsciiWhitespace>, BytesIsNotEmpty>,
 ) : Iterable<List<UByte>> {
+    public var inner: Filter<Split<UByte, IsAsciiWhitespace>, BytesIsNotEmpty> = innerCtorArg
+        internal set
+
     override fun iterator(): Iterator<List<UByte>> = object : AbstractIterator<List<UByte>>() {
         override fun computeNext() {
             when (val v = this@SplitAsciiWhitespace.next()) {
@@ -450,6 +458,14 @@ public open class SplitAsciiWhitespace(
             return null
         }
         return this.inner.iter.v
+    }
+
+    public companion object {
+        public operator fun invoke(
+            inner: Filter<Split<UByte, IsAsciiWhitespace>, BytesIsNotEmpty>,
+        ): SplitAsciiWhitespace = SplitAsciiWhitespace(
+            innerCtorArg = inner,
+        )
     }
 }
 

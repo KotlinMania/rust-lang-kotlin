@@ -46,7 +46,7 @@ import io.github.kotlinmania.rustlang.std.thread.functions.yieldNow
 /**
  * Pads and aligns a value to the length of a cache line.
  */
-internal open class CachePadded<T>(
+public open class CachePadded<T>(
     public var value: T,
 ) {
     public open fun clone(): CachePadded<T> = CachePadded(value)
@@ -79,7 +79,7 @@ internal open class CachePadded<T>(
         /**
          * Pads and aligns a value to the length of a cache line.
          */
-        internal fun <T> new(value: T): CachePadded<T> = CachePadded(value = value)
+        public fun <T> new(value: T): CachePadded<T> = CachePadded(value = value)
     }
 }
 
@@ -88,16 +88,19 @@ public val SPIN_LIMIT: UInt = 6u
 /**
  * Performs quadratic backoff in spin loops.
  */
-internal open class Backoff(
-    public var step: Cell<UInt>,
+public open class Backoff internal constructor(
+    stepCtorArg: Cell<UInt>,
 ) {
+    public var step: Cell<UInt> = stepCtorArg
+        internal set
+
     /**
      * Backs off using lightweight spinning.
      *
      * This method should be used for retrying an operation because another thread made
      * progress. i.e. on CAS failure.
      */
-    internal open fun spinLight() {
+    public open fun spinLight() {
         val step = this.step.get().min(SPIN_LIMIT)
         for (unused in 0 until step.pow(2)) {
             kmSpinLoopHint()
@@ -110,7 +113,7 @@ internal open class Backoff(
      *
      * This method should be used in blocking loops where parking the thread is not an option.
      */
-    internal open fun spinHeavy() {
+    public open fun spinHeavy() {
         if (this.step.get() <= SPIN_LIMIT) {
             for (unused in 0 until this.step.get().pow(2)) {
                 kmSpinLoopHint()
@@ -122,9 +125,15 @@ internal open class Backoff(
     }
 
     public companion object {
+        public operator fun invoke(
+            step: Cell<UInt>,
+        ): Backoff = Backoff(
+            stepCtorArg = step,
+        )
+
         /**
          * Creates a new `Backoff`.
          */
-        internal fun new(): Backoff = Backoff(step = Cell.new(0))
+        public fun new(): Backoff = Backoff(step = Cell.new(0))
     }
 }

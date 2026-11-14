@@ -50,7 +50,7 @@ public open class DecimalSeq(
     /**
      * Append a digit to the buffer if it fits.
      */
-    internal open fun tryAddDigit(digit: UByte) {
+    public open fun tryAddDigit(digit: UByte) {
         if (this.numDigits < DecimalSeq.MAX_DIGITS) {
             this.digits[this.numDigits] = digit
         }
@@ -71,7 +71,7 @@ public open class DecimalSeq(
         }
     }
 
-    internal open fun round(): ULong {
+    public open fun round(): ULong {
         if (this.numDigits == 0 || this.decimalPoint < 0) {
             return 0uL
         } else if (this.decimalPoint >= DecimalSeq.MAX_DIGITS_WITHOUT_OVERFLOW.toInt()) {
@@ -101,7 +101,7 @@ public open class DecimalSeq(
     /**
      * Computes decimal * 2^shift.
      */
-    internal open fun leftShift(shift: Int) {
+    public open fun leftShift(shift: Int) {
         if (this.numDigits == 0) {
             return
         }
@@ -144,7 +144,7 @@ public open class DecimalSeq(
     /**
      * Computes decimal * 2^-shift.
      */
-    internal open fun rightShift(shift: Int) {
+    public open fun rightShift(shift: Int) {
         var readIndex = 0
         var writeIndex = 0
         var n = 0uL
@@ -258,9 +258,9 @@ public open class DecimalSeq(
         /**
          * The max decimal digits that can be exactly represented in a 64-bit integer.
          */
-        internal val MAX_DIGITS_WITHOUT_OVERFLOW: Int = 19
+        public val MAX_DIGITS_WITHOUT_OVERFLOW: Int = 19
 
-        internal val DECIMAL_POINT_RANGE: Int = 2047
+        public val DECIMAL_POINT_RANGE: Int = 2047
     }
 }
 

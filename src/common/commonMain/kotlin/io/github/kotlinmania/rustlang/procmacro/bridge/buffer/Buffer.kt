@@ -8,7 +8,6 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.core.slice.rawSliceList
 
 // Buffer management for same-process client<->server communication.
 
@@ -30,19 +29,19 @@ public open class Buffer internal constructor(
     public var data: MutPtr = dataCtorArg
         internal set
 
-    public open fun deref(): List<UByte> = rawSliceList((this.data).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, this.len.toInt(), PrimitiveLayouts.U8)
+    public open fun deref(): List<UByte> = Slice.fromRawParts((this.data).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, this.len)
 
-    internal open fun clear() {
+    public open fun clear() {
         this.len = 0
     }
 
-    internal open fun take(): Buffer = take(this)
+    public open fun take(): Buffer = io.github.kotlinmania.rustlang.core.mem.take(this)
 
     // We have the array method separate from extending from a slice. This is
     // because in the case of small arrays, codegen can be more efficient
     // (avoiding a memmove call). With extendFromSlice, LLVM at least
     // currently is not able to make that optimization.
-    internal open fun extendFromArray(xs: UByteArray, n: Int) {
+    public open fun extendFromArray(xs: UByteArray, n: Int) {
         if (xs.size > (this.capacity - this.len)) {
             val b = this.also { this = null }
             this = (b.reserve)(b, xs.size)
@@ -53,7 +52,7 @@ public open class Buffer internal constructor(
         }
     }
 
-    internal open fun extendFromSlice(xs: List<UByte>) {
+    public open fun extendFromSlice(xs: List<UByte>) {
         if (xs.size > (this.capacity - this.len)) {
             val b = this.also { this = null }
             this = (b.reserve)(b, xs.size)
@@ -64,7 +63,7 @@ public open class Buffer internal constructor(
         }
     }
 
-    internal open fun push(v: UByte) {
+    public open fun push(v: UByte) {
         // The code here is taken from Vec.push, and we know that reserve()
         // will panic if we're exceeding isize.Max bytes and so there's no need
         // to check for overflow.
@@ -100,7 +99,7 @@ public open class Buffer internal constructor(
 
         public fun default(): Buffer = Buffer.from(mutableListOf())
 
-        internal fun new(): Buffer = Buffer.default()
+        public fun new(): Buffer = Buffer.default()
 
         public fun from(v: List<UByte>): Buffer {
             // This utility function is nested in here because it can *only*
@@ -116,7 +115,7 @@ public open class Buffer internal constructor(
                 return Buffer.from(v1)
             }
             fun drop(b: Buffer) {
-                drop(toVec(b))
+                io.github.kotlinmania.rustlang.core.mem.drop(toVec(b))
             }
             val (data, len, capacity) = v.intoRawParts()
             return Buffer(data = data, len = len, capacity = capacity, reserve = ::reserve, drop = ::drop)

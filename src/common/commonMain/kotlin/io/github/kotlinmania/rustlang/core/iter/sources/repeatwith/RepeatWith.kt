@@ -1,9 +1,10 @@
 // port-lint: source iter/sources/repeat_with.rs
 package io.github.kotlinmania.rustlang.core.iter.sources.repeatwith
 
-import io.github.kotlinmania.rustlang.core.iter.TrustedLen
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
 
 public class DebugStruct(

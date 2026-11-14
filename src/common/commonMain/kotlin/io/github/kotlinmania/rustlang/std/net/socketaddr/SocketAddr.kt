@@ -2,12 +2,15 @@
 package io.github.kotlinmania.rustlang.std.net.socketaddr
 
 import io.github.kotlinmania.rustlang.core.net.ipaddr.IpAddr
+import io.github.kotlinmania.rustlang.core.net.ipaddr.Ipv4Addr
+import io.github.kotlinmania.rustlang.core.net.ipaddr.Ipv6Addr
 import io.github.kotlinmania.rustlang.core.net.socketaddr.SocketAddr
 import io.github.kotlinmania.rustlang.core.net.socketaddr.SocketAddrV4
 import io.github.kotlinmania.rustlang.core.net.socketaddr.SocketAddrV6
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.sys.net.connection.lookupHostString
+import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.lookupHost
 
 /**
  * A trait for objects which can be converted or resolved to one or more
@@ -146,6 +149,31 @@ public fun Pair<IpAddr, UShort>.toSocketAddrs(): Result<ArrayDeque<SocketAddr>, 
             Pair(a1, port).toSocketAddrs()
         }
     }
+}
+
+public fun Pair<Ipv4Addr, UShort>.toSocketAddrsFromIpv4AddrUShort(): Result<ArrayDeque<SocketAddr>, Error> {
+    val (ip, port) = this
+    return SocketAddrV4.new(ip, port).toSocketAddrs()
+}
+
+public fun Pair<Ipv6Addr, UShort>.toSocketAddrsFromIpv6AddrUShort(): Result<ArrayDeque<SocketAddr>, Error> {
+    val (ip, port) = this
+    return SocketAddrV6.new(ip, port, 0, 0).toSocketAddrs()
+}
+
+public fun Pair<String, UShort>.toSocketAddrsFromStringUShort(): Result<ArrayDeque<SocketAddr>, Error> {
+    val (host, port) = this
+    // Try to parse the host as a regular IP address first
+    when (val matchVal = host.parse<IpAddr>()) {
+        is Ok -> {
+            val addr = matchVal.value
+            val addr1 = SocketAddr.new(addr, port)
+            return Result.Ok(mutableListOf(addr1).intoIter())
+        }
+        else -> {}
+    }
+    // Otherwise, make the system look it up.
+    return lookupHost(host, port).map({ addrs -> Vec.fromIter(addrs).intoIter() })
 }
 
 // accepts strings like localhost:12345'

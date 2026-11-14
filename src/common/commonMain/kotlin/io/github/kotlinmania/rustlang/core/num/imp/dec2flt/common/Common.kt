@@ -11,7 +11,7 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 /**
  * Helper methods to process immutable bytes.
  */
-internal interface ByteSlice<T> {
+public interface ByteSlice<T> {
     /**
      * Reads 8 bytes as a 64-bit integer in little-endian order.
      */
@@ -73,7 +73,7 @@ public fun List<UByte>.parseDigits(func: (UByte) -> Unit): List<UByte> {
  *
  * This does not care about the order in which the bytes were loaded.
  */
-internal fun is8digits(v: ULong): Boolean {
+public fun is8digits(v: ULong): Boolean {
     val a = (v + 0x4646464646464646uL)
     val b = (v - 0x3030303030303030uL)
     return (a or b) and 0x8080808080808080uL == 0uL

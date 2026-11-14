@@ -69,7 +69,7 @@ public fun <K, V, A : AllocatorClone> NodeRef<Mut, K, V, LeafOrInternal>.fixNode
  * This method does not expect ancestors to already be underfull upon entry
  * and panics if it encounters an empty ancestor.
  */
-internal fun <K, V, A : AllocatorClone> NodeRef<Mut, K, V, LeafOrInternal>.fixNodeAndAffectedAncestors(alloc: A): Boolean {
+public fun <K, V, A : AllocatorClone> NodeRef<Mut, K, V, LeafOrInternal>.fixNodeAndAffectedAncestors(alloc: A): Boolean {
     while (true) {
         run {
             val matchVal = this.fixNodeThroughParent(alloc.clone())
@@ -88,7 +88,7 @@ internal fun <K, V, A : AllocatorClone> NodeRef<Mut, K, V, LeafOrInternal>.fixNo
 /**
  * Removes empty levels on the top, but keeps an empty leaf if the entire tree is empty.
  */
-internal fun <K, V, A : AllocatorClone> Root<K, V>.fixTop(alloc: A) {
+public fun <K, V, A : AllocatorClone> Root<K, V>.fixTop(alloc: A) {
     while (this.height() > 0 && this.len() == 0) {
         this.popInternalLevel(alloc.clone())
     }
@@ -99,7 +99,7 @@ internal fun <K, V, A : AllocatorClone> Root<K, V>.fixTop(alloc: A) {
  * tree. The other nodes, those that are not the root nor a rightmost edge,
  * must already have at least MIN_LEN elements.
  */
-internal fun <K, V, A : AllocatorClone> Root<K, V>.fixRightBorder(alloc: A) {
+public fun <K, V, A : AllocatorClone> Root<K, V>.fixRightBorder(alloc: A) {
     this.fixTop(alloc.clone())
     if (this.len() > 0) {
         this.borrowMut().lastKv().fixRightBorderOfRightEdge(alloc.clone())
@@ -110,7 +110,7 @@ internal fun <K, V, A : AllocatorClone> Root<K, V>.fixRightBorder(alloc: A) {
 /**
  * The symmetric clone of `fixRightBorder`.
  */
-internal fun <K, V, A : AllocatorClone> Root<K, V>.fixLeftBorder(alloc: A) {
+public fun <K, V, A : AllocatorClone> Root<K, V>.fixLeftBorder(alloc: A) {
     this.fixTop(alloc.clone())
     if (this.len() > 0) {
         this.borrowMut().firstKv().fixLeftBorderOfLeftEdge(alloc.clone())
@@ -123,7 +123,7 @@ internal fun <K, V, A : AllocatorClone> Root<K, V>.fixLeftBorder(alloc: A) {
  * The other nodes, those that are neither the root nor a rightmost edge,
  * must be prepared to have up to MIN_LEN elements stolen.
  */
-internal fun <K, V> Root<K, V>.fixRightBorderOfPlentiful() {
+public fun <K, V> Root<K, V>.fixRightBorderOfPlentiful() {
     var curNode = this.borrowMut()
     while (true) {
         val matchVal = curNode.force()

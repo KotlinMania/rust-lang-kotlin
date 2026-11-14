@@ -161,7 +161,7 @@ public fun parseDriveExact(path: OsStr): UByte? {
 //
 // Returns the next component and the rest of the path excluding the component and separator.
 // Does not recognize `/` as a separator character on Windows if `verbatim` is true.
-internal fun parseNextComponent(path: OsStr, verbatim: Boolean): Pair<OsStr, OsStr> {
+public fun parseNextComponent(path: OsStr, verbatim: Boolean): Pair<OsStr, OsStr> {
     val separator =
         if (verbatim) {
             isVerbatimSep

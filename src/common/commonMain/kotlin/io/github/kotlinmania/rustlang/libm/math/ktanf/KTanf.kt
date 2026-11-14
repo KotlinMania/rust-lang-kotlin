@@ -14,7 +14,7 @@ package io.github.kotlinmania.rustlang.libm.math.ktanf
 // |tan(x)/x - t(x)| < 2**-25.5 (~[-2e-08, 2e-08]).
 public val T: DoubleArray = doubleArrayOf(0.333331395030791399758, 0.133392002712976742718, 0.0533812378445670393523, 0.0245283181166547278873, 0.00297435743359967304927, 0.00946564784943673166728)
 
-internal fun kTanf(x: Double, odd: Boolean): kotlin.Float {
+public fun kTanf(x: Double, odd: Boolean): kotlin.Float {
     val z = x * x
     //
     // Split up the polynomial into small independent terms to give

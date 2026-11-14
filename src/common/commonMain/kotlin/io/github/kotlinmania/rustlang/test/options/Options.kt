@@ -9,7 +9,7 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 /**
  * Number of times to run a benchmarked function
  */
-internal sealed class BenchMode {
+public sealed class BenchMode {
     public data object Auto : BenchMode()
     public data object Single : BenchMode()
 

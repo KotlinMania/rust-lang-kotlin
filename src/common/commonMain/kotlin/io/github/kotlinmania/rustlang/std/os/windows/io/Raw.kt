@@ -18,11 +18,6 @@ import io.github.kotlinmania.rustlang.std.net.udp.UdpSocket
 import io.github.kotlinmania.rustlang.std.os.windows.raw.Handle
 import io.github.kotlinmania.rustlang.std.os.windows.raw.Socket
 import io.github.kotlinmania.rustlang.std.sys.FromInner
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.INVALID_HANDLE_VALUE
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.STD_ERROR_HANDLE
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.STD_INPUT_HANDLE
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.STD_OUTPUT_HANDLE
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.getStdHandle
 
 // Windows-specific extensions to general I/O primitives.
 
@@ -116,28 +111,28 @@ public interface IntoRawHandle {
 
 public fun File.asRawHandle(): RawHandle = ((this.asInner().asRawHandle() as Any?) as RawHandle)
 
-public fun Stdin.asRawHandle(): RawHandle = stdioHandle(MutPtr(getStdHandle(STD_INPUT_HANDLE).rawAddress))
+public fun Stdin.asRawHandle(): RawHandle = stdioHandle(MutPtr(C.GetStdHandle(C.STD_INPUT_HANDLE).rawAddress))
 
-public fun Stdout.asRawHandle(): RawHandle = stdioHandle(MutPtr(getStdHandle(STD_OUTPUT_HANDLE).rawAddress))
+public fun Stdout.asRawHandle(): RawHandle = stdioHandle(MutPtr(C.GetStdHandle(C.STD_OUTPUT_HANDLE).rawAddress))
 
-public fun Stderr.asRawHandle(): RawHandle = stdioHandle(MutPtr(getStdHandle(STD_ERROR_HANDLE).rawAddress))
+public fun Stderr.asRawHandle(): RawHandle = stdioHandle(MutPtr(C.GetStdHandle(C.STD_ERROR_HANDLE).rawAddress))
 
-public fun StdinLock.asRawHandle(): RawHandle = stdioHandle(MutPtr(getStdHandle(STD_INPUT_HANDLE).rawAddress))
+public fun StdinLock.asRawHandle(): RawHandle = stdioHandle(MutPtr(C.GetStdHandle(C.STD_INPUT_HANDLE).rawAddress))
 
-public fun StdoutLock.asRawHandle(): RawHandle = stdioHandle(MutPtr(getStdHandle(STD_OUTPUT_HANDLE).rawAddress))
+public fun StdoutLock.asRawHandle(): RawHandle = stdioHandle(MutPtr(C.GetStdHandle(C.STD_OUTPUT_HANDLE).rawAddress))
 
-public fun StderrLock.asRawHandle(): RawHandle = stdioHandle(MutPtr(getStdHandle(STD_ERROR_HANDLE).rawAddress))
+public fun StderrLock.asRawHandle(): RawHandle = stdioHandle(MutPtr(C.GetStdHandle(C.STD_ERROR_HANDLE).rawAddress))
 
 // Translate a handle returned from `GetStdHandle` into a handle to return to
 // the user.
-internal fun stdioHandle(raw: RawHandle): RawHandle {
+public fun stdioHandle(raw: RawHandle): RawHandle {
     // `GetStdHandle` isn't expected to actually fail, so when it returns
     // `INVALID_HANDLE_VALUE`, it means we were launched from a parent which
     // didn't provide us with stdio handles, such as a parent with a detached
     // console. In that case, return null to the user, which is consistent
     // with what they'd get in the parent, and which avoids the problem that
     // `INVALID_HANDLE_VALUE` aliases the current process handle.
-    return if (raw == INVALID_HANDLE_VALUE) {
+    return if (raw == C.INVALID_HANDLE_VALUE) {
         MutPtr(0L)
     } else {
         raw

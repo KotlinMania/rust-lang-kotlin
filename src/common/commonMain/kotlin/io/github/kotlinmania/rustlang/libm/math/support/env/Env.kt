@@ -4,7 +4,6 @@ package io.github.kotlinmania.rustlang.libm.math.support.env
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
-import io.github.kotlinmania.rustlang.libm.math.ktan.T
 
 // Support for rounding directions and status flags as specified by IEEE 754.
 //
@@ -134,7 +133,7 @@ public open class Status(
         }
     }
 
-    internal open fun with(rhs: Status): Status = Status(this.value or rhs.value)
+    public open fun with(rhs: Status): Status = Status(this.value or rhs.value)
 
     public open fun fmt(f: StringBuilder) {
         // shift -> flag map

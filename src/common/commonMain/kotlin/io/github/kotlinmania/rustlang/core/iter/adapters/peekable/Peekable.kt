@@ -1,9 +1,10 @@
 // port-lint: source iter/adapters/peekable.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.peekable
 
-import io.github.kotlinmania.rustlang.core.iter.TrustedLen
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
 
 public typealias Source<I> = I.Source
@@ -482,6 +483,6 @@ public open class Peekable<I>(
     }
 
     public companion object {
-        internal fun <Item, I> new(iter: I): Peekable<I> = Peekable(iter = iter, peeked = null)
+        public fun <Item, I> new(iter: I): Peekable<I> = Peekable(iter = iter, peeked = null)
     }
 }

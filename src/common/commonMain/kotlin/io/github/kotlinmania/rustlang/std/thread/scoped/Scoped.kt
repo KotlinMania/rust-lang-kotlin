@@ -179,12 +179,18 @@ public open class ScopedJoinHandle<T>(
     }
 }
 
-internal open class ScopeData(
-    public var numRunningThreads: Atomic<Int>,
-    public var aThreadPanicked: Atomic<Boolean>,
+public open class ScopeData internal constructor(
+    numRunningThreadsCtorArg: Atomic<Int>,
+    aThreadPanickedCtorArg: Atomic<Boolean>,
     public var mainThread: Thread,
 ) {
-    internal open fun incrementNumRunningThreads() {
+    public var numRunningThreads: Atomic<Int> = numRunningThreadsCtorArg
+        internal set
+
+    public var aThreadPanicked: Atomic<Boolean> = aThreadPanickedCtorArg
+        internal set
+
+    public open fun incrementNumRunningThreads() {
         // We check for 'overflow' with usize.Max / 2, to make sure there's no
         // chance it overflows to 0, which would result in unsoundness.
         if (this.numRunningThreads.fetchAdd(1, Ordering.Relaxed) > Int.MAX_VALUE / 2) {
@@ -198,13 +204,25 @@ internal open class ScopeData(
         error("too many running threads in thread scope")
     }
 
-    internal open fun decrementNumRunningThreads(panic: Boolean) {
+    public open fun decrementNumRunningThreads(panic: Boolean) {
         if (panic) {
             this.aThreadPanicked.store(true, Ordering.Relaxed)
         }
         if (this.numRunningThreads.fetchSub(1, Ordering.Release) == 1) {
             this.mainThread.unpark()
         }
+    }
+
+    public companion object {
+        public operator fun invoke(
+            numRunningThreads: Atomic<Int>,
+            aThreadPanicked: Atomic<Boolean>,
+            mainThread: Thread,
+        ): ScopeData = ScopeData(
+            numRunningThreadsCtorArg = numRunningThreads,
+            aThreadPanickedCtorArg = aThreadPanicked,
+            mainThread = mainThread,
+        )
     }
 }
 

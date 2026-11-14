@@ -4,7 +4,7 @@ package io.github.kotlinmania.rustlang.procmacro.escape
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 
-internal open class EscapeOptions(
+public open class EscapeOptions(
     /**
      * Produce \'.
      */
@@ -52,7 +52,7 @@ internal open class EscapeOptions(
     }
 }
 
-internal fun escapeBytes(bytes: List<UByte>, opt: EscapeOptions): String {
+public fun escapeBytes(bytes: List<UByte>, opt: EscapeOptions): String {
     val repr = ""
     if (opt.escapeNonascii) {
         for (byte in bytes) {

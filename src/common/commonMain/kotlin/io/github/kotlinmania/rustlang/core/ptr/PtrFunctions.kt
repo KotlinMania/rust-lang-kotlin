@@ -2,7 +2,9 @@
 
 package io.github.kotlinmania.rustlang.core.ptr
 
-import io.github.kotlinmania.rustlang.core.fmt.Formatter
+import io.github.kotlinmania.rustlang.core.cmp.Eq
+import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.fmt.pointerFmtInner
 import io.github.kotlinmania.rustlang.core.intrinsics.assume
 import io.github.kotlinmania.rustlang.core.intrinsics.cttzNonzero
 import io.github.kotlinmania.rustlang.core.intrinsics.exactDiv
@@ -24,11 +26,12 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
+import io.github.kotlinmania.rustlang.core.mem.sizeOfValRaw
+import io.github.kotlinmania.rustlang.core.mem.transmuteNeo
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
-import io.github.kotlinmania.rustlang.core.mem.typeinfo.FnPtr
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.core.ops.function.FnPtr
 import io.github.kotlinmania.rustlang.core.option.Option
-import io.github.kotlinmania.rustlang.core.panicking.AssertKind
 import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.ptr.metadata.fromRawParts
 import io.github.kotlinmania.rustlang.core.ptr.metadata.fromRawPartsMut
@@ -38,8 +41,6 @@ import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.rawMutSliceList
 import io.github.kotlinmania.rustlang.core.slice.rawSliceList
-import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
-import io.github.kotlinmania.rustlang.core.ubchecks.assertUnsafePrecondition
 import io.github.kotlinmania.rustlang.core.ubchecks.checkLanguageUb
 
 // Some functions are defined here because they accidentally got made
@@ -128,7 +129,7 @@ import io.github.kotlinmania.rustlang.core.ubchecks.checkLanguageUb
  * [Vec.append]: ../../std/vec/struct.Vec.html#method.append
  */
 public fun <T> copyNonoverlapping(src: ConstPtr, dst: MutPtr, count: Int, typeLayoutT: TypeLayout<T>) {
-    assertUnsafePrecondition(checkLanguageUb, "ptr::copy_nonoverlapping requires that both pointer arguments are aligned and non-null and the specified memory ranges do not overlap", src, src, dst, dst, size, sizeOf, T, align, alignOf, T, count, count, zeroSize, count, 0, size, 0, ubChecks, maybeIsAlignedAndNotNull, src, align, zeroSize, ubChecks, maybeIsAlignedAndNotNull, dst, align, zeroSize, ubChecks, maybeIsNonoverlapping, src, dst, size, count)
+    ubChecks.assertUnsafePrecondition(checkLanguageUb, "ptr::copy_nonoverlapping requires that both pointer arguments are aligned and non-null and the specified memory ranges do not overlap", src, src, dst, dst, size, sizeOf, T, align, alignOf, T, count, count, zeroSize, count, 0, size, 0, ubChecks, maybeIsAlignedAndNotNull, src, align, zeroSize, ubChecks, maybeIsAlignedAndNotNull, dst, align, zeroSize, ubChecks, maybeIsNonoverlapping, src, dst, size, count)
     // SAFETY: the safety contract for `copyNonoverlapping` must be
     // upheld by the caller.
     kmCopyNonoverlapping(dst.rawAddress, src.rawAddress, (count).toLong() * (typeLayoutT).sizeBytes)
@@ -209,7 +210,7 @@ public fun <T> copyNonoverlapping(src: ConstPtr, dst: MutPtr, count: Int, typeLa
 public fun <T> copy(src: ConstPtr, dst: MutPtr, count: Int, typeLayoutT: TypeLayout<T>) {
     // SAFETY: the safety contract for `copy` must be upheld by the caller.
     run {
-        assertUnsafePrecondition(checkLanguageUb, "ptr::copy requires that both pointer arguments are aligned and non-null", src, src, dst, dst, align, alignOf, T, zeroSize, T, IS_ZST, count, 0, ubChecks, maybeIsAlignedAndNotNull, src, align, zeroSize, ubChecks, maybeIsAlignedAndNotNull, dst, align, zeroSize)
+        ubChecks.assertUnsafePrecondition(checkLanguageUb, "ptr::copy requires that both pointer arguments are aligned and non-null", src, src, dst, dst, align, alignOf, T, zeroSize, T, IS_ZST, count, 0, ubChecks, maybeIsAlignedAndNotNull, src, align, zeroSize, ubChecks, maybeIsAlignedAndNotNull, dst, align, zeroSize)
         kmCopy(dst.rawAddress, src.rawAddress, (count).toLong() * (typeLayoutT).sizeBytes)
     }
 }
@@ -276,7 +277,7 @@ public fun <T> copy(src: ConstPtr, dst: MutPtr, count: Int, typeLayoutT: TypeLay
 public fun <T> writeBytes(dst: MutPtr, value: UByte, count: Int, typeLayoutT: TypeLayout<T>) {
     // SAFETY: the safety contract for `writeBytes` must be upheld by the caller.
     run {
-        assertUnsafePrecondition(checkLanguageUb, "ptr::write_bytes requires that the destination pointer is aligned and non-null", addr, dst, align, alignOf, T, zeroSize, T, IS_ZST, count, 0, ubChecks, maybeIsAlignedAndNotNull, addr, align, zeroSize)
+        ubChecks.assertUnsafePrecondition(checkLanguageUb, "ptr::write_bytes requires that the destination pointer is aligned and non-null", addr, dst, align, alignOf, T, zeroSize, T, IS_ZST, count, 0, ubChecks, maybeIsAlignedAndNotNull, addr, align, zeroSize)
         kmWriteBytes(dst.rawAddress, (value).toUByte(), (count).toLong() * (typeLayoutT).sizeBytes)
     }
 }
@@ -377,7 +378,7 @@ public fun <T> dropInPlace(toDrop: MutPtr, typeLayoutT: TypeLayout<T>) {
 /**
  * Helper function for `dropInPlace`. The compiler replaces this by the actual drop glue.
  */
-internal fun <T> dropGlue(arg0: T) {
+public fun <T> dropGlue(arg0: T) {
     // Code here does not matter - this is replaced by the
     // real drop glue by the compiler.
 }
@@ -874,7 +875,7 @@ public fun <T> swap(x: MutPtr, y: MutPtr, typeLayoutT: TypeLayout<T>) {
  * ```
  */
 public fun <T> swapNonoverlapping(x: MutPtr, y: MutPtr, count: Int) {
-    assertUnsafePrecondition(checkLibraryUb, "ptr::swap_nonoverlapping requires that both pointer arguments are aligned and non-null and the specified memory ranges do not overlap", x, x, y, y, size, sizeOf, T, align, alignOf, T, count, count, zeroSize, size, 0, count, 0, ubChecks, maybeIsAlignedAndNotNull, x, align, zeroSize, ubChecks, maybeIsAlignedAndNotNull, y, align, zeroSize, ubChecks, maybeIsNonoverlapping, x, y, size, count)
+    ubChecks.assertUnsafePrecondition(checkLibraryUb, "ptr::swap_nonoverlapping requires that both pointer arguments are aligned and non-null and the specified memory ranges do not overlap", x, x, y, y, size, sizeOf, T, align, alignOf, T, count, count, zeroSize, size, 0, count, 0, ubChecks, maybeIsAlignedAndNotNull, x, align, zeroSize, ubChecks, maybeIsAlignedAndNotNull, y, align, zeroSize, ubChecks, maybeIsNonoverlapping, x, y, size, count)
     run {
         val slice = sliceFromRawPartsMut(x, count)
         val bytes = sizeOfValRaw<List<T>>(slice)
@@ -958,7 +959,7 @@ public fun swapNonoverlappingBytes(x: MutPtr, y: MutPtr, bytes: NonZero<Int>) {
                     val leftVal = matchVal.first
                     val rightVal = matchVal.second
                     if (!(leftVal == rightVal)) {
-                        val kind = AssertKind.Eq
+                        val kind = Eq
                         assertFailed(kind, leftVal, rightVal, Option.None)
                     }
                 }
@@ -1033,14 +1034,14 @@ public fun <T> replace(dst: MutPtr, src: T, typeLayoutT: TypeLayout<T>): T {
     // and cannot overlap `src` since `dst` must point to a distinct
     // allocation. We are excluding null (with a ZST check) before creating a reference.
     return run {
-        assertUnsafePrecondition(checkLanguageUb, "ptr::replace requires that the pointer argument is aligned and non-null", addr, dst, align, alignOf, T, isZst, T, IS_ZST, ubChecks, maybeIsAlignedAndNotNull, addr, align, isZst)
+        ubChecks.assertUnsafePrecondition(checkLanguageUb, "ptr::replace requires that the pointer argument is aligned and non-null", addr, dst, align, alignOf, T, isZst, T, IS_ZST, ubChecks, maybeIsAlignedAndNotNull, addr, align, isZst)
         if (T.IS_ZST) {
             // If `T` is a ZST, `dst` is allowed to be null. However, we also don't have to actually
             // do anything since there isn't actually any data to be copied anyway. All values of
             // type `T` are bit-identical, so we can just return `src` here.
             return src
         }
-        replace(RustMutableReference(MutPtr((dst).rawAddress), typeLayoutT), src)
+        io.github.kotlinmania.rustlang.core.mem.replace(RustMutableReference(MutPtr((dst).rawAddress), typeLayoutT), src)
     }
 }
 
@@ -1082,6 +1083,9 @@ public fun <T> replace(dst: MutPtr, src: T, typeLayoutT: TypeLayout<T>): T {
  * Manually implement [mem.swap]:
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
+ * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+ * import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
  * import std.ptr
  *
  * fun <T> swap(a: T, b: T) {
@@ -1103,9 +1107,11 @@ public fun <T> replace(dst: MutPtr, src: T, typeLayoutT: TypeLayout<T>): T {
  *         // so nothing is dropped implicitly here.
  *     }
  * }
- * var foo = "foo".toOwned()
- * var bar = "bar".toOwned()
- * swap(foo, bar)
+ * val localStorageL30C0 = AddressableLocal("foo".toOwned(), ObjectSlotLayout<Any?>())
+ * var foo by localStorageL30C0
+ * val localStorageL31C0 = AddressableLocal("bar".toOwned(), ObjectSlotLayout<Any?>())
+ * var bar by localStorageL31C0
+ * swap(RustMutableReference(localStorageL30C0.asMutPtr(), localStorageL30C0.layout), RustMutableReference(localStorageL31C0.asMutPtr(), localStorageL31C0.layout))
  * check(foo == "bar")
  * check(bar == "foo")
  * ```
@@ -1170,7 +1176,7 @@ public fun <T> read(src: ConstPtr, typeLayoutT: TypeLayout<T>): T {
     // to the previous implementation, rather than using an intrinsic.
     // SAFETY: the caller must guarantee that `src` is valid for reads.
     return run {
-        assertUnsafePrecondition(checkLanguageUb, "ptr::read requires that the pointer argument is aligned and non-null", addr, src, align, alignOf, T, isZst, T, IS_ZST, ubChecks, maybeIsAlignedAndNotNull, addr, align, isZst)
+        ubChecks.assertUnsafePrecondition(checkLanguageUb, "ptr::read requires that the pointer argument is aligned and non-null", addr, src, align, alignOf, T, isZst, T, IS_ZST, ubChecks, maybeIsAlignedAndNotNull, addr, align, isZst)
         (typeLayoutT).readNative(src.rawAddress)
     }
 }
@@ -1308,6 +1314,9 @@ public fun <T> readUnaligned(src: ConstPtr, typeLayoutT: TypeLayout<T>): T {
  * Manually implement [mem.swap]:
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
+ * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+ * import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
  * import std.ptr
  *
  * fun <T> swap(a: T, b: T) {
@@ -1329,9 +1338,11 @@ public fun <T> readUnaligned(src: ConstPtr, typeLayoutT: TypeLayout<T>): T {
  *         // so nothing is dropped implicitly here.
  *     }
  * }
- * var foo = "foo".toOwned()
- * var bar = "bar".toOwned()
- * swap(foo, bar)
+ * val localStorageL30C0 = AddressableLocal("foo".toOwned(), ObjectSlotLayout<Any?>())
+ * var foo by localStorageL30C0
+ * val localStorageL31C0 = AddressableLocal("bar".toOwned(), ObjectSlotLayout<Any?>())
+ * var bar by localStorageL31C0
+ * swap(RustMutableReference(localStorageL30C0.asMutPtr(), localStorageL30C0.layout), RustMutableReference(localStorageL31C0.asMutPtr(), localStorageL31C0.layout))
  * check(foo == "bar")
  * check(bar == "foo")
  * ```
@@ -1347,7 +1358,7 @@ public fun <T> write(dst: MutPtr, src: T, typeLayoutT: TypeLayout<T>) {
     // `dst` cannot overlap `src` because the caller has mutable access
     // to `dst` while `src` is owned by this function.
     run {
-        assertUnsafePrecondition(checkLanguageUb, "ptr::write requires that the pointer argument is aligned and non-null", addr, dst, align, alignOf, T, isZst, T, IS_ZST, ubChecks, maybeIsAlignedAndNotNull, addr, align, isZst)
+        ubChecks.assertUnsafePrecondition(checkLanguageUb, "ptr::write requires that the pointer argument is aligned and non-null", addr, dst, align, alignOf, T, isZst, T, IS_ZST, ubChecks, maybeIsAlignedAndNotNull, addr, align, isZst)
         (typeLayoutT).writeNative(dst.rawAddress, src)
     }
 }
@@ -1392,12 +1403,15 @@ public fun <T> write(dst: MutPtr, src: T, typeLayoutT: TypeLayout<T>) {
  * An example of how to do it and how this relates to `writeUnaligned` is:
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.intrinsics.kmAllocZeroed
+ * import io.github.kotlinmania.rustlang.core.intrinsics.kmDealloc
+ *
  * @repr(packed, C)
  * open class Packed(public var padding: UByte, public var unaligned: UInt)
- * var packed: Packed? = null
+ * var packed: Packed = run { val ptr = kmAllocZeroed(maxOf(1L, (Packed.typeLayout()).sizeBytes), maxOf(1L, (Packed.typeLayout()).alignBytes)); val res = (Packed.typeLayout()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (Packed.typeLayout()).sizeBytes), maxOf(1L, (Packed.typeLayout()).alignBytes)); res }
  * // Take the address of a 32-bit integer which is not aligned.
  * // In contrast to `packed.unaligned as * _`, this has no undefined behavior.
- * val unaligned = addrOfMut(packed!!.unaligned)
+ * val unaligned = addrOfMut(packed.unaligned)
  * writeUnaligned(unaligned, 42)
  * check(packed.unaligned == 42u)
  * // `{ ... }` forces copying the field instead of creating a reference.
@@ -1525,7 +1539,7 @@ public fun <T> writeUnaligned(dst: MutPtr, src: T, typeLayoutT: TypeLayout<T>) {
 public fun <T> readVolatile(src: ConstPtr, typeLayoutT: TypeLayout<T>): T {
     // SAFETY: the caller must uphold the safety contract for `volatileLoad`.
     return run {
-        assertUnsafePrecondition(checkLanguageUb, "ptr::read_volatile requires that the pointer argument is aligned", addr, src, align, alignOf, T, ubChecks, maybeIsAligned, addr, align)
+        ubChecks.assertUnsafePrecondition(checkLanguageUb, "ptr::read_volatile requires that the pointer argument is aligned", addr, src, align, alignOf, T, ubChecks, maybeIsAligned, addr, align)
         (typeLayoutT).readVolatileNative(src.rawAddress)
     }
 }
@@ -1621,7 +1635,7 @@ public fun <T> readVolatile(src: ConstPtr, typeLayoutT: TypeLayout<T>): T {
 public fun <T> writeVolatile(dst: MutPtr, src: T, typeLayoutT: TypeLayout<T>) {
     // SAFETY: the caller must uphold the safety contract for `volatileStore`.
     run {
-        assertUnsafePrecondition(checkLanguageUb, "ptr::write_volatile requires that the pointer argument is aligned", addr, dst, align, alignOf, T, ubChecks, maybeIsAligned, addr, align)
+        ubChecks.assertUnsafePrecondition(checkLanguageUb, "ptr::write_volatile requires that the pointer argument is aligned", addr, dst, align, alignOf, T, ubChecks, maybeIsAligned, addr, align)
         (typeLayoutT).writeVolatileNative(dst.rawAddress, src)
     }
 }
@@ -1645,7 +1659,7 @@ public fun <T> writeVolatile(dst: MutPtr, src: T, typeLayoutT: TypeLayout<T>) {
  *
  * Any questions go to @nagisa.
  */
-internal fun <T> alignOffset(p: ConstPtr, a: Int, typeLayoutT: TypeLayout<T>): Int {
+public fun <T> alignOffset(p: ConstPtr, a: Int, typeLayoutT: TypeLayout<T>): Int {
     /**
      * Calculate multiplicative modular inverse of `x` modulo `m`.
      *
@@ -1980,4 +1994,4 @@ public fun <F : FnPtr<F>, HH> F.hash(state: HH) {
     state.writeUsize(this.addr())
 }
 
-public fun <F : FnPtr<F>> F.fmt(f: Formatter): Result<Unit, Unit> = pointerFmtInner(this.addr(), f)
+public fun <F : FnPtr<F>> F.fmt(f: StringBuilder): Result<Unit, Unit> = pointerFmtInner(this.addr(), f)

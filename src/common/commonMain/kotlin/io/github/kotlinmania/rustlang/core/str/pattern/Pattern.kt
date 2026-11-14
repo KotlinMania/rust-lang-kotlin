@@ -3,6 +3,8 @@
 
 package io.github.kotlinmania.rustlang.core.str.pattern
 
+import io.github.kotlinmania.rustlang.core.cmp.Eq
+import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -11,14 +13,13 @@ import io.github.kotlinmania.rustlang.core.num.rustSaturatingSub
 import io.github.kotlinmania.rustlang.core.option.Option
 import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
-import io.github.kotlinmania.rustlang.core.ptr.eq
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.memchr.memchr
 import io.github.kotlinmania.rustlang.core.str.iter.CharIndices
 import io.github.kotlinmania.rustlang.core.str.rustStrChars
-import io.github.kotlinmania.rustlang.core.simd.Mask8x16 as Mask
-import io.github.kotlinmania.rustlang.core.simd.U8x16 as Block
+import io.github.kotlinmania.rustlang.core.Mask8x16 as Mask
+import io.github.kotlinmania.rustlang.core.U8x16 as Block
 
 // The string Pattern API.
 //
@@ -191,7 +192,7 @@ public interface Pattern<Searcher> {
                             val leftVal = matchVal1.first
                             val rightVal = matchVal1.second
                             if (!(leftVal == rightVal)) {
-                                val kind = eq
+                                val kind = Eq
                                 assertFailed(kind, leftVal, rightVal, Option.Some("The first search step from Searcher must include the first character"))
                             }
                         }
@@ -219,7 +220,7 @@ public interface Pattern<Searcher> {
                             val leftVal = matchVal1.first
                             val rightVal = matchVal1.second
                             if (!(leftVal == rightVal)) {
-                                val kind = eq
+                                val kind = Eq
                                 assertFailed(kind, leftVal, rightVal, Option.Some("The first search step from ReverseSearcher must include the last character"))
                             }
                         }
@@ -2142,7 +2143,7 @@ public fun smallSliceEq(x: List<UByte>, y: List<UByte>): Boolean {
                 val leftVal = matchVal.first
                 val rightVal = matchVal.second
                 if (!(leftVal == rightVal)) {
-                    val kind = eq
+                    val kind = Eq
                     assertFailed(kind, leftVal, rightVal, Option.None)
                 }
             }

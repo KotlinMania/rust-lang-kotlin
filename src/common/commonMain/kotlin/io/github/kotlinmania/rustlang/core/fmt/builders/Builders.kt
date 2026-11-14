@@ -259,7 +259,7 @@ public open class DebugStruct(
     public open fun isPretty(): Boolean = this.fmt.alternate()
 }
 
-internal fun debugStructNew(fmt: StringBuilder, name: String): DebugStruct {
+public fun debugStructNew(fmt: StringBuilder, name: String): DebugStruct {
     val result = fmt.append(name)
     return DebugStruct(fmt = fmt, result = result, hasFields = false)
 }
@@ -545,7 +545,7 @@ public open class DebugTuple(
     public open fun isPretty(): Boolean = this.fmt.alternate()
 }
 
-internal fun debugTupleNew(fmt: StringBuilder, name: String): DebugTuple {
+public fun debugTupleNew(fmt: StringBuilder, name: String): DebugTuple {
     val result = fmt.append(name)
     return DebugTuple(fmt = fmt, result = result, fields = 0, emptyName = name.isEmpty())
 }
@@ -762,7 +762,7 @@ public open class DebugSet(
     }
 }
 
-internal fun debugSetNew(fmt: StringBuilder): DebugSet {
+public fun debugSetNew(fmt: StringBuilder): DebugSet {
     val result = fmt.append("{")
     return DebugSet(inner = DebugInner(fmt = fmt, result = result, hasFields = false))
 }
@@ -942,7 +942,7 @@ public open class DebugList(
     }
 }
 
-internal fun debugListNew(fmt: StringBuilder): DebugList {
+public fun debugListNew(fmt: StringBuilder): DebugList {
     val result = fmt.append("[")
     return DebugList(inner = DebugInner(fmt = fmt, result = result, hasFields = false))
 }
@@ -1312,7 +1312,7 @@ public open class DebugMap(
     public open fun isPretty(): Boolean = this.fmt.alternate()
 }
 
-internal fun debugMapNew(fmt: StringBuilder): DebugMap {
+public fun debugMapNew(fmt: StringBuilder): DebugMap {
     val result = fmt.append("{")
     return DebugMap(fmt = fmt, result = result, hasFields = false, hasKey = false, state = Default.default())
 }

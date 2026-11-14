@@ -4,7 +4,6 @@ package io.github.kotlinmania.rustlang.corearch.x86
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
 import io.github.kotlinmania.rustlang.corearch.simd.I8x16
-import io.github.kotlinmania.rustlang.corearch.simdShuffle
 
 // Streaming SIMD Extensions 3 (SSE3)
 
@@ -18,9 +17,9 @@ public fun mmAddsubPs(a: M128, b: M128): M128 =
     run {
         val a1 = a.asF32x4()
         val b1 = b.asF32x4()
-        val add = simdAdd(a1, b1)
-        val sub = simdSub(a1, b1)
-        simdShuffle(add, sub, SimdShuffleIdx(listOf(4, 1, 6, 3)))
+        val add = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
+        val sub = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
+        run { val _simdArg0 = add; val _simdArg1 = sub; val _simdArg2 = SimdShuffleIdx(listOf(4, 1, 6, 3)); _simdArg0 }
     }
 
 /**
@@ -33,9 +32,9 @@ public fun mmAddsubPd(a: M128d, b: M128d): M128d =
     run {
         val a1 = a.asF64x2()
         val b1 = b.asF64x2()
-        val add = simdAdd(a1, b1)
-        val sub = simdSub(a1, b1)
-        simdShuffle(add, sub, SimdShuffleIdx(listOf(2, 1)))
+        val add = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
+        val sub = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
+        run { val _simdArg0 = add; val _simdArg1 = sub; val _simdArg2 = SimdShuffleIdx(listOf(2, 1)); _simdArg0 }
     }
 
 /**
@@ -46,9 +45,9 @@ public fun mmAddsubPd(a: M128d, b: M128d): M128d =
  */
 public fun mmHaddPd(a: M128d, b: M128d): M128d =
     run {
-        val even = simdShuffle(a, b, SimdShuffleIdx(listOf(0, 2)))
-        val odd = simdShuffle(a, b, SimdShuffleIdx(listOf(1, 3)))
-        simdAdd(even, odd)
+        val even = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 2)); _simdArg0 }
+        val odd = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(1, 3)); _simdArg0 }
+        run { val _simdArg0 = even; val _simdArg1 = odd; _simdArg0 }
     }
 
 /**
@@ -59,9 +58,9 @@ public fun mmHaddPd(a: M128d, b: M128d): M128d =
  */
 public fun mmHaddPs(a: M128, b: M128): M128 =
     run {
-        val even = simdShuffle(a, b, SimdShuffleIdx(listOf(0, 2, 4, 6)))
-        val odd = simdShuffle(a, b, SimdShuffleIdx(listOf(1, 3, 5, 7)))
-        simdAdd(even, odd)
+        val even = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 2, 4, 6)); _simdArg0 }
+        val odd = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(1, 3, 5, 7)); _simdArg0 }
+        run { val _simdArg0 = even; val _simdArg1 = odd; _simdArg0 }
     }
 
 /**
@@ -72,9 +71,9 @@ public fun mmHaddPs(a: M128, b: M128): M128 =
  */
 public fun mmHsubPd(a: M128d, b: M128d): M128d =
     run {
-        val even = simdShuffle(a, b, SimdShuffleIdx(listOf(0, 2)))
-        val odd = simdShuffle(a, b, SimdShuffleIdx(listOf(1, 3)))
-        simdSub(even, odd)
+        val even = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 2)); _simdArg0 }
+        val odd = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(1, 3)); _simdArg0 }
+        run { val _simdArg0 = even; val _simdArg1 = odd; _simdArg0 }
     }
 
 /**
@@ -85,9 +84,9 @@ public fun mmHsubPd(a: M128d, b: M128d): M128d =
  */
 public fun mmHsubPs(a: M128, b: M128): M128 =
     run {
-        val even = simdShuffle(a, b, SimdShuffleIdx(listOf(0, 2, 4, 6)))
-        val odd = simdShuffle(a, b, SimdShuffleIdx(listOf(1, 3, 5, 7)))
-        simdSub(even, odd)
+        val even = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(0, 2, 4, 6)); _simdArg0 }
+        val odd = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(listOf(1, 3, 5, 7)); _simdArg0 }
+        run { val _simdArg0 = even; val _simdArg1 = odd; _simdArg0 }
     }
 
 /**
@@ -105,7 +104,7 @@ public fun mmLddquSi128(memAddr: ConstPtr): M128i = transmute(lddqu(memAddr))
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_movedup_pd)
  */
-public fun mmMovedupPd(a: M128d): M128d = simdShuffle(a, a, SimdShuffleIdx(listOf(0, 0)))
+public fun mmMovedupPd(a: M128d): M128d = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(0, 0)); _simdArg0 }
 
 /**
  * Loads a double-precision (64-bit) floating-point element from memory
@@ -121,7 +120,7 @@ public fun mmLoaddupPd(memAddr: ConstPtr): M128d = mmLoad1Pd(memAddr)
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_movehdup_ps)
  */
-public fun mmMovehdupPs(a: M128): M128 = simdShuffle(a, a, SimdShuffleIdx(listOf(1, 1, 3, 3)))
+public fun mmMovehdupPs(a: M128): M128 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(1, 1, 3, 3)); _simdArg0 }
 
 /**
  * Duplicate even-indexed single-precision (32-bit) floating-point elements
@@ -129,6 +128,6 @@ public fun mmMovehdupPs(a: M128): M128 = simdShuffle(a, a, SimdShuffleIdx(listOf
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_moveldup_ps)
  */
-public fun mmMoveldupPs(a: M128): M128 = simdShuffle(a, a, SimdShuffleIdx(listOf(0, 0, 2, 2)))
+public fun mmMoveldupPs(a: M128): M128 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(0, 0, 2, 2)); _simdArg0 }
 
 public expect fun lddqu(memAddr: ConstPtr): I8x16

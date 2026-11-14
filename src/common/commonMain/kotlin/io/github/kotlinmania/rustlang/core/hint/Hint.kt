@@ -2,13 +2,13 @@
 package io.github.kotlinmania.rustlang.core.hint
 
 import io.github.kotlinmania.rustlang.core.X8664
+import io.github.kotlinmania.rustlang.core.intrinsics.ubChecks
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
-import io.github.kotlinmania.rustlang.core.ubchecks.assertUnsafePrecondition
 import io.github.kotlinmania.rustlang.core.ubchecks.checkLanguageUb
 
 // Hints to compiler that affects how code should be emitted or optimized.
@@ -100,7 +100,7 @@ import io.github.kotlinmania.rustlang.core.ubchecks.checkLanguageUb
  * ```
  */
 public fun unreachableUnchecked(): Nothing {
-    assertUnsafePrecondition(checkLanguageUb, "hint::unreachable_unchecked must never be reached", false)
+    ubChecks.assertUnsafePrecondition(checkLanguageUb, "hint::unreachable_unchecked must never be reached", false)
     // SAFETY: the safety contract for `intrinsics.unreachable` must
     // be upheld by the caller.
     error("Entered Rust intrinsics::unreachable")
@@ -186,7 +186,7 @@ public fun unreachableUnchecked(): Nothing {
 public fun assertUnchecked(cond: Boolean) {
     // SAFETY: The caller promised `cond` is true.
     run {
-        assertUnsafePrecondition(checkLanguageUb, "hint::assert_unchecked must never be called when the condition is false", cond, cond, cond)
+        ubChecks.assertUnsafePrecondition(checkLanguageUb, "hint::assert_unchecked must never be called when the condition is false", cond, cond, cond)
     }
 }
 

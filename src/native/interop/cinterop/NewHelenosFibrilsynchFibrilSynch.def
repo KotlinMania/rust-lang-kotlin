@@ -1,0 +1,5 @@
+package = io.github.kotlinmania.rustlang.libc.new.helenos.fibrilsynch.cinterop
+headers = new_helenos_fibrilsynch_fibril_synch_wrapper.h
+headerFilter = new_helenos_fibrilsynch_fibril_synch_wrapper.h
+compilerOpts = -Isrc/native/interop/cinterop
+staticLibraries = new_helenos_fibrilsynch_fibril_synch_wrapper.a

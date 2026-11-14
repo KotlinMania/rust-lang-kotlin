@@ -43,14 +43,14 @@ public sealed class FormatState {
 /**
  * Types of parameters a capability can use
  */
-internal sealed class Param {
+public sealed class Param {
     public data class Number(public var value: Int) : Param()
 }
 
 /**
  * Container for static and dynamic variable arrays
  */
-internal open class Variables(
+public open class Variables(
     /**
      * Static variables A-Z
      */
@@ -64,7 +64,7 @@ internal open class Variables(
         /**
          * Returns a new zero-initialized Variables
          */
-        internal fun new(): Variables = Variables(staVa = listOf(Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0)), dynVa = listOf(Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0)))
+        public fun new(): Variables = Variables(staVa = listOf(Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0)), dynVa = listOf(Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0), Number(0)))
     }
 }
 
@@ -79,7 +79,7 @@ internal open class Variables(
  * To be compatible with ncurses, `vars` should be the same between calls to `expand` for
  * multiple capabilities for the same terminal.
  */
-internal fun expand(cap: List<UByte>, params: List<Param>, vars: Variables): Result<List<UByte>, String> {
+public fun expand(cap: List<UByte>, params: List<Param>, vars: Variables): Result<List<UByte>, String> {
     var state = Nothing
     // expanded cap will only rarely be larger than the cap itself
     val output = ArrayList<UByte>(cap.size)

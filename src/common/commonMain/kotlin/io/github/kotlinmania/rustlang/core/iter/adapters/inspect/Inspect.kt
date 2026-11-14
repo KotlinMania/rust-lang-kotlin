@@ -1,12 +1,13 @@
 // port-lint: source iter/adapters/inspect.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.inspect
 
-import io.github.kotlinmania.rustlang.core.iter.InPlaceIterable
-import io.github.kotlinmania.rustlang.core.iter.TrustedFused
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.InPlaceIterable
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedFused
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
 
 public class DebugStruct(
@@ -126,7 +127,7 @@ public open class Inspect<I, F>(
                 }
             }
 
-        internal fun <I, F> new(iter: I, f: F): Inspect<I, F> = Inspect(iter = iter, f = f)
+        public fun <I, F> new(iter: I, f: F): Inspect<I, F> = Inspect(iter = iter, f = f)
 
         public val EXPAND_BY: NonZero<Int>? = I.EXPAND_BY
 

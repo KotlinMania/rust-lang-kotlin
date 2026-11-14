@@ -1,7 +1,6 @@
 // port-lint: source sys/args/common.rs
 package io.github.kotlinmania.rustlang.std.sys.args.common
 
-import io.github.kotlinmania.rustlang.alloc.vec.intoiter.IntoIter
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -25,7 +24,7 @@ public open class Args(
 
     public open fun next(): OsString? = this.iter.removeFirstOrNull()
 
-    public open fun nextChunk(n: Int): Result<List<OsString>, io.github.kotlinmania.rustlang.core.array.iter.IntoIter<OsString>> = this.iter.nextChunk()
+    public open fun nextChunk(n: Int): Result<List<OsString>, IntoIter<OsString>> = this.iter.nextChunk()
 
     public open fun sizeHint(): Pair<Int, Int?> = run { val n = this.iter.size; Pair(n, n) }
 

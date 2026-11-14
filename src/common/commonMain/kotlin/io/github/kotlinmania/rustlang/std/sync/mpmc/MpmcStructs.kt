@@ -141,7 +141,7 @@ public open class Sender<T>(
      *     // This send is always successful
      *     tx.send(1).unwrap()
      *     // This send will fail because the receiver is gone
-     *     drop(rx)
+     *     (rx).let { }
      *     check(tx.send(1).isErr())
      * }
      * ```
@@ -451,7 +451,7 @@ public open class Sender<T>(
      * public fun doctestEntry() {
      *     val (tx, rx) = channel<Int>()
      *     check(!tx.isDisconnected())
-     *     drop(rx)
+     *     (rx).let { }
      *     check(tx.isDisconnected())
      * }
      * ```
@@ -650,7 +650,7 @@ public open class Receiver<T>(
      *         send.send(1u.toUByte()).unwrap()
      *         send.send(2).unwrap()
      *         send.send(3).unwrap()
-     *         drop(send)
+     *         (send).let { }
      *     })
      *     // wait for the thread to join so we ensure the sender is dropped
      *     handle.join().unwrap()
@@ -1079,7 +1079,7 @@ public open class Receiver<T>(
      * public fun doctestEntry() {
      *     val (tx, rx) = channel<Int>()
      *     check(!rx.isDisconnected())
-     *     drop(tx)
+     *     (tx).let { }
      *     check(rx.isDisconnected())
      * }
      * ```

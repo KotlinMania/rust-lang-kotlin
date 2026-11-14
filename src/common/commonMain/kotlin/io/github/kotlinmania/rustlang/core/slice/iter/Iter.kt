@@ -1,14 +1,19 @@
 // port-lint: source slice/iter.rs
 package io.github.kotlinmania.rustlang.core.slice.iter
 
-import io.github.kotlinmania.rustlang.core.iter.TrustedLen
-import io.github.kotlinmania.rustlang.core.iter.TrustedRandomAccess
-import io.github.kotlinmania.rustlang.core.iter.TrustedRandomAccessNoCoerce
+import io.github.kotlinmania.rustlang.core.cmp.max
+import io.github.kotlinmania.rustlang.core.cmp.min
+import io.github.kotlinmania.rustlang.core.convert.AsRef
+import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccess
+import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccessNoCoerce
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
+import io.github.kotlinmania.rustlang.core.mem.replace
+import io.github.kotlinmania.rustlang.core.mem.take
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.num.rustCheckedAdd
 import io.github.kotlinmania.rustlang.core.num.rustCheckedMul
@@ -155,7 +160,7 @@ public open class Iter<T>(
     public override fun asRef(): List<T> = this.asSlice()
 
     public companion object {
-        internal fun <T> new(slice: List<T>): Iter<T> {
+        public fun <T> new(slice: List<T>): Iter<T> {
             val len = slice.size
             val ptr: NonNull = NonNull.fromRef(slice).cast()
             // SAFETY: Similar to `IterMut.new`.
@@ -322,7 +327,7 @@ public open class IterMut<T>(
     public override fun asRef(): List<T> = this.asSlice()
 
     public companion object {
-        internal fun <T> new(slice: MutableList<T>): IterMut<T> {
+        public fun <T> new(slice: MutableList<T>): IterMut<T> {
             val len = slice.size
             val ptr: NonNull = NonNull.fromMut(slice).cast()
             // SAFETY: There are several things here:
@@ -360,7 +365,7 @@ public open class IterMut<T>(
  * An internal abstraction over the splitting iterators, so that
  * splitn, splitnMut etc can be implemented once.
  */
-internal interface SplitIter<T> {
+public interface SplitIter<T> {
     /**
      * Marks the underlying iterator as complete, extracting the remaining
      * portion of the slice.
@@ -389,10 +394,10 @@ internal interface SplitIter<T> {
  */
 public open class Split<T, P>(
     // Used for `SplitWhitespace` and `SplitAsciiWhitespace` `asStr` methods
-    internal var v: List<T>,
+    public var v: List<T>,
     public var pred: P,
     // Used for `SplitAsciiWhitespace` `asStr` method
-    internal var finished: Boolean,
+    public var finished: Boolean,
 ) : SplitIter<Split<T, P>>, Iterable<List<T>> {
     override fun iterator(): Iterator<List<T>> = object : AbstractIterator<List<T>>() {
         override fun computeNext() {
@@ -479,7 +484,7 @@ public open class Split<T, P>(
         }
 
     public companion object {
-        internal fun <T> new(slice: List<T>, pred: (T) -> Boolean): Split<T, P> = Split(v = slice, pred = pred, finished = false)
+        public fun <T> new(slice: List<T>, pred: (T) -> Boolean): Split<T, P> = Split(v = slice, pred = pred, finished = false)
     }
 }
 
@@ -568,7 +573,7 @@ public open class SplitInclusive<T, P>(
     }
 
     public companion object {
-        internal fun <T> new(slice: List<T>, pred: (T) -> Boolean): SplitInclusive<T, P> {
+        public fun <T> new(slice: List<T>, pred: (T) -> Boolean): SplitInclusive<T, P> {
             val finished = slice.isEmpty()
             return SplitInclusive(v = slice, pred = pred, finished = finished)
         }
@@ -666,7 +671,7 @@ public open class SplitMut<T, P>(
     }
 
     public companion object {
-        internal fun <T> new(slice: MutableList<T>, pred: (T) -> Boolean): SplitMut<T, P> = SplitMut(v = slice, pred = pred, finished = false)
+        public fun <T> new(slice: MutableList<T>, pred: (T) -> Boolean): SplitMut<T, P> = SplitMut(v = slice, pred = pred, finished = false)
     }
 }
 
@@ -759,7 +764,7 @@ public open class SplitInclusiveMut<T, P>(
     }
 
     public companion object {
-        internal fun <T> new(slice: MutableList<T>, pred: (T) -> Boolean): SplitInclusiveMut<T, P> {
+        public fun <T> new(slice: MutableList<T>, pred: (T) -> Boolean): SplitInclusiveMut<T, P> {
             val finished = slice.isEmpty()
             return SplitInclusiveMut(v = slice, pred = pred, finished = finished)
         }
@@ -820,7 +825,7 @@ public open class RSplit<T, P> internal constructor(
             innerCtorArg = inner,
         )
 
-        internal fun <T> new(slice: List<T>, pred: (T) -> Boolean): RSplit<T, P> = RSplit(inner = Split.new(slice, pred))
+        public fun <T> new(slice: List<T>, pred: (T) -> Boolean): RSplit<T, P> = RSplit(inner = Split.new(slice, pred))
     }
 }
 
@@ -872,7 +877,7 @@ public open class RSplitMut<T, P> internal constructor(
             innerCtorArg = inner,
         )
 
-        internal fun <T> new(slice: MutableList<T>, pred: (T) -> Boolean): RSplitMut<T, P> = RSplitMut(inner = SplitMut.new(slice, pred))
+        public fun <T> new(slice: MutableList<T>, pred: (T) -> Boolean): RSplitMut<T, P> = RSplitMut(inner = SplitMut.new(slice, pred))
     }
 }
 
@@ -974,7 +979,7 @@ public open class SplitN<T, P> internal constructor(
             innerCtorArg = inner,
         )
 
-        internal fun <T> new(s: Split<T, (T) -> Boolean>, n: Int): SplitN<T, P> = SplitN(inner = GenericSplitN(iter = s, count = n))
+        public fun <T> new(s: Split<T, (T) -> Boolean>, n: Int): SplitN<T, P> = SplitN(inner = GenericSplitN(iter = s, count = n))
     }
 }
 
@@ -1013,7 +1018,7 @@ public open class RSplitN<T, P> internal constructor(
             innerCtorArg = inner,
         )
 
-        internal fun <T> new(s: RSplit<T, (T) -> Boolean>, n: Int): RSplitN<T, P> = RSplitN(inner = GenericSplitN(iter = s, count = n))
+        public fun <T> new(s: RSplit<T, (T) -> Boolean>, n: Int): RSplitN<T, P> = RSplitN(inner = GenericSplitN(iter = s, count = n))
     }
 }
 
@@ -1048,7 +1053,7 @@ public open class SplitNMut<T, P> internal constructor(
             innerCtorArg = inner,
         )
 
-        internal fun <T> new(s: SplitMut<T, (T) -> Boolean>, n: Int): SplitNMut<T, P> = SplitNMut(inner = GenericSplitN(iter = s, count = n))
+        public fun <T> new(s: SplitMut<T, (T) -> Boolean>, n: Int): SplitNMut<T, P> = SplitNMut(inner = GenericSplitN(iter = s, count = n))
     }
 }
 
@@ -1084,7 +1089,7 @@ public open class RSplitNMut<T, P> internal constructor(
             innerCtorArg = inner,
         )
 
-        internal fun <T> new(s: RSplitMut<T, (T) -> Boolean>, n: Int): RSplitNMut<T, P> = RSplitNMut(inner = GenericSplitN(iter = s, count = n))
+        public fun <T> new(s: RSplitMut<T, (T) -> Boolean>, n: Int): RSplitNMut<T, P> = RSplitNMut(inner = GenericSplitN(iter = s, count = n))
     }
 }
 
@@ -1196,7 +1201,7 @@ public open class Windows<T> internal constructor(
             sizeCtorArg = size,
         )
 
-        internal fun <T> new(slice: List<T>, size: NonZero<Int>): Windows<T> = Windows(v = slice, size = size)
+        public fun <T> new(slice: List<T>, size: NonZero<Int>): Windows<T> = Windows(v = slice, size = size)
 
         public val MAY_HAVE_SIDE_EFFECT: Boolean = false
     }
@@ -1343,7 +1348,7 @@ public open class Chunks<T>(
     }
 
     public companion object {
-        internal fun <T> new(slice: List<T>, size: Int): Chunks<T> = Chunks(v = slice, chunkSize = size)
+        public fun <T> new(slice: List<T>, size: Int): Chunks<T> = Chunks(v = slice, chunkSize = size)
 
         public val MAY_HAVE_SIDE_EFFECT: Boolean = false
     }
@@ -1507,7 +1512,7 @@ public open class ChunksMut<T> internal constructor(
             marker = marker,
         )
 
-        internal fun <T> new(slice: MutableList<T>, size: Int): ChunksMut<T> = ChunksMut(v = slice, chunkSize = size, marker = Unit)
+        public fun <T> new(slice: MutableList<T>, size: Int): ChunksMut<T> = ChunksMut(v = slice, chunkSize = size, marker = Unit)
 
         public val MAY_HAVE_SIDE_EFFECT: Boolean = false
     }
@@ -1633,7 +1638,7 @@ public open class ChunksExact<T>(
     public open fun isEmpty(): Boolean = this.v.isEmpty()
 
     public companion object {
-        internal fun <T> new(slice: List<T>, chunkSize: Int): ChunksExact<T> {
+        public fun <T> new(slice: List<T>, chunkSize: Int): ChunksExact<T> {
             val rem = slice.size % chunkSize
             val fstLen = slice.size - rem
             // SAFETY: 0 <= fstLen <= slice.len() by construction above
@@ -1777,7 +1782,7 @@ public open class ChunksExactMut<T> internal constructor(
             marker = marker,
         )
 
-        internal fun <T> new(slice: MutableList<T>, chunkSize: Int): ChunksExactMut<T> {
+        public fun <T> new(slice: MutableList<T>, chunkSize: Int): ChunksExactMut<T> {
             val rem = slice.size % chunkSize
             val fstLen = slice.size - rem
             // SAFETY: 0 <= fstLen <= slice.len() by construction above
@@ -1813,7 +1818,7 @@ public open class ArrayWindows<T>(
     public var v: List<T>,
 )
 
-internal fun <T> ArrayWindows.Companion.new(slice: List<T>, n: Int): ArrayWindows<T, N> = ArrayWindows(v = slice)
+public fun <T> ArrayWindows.Companion.new(slice: List<T>, n: Int): ArrayWindows<T, N> = ArrayWindows(v = slice)
 
 // Note(#26925) Remove in favor of `@derive(Clone)`
 public fun <T> ArrayWindows<T, N>.clone(n: Int): ArrayWindows<T, N> = ArrayWindows(v = this.v)
@@ -1996,7 +2001,7 @@ public open class RChunks<T>(
     }
 
     public companion object {
-        internal fun <T> new(slice: List<T>, size: Int): RChunks<T> = RChunks(v = slice, chunkSize = size)
+        public fun <T> new(slice: List<T>, size: Int): RChunks<T> = RChunks(v = slice, chunkSize = size)
 
         public val MAY_HAVE_SIDE_EFFECT: Boolean = false
     }
@@ -2156,7 +2161,7 @@ public open class RChunksMut<T> internal constructor(
             marker = marker,
         )
 
-        internal fun <T> new(slice: MutableList<T>, size: Int): RChunksMut<T> = RChunksMut(v = slice, chunkSize = size, marker = Unit)
+        public fun <T> new(slice: MutableList<T>, size: Int): RChunksMut<T> = RChunksMut(v = slice, chunkSize = size, marker = Unit)
 
         public val MAY_HAVE_SIDE_EFFECT: Boolean = false
     }
@@ -2289,7 +2294,7 @@ public open class RChunksExact<T>(
     public open fun isEmpty(): Boolean = this.v.isEmpty()
 
     public companion object {
-        internal fun <T> new(slice: List<T>, chunkSize: Int): RChunksExact<T> {
+        public fun <T> new(slice: List<T>, chunkSize: Int): RChunksExact<T> {
             val rem = slice.size % chunkSize
             // SAFETY: 0 <= rem <= slice.len() by construction above
             val (fst, snd) = slice.splitAtUnchecked(rem)
@@ -2438,7 +2443,7 @@ public open class RChunksExactMut<T> internal constructor(
             chunkSize = chunkSize,
         )
 
-        internal fun <T> new(slice: MutableList<T>, chunkSize: Int): RChunksExactMut<T> {
+        public fun <T> new(slice: MutableList<T>, chunkSize: Int): RChunksExactMut<T> {
             val rem = slice.size % chunkSize
             // SAFETY: 0 <= rem <= slice.len() by construction above
             val (fst, snd) = slice.splitAtMutUnchecked(rem)
@@ -2538,7 +2543,7 @@ public open class ChunkBy<T, P>(
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "ChunkBy").field("slice", this.slice).finish()
 
     public companion object {
-        internal fun <T, P> new(slice: List<T>, predicate: P): ChunkBy<T, P> = ChunkBy(slice = slice, predicate = predicate)
+        public fun <T, P> new(slice: List<T>, predicate: P): ChunkBy<T, P> = ChunkBy(slice = slice, predicate = predicate)
     }
 }
 
@@ -2622,6 +2627,6 @@ public open class ChunkByMut<T, P>(
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "ChunkByMut").field("slice", this.slice).finish()
 
     public companion object {
-        internal fun <T, P> new(slice: MutableList<T>, predicate: P): ChunkByMut<T, P> = ChunkByMut(slice = slice, predicate = predicate)
+        public fun <T, P> new(slice: MutableList<T>, predicate: P): ChunkByMut<T, P> = ChunkByMut(slice = slice, predicate = predicate)
     }
 }

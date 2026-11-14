@@ -235,7 +235,7 @@ public fun <T> Storage.Companion.tryInitialize(key: Key, ptr: MutPtr, i: T?, f: 
         // initializer has already returned and the next scope only starts
         // after we return the pointer. Therefore, there can be no references
         // to the old value.
-        drop(AlignedSystemBox.fromRaw(old1))
+        (AlignedSystemBox.fromRaw(old1)).let { }
     }
     // SAFETY: We just created this value above.
     return ptr1.value
@@ -256,7 +256,7 @@ public fun destroyValue(ptr: MutPtr, align: Int) {
         val key = ptr1.key
         // SAFETY: `key` is the TLS key `ptr` was stored under.
         set(key, withoutProvenanceMut(1))
-        drop(ptr1)
+        (ptr1).let { }
         // SAFETY: `key` is the TLS key `ptr` was stored under.
         set(key, MutPtr(0L))
         // Make sure that the runtime cleanup will be performed
@@ -265,7 +265,7 @@ public fun destroyValue(ptr: MutPtr, align: Int) {
     })
 }
 
-internal open class LocalPointer(
+public open class LocalPointer(
     public var key: LazyKey,
 ) {
     public open fun get(): MutPtr = (get(this.key.force())).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }

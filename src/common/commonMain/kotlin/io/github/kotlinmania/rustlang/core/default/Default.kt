@@ -192,7 +192,7 @@ public fun defaultI128(): I128 = I128(0x0L, 0x0uL)
 /**
  * Returns the default value of `0.0`
  */
-public fun defaultF16(): F16 = 0.0
+public fun defaultF16(): F16 = F16.fromFloat(0.0f)
 
 /**
  * Returns the default value of `0.0`
@@ -207,4 +207,4 @@ public fun defaultDouble(): Double = 0.0
 /**
  * Returns the default value of `0.0`
  */
-public fun defaultF128(): F128 = 0.0
+public fun defaultF128(): F128 = F128.fromDouble(0.0)

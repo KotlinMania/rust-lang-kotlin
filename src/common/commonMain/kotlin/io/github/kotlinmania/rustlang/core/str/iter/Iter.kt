@@ -1,14 +1,15 @@
 // port-lint: source str/iter.rs
 package io.github.kotlinmania.rustlang.core.str.iter
 
-import io.github.kotlinmania.rustlang.core.iter.TrustedLen
-import io.github.kotlinmania.rustlang.core.iter.TrustedRandomAccess
-import io.github.kotlinmania.rustlang.core.iter.TrustedRandomAccessNoCoerce
 import io.github.kotlinmania.rustlang.core.iter.adapters.copied.Copied
 import io.github.kotlinmania.rustlang.core.iter.adapters.filter.Filter
 import io.github.kotlinmania.rustlang.core.iter.adapters.flatten.FlatMap
 import io.github.kotlinmania.rustlang.core.iter.adapters.map.Map
+import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccess
+import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccessNoCoerce
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.str.BytesIsNotEmpty
 import io.github.kotlinmania.rustlang.core.str.CharEscapeDebug
@@ -21,6 +22,7 @@ import io.github.kotlinmania.rustlang.core.str.LinesMap
 import io.github.kotlinmania.rustlang.core.str.UnsafeBytesToStr
 import io.github.kotlinmania.rustlang.core.str.converts.fromUtf8Unchecked
 import io.github.kotlinmania.rustlang.core.str.count.countChars
+import io.github.kotlinmania.rustlang.core.str.pattern.Pattern
 import io.github.kotlinmania.rustlang.core.str.pattern.Searcher
 import io.github.kotlinmania.rustlang.core.str.validations.nextCodePoint
 import io.github.kotlinmania.rustlang.core.str.validations.nextCodePointReverse
@@ -130,7 +132,7 @@ public class DebugTuple(
  * [chars]: str.chars
  */
 public open class Chars(
-    internal var iter: ArrayDeque<UByte>,
+    public var iter: ArrayDeque<UByte>,
 ) : Iterable<Char> {
     override fun iterator(): Iterator<Char> = object : AbstractIterator<Char>() {
         override fun computeNext() {
@@ -246,8 +248,8 @@ public open class Chars(
  * [charIndices]: str.charIndices
  */
 public open class CharIndices(
-    internal var frontOffset: Int,
-    internal var iter: Chars,
+    public var frontOffset: Int,
+    public var iter: Chars,
 ) : Iterable<Pair<Int, Char>> {
     override fun iterator(): Iterator<Pair<Int, Char>> = object : AbstractIterator<Pair<Int, Char>>() {
         override fun computeNext() {
@@ -336,9 +338,12 @@ public open class CharIndices(
  *
  * [bytes]: str.bytes
  */
-public open class Bytes(
-    internal var value: Copied<ArrayDeque<UByte>>,
+public open class Bytes internal constructor(
+    valueCtorArg: Copied<ArrayDeque<UByte>>,
 ) : TrustedLen<Bytes>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<UByte> {
+    public var value: Copied<ArrayDeque<UByte>> = valueCtorArg
+        internal set
+
     public var field0: Copied<ArrayDeque<UByte>>
         get() = value
         set(v) {
@@ -393,16 +398,22 @@ public open class Bytes(
     public open fun isEmpty(): Boolean = this.value.isEmpty()
 
     public companion object {
+        public operator fun invoke(
+            value: Copied<ArrayDeque<UByte>>,
+        ): Bytes = Bytes(
+            valueCtorArg = value,
+        )
+
         public val MAY_HAVE_SIDE_EFFECT: Boolean = false
     }
 }
 
-internal open class SplitInternal<P : Pattern<Any?>>(
-    internal var start: Int,
-    internal var end: Int,
-    internal var matcher: Searcher,
-    internal var allowTrailingEmpty: Boolean,
-    internal var finished: Boolean,
+public open class SplitInternal<P : Pattern<Any?>>(
+    public var start: Int,
+    public var end: Int,
+    public var matcher: Searcher,
+    public var allowTrailingEmpty: Boolean,
+    public var finished: Boolean,
 ) {
     public open fun clone(): SplitInternal<P> {
         val s = this
@@ -576,9 +587,12 @@ internal open class SplitInternal<P : Pattern<Any?>>(
  *
  * [split]: str.split
  */
-public open class Split<P : Pattern<Any?>>(
-    internal var value: SplitInternal<P>,
+public open class Split<P : Pattern<Any?>> internal constructor(
+    valueCtorArg: SplitInternal<P>,
 ) : Iterable<String> {
+    public var value: SplitInternal<P> = valueCtorArg
+        internal set
+
     public var field0: SplitInternal<P>
         get() = value
         set(v) {
@@ -622,6 +636,14 @@ public open class Split<P : Pattern<Any?>>(
      * ```
      */
     public open fun remainder(): String? = this.value.remainder()
+
+    public companion object {
+        public operator fun <P : Pattern<Any?>> invoke(
+            value: SplitInternal<P>,
+        ): Split<P> = Split<P>(
+            valueCtorArg = value,
+        )
+    }
 }
 
 /**
@@ -629,9 +651,12 @@ public open class Split<P : Pattern<Any?>>(
  *
  * [rsplit]: str.rsplit
  */
-public open class RSplit<P : Pattern<Any?>>(
-    internal var value: SplitInternal<P>,
+public open class RSplit<P : Pattern<Any?>> internal constructor(
+    valueCtorArg: SplitInternal<P>,
 ) : Iterable<String> {
+    public var value: SplitInternal<P> = valueCtorArg
+        internal set
+
     public var field0: SplitInternal<P>
         get() = value
         set(v) {
@@ -675,6 +700,14 @@ public open class RSplit<P : Pattern<Any?>>(
      * ```
      */
     public open fun remainder(): String? = this.value.remainder()
+
+    public companion object {
+        public operator fun <P : Pattern<Any?>> invoke(
+            value: SplitInternal<P>,
+        ): RSplit<P> = RSplit<P>(
+            valueCtorArg = value,
+        )
+    }
 }
 
 /**
@@ -682,9 +715,12 @@ public open class RSplit<P : Pattern<Any?>>(
  *
  * [splitTerminator]: str.splitTerminator
  */
-public open class SplitTerminator<P : Pattern<Any?>>(
-    internal var value: SplitInternal<P>,
+public open class SplitTerminator<P : Pattern<Any?>> internal constructor(
+    valueCtorArg: SplitInternal<P>,
 ) : Iterable<String> {
+    public var value: SplitInternal<P> = valueCtorArg
+        internal set
+
     public var field0: SplitInternal<P>
         get() = value
         set(v) {
@@ -728,6 +764,14 @@ public open class SplitTerminator<P : Pattern<Any?>>(
      * ```
      */
     public open fun remainder(): String? = this.value.remainder()
+
+    public companion object {
+        public operator fun <P : Pattern<Any?>> invoke(
+            value: SplitInternal<P>,
+        ): SplitTerminator<P> = SplitTerminator<P>(
+            valueCtorArg = value,
+        )
+    }
 }
 
 /**
@@ -735,9 +779,12 @@ public open class SplitTerminator<P : Pattern<Any?>>(
  *
  * [rsplitTerminator]: str.rsplitTerminator
  */
-public open class RSplitTerminator<P : Pattern<Any?>>(
-    internal var value: SplitInternal<P>,
+public open class RSplitTerminator<P : Pattern<Any?>> internal constructor(
+    valueCtorArg: SplitInternal<P>,
 ) : Iterable<String> {
+    public var value: SplitInternal<P> = valueCtorArg
+        internal set
+
     public var field0: SplitInternal<P>
         get() = value
         set(v) {
@@ -781,15 +828,26 @@ public open class RSplitTerminator<P : Pattern<Any?>>(
      * ```
      */
     public open fun remainder(): String? = this.value.remainder()
+
+    public companion object {
+        public operator fun <P : Pattern<Any?>> invoke(
+            value: SplitInternal<P>,
+        ): RSplitTerminator<P> = RSplitTerminator<P>(
+            valueCtorArg = value,
+        )
+    }
 }
 
-internal open class SplitNInternal<P : Pattern<Any?>>(
-    internal var iter: SplitInternal<P>,
+public open class SplitNInternal<P : Pattern<Any?>> internal constructor(
+    iterCtorArg: SplitInternal<P>,
     /**
      * The number of splits remaining
      */
-    internal var count: Int,
+    public var count: Int,
 ) {
+    public var iter: SplitInternal<P> = iterCtorArg
+        internal set
+
     public open fun clone(): SplitNInternal<P> {
         val s = this
         return s.copy(iter = s.iter.clone())
@@ -824,6 +882,16 @@ internal open class SplitNInternal<P : Pattern<Any?>>(
         }
 
     public open fun remainder(): String? = this.iter.remainder()
+
+    public companion object {
+        public operator fun <P : Pattern<Any?>> invoke(
+            iter: SplitInternal<P>,
+            count: Int,
+        ): SplitNInternal<P> = SplitNInternal<P>(
+            iterCtorArg = iter,
+            count = count,
+        )
+    }
 }
 
 /**
@@ -831,9 +899,12 @@ internal open class SplitNInternal<P : Pattern<Any?>>(
  *
  * [splitn]: str.splitn
  */
-public open class SplitN<P : Pattern<Any?>>(
-    internal var value: SplitNInternal<P>,
+public open class SplitN<P : Pattern<Any?>> internal constructor(
+    valueCtorArg: SplitNInternal<P>,
 ) : Iterable<String> {
+    public var value: SplitNInternal<P> = valueCtorArg
+        internal set
+
     public var field0: SplitNInternal<P>
         get() = value
         set(v) {
@@ -875,6 +946,14 @@ public open class SplitN<P : Pattern<Any?>>(
      * ```
      */
     public open fun remainder(): String? = this.value.remainder()
+
+    public companion object {
+        public operator fun <P : Pattern<Any?>> invoke(
+            value: SplitNInternal<P>,
+        ): SplitN<P> = SplitN<P>(
+            valueCtorArg = value,
+        )
+    }
 }
 
 /**
@@ -882,9 +961,12 @@ public open class SplitN<P : Pattern<Any?>>(
  *
  * [rsplitn]: str.rsplitn
  */
-public open class RSplitN<P : Pattern<Any?>>(
-    internal var value: SplitNInternal<P>,
+public open class RSplitN<P : Pattern<Any?>> internal constructor(
+    valueCtorArg: SplitNInternal<P>,
 ) : Iterable<String> {
+    public var value: SplitNInternal<P> = valueCtorArg
+        internal set
+
     public var field0: SplitNInternal<P>
         get() = value
         set(v) {
@@ -926,10 +1008,18 @@ public open class RSplitN<P : Pattern<Any?>>(
      * ```
      */
     public open fun remainder(): String? = this.value.remainder()
+
+    public companion object {
+        public operator fun <P : Pattern<Any?>> invoke(
+            value: SplitNInternal<P>,
+        ): RSplitN<P> = RSplitN<P>(
+            valueCtorArg = value,
+        )
+    }
 }
 
-internal open class MatchIndicesInternal<P : Pattern<Any?>>(
-    internal var value: Searcher,
+public open class MatchIndicesInternal<P : Pattern<Any?>>(
+    public var value: Searcher,
 ) {
     public var field0: P.Searcher
         get() = value
@@ -954,9 +1044,12 @@ internal open class MatchIndicesInternal<P : Pattern<Any?>>(
  *
  * [matchIndices]: str.matchIndices
  */
-public open class MatchIndices<P : Pattern<Any?>>(
-    internal var value: MatchIndicesInternal<P>,
+public open class MatchIndices<P : Pattern<Any?>> internal constructor(
+    valueCtorArg: MatchIndicesInternal<P>,
 ) : Iterable<Pair<Int, String>> {
+    public var value: MatchIndicesInternal<P> = valueCtorArg
+        internal set
+
     public var field0: MatchIndicesInternal<P>
         get() = value
         set(v) {
@@ -979,6 +1072,14 @@ public open class MatchIndices<P : Pattern<Any?>>(
     public open fun clone(): MatchIndices<P> = MatchIndices(this.value.clone())
 
     public open fun nextBack(): Pair<Int, String>? = this.value.nextBack()
+
+    public companion object {
+        public operator fun <P : Pattern<Any?>> invoke(
+            value: MatchIndicesInternal<P>,
+        ): MatchIndices<P> = MatchIndices<P>(
+            valueCtorArg = value,
+        )
+    }
 }
 
 /**
@@ -986,9 +1087,12 @@ public open class MatchIndices<P : Pattern<Any?>>(
  *
  * [rmatchIndices]: str.rmatchIndices
  */
-public open class RMatchIndices<P : Pattern<Any?>>(
-    internal var value: MatchIndicesInternal<P>,
+public open class RMatchIndices<P : Pattern<Any?>> internal constructor(
+    valueCtorArg: MatchIndicesInternal<P>,
 ) : Iterable<Pair<Int, String>> {
+    public var value: MatchIndicesInternal<P> = valueCtorArg
+        internal set
+
     public var field0: MatchIndicesInternal<P>
         get() = value
         set(v) {
@@ -1011,10 +1115,18 @@ public open class RMatchIndices<P : Pattern<Any?>>(
     public open fun clone(): RMatchIndices<P> = RMatchIndices(this.value.clone())
 
     public open fun nextBack(): Pair<Int, String>? = this.value.next()
+
+    public companion object {
+        public operator fun <P : Pattern<Any?>> invoke(
+            value: MatchIndicesInternal<P>,
+        ): RMatchIndices<P> = RMatchIndices<P>(
+            valueCtorArg = value,
+        )
+    }
 }
 
-internal open class MatchesInternal<P : Pattern<Any?>>(
-    internal var value: Searcher,
+public open class MatchesInternal<P : Pattern<Any?>>(
+    public var value: Searcher,
 ) {
     public var field0: P.Searcher
         get() = value
@@ -1045,9 +1157,12 @@ internal open class MatchesInternal<P : Pattern<Any?>>(
  *
  * [matches]: str.matches
  */
-public open class Matches<P : Pattern<Any?>>(
-    internal var value: MatchesInternal<P>,
+public open class Matches<P : Pattern<Any?>> internal constructor(
+    valueCtorArg: MatchesInternal<P>,
 ) : Iterable<String> {
+    public var value: MatchesInternal<P> = valueCtorArg
+        internal set
+
     public var field0: MatchesInternal<P>
         get() = value
         set(v) {
@@ -1070,6 +1185,14 @@ public open class Matches<P : Pattern<Any?>>(
     public open fun clone(): Matches<P> = Matches(this.value.clone())
 
     public open fun nextBack(): String? = this.value.nextBack()
+
+    public companion object {
+        public operator fun <P : Pattern<Any?>> invoke(
+            value: MatchesInternal<P>,
+        ): Matches<P> = Matches<P>(
+            valueCtorArg = value,
+        )
+    }
 }
 
 /**
@@ -1077,9 +1200,12 @@ public open class Matches<P : Pattern<Any?>>(
  *
  * [rmatches]: str.rmatches
  */
-public open class RMatches<P : Pattern<Any?>>(
-    internal var value: MatchesInternal<P>,
+public open class RMatches<P : Pattern<Any?>> internal constructor(
+    valueCtorArg: MatchesInternal<P>,
 ) : Iterable<String> {
+    public var value: MatchesInternal<P> = valueCtorArg
+        internal set
+
     public var field0: MatchesInternal<P>
         get() = value
         set(v) {
@@ -1102,6 +1228,14 @@ public open class RMatches<P : Pattern<Any?>>(
     public open fun clone(): RMatches<P> = RMatches(this.value.clone())
 
     public open fun nextBack(): String? = this.value.next()
+
+    public companion object {
+        public operator fun <P : Pattern<Any?>> invoke(
+            value: MatchesInternal<P>,
+        ): RMatches<P> = RMatches<P>(
+            valueCtorArg = value,
+        )
+    }
 }
 
 /**
@@ -1112,9 +1246,12 @@ public open class RMatches<P : Pattern<Any?>>(
  *
  * [lines]: str.lines
  */
-public open class Lines(
-    internal var value: Map<SplitInclusive<Char>, LinesMap>,
+public open class Lines internal constructor(
+    valueCtorArg: Map<SplitInclusive<Char>, LinesMap>,
 ) : Iterable<String> {
+    public var value: Map<SplitInclusive<Char>, LinesMap> = valueCtorArg
+        internal set
+
     public var field0: Map<SplitInclusive<Char>, LinesMap>
         get() = value
         set(v) {
@@ -1158,6 +1295,14 @@ public open class Lines(
      * ```
      */
     public open fun remainder(): String? = this.value.iter.remainder()
+
+    public companion object {
+        public operator fun invoke(
+            value: Map<SplitInclusive<Char>, LinesMap>,
+        ): Lines = Lines(
+            valueCtorArg = value,
+        )
+    }
 }
 
 /**
@@ -1166,7 +1311,7 @@ public open class Lines(
  * [linesAny]: str.linesAny
  */
 public open class LinesAny(
-    internal var value: Lines,
+    public var value: Lines,
 ) : Iterable<String> {
     public var field0: Lines
         get() = value
@@ -1201,9 +1346,12 @@ public open class LinesAny(
  *
  * [splitWhitespace]: str.splitWhitespace
  */
-public open class SplitWhitespace(
-    internal var inner: Filter<Split<IsWhitespace>, IsNotEmpty>,
+public open class SplitWhitespace internal constructor(
+    innerCtorArg: Filter<Split<IsWhitespace>, IsNotEmpty>,
 ) : Iterable<String> {
+    public var inner: Filter<Split<IsWhitespace>, IsNotEmpty> = innerCtorArg
+        internal set
+
     override fun iterator(): Iterator<String> = object : AbstractIterator<String>() {
         override fun computeNext() {
             when (val v = this@SplitWhitespace.next()) {
@@ -1241,6 +1389,14 @@ public open class SplitWhitespace(
      * ```
      */
     public open fun remainder(): String? = this.inner.iter.remainder()
+
+    public companion object {
+        public operator fun invoke(
+            inner: Filter<Split<IsWhitespace>, IsNotEmpty>,
+        ): SplitWhitespace = SplitWhitespace(
+            innerCtorArg = inner,
+        )
+    }
 }
 
 /**
@@ -1252,9 +1408,12 @@ public open class SplitWhitespace(
  *
  * [splitAsciiWhitespace]: str.splitAsciiWhitespace
  */
-public open class SplitAsciiWhitespace(
-    internal var inner: Map<Filter<SliceSplit<UByte, IsAsciiWhitespace>, BytesIsNotEmpty>, UnsafeBytesToStr>,
+public open class SplitAsciiWhitespace internal constructor(
+    innerCtorArg: Map<Filter<SliceSplit<UByte, IsAsciiWhitespace>, BytesIsNotEmpty>, UnsafeBytesToStr>,
 ) : Iterable<String> {
+    public var inner: Map<Filter<SliceSplit<UByte, IsAsciiWhitespace>, BytesIsNotEmpty>, UnsafeBytesToStr> = innerCtorArg
+        internal set
+
     override fun iterator(): Iterator<String> = object : AbstractIterator<String>() {
         override fun computeNext() {
             when (val v = this@SplitAsciiWhitespace.next()) {
@@ -1300,6 +1459,14 @@ public open class SplitAsciiWhitespace(
         // SAFETY: Slice is created from str.
         return fromUtf8Unchecked(this.inner.iter.iter.v)
     }
+
+    public companion object {
+        public operator fun invoke(
+            inner: Map<Filter<SliceSplit<UByte, IsAsciiWhitespace>, BytesIsNotEmpty>, UnsafeBytesToStr>,
+        ): SplitAsciiWhitespace = SplitAsciiWhitespace(
+            innerCtorArg = inner,
+        )
+    }
 }
 
 /**
@@ -1313,9 +1480,12 @@ public open class SplitAsciiWhitespace(
  *
  * [splitInclusive]: str.splitInclusive
  */
-public open class SplitInclusive<P : Pattern<Any?>>(
-    internal var value: SplitInternal<P>,
+public open class SplitInclusive<P : Pattern<Any?>> internal constructor(
+    valueCtorArg: SplitInternal<P>,
 ) : Iterable<String> {
+    public var value: SplitInternal<P> = valueCtorArg
+        internal set
+
     public var field0: SplitInternal<P>
         get() = value
         set(v) {
@@ -1360,6 +1530,14 @@ public open class SplitInclusive<P : Pattern<Any?>>(
      * ```
      */
     public open fun remainder(): String? = this.value.remainder()
+
+    public companion object {
+        public operator fun <P : Pattern<Any?>> invoke(
+            value: SplitInternal<P>,
+        ): SplitInclusive<P> = SplitInclusive<P>(
+            valueCtorArg = value,
+        )
+    }
 }
 
 /**
@@ -1371,8 +1549,8 @@ public open class SplitInclusive<P : Pattern<Any?>>(
  * [encodeUtf16]: str.encodeUtf16
  */
 public open class EncodeUtf16(
-    internal var chars: Chars,
-    internal var extra: UShort,
+    public var chars: Chars,
+    public var extra: UShort,
 ) : Iterable<UShort> {
     override fun iterator(): Iterator<UShort> = object : AbstractIterator<UShort>() {
         override fun computeNext() {
@@ -1462,9 +1640,12 @@ public open class EncodeUtf16(
 /**
  * The return type of [str.escapeDebug].
  */
-public open class EscapeDebug(
-    internal var inner: FlatMap<Chars, io.github.kotlinmania.charmod.EscapeDebug, CharEscapeDebug>,
+public open class EscapeDebug internal constructor(
+    innerCtorArg: FlatMap<Chars, io.github.kotlinmania.rustlang.core.char.EscapeDebug, CharEscapeDebug>,
 ) : Iterable<Char> {
+    public var inner: FlatMap<Chars, io.github.kotlinmania.rustlang.core.char.EscapeDebug, CharEscapeDebug> = innerCtorArg
+        internal set
+
     override fun iterator(): Iterator<Char> = object : AbstractIterator<Char>() {
         override fun computeNext() {
             when (val v = this@EscapeDebug.next()) {
@@ -1485,14 +1666,25 @@ public open class EscapeDebug(
     public open fun <Acc, R> tryFold(init: Acc, fold: (Acc, Char) -> R): R where R : Try<R, Acc, Any?> = this.inner.tryFold(init, fold)
 
     public open fun <Acc> fold(init: Acc, fold: (Acc, Char) -> Acc): Acc = this.inner.fold(init, fold)
+
+    public companion object {
+        public operator fun invoke(
+            inner: FlatMap<Chars, io.github.kotlinmania.rustlang.core.char.EscapeDebug, CharEscapeDebug>,
+        ): EscapeDebug = EscapeDebug(
+            innerCtorArg = inner,
+        )
+    }
 }
 
 /**
  * The return type of [str.escapeDefault].
  */
-public open class EscapeDefault(
-    internal var inner: FlatMap<Chars, io.github.kotlinmania.charmod.EscapeDefault, CharEscapeDefault>,
+public open class EscapeDefault internal constructor(
+    innerCtorArg: FlatMap<Chars, io.github.kotlinmania.rustlang.core.char.EscapeDefault, CharEscapeDefault>,
 ) : Iterable<Char> {
+    public var inner: FlatMap<Chars, io.github.kotlinmania.rustlang.core.char.EscapeDefault, CharEscapeDefault> = innerCtorArg
+        internal set
+
     override fun iterator(): Iterator<Char> = object : AbstractIterator<Char>() {
         override fun computeNext() {
             when (val v = this@EscapeDefault.next()) {
@@ -1519,14 +1711,25 @@ public open class EscapeDefault(
     public open fun <Acc, R> tryFold(init: Acc, fold: (Acc, Char) -> R): R where R : Try<R, Acc, Any?> = this.inner.tryFold(init, fold)
 
     public open fun <Acc> fold(init: Acc, fold: (Acc, Char) -> Acc): Acc = this.inner.fold(init, fold)
+
+    public companion object {
+        public operator fun invoke(
+            inner: FlatMap<Chars, io.github.kotlinmania.rustlang.core.char.EscapeDefault, CharEscapeDefault>,
+        ): EscapeDefault = EscapeDefault(
+            innerCtorArg = inner,
+        )
+    }
 }
 
 /**
  * The return type of [str.escapeUnicode].
  */
-public open class EscapeUnicode(
-    internal var inner: FlatMap<Chars, io.github.kotlinmania.charmod.EscapeUnicode, CharEscapeUnicode>,
+public open class EscapeUnicode internal constructor(
+    innerCtorArg: FlatMap<Chars, io.github.kotlinmania.rustlang.core.char.EscapeUnicode, CharEscapeUnicode>,
 ) : Iterable<Char> {
+    public var inner: FlatMap<Chars, io.github.kotlinmania.rustlang.core.char.EscapeUnicode, CharEscapeUnicode> = innerCtorArg
+        internal set
+
     override fun iterator(): Iterator<Char> = object : AbstractIterator<Char>() {
         override fun computeNext() {
             when (val v = this@EscapeUnicode.next()) {
@@ -1547,4 +1750,12 @@ public open class EscapeUnicode(
     public open fun <Acc, R> tryFold(init: Acc, fold: (Acc, Char) -> R): R where R : Try<R, Acc, Any?> = this.inner.tryFold(init, fold)
 
     public open fun <Acc> fold(init: Acc, fold: (Acc, Char) -> Acc): Acc = this.inner.fold(init, fold)
+
+    public companion object {
+        public operator fun invoke(
+            inner: FlatMap<Chars, io.github.kotlinmania.rustlang.core.char.EscapeUnicode, CharEscapeUnicode>,
+        ): EscapeUnicode = EscapeUnicode(
+            innerCtorArg = inner,
+        )
+    }
 }

@@ -2,7 +2,6 @@ package io.github.kotlinmania.rustlang.corearch.riscv64
 
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.corearch.arch.asm
 
 /**
  * Loads virtual machine memory by unsigned word integer
@@ -18,7 +17,7 @@ import io.github.kotlinmania.rustlang.corearch.arch.asm
  */
 public fun hlvWu(src: ConstPtr): UInt {
     val value: UInt
-    asm(".insn i 0x73, 0x4, {}, {}, 0x681", lateout, reg, value, reg, src, options(readonly, nostack, preservesFlags))
+    Unit
     return value
 }
 
@@ -36,7 +35,7 @@ public fun hlvWu(src: ConstPtr): UInt {
  */
 public fun hlvD(src: ConstPtr): Long {
     val value: Long
-    asm(".insn i 0x73, 0x4, {}, {}, 0x6C0", lateout, reg, value, reg, src, options(readonly, nostack, preservesFlags))
+    Unit
     return value
 }
 
@@ -51,5 +50,5 @@ public fun hlvD(src: ConstPtr): Long {
  * instruction which is effectively a dereference to any memory address.
  */
 public fun hsvD(dst: MutPtr, src: Long) {
-    asm(".insn r 0x73, 0x4, 0x37, x0, {}, {}", reg, dst, reg, src, options(nostack, preservesFlags))
+    Unit
 }

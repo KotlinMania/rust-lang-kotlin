@@ -6,7 +6,7 @@ package io.github.kotlinmania.rustlang.stddetect.detect.bit
 /**
  * Tests the `bit` of `x`.
  */
-internal fun test(x: Int, bit: UInt): Boolean {
+public fun test(x: Int, bit: UInt): Boolean {
     check(bit < 32u) { "bit index out-of-bounds" }
     return x and (1 shl bit.toInt()) != 0
 }

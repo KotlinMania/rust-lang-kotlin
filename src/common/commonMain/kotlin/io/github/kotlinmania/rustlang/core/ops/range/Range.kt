@@ -416,8 +416,8 @@ public open class RangeInclusive<Idx>(
     // expose start/end, modifying them without changing (future/current)
     // private fields may lead to incorrect behavior, so we don't want to
     // support that mode.
-    internal var start: Idx,
-    internal var end: Idx,
+    public var start: Idx,
+    public var end: Idx,
     // This field represents an overflow flag for either bound (start or end):
     // - `false` upon construction
     // - `false` when iteration has yielded an element and
@@ -429,7 +429,7 @@ public open class RangeInclusive<Idx>(
     // often wrapping (modular arithmetic) around at the boundary of `Idx`.
     //
     // This is required to support PartialEq and Hash without a PartialOrd bound or specialization.
-    internal var exhausted: Boolean,
+    public var exhausted: Boolean,
 ) {
     public open fun clone(): RangeInclusive<Idx> = RangeInclusive(start, end, exhausted)
 
@@ -612,7 +612,7 @@ public open class RangeInclusive<Idx>(
  * Converts to an exclusive `Range` for `SliceIndex` implementations.
  * The caller is responsible for dealing with `end == Int.MAX`.
  */
-internal fun RangeInclusive<Int>.intoSliceRange(): Range<Int> {
+public fun RangeInclusive<Int>.intoSliceRange(): Range<Int> {
     // Typically users should not be indexing with exhausted instances,
     // but this heuristic should apply to most cases. This doesn't
     // handle reverse iteration well (`nextBack` and `nthBack` can
@@ -825,8 +825,8 @@ public sealed class Bound<T> {
      * ```
      *
      * ```kotlin
-     * import Bound.*
      * import std.ops.Bound
+     * import std.ops.Bound.*
      *
      * val unboundedString: Bound<String> = Unbounded
      * check(unboundedString.map({ s -> s.len() }) == Unbounded)

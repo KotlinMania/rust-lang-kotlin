@@ -1,6 +1,8 @@
 // port-lint: source io/cursor.rs
 package io.github.kotlinmania.rustlang.alloc.io.cursor
 
+import io.github.kotlinmania.rustlang.alloc.io.Error
+import io.github.kotlinmania.rustlang.alloc.io.constError
 import io.github.kotlinmania.rustlang.alloc.string.String
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.intrinsics.kmCopy
@@ -98,7 +100,7 @@ public fun Cursor<T>.consume(amt: Int) {
 public fun <A : Allocator> reserveAndPad(posMut: RustMutableReference<ULong>, vec: List<UByte>, bufLen: Int): Result<Int> {
     val pos: Int =
         when (val tryResult = (posMut).read().tryInto().mapErr({
-            io.constError(ErrorKind.InvalidInput, "cursor position exceeds maximum possible vector length")
+            constError(ErrorKind.InvalidInput, "cursor position exceeds maximum possible vector length")
         })) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
     // For safety reasons, we don't want these numbers to overflow
     // otherwise our allocation won't be enough

@@ -2,14 +2,12 @@
 package io.github.kotlinmania.rustlang.core.str.converts
 
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.slice.rawMutSliceList
-import io.github.kotlinmania.rustlang.core.slice.rawSliceList
 import io.github.kotlinmania.rustlang.core.str.error.Utf8Error
 import io.github.kotlinmania.rustlang.core.str.validations.runUtf8Validation
 
@@ -224,7 +222,7 @@ public fun fromUtf8UncheckedMut(v: MutableList<UByte>): String {
  */
 public fun fromRawParts(ptr: ConstPtr, len: Int): String {
     // SAFETY: the caller must uphold the safety contract for `fromRawParts`.
-    return (ObjectSlotLayout<T>()).readNative((rawSliceList(ptr, len.toInt(), PrimitiveLayouts.U8)).rawAddress)
+    return (ObjectSlotLayout<T>()).readNative((io.github.kotlinmania.rustlang.core.ptr.metadata.fromRawParts(ptr, len)).rawAddress)
 }
 
 /**
@@ -243,5 +241,5 @@ public fun fromRawParts(ptr: ConstPtr, len: Int): String {
  */
 public fun fromRawPartsMut(ptr: MutPtr, len: Int): String {
     // SAFETY: the caller must uphold the safety contract for `fromRawPartsMut`.
-    return RustMutableReference(MutPtr((rawMutSliceList(ptr, len.toInt(), PrimitiveLayouts.U8)).rawAddress), ObjectSlotLayout<T>())
+    return RustMutableReference(MutPtr((io.github.kotlinmania.rustlang.core.ptr.metadata.fromRawPartsMut(ptr, len)).rawAddress), ObjectSlotLayout<T>())
 }

@@ -15,13 +15,10 @@ import io.github.kotlinmania.rustlang.std.Layout
 import io.github.kotlinmania.rustlang.std.panic.BacktraceStyle
 import io.github.kotlinmania.rustlang.std.panic.getBacktraceStyle
 import io.github.kotlinmania.rustlang.std.process.abort
-import io.github.kotlinmania.rustlang.std.sys.alloc.unix.alloc
-import io.github.kotlinmania.rustlang.std.sys.alloc.unix.allocZeroed
-import io.github.kotlinmania.rustlang.std.sys.alloc.unix.dealloc
-import io.github.kotlinmania.rustlang.std.sys.alloc.unix.realloc
 import io.github.kotlinmania.rustlang.std.sys.backtrace.lock
 import io.github.kotlinmania.rustlang.std.sys.backtrace.rustEndShortBacktrace
 import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
+import io.github.kotlinmania.rustlang.std.sys.alloc.unix.alloc as imp
 
 // Memory allocation APIs.
 //
@@ -179,9 +176,9 @@ public open class System : AllocatorClone, StaticAllocator, Allocator, GlobalAll
                 run {
                     val rawPtr =
                         if (zeroed) {
-                            allocZeroed(layout)
+                            imp.allocZeroed(layout)
                         } else {
-                            alloc(layout)
+                            imp.alloc(layout)
                         }
                     val ptr = when (val tryResult = NonNull.new(rawPtr).okOr(AllocError)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
                     Result.Ok(ptr.castSlice(size))
@@ -206,7 +203,7 @@ public open class System : AllocatorClone, StaticAllocator, Allocator, GlobalAll
                         val newSize = newLayout.size()
                         // `realloc` probably checks for `newSize >= oldLayout.size()` or something similar.
                         assertUnchecked(newSize >= oldLayout.size())
-                        val rawPtr = realloc(ptr.asPtr(), oldLayout, newSize)
+                        val rawPtr = imp.realloc(ptr.asPtr(), oldLayout, newSize)
                         val ptr1 = when (val tryResult = NonNull.new(rawPtr).okOr(AllocError)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
                         if (zeroed) {
                             rawPtr.add(oldSize).writeBytes(0, newSize - oldSize)
@@ -242,7 +239,7 @@ public open class System : AllocatorClone, StaticAllocator, Allocator, GlobalAll
         if (layout.size() != 0) {
             // SAFETY: `layout` is non-zero in size,
             // other conditions must be upheld by the caller
-            dealloc(ptr.asPtr(), layout)
+            imp.dealloc(ptr.asPtr(), layout)
         }
     }
 
@@ -272,7 +269,7 @@ public open class System : AllocatorClone, StaticAllocator, Allocator, GlobalAll
                     run {
                         // `realloc` probably checks for `newSize <= oldLayout.size()` or something similar.
                         assertUnchecked(newSize <= oldLayout.size())
-                        val rawPtr = realloc(ptr.asPtr(), oldLayout, newSize)
+                        val rawPtr = imp.realloc(ptr.asPtr(), oldLayout, newSize)
                         val ptr1 = when (val tryResult = NonNull.new(rawPtr).okOr(AllocError)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
                         Result.Ok(ptr1.castSlice(newSize))
                     }
@@ -417,10 +414,10 @@ public fun defaultAllocErrorHook(layout: Layout) {
     val lock = lock()
     when (val matchVal1 = getBacktraceStyle()) {
         BacktraceStyle.Short -> {
-            drop(lock.print(out1, PrintFmt.Short))
+            (lock.print(out1, PrintFmt.Short)).let { }
         }
         BacktraceStyle.Full -> {
-            drop(lock.print(out1, PrintFmt.Full))
+            (lock.print(out1, PrintFmt.Full)).let { }
         }
         BacktraceStyle.Off -> {
             out1.appendLine("note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace")
@@ -458,14 +455,14 @@ public fun rdlAlloc(size: Int, align: Int): MutPtr {
     // `GlobalAlloc.alloc`.
     return run {
         val layout = Layout.fromSizeAlignUnchecked(size, align)
-        alloc(layout)
+        imp.alloc(layout)
     }
 }
 
 public fun rdlDealloc(ptr: MutPtr, size: Int, align: Int) {
     // SAFETY: see the guarantees expected by `Layout.fromSizeAlign` and
     // `GlobalAlloc.dealloc`.
-    dealloc(ptr, Layout.fromSizeAlignUnchecked(size, align))
+    imp.dealloc(ptr, Layout.fromSizeAlignUnchecked(size, align))
 }
 
 public fun rdlRealloc(ptr: MutPtr, oldSize: Int, align: Int, newSize: Int): MutPtr {
@@ -473,7 +470,7 @@ public fun rdlRealloc(ptr: MutPtr, oldSize: Int, align: Int, newSize: Int): MutP
     // `GlobalAlloc.realloc`.
     return run {
         val oldLayout = Layout.fromSizeAlignUnchecked(oldSize, align)
-        realloc(ptr, oldLayout, newSize)
+        imp.realloc(ptr, oldLayout, newSize)
     }
 }
 
@@ -482,6 +479,6 @@ public fun rdlAllocZeroed(size: Int, align: Int): MutPtr {
     // `GlobalAlloc.allocZeroed`.
     return run {
         val layout = Layout.fromSizeAlignUnchecked(size, align)
-        allocZeroed(layout)
+        imp.allocZeroed(layout)
     }
 }

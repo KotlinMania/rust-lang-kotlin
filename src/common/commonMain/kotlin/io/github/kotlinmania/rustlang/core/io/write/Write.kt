@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.core.io.write
 
 import io.github.kotlinmania.rustlang.core.fmt.Arguments
+import io.github.kotlinmania.rustlang.core.fmt.write
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.Result
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
@@ -404,7 +405,7 @@ public fun <W : Write<W>> defaultWriteFmt(thisRef: W, args: Arguments): Result<U
     }
     val output = Adapter(inner = thisRef, error = Result.Ok(Unit))
     return run {
-        val matchVal = Write(output, args)
+        val matchVal = write(output, args)
         when (matchVal) { is Result.Ok<*> -> {
             Result.Ok(Unit)
         }; is Result.Err<*> -> {

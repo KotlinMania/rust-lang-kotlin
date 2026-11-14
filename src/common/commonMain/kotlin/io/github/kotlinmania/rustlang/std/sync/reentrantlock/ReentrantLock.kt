@@ -281,7 +281,7 @@ public open class ReentrantLock<T> internal constructor(
          * }
          * ```
          */
-        public fun <T> new(t: T): ReentrantLock<T> = ReentrantLock(mutex = Mutex.new(), owner = Tid.new(), lockCount = UnsafeCell.new(0), data = t)
+        public fun <T> new(t: T): ReentrantLock<T> = ReentrantLock(mutex = io.github.kotlinmania.rustlang.std.sys.sync.mutex.new(), owner = Tid.new(), lockCount = UnsafeCell.new(0), data = t)
 
         public fun <T> default(defaultTFn: () -> T): ReentrantLock<T> = ReentrantLock.new(defaultTFn())
 

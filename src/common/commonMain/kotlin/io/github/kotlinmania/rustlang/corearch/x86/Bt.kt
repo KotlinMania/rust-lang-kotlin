@@ -3,7 +3,6 @@ package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.corearch.arch.asm
 
 /**
  * Returns the bit in position `b` of the memory addressed by `p`.
@@ -12,7 +11,7 @@ import io.github.kotlinmania.rustlang.corearch.arch.asm
  */
 public fun bittest(p: ConstPtr, b: Int): UByte {
     val r: UByte
-    asm(bt("btl"), "setc {r}", p, reg, p, b, reg, b, r, out, regByte, r, options(readonly, nostack, pure, attSyntax))
+    Unit
     return r
 }
 
@@ -23,7 +22,7 @@ public fun bittest(p: ConstPtr, b: Int): UByte {
  */
 public fun bittestandset(p: MutPtr, b: Int): UByte {
     val r: UByte
-    asm(bt("btsl"), "setc {r}", p, reg, p, b, reg, b, r, out, regByte, r, options(nostack, attSyntax))
+    Unit
     return r
 }
 
@@ -34,7 +33,7 @@ public fun bittestandset(p: MutPtr, b: Int): UByte {
  */
 public fun bittestandreset(p: MutPtr, b: Int): UByte {
     val r: UByte
-    asm(bt("btrl"), "setc {r}", p, reg, p, b, reg, b, r, out, regByte, r, options(nostack, attSyntax))
+    Unit
     return r
 }
 
@@ -45,6 +44,6 @@ public fun bittestandreset(p: MutPtr, b: Int): UByte {
  */
 public fun bittestandcomplement(p: MutPtr, b: Int): UByte {
     val r: UByte
-    asm(bt("btcl"), "setc {r}", p, reg, p, b, reg, b, r, out, regByte, r, options(nostack, attSyntax))
+    Unit
     return r
 }

@@ -3,8 +3,10 @@
 
 package io.github.kotlinmania.rustlang.core.io.cursor
 
-import io.github.kotlinmania.rustlang.core.fmt.write
+import io.github.kotlinmania.rustlang.core.cmp.min
+import io.github.kotlinmania.rustlang.core.io.constError
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
+import io.github.kotlinmania.rustlang.core.io.error.WRITE_ALL_EOF
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.seek.Seek
 import io.github.kotlinmania.rustlang.core.io.seek.SeekFrom
@@ -232,7 +234,7 @@ public open class Cursor<T>(
                 }
             }
         return when (val matchVal = basePos.checkedAddSigned(offset)) {
-            null -> Result.Err(io.constError(ErrorKind.InvalidInput, "invalid seek to a negative or overflowing position"))
+            null -> Result.Err(constError(ErrorKind.InvalidInput, "invalid seek to a negative or overflowing position"))
             else -> {
                 val n3 = matchVal
                 this.setPosition(n3)
@@ -331,7 +333,7 @@ public fun sliceWriteVectored(posMut: RustMutableReference<ULong>, slice: Mutabl
 public fun sliceWriteAll(posMut: RustMutableReference<ULong>, slice: MutableList<UByte>, buf: List<UByte>): Result<Unit> {
     val n = when (val tryResult = sliceWrite(posMut, slice, buf)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
     return if (n < buf.size) {
-        Result.Err(Error.WRITE_ALL_EOF)
+        Result.Err(WRITE_ALL_EOF)
     } else {
         Result.Ok(Unit)
     }
@@ -345,7 +347,7 @@ public fun sliceWriteAllVectored(posMut: RustMutableReference<ULong>, slice: Mut
     for (buf in bufs) {
         val n = when (val tryResult = sliceWrite(posMut, slice, buf)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         if (n < buf.len()) {
-            return Result.Err(Error.WRITE_ALL_EOF)
+            return Result.Err(WRITE_ALL_EOF)
         }
     }
     return Result.Ok(Unit)

@@ -12,21 +12,21 @@ import io.github.kotlinmania.rustlang.stddetect.detect.checkFor
  * PLEASE: do not use this, it is an implementation detail subject
  * to change.
  */
-internal sealed class Feature {
+public sealed class Feature {
     /**
      * MIPS SIMD Architecture (MSA)
      */
     public data object Msa : Feature()
 
-    internal open fun toStr(): String =
+    public open fun toStr(): String =
         when (this) {
             Feature.msa -> "msa"
         }
 
     public companion object {
-        internal val ALL: List<Feature> = listOf(Feature::msa)
+        public val ALL: List<Feature> = listOf(Feature::msa)
 
-        internal fun fromStr(s: String): Result<Feature, Unit> =
+        public fun fromStr(s: String): Result<Feature, Unit> =
             when (s) {
                 "msa" -> Result.Ok(Feature::msa)
                 else -> Result.Err(Unit)

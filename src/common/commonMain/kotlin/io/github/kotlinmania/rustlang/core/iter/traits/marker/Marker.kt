@@ -1,7 +1,7 @@
 // port-lint: source iter/traits/marker.rs
 package io.github.kotlinmania.rustlang.core.iter.traits.marker
 
-import io.github.kotlinmania.rustlang.core.iter.Step
+import io.github.kotlinmania.rustlang.core.iter.range.Step
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 
 /**

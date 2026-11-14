@@ -1,17 +1,17 @@
 package io.github.kotlinmania.rustlang.corearch.aarch64.sve
 
-internal interface AsUnsigned<out Unsigned> {
+public interface AsUnsigned<out Unsigned> {
     public fun asUnsigned(): Unsigned
 }
 
-internal interface AsSigned<out Signed> {
+public interface AsSigned<out Signed> {
     public fun asSigned(): Signed
 }
 
 /**
  * Same as `Into` but with into being unchecked so that it can have the required `targetFeature`
  */
-internal interface SveInto<T> {
+public interface SveInto<T> {
     public fun sveInto(): T
 }
 

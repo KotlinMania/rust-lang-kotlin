@@ -1,19 +1,20 @@
 // port-lint: source sys/sync/futex/unix.rs
 package io.github.kotlinmania.rustlang.std.sys.sync.futex.unix
 
-import io.github.kotlinmania.libc.SysFutex
-import io.github.kotlinmania.libc.fuchsia.CLOCK_MONOTONIC
-import io.github.kotlinmania.libc.fuchsia.EINTR
-import io.github.kotlinmania.libc.fuchsia.ETIMEDOUT
-import io.github.kotlinmania.libc.syscall
-import io.github.kotlinmania.libc.unix.linuxlike.android.FUTEX_PRIVATE_FLAG
-import io.github.kotlinmania.libc.unix.linuxlike.android.FUTEX_WAIT_BITSET
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.time.Duration
+import io.github.kotlinmania.rustlang.libc.SysFutex
+import io.github.kotlinmania.rustlang.libc.helenos.CLOCK_MONOTONIC
+import io.github.kotlinmania.rustlang.libc.new.glibc.sysdeps.unix.linux.bits.types.siginfot.syscall
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.FUTEX_PRIVATE_FLAG
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.FUTEX_WAIT_BITSET
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.FUTEX_WAKE
+import io.github.kotlinmania.rustlang.libc.wasi.EINTR
+import io.github.kotlinmania.rustlang.libc.wasi.ETIMEDOUT
 import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Relaxed
-import io.github.kotlinmania.rustlang.std.sys.io.error.generic.errno
+import io.github.kotlinmania.rustlang.std.sys.io.Errno
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.time.Timespec
 
 /**
@@ -54,7 +55,7 @@ public fun futexWait(futex: Atomic<UInt>, expected: UInt, timeout: Duration?): B
             return true
         }
         val r = syscall(SysFutex, ((constPtrFromRustCast(futex)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }).rawAddress, (FUTEX_WAIT_BITSET or FUTEX_PRIVATE_FLAG).toLong(), expected.toLong(), (timespec?.let({ t -> constPtrFromRustCast(t) }) ?: ConstPtr(0L)).toLong(), ConstPtr(0L).toLong(), 0u.inv())
-        when (val matchVal = (r < 0).then(errno)) {
+        when (val matchVal = (r < 0).then(Errno)) {
             ETIMEDOUT -> { return false }
             EINTR -> { continue }
             else -> { return true }
@@ -72,7 +73,7 @@ public fun futexWait(futex: Atomic<UInt>, expected: UInt, timeout: Duration?): B
  */
 public fun futexWake(futex: Atomic<UInt>): Boolean {
     val ptr = (constPtrFromRustCast(futex)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
-    val op = io.github.kotlinmania.libc.futexWake or FUTEX_PRIVATE_FLAG
+    val op = FUTEX_WAKE or FUTEX_PRIVATE_FLAG
     return syscall(SysFutex, ptr.rawAddress, op.toLong(), 1L) > 0
 }
 
@@ -81,7 +82,7 @@ public fun futexWake(futex: Atomic<UInt>): Boolean {
  */
 public fun futexWakeAll(futex: Atomic<UInt>) {
     val ptr = (constPtrFromRustCast(futex)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
-    val op = io.github.kotlinmania.libc.futexWake or FUTEX_PRIVATE_FLAG
+    val op = FUTEX_WAKE or FUTEX_PRIVATE_FLAG
     run {
         syscall(SysFutex, ptr.rawAddress, op.toLong(), Int.MAX_VALUE.toLong())
     }

@@ -51,8 +51,8 @@ import io.github.kotlinmania.rustlang.core.result.Result
  * ```
  */
 public open class Utf8Error(
-    internal var validUpTo: Int,
-    internal var errorLen: UByte?,
+    public var validUpTo: Int,
+    public var errorLen: UByte?,
 ) {
     public open fun clone(): Utf8Error = Utf8Error(validUpTo, errorLen)
 

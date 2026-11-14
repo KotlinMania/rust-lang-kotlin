@@ -2,12 +2,12 @@
 
 package io.github.kotlinmania.rustlang.std.sys.io.error.unix
 
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.std.ffi.CInt
 
 private object SysIoErrorUnixJniBridge {
     init {
-        System.loadLibrary("std_jni")
+        System.loadLibrary("kmcore_jni")
     }
 
     @JvmStatic

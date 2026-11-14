@@ -53,13 +53,13 @@ public open class Iovec internal constructor(
     }
 }
 
-internal open class IoSlice(
+public open class IoSlice(
     public var vec: Iovec,
     public var p: Unit,
 ) {
     public open fun clone(): IoSlice = IoSlice(vec, p)
 
-    internal open fun advance(n: Int) {
+    public open fun advance(n: Int) {
         check(n <= this.vec.iovLen) { "advancing IoSlice beyond its length" }
         // SAFETY:
         // * `n <= iovLen` as asserted above.
@@ -70,22 +70,22 @@ internal open class IoSlice(
         }
     }
 
-    internal open fun asSlice(): List<UByte> {
+    public open fun asSlice(): List<UByte> {
         // SAFETY:
         // * `iovBase` and `iovLen` come from a prior decomposition of a valid slice.
         return rawSliceList((this.vec.iovBase).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, this.vec.iovLen.toInt(), PrimitiveLayouts.U8)
     }
 
     public companion object {
-        internal fun new(buf: List<UByte>): IoSlice = IoSlice(vec = Iovec(iovBase = ((buf.asPtr()).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, iovLen = buf.size), p = Unit)
+        public fun new(buf: List<UByte>): IoSlice = IoSlice(vec = Iovec(iovBase = ((buf.asPtr()).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, iovLen = buf.size), p = Unit)
     }
 }
 
-internal open class IoSliceMut(
+public open class IoSliceMut(
     public var vec: Iovec,
     public var p: Unit,
 ) {
-    internal open fun advance(n: Int) {
+    public open fun advance(n: Int) {
         check(n <= this.vec.iovLen) { "advancing IoSliceMut beyond its length" }
         // SAFETY:
         // * `n <= iovLen` as asserted above.
@@ -96,25 +96,25 @@ internal open class IoSliceMut(
         }
     }
 
-    internal open fun asSlice(): List<UByte> {
+    public open fun asSlice(): List<UByte> {
         // SAFETY:
         // * `iovBase` and `iovLen` come from a prior decomposition of a valid slice.
         return rawSliceList((this.vec.iovBase).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, this.vec.iovLen.toInt(), PrimitiveLayouts.U8)
     }
 
-    internal open fun intoSlice(): MutableList<UByte> {
+    public open fun intoSlice(): MutableList<UByte> {
         // SAFETY:
         // * `iovBase` and `iovLen` come from a prior decomposition of a valid slice.
         return rawMutSliceList((this.vec.iovBase).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, this.vec.iovLen.toInt(), PrimitiveLayouts.U8)
     }
 
-    internal open fun asMutSlice(): MutableList<UByte> {
+    public open fun asMutSlice(): MutableList<UByte> {
         // SAFETY:
         // * `iovBase` and `iovLen` come from a prior decomposition of a valid slice.
         return rawMutSliceList((this.vec.iovBase).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, this.vec.iovLen.toInt(), PrimitiveLayouts.U8)
     }
 
     public companion object {
-        internal fun new(buf: MutableList<UByte>): IoSliceMut = IoSliceMut(vec = Iovec(iovBase = (buf.asMutPtr()).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, iovLen = buf.size), p = Unit)
+        public fun new(buf: MutableList<UByte>): IoSliceMut = IoSliceMut(vec = Iovec(iovBase = (buf.asMutPtr()).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, iovLen = buf.size), p = Unit)
     }
 }

@@ -2,63 +2,63 @@
 
 package io.github.kotlinmania.rustlang.corearch.loongarch64
 
-@JsFun("() => { if (typeof globalThis.__km_napi_corearch !== 'undefined') return globalThis.__km_napi_corearch !== null; if (typeof process === 'undefined' || !process.versions || !process.versions.node) { globalThis.__km_napi_corearch = null; return false; } var mod = process.getBuiltinModule ? process.getBuiltinModule('module') : (process.mainModule && process.mainModule.constructor); var req = (mod && mod.createRequire) ? mod.createRequire((process.cwd ? process.cwd() : '.') + '/package.json') : (process.mainModule ? process.mainModule.require : null); if (!req) { globalThis.__km_napi_corearch = null; return false; } try { globalThis.__km_napi_corearch = req('@kotlinmania/corearch-native-bindings'); return true; } catch (_) {} var fs = req('fs'); var path = req('path'); var dir = process.cwd ? process.cwd() : '.'; var rels = ['corearch_native.node', 'build/node-ffi/corearch_native.node', 'build/node-ffi/release/corearch_native.node', 'build/node-ffi/debug/corearch_native.node', 'src/js/node-corearch/build/Release/corearch_native.node', 'src/js/node-corearch/build/Debug/corearch_native.node', 'src/js/node-corearch/dist/build/Release/corearch_native.node', 'src/js/node-corearch/dist/build/Debug/corearch_native.node']; for (var d = 0; d < 8; d++) { for (var i = 0; i < rels.length; i++) { var c = path.resolve(dir, rels[i]); if (fs.existsSync(c)) { globalThis.__km_napi_corearch = req(c); return true; } } var parent = path.dirname(dir); if (parent === dir) break; dir = parent; } globalThis.__km_napi_corearch = null; return false; }")
+@JsFun("() => { if (typeof globalThis.__km_napi_kmcore !== 'undefined') return globalThis.__km_napi_kmcore !== null; if (typeof process === 'undefined' || !process.versions || !process.versions.node) { globalThis.__km_napi_kmcore = null; return false; } var mod = process.getBuiltinModule ? process.getBuiltinModule('module') : (process.mainModule && process.mainModule.constructor); var req = (mod && mod.createRequire) ? mod.createRequire((process.cwd ? process.cwd() : '.') + '/package.json') : (process.mainModule ? process.mainModule.require : null); if (!req) { globalThis.__km_napi_kmcore = null; return false; } try { globalThis.__km_napi_kmcore = req('@kotlinmania/kmcore-native-bindings'); return true; } catch (_) {} var fs = req('fs'); var path = req('path'); var dir = process.cwd ? process.cwd() : '.'; var rels = ['kmcore_native.node', 'build/node-ffi/kmcore_native.node', 'build/node-ffi/release/kmcore_native.node', 'build/node-ffi/debug/kmcore_native.node', 'src/js/node-kmcore/build/Release/kmcore_native.node', 'src/js/node-kmcore/build/Debug/kmcore_native.node', 'src/js/node-kmcore/dist/build/Release/kmcore_native.node', 'src/js/node-kmcore/dist/build/Debug/kmcore_native.node']; for (var d = 0; d < 8; d++) { for (var i = 0; i < rels.length; i++) { var c = path.resolve(dir, rels[i]); if (fs.existsSync(c)) { globalThis.__km_napi_kmcore = req(c); return true; } } var parent = path.dirname(dir); if (parent === dir) break; dir = parent; } globalThis.__km_napi_kmcore = null; return false; }")
 private external fun initLoongarch64NapiAddon(): Boolean
 
 private val loongarch64NapiAvailable: Boolean = initLoongarch64NapiAddon()
 
-@JsFun("(p0, p1) => globalThis.__km_napi_corearch.corearchLoongarch64CrcWBW(p0, p1)")
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchLoongarch64CrcWBW(p0, p1)")
 private external fun wasmCorearchLoongarch64CrcWBW(p0: Int, p1: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_corearch.corearchLoongarch64CrcWHW(p0, p1)")
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchLoongarch64CrcWHW(p0, p1)")
 private external fun wasmCorearchLoongarch64CrcWHW(p0: Int, p1: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_corearch.corearchLoongarch64CrcWWW(p0, p1)")
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchLoongarch64CrcWWW(p0, p1)")
 private external fun wasmCorearchLoongarch64CrcWWW(p0: Int, p1: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_corearch.corearchLoongarch64CrcWDW(p0, p1)")
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchLoongarch64CrcWDW(p0, p1)")
 private external fun wasmCorearchLoongarch64CrcWDW(p0: String, p1: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_corearch.corearchLoongarch64CrccWBW(p0, p1)")
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchLoongarch64CrccWBW(p0, p1)")
 private external fun wasmCorearchLoongarch64CrccWBW(p0: Int, p1: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_corearch.corearchLoongarch64CrccWHW(p0, p1)")
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchLoongarch64CrccWHW(p0, p1)")
 private external fun wasmCorearchLoongarch64CrccWHW(p0: Int, p1: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_corearch.corearchLoongarch64CrccWWW(p0, p1)")
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchLoongarch64CrccWWW(p0, p1)")
 private external fun wasmCorearchLoongarch64CrccWWW(p0: Int, p1: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_corearch.corearchLoongarch64CrccWDW(p0, p1)")
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchLoongarch64CrccWDW(p0, p1)")
 private external fun wasmCorearchLoongarch64CrccWDW(p0: String, p1: Int): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_corearch.corearchLoongarch64Cacop(p0, p1, p2)")
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.corearchLoongarch64Cacop(p0, p1, p2)")
 private external fun wasmCorearchLoongarch64Cacop(p0: String, p1: String, p2: String)
 
-@JsFun("(p0) => globalThis.__km_napi_corearch.corearchLoongarch64Csrrd(p0)")
+@JsFun("(p0) => globalThis.__km_napi_kmcore.corearchLoongarch64Csrrd(p0)")
 private external fun wasmCorearchLoongarch64Csrrd(p0: Int): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_corearch.corearchLoongarch64Csrwr(p0, p1)")
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchLoongarch64Csrwr(p0, p1)")
 private external fun wasmCorearchLoongarch64Csrwr(p0: String, p1: Int): String
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_corearch.corearchLoongarch64Csrxchg(p0, p1, p2)")
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.corearchLoongarch64Csrxchg(p0, p1, p2)")
 private external fun wasmCorearchLoongarch64Csrxchg(p0: String, p1: String, p2: Int): String
 
-@JsFun("(p0) => globalThis.__km_napi_corearch.corearchLoongarch64IocsrrdD(p0)")
+@JsFun("(p0) => globalThis.__km_napi_kmcore.corearchLoongarch64IocsrrdD(p0)")
 private external fun wasmCorearchLoongarch64IocsrrdD(p0: Int): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_corearch.corearchLoongarch64IocsrwrD(p0, p1)")
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchLoongarch64IocsrwrD(p0, p1)")
 private external fun wasmCorearchLoongarch64IocsrwrD(p0: String, p1: Int)
 
-@JsFun("(p0, p1) => globalThis.__km_napi_corearch.corearchLoongarch64Asrtle(p0, p1)")
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchLoongarch64Asrtle(p0, p1)")
 private external fun wasmCorearchLoongarch64Asrtle(p0: String, p1: String)
 
-@JsFun("(p0, p1) => globalThis.__km_napi_corearch.corearchLoongarch64Asrtgt(p0, p1)")
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchLoongarch64Asrtgt(p0, p1)")
 private external fun wasmCorearchLoongarch64Asrtgt(p0: String, p1: String)
 
-@JsFun("(p0, p1) => globalThis.__km_napi_corearch.corearchLoongarch64Lddir(p0, p1)")
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchLoongarch64Lddir(p0, p1)")
 private external fun wasmCorearchLoongarch64Lddir(p0: String, p1: String): String
 
-@JsFun("(p0, p1) => globalThis.__km_napi_corearch.corearchLoongarch64Ldpte(p0, p1)")
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchLoongarch64Ldpte(p0, p1)")
 private external fun wasmCorearchLoongarch64Ldpte(p0: String, p1: String)
 
 public actual fun crcWBW(a: Int, b: Int): Int =

@@ -7,11 +7,13 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.maybedangling.MaybeDangling
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.result.andThen
-import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
+import io.github.kotlinmania.rustlang.std.env.varOs
 import io.github.kotlinmania.rustlang.std.io.error.Error
+import io.github.kotlinmania.rustlang.std.panic.AssertUnwindSafe
+import io.github.kotlinmania.rustlang.std.panic.catchUnwind
 import io.github.kotlinmania.rustlang.std.process.abort
 import io.github.kotlinmania.rustlang.std.sync.Arc
 import io.github.kotlinmania.rustlang.std.sys.AsInner
@@ -31,7 +33,7 @@ import io.github.kotlinmania.rustlang.std.thread.thread.Thread
 // The inner logic for thread spawning and joining.
 
 // even without panics, this helps for Miri backtraces
-internal fun <T> spawnUnchecked(name: String?, stackSize: Int?, noHooks: Boolean, scopeData: ScopeData?, f: () -> T): Result<JoinInner<T>, Error> {
+public fun <T> spawnUnchecked(name: String?, stackSize: Int?, noHooks: Boolean, scopeData: ScopeData?, f: () -> T): Result<JoinInner<T>, Error> {
     val stackSize1 =
         (stackSize ?: closure1@{
             var MIN: Atomic<Int> = AtomicUsize.new(0)
@@ -42,7 +44,7 @@ internal fun <T> spawnUnchecked(name: String?, stackSize: Int?, noHooks: Boolean
                     return@closure1 n - 1
                 }
             }
-            val amt = env.varOs("RUST_MIN_STACK").andThen({ s -> s.toStr().andThen({ s1 -> s1.parse().ok() }) }).unwrapOr(DEFAULT_MIN_STACK_SIZE)
+            val amt = (varOs("RUST_MIN_STACK")?.let({ s -> s.toStr().andThen({ s1 -> s1.parse().ok() }) }) ?: DEFAULT_MIN_STACK_SIZE)
             MIN.store(amt + 1, Ordering.Relaxed)
             amt
         }())
@@ -77,7 +79,7 @@ internal fun <T> spawnUnchecked(name: String?, stackSize: Int?, noHooks: Boolean
             // Here `theirPacket` gets dropped, and if this is the last `Arc` for that packet that
             // will call `decrementNumRunningThreads` and therefore signal that this thread is
             // done.
-            drop(theirPacket)
+            (theirPacket).let { }
         }
     when (val matchVal = myPacket.scope) {
         null -> {}
@@ -95,7 +97,7 @@ internal fun <T> spawnUnchecked(name: String?, stackSize: Int?, noHooks: Boolean
             Box.fromRaw(ptr1)
         }
     val init = ThreadInit(handle = thread.clone(), rustStart = rustStart1)
-    return Result.Ok(JoinInner(native = when (val tryResult = Thread.new(stackSize1, init)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }, thread = thread, packet = myPacket))
+    return Result.Ok(JoinInner(native = when (val tryResult = io.github.kotlinmania.rustlang.std.sys.thread.unix.Thread.new(stackSize1, init)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }, thread = thread, packet = myPacket))
 }
 
 /**
@@ -104,7 +106,7 @@ internal fun <T> spawnUnchecked(name: String?, stackSize: Int?, noHooks: Boolean
  * doing anything else to ensure the current thread is properly initialized and
  * the global allocator works.
  */
-internal open class ThreadInit(
+public open class ThreadInit(
     public var handle: Thread,
     public var rustStart: () -> Unit,
 ) {
@@ -112,7 +114,7 @@ internal open class ThreadInit(
      * Initialize the current thread' mechanism on this thread, returning the
      * Rust entry point.
      */
-    internal open fun init(): () -> Unit {
+    public open fun init(): () -> Unit {
         // Set the current thread before any (de)allocations on the global allocator occur,
         // so that it may call std.thread.current() in its implementation. This is also
         // why we take Holder<Self>, to ensure the Holder is not destroyed until after this point.
@@ -238,21 +240,21 @@ public open class Packet<T> internal constructor(
 /**
  * Inner representation for JoinHandle
  */
-internal open class JoinInner<T>(
-    public var native: Thread,
+public open class JoinInner<T>(
+    public var native: io.github.kotlinmania.rustlang.std.sys.thread.unix.Thread,
     public var thread: Thread,
     public var packet: Packet<T>,
-) : AsInner<Thread>, IntoInner<Thread> {
-    internal open fun isFinished(): Boolean = (Arc.strongCount(this.packet) == 1).toUByte()
+) : AsInner<io.github.kotlinmania.rustlang.std.sys.thread.unix.Thread>, IntoInner<io.github.kotlinmania.rustlang.std.sys.thread.unix.Thread> {
+    public open fun isFinished(): Boolean = (Arc.strongCount(this.packet) == 1).toUByte()
 
-    internal open fun thread(): Thread = this.thread
+    public open fun thread(): Thread = this.thread
 
-    internal open fun join(): Result<T> {
+    public open fun join(): Result<T> {
         this.native.join()
         return Arc.getMut(this.packet).expect("threads should not terminate unexpectedly").result.getMut().take()!!
     }
 
-    public override fun asInner(): Thread = this.native
+    public override fun asInner(): io.github.kotlinmania.rustlang.std.sys.thread.unix.Thread = this.native
 
-    public override fun intoInner(): Thread = this.native
+    public override fun intoInner(): io.github.kotlinmania.rustlang.std.sys.thread.unix.Thread = this.native
 }

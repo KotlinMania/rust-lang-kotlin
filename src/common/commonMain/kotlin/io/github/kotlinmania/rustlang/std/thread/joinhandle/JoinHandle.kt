@@ -86,7 +86,7 @@ public class DebugStruct(
  * ```
  */
 public open class JoinHandle<T>(
-    internal var value: JoinInner<T>,
+    public var value: JoinInner<T>,
 ) : AsInner<Thread>, IntoInner<Thread> {
     public var field0: JoinInner<T>
         get() = value
@@ -108,7 +108,7 @@ public open class JoinHandle<T>(
      * println("thread id: ${thread.id()}")
      * ```
      */
-    public open fun thread(): Thread = this.value.thread()
+    public open fun thread(): io.github.kotlinmania.rustlang.std.thread.thread.Thread = this.value.thread()
 
     /**
      * Waits for the associated thread to finish.

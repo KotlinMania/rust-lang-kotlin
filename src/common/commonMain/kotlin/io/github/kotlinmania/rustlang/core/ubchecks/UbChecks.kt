@@ -14,7 +14,7 @@ import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
  * The intention is to not do that when running in the interpreter, as that one has its own
  * language UB checks which generally produce better errors.
  */
-internal fun checkLanguageUb(): Boolean {
+public fun checkLanguageUb(): Boolean {
     // Only used for UB checks so we may constEvalSelect.
     return !false && false
 }
@@ -27,7 +27,7 @@ internal fun checkLanguageUb(): Boolean {
  * for `assertUnsafePrecondition` with `checkLanguageUb`, in which case the
  * check is anyway not executed in `const`.
  */
-internal fun maybeIsAlignedAndNotNull(ptr: ConstPtr, align: Int, isZst: Boolean): Boolean {
+public fun maybeIsAlignedAndNotNull(ptr: ConstPtr, align: Int, isZst: Boolean): Boolean {
     // This is just for safety checks so we can constEvalSelect.
     return maybeIsAligned(ptr, align) && (isZst || !((ptr).rawAddress == 0L))
 }
@@ -39,12 +39,12 @@ internal fun maybeIsAlignedAndNotNull(ptr: ConstPtr, align: Int, isZst: Boolean)
  * for `assertUnsafePrecondition` with `checkLanguageUb`, in which case the
  * check is anyway not executed in `const`.
  */
-internal fun maybeIsAligned(ptr: ConstPtr, align: Int): Boolean {
+public fun maybeIsAligned(ptr: ConstPtr, align: Int): Boolean {
     // This is just for safety checks so we can constEvalSelect.
     return ptr.isAlignedTo(align)
 }
 
-internal fun isValidAllocationSize(size: Int, len: Int): Boolean {
+public fun isValidAllocationSize(size: Int, len: Int): Boolean {
     val maxLen =
         if (size == 0) {
             Int.MAX_VALUE
@@ -61,7 +61,7 @@ internal fun isValidAllocationSize(size: Int, len: Int): Boolean {
  * Note that in const-eval this function just returns `true` and therefore must
  * only be used with `assertUnsafePrecondition`, similar to `isAlignedAndNotNull`.
  */
-internal fun maybeIsNonoverlapping(src: ConstPtr, dst: ConstPtr, size: Int, count: Int): Boolean {
+public fun maybeIsNonoverlapping(src: ConstPtr, dst: ConstPtr, size: Int, count: Int): Boolean {
     // This is just for safety checks so we can constEvalSelect.
     return run {
         val srcUsize = (src).rawAddress.toInt()

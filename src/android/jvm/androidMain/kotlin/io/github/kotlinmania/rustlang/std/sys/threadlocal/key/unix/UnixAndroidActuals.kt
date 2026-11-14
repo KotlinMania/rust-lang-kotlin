@@ -8,7 +8,7 @@ import io.github.kotlinmania.rustlang.std.ffi.CInt
 
 private object SysThreadlocalKeyUnixJniBridge {
     init {
-        System.loadLibrary("std_jni")
+        System.loadLibrary("kmcore_jni")
     }
 
     @JvmStatic

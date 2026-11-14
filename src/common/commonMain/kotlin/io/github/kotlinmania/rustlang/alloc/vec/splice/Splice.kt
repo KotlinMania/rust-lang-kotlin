@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.alloc.vec.splice
 
 import io.github.kotlinmania.rustlang.alloc.vec.drain.Drain
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
+import io.github.kotlinmania.rustlang.core.mem.copy
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 
@@ -20,10 +21,13 @@ import io.github.kotlinmania.rustlang.core.slice.asPtr
  * val iter: Splice = v.splice(1 until Int.MAX_VALUE, new)
  * ```
  */
-public open class Splice<I, A : Allocator>(
-    internal var drain: Drain<Item, A>,
-    internal var replaceWith: I,
+public open class Splice<I, A : Allocator> internal constructor(
+    drainCtorArg: Drain<Item, A>,
+    public var replaceWith: I,
 ) : Iterable<Item> {
+    public var drain: Drain<Item, A> = drainCtorArg
+        internal set
+
     override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
         override fun computeNext() {
             when (val v = this@Splice.next()) {
@@ -80,6 +84,16 @@ public open class Splice<I, A : Allocator>(
         }
         // Let `Drain.drop` move the tail back if necessary and restore `vec.len`.
     }
+
+    public companion object {
+        public operator fun <I, A : Allocator> invoke(
+            drain: Drain<Item, A>,
+            replaceWith: I,
+        ): Splice<I, A> = Splice<I, A>(
+            drainCtorArg = drain,
+            replaceWith = replaceWith,
+        )
+    }
 }
 
 /**
@@ -119,7 +133,7 @@ public fun <T, A : Allocator> Drain<T, A>.moveTail(additional: Int) {
     run {
         val src = vec.asPtr().add(this.tailStart)
         val dst = vec.asMutPtr().add(newTailStart)
-        ptr.copy(src, dst, this.tailLen)
+        copy(src, dst, this.tailLen)
     }
     this.tailStart = newTailStart
 }

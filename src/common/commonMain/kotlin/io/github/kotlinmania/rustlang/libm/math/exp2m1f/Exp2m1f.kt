@@ -1,7 +1,6 @@
 // port-lint: source math/exp2m1f.rs
 package io.github.kotlinmania.rustlang.libm.math.exp2m1f
 
-import io.github.kotlinmania.rustlang.libm.math.exp2m1.Q
 import io.github.kotlinmania.rustlang.libm.math.support.Float
 import io.github.kotlinmania.rustlang.libm.math.support.Int
 import io.github.kotlinmania.rustlang.libm.math.support.coldPath

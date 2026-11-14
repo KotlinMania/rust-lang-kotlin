@@ -51,9 +51,9 @@ private object X86Avx512fJniBridge {
             }
         val libFileName =
             when (hostPlatform) {
-                "windows" -> "corearch_jni.dll"
-                "macos" -> "libcorearch_jni.dylib"
-                else -> "libcorearch_jni.so"
+                "windows" -> "kmcore_jni.dll"
+                "macos" -> "libkmcore_jni.dylib"
+                else -> "libkmcore_jni.so"
             }
         val pathSep = System.getProperty("path.separator", ":")
         val libPathProp = System.getProperty("java.library.path", "")
@@ -69,7 +69,7 @@ private object X86Avx512fJniBridge {
         val stream = X86Avx512fJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
-            val extracted = java.nio.file.Files.createTempFile("corearch_jni-", suffix).toFile()
+            val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
             extracted.deleteOnExit()
             stream.use { input ->
                 extracted.outputStream().use { output ->
@@ -79,7 +79,7 @@ private object X86Avx512fJniBridge {
             System.load(extracted.absolutePath)
             return
         }
-        System.loadLibrary("corearch_jni")
+        System.loadLibrary("kmcore_jni")
     }
 
     @JvmStatic

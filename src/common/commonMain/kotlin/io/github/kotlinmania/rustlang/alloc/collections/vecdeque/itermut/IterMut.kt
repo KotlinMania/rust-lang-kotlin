@@ -1,10 +1,10 @@
 // port-lint: source collections/vec_deque/iter_mut.rs
 package io.github.kotlinmania.rustlang.alloc.collections.vecdeque.itermut
 
-import io.github.kotlinmania.rustlang.alloc.collections.btree.node.B
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccess
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccessNoCoerce
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
+import io.github.kotlinmania.rustlang.core.mem.swap
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -253,7 +253,7 @@ public open class IterMut<T>(
     public open fun isEmpty(): Boolean = this.i1.isEmpty() && this.i2.isEmpty()
 
     public companion object {
-        internal fun <T> new(i1: ArrayDeque<T>, i2: ArrayDeque<T>): IterMut<T> = IterMut(i1 = i1, i2 = i2)
+        public fun <T> new(i1: ArrayDeque<T>, i2: ArrayDeque<T>): IterMut<T> = IterMut(i1 = i1, i2 = i2)
 
         /**
          * Creates an empty `vecDeque.IterMut`.

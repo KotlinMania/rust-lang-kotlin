@@ -1,7 +1,6 @@
 // port-lint: source io/stdio.rs
 package io.github.kotlinmania.rustlang.std.io.stdio
 
-import io.github.kotlinmania.fmt.Arguments
 import io.github.kotlinmania.rustlang.alloc.io.buffered.bufreader.BufReader
 import io.github.kotlinmania.rustlang.alloc.io.buffered.linewriter.LineWriter
 import io.github.kotlinmania.rustlang.alloc.io.util.Lines
@@ -17,6 +16,7 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 import io.github.kotlinmania.rustlang.std.fs.File
+import io.github.kotlinmania.rustlang.std.io.Write
 import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.sync.nonpoison.mutex.Mutex
 import io.github.kotlinmania.rustlang.std.sync.nonpoison.mutex.MutexGuard
@@ -107,14 +107,14 @@ public open class StdinRaw(
         if (buf.isEmpty()) {
             return Result.Ok(Unit)
         }
-        return handleEbadf(this.value.readExact(buf), { Result.Err(Error.READ_EXACT_EOF) })
+        return handleEbadf(this.value.readExact(buf), { Result.Err(io.github.kotlinmania.rustlang.std.io.Error.READ_EXACT_EOF) })
     }
 
     public open fun readBufExact(buf: BorrowedCursor<UByte>): Result<Unit, Error> {
         if (buf.capacity() == 0) {
             return Result.Ok(Unit)
         }
-        return handleEbadf(this.value.readBufExact(buf), { Result.Err(Error.READ_EXACT_EOF) })
+        return handleEbadf(this.value.readBufExact(buf), { Result.Err(io.github.kotlinmania.rustlang.std.io.Error.READ_EXACT_EOF) })
     }
 
     public open fun readToEnd(buf: List<UByte>): Result<Int, Error> = handleEbadf(this.value.readToEnd(buf), { Result.Ok(0) })
@@ -388,7 +388,7 @@ public open class Stdin internal constructor(
 
     public open fun readBufExact(cursor: BorrowedCursor<UByte>): Result<Unit, Error> = this.lock().readBufExact(cursor)
 
-    public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.hermit.isTerminal(this)
+    public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.isatty.isTerminal(this)
 
     public companion object {
         public operator fun invoke(
@@ -443,7 +443,7 @@ public open class StdinLock internal constructor(
         internal set
 
     // only used by platform-dependent io.copy specializations, i.e. unused on some platforms
-    internal open fun asMutBuf(): kotlin.reflect.KMutableProperty0<MutexGuard<BufReader<StdinRaw>>> {
+    public open fun asMutBuf(): kotlin.reflect.KMutableProperty0<MutexGuard<BufReader<StdinRaw>>> {
         return this::inner
     }
 
@@ -479,7 +479,7 @@ public open class StdinLock internal constructor(
         DebugStruct(f, "StdinLock").finishNonExhaustive()
     }
 
-    public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.hermit.isTerminal(this)
+    public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.isatty.isTerminal(this)
 
     public companion object {
         public operator fun invoke(
@@ -626,7 +626,7 @@ public open class Stdout internal constructor(
 
     public open fun writeFmt(args: Arguments): Result<Unit, Error> = (this).writeFmt(args)
 
-    public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.hermit.isTerminal(this)
+    public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.isatty.isTerminal(this)
 
     public companion object {
         public operator fun invoke(
@@ -683,7 +683,7 @@ public open class StdoutLock internal constructor(
         DebugStruct(f, "StdoutLock").finishNonExhaustive()
     }
 
-    public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.hermit.isTerminal(this)
+    public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.isatty.isTerminal(this)
 
     public companion object {
         public operator fun invoke(
@@ -768,7 +768,7 @@ public fun stdout(): Stdout = Stdout(inner = STDOUT.getOrInit({ ReentrantLock.ne
 // Flush the data and disable buffering during shutdown
 // by replacing the line writer by one with zero
 // buffering capacity.
-internal fun cleanup() {
+public fun cleanup() {
     var initialized = false
     val stdout =
         STDOUT.getOrInit({
@@ -859,7 +859,7 @@ public open class Stderr internal constructor(
 
     public open fun writeFmt(args: Arguments): Result<Unit, Error> = (this).writeFmt(args)
 
-    public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.hermit.isTerminal(this)
+    public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.isatty.isTerminal(this)
 
     public companion object {
         public operator fun invoke(
@@ -909,7 +909,7 @@ public open class StderrLock internal constructor(
         DebugStruct(f, "StderrLock").finishNonExhaustive()
     }
 
-    public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.hermit.isTerminal(this)
+    public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.isatty.isTerminal(this)
 
     public companion object {
         public operator fun invoke(
@@ -1035,7 +1035,7 @@ public fun printToBufferIfCaptureUsed(args: Arguments): Boolean =
  * has returned. Should avoid panicking, although we can't help it if one of
  * the Display impls inside args decides to.
  */
-internal fun attemptPrintToStderr(args: Arguments) {
+public fun attemptPrintToStderr(args: Arguments) {
     if (printToBufferIfCaptureUsed(args)) {
         return
     }
@@ -1096,7 +1096,7 @@ public interface IsTerminal {
     public fun isTerminal(): Boolean
 }
 
-public fun File.isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.hermit.isTerminal(this)
+public fun File.isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.isatty.isTerminal(this)
 
 public fun print(args: Arguments) {
     printTo(args, ::stdout, "stdout")

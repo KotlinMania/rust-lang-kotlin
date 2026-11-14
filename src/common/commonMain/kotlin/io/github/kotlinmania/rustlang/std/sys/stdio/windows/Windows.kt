@@ -3,9 +3,6 @@
 
 package io.github.kotlinmania.rustlang.std.sys.stdio.windows
 
-import io.github.kotlinmania.rustlang.alloc.io.read.Read
-import io.github.kotlinmania.rustlang.core.io.error.Error
-import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
@@ -21,26 +18,12 @@ import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.str.validations.utf8CharWidth
 import io.github.kotlinmania.rustlang.std.alloc.System
+import io.github.kotlinmania.rustlang.std.io.Error
+import io.github.kotlinmania.rustlang.std.io.Read
+import io.github.kotlinmania.rustlang.std.io.Write
+import io.github.kotlinmania.rustlang.std.sys.c
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.api.WinError
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.api.getLastError
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.CP_UTF8
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.ERROR_INVALID_HANDLE
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.FILE_DEVICE_CONSOLE
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.INVALID_HANDLE_VALUE
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.ConsoleReadconsoleControl
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.FileFsDeviceInformation
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.IoStatusBlock
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.STD_ERROR_HANDLE
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.STD_INPUT_HANDLE
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.STD_OUTPUT_HANDLE
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.getStdHandle
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.multiByteToWideChar
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.ntQueryVolumeInformationFile
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.readConsoleW
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.setLastError
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.wideCharToMultiByte
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.writeConsoleW
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.handle.Handle
 
 // Don't cache handles but get them fresh for every read/write. This allows us to track changes to
@@ -50,7 +33,7 @@ public open class Stdin(
     public var incompleteUtf8: IncompleteUtf8,
 ) : Read {
     public open fun read(buf: MutableList<UByte>): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> {
-        val handle = when (val tryResult = getHandle(STD_INPUT_HANDLE)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        val handle = when (val tryResult = getHandle(c.STD_INPUT_HANDLE)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         if (!isConsole(handle)) {
             run {
                 val handle1 = Handle.fromRawHandle(handle)
@@ -132,7 +115,7 @@ public open class Stdin(
 public open class Stdout(
     public var incompleteUtf8: IncompleteUtf8,
 ) : Write {
-    public open fun write(buf: List<UByte>): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> = write(STD_OUTPUT_HANDLE, buf, this.incompleteUtf8)
+    public open fun write(buf: List<UByte>): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> = write(c.STD_OUTPUT_HANDLE, buf, this.incompleteUtf8)
 
     public open fun flush(): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = Result.Ok(Unit)
 
@@ -164,7 +147,7 @@ public open class Stdout(
 public open class Stderr(
     public var incompleteUtf8: IncompleteUtf8,
 ) : Write {
-    public open fun write(buf: List<UByte>): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> = write(STD_ERROR_HANDLE, buf, this.incompleteUtf8)
+    public open fun write(buf: List<UByte>): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> = write(c.STD_ERROR_HANDLE, buf, this.incompleteUtf8)
 
     public open fun flush(): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = Result.Ok(Unit)
 
@@ -258,12 +241,12 @@ public val STDIN_BUF_SIZE: Int = MAX_BUFFER_SIZE / 2 * 3
 public val MAX_WRITE_HEAP_LEN: Int = 64 * 1024
 
 // In u16 -> 128KiB
-public fun getHandle(handleId: UInt): Result<Handle, io.github.kotlinmania.rustlang.std.io.error.Error> {
-    val handle = getStdHandle(handleId)
-    return if (handle == INVALID_HANDLE_VALUE) {
+public fun getHandle(handleId: UInt): Result<c.Handle, io.github.kotlinmania.rustlang.std.io.error.Error> {
+    val handle = c.GetStdHandle(handleId)
+    return if (handle == c.INVALID_HANDLE_VALUE) {
         Result.Err(Error.lastOsError())
     } else if (handle.isNull()) {
-        Result.Err(Error.fromRawOsError(ERROR_INVALID_HANDLE.toInt()))
+        Result.Err(Error.fromRawOsError(c.ERROR_INVALID_HANDLE.toInt()))
     } else {
         Result.Ok(handle)
     }
@@ -272,16 +255,16 @@ public fun getHandle(handleId: UInt): Result<Handle, io.github.kotlinmania.rustl
 /**
  * Returns true if `handle` refers to a proper console (aka conhost).
  */
-public fun isConsole(handle: Handle): Boolean =
+public fun isConsole(handle: c.Handle): Boolean =
     run {
         // `GetConsoleMode` incurs a remote RPC round-trip (= bad), so it's best avoided.
         // `NtQueryVolumeInformationFile` lets us test the handle directly.
         // The required `FILE_DEVICE_CONSOLE` type was introduced in Windows 8.
         // Fun fact: `GetFileType` uses `NtQueryVolumeInformationFile` internally.
-        val ioStatus = MaybeUninit.uninit(ObjectSlotLayout<IoStatusBlock>())
-        val deviceInfo = MaybeUninit.uninit(ObjectSlotLayout<FileFsDeviceInformation>())
-        val status = ntQueryVolumeInformationFile(handle, ioStatus.asMutPtr(), deviceInfo.asMutPtr().cast(), sizeOfVal(deviceInfo).toUInt(), FileFsDeviceInformation)
-        status >= 0 && deviceInfo.assumeInitRef().deviceType == FILE_DEVICE_CONSOLE
+        val ioStatus = MaybeUninit.uninit(ObjectSlotLayout<c.IoStatusBlock>())
+        val deviceInfo = MaybeUninit.uninit(ObjectSlotLayout<c.FileFsDeviceInformation>())
+        val status = c.NtQueryVolumeInformationFile(handle, ioStatus.asMutPtr(), deviceInfo.asMutPtr().cast(), sizeOfVal(deviceInfo).toUInt(), c.FileFsDeviceInformation)
+        status >= 0 && deviceInfo.assumeInitRef().deviceType == c.FILE_DEVICE_CONSOLE
     }
 
 public fun write(handleId: UInt, data: List<UByte>, incompleteUtf8: IncompleteUtf8): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> {
@@ -306,7 +289,7 @@ public fun write(handleId: UInt, data: List<UByte>, incompleteUtf8: IncompleteUt
     }
 }
 
-public fun writeConsoleUtf16(data: List<UByte>, incompleteUtf8: IncompleteUtf8, handle: Handle): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> {
+public fun writeConsoleUtf16(data: List<UByte>, incompleteUtf8: IncompleteUtf8, handle: c.Handle): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> {
     // As stated for `MAX_BUFFER_SIZE`, Windows 7 does not support large writes at all.
     // --> Fall back to the small-writes stack-alloc path.
     if (data.size > MAX_BUFFER_SIZE && data.size.min(MAX_WRITE_HEAP_LEN) != null && Box.tryNewUninitSliceIn(capacity, System) is Result.Ok<*>) {
@@ -316,12 +299,12 @@ public fun writeConsoleUtf16(data: List<UByte>, incompleteUtf8: IncompleteUtf8, 
 }
 
 // Avoid stack allocations unless called
-public fun writeConsoleStack(data: List<UByte>, incompleteUtf8: IncompleteUtf8, handle: Handle): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> {
+public fun writeConsoleStack(data: List<UByte>, incompleteUtf8: IncompleteUtf8, handle: c.Handle): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> {
     val utf16 = MutableList(MAX_BUFFER_SIZE) { MaybeUninit.uninit(PrimitiveLayouts.U16) }
     return writeConsoleWithBuffer(data, incompleteUtf8, utf16, handle)
 }
 
-public fun writeConsoleWithBuffer(data: List<UByte>, incompleteUtf8: IncompleteUtf8, utf16: MutableList<MaybeUninit<UShort>>, handle: Handle): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> {
+public fun writeConsoleWithBuffer(data: List<UByte>, incompleteUtf8: IncompleteUtf8, utf16: MutableList<MaybeUninit<UShort>>, handle: c.Handle): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> {
     var written = 0
     while (written < data.size) {
         run {
@@ -343,7 +326,7 @@ public fun writeConsoleWithBuffer(data: List<UByte>, incompleteUtf8: IncompleteU
     return Result.Ok(written)
 }
 
-public fun writeConsoleChunk(data: List<UByte>, incompleteUtf8: IncompleteUtf8, utf16: MutableList<MaybeUninit<UShort>>, handle: Handle): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> {
+public fun writeConsoleChunk(data: List<UByte>, incompleteUtf8: IncompleteUtf8, utf16: MutableList<MaybeUninit<UShort>>, handle: c.Handle): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> {
     check(utf16.size >= 2) { "not enough space for a full codepoint" }
     check(utf16.size >= 1024) { "unreasonably small buffer" }
     var chunkLen = data.size.min(utf16.size - incompleteUtf8.len.toInt())
@@ -380,7 +363,7 @@ public fun writeConsoleChunk(data: List<UByte>, incompleteUtf8: IncompleteUtf8, 
     if (utf16Len != 0) {
         // NOTE: WriteConsoleW does not result in short writes.
         val localStorageL234C8 = AddressableLocal(0, PrimitiveLayouts.I32)
-        when (val tryResult = cvt(writeConsoleW(handle, utf16.asPtr(), utf16Len.toUInt(), RustMutableReference(localStorageL234C8.asMutPtr(), localStorageL234C8.layout), MutPtr(0L)))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = cvt(c.WriteConsoleW(handle, utf16.asPtr(), utf16Len.toUInt(), RustMutableReference(localStorageL234C8.asMutPtr(), localStorageL234C8.layout), MutPtr(0L)))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
     }
     run { val dstTmp1 = incompleteUtf8.bytes; val srcTmp1 = trailing; for (idxTmp1 in srcTmp1.indices) dstTmp1[idxTmp1] = srcTmp1[idxTmp1] }
     incompleteUtf8.len = trailing.len().toUByte()
@@ -405,7 +388,7 @@ public fun incompleteUtf8SuffixStart(bytes: List<UByte>): Int {
 // We assume that if the last `UShort` is an unpaired surrogate they got sliced apart by our
 // buffer size, and keep it around for the next read hoping to put them together.
 // This is a best effort, and might not work if we are not the only reader on Stdin.
-public fun readU16sFixupSurrogates(handle: Handle, buf: MutableList<MaybeUninit<UShort>>, amount: Int, surrogate: RustMutableReference<UShort>): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> {
+public fun readU16sFixupSurrogates(handle: c.Handle, buf: MutableList<MaybeUninit<UShort>>, amount: Int, surrogate: RustMutableReference<UShort>): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> {
     var amount1 = amount
     val surrogate1 = surrogate
     // Insert possibly remaining unpaired surrogate from last read.
@@ -440,23 +423,23 @@ public fun readU16sFixupSurrogates(handle: Handle, buf: MutableList<MaybeUninit<
 }
 
 // Returns `Ok(n)` if it initialized `n` values in `buf`.
-public fun readU16s(handle: Handle, buf: MutableList<MaybeUninit<UShort>>): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> {
+public fun readU16s(handle: c.Handle, buf: MutableList<MaybeUninit<UShort>>): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> {
     // Configure the `pInputControl` parameter to not only return on `\r\n` but also Ctrl-Z, the
     // traditional DOS method to indicate end of character stream / user input (SUB).
     // See #38274 and https://stackoverflow.com/questions/43836040/win-api-readconsole.
     val CTRL_Z: UShort = 0x1Au
     val CTRL_Z_MASK: UInt = 1u shl CTRL_Z.toInt()
-    val inputControl = ConsoleReadconsoleControl(nLength = sizeOf<ConsoleReadconsoleControl>(typeLayoutT = ObjectSlotLayout<ConsoleReadconsoleControl>()).toUInt(), nInitialChars = 0u, dwCtrlWakeupMask = CTRL_Z_MASK, dwControlKeyState = 0u)
+    val inputControl = c.ConsoleReadconsoleControl(nLength = sizeOf<c.ConsoleReadconsoleControl>(typeLayoutT = ObjectSlotLayout<c.ConsoleReadconsoleControl>()).toUInt(), nInitialChars = 0u, dwCtrlWakeupMask = CTRL_Z_MASK, dwControlKeyState = 0u)
     val localStorageL374C4 = AddressableLocal(0, PrimitiveLayouts.I32)
     var amount by localStorageL374C4
     while (true) {
         when (val tryResult = cvt(run {
-            setLastError(0u)
-            readConsoleW(handle, (buf.asMutPtr()).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, buf.size.toUInt(), RustMutableReference(localStorageL374C4.asMutPtr(), localStorageL374C4.layout), inputControl)
+            c.SetLastError(0)
+            c.ReadConsoleW(handle, (buf.asMutPtr()).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, buf.size.toUInt(), RustMutableReference(localStorageL374C4.asMutPtr(), localStorageL374C4.layout), inputControl)
         })) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         // ReadConsoleW returns success with ERROR_OPERATION_ABORTED for Ctrl-C or Ctrl-Break.
         // Explicitly check for that case here and try again.
-        if (amount == 0 && getLastError() == WinError.OPERATION_ABORTED) {
+        if (amount == 0 && api.getLastError() == WinError.OPERATION_ABORTED) {
             continue
         }
         break
@@ -475,7 +458,7 @@ public fun utf16ToUtf8(utf16: List<UShort>, utf8: MutableList<UByte>): Result<In
     if (utf16.isEmpty()) {
         return Result.Ok(0)
     }
-    val result = wideCharToMultiByte(CP_UTF8, 0u, utf16.asPtr(), utf16.size, utf8.asMutPtr(), utf8.size, ConstPtr(0L), MutPtr(0L))
+    val result = c.WideCharToMultiByte(c.CP_UTF8, 0, utf16.asPtr(), utf16.size, utf8.asMutPtr(), utf8.size, ConstPtr(0L), MutPtr(0L))
     return if (result == 0) {
         return Result.Err(Error.lastOsError())
     } else {
@@ -504,13 +487,13 @@ public fun utf8ToUtf16(data: List<UByte>, utf16: MutableList<MaybeUninit<UShort>
     //
     // [^1]: https://www.unicode.org/review/pr-121.html
     // [^2]: https://encoding.spec.whatwg.org/#utf-8-decoder
-    val len = multiByteToWideChar(CP_UTF8, 0u, data.asPtr(), data.size, utf16.asMutPtr(), utf16.size)
+    val len = c.MultiByteToWideChar(c.CP_UTF8, 0, data.asPtr(), data.size, utf16.asMutPtr(), utf16.size)
     if (len <= 0) {
         return Result.Err(Error.lastOsError())
     }
     return Result.Ok(len)
 }
 
-public fun isEbadf(err: Error): Boolean = (err.rawOsError() == ERROR_INVALID_HANDLE.toInt()).toUByte()
+public fun isEbadf(err: Error): Boolean = (err.rawOsError() == c.ERROR_INVALID_HANDLE.toInt()).toUByte()
 
 public fun panicOutput(): Write? = Stderr.new()

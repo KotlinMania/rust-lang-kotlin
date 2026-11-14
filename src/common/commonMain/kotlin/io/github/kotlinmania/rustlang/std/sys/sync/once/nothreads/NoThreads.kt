@@ -14,7 +14,7 @@ public open class Once internal constructor(
 
     public open fun isCompleted(): Boolean = (this.state.get() == State.Complete).toUByte()
 
-    internal open fun state(): OnceExclusiveState =
+    public open fun state(): OnceExclusiveState =
         when (this.state.get()) {
             State.Incomplete -> OnceExclusiveState.Incomplete
             State.Poisoned -> OnceExclusiveState.Poisoned
@@ -22,7 +22,7 @@ public open class Once internal constructor(
             else -> error("invalid Once state")
         }
 
-    internal open fun setState(newState: OnceExclusiveState) {
+    public open fun setState(newState: OnceExclusiveState) {
         this.state.set(when (newState) {
             OnceExclusiveState.Incomplete -> State.Incomplete
             OnceExclusiveState.Poisoned -> State.Poisoned
@@ -34,7 +34,7 @@ public open class Once internal constructor(
         error("not implementable on this target")
     }
 
-    public open fun call(ignorePoisoning: Boolean, f: (io.github.kotlinmania.public.OnceState) -> Unit) {
+    public open fun call(ignorePoisoning: Boolean, f: (io.github.kotlinmania.rustlang.std.sync.once.OnceState) -> Unit) {
         val state = this.state.get()
         when {
             state == State.Poisoned && !ignorePoisoning -> {
@@ -46,7 +46,7 @@ public open class Once internal constructor(
                 // `guard` will set the new state on drop.
                 val guard = CompletionGuard(state = this.state, setStateOnDropTo = State.Poisoned)
                 // Run the function, letting it know if we're poisoned or not.
-                val fState = io.github.kotlinmania.public.OnceState(inner = OnceState(poisoned = (state == State.Poisoned).toUByte(), setStateTo = Cell.new(State.Complete)))
+                val fState = io.github.kotlinmania.rustlang.std.sync.once.OnceState(inner = OnceState(poisoned = (state == State.Poisoned).toUByte(), setStateTo = Cell.new(State.Complete)))
                 f(fState)
                 guard.setStateOnDropTo = fState.inner.setStateTo.get()
             }

@@ -1,27 +1,27 @@
 // port-lint: source aarch64/sve/generated.rs
 package io.github.kotlinmania.rustlang.corearch.aarch64.sve
 
+import io.github.kotlinmania.rustlang.core.intrinsics.kmAllocZeroed
+import io.github.kotlinmania.rustlang.core.intrinsics.kmDealloc
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.corearch.Mem
 import io.github.kotlinmania.rustlang.corearch.aarch64.neon.Float64x2T
 import io.github.kotlinmania.rustlang.corearch.armshared.neon.Float32x4T
 import io.github.kotlinmania.rustlang.corearch.armshared.neon.Int16x8T
 import io.github.kotlinmania.rustlang.corearch.armshared.neon.Int32x4T
 import io.github.kotlinmania.rustlang.corearch.armshared.neon.Int64x2T
 import io.github.kotlinmania.rustlang.corearch.armshared.neon.Int8x16T
-import io.github.kotlinmania.rustlang.corearch.simd.Simd
 
 /**
  * Absolute difference
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabd[_f32]_m)
  */
 public fun svabdF32M(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T): Svfloat32T {
-    fun svabdF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = null as Svfloat32T
+    fun svabdF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svabdF32M(pg.sveInto(), op1, op2)
 }
 
@@ -60,7 +60,7 @@ public fun svabdNF32Z(pg: SvboolT, op1: Svfloat32T, op2: Float): Svfloat32T = sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabd[_f64]_m)
  */
 public fun svabdF64M(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T): Svfloat64T {
-    fun svabdF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = null as Svfloat64T
+    fun svabdF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svabdF64M(pg.sveInto(), op1, op2)
 }
 
@@ -99,7 +99,7 @@ public fun svabdNF64Z(pg: SvboolT, op1: Svfloat64T, op2: Double): Svfloat64T = s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabd[_s8]_m)
  */
 public fun svabdS8M(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T {
-    fun svabdS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    fun svabdS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svabdS8M(pg, op1, op2)
 }
 
@@ -138,7 +138,7 @@ public fun svabdNS8Z(pg: SvboolT, op1: Svint8T, op2: Byte): Svint8T = svabdS8Z(p
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabd[_s16]_m)
  */
 public fun svabdS16M(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T {
-    fun svabdS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    fun svabdS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svabdS16M(pg.sveInto(), op1, op2)
 }
 
@@ -177,7 +177,7 @@ public fun svabdNS16Z(pg: SvboolT, op1: Svint16T, op2: Short): Svint16T = svabdS
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabd[_s32]_m)
  */
 public fun svabdS32M(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T {
-    fun svabdS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    fun svabdS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svabdS32M(pg.sveInto(), op1, op2)
 }
 
@@ -216,7 +216,7 @@ public fun svabdNS32Z(pg: SvboolT, op1: Svint32T, op2: Int): Svint32T = svabdS32
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabd[_s64]_m)
  */
 public fun svabdS64M(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T {
-    fun svabdS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    fun svabdS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svabdS64M(pg.sveInto(), op1, op2)
 }
 
@@ -255,7 +255,7 @@ public fun svabdNS64Z(pg: SvboolT, op1: Svint64T, op2: Long): Svint64T = svabdS6
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabd[_u8]_m)
  */
 public fun svabdU8M(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T {
-    fun svabdU8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    fun svabdU8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svabdU8M(pg, op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -294,7 +294,7 @@ public fun svabdNU8Z(pg: SvboolT, op1: Svuint8T, op2: UByte): Svuint8T = svabdU8
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabd[_u16]_m)
  */
 public fun svabdU16M(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T {
-    fun svabdU16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    fun svabdU16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svabdU16M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -333,7 +333,7 @@ public fun svabdNU16Z(pg: SvboolT, op1: Svuint16T, op2: UShort): Svuint16T = sva
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabd[_u32]_m)
  */
 public fun svabdU32M(pg: SvboolT, op1: Svuint32T, op2: Svuint32T): Svuint32T {
-    fun svabdU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    fun svabdU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svabdU32M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -372,7 +372,7 @@ public fun svabdNU32Z(pg: SvboolT, op1: Svuint32T, op2: UInt): Svuint32T = svabd
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabd[_u64]_m)
  */
 public fun svabdU64M(pg: SvboolT, op1: Svuint64T, op2: Svuint64T): Svuint64T {
-    fun svabdU64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    fun svabdU64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svabdU64M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -411,7 +411,7 @@ public fun svabdNU64Z(pg: SvboolT, op1: Svuint64T, op2: ULong): Svuint64T = svab
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabs[_f32]_m)
  */
 public fun svabsF32M(inactive: Svfloat32T, pg: SvboolT, op: Svfloat32T): Svfloat32T {
-    fun svabsF32M(inactive1: Svfloat32T, pg1: Svbool4T, op1: Svfloat32T): Svfloat32T = null as Svfloat32T
+    fun svabsF32M(inactive1: Svfloat32T, pg1: Svbool4T, op1: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svabsF32M(inactive, pg.sveInto(), op)
 }
 
@@ -432,7 +432,7 @@ public fun svabsF32Z(pg: SvboolT, op: Svfloat32T): Svfloat32T = svabsF32M(svdupN
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabs[_f64]_m)
  */
 public fun svabsF64M(inactive: Svfloat64T, pg: SvboolT, op: Svfloat64T): Svfloat64T {
-    fun svabsF64M(inactive1: Svfloat64T, pg1: Svbool2T, op1: Svfloat64T): Svfloat64T = null as Svfloat64T
+    fun svabsF64M(inactive1: Svfloat64T, pg1: Svbool2T, op1: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svabsF64M(inactive, pg.sveInto(), op)
 }
 
@@ -453,7 +453,7 @@ public fun svabsF64Z(pg: SvboolT, op: Svfloat64T): Svfloat64T = svabsF64M(svdupN
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabs[_s8]_m)
  */
 public fun svabsS8M(inactive: Svint8T, pg: SvboolT, op: Svint8T): Svint8T {
-    fun svabsS8M(inactive1: Svint8T, pg1: SvboolT, op1: Svint8T): Svint8T = null as Svint8T
+    fun svabsS8M(inactive1: Svint8T, pg1: SvboolT, op1: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svabsS8M(inactive, pg, op)
 }
 
@@ -474,7 +474,7 @@ public fun svabsS8Z(pg: SvboolT, op: Svint8T): Svint8T = svabsS8M(svdupNS8(0), p
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabs[_s16]_m)
  */
 public fun svabsS16M(inactive: Svint16T, pg: SvboolT, op: Svint16T): Svint16T {
-    fun svabsS16M(inactive1: Svint16T, pg1: Svbool8T, op1: Svint16T): Svint16T = null as Svint16T
+    fun svabsS16M(inactive1: Svint16T, pg1: Svbool8T, op1: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svabsS16M(inactive, pg.sveInto(), op)
 }
 
@@ -495,7 +495,7 @@ public fun svabsS16Z(pg: SvboolT, op: Svint16T): Svint16T = svabsS16M(svdupNS16(
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabs[_s32]_m)
  */
 public fun svabsS32M(inactive: Svint32T, pg: SvboolT, op: Svint32T): Svint32T {
-    fun svabsS32M(inactive1: Svint32T, pg1: Svbool4T, op1: Svint32T): Svint32T = null as Svint32T
+    fun svabsS32M(inactive1: Svint32T, pg1: Svbool4T, op1: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svabsS32M(inactive, pg.sveInto(), op)
 }
 
@@ -516,7 +516,7 @@ public fun svabsS32Z(pg: SvboolT, op: Svint32T): Svint32T = svabsS32M(svdupNS32(
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabs[_s64]_m)
  */
 public fun svabsS64M(inactive: Svint64T, pg: SvboolT, op: Svint64T): Svint64T {
-    fun svabsS64M(inactive1: Svint64T, pg1: Svbool2T, op1: Svint64T): Svint64T = null as Svint64T
+    fun svabsS64M(inactive1: Svint64T, pg1: Svbool2T, op1: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svabsS64M(inactive, pg.sveInto(), op)
 }
 
@@ -537,7 +537,7 @@ public fun svabsS64Z(pg: SvboolT, op: Svint64T): Svint64T = svabsS64M(svdupNS64(
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svacge[_f32])
  */
 public fun svacgeF32(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T): SvboolT {
-    fun svacgeF32(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T): Svbool4T = null as Svbool4T
+    fun svacgeF32(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T): Svbool4T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); res }
     return svacgeF32(pg.sveInto(), op1, op2).sveInto()
 }
 
@@ -552,7 +552,7 @@ public fun svacgeNF32(pg: SvboolT, op1: Svfloat32T, op2: Float): SvboolT = svacg
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svacge[_f64])
  */
 public fun svacgeF64(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T): SvboolT {
-    fun svacgeF64(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T): Svbool2T = null as Svbool2T
+    fun svacgeF64(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T): Svbool2T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool2T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool2T>()).alignBytes)); res }
     return svacgeF64(pg.sveInto(), op1, op2).sveInto()
 }
 
@@ -567,7 +567,7 @@ public fun svacgeNF64(pg: SvboolT, op1: Svfloat64T, op2: Double): SvboolT = svac
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svacgt[_f32])
  */
 public fun svacgtF32(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T): SvboolT {
-    fun svacgtF32(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T): Svbool4T = null as Svbool4T
+    fun svacgtF32(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T): Svbool4T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); res }
     return svacgtF32(pg.sveInto(), op1, op2).sveInto()
 }
 
@@ -582,7 +582,7 @@ public fun svacgtNF32(pg: SvboolT, op1: Svfloat32T, op2: Float): SvboolT = svacg
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svacgt[_f64])
  */
 public fun svacgtF64(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T): SvboolT {
-    fun svacgtF64(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T): Svbool2T = null as Svbool2T
+    fun svacgtF64(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T): Svbool2T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool2T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool2T>()).alignBytes)); res }
     return svacgtF64(pg.sveInto(), op1, op2).sveInto()
 }
 
@@ -645,7 +645,7 @@ public fun svacltNF64(pg: SvboolT, op1: Svfloat64T, op2: Double): SvboolT = svac
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svadd[_f32]_m)
  */
 public fun svaddF32M(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T): Svfloat32T {
-    fun svaddF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = null as Svfloat32T
+    fun svaddF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svaddF32M(pg.sveInto(), op1, op2)
 }
 
@@ -684,7 +684,7 @@ public fun svaddNF32Z(pg: SvboolT, op1: Svfloat32T, op2: Float): Svfloat32T = sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svadd[_f64]_m)
  */
 public fun svaddF64M(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T): Svfloat64T {
-    fun svaddF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = null as Svfloat64T
+    fun svaddF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svaddF64M(pg.sveInto(), op1, op2)
 }
 
@@ -723,7 +723,7 @@ public fun svaddNF64Z(pg: SvboolT, op1: Svfloat64T, op2: Double): Svfloat64T = s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svadd[_s8]_m)
  */
 public fun svaddS8M(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T {
-    fun svaddS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    fun svaddS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svaddS8M(pg, op1, op2)
 }
 
@@ -762,7 +762,7 @@ public fun svaddNS8Z(pg: SvboolT, op1: Svint8T, op2: Byte): Svint8T = svaddS8Z(p
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svadd[_s16]_m)
  */
 public fun svaddS16M(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T {
-    fun svaddS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    fun svaddS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svaddS16M(pg.sveInto(), op1, op2)
 }
 
@@ -801,7 +801,7 @@ public fun svaddNS16Z(pg: SvboolT, op1: Svint16T, op2: Short): Svint16T = svaddS
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svadd[_s32]_m)
  */
 public fun svaddS32M(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T {
-    fun svaddS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    fun svaddS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svaddS32M(pg.sveInto(), op1, op2)
 }
 
@@ -840,7 +840,7 @@ public fun svaddNS32Z(pg: SvboolT, op1: Svint32T, op2: Int): Svint32T = svaddS32
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svadd[_s64]_m)
  */
 public fun svaddS64M(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T {
-    fun svaddS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    fun svaddS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svaddS64M(pg.sveInto(), op1, op2)
 }
 
@@ -1131,7 +1131,7 @@ public fun svaddvU32(pg: SvboolT, op: Svuint32T): ULong {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svadrb[_u32base]_[s32]offset)
  */
 public fun svadrbU32baseS32offset(bases: Svuint32T, offsets: Svint32T): Svuint32T {
-    fun svadrbU32baseS32offset(bases1: Svint32T, offsets1: Svint32T): Svint32T = null as Svint32T
+    fun svadrbU32baseS32offset(bases1: Svint32T, offsets1: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svadrbU32baseS32offset(bases.asSigned(), offsets).asUnsigned()
 }
 
@@ -1140,7 +1140,7 @@ public fun svadrbU32baseS32offset(bases: Svuint32T, offsets: Svint32T): Svuint32
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svadrh[_u32base]_[s32]index)
  */
 public fun svadrhU32baseS32index(bases: Svuint32T, indices: Svint32T): Svuint32T {
-    fun svadrhU32baseS32index(bases1: Svint32T, indices1: Svint32T): Svint32T = null as Svint32T
+    fun svadrhU32baseS32index(bases1: Svint32T, indices1: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svadrhU32baseS32index(bases.asSigned(), indices).asUnsigned()
 }
 
@@ -1149,7 +1149,7 @@ public fun svadrhU32baseS32index(bases: Svuint32T, indices: Svint32T): Svuint32T
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svadrw[_u32base]_[s32]index)
  */
 public fun svadrwU32baseS32index(bases: Svuint32T, indices: Svint32T): Svuint32T {
-    fun svadrwU32baseS32index(bases1: Svint32T, indices1: Svint32T): Svint32T = null as Svint32T
+    fun svadrwU32baseS32index(bases1: Svint32T, indices1: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svadrwU32baseS32index(bases.asSigned(), indices).asUnsigned()
 }
 
@@ -1158,7 +1158,7 @@ public fun svadrwU32baseS32index(bases: Svuint32T, indices: Svint32T): Svuint32T
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svadrd[_u32base]_[s32]index)
  */
 public fun svadrdU32baseS32index(bases: Svuint32T, indices: Svint32T): Svuint32T {
-    fun svadrdU32baseS32index(bases1: Svint32T, indices1: Svint32T): Svint32T = null as Svint32T
+    fun svadrdU32baseS32index(bases1: Svint32T, indices1: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svadrdU32baseS32index(bases.asSigned(), indices).asUnsigned()
 }
 
@@ -1191,7 +1191,7 @@ public fun svadrdU32baseU32index(bases: Svuint32T, indices: Svuint32T): Svuint32
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svadrb[_u64base]_[s64]offset)
  */
 public fun svadrbU64baseS64offset(bases: Svuint64T, offsets: Svint64T): Svuint64T {
-    fun svadrbU64baseS64offset(bases1: Svint64T, offsets1: Svint64T): Svint64T = null as Svint64T
+    fun svadrbU64baseS64offset(bases1: Svint64T, offsets1: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svadrbU64baseS64offset(bases.asSigned(), offsets).asUnsigned()
 }
 
@@ -1200,7 +1200,7 @@ public fun svadrbU64baseS64offset(bases: Svuint64T, offsets: Svint64T): Svuint64
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svadrh[_u64base]_[s64]index)
  */
 public fun svadrhU64baseS64index(bases: Svuint64T, indices: Svint64T): Svuint64T {
-    fun svadrhU64baseS64index(bases1: Svint64T, indices1: Svint64T): Svint64T = null as Svint64T
+    fun svadrhU64baseS64index(bases1: Svint64T, indices1: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svadrhU64baseS64index(bases.asSigned(), indices).asUnsigned()
 }
 
@@ -1209,7 +1209,7 @@ public fun svadrhU64baseS64index(bases: Svuint64T, indices: Svint64T): Svuint64T
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svadrw[_u64base]_[s64]index)
  */
 public fun svadrwU64baseS64index(bases: Svuint64T, indices: Svint64T): Svuint64T {
-    fun svadrwU64baseS64index(bases1: Svint64T, indices1: Svint64T): Svint64T = null as Svint64T
+    fun svadrwU64baseS64index(bases1: Svint64T, indices1: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svadrwU64baseS64index(bases.asSigned(), indices).asUnsigned()
 }
 
@@ -1218,7 +1218,7 @@ public fun svadrwU64baseS64index(bases: Svuint64T, indices: Svint64T): Svuint64T
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svadrd[_u64base]_[s64]index)
  */
 public fun svadrdU64baseS64index(bases: Svuint64T, indices: Svint64T): Svuint64T {
-    fun svadrdU64baseS64index(bases1: Svint64T, indices1: Svint64T): Svint64T = null as Svint64T
+    fun svadrdU64baseS64index(bases1: Svint64T, indices1: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svadrdU64baseS64index(bases.asSigned(), indices).asUnsigned()
 }
 
@@ -1251,7 +1251,7 @@ public fun svadrdU64baseU64index(bases: Svuint64T, indices: Svuint64T): Svuint64
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svand[_b]_z)
  */
 public fun svandBZ(pg: SvboolT, op1: SvboolT, op2: SvboolT): SvboolT {
-    fun svandBZ(pg1: SvboolT, op11: SvboolT, op21: SvboolT): SvboolT = null as SvboolT
+    fun svandBZ(pg1: SvboolT, op11: SvboolT, op21: SvboolT): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svandBZ(pg, op1, op2)
 }
 
@@ -1260,7 +1260,7 @@ public fun svandBZ(pg: SvboolT, op1: SvboolT, op2: SvboolT): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svand[_s8]_m)
  */
 public fun svandS8M(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T {
-    fun svandS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    fun svandS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svandS8M(pg, op1, op2)
 }
 
@@ -1299,7 +1299,7 @@ public fun svandNS8Z(pg: SvboolT, op1: Svint8T, op2: Byte): Svint8T = svandS8Z(p
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svand[_s16]_m)
  */
 public fun svandS16M(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T {
-    fun svandS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    fun svandS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svandS16M(pg.sveInto(), op1, op2)
 }
 
@@ -1338,7 +1338,7 @@ public fun svandNS16Z(pg: SvboolT, op1: Svint16T, op2: Short): Svint16T = svandS
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svand[_s32]_m)
  */
 public fun svandS32M(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T {
-    fun svandS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    fun svandS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svandS32M(pg.sveInto(), op1, op2)
 }
 
@@ -1377,7 +1377,7 @@ public fun svandNS32Z(pg: SvboolT, op1: Svint32T, op2: Int): Svint32T = svandS32
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svand[_s64]_m)
  */
 public fun svandS64M(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T {
-    fun svandS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    fun svandS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svandS64M(pg.sveInto(), op1, op2)
 }
 
@@ -1620,7 +1620,7 @@ public fun svandvU64(pg: SvboolT, op: Svuint64T): ULong = svandvS64(pg, op.asSig
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svasr[_s8]_m)
  */
 public fun svasrS8M(pg: SvboolT, op1: Svint8T, op2: Svuint8T): Svint8T {
-    fun svasrS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    fun svasrS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svasrS8M(pg, op1, op2.asSigned())
 }
 
@@ -1659,7 +1659,7 @@ public fun svasrNS8Z(pg: SvboolT, op1: Svint8T, op2: UByte): Svint8T = svasrS8Z(
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svasr[_s16]_m)
  */
 public fun svasrS16M(pg: SvboolT, op1: Svint16T, op2: Svuint16T): Svint16T {
-    fun svasrS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    fun svasrS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svasrS16M(pg.sveInto(), op1, op2.asSigned())
 }
 
@@ -1698,7 +1698,7 @@ public fun svasrNS16Z(pg: SvboolT, op1: Svint16T, op2: UShort): Svint16T = svasr
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svasr[_s32]_m)
  */
 public fun svasrS32M(pg: SvboolT, op1: Svint32T, op2: Svuint32T): Svint32T {
-    fun svasrS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    fun svasrS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svasrS32M(pg.sveInto(), op1, op2.asSigned())
 }
 
@@ -1737,7 +1737,7 @@ public fun svasrNS32Z(pg: SvboolT, op1: Svint32T, op2: UInt): Svint32T = svasrS3
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svasr[_s64]_m)
  */
 public fun svasrS64M(pg: SvboolT, op1: Svint64T, op2: Svuint64T): Svint64T {
-    fun svasrS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    fun svasrS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svasrS64M(pg.sveInto(), op1, op2.asSigned())
 }
 
@@ -1776,7 +1776,7 @@ public fun svasrNS64Z(pg: SvboolT, op1: Svint64T, op2: ULong): Svint64T = svasrS
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svasrWide[_s8]_m)
  */
 public fun svasrWideS8M(pg: SvboolT, op1: Svint8T, op2: Svuint64T): Svint8T {
-    fun svasrWideS8M(pg1: SvboolT, op11: Svint8T, op21: Svint64T): Svint8T = null as Svint8T
+    fun svasrWideS8M(pg1: SvboolT, op11: Svint8T, op21: Svint64T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svasrWideS8M(pg, op1, op2.asSigned())
 }
 
@@ -1815,7 +1815,7 @@ public fun svasrWideNS8Z(pg: SvboolT, op1: Svint8T, op2: ULong): Svint8T = svasr
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svasrWide[_s16]_m)
  */
 public fun svasrWideS16M(pg: SvboolT, op1: Svint16T, op2: Svuint64T): Svint16T {
-    fun svasrWideS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint64T): Svint16T = null as Svint16T
+    fun svasrWideS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint64T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svasrWideS16M(pg.sveInto(), op1, op2.asSigned())
 }
 
@@ -1854,7 +1854,7 @@ public fun svasrWideNS16Z(pg: SvboolT, op1: Svint16T, op2: ULong): Svint16T = sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svasrWide[_s32]_m)
  */
 public fun svasrWideS32M(pg: SvboolT, op1: Svint32T, op2: Svuint64T): Svint32T {
-    fun svasrWideS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint64T): Svint32T = null as Svint32T
+    fun svasrWideS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint64T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svasrWideS32M(pg.sveInto(), op1, op2.asSigned())
 }
 
@@ -1893,7 +1893,7 @@ public fun svasrWideNS32Z(pg: SvboolT, op1: Svint32T, op2: ULong): Svint32T = sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svasrd[_n_s8]_m)
  */
 public fun svasrdNS8M(pg: SvboolT, op1: Svint8T, imm2: Int): Svint8T {
-    fun svasrdNS8M(pg1: SvboolT, op11: Svint8T, imm2: Int): Svint8T = null as Svint8T
+    fun svasrdNS8M(pg1: SvboolT, op11: Svint8T, imm2: Int): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 8) { "IMM2 is not in range 1-8" }
     }
@@ -1917,7 +1917,7 @@ public fun svasrdNS8Z(pg: SvboolT, op1: Svint8T, imm2: Int): Svint8T = svasrdNS8
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svasrd[_n_s16]_m)
  */
 public fun svasrdNS16M(pg: SvboolT, op1: Svint16T, imm2: Int): Svint16T {
-    fun svasrdNS16M(pg1: Svbool8T, op11: Svint16T, imm2: Int): Svint16T = null as Svint16T
+    fun svasrdNS16M(pg1: Svbool8T, op11: Svint16T, imm2: Int): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 16) { "IMM2 is not in range 1-16" }
     }
@@ -1941,7 +1941,7 @@ public fun svasrdNS16Z(pg: SvboolT, op1: Svint16T, imm2: Int): Svint16T = svasrd
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svasrd[_n_s32]_m)
  */
 public fun svasrdNS32M(pg: SvboolT, op1: Svint32T, imm2: Int): Svint32T {
-    fun svasrdNS32M(pg1: Svbool4T, op11: Svint32T, imm2: Int): Svint32T = null as Svint32T
+    fun svasrdNS32M(pg1: Svbool4T, op11: Svint32T, imm2: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 32) { "IMM2 is not in range 1-32" }
     }
@@ -1965,7 +1965,7 @@ public fun svasrdNS32Z(pg: SvboolT, op1: Svint32T, imm2: Int): Svint32T = svasrd
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svasrd[_n_s64]_m)
  */
 public fun svasrdNS64M(pg: SvboolT, op1: Svint64T, imm2: Int): Svint64T {
-    fun svasrdNS64M(pg1: Svbool2T, op11: Svint64T, imm2: Int): Svint64T = null as Svint64T
+    fun svasrdNS64M(pg1: Svbool2T, op11: Svint64T, imm2: Int): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 64) { "IMM2 is not in range 1-64" }
     }
@@ -1989,7 +1989,7 @@ public fun svasrdNS64Z(pg: SvboolT, op1: Svint64T, imm2: Int): Svint64T = svasrd
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbic[_b]_z)
  */
 public fun svbicBZ(pg: SvboolT, op1: SvboolT, op2: SvboolT): SvboolT {
-    fun svbicBZ(pg1: SvboolT, op11: SvboolT, op21: SvboolT): SvboolT = null as SvboolT
+    fun svbicBZ(pg1: SvboolT, op11: SvboolT, op21: SvboolT): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svbicBZ(pg, op1, op2)
 }
 
@@ -1998,7 +1998,7 @@ public fun svbicBZ(pg: SvboolT, op1: SvboolT, op2: SvboolT): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbic[_s8]_m)
  */
 public fun svbicS8M(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T {
-    fun svbicS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    fun svbicS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svbicS8M(pg, op1, op2)
 }
 
@@ -2037,7 +2037,7 @@ public fun svbicNS8Z(pg: SvboolT, op1: Svint8T, op2: Byte): Svint8T = svbicS8Z(p
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbic[_s16]_m)
  */
 public fun svbicS16M(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T {
-    fun svbicS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    fun svbicS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svbicS16M(pg.sveInto(), op1, op2)
 }
 
@@ -2076,7 +2076,7 @@ public fun svbicNS16Z(pg: SvboolT, op1: Svint16T, op2: Short): Svint16T = svbicS
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbic[_s32]_m)
  */
 public fun svbicS32M(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T {
-    fun svbicS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    fun svbicS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svbicS32M(pg.sveInto(), op1, op2)
 }
 
@@ -2115,7 +2115,7 @@ public fun svbicNS32Z(pg: SvboolT, op1: Svint32T, op2: Int): Svint32T = svbicS32
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbic[_s64]_m)
  */
 public fun svbicS64M(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T {
-    fun svbicS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    fun svbicS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svbicS64M(pg.sveInto(), op1, op2)
 }
 
@@ -2298,7 +2298,7 @@ public fun svbicNU64Z(pg: SvboolT, op1: Svuint64T, op2: ULong): Svuint64T = svbi
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbrka[_b]_m)
  */
 public fun svbrkaBM(inactive: SvboolT, pg: SvboolT, op: SvboolT): SvboolT {
-    fun svbrkaBM(inactive1: SvboolT, pg1: SvboolT, op1: SvboolT): SvboolT = null as SvboolT
+    fun svbrkaBM(inactive1: SvboolT, pg1: SvboolT, op1: SvboolT): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svbrkaBM(inactive, pg, op)
 }
 
@@ -2307,7 +2307,7 @@ public fun svbrkaBM(inactive: SvboolT, pg: SvboolT, op: SvboolT): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbrka[_b]_z)
  */
 public fun svbrkaBZ(pg: SvboolT, op: SvboolT): SvboolT {
-    fun svbrkaBZ(pg1: SvboolT, op1: SvboolT): SvboolT = null as SvboolT
+    fun svbrkaBZ(pg1: SvboolT, op1: SvboolT): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svbrkaBZ(pg, op)
 }
 
@@ -2316,7 +2316,7 @@ public fun svbrkaBZ(pg: SvboolT, op: SvboolT): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbrkb[_b]_m)
  */
 public fun svbrkbBM(inactive: SvboolT, pg: SvboolT, op: SvboolT): SvboolT {
-    fun svbrkbBM(inactive1: SvboolT, pg1: SvboolT, op1: SvboolT): SvboolT = null as SvboolT
+    fun svbrkbBM(inactive1: SvboolT, pg1: SvboolT, op1: SvboolT): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svbrkbBM(inactive, pg, op)
 }
 
@@ -2325,7 +2325,7 @@ public fun svbrkbBM(inactive: SvboolT, pg: SvboolT, op: SvboolT): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbrkb[_b]_z)
  */
 public fun svbrkbBZ(pg: SvboolT, op: SvboolT): SvboolT {
-    fun svbrkbBZ(pg1: SvboolT, op1: SvboolT): SvboolT = null as SvboolT
+    fun svbrkbBZ(pg1: SvboolT, op1: SvboolT): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svbrkbBZ(pg, op)
 }
 
@@ -2334,7 +2334,7 @@ public fun svbrkbBZ(pg: SvboolT, op: SvboolT): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbrkn[_b]_z)
  */
 public fun svbrknBZ(pg: SvboolT, op1: SvboolT, op2: SvboolT): SvboolT {
-    fun svbrknBZ(pg1: SvboolT, op11: SvboolT, op21: SvboolT): SvboolT = null as SvboolT
+    fun svbrknBZ(pg1: SvboolT, op11: SvboolT, op21: SvboolT): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svbrknBZ(pg, op1, op2)
 }
 
@@ -2343,7 +2343,7 @@ public fun svbrknBZ(pg: SvboolT, op1: SvboolT, op2: SvboolT): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbrkpa[_b]_z)
  */
 public fun svbrkpaBZ(pg: SvboolT, op1: SvboolT, op2: SvboolT): SvboolT {
-    fun svbrkpaBZ(pg1: SvboolT, op11: SvboolT, op21: SvboolT): SvboolT = null as SvboolT
+    fun svbrkpaBZ(pg1: SvboolT, op11: SvboolT, op21: SvboolT): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svbrkpaBZ(pg, op1, op2)
 }
 
@@ -2352,7 +2352,7 @@ public fun svbrkpaBZ(pg: SvboolT, op1: SvboolT, op2: SvboolT): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbrkpb[_b]_z)
  */
 public fun svbrkpbBZ(pg: SvboolT, op1: SvboolT, op2: SvboolT): SvboolT {
-    fun svbrkpbBZ(pg1: SvboolT, op11: SvboolT, op21: SvboolT): SvboolT = null as SvboolT
+    fun svbrkpbBZ(pg1: SvboolT, op11: SvboolT, op21: SvboolT): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svbrkpbBZ(pg, op1, op2)
 }
 
@@ -2361,7 +2361,7 @@ public fun svbrkpbBZ(pg: SvboolT, op1: SvboolT, op2: SvboolT): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcadd[_f32]_m)
  */
 public fun svcaddF32M(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T, immRotation: Int): Svfloat32T {
-    fun svcaddF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T, immRotation: Int): Svfloat32T = null as Svfloat32T
+    fun svcaddF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T, immRotation: Int): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     run {
         check(immRotation == 90 || immRotation == 270)
     }
@@ -2385,7 +2385,7 @@ public fun svcaddF32Z(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T, immRotation
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcadd[_f64]_m)
  */
 public fun svcaddF64M(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T, immRotation: Int): Svfloat64T {
-    fun svcaddF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T, immRotation: Int): Svfloat64T = null as Svfloat64T
+    fun svcaddF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T, immRotation: Int): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     run {
         check(immRotation == 90 || immRotation == 270)
     }
@@ -2409,7 +2409,7 @@ public fun svcaddF64Z(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T, immRotation
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svclasta[_f32])
  */
 public fun svclastaF32(pg: SvboolT, fallback: Svfloat32T, data: Svfloat32T): Svfloat32T {
-    fun svclastaF32(pg1: Svbool4T, fallback1: Svfloat32T, data1: Svfloat32T): Svfloat32T = null as Svfloat32T
+    fun svclastaF32(pg1: Svbool4T, fallback1: Svfloat32T, data1: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svclastaF32(pg.sveInto(), fallback, data)
 }
 
@@ -2418,7 +2418,7 @@ public fun svclastaF32(pg: SvboolT, fallback: Svfloat32T, data: Svfloat32T): Svf
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svclasta[_f64])
  */
 public fun svclastaF64(pg: SvboolT, fallback: Svfloat64T, data: Svfloat64T): Svfloat64T {
-    fun svclastaF64(pg1: Svbool2T, fallback1: Svfloat64T, data1: Svfloat64T): Svfloat64T = null as Svfloat64T
+    fun svclastaF64(pg1: Svbool2T, fallback1: Svfloat64T, data1: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svclastaF64(pg.sveInto(), fallback, data)
 }
 
@@ -2427,7 +2427,7 @@ public fun svclastaF64(pg: SvboolT, fallback: Svfloat64T, data: Svfloat64T): Svf
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svclasta[_s8])
  */
 public fun svclastaS8(pg: SvboolT, fallback: Svint8T, data: Svint8T): Svint8T {
-    fun svclastaS8(pg1: SvboolT, fallback1: Svint8T, data1: Svint8T): Svint8T = null as Svint8T
+    fun svclastaS8(pg1: SvboolT, fallback1: Svint8T, data1: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svclastaS8(pg, fallback, data)
 }
 
@@ -2436,7 +2436,7 @@ public fun svclastaS8(pg: SvboolT, fallback: Svint8T, data: Svint8T): Svint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svclasta[_s16])
  */
 public fun svclastaS16(pg: SvboolT, fallback: Svint16T, data: Svint16T): Svint16T {
-    fun svclastaS16(pg1: Svbool8T, fallback1: Svint16T, data1: Svint16T): Svint16T = null as Svint16T
+    fun svclastaS16(pg1: Svbool8T, fallback1: Svint16T, data1: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svclastaS16(pg.sveInto(), fallback, data)
 }
 
@@ -2445,7 +2445,7 @@ public fun svclastaS16(pg: SvboolT, fallback: Svint16T, data: Svint16T): Svint16
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svclasta[_s32])
  */
 public fun svclastaS32(pg: SvboolT, fallback: Svint32T, data: Svint32T): Svint32T {
-    fun svclastaS32(pg1: Svbool4T, fallback1: Svint32T, data1: Svint32T): Svint32T = null as Svint32T
+    fun svclastaS32(pg1: Svbool4T, fallback1: Svint32T, data1: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svclastaS32(pg.sveInto(), fallback, data)
 }
 
@@ -2454,7 +2454,7 @@ public fun svclastaS32(pg: SvboolT, fallback: Svint32T, data: Svint32T): Svint32
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svclasta[_s64])
  */
 public fun svclastaS64(pg: SvboolT, fallback: Svint64T, data: Svint64T): Svint64T {
-    fun svclastaS64(pg1: Svbool2T, fallback1: Svint64T, data1: Svint64T): Svint64T = null as Svint64T
+    fun svclastaS64(pg1: Svbool2T, fallback1: Svint64T, data1: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svclastaS64(pg.sveInto(), fallback, data)
 }
 
@@ -2565,7 +2565,7 @@ public fun svclastaNU64(pg: SvboolT, fallback: ULong, data: Svuint64T): ULong = 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svclastb[_f32])
  */
 public fun svclastbF32(pg: SvboolT, fallback: Svfloat32T, data: Svfloat32T): Svfloat32T {
-    fun svclastbF32(pg1: Svbool4T, fallback1: Svfloat32T, data1: Svfloat32T): Svfloat32T = null as Svfloat32T
+    fun svclastbF32(pg1: Svbool4T, fallback1: Svfloat32T, data1: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svclastbF32(pg.sveInto(), fallback, data)
 }
 
@@ -2574,7 +2574,7 @@ public fun svclastbF32(pg: SvboolT, fallback: Svfloat32T, data: Svfloat32T): Svf
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svclastb[_f64])
  */
 public fun svclastbF64(pg: SvboolT, fallback: Svfloat64T, data: Svfloat64T): Svfloat64T {
-    fun svclastbF64(pg1: Svbool2T, fallback1: Svfloat64T, data1: Svfloat64T): Svfloat64T = null as Svfloat64T
+    fun svclastbF64(pg1: Svbool2T, fallback1: Svfloat64T, data1: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svclastbF64(pg.sveInto(), fallback, data)
 }
 
@@ -2583,7 +2583,7 @@ public fun svclastbF64(pg: SvboolT, fallback: Svfloat64T, data: Svfloat64T): Svf
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svclastb[_s8])
  */
 public fun svclastbS8(pg: SvboolT, fallback: Svint8T, data: Svint8T): Svint8T {
-    fun svclastbS8(pg1: SvboolT, fallback1: Svint8T, data1: Svint8T): Svint8T = null as Svint8T
+    fun svclastbS8(pg1: SvboolT, fallback1: Svint8T, data1: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svclastbS8(pg, fallback, data)
 }
 
@@ -2592,7 +2592,7 @@ public fun svclastbS8(pg: SvboolT, fallback: Svint8T, data: Svint8T): Svint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svclastb[_s16])
  */
 public fun svclastbS16(pg: SvboolT, fallback: Svint16T, data: Svint16T): Svint16T {
-    fun svclastbS16(pg1: Svbool8T, fallback1: Svint16T, data1: Svint16T): Svint16T = null as Svint16T
+    fun svclastbS16(pg1: Svbool8T, fallback1: Svint16T, data1: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svclastbS16(pg.sveInto(), fallback, data)
 }
 
@@ -2601,7 +2601,7 @@ public fun svclastbS16(pg: SvboolT, fallback: Svint16T, data: Svint16T): Svint16
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svclastb[_s32])
  */
 public fun svclastbS32(pg: SvboolT, fallback: Svint32T, data: Svint32T): Svint32T {
-    fun svclastbS32(pg1: Svbool4T, fallback1: Svint32T, data1: Svint32T): Svint32T = null as Svint32T
+    fun svclastbS32(pg1: Svbool4T, fallback1: Svint32T, data1: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svclastbS32(pg.sveInto(), fallback, data)
 }
 
@@ -2610,7 +2610,7 @@ public fun svclastbS32(pg: SvboolT, fallback: Svint32T, data: Svint32T): Svint32
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svclastb[_s64])
  */
 public fun svclastbS64(pg: SvboolT, fallback: Svint64T, data: Svint64T): Svint64T {
-    fun svclastbS64(pg1: Svbool2T, fallback1: Svint64T, data1: Svint64T): Svint64T = null as Svint64T
+    fun svclastbS64(pg1: Svbool2T, fallback1: Svint64T, data1: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svclastbS64(pg.sveInto(), fallback, data)
 }
 
@@ -2721,7 +2721,7 @@ public fun svclastbNU64(pg: SvboolT, fallback: ULong, data: Svuint64T): ULong = 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcls[_s8]_m)
  */
 public fun svclsS8M(inactive: Svuint8T, pg: SvboolT, op: Svint8T): Svuint8T {
-    fun svclsS8M(inactive1: Svint8T, pg1: SvboolT, op1: Svint8T): Svint8T = null as Svint8T
+    fun svclsS8M(inactive1: Svint8T, pg1: SvboolT, op1: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svclsS8M(inactive.asSigned(), pg, op).asUnsigned()
 }
 
@@ -2742,7 +2742,7 @@ public fun svclsS8Z(pg: SvboolT, op: Svint8T): Svuint8T = svclsS8M(svdupNU8(0u),
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcls[_s16]_m)
  */
 public fun svclsS16M(inactive: Svuint16T, pg: SvboolT, op: Svint16T): Svuint16T {
-    fun svclsS16M(inactive1: Svint16T, pg1: Svbool8T, op1: Svint16T): Svint16T = null as Svint16T
+    fun svclsS16M(inactive1: Svint16T, pg1: Svbool8T, op1: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svclsS16M(inactive.asSigned(), pg.sveInto(), op).asUnsigned()
 }
 
@@ -2763,7 +2763,7 @@ public fun svclsS16Z(pg: SvboolT, op: Svint16T): Svuint16T = svclsS16M(svdupNU16
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcls[_s32]_m)
  */
 public fun svclsS32M(inactive: Svuint32T, pg: SvboolT, op: Svint32T): Svuint32T {
-    fun svclsS32M(inactive1: Svint32T, pg1: Svbool4T, op1: Svint32T): Svint32T = null as Svint32T
+    fun svclsS32M(inactive1: Svint32T, pg1: Svbool4T, op1: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svclsS32M(inactive.asSigned(), pg.sveInto(), op).asUnsigned()
 }
 
@@ -2784,7 +2784,7 @@ public fun svclsS32Z(pg: SvboolT, op: Svint32T): Svuint32T = svclsS32M(svdupNU32
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcls[_s64]_m)
  */
 public fun svclsS64M(inactive: Svuint64T, pg: SvboolT, op: Svint64T): Svuint64T {
-    fun svclsS64M(inactive1: Svint64T, pg1: Svbool2T, op1: Svint64T): Svint64T = null as Svint64T
+    fun svclsS64M(inactive1: Svint64T, pg1: Svbool2T, op1: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svclsS64M(inactive.asSigned(), pg.sveInto(), op).asUnsigned()
 }
 
@@ -2805,7 +2805,7 @@ public fun svclsS64Z(pg: SvboolT, op: Svint64T): Svuint64T = svclsS64M(svdupNU64
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svclz[_s8]_m)
  */
 public fun svclzS8M(inactive: Svuint8T, pg: SvboolT, op: Svint8T): Svuint8T {
-    fun svclzS8M(inactive1: Svint8T, pg1: SvboolT, op1: Svint8T): Svint8T = null as Svint8T
+    fun svclzS8M(inactive1: Svint8T, pg1: SvboolT, op1: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svclzS8M(inactive.asSigned(), pg, op).asUnsigned()
 }
 
@@ -2826,7 +2826,7 @@ public fun svclzS8Z(pg: SvboolT, op: Svint8T): Svuint8T = svclzS8M(svdupNU8(0u),
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svclz[_s16]_m)
  */
 public fun svclzS16M(inactive: Svuint16T, pg: SvboolT, op: Svint16T): Svuint16T {
-    fun svclzS16M(inactive1: Svint16T, pg1: Svbool8T, op1: Svint16T): Svint16T = null as Svint16T
+    fun svclzS16M(inactive1: Svint16T, pg1: Svbool8T, op1: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svclzS16M(inactive.asSigned(), pg.sveInto(), op).asUnsigned()
 }
 
@@ -2847,7 +2847,7 @@ public fun svclzS16Z(pg: SvboolT, op: Svint16T): Svuint16T = svclzS16M(svdupNU16
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svclz[_s32]_m)
  */
 public fun svclzS32M(inactive: Svuint32T, pg: SvboolT, op: Svint32T): Svuint32T {
-    fun svclzS32M(inactive1: Svint32T, pg1: Svbool4T, op1: Svint32T): Svint32T = null as Svint32T
+    fun svclzS32M(inactive1: Svint32T, pg1: Svbool4T, op1: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svclzS32M(inactive.asSigned(), pg.sveInto(), op).asUnsigned()
 }
 
@@ -2868,7 +2868,7 @@ public fun svclzS32Z(pg: SvboolT, op: Svint32T): Svuint32T = svclzS32M(svdupNU32
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svclz[_s64]_m)
  */
 public fun svclzS64M(inactive: Svuint64T, pg: SvboolT, op: Svint64T): Svuint64T {
-    fun svclzS64M(inactive1: Svint64T, pg1: Svbool2T, op1: Svint64T): Svint64T = null as Svint64T
+    fun svclzS64M(inactive1: Svint64T, pg1: Svbool2T, op1: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svclzS64M(inactive.asSigned(), pg.sveInto(), op).asUnsigned()
 }
 
@@ -2961,7 +2961,7 @@ public fun svclzU64Z(pg: SvboolT, op: Svuint64T): Svuint64T = svclzU64M(svdupNU6
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmla[_f32]_m)
  */
 public fun svcmlaF32M(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T, op3: Svfloat32T, immRotation: Int): Svfloat32T {
-    fun svcmlaF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T, op31: Svfloat32T, immRotation: Int): Svfloat32T = null as Svfloat32T
+    fun svcmlaF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T, op31: Svfloat32T, immRotation: Int): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     run {
         check(immRotation == 0 || immRotation == 90 || immRotation == 180 || immRotation == 270)
     }
@@ -2985,7 +2985,7 @@ public fun svcmlaF32Z(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T, op3: Svfloa
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmla[_f64]_m)
  */
 public fun svcmlaF64M(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T, op3: Svfloat64T, immRotation: Int): Svfloat64T {
-    fun svcmlaF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T, op31: Svfloat64T, immRotation: Int): Svfloat64T = null as Svfloat64T
+    fun svcmlaF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T, op31: Svfloat64T, immRotation: Int): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     run {
         check(immRotation == 0 || immRotation == 90 || immRotation == 180 || immRotation == 270)
     }
@@ -3009,7 +3009,7 @@ public fun svcmlaF64Z(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T, op3: Svfloa
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmlaLane[_f32])
  */
 public fun svcmlaLaneF32(op1: Svfloat32T, op2: Svfloat32T, op3: Svfloat32T, immIndex: Int, immRotation: Int): Svfloat32T {
-    fun svcmlaLaneF32(op11: Svfloat32T, op21: Svfloat32T, op31: Svfloat32T, immIndex: Int, immRotation: Int): Svfloat32T = null as Svfloat32T
+    fun svcmlaLaneF32(op11: Svfloat32T, op21: Svfloat32T, op31: Svfloat32T, immIndex: Int, immRotation: Int): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 1) { "IMM_INDEX is not in range 0-1" }
     }
@@ -3024,7 +3024,7 @@ public fun svcmlaLaneF32(op1: Svfloat32T, op2: Svfloat32T, op3: Svfloat32T, immI
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpeq[_f32])
  */
 public fun svcmpeqF32(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T): SvboolT {
-    fun svcmpeqF32(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T): Svbool4T = null as Svbool4T
+    fun svcmpeqF32(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T): Svbool4T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); res }
     return svcmpeqF32(pg.sveInto(), op1, op2).sveInto()
 }
 
@@ -3039,7 +3039,7 @@ public fun svcmpeqNF32(pg: SvboolT, op1: Svfloat32T, op2: Float): SvboolT = svcm
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpeq[_f64])
  */
 public fun svcmpeqF64(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T): SvboolT {
-    fun svcmpeqF64(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T): Svbool2T = null as Svbool2T
+    fun svcmpeqF64(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T): Svbool2T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool2T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool2T>()).alignBytes)); res }
     return svcmpeqF64(pg.sveInto(), op1, op2).sveInto()
 }
 
@@ -3054,7 +3054,7 @@ public fun svcmpeqNF64(pg: SvboolT, op1: Svfloat64T, op2: Double): SvboolT = svc
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpeq[_s8])
  */
 public fun svcmpeqS8(pg: SvboolT, op1: Svint8T, op2: Svint8T): SvboolT {
-    fun svcmpeqS8(pg1: SvboolT, op11: Svint8T, op21: Svint8T): SvboolT = null as SvboolT
+    fun svcmpeqS8(pg1: SvboolT, op11: Svint8T, op21: Svint8T): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svcmpeqS8(pg, op1, op2)
 }
 
@@ -3069,7 +3069,7 @@ public fun svcmpeqNS8(pg: SvboolT, op1: Svint8T, op2: Byte): SvboolT = svcmpeqS8
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpeq[_s16])
  */
 public fun svcmpeqS16(pg: SvboolT, op1: Svint16T, op2: Svint16T): SvboolT {
-    fun svcmpeqS16(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svbool8T = null as Svbool8T
+    fun svcmpeqS16(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svbool8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool8T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool8T>()).alignBytes)); res }
     return svcmpeqS16(pg.sveInto(), op1, op2).sveInto()
 }
 
@@ -3084,7 +3084,7 @@ public fun svcmpeqNS16(pg: SvboolT, op1: Svint16T, op2: Short): SvboolT = svcmpe
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpeq[_s32])
  */
 public fun svcmpeqS32(pg: SvboolT, op1: Svint32T, op2: Svint32T): SvboolT {
-    fun svcmpeqS32(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svbool4T = null as Svbool4T
+    fun svcmpeqS32(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svbool4T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); res }
     return svcmpeqS32(pg.sveInto(), op1, op2).sveInto()
 }
 
@@ -3099,7 +3099,7 @@ public fun svcmpeqNS32(pg: SvboolT, op1: Svint32T, op2: Int): SvboolT = svcmpeqS
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpeq[_s64])
  */
 public fun svcmpeqS64(pg: SvboolT, op1: Svint64T, op2: Svint64T): SvboolT {
-    fun svcmpeqS64(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svbool2T = null as Svbool2T
+    fun svcmpeqS64(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svbool2T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool2T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool2T>()).alignBytes)); res }
     return svcmpeqS64(pg.sveInto(), op1, op2).sveInto()
 }
 
@@ -3162,7 +3162,7 @@ public fun svcmpeqNU64(pg: SvboolT, op1: Svuint64T, op2: ULong): SvboolT = svcmp
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpeqWide[_s8])
  */
 public fun svcmpeqWideS8(pg: SvboolT, op1: Svint8T, op2: Svint64T): SvboolT {
-    fun svcmpeqWideS8(pg1: SvboolT, op11: Svint8T, op21: Svint64T): SvboolT = null as SvboolT
+    fun svcmpeqWideS8(pg1: SvboolT, op11: Svint8T, op21: Svint64T): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svcmpeqWideS8(pg, op1, op2)
 }
 
@@ -3177,7 +3177,7 @@ public fun svcmpeqWideNS8(pg: SvboolT, op1: Svint8T, op2: Long): SvboolT = svcmp
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpeqWide[_s16])
  */
 public fun svcmpeqWideS16(pg: SvboolT, op1: Svint16T, op2: Svint64T): SvboolT {
-    fun svcmpeqWideS16(pg1: Svbool8T, op11: Svint16T, op21: Svint64T): Svbool8T = null as Svbool8T
+    fun svcmpeqWideS16(pg1: Svbool8T, op11: Svint16T, op21: Svint64T): Svbool8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool8T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool8T>()).alignBytes)); res }
     return svcmpeqWideS16(pg.sveInto(), op1, op2).sveInto()
 }
 
@@ -3192,7 +3192,7 @@ public fun svcmpeqWideNS16(pg: SvboolT, op1: Svint16T, op2: Long): SvboolT = svc
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpeqWide[_s32])
  */
 public fun svcmpeqWideS32(pg: SvboolT, op1: Svint32T, op2: Svint64T): SvboolT {
-    fun svcmpeqWideS32(pg1: Svbool4T, op11: Svint32T, op21: Svint64T): Svbool4T = null as Svbool4T
+    fun svcmpeqWideS32(pg1: Svbool4T, op11: Svint32T, op21: Svint64T): Svbool4T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); res }
     return svcmpeqWideS32(pg.sveInto(), op1, op2).sveInto()
 }
 
@@ -3207,7 +3207,7 @@ public fun svcmpeqWideNS32(pg: SvboolT, op1: Svint32T, op2: Long): SvboolT = svc
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpge[_f32])
  */
 public fun svcmpgeF32(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T): SvboolT {
-    fun svcmpgeF32(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T): Svbool4T = null as Svbool4T
+    fun svcmpgeF32(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T): Svbool4T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); res }
     return svcmpgeF32(pg.sveInto(), op1, op2).sveInto()
 }
 
@@ -3222,7 +3222,7 @@ public fun svcmpgeNF32(pg: SvboolT, op1: Svfloat32T, op2: Float): SvboolT = svcm
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpge[_f64])
  */
 public fun svcmpgeF64(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T): SvboolT {
-    fun svcmpgeF64(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T): Svbool2T = null as Svbool2T
+    fun svcmpgeF64(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T): Svbool2T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool2T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool2T>()).alignBytes)); res }
     return svcmpgeF64(pg.sveInto(), op1, op2).sveInto()
 }
 
@@ -3237,7 +3237,7 @@ public fun svcmpgeNF64(pg: SvboolT, op1: Svfloat64T, op2: Double): SvboolT = svc
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpge[_s8])
  */
 public fun svcmpgeS8(pg: SvboolT, op1: Svint8T, op2: Svint8T): SvboolT {
-    fun svcmpgeS8(pg1: SvboolT, op11: Svint8T, op21: Svint8T): SvboolT = null as SvboolT
+    fun svcmpgeS8(pg1: SvboolT, op11: Svint8T, op21: Svint8T): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svcmpgeS8(pg, op1, op2)
 }
 
@@ -3252,7 +3252,7 @@ public fun svcmpgeNS8(pg: SvboolT, op1: Svint8T, op2: Byte): SvboolT = svcmpgeS8
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpge[_s16])
  */
 public fun svcmpgeS16(pg: SvboolT, op1: Svint16T, op2: Svint16T): SvboolT {
-    fun svcmpgeS16(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svbool8T = null as Svbool8T
+    fun svcmpgeS16(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svbool8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool8T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool8T>()).alignBytes)); res }
     return svcmpgeS16(pg.sveInto(), op1, op2).sveInto()
 }
 
@@ -3267,7 +3267,7 @@ public fun svcmpgeNS16(pg: SvboolT, op1: Svint16T, op2: Short): SvboolT = svcmpg
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpge[_s32])
  */
 public fun svcmpgeS32(pg: SvboolT, op1: Svint32T, op2: Svint32T): SvboolT {
-    fun svcmpgeS32(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svbool4T = null as Svbool4T
+    fun svcmpgeS32(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svbool4T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); res }
     return svcmpgeS32(pg.sveInto(), op1, op2).sveInto()
 }
 
@@ -3282,7 +3282,7 @@ public fun svcmpgeNS32(pg: SvboolT, op1: Svint32T, op2: Int): SvboolT = svcmpgeS
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpge[_s64])
  */
 public fun svcmpgeS64(pg: SvboolT, op1: Svint64T, op2: Svint64T): SvboolT {
-    fun svcmpgeS64(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svbool2T = null as Svbool2T
+    fun svcmpgeS64(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svbool2T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool2T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool2T>()).alignBytes)); res }
     return svcmpgeS64(pg.sveInto(), op1, op2).sveInto()
 }
 
@@ -3297,7 +3297,7 @@ public fun svcmpgeNS64(pg: SvboolT, op1: Svint64T, op2: Long): SvboolT = svcmpge
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpge[_u8])
  */
 public fun svcmpgeU8(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): SvboolT {
-    fun svcmpgeU8(pg1: SvboolT, op11: Svint8T, op21: Svint8T): SvboolT = null as SvboolT
+    fun svcmpgeU8(pg1: SvboolT, op11: Svint8T, op21: Svint8T): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svcmpgeU8(pg, op1.asSigned(), op2.asSigned())
 }
 
@@ -3312,7 +3312,7 @@ public fun svcmpgeNU8(pg: SvboolT, op1: Svuint8T, op2: UByte): SvboolT = svcmpge
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpge[_u16])
  */
 public fun svcmpgeU16(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): SvboolT {
-    fun svcmpgeU16(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svbool8T = null as Svbool8T
+    fun svcmpgeU16(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svbool8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool8T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool8T>()).alignBytes)); res }
     return svcmpgeU16(pg.sveInto(), op1.asSigned(), op2.asSigned()).sveInto()
 }
 
@@ -3327,7 +3327,7 @@ public fun svcmpgeNU16(pg: SvboolT, op1: Svuint16T, op2: UShort): SvboolT = svcm
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpge[_u32])
  */
 public fun svcmpgeU32(pg: SvboolT, op1: Svuint32T, op2: Svuint32T): SvboolT {
-    fun svcmpgeU32(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svbool4T = null as Svbool4T
+    fun svcmpgeU32(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svbool4T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); res }
     return svcmpgeU32(pg.sveInto(), op1.asSigned(), op2.asSigned()).sveInto()
 }
 
@@ -3342,7 +3342,7 @@ public fun svcmpgeNU32(pg: SvboolT, op1: Svuint32T, op2: UInt): SvboolT = svcmpg
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpge[_u64])
  */
 public fun svcmpgeU64(pg: SvboolT, op1: Svuint64T, op2: Svuint64T): SvboolT {
-    fun svcmpgeU64(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svbool2T = null as Svbool2T
+    fun svcmpgeU64(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svbool2T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool2T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool2T>()).alignBytes)); res }
     return svcmpgeU64(pg.sveInto(), op1.asSigned(), op2.asSigned()).sveInto()
 }
 
@@ -3357,7 +3357,7 @@ public fun svcmpgeNU64(pg: SvboolT, op1: Svuint64T, op2: ULong): SvboolT = svcmp
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpgeWide[_s8])
  */
 public fun svcmpgeWideS8(pg: SvboolT, op1: Svint8T, op2: Svint64T): SvboolT {
-    fun svcmpgeWideS8(pg1: SvboolT, op11: Svint8T, op21: Svint64T): SvboolT = null as SvboolT
+    fun svcmpgeWideS8(pg1: SvboolT, op11: Svint8T, op21: Svint64T): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svcmpgeWideS8(pg, op1, op2)
 }
 
@@ -3372,7 +3372,7 @@ public fun svcmpgeWideNS8(pg: SvboolT, op1: Svint8T, op2: Long): SvboolT = svcmp
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpgeWide[_s16])
  */
 public fun svcmpgeWideS16(pg: SvboolT, op1: Svint16T, op2: Svint64T): SvboolT {
-    fun svcmpgeWideS16(pg1: Svbool8T, op11: Svint16T, op21: Svint64T): Svbool8T = null as Svbool8T
+    fun svcmpgeWideS16(pg1: Svbool8T, op11: Svint16T, op21: Svint64T): Svbool8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool8T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool8T>()).alignBytes)); res }
     return svcmpgeWideS16(pg.sveInto(), op1, op2).sveInto()
 }
 
@@ -3387,7 +3387,7 @@ public fun svcmpgeWideNS16(pg: SvboolT, op1: Svint16T, op2: Long): SvboolT = svc
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpgeWide[_s32])
  */
 public fun svcmpgeWideS32(pg: SvboolT, op1: Svint32T, op2: Svint64T): SvboolT {
-    fun svcmpgeWideS32(pg1: Svbool4T, op11: Svint32T, op21: Svint64T): Svbool4T = null as Svbool4T
+    fun svcmpgeWideS32(pg1: Svbool4T, op11: Svint32T, op21: Svint64T): Svbool4T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); res }
     return svcmpgeWideS32(pg.sveInto(), op1, op2).sveInto()
 }
 
@@ -3402,7 +3402,7 @@ public fun svcmpgeWideNS32(pg: SvboolT, op1: Svint32T, op2: Long): SvboolT = svc
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpgeWide[_u8])
  */
 public fun svcmpgeWideU8(pg: SvboolT, op1: Svuint8T, op2: Svuint64T): SvboolT {
-    fun svcmpgeWideU8(pg1: SvboolT, op11: Svint8T, op21: Svint64T): SvboolT = null as SvboolT
+    fun svcmpgeWideU8(pg1: SvboolT, op11: Svint8T, op21: Svint64T): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svcmpgeWideU8(pg, op1.asSigned(), op2.asSigned())
 }
 
@@ -3417,7 +3417,7 @@ public fun svcmpgeWideNU8(pg: SvboolT, op1: Svuint8T, op2: ULong): SvboolT = svc
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpgeWide[_u16])
  */
 public fun svcmpgeWideU16(pg: SvboolT, op1: Svuint16T, op2: Svuint64T): SvboolT {
-    fun svcmpgeWideU16(pg1: Svbool8T, op11: Svint16T, op21: Svint64T): Svbool8T = null as Svbool8T
+    fun svcmpgeWideU16(pg1: Svbool8T, op11: Svint16T, op21: Svint64T): Svbool8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool8T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool8T>()).alignBytes)); res }
     return svcmpgeWideU16(pg.sveInto(), op1.asSigned(), op2.asSigned()).sveInto()
 }
 
@@ -3432,7 +3432,7 @@ public fun svcmpgeWideNU16(pg: SvboolT, op1: Svuint16T, op2: ULong): SvboolT = s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpgeWide[_u32])
  */
 public fun svcmpgeWideU32(pg: SvboolT, op1: Svuint32T, op2: Svuint64T): SvboolT {
-    fun svcmpgeWideU32(pg1: Svbool4T, op11: Svint32T, op21: Svint64T): Svbool4T = null as Svbool4T
+    fun svcmpgeWideU32(pg1: Svbool4T, op11: Svint32T, op21: Svint64T): Svbool4T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); res }
     return svcmpgeWideU32(pg.sveInto(), op1.asSigned(), op2.asSigned()).sveInto()
 }
 
@@ -3447,7 +3447,7 @@ public fun svcmpgeWideNU32(pg: SvboolT, op1: Svuint32T, op2: ULong): SvboolT = s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpgt[_f32])
  */
 public fun svcmpgtF32(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T): SvboolT {
-    fun svcmpgtF32(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T): Svbool4T = null as Svbool4T
+    fun svcmpgtF32(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T): Svbool4T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); res }
     return svcmpgtF32(pg.sveInto(), op1, op2).sveInto()
 }
 
@@ -3462,7 +3462,7 @@ public fun svcmpgtNF32(pg: SvboolT, op1: Svfloat32T, op2: Float): SvboolT = svcm
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpgt[_f64])
  */
 public fun svcmpgtF64(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T): SvboolT {
-    fun svcmpgtF64(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T): Svbool2T = null as Svbool2T
+    fun svcmpgtF64(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T): Svbool2T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool2T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool2T>()).alignBytes)); res }
     return svcmpgtF64(pg.sveInto(), op1, op2).sveInto()
 }
 
@@ -3477,7 +3477,7 @@ public fun svcmpgtNF64(pg: SvboolT, op1: Svfloat64T, op2: Double): SvboolT = svc
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpgt[_s8])
  */
 public fun svcmpgtS8(pg: SvboolT, op1: Svint8T, op2: Svint8T): SvboolT {
-    fun svcmpgtS8(pg1: SvboolT, op11: Svint8T, op21: Svint8T): SvboolT = null as SvboolT
+    fun svcmpgtS8(pg1: SvboolT, op11: Svint8T, op21: Svint8T): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svcmpgtS8(pg, op1, op2)
 }
 
@@ -3492,7 +3492,7 @@ public fun svcmpgtNS8(pg: SvboolT, op1: Svint8T, op2: Byte): SvboolT = svcmpgtS8
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpgt[_s16])
  */
 public fun svcmpgtS16(pg: SvboolT, op1: Svint16T, op2: Svint16T): SvboolT {
-    fun svcmpgtS16(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svbool8T = null as Svbool8T
+    fun svcmpgtS16(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svbool8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool8T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool8T>()).alignBytes)); res }
     return svcmpgtS16(pg.sveInto(), op1, op2).sveInto()
 }
 
@@ -3507,7 +3507,7 @@ public fun svcmpgtNS16(pg: SvboolT, op1: Svint16T, op2: Short): SvboolT = svcmpg
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpgt[_s32])
  */
 public fun svcmpgtS32(pg: SvboolT, op1: Svint32T, op2: Svint32T): SvboolT {
-    fun svcmpgtS32(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svbool4T = null as Svbool4T
+    fun svcmpgtS32(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svbool4T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); res }
     return svcmpgtS32(pg.sveInto(), op1, op2).sveInto()
 }
 
@@ -3522,7 +3522,7 @@ public fun svcmpgtNS32(pg: SvboolT, op1: Svint32T, op2: Int): SvboolT = svcmpgtS
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpgt[_s64])
  */
 public fun svcmpgtS64(pg: SvboolT, op1: Svint64T, op2: Svint64T): SvboolT {
-    fun svcmpgtS64(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svbool2T = null as Svbool2T
+    fun svcmpgtS64(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svbool2T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool2T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool2T>()).alignBytes)); res }
     return svcmpgtS64(pg.sveInto(), op1, op2).sveInto()
 }
 
@@ -3537,7 +3537,7 @@ public fun svcmpgtNS64(pg: SvboolT, op1: Svint64T, op2: Long): SvboolT = svcmpgt
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpgt[_u8])
  */
 public fun svcmpgtU8(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): SvboolT {
-    fun svcmpgtU8(pg1: SvboolT, op11: Svint8T, op21: Svint8T): SvboolT = null as SvboolT
+    fun svcmpgtU8(pg1: SvboolT, op11: Svint8T, op21: Svint8T): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svcmpgtU8(pg, op1.asSigned(), op2.asSigned())
 }
 
@@ -3552,7 +3552,7 @@ public fun svcmpgtNU8(pg: SvboolT, op1: Svuint8T, op2: UByte): SvboolT = svcmpgt
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpgt[_u16])
  */
 public fun svcmpgtU16(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): SvboolT {
-    fun svcmpgtU16(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svbool8T = null as Svbool8T
+    fun svcmpgtU16(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svbool8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool8T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool8T>()).alignBytes)); res }
     return svcmpgtU16(pg.sveInto(), op1.asSigned(), op2.asSigned()).sveInto()
 }
 
@@ -3567,7 +3567,7 @@ public fun svcmpgtNU16(pg: SvboolT, op1: Svuint16T, op2: UShort): SvboolT = svcm
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpgt[_u32])
  */
 public fun svcmpgtU32(pg: SvboolT, op1: Svuint32T, op2: Svuint32T): SvboolT {
-    fun svcmpgtU32(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svbool4T = null as Svbool4T
+    fun svcmpgtU32(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svbool4T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); res }
     return svcmpgtU32(pg.sveInto(), op1.asSigned(), op2.asSigned()).sveInto()
 }
 
@@ -3582,7 +3582,7 @@ public fun svcmpgtNU32(pg: SvboolT, op1: Svuint32T, op2: UInt): SvboolT = svcmpg
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpgt[_u64])
  */
 public fun svcmpgtU64(pg: SvboolT, op1: Svuint64T, op2: Svuint64T): SvboolT {
-    fun svcmpgtU64(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svbool2T = null as Svbool2T
+    fun svcmpgtU64(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svbool2T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool2T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool2T>()).alignBytes)); res }
     return svcmpgtU64(pg.sveInto(), op1.asSigned(), op2.asSigned()).sveInto()
 }
 
@@ -3597,7 +3597,7 @@ public fun svcmpgtNU64(pg: SvboolT, op1: Svuint64T, op2: ULong): SvboolT = svcmp
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpgtWide[_s8])
  */
 public fun svcmpgtWideS8(pg: SvboolT, op1: Svint8T, op2: Svint64T): SvboolT {
-    fun svcmpgtWideS8(pg1: SvboolT, op11: Svint8T, op21: Svint64T): SvboolT = null as SvboolT
+    fun svcmpgtWideS8(pg1: SvboolT, op11: Svint8T, op21: Svint64T): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svcmpgtWideS8(pg, op1, op2)
 }
 
@@ -3612,7 +3612,7 @@ public fun svcmpgtWideNS8(pg: SvboolT, op1: Svint8T, op2: Long): SvboolT = svcmp
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpgtWide[_s16])
  */
 public fun svcmpgtWideS16(pg: SvboolT, op1: Svint16T, op2: Svint64T): SvboolT {
-    fun svcmpgtWideS16(pg1: Svbool8T, op11: Svint16T, op21: Svint64T): Svbool8T = null as Svbool8T
+    fun svcmpgtWideS16(pg1: Svbool8T, op11: Svint16T, op21: Svint64T): Svbool8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool8T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool8T>()).alignBytes)); res }
     return svcmpgtWideS16(pg.sveInto(), op1, op2).sveInto()
 }
 
@@ -3627,7 +3627,7 @@ public fun svcmpgtWideNS16(pg: SvboolT, op1: Svint16T, op2: Long): SvboolT = svc
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpgtWide[_s32])
  */
 public fun svcmpgtWideS32(pg: SvboolT, op1: Svint32T, op2: Svint64T): SvboolT {
-    fun svcmpgtWideS32(pg1: Svbool4T, op11: Svint32T, op21: Svint64T): Svbool4T = null as Svbool4T
+    fun svcmpgtWideS32(pg1: Svbool4T, op11: Svint32T, op21: Svint64T): Svbool4T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); res }
     return svcmpgtWideS32(pg.sveInto(), op1, op2).sveInto()
 }
 
@@ -3642,7 +3642,7 @@ public fun svcmpgtWideNS32(pg: SvboolT, op1: Svint32T, op2: Long): SvboolT = svc
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpgtWide[_u8])
  */
 public fun svcmpgtWideU8(pg: SvboolT, op1: Svuint8T, op2: Svuint64T): SvboolT {
-    fun svcmpgtWideU8(pg1: SvboolT, op11: Svint8T, op21: Svint64T): SvboolT = null as SvboolT
+    fun svcmpgtWideU8(pg1: SvboolT, op11: Svint8T, op21: Svint64T): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svcmpgtWideU8(pg, op1.asSigned(), op2.asSigned())
 }
 
@@ -3657,7 +3657,7 @@ public fun svcmpgtWideNU8(pg: SvboolT, op1: Svuint8T, op2: ULong): SvboolT = svc
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpgtWide[_u16])
  */
 public fun svcmpgtWideU16(pg: SvboolT, op1: Svuint16T, op2: Svuint64T): SvboolT {
-    fun svcmpgtWideU16(pg1: Svbool8T, op11: Svint16T, op21: Svint64T): Svbool8T = null as Svbool8T
+    fun svcmpgtWideU16(pg1: Svbool8T, op11: Svint16T, op21: Svint64T): Svbool8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool8T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool8T>()).alignBytes)); res }
     return svcmpgtWideU16(pg.sveInto(), op1.asSigned(), op2.asSigned()).sveInto()
 }
 
@@ -3672,7 +3672,7 @@ public fun svcmpgtWideNU16(pg: SvboolT, op1: Svuint16T, op2: ULong): SvboolT = s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpgtWide[_u32])
  */
 public fun svcmpgtWideU32(pg: SvboolT, op1: Svuint32T, op2: Svuint64T): SvboolT {
-    fun svcmpgtWideU32(pg1: Svbool4T, op11: Svint32T, op21: Svint64T): Svbool4T = null as Svbool4T
+    fun svcmpgtWideU32(pg1: Svbool4T, op11: Svint32T, op21: Svint64T): Svbool4T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); res }
     return svcmpgtWideU32(pg.sveInto(), op1.asSigned(), op2.asSigned()).sveInto()
 }
 
@@ -3807,7 +3807,7 @@ public fun svcmpleNU64(pg: SvboolT, op1: Svuint64T, op2: ULong): SvboolT = svcmp
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpleWide[_s8])
  */
 public fun svcmpleWideS8(pg: SvboolT, op1: Svint8T, op2: Svint64T): SvboolT {
-    fun svcmpleWideS8(pg1: SvboolT, op11: Svint8T, op21: Svint64T): SvboolT = null as SvboolT
+    fun svcmpleWideS8(pg1: SvboolT, op11: Svint8T, op21: Svint64T): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svcmpleWideS8(pg, op1, op2)
 }
 
@@ -3822,7 +3822,7 @@ public fun svcmpleWideNS8(pg: SvboolT, op1: Svint8T, op2: Long): SvboolT = svcmp
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpleWide[_s16])
  */
 public fun svcmpleWideS16(pg: SvboolT, op1: Svint16T, op2: Svint64T): SvboolT {
-    fun svcmpleWideS16(pg1: Svbool8T, op11: Svint16T, op21: Svint64T): Svbool8T = null as Svbool8T
+    fun svcmpleWideS16(pg1: Svbool8T, op11: Svint16T, op21: Svint64T): Svbool8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool8T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool8T>()).alignBytes)); res }
     return svcmpleWideS16(pg.sveInto(), op1, op2).sveInto()
 }
 
@@ -3837,7 +3837,7 @@ public fun svcmpleWideNS16(pg: SvboolT, op1: Svint16T, op2: Long): SvboolT = svc
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpleWide[_s32])
  */
 public fun svcmpleWideS32(pg: SvboolT, op1: Svint32T, op2: Svint64T): SvboolT {
-    fun svcmpleWideS32(pg1: Svbool4T, op11: Svint32T, op21: Svint64T): Svbool4T = null as Svbool4T
+    fun svcmpleWideS32(pg1: Svbool4T, op11: Svint32T, op21: Svint64T): Svbool4T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); res }
     return svcmpleWideS32(pg.sveInto(), op1, op2).sveInto()
 }
 
@@ -3852,7 +3852,7 @@ public fun svcmpleWideNS32(pg: SvboolT, op1: Svint32T, op2: Long): SvboolT = svc
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpleWide[_u8])
  */
 public fun svcmpleWideU8(pg: SvboolT, op1: Svuint8T, op2: Svuint64T): SvboolT {
-    fun svcmpleWideU8(pg1: SvboolT, op11: Svint8T, op21: Svint64T): SvboolT = null as SvboolT
+    fun svcmpleWideU8(pg1: SvboolT, op11: Svint8T, op21: Svint64T): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svcmpleWideU8(pg, op1.asSigned(), op2.asSigned())
 }
 
@@ -3867,7 +3867,7 @@ public fun svcmpleWideNU8(pg: SvboolT, op1: Svuint8T, op2: ULong): SvboolT = svc
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpleWide[_u16])
  */
 public fun svcmpleWideU16(pg: SvboolT, op1: Svuint16T, op2: Svuint64T): SvboolT {
-    fun svcmpleWideU16(pg1: Svbool8T, op11: Svint16T, op21: Svint64T): Svbool8T = null as Svbool8T
+    fun svcmpleWideU16(pg1: Svbool8T, op11: Svint16T, op21: Svint64T): Svbool8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool8T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool8T>()).alignBytes)); res }
     return svcmpleWideU16(pg.sveInto(), op1.asSigned(), op2.asSigned()).sveInto()
 }
 
@@ -3882,7 +3882,7 @@ public fun svcmpleWideNU16(pg: SvboolT, op1: Svuint16T, op2: ULong): SvboolT = s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpleWide[_u32])
  */
 public fun svcmpleWideU32(pg: SvboolT, op1: Svuint32T, op2: Svuint64T): SvboolT {
-    fun svcmpleWideU32(pg1: Svbool4T, op11: Svint32T, op21: Svint64T): Svbool4T = null as Svbool4T
+    fun svcmpleWideU32(pg1: Svbool4T, op11: Svint32T, op21: Svint64T): Svbool4T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); res }
     return svcmpleWideU32(pg.sveInto(), op1.asSigned(), op2.asSigned()).sveInto()
 }
 
@@ -4017,7 +4017,7 @@ public fun svcmpltNU64(pg: SvboolT, op1: Svuint64T, op2: ULong): SvboolT = svcmp
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpltWide[_s8])
  */
 public fun svcmpltWideS8(pg: SvboolT, op1: Svint8T, op2: Svint64T): SvboolT {
-    fun svcmpltWideS8(pg1: SvboolT, op11: Svint8T, op21: Svint64T): SvboolT = null as SvboolT
+    fun svcmpltWideS8(pg1: SvboolT, op11: Svint8T, op21: Svint64T): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svcmpltWideS8(pg, op1, op2)
 }
 
@@ -4032,7 +4032,7 @@ public fun svcmpltWideNS8(pg: SvboolT, op1: Svint8T, op2: Long): SvboolT = svcmp
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpltWide[_s16])
  */
 public fun svcmpltWideS16(pg: SvboolT, op1: Svint16T, op2: Svint64T): SvboolT {
-    fun svcmpltWideS16(pg1: Svbool8T, op11: Svint16T, op21: Svint64T): Svbool8T = null as Svbool8T
+    fun svcmpltWideS16(pg1: Svbool8T, op11: Svint16T, op21: Svint64T): Svbool8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool8T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool8T>()).alignBytes)); res }
     return svcmpltWideS16(pg.sveInto(), op1, op2).sveInto()
 }
 
@@ -4047,7 +4047,7 @@ public fun svcmpltWideNS16(pg: SvboolT, op1: Svint16T, op2: Long): SvboolT = svc
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpltWide[_s32])
  */
 public fun svcmpltWideS32(pg: SvboolT, op1: Svint32T, op2: Svint64T): SvboolT {
-    fun svcmpltWideS32(pg1: Svbool4T, op11: Svint32T, op21: Svint64T): Svbool4T = null as Svbool4T
+    fun svcmpltWideS32(pg1: Svbool4T, op11: Svint32T, op21: Svint64T): Svbool4T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); res }
     return svcmpltWideS32(pg.sveInto(), op1, op2).sveInto()
 }
 
@@ -4062,7 +4062,7 @@ public fun svcmpltWideNS32(pg: SvboolT, op1: Svint32T, op2: Long): SvboolT = svc
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpltWide[_u8])
  */
 public fun svcmpltWideU8(pg: SvboolT, op1: Svuint8T, op2: Svuint64T): SvboolT {
-    fun svcmpltWideU8(pg1: SvboolT, op11: Svint8T, op21: Svint64T): SvboolT = null as SvboolT
+    fun svcmpltWideU8(pg1: SvboolT, op11: Svint8T, op21: Svint64T): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svcmpltWideU8(pg, op1.asSigned(), op2.asSigned())
 }
 
@@ -4077,7 +4077,7 @@ public fun svcmpltWideNU8(pg: SvboolT, op1: Svuint8T, op2: ULong): SvboolT = svc
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpltWide[_u16])
  */
 public fun svcmpltWideU16(pg: SvboolT, op1: Svuint16T, op2: Svuint64T): SvboolT {
-    fun svcmpltWideU16(pg1: Svbool8T, op11: Svint16T, op21: Svint64T): Svbool8T = null as Svbool8T
+    fun svcmpltWideU16(pg1: Svbool8T, op11: Svint16T, op21: Svint64T): Svbool8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool8T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool8T>()).alignBytes)); res }
     return svcmpltWideU16(pg.sveInto(), op1.asSigned(), op2.asSigned()).sveInto()
 }
 
@@ -4092,7 +4092,7 @@ public fun svcmpltWideNU16(pg: SvboolT, op1: Svuint16T, op2: ULong): SvboolT = s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpltWide[_u32])
  */
 public fun svcmpltWideU32(pg: SvboolT, op1: Svuint32T, op2: Svuint64T): SvboolT {
-    fun svcmpltWideU32(pg1: Svbool4T, op11: Svint32T, op21: Svint64T): Svbool4T = null as Svbool4T
+    fun svcmpltWideU32(pg1: Svbool4T, op11: Svint32T, op21: Svint64T): Svbool4T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); res }
     return svcmpltWideU32(pg.sveInto(), op1.asSigned(), op2.asSigned()).sveInto()
 }
 
@@ -4107,7 +4107,7 @@ public fun svcmpltWideNU32(pg: SvboolT, op1: Svuint32T, op2: ULong): SvboolT = s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpne[_f32])
  */
 public fun svcmpneF32(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T): SvboolT {
-    fun svcmpneF32(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T): Svbool4T = null as Svbool4T
+    fun svcmpneF32(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T): Svbool4T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); res }
     return svcmpneF32(pg.sveInto(), op1, op2).sveInto()
 }
 
@@ -4122,7 +4122,7 @@ public fun svcmpneNF32(pg: SvboolT, op1: Svfloat32T, op2: Float): SvboolT = svcm
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpne[_f64])
  */
 public fun svcmpneF64(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T): SvboolT {
-    fun svcmpneF64(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T): Svbool2T = null as Svbool2T
+    fun svcmpneF64(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T): Svbool2T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool2T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool2T>()).alignBytes)); res }
     return svcmpneF64(pg.sveInto(), op1, op2).sveInto()
 }
 
@@ -4137,7 +4137,7 @@ public fun svcmpneNF64(pg: SvboolT, op1: Svfloat64T, op2: Double): SvboolT = svc
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpne[_s8])
  */
 public fun svcmpneS8(pg: SvboolT, op1: Svint8T, op2: Svint8T): SvboolT {
-    fun svcmpneS8(pg1: SvboolT, op11: Svint8T, op21: Svint8T): SvboolT = null as SvboolT
+    fun svcmpneS8(pg1: SvboolT, op11: Svint8T, op21: Svint8T): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svcmpneS8(pg, op1, op2)
 }
 
@@ -4152,7 +4152,7 @@ public fun svcmpneNS8(pg: SvboolT, op1: Svint8T, op2: Byte): SvboolT = svcmpneS8
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpne[_s16])
  */
 public fun svcmpneS16(pg: SvboolT, op1: Svint16T, op2: Svint16T): SvboolT {
-    fun svcmpneS16(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svbool8T = null as Svbool8T
+    fun svcmpneS16(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svbool8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool8T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool8T>()).alignBytes)); res }
     return svcmpneS16(pg.sveInto(), op1, op2).sveInto()
 }
 
@@ -4167,7 +4167,7 @@ public fun svcmpneNS16(pg: SvboolT, op1: Svint16T, op2: Short): SvboolT = svcmpn
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpne[_s32])
  */
 public fun svcmpneS32(pg: SvboolT, op1: Svint32T, op2: Svint32T): SvboolT {
-    fun svcmpneS32(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svbool4T = null as Svbool4T
+    fun svcmpneS32(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svbool4T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); res }
     return svcmpneS32(pg.sveInto(), op1, op2).sveInto()
 }
 
@@ -4182,7 +4182,7 @@ public fun svcmpneNS32(pg: SvboolT, op1: Svint32T, op2: Int): SvboolT = svcmpneS
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpne[_s64])
  */
 public fun svcmpneS64(pg: SvboolT, op1: Svint64T, op2: Svint64T): SvboolT {
-    fun svcmpneS64(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svbool2T = null as Svbool2T
+    fun svcmpneS64(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svbool2T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool2T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool2T>()).alignBytes)); res }
     return svcmpneS64(pg.sveInto(), op1, op2).sveInto()
 }
 
@@ -4245,7 +4245,7 @@ public fun svcmpneNU64(pg: SvboolT, op1: Svuint64T, op2: ULong): SvboolT = svcmp
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpneWide[_s8])
  */
 public fun svcmpneWideS8(pg: SvboolT, op1: Svint8T, op2: Svint64T): SvboolT {
-    fun svcmpneWideS8(pg1: SvboolT, op11: Svint8T, op21: Svint64T): SvboolT = null as SvboolT
+    fun svcmpneWideS8(pg1: SvboolT, op11: Svint8T, op21: Svint64T): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svcmpneWideS8(pg, op1, op2)
 }
 
@@ -4260,7 +4260,7 @@ public fun svcmpneWideNS8(pg: SvboolT, op1: Svint8T, op2: Long): SvboolT = svcmp
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpneWide[_s16])
  */
 public fun svcmpneWideS16(pg: SvboolT, op1: Svint16T, op2: Svint64T): SvboolT {
-    fun svcmpneWideS16(pg1: Svbool8T, op11: Svint16T, op21: Svint64T): Svbool8T = null as Svbool8T
+    fun svcmpneWideS16(pg1: Svbool8T, op11: Svint16T, op21: Svint64T): Svbool8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool8T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool8T>()).alignBytes)); res }
     return svcmpneWideS16(pg.sveInto(), op1, op2).sveInto()
 }
 
@@ -4275,7 +4275,7 @@ public fun svcmpneWideNS16(pg: SvboolT, op1: Svint16T, op2: Long): SvboolT = svc
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpneWide[_s32])
  */
 public fun svcmpneWideS32(pg: SvboolT, op1: Svint32T, op2: Svint64T): SvboolT {
-    fun svcmpneWideS32(pg1: Svbool4T, op11: Svint32T, op21: Svint64T): Svbool4T = null as Svbool4T
+    fun svcmpneWideS32(pg1: Svbool4T, op11: Svint32T, op21: Svint64T): Svbool4T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); res }
     return svcmpneWideS32(pg.sveInto(), op1, op2).sveInto()
 }
 
@@ -4290,7 +4290,7 @@ public fun svcmpneWideNS32(pg: SvboolT, op1: Svint32T, op2: Long): SvboolT = svc
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpuo[_f32])
  */
 public fun svcmpuoF32(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T): SvboolT {
-    fun svcmpuoF32(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T): Svbool4T = null as Svbool4T
+    fun svcmpuoF32(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T): Svbool4T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); res }
     return svcmpuoF32(pg.sveInto(), op1, op2).sveInto()
 }
 
@@ -4305,7 +4305,7 @@ public fun svcmpuoNF32(pg: SvboolT, op1: Svfloat32T, op2: Float): SvboolT = svcm
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmpuo[_f64])
  */
 public fun svcmpuoF64(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T): SvboolT {
-    fun svcmpuoF64(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T): Svbool2T = null as Svbool2T
+    fun svcmpuoF64(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T): Svbool2T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool2T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool2T>()).alignBytes)); res }
     return svcmpuoF64(pg.sveInto(), op1, op2).sveInto()
 }
 
@@ -4320,7 +4320,7 @@ public fun svcmpuoNF64(pg: SvboolT, op1: Svfloat64T, op2: Double): SvboolT = svc
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcnot[_s8]_m)
  */
 public fun svcnotS8M(inactive: Svint8T, pg: SvboolT, op: Svint8T): Svint8T {
-    fun svcnotS8M(inactive1: Svint8T, pg1: SvboolT, op1: Svint8T): Svint8T = null as Svint8T
+    fun svcnotS8M(inactive1: Svint8T, pg1: SvboolT, op1: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svcnotS8M(inactive, pg, op)
 }
 
@@ -4341,7 +4341,7 @@ public fun svcnotS8Z(pg: SvboolT, op: Svint8T): Svint8T = svcnotS8M(svdupNS8(0),
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcnot[_s16]_m)
  */
 public fun svcnotS16M(inactive: Svint16T, pg: SvboolT, op: Svint16T): Svint16T {
-    fun svcnotS16M(inactive1: Svint16T, pg1: Svbool8T, op1: Svint16T): Svint16T = null as Svint16T
+    fun svcnotS16M(inactive1: Svint16T, pg1: Svbool8T, op1: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svcnotS16M(inactive, pg.sveInto(), op)
 }
 
@@ -4362,7 +4362,7 @@ public fun svcnotS16Z(pg: SvboolT, op: Svint16T): Svint16T = svcnotS16M(svdupNS1
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcnot[_s32]_m)
  */
 public fun svcnotS32M(inactive: Svint32T, pg: SvboolT, op: Svint32T): Svint32T {
-    fun svcnotS32M(inactive1: Svint32T, pg1: Svbool4T, op1: Svint32T): Svint32T = null as Svint32T
+    fun svcnotS32M(inactive1: Svint32T, pg1: Svbool4T, op1: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svcnotS32M(inactive, pg.sveInto(), op)
 }
 
@@ -4383,7 +4383,7 @@ public fun svcnotS32Z(pg: SvboolT, op: Svint32T): Svint32T = svcnotS32M(svdupNS3
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcnot[_s64]_m)
  */
 public fun svcnotS64M(inactive: Svint64T, pg: SvboolT, op: Svint64T): Svint64T {
-    fun svcnotS64M(inactive1: Svint64T, pg1: Svbool2T, op1: Svint64T): Svint64T = null as Svint64T
+    fun svcnotS64M(inactive1: Svint64T, pg1: Svbool2T, op1: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svcnotS64M(inactive, pg.sveInto(), op)
 }
 
@@ -4476,7 +4476,7 @@ public fun svcnotU64Z(pg: SvboolT, op: Svuint64T): Svuint64T = svcnotU64M(svdupN
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcnt[_f32]_m)
  */
 public fun svcntF32M(inactive: Svuint32T, pg: SvboolT, op: Svfloat32T): Svuint32T {
-    fun svcntF32M(inactive1: Svint32T, pg1: Svbool4T, op1: Svfloat32T): Svint32T = null as Svint32T
+    fun svcntF32M(inactive1: Svint32T, pg1: Svbool4T, op1: Svfloat32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svcntF32M(inactive.asSigned(), pg.sveInto(), op).asUnsigned()
 }
 
@@ -4497,7 +4497,7 @@ public fun svcntF32Z(pg: SvboolT, op: Svfloat32T): Svuint32T = svcntF32M(svdupNU
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcnt[_f64]_m)
  */
 public fun svcntF64M(inactive: Svuint64T, pg: SvboolT, op: Svfloat64T): Svuint64T {
-    fun svcntF64M(inactive1: Svint64T, pg1: Svbool2T, op1: Svfloat64T): Svint64T = null as Svint64T
+    fun svcntF64M(inactive1: Svint64T, pg1: Svbool2T, op1: Svfloat64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svcntF64M(inactive.asSigned(), pg.sveInto(), op).asUnsigned()
 }
 
@@ -4518,7 +4518,7 @@ public fun svcntF64Z(pg: SvboolT, op: Svfloat64T): Svuint64T = svcntF64M(svdupNU
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcnt[_s8]_m)
  */
 public fun svcntS8M(inactive: Svuint8T, pg: SvboolT, op: Svint8T): Svuint8T {
-    fun svcntS8M(inactive1: Svint8T, pg1: SvboolT, op1: Svint8T): Svint8T = null as Svint8T
+    fun svcntS8M(inactive1: Svint8T, pg1: SvboolT, op1: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svcntS8M(inactive.asSigned(), pg, op).asUnsigned()
 }
 
@@ -4539,7 +4539,7 @@ public fun svcntS8Z(pg: SvboolT, op: Svint8T): Svuint8T = svcntS8M(svdupNU8(0u),
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcnt[_s16]_m)
  */
 public fun svcntS16M(inactive: Svuint16T, pg: SvboolT, op: Svint16T): Svuint16T {
-    fun svcntS16M(inactive1: Svint16T, pg1: Svbool8T, op1: Svint16T): Svint16T = null as Svint16T
+    fun svcntS16M(inactive1: Svint16T, pg1: Svbool8T, op1: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svcntS16M(inactive.asSigned(), pg.sveInto(), op).asUnsigned()
 }
 
@@ -4560,7 +4560,7 @@ public fun svcntS16Z(pg: SvboolT, op: Svint16T): Svuint16T = svcntS16M(svdupNU16
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcnt[_s32]_m)
  */
 public fun svcntS32M(inactive: Svuint32T, pg: SvboolT, op: Svint32T): Svuint32T {
-    fun svcntS32M(inactive1: Svint32T, pg1: Svbool4T, op1: Svint32T): Svint32T = null as Svint32T
+    fun svcntS32M(inactive1: Svint32T, pg1: Svbool4T, op1: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svcntS32M(inactive.asSigned(), pg.sveInto(), op).asUnsigned()
 }
 
@@ -4581,7 +4581,7 @@ public fun svcntS32Z(pg: SvboolT, op: Svint32T): Svuint32T = svcntS32M(svdupNU32
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcnt[_s64]_m)
  */
 public fun svcntS64M(inactive: Svuint64T, pg: SvboolT, op: Svint64T): Svuint64T {
-    fun svcntS64M(inactive1: Svint64T, pg1: Svbool2T, op1: Svint64T): Svint64T = null as Svint64T
+    fun svcntS64M(inactive1: Svint64T, pg1: Svbool2T, op1: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svcntS64M(inactive.asSigned(), pg.sveInto(), op).asUnsigned()
 }
 
@@ -4770,7 +4770,7 @@ public fun svcntpB64(pg: SvboolT, op: SvboolT): ULong {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcompact[_f32])
  */
 public fun svcompactF32(pg: SvboolT, op: Svfloat32T): Svfloat32T {
-    fun svcompactF32(pg1: Svbool4T, op1: Svfloat32T): Svfloat32T = null as Svfloat32T
+    fun svcompactF32(pg1: Svbool4T, op1: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svcompactF32(pg.sveInto(), op)
 }
 
@@ -4779,7 +4779,7 @@ public fun svcompactF32(pg: SvboolT, op: Svfloat32T): Svfloat32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcompact[_f64])
  */
 public fun svcompactF64(pg: SvboolT, op: Svfloat64T): Svfloat64T {
-    fun svcompactF64(pg1: Svbool2T, op1: Svfloat64T): Svfloat64T = null as Svfloat64T
+    fun svcompactF64(pg1: Svbool2T, op1: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svcompactF64(pg.sveInto(), op)
 }
 
@@ -4788,7 +4788,7 @@ public fun svcompactF64(pg: SvboolT, op: Svfloat64T): Svfloat64T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcompact[_s32])
  */
 public fun svcompactS32(pg: SvboolT, op: Svint32T): Svint32T {
-    fun svcompactS32(pg1: Svbool4T, op1: Svint32T): Svint32T = null as Svint32T
+    fun svcompactS32(pg1: Svbool4T, op1: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svcompactS32(pg.sveInto(), op)
 }
 
@@ -4797,7 +4797,7 @@ public fun svcompactS32(pg: SvboolT, op: Svint32T): Svint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcompact[_s64])
  */
 public fun svcompactS64(pg: SvboolT, op: Svint64T): Svint64T {
-    fun svcompactS64(pg1: Svbool2T, op1: Svint64T): Svint64T = null as Svint64T
+    fun svcompactS64(pg1: Svbool2T, op1: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svcompactS64(pg.sveInto(), op)
 }
 
@@ -4998,7 +4998,7 @@ public fun svcreate4U64(x0: Svuint64T, x1: Svuint64T, x2: Svuint64T, x3: Svuint6
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcvtF32[_f64]_m)
  */
 public fun svcvtF32F64M(inactive: Svfloat32T, pg: SvboolT, op: Svfloat64T): Svfloat32T {
-    fun svcvtF32F64M(inactive1: Svfloat32T, pg1: Svbool2T, op1: Svfloat64T): Svfloat32T = null as Svfloat32T
+    fun svcvtF32F64M(inactive1: Svfloat32T, pg1: Svbool2T, op1: Svfloat64T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svcvtF32F64M(inactive, pg.sveInto(), op)
 }
 
@@ -5019,7 +5019,7 @@ public fun svcvtF32F64Z(pg: SvboolT, op: Svfloat64T): Svfloat32T = svcvtF32F64M(
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcvtF64[_f32]_m)
  */
 public fun svcvtF64F32M(inactive: Svfloat64T, pg: SvboolT, op: Svfloat32T): Svfloat64T {
-    fun svcvtF64F32M(inactive1: Svfloat64T, pg1: Svbool2T, op1: Svfloat32T): Svfloat64T = null as Svfloat64T
+    fun svcvtF64F32M(inactive1: Svfloat64T, pg1: Svbool2T, op1: Svfloat32T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svcvtF64F32M(inactive, pg.sveInto(), op)
 }
 
@@ -5040,7 +5040,7 @@ public fun svcvtF64F32Z(pg: SvboolT, op: Svfloat32T): Svfloat64T = svcvtF64F32M(
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcvtF32[_s32]_m)
  */
 public fun svcvtF32S32M(inactive: Svfloat32T, pg: SvboolT, op: Svint32T): Svfloat32T {
-    fun svcvtF32S32M(inactive1: Svfloat32T, pg1: Svbool4T, op1: Svint32T): Svfloat32T = null as Svfloat32T
+    fun svcvtF32S32M(inactive1: Svfloat32T, pg1: Svbool4T, op1: Svint32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svcvtF32S32M(inactive, pg.sveInto(), op)
 }
 
@@ -5061,7 +5061,7 @@ public fun svcvtF32S32Z(pg: SvboolT, op: Svint32T): Svfloat32T = svcvtF32S32M(sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcvtF32[_u32]_m)
  */
 public fun svcvtF32U32M(inactive: Svfloat32T, pg: SvboolT, op: Svuint32T): Svfloat32T {
-    fun svcvtF32U32M(inactive1: Svfloat32T, pg1: Svbool4T, op1: Svint32T): Svfloat32T = null as Svfloat32T
+    fun svcvtF32U32M(inactive1: Svfloat32T, pg1: Svbool4T, op1: Svint32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svcvtF32U32M(inactive, pg.sveInto(), op.asSigned())
 }
 
@@ -5082,7 +5082,7 @@ public fun svcvtF32U32Z(pg: SvboolT, op: Svuint32T): Svfloat32T = svcvtF32U32M(s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcvtF64[_s64]_m)
  */
 public fun svcvtF64S64M(inactive: Svfloat64T, pg: SvboolT, op: Svint64T): Svfloat64T {
-    fun svcvtF64S64M(inactive1: Svfloat64T, pg1: Svbool2T, op1: Svint64T): Svfloat64T = null as Svfloat64T
+    fun svcvtF64S64M(inactive1: Svfloat64T, pg1: Svbool2T, op1: Svint64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svcvtF64S64M(inactive, pg.sveInto(), op)
 }
 
@@ -5103,7 +5103,7 @@ public fun svcvtF64S64Z(pg: SvboolT, op: Svint64T): Svfloat64T = svcvtF64S64M(sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcvtF64[_u64]_m)
  */
 public fun svcvtF64U64M(inactive: Svfloat64T, pg: SvboolT, op: Svuint64T): Svfloat64T {
-    fun svcvtF64U64M(inactive1: Svfloat64T, pg1: Svbool2T, op1: Svint64T): Svfloat64T = null as Svfloat64T
+    fun svcvtF64U64M(inactive1: Svfloat64T, pg1: Svbool2T, op1: Svint64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svcvtF64U64M(inactive, pg.sveInto(), op.asSigned())
 }
 
@@ -5124,7 +5124,7 @@ public fun svcvtF64U64Z(pg: SvboolT, op: Svuint64T): Svfloat64T = svcvtF64U64M(s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcvtF32[_s64]_m)
  */
 public fun svcvtF32S64M(inactive: Svfloat32T, pg: SvboolT, op: Svint64T): Svfloat32T {
-    fun svcvtF32S64M(inactive1: Svfloat32T, pg1: Svbool2T, op1: Svint64T): Svfloat32T = null as Svfloat32T
+    fun svcvtF32S64M(inactive1: Svfloat32T, pg1: Svbool2T, op1: Svint64T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svcvtF32S64M(inactive, pg.sveInto(), op)
 }
 
@@ -5145,7 +5145,7 @@ public fun svcvtF32S64Z(pg: SvboolT, op: Svint64T): Svfloat32T = svcvtF32S64M(sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcvtF32[_u64]_m)
  */
 public fun svcvtF32U64M(inactive: Svfloat32T, pg: SvboolT, op: Svuint64T): Svfloat32T {
-    fun svcvtF32U64M(inactive1: Svfloat32T, pg1: Svbool2T, op1: Svint64T): Svfloat32T = null as Svfloat32T
+    fun svcvtF32U64M(inactive1: Svfloat32T, pg1: Svbool2T, op1: Svint64T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svcvtF32U64M(inactive, pg.sveInto(), op.asSigned())
 }
 
@@ -5166,7 +5166,7 @@ public fun svcvtF32U64Z(pg: SvboolT, op: Svuint64T): Svfloat32T = svcvtF32U64M(s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcvtF64[_s32]_m)
  */
 public fun svcvtF64S32M(inactive: Svfloat64T, pg: SvboolT, op: Svint32T): Svfloat64T {
-    fun svcvtF64S32M(inactive1: Svfloat64T, pg1: Svbool2T, op1: Svint32T): Svfloat64T = null as Svfloat64T
+    fun svcvtF64S32M(inactive1: Svfloat64T, pg1: Svbool2T, op1: Svint32T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svcvtF64S32M(inactive, pg.sveInto(), op)
 }
 
@@ -5187,7 +5187,7 @@ public fun svcvtF64S32Z(pg: SvboolT, op: Svint32T): Svfloat64T = svcvtF64S32M(sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcvtF64[_u32]_m)
  */
 public fun svcvtF64U32M(inactive: Svfloat64T, pg: SvboolT, op: Svuint32T): Svfloat64T {
-    fun svcvtF64U32M(inactive1: Svfloat64T, pg1: Svbool2T, op1: Svint32T): Svfloat64T = null as Svfloat64T
+    fun svcvtF64U32M(inactive1: Svfloat64T, pg1: Svbool2T, op1: Svint32T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svcvtF64U32M(inactive, pg.sveInto(), op.asSigned())
 }
 
@@ -5208,7 +5208,7 @@ public fun svcvtF64U32Z(pg: SvboolT, op: Svuint32T): Svfloat64T = svcvtF64U32M(s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcvtS32[_f32]_m)
  */
 public fun svcvtS32F32M(inactive: Svint32T, pg: SvboolT, op: Svfloat32T): Svint32T {
-    fun svcvtS32F32M(inactive1: Svint32T, pg1: Svbool4T, op1: Svfloat32T): Svint32T = null as Svint32T
+    fun svcvtS32F32M(inactive1: Svint32T, pg1: Svbool4T, op1: Svfloat32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svcvtS32F32M(inactive, pg.sveInto(), op)
 }
 
@@ -5229,7 +5229,7 @@ public fun svcvtS32F32Z(pg: SvboolT, op: Svfloat32T): Svint32T = svcvtS32F32M(sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcvtS64[_f64]_m)
  */
 public fun svcvtS64F64M(inactive: Svint64T, pg: SvboolT, op: Svfloat64T): Svint64T {
-    fun svcvtS64F64M(inactive1: Svint64T, pg1: Svbool2T, op1: Svfloat64T): Svint64T = null as Svint64T
+    fun svcvtS64F64M(inactive1: Svint64T, pg1: Svbool2T, op1: Svfloat64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svcvtS64F64M(inactive, pg.sveInto(), op)
 }
 
@@ -5250,7 +5250,7 @@ public fun svcvtS64F64Z(pg: SvboolT, op: Svfloat64T): Svint64T = svcvtS64F64M(sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcvtU32[_f32]_m)
  */
 public fun svcvtU32F32M(inactive: Svuint32T, pg: SvboolT, op: Svfloat32T): Svuint32T {
-    fun svcvtU32F32M(inactive1: Svint32T, pg1: Svbool4T, op1: Svfloat32T): Svint32T = null as Svint32T
+    fun svcvtU32F32M(inactive1: Svint32T, pg1: Svbool4T, op1: Svfloat32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svcvtU32F32M(inactive.asSigned(), pg.sveInto(), op).asUnsigned()
 }
 
@@ -5271,7 +5271,7 @@ public fun svcvtU32F32Z(pg: SvboolT, op: Svfloat32T): Svuint32T = svcvtU32F32M(s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcvtU64[_f64]_m)
  */
 public fun svcvtU64F64M(inactive: Svuint64T, pg: SvboolT, op: Svfloat64T): Svuint64T {
-    fun svcvtU64F64M(inactive1: Svint64T, pg1: Svbool2T, op1: Svfloat64T): Svint64T = null as Svint64T
+    fun svcvtU64F64M(inactive1: Svint64T, pg1: Svbool2T, op1: Svfloat64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svcvtU64F64M(inactive.asSigned(), pg.sveInto(), op).asUnsigned()
 }
 
@@ -5292,7 +5292,7 @@ public fun svcvtU64F64Z(pg: SvboolT, op: Svfloat64T): Svuint64T = svcvtU64F64M(s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcvtS32[_f64]_m)
  */
 public fun svcvtS32F64M(inactive: Svint32T, pg: SvboolT, op: Svfloat64T): Svint32T {
-    fun svcvtS32F64M(inactive1: Svint32T, pg1: Svbool2T, op1: Svfloat64T): Svint32T = null as Svint32T
+    fun svcvtS32F64M(inactive1: Svint32T, pg1: Svbool2T, op1: Svfloat64T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svcvtS32F64M(inactive, pg.sveInto(), op)
 }
 
@@ -5313,7 +5313,7 @@ public fun svcvtS32F64Z(pg: SvboolT, op: Svfloat64T): Svint32T = svcvtS32F64M(sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcvtS64[_f32]_m)
  */
 public fun svcvtS64F32M(inactive: Svint64T, pg: SvboolT, op: Svfloat32T): Svint64T {
-    fun svcvtS64F32M(inactive1: Svint64T, pg1: Svbool2T, op1: Svfloat32T): Svint64T = null as Svint64T
+    fun svcvtS64F32M(inactive1: Svint64T, pg1: Svbool2T, op1: Svfloat32T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svcvtS64F32M(inactive, pg.sveInto(), op)
 }
 
@@ -5334,7 +5334,7 @@ public fun svcvtS64F32Z(pg: SvboolT, op: Svfloat32T): Svint64T = svcvtS64F32M(sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcvtU32[_f64]_m)
  */
 public fun svcvtU32F64M(inactive: Svuint32T, pg: SvboolT, op: Svfloat64T): Svuint32T {
-    fun svcvtU32F64M(inactive1: Svint32T, pg1: Svbool2T, op1: Svfloat64T): Svint32T = null as Svint32T
+    fun svcvtU32F64M(inactive1: Svint32T, pg1: Svbool2T, op1: Svfloat64T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svcvtU32F64M(inactive.asSigned(), pg.sveInto(), op).asUnsigned()
 }
 
@@ -5355,7 +5355,7 @@ public fun svcvtU32F64Z(pg: SvboolT, op: Svfloat64T): Svuint32T = svcvtU32F64M(s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcvtU64[_f32]_m)
  */
 public fun svcvtU64F32M(inactive: Svuint64T, pg: SvboolT, op: Svfloat32T): Svuint64T {
-    fun svcvtU64F32M(inactive1: Svint64T, pg1: Svbool2T, op1: Svfloat32T): Svint64T = null as Svint64T
+    fun svcvtU64F32M(inactive1: Svint64T, pg1: Svbool2T, op1: Svfloat32T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svcvtU64F32M(inactive.asSigned(), pg.sveInto(), op).asUnsigned()
 }
 
@@ -5376,7 +5376,7 @@ public fun svcvtU64F32Z(pg: SvboolT, op: Svfloat32T): Svuint64T = svcvtU64F32M(s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svdiv[_f32]_m)
  */
 public fun svdivF32M(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T): Svfloat32T {
-    fun svdivF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = null as Svfloat32T
+    fun svdivF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svdivF32M(pg.sveInto(), op1, op2)
 }
 
@@ -5415,7 +5415,7 @@ public fun svdivNF32Z(pg: SvboolT, op1: Svfloat32T, op2: Float): Svfloat32T = sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svdiv[_f64]_m)
  */
 public fun svdivF64M(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T): Svfloat64T {
-    fun svdivF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = null as Svfloat64T
+    fun svdivF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svdivF64M(pg.sveInto(), op1, op2)
 }
 
@@ -5454,7 +5454,7 @@ public fun svdivNF64Z(pg: SvboolT, op1: Svfloat64T, op2: Double): Svfloat64T = s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svdiv[_s32]_m)
  */
 public fun svdivS32M(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T {
-    fun svdivS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    fun svdivS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svdivS32M(pg.sveInto(), op1, op2)
 }
 
@@ -5493,7 +5493,7 @@ public fun svdivNS32Z(pg: SvboolT, op1: Svint32T, op2: Int): Svint32T = svdivS32
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svdiv[_s64]_m)
  */
 public fun svdivS64M(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T {
-    fun svdivS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    fun svdivS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svdivS64M(pg.sveInto(), op1, op2)
 }
 
@@ -5532,7 +5532,7 @@ public fun svdivNS64Z(pg: SvboolT, op1: Svint64T, op2: Long): Svint64T = svdivS6
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svdiv[_u32]_m)
  */
 public fun svdivU32M(pg: SvboolT, op1: Svuint32T, op2: Svuint32T): Svuint32T {
-    fun svdivU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    fun svdivU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svdivU32M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -5571,7 +5571,7 @@ public fun svdivNU32Z(pg: SvboolT, op1: Svuint32T, op2: UInt): Svuint32T = svdiv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svdiv[_u64]_m)
  */
 public fun svdivU64M(pg: SvboolT, op1: Svuint64T, op2: Svuint64T): Svuint64T {
-    fun svdivU64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    fun svdivU64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svdivU64M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -5610,7 +5610,7 @@ public fun svdivNU64Z(pg: SvboolT, op1: Svuint64T, op2: ULong): Svuint64T = svdi
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svdivr[_f32]_m)
  */
 public fun svdivrF32M(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T): Svfloat32T {
-    fun svdivrF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = null as Svfloat32T
+    fun svdivrF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svdivrF32M(pg.sveInto(), op1, op2)
 }
 
@@ -5649,7 +5649,7 @@ public fun svdivrNF32Z(pg: SvboolT, op1: Svfloat32T, op2: Float): Svfloat32T = s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svdivr[_f64]_m)
  */
 public fun svdivrF64M(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T): Svfloat64T {
-    fun svdivrF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = null as Svfloat64T
+    fun svdivrF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svdivrF64M(pg.sveInto(), op1, op2)
 }
 
@@ -5688,7 +5688,7 @@ public fun svdivrNF64Z(pg: SvboolT, op1: Svfloat64T, op2: Double): Svfloat64T = 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svdivr[_s32]_m)
  */
 public fun svdivrS32M(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T {
-    fun svdivrS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    fun svdivrS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svdivrS32M(pg.sveInto(), op1, op2)
 }
 
@@ -5727,7 +5727,7 @@ public fun svdivrNS32Z(pg: SvboolT, op1: Svint32T, op2: Int): Svint32T = svdivrS
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svdivr[_s64]_m)
  */
 public fun svdivrS64M(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T {
-    fun svdivrS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    fun svdivrS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svdivrS64M(pg.sveInto(), op1, op2)
 }
 
@@ -5766,7 +5766,7 @@ public fun svdivrNS64Z(pg: SvboolT, op1: Svint64T, op2: Long): Svint64T = svdivr
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svdivr[_u32]_m)
  */
 public fun svdivrU32M(pg: SvboolT, op1: Svuint32T, op2: Svuint32T): Svuint32T {
-    fun svdivrU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    fun svdivrU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svdivrU32M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -5805,7 +5805,7 @@ public fun svdivrNU32Z(pg: SvboolT, op1: Svuint32T, op2: UInt): Svuint32T = svdi
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svdivr[_u64]_m)
  */
 public fun svdivrU64M(pg: SvboolT, op1: Svuint64T, op2: Svuint64T): Svuint64T {
-    fun svdivrU64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    fun svdivrU64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svdivrU64M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -5844,7 +5844,7 @@ public fun svdivrNU64Z(pg: SvboolT, op1: Svuint64T, op2: ULong): Svuint64T = svd
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svdotLane[_s32])
  */
 public fun svdotLaneS32(op1: Svint32T, op2: Svint8T, op3: Svint8T, immIndex: Int): Svint32T {
-    fun svdotLaneS32(op11: Svint32T, op21: Svint8T, op31: Svint8T, immIndex: Int): Svint32T = null as Svint32T
+    fun svdotLaneS32(op11: Svint32T, op21: Svint8T, op31: Svint8T, immIndex: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
     }
@@ -5856,7 +5856,7 @@ public fun svdotLaneS32(op1: Svint32T, op2: Svint8T, op3: Svint8T, immIndex: Int
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svdotLane[_s64])
  */
 public fun svdotLaneS64(op1: Svint64T, op2: Svint16T, op3: Svint16T, immIndex: Int): Svint64T {
-    fun svdotLaneS64(op11: Svint64T, op21: Svint16T, op31: Svint16T, immIndex: Int): Svint64T = null as Svint64T
+    fun svdotLaneS64(op11: Svint64T, op21: Svint16T, op31: Svint16T, immIndex: Int): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 1) { "IMM_INDEX is not in range 0-1" }
     }
@@ -5868,7 +5868,7 @@ public fun svdotLaneS64(op1: Svint64T, op2: Svint16T, op3: Svint16T, immIndex: I
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svdotLane[_u32])
  */
 public fun svdotLaneU32(op1: Svuint32T, op2: Svuint8T, op3: Svuint8T, immIndex: Int): Svuint32T {
-    fun svdotLaneU32(op11: Svint32T, op21: Svint8T, op31: Svint8T, immIndex: Int): Svint32T = null as Svint32T
+    fun svdotLaneU32(op11: Svint32T, op21: Svint8T, op31: Svint8T, immIndex: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
     }
@@ -5880,7 +5880,7 @@ public fun svdotLaneU32(op1: Svuint32T, op2: Svuint8T, op3: Svuint8T, immIndex: 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svdotLane[_u64])
  */
 public fun svdotLaneU64(op1: Svuint64T, op2: Svuint16T, op3: Svuint16T, immIndex: Int): Svuint64T {
-    fun svdotLaneU64(op11: Svint64T, op21: Svint16T, op31: Svint16T, immIndex: Int): Svint64T = null as Svint64T
+    fun svdotLaneU64(op11: Svint64T, op21: Svint16T, op31: Svint16T, immIndex: Int): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 1) { "IMM_INDEX is not in range 0-1" }
     }
@@ -5892,7 +5892,7 @@ public fun svdotLaneU64(op1: Svuint64T, op2: Svuint16T, op3: Svuint16T, immIndex
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svdot[_s32])
  */
 public fun svdotS32(op1: Svint32T, op2: Svint8T, op3: Svint8T): Svint32T {
-    fun svdotS32(op11: Svint32T, op21: Svint8T, op31: Svint8T): Svint32T = null as Svint32T
+    fun svdotS32(op11: Svint32T, op21: Svint8T, op31: Svint8T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svdotS32(op1, op2, op3)
 }
 
@@ -5907,7 +5907,7 @@ public fun svdotNS32(op1: Svint32T, op2: Svint8T, op3: Byte): Svint32T = svdotS3
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svdot[_s64])
  */
 public fun svdotS64(op1: Svint64T, op2: Svint16T, op3: Svint16T): Svint64T {
-    fun svdotS64(op11: Svint64T, op21: Svint16T, op31: Svint16T): Svint64T = null as Svint64T
+    fun svdotS64(op11: Svint64T, op21: Svint16T, op31: Svint16T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svdotS64(op1, op2, op3)
 }
 
@@ -5922,7 +5922,7 @@ public fun svdotNS64(op1: Svint64T, op2: Svint16T, op3: Short): Svint64T = svdot
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svdot[_u32])
  */
 public fun svdotU32(op1: Svuint32T, op2: Svuint8T, op3: Svuint8T): Svuint32T {
-    fun svdotU32(op11: Svint32T, op21: Svint8T, op31: Svint8T): Svint32T = null as Svint32T
+    fun svdotU32(op11: Svint32T, op21: Svint8T, op31: Svint8T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svdotU32(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
 }
 
@@ -5937,7 +5937,7 @@ public fun svdotNU32(op1: Svuint32T, op2: Svuint8T, op3: UByte): Svuint32T = svd
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svdot[_u64])
  */
 public fun svdotU64(op1: Svuint64T, op2: Svuint16T, op3: Svuint16T): Svuint64T {
-    fun svdotU64(op11: Svint64T, op21: Svint16T, op31: Svint16T): Svint64T = null as Svint64T
+    fun svdotU64(op11: Svint64T, op21: Svint16T, op31: Svint16T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svdotU64(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
 }
 
@@ -6012,7 +6012,7 @@ public fun svdupLaneU64(data: Svuint64T, index: ULong): Svuint64T = svtblU64(dat
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svdup[_n]_b8)
  */
 public fun svdupNB8(op: Boolean): SvboolT {
-    fun svdupNB8(op1: Boolean): SvboolT = null as SvboolT
+    fun svdupNB8(op1: Boolean): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svdupNB8(op)
 }
 
@@ -6021,7 +6021,7 @@ public fun svdupNB8(op: Boolean): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svdup[_n]_b16)
  */
 public fun svdupNB16(op: Boolean): SvboolT {
-    fun svdupNB16(op1: Boolean): Svbool8T = null as Svbool8T
+    fun svdupNB16(op1: Boolean): Svbool8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool8T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool8T>()).alignBytes)); res }
     return svdupNB16(op).sveInto()
 }
 
@@ -6030,7 +6030,7 @@ public fun svdupNB16(op: Boolean): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svdup[_n]_b32)
  */
 public fun svdupNB32(op: Boolean): SvboolT {
-    fun svdupNB32(op1: Boolean): Svbool4T = null as Svbool4T
+    fun svdupNB32(op1: Boolean): Svbool4T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); res }
     return svdupNB32(op).sveInto()
 }
 
@@ -6039,7 +6039,7 @@ public fun svdupNB32(op: Boolean): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svdup[_n]_b64)
  */
 public fun svdupNB64(op: Boolean): SvboolT {
-    fun svdupNB64(op1: Boolean): Svbool2T = null as Svbool2T
+    fun svdupNB64(op1: Boolean): Svbool2T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool2T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool2T>()).alignBytes)); res }
     return svdupNB64(op).sveInto()
 }
 
@@ -6048,7 +6048,7 @@ public fun svdupNB64(op: Boolean): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svdup[_n]_f32)
  */
 public fun svdupNF32(op: Float): Svfloat32T {
-    fun svdupNF32(op1: Float): Svfloat32T = null as Svfloat32T
+    fun svdupNF32(op1: Float): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svdupNF32(op)
 }
 
@@ -6057,7 +6057,7 @@ public fun svdupNF32(op: Float): Svfloat32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svdup[_n]_f64)
  */
 public fun svdupNF64(op: Double): Svfloat64T {
-    fun svdupNF64(op1: Double): Svfloat64T = null as Svfloat64T
+    fun svdupNF64(op1: Double): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svdupNF64(op)
 }
 
@@ -6066,7 +6066,7 @@ public fun svdupNF64(op: Double): Svfloat64T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svdup[_n]_s8)
  */
 public fun svdupNS8(op: Byte): Svint8T {
-    fun svdupNS8(op1: Byte): Svint8T = null as Svint8T
+    fun svdupNS8(op1: Byte): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svdupNS8(op)
 }
 
@@ -6075,7 +6075,7 @@ public fun svdupNS8(op: Byte): Svint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svdup[_n]_s16)
  */
 public fun svdupNS16(op: Short): Svint16T {
-    fun svdupNS16(op1: Short): Svint16T = null as Svint16T
+    fun svdupNS16(op1: Short): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svdupNS16(op)
 }
 
@@ -6084,7 +6084,7 @@ public fun svdupNS16(op: Short): Svint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svdup[_n]_s32)
  */
 public fun svdupNS32(op: Int): Svint32T {
-    fun svdupNS32(op1: Int): Svint32T = null as Svint32T
+    fun svdupNS32(op1: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svdupNS32(op)
 }
 
@@ -6093,7 +6093,7 @@ public fun svdupNS32(op: Int): Svint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svdup[_n]_s64)
  */
 public fun svdupNS64(op: Long): Svint64T {
-    fun svdupNS64(op1: Long): Svint64T = null as Svint64T
+    fun svdupNS64(op1: Long): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svdupNS64(op)
 }
 
@@ -6126,7 +6126,7 @@ public fun svdupNU64(op: ULong): Svuint64T = svdupNS64(op.asSigned()).asUnsigned
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svdup[_n]_f32_m)
  */
 public fun svdupNF32M(inactive: Svfloat32T, pg: SvboolT, op: Float): Svfloat32T {
-    fun svdupNF32M(inactive1: Svfloat32T, pg1: Svbool4T, op1: Float): Svfloat32T = null as Svfloat32T
+    fun svdupNF32M(inactive1: Svfloat32T, pg1: Svbool4T, op1: Float): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svdupNF32M(inactive, pg.sveInto(), op)
 }
 
@@ -6147,7 +6147,7 @@ public fun svdupNF32Z(pg: SvboolT, op: Float): Svfloat32T = svdupNF32M(svdupNF32
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svdup[_n]_f64_m)
  */
 public fun svdupNF64M(inactive: Svfloat64T, pg: SvboolT, op: Double): Svfloat64T {
-    fun svdupNF64M(inactive1: Svfloat64T, pg1: Svbool2T, op1: Double): Svfloat64T = null as Svfloat64T
+    fun svdupNF64M(inactive1: Svfloat64T, pg1: Svbool2T, op1: Double): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svdupNF64M(inactive, pg.sveInto(), op)
 }
 
@@ -6168,7 +6168,7 @@ public fun svdupNF64Z(pg: SvboolT, op: Double): Svfloat64T = svdupNF64M(svdupNF6
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svdup[_n]_s8_m)
  */
 public fun svdupNS8M(inactive: Svint8T, pg: SvboolT, op: Byte): Svint8T {
-    fun svdupNS8M(inactive1: Svint8T, pg1: SvboolT, op1: Byte): Svint8T = null as Svint8T
+    fun svdupNS8M(inactive1: Svint8T, pg1: SvboolT, op1: Byte): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svdupNS8M(inactive, pg, op)
 }
 
@@ -6189,7 +6189,7 @@ public fun svdupNS8Z(pg: SvboolT, op: Byte): Svint8T = svdupNS8M(svdupNS8(0), pg
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svdup[_n]_s16_m)
  */
 public fun svdupNS16M(inactive: Svint16T, pg: SvboolT, op: Short): Svint16T {
-    fun svdupNS16M(inactive1: Svint16T, pg1: Svbool8T, op1: Short): Svint16T = null as Svint16T
+    fun svdupNS16M(inactive1: Svint16T, pg1: Svbool8T, op1: Short): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svdupNS16M(inactive, pg.sveInto(), op)
 }
 
@@ -6210,7 +6210,7 @@ public fun svdupNS16Z(pg: SvboolT, op: Short): Svint16T = svdupNS16M(svdupNS16(0
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svdup[_n]_s32_m)
  */
 public fun svdupNS32M(inactive: Svint32T, pg: SvboolT, op: Int): Svint32T {
-    fun svdupNS32M(inactive1: Svint32T, pg1: Svbool4T, op1: Int): Svint32T = null as Svint32T
+    fun svdupNS32M(inactive1: Svint32T, pg1: Svbool4T, op1: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svdupNS32M(inactive, pg.sveInto(), op)
 }
 
@@ -6231,7 +6231,7 @@ public fun svdupNS32Z(pg: SvboolT, op: Int): Svint32T = svdupNS32M(svdupNS32(0),
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svdup[_n]_s64_m)
  */
 public fun svdupNS64M(inactive: Svint64T, pg: SvboolT, op: Long): Svint64T {
-    fun svdupNS64M(inactive1: Svint64T, pg1: Svbool2T, op1: Long): Svint64T = null as Svint64T
+    fun svdupNS64M(inactive1: Svint64T, pg1: Svbool2T, op1: Long): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svdupNS64M(inactive, pg.sveInto(), op)
 }
 
@@ -6324,7 +6324,7 @@ public fun svdupNU64Z(pg: SvboolT, op: ULong): Svuint64T = svdupNU64M(svdupNU64(
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svdupqLane[_f32])
  */
 public fun svdupqLaneF32(data: Svfloat32T, index: ULong): Svfloat32T {
-    fun svdupqLaneF32(data1: Svfloat32T, index1: Long): Svfloat32T = null as Svfloat32T
+    fun svdupqLaneF32(data1: Svfloat32T, index1: Long): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svdupqLaneF32(data, index.asSigned())
 }
 
@@ -6333,7 +6333,7 @@ public fun svdupqLaneF32(data: Svfloat32T, index: ULong): Svfloat32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svdupqLane[_f64])
  */
 public fun svdupqLaneF64(data: Svfloat64T, index: ULong): Svfloat64T {
-    fun svdupqLaneF64(data1: Svfloat64T, index1: Long): Svfloat64T = null as Svfloat64T
+    fun svdupqLaneF64(data1: Svfloat64T, index1: Long): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svdupqLaneF64(data, index.asSigned())
 }
 
@@ -6342,7 +6342,7 @@ public fun svdupqLaneF64(data: Svfloat64T, index: ULong): Svfloat64T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svdupqLane[_s8])
  */
 public fun svdupqLaneS8(data: Svint8T, index: ULong): Svint8T {
-    fun svdupqLaneS8(data1: Svint8T, index1: Long): Svint8T = null as Svint8T
+    fun svdupqLaneS8(data1: Svint8T, index1: Long): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svdupqLaneS8(data, index.asSigned())
 }
 
@@ -6351,7 +6351,7 @@ public fun svdupqLaneS8(data: Svint8T, index: ULong): Svint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svdupqLane[_s16])
  */
 public fun svdupqLaneS16(data: Svint16T, index: ULong): Svint16T {
-    fun svdupqLaneS16(data1: Svint16T, index1: Long): Svint16T = null as Svint16T
+    fun svdupqLaneS16(data1: Svint16T, index1: Long): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svdupqLaneS16(data, index.asSigned())
 }
 
@@ -6360,7 +6360,7 @@ public fun svdupqLaneS16(data: Svint16T, index: ULong): Svint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svdupqLane[_s32])
  */
 public fun svdupqLaneS32(data: Svint32T, index: ULong): Svint32T {
-    fun svdupqLaneS32(data1: Svint32T, index1: Long): Svint32T = null as Svint32T
+    fun svdupqLaneS32(data1: Svint32T, index1: Long): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svdupqLaneS32(data, index.asSigned())
 }
 
@@ -6369,7 +6369,7 @@ public fun svdupqLaneS32(data: Svint32T, index: ULong): Svint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svdupqLane[_s64])
  */
 public fun svdupqLaneS64(data: Svint64T, index: ULong): Svint64T {
-    fun svdupqLaneS64(data1: Svint64T, index1: Long): Svint64T = null as Svint64T
+    fun svdupqLaneS64(data1: Svint64T, index1: Long): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svdupqLaneS64(data, index.asSigned())
 }
 
@@ -6438,9 +6438,9 @@ public fun svdupqNB8(x0: Boolean, x1: Boolean, x2: Boolean, x3: Boolean, x4: Boo
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svdupq[_n]_f32)
  */
 public fun svdupqNF32(x0: Float, x1: Float, x2: Float, x3: Float): Svfloat32T {
-    fun svdupqNF32(op0: Svfloat32T, op1: Float32x4T, idx: Long): Svfloat32T = null as Svfloat32T
+    fun svdupqNF32(op0: Svfloat32T, op1: Float32x4T, idx: Long): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return run {
-        val op = svdupqNF32(svundefF32(), Mem.transmute(floatArrayOf(x0, x1, x2, x3)), 0)
+        val op = svdupqNF32(svundefF32(), transmute(floatArrayOf(x0, x1, x2, x3)), 0)
         svdupqLaneF32(op, 0uL)
     }
 }
@@ -6450,9 +6450,9 @@ public fun svdupqNF32(x0: Float, x1: Float, x2: Float, x3: Float): Svfloat32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svdupq[_n]_s32)
  */
 public fun svdupqNS32(x0: Int, x1: Int, x2: Int, x3: Int): Svint32T {
-    fun svdupqNS32(op0: Svint32T, op1: Int32x4T, idx: Long): Svint32T = null as Svint32T
+    fun svdupqNS32(op0: Svint32T, op1: Int32x4T, idx: Long): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return run {
-        val op = svdupqNS32(svundefS32(), Mem.transmute(intArrayOf(x0, x1, x2, x3)), 0)
+        val op = svdupqNS32(svundefS32(), transmute(intArrayOf(x0, x1, x2, x3)), 0)
         svdupqLaneS32(op, 0uL)
     }
 }
@@ -6468,9 +6468,9 @@ public fun svdupqNU32(x0: UInt, x1: UInt, x2: UInt, x3: UInt): Svuint32T = svdup
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svdupq[_n]_f64)
  */
 public fun svdupqNF64(x0: Double, x1: Double): Svfloat64T {
-    fun svdupqNF64(op0: Svfloat64T, op1: Float64x2T, idx: Long): Svfloat64T = null as Svfloat64T
+    fun svdupqNF64(op0: Svfloat64T, op1: Float64x2T, idx: Long): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return run {
-        val op = svdupqNF64(svundefF64(), Mem.transmute(doubleArrayOf(x0, x1)), 0)
+        val op = svdupqNF64(svundefF64(), transmute(doubleArrayOf(x0, x1)), 0)
         svdupqLaneF64(op, 0uL)
     }
 }
@@ -6480,9 +6480,9 @@ public fun svdupqNF64(x0: Double, x1: Double): Svfloat64T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svdupq[_n]_s64)
  */
 public fun svdupqNS64(x0: Long, x1: Long): Svint64T {
-    fun svdupqNS64(op0: Svint64T, op1: Int64x2T, idx: Long): Svint64T = null as Svint64T
+    fun svdupqNS64(op0: Svint64T, op1: Int64x2T, idx: Long): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return run {
-        val op = svdupqNS64(svundefS64(), Mem.transmute(longArrayOf(x0, x1)), 0)
+        val op = svdupqNS64(svundefS64(), transmute(longArrayOf(x0, x1)), 0)
         svdupqLaneS64(op, 0uL)
     }
 }
@@ -6498,9 +6498,9 @@ public fun svdupqNU64(x0: ULong, x1: ULong): Svuint64T = svdupqNS64(x0.asSigned(
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svdupq[_n]_s16)
  */
 public fun svdupqNS16(x0: Short, x1: Short, x2: Short, x3: Short, x4: Short, x5: Short, x6: Short, x7: Short): Svint16T {
-    fun svdupqNS16(op0: Svint16T, op1: Int16x8T, idx: Long): Svint16T = null as Svint16T
+    fun svdupqNS16(op0: Svint16T, op1: Int16x8T, idx: Long): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return run {
-        val op = svdupqNS16(svundefS16(), Mem.transmute(shortArrayOf(x0, x1, x2, x3, x4, x5, x6, x7)), 0)
+        val op = svdupqNS16(svundefS16(), transmute(shortArrayOf(x0, x1, x2, x3, x4, x5, x6, x7)), 0)
         svdupqLaneS16(op, 0uL)
     }
 }
@@ -6516,9 +6516,9 @@ public fun svdupqNU16(x0: UShort, x1: UShort, x2: UShort, x3: UShort, x4: UShort
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svdupq[_n]_s8)
  */
 public fun svdupqNS8(x0: Byte, x1: Byte, x2: Byte, x3: Byte, x4: Byte, x5: Byte, x6: Byte, x7: Byte, x8: Byte, x9: Byte, x10: Byte, x11: Byte, x12: Byte, x13: Byte, x14: Byte, x15: Byte): Svint8T {
-    fun svdupqNS8(op0: Svint8T, op1: Int8x16T, idx: Long): Svint8T = null as Svint8T
+    fun svdupqNS8(op0: Svint8T, op1: Int8x16T, idx: Long): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return run {
-        val op = svdupqNS8(svundefS8(), Mem.transmute(byteArrayOf(x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15)), 0)
+        val op = svdupqNS8(svundefS8(), transmute(byteArrayOf(x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15)), 0)
         svdupqLaneS8(op, 0uL)
     }
 }
@@ -6534,7 +6534,7 @@ public fun svdupqNU8(x0: UByte, x1: UByte, x2: UByte, x3: UByte, x4: UByte, x5: 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveor[_b]_z)
  */
 public fun sveorBZ(pg: SvboolT, op1: SvboolT, op2: SvboolT): SvboolT {
-    fun sveorBZ(pg1: SvboolT, op11: SvboolT, op21: SvboolT): SvboolT = null as SvboolT
+    fun sveorBZ(pg1: SvboolT, op11: SvboolT, op21: SvboolT): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return sveorBZ(pg, op1, op2)
 }
 
@@ -6543,7 +6543,7 @@ public fun sveorBZ(pg: SvboolT, op1: SvboolT, op2: SvboolT): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveor[_s8]_m)
  */
 public fun sveorS8M(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T {
-    fun sveorS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    fun sveorS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return sveorS8M(pg, op1, op2)
 }
 
@@ -6582,7 +6582,7 @@ public fun sveorNS8Z(pg: SvboolT, op1: Svint8T, op2: Byte): Svint8T = sveorS8Z(p
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveor[_s16]_m)
  */
 public fun sveorS16M(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T {
-    fun sveorS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    fun sveorS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return sveorS16M(pg.sveInto(), op1, op2)
 }
 
@@ -6621,7 +6621,7 @@ public fun sveorNS16Z(pg: SvboolT, op1: Svint16T, op2: Short): Svint16T = sveorS
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveor[_s32]_m)
  */
 public fun sveorS32M(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T {
-    fun sveorS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    fun sveorS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return sveorS32M(pg.sveInto(), op1, op2)
 }
 
@@ -6660,7 +6660,7 @@ public fun sveorNS32Z(pg: SvboolT, op1: Svint32T, op2: Int): Svint32T = sveorS32
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveor[_s64]_m)
  */
 public fun sveorS64M(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T {
-    fun sveorS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    fun sveorS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return sveorS64M(pg.sveInto(), op1, op2)
 }
 
@@ -6903,7 +6903,7 @@ public fun sveorvU64(pg: SvboolT, op: Svuint64T): ULong = sveorvS64(pg, op.asSig
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svexpa[_f32])
  */
 public fun svexpaF32(op: Svuint32T): Svfloat32T {
-    fun svexpaF32(op1: Svint32T): Svfloat32T = null as Svfloat32T
+    fun svexpaF32(op1: Svint32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svexpaF32(op.asSigned())
 }
 
@@ -6912,7 +6912,7 @@ public fun svexpaF32(op: Svuint32T): Svfloat32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svexpa[_f64])
  */
 public fun svexpaF64(op: Svuint64T): Svfloat64T {
-    fun svexpaF64(op1: Svint64T): Svfloat64T = null as Svfloat64T
+    fun svexpaF64(op1: Svint64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svexpaF64(op.asSigned())
 }
 
@@ -6921,7 +6921,7 @@ public fun svexpaF64(op: Svuint64T): Svfloat64T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svext[_f32])
  */
 public fun svextF32(op1: Svfloat32T, op2: Svfloat32T, imm3: Int): Svfloat32T {
-    fun svextF32(op11: Svfloat32T, op21: Svfloat32T, imm3: Int): Svfloat32T = null as Svfloat32T
+    fun svextF32(op11: Svfloat32T, op21: Svfloat32T, imm3: Int): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     run {
         check(0 <= imm3 && imm3 <= 63) { "IMM3 is not in range 0-63" }
     }
@@ -6933,7 +6933,7 @@ public fun svextF32(op1: Svfloat32T, op2: Svfloat32T, imm3: Int): Svfloat32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svext[_f64])
  */
 public fun svextF64(op1: Svfloat64T, op2: Svfloat64T, imm3: Int): Svfloat64T {
-    fun svextF64(op11: Svfloat64T, op21: Svfloat64T, imm3: Int): Svfloat64T = null as Svfloat64T
+    fun svextF64(op11: Svfloat64T, op21: Svfloat64T, imm3: Int): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     run {
         check(0 <= imm3 && imm3 <= 31) { "IMM3 is not in range 0-31" }
     }
@@ -6945,7 +6945,7 @@ public fun svextF64(op1: Svfloat64T, op2: Svfloat64T, imm3: Int): Svfloat64T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svext[_s8])
  */
 public fun svextS8(op1: Svint8T, op2: Svint8T, imm3: Int): Svint8T {
-    fun svextS8(op11: Svint8T, op21: Svint8T, imm3: Int): Svint8T = null as Svint8T
+    fun svextS8(op11: Svint8T, op21: Svint8T, imm3: Int): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     run {
         check(0 <= imm3 && imm3 <= 255) { "IMM3 is not in range 0-255" }
     }
@@ -6957,7 +6957,7 @@ public fun svextS8(op1: Svint8T, op2: Svint8T, imm3: Int): Svint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svext[_s16])
  */
 public fun svextS16(op1: Svint16T, op2: Svint16T, imm3: Int): Svint16T {
-    fun svextS16(op11: Svint16T, op21: Svint16T, imm3: Int): Svint16T = null as Svint16T
+    fun svextS16(op11: Svint16T, op21: Svint16T, imm3: Int): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     run {
         check(0 <= imm3 && imm3 <= 127) { "IMM3 is not in range 0-127" }
     }
@@ -6969,7 +6969,7 @@ public fun svextS16(op1: Svint16T, op2: Svint16T, imm3: Int): Svint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svext[_s32])
  */
 public fun svextS32(op1: Svint32T, op2: Svint32T, imm3: Int): Svint32T {
-    fun svextS32(op11: Svint32T, op21: Svint32T, imm3: Int): Svint32T = null as Svint32T
+    fun svextS32(op11: Svint32T, op21: Svint32T, imm3: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     run {
         check(0 <= imm3 && imm3 <= 63) { "IMM3 is not in range 0-63" }
     }
@@ -6981,7 +6981,7 @@ public fun svextS32(op1: Svint32T, op2: Svint32T, imm3: Int): Svint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svext[_s64])
  */
 public fun svextS64(op1: Svint64T, op2: Svint64T, imm3: Int): Svint64T {
-    fun svextS64(op11: Svint64T, op21: Svint64T, imm3: Int): Svint64T = null as Svint64T
+    fun svextS64(op11: Svint64T, op21: Svint64T, imm3: Int): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     run {
         check(0 <= imm3 && imm3 <= 31) { "IMM3 is not in range 0-31" }
     }
@@ -7037,7 +7037,7 @@ public fun svextU64(op1: Svuint64T, op2: Svuint64T, imm3: Int): Svuint64T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svextb[_s16]_m)
  */
 public fun svextbS16M(inactive: Svint16T, pg: SvboolT, op: Svint16T): Svint16T {
-    fun svextbS16M(inactive1: Svint16T, pg1: Svbool8T, op1: Svint16T): Svint16T = null as Svint16T
+    fun svextbS16M(inactive1: Svint16T, pg1: Svbool8T, op1: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svextbS16M(inactive, pg.sveInto(), op)
 }
 
@@ -7058,7 +7058,7 @@ public fun svextbS16Z(pg: SvboolT, op: Svint16T): Svint16T = svextbS16M(svdupNS1
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svextb[_s32]_m)
  */
 public fun svextbS32M(inactive: Svint32T, pg: SvboolT, op: Svint32T): Svint32T {
-    fun svextbS32M(inactive1: Svint32T, pg1: Svbool4T, op1: Svint32T): Svint32T = null as Svint32T
+    fun svextbS32M(inactive1: Svint32T, pg1: Svbool4T, op1: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svextbS32M(inactive, pg.sveInto(), op)
 }
 
@@ -7079,7 +7079,7 @@ public fun svextbS32Z(pg: SvboolT, op: Svint32T): Svint32T = svextbS32M(svdupNS3
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svexth[_s32]_m)
  */
 public fun svexthS32M(inactive: Svint32T, pg: SvboolT, op: Svint32T): Svint32T {
-    fun svexthS32M(inactive1: Svint32T, pg1: Svbool4T, op1: Svint32T): Svint32T = null as Svint32T
+    fun svexthS32M(inactive1: Svint32T, pg1: Svbool4T, op1: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svexthS32M(inactive, pg.sveInto(), op)
 }
 
@@ -7100,7 +7100,7 @@ public fun svexthS32Z(pg: SvboolT, op: Svint32T): Svint32T = svexthS32M(svdupNS3
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svextb[_s64]_m)
  */
 public fun svextbS64M(inactive: Svint64T, pg: SvboolT, op: Svint64T): Svint64T {
-    fun svextbS64M(inactive1: Svint64T, pg1: Svbool2T, op1: Svint64T): Svint64T = null as Svint64T
+    fun svextbS64M(inactive1: Svint64T, pg1: Svbool2T, op1: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svextbS64M(inactive, pg.sveInto(), op)
 }
 
@@ -7121,7 +7121,7 @@ public fun svextbS64Z(pg: SvboolT, op: Svint64T): Svint64T = svextbS64M(svdupNS6
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svexth[_s64]_m)
  */
 public fun svexthS64M(inactive: Svint64T, pg: SvboolT, op: Svint64T): Svint64T {
-    fun svexthS64M(inactive1: Svint64T, pg1: Svbool2T, op1: Svint64T): Svint64T = null as Svint64T
+    fun svexthS64M(inactive1: Svint64T, pg1: Svbool2T, op1: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svexthS64M(inactive, pg.sveInto(), op)
 }
 
@@ -7142,7 +7142,7 @@ public fun svexthS64Z(pg: SvboolT, op: Svint64T): Svint64T = svexthS64M(svdupNS6
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svextw[_s64]_m)
  */
 public fun svextwS64M(inactive: Svint64T, pg: SvboolT, op: Svint64T): Svint64T {
-    fun svextwS64M(inactive1: Svint64T, pg1: Svbool2T, op1: Svint64T): Svint64T = null as Svint64T
+    fun svextwS64M(inactive1: Svint64T, pg1: Svbool2T, op1: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svextwS64M(inactive, pg.sveInto(), op)
 }
 
@@ -7163,7 +7163,7 @@ public fun svextwS64Z(pg: SvboolT, op: Svint64T): Svint64T = svextwS64M(svdupNS6
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svextb[_u16]_m)
  */
 public fun svextbU16M(inactive: Svuint16T, pg: SvboolT, op: Svuint16T): Svuint16T {
-    fun svextbU16M(inactive1: Svint16T, pg1: Svbool8T, op1: Svint16T): Svint16T = null as Svint16T
+    fun svextbU16M(inactive1: Svint16T, pg1: Svbool8T, op1: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svextbU16M(inactive.asSigned(), pg.sveInto(), op.asSigned()).asUnsigned()
 }
 
@@ -7184,7 +7184,7 @@ public fun svextbU16Z(pg: SvboolT, op: Svuint16T): Svuint16T = svextbU16M(svdupN
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svextb[_u32]_m)
  */
 public fun svextbU32M(inactive: Svuint32T, pg: SvboolT, op: Svuint32T): Svuint32T {
-    fun svextbU32M(inactive1: Svint32T, pg1: Svbool4T, op1: Svint32T): Svint32T = null as Svint32T
+    fun svextbU32M(inactive1: Svint32T, pg1: Svbool4T, op1: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svextbU32M(inactive.asSigned(), pg.sveInto(), op.asSigned()).asUnsigned()
 }
 
@@ -7205,7 +7205,7 @@ public fun svextbU32Z(pg: SvboolT, op: Svuint32T): Svuint32T = svextbU32M(svdupN
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svexth[_u32]_m)
  */
 public fun svexthU32M(inactive: Svuint32T, pg: SvboolT, op: Svuint32T): Svuint32T {
-    fun svexthU32M(inactive1: Svint32T, pg1: Svbool4T, op1: Svint32T): Svint32T = null as Svint32T
+    fun svexthU32M(inactive1: Svint32T, pg1: Svbool4T, op1: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svexthU32M(inactive.asSigned(), pg.sveInto(), op.asSigned()).asUnsigned()
 }
 
@@ -7226,7 +7226,7 @@ public fun svexthU32Z(pg: SvboolT, op: Svuint32T): Svuint32T = svexthU32M(svdupN
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svextb[_u64]_m)
  */
 public fun svextbU64M(inactive: Svuint64T, pg: SvboolT, op: Svuint64T): Svuint64T {
-    fun svextbU64M(inactive1: Svint64T, pg1: Svbool2T, op1: Svint64T): Svint64T = null as Svint64T
+    fun svextbU64M(inactive1: Svint64T, pg1: Svbool2T, op1: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svextbU64M(inactive.asSigned(), pg.sveInto(), op.asSigned()).asUnsigned()
 }
 
@@ -7247,7 +7247,7 @@ public fun svextbU64Z(pg: SvboolT, op: Svuint64T): Svuint64T = svextbU64M(svdupN
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svexth[_u64]_m)
  */
 public fun svexthU64M(inactive: Svuint64T, pg: SvboolT, op: Svuint64T): Svuint64T {
-    fun svexthU64M(inactive1: Svint64T, pg1: Svbool2T, op1: Svint64T): Svint64T = null as Svint64T
+    fun svexthU64M(inactive1: Svint64T, pg1: Svbool2T, op1: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svexthU64M(inactive.asSigned(), pg.sveInto(), op.asSigned()).asUnsigned()
 }
 
@@ -7268,7 +7268,7 @@ public fun svexthU64Z(pg: SvboolT, op: Svuint64T): Svuint64T = svexthU64M(svdupN
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svextw[_u64]_m)
  */
 public fun svextwU64M(inactive: Svuint64T, pg: SvboolT, op: Svuint64T): Svuint64T {
-    fun svextwU64M(inactive1: Svint64T, pg1: Svbool2T, op1: Svint64T): Svint64T = null as Svint64T
+    fun svextwU64M(inactive1: Svint64T, pg1: Svbool2T, op1: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svextwU64M(inactive.asSigned(), pg.sveInto(), op.asSigned()).asUnsigned()
 }
 
@@ -7619,7 +7619,7 @@ public fun svget4U64(tuple: Svuint64x4T, immIndex: Int): Svuint64T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svindexS8)
  */
 public fun svindexS8(base: Byte, step: Byte): Svint8T {
-    fun svindexS8(base1: Byte, step1: Byte): Svint8T = null as Svint8T
+    fun svindexS8(base1: Byte, step1: Byte): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svindexS8(base, step)
 }
 
@@ -7628,7 +7628,7 @@ public fun svindexS8(base: Byte, step: Byte): Svint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svindexS16)
  */
 public fun svindexS16(base: Short, step: Short): Svint16T {
-    fun svindexS16(base1: Short, step1: Short): Svint16T = null as Svint16T
+    fun svindexS16(base1: Short, step1: Short): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svindexS16(base, step)
 }
 
@@ -7637,7 +7637,7 @@ public fun svindexS16(base: Short, step: Short): Svint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svindexS32)
  */
 public fun svindexS32(base: Int, step: Int): Svint32T {
-    fun svindexS32(base1: Int, step1: Int): Svint32T = null as Svint32T
+    fun svindexS32(base1: Int, step1: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svindexS32(base, step)
 }
 
@@ -7646,7 +7646,7 @@ public fun svindexS32(base: Int, step: Int): Svint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svindexS64)
  */
 public fun svindexS64(base: Long, step: Long): Svint64T {
-    fun svindexS64(base1: Long, step1: Long): Svint64T = null as Svint64T
+    fun svindexS64(base1: Long, step1: Long): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svindexS64(base, step)
 }
 
@@ -7679,7 +7679,7 @@ public fun svindexU64(base: ULong, step: ULong): Svuint64T = svindexS64(base.asS
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svinsr[_n_f32])
  */
 public fun svinsrNF32(op1: Svfloat32T, op2: Float): Svfloat32T {
-    fun svinsrNF32(op11: Svfloat32T, op21: Float): Svfloat32T = null as Svfloat32T
+    fun svinsrNF32(op11: Svfloat32T, op21: Float): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svinsrNF32(op1, op2)
 }
 
@@ -7688,7 +7688,7 @@ public fun svinsrNF32(op1: Svfloat32T, op2: Float): Svfloat32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svinsr[_n_f64])
  */
 public fun svinsrNF64(op1: Svfloat64T, op2: Double): Svfloat64T {
-    fun svinsrNF64(op11: Svfloat64T, op21: Double): Svfloat64T = null as Svfloat64T
+    fun svinsrNF64(op11: Svfloat64T, op21: Double): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svinsrNF64(op1, op2)
 }
 
@@ -7697,7 +7697,7 @@ public fun svinsrNF64(op1: Svfloat64T, op2: Double): Svfloat64T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svinsr[_n_s8])
  */
 public fun svinsrNS8(op1: Svint8T, op2: Byte): Svint8T {
-    fun svinsrNS8(op11: Svint8T, op21: Byte): Svint8T = null as Svint8T
+    fun svinsrNS8(op11: Svint8T, op21: Byte): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svinsrNS8(op1, op2)
 }
 
@@ -7706,7 +7706,7 @@ public fun svinsrNS8(op1: Svint8T, op2: Byte): Svint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svinsr[_n_s16])
  */
 public fun svinsrNS16(op1: Svint16T, op2: Short): Svint16T {
-    fun svinsrNS16(op11: Svint16T, op21: Short): Svint16T = null as Svint16T
+    fun svinsrNS16(op11: Svint16T, op21: Short): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svinsrNS16(op1, op2)
 }
 
@@ -7715,7 +7715,7 @@ public fun svinsrNS16(op1: Svint16T, op2: Short): Svint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svinsr[_n_s32])
  */
 public fun svinsrNS32(op1: Svint32T, op2: Int): Svint32T {
-    fun svinsrNS32(op11: Svint32T, op21: Int): Svint32T = null as Svint32T
+    fun svinsrNS32(op11: Svint32T, op21: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svinsrNS32(op1, op2)
 }
 
@@ -7724,7 +7724,7 @@ public fun svinsrNS32(op1: Svint32T, op2: Int): Svint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svinsr[_n_s64])
  */
 public fun svinsrNS64(op1: Svint64T, op2: Long): Svint64T {
-    fun svinsrNS64(op11: Svint64T, op21: Long): Svint64T = null as Svint64T
+    fun svinsrNS64(op11: Svint64T, op21: Long): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svinsrNS64(op1, op2)
 }
 
@@ -7916,7 +7916,7 @@ public fun svlastbU64(pg: SvboolT, op: Svuint64T): ULong = svlastbS64(pg, op.asS
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1F32(pg: SvboolT, base: ConstPtr): Svfloat32T {
-    fun svld1F32(pg1: Svbool4T, base1: ConstPtr): Svfloat32T = null as Svfloat32T
+    fun svld1F32(pg1: Svbool4T, base1: ConstPtr): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svld1F32(pg.sveInto(), base)
 }
 
@@ -7928,7 +7928,7 @@ public fun svld1F32(pg: SvboolT, base: ConstPtr): Svfloat32T {
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1F64(pg: SvboolT, base: ConstPtr): Svfloat64T {
-    fun svld1F64(pg1: Svbool2T, base1: ConstPtr): Svfloat64T = null as Svfloat64T
+    fun svld1F64(pg1: Svbool2T, base1: ConstPtr): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svld1F64(pg.sveInto(), base)
 }
 
@@ -7940,7 +7940,7 @@ public fun svld1F64(pg: SvboolT, base: ConstPtr): Svfloat64T {
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1S8(pg: SvboolT, base: ConstPtr): Svint8T {
-    fun svld1S8(pg1: SvboolT, base1: ConstPtr): Svint8T = null as Svint8T
+    fun svld1S8(pg1: SvboolT, base1: ConstPtr): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svld1S8(pg, base)
 }
 
@@ -7952,7 +7952,7 @@ public fun svld1S8(pg: SvboolT, base: ConstPtr): Svint8T {
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1S16(pg: SvboolT, base: ConstPtr): Svint16T {
-    fun svld1S16(pg1: Svbool8T, base1: ConstPtr): Svint16T = null as Svint16T
+    fun svld1S16(pg1: Svbool8T, base1: ConstPtr): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svld1S16(pg.sveInto(), base)
 }
 
@@ -7964,7 +7964,7 @@ public fun svld1S16(pg: SvboolT, base: ConstPtr): Svint16T {
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1S32(pg: SvboolT, base: ConstPtr): Svint32T {
-    fun svld1S32(pg1: Svbool4T, base1: ConstPtr): Svint32T = null as Svint32T
+    fun svld1S32(pg1: Svbool4T, base1: ConstPtr): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svld1S32(pg.sveInto(), base)
 }
 
@@ -7976,7 +7976,7 @@ public fun svld1S32(pg: SvboolT, base: ConstPtr): Svint32T {
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1S64(pg: SvboolT, base: ConstPtr): Svint64T {
-    fun svld1S64(pg1: Svbool2T, base1: ConstPtr): Svint64T = null as Svint64T
+    fun svld1S64(pg1: Svbool2T, base1: ConstPtr): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svld1S64(pg.sveInto(), base)
 }
 
@@ -8024,7 +8024,7 @@ public fun svld1U64(pg: SvboolT, base: ConstPtr): Svuint64T = svld1S64(pg, base.
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1GatherS32indexF32(pg: SvboolT, base: ConstPtr, indices: Svint32T): Svfloat32T {
-    fun svld1GatherS32indexF32(pg1: Svbool4T, base1: ConstPtr, indices1: Svint32T): Svfloat32T = null as Svfloat32T
+    fun svld1GatherS32indexF32(pg1: Svbool4T, base1: ConstPtr, indices1: Svint32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svld1GatherS32indexF32(pg.sveInto(), base, indices)
 }
 
@@ -8036,7 +8036,7 @@ public fun svld1GatherS32indexF32(pg: SvboolT, base: ConstPtr, indices: Svint32T
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1GatherS32indexS32(pg: SvboolT, base: ConstPtr, indices: Svint32T): Svint32T {
-    fun svld1GatherS32indexS32(pg1: Svbool4T, base1: ConstPtr, indices1: Svint32T): Svint32T = null as Svint32T
+    fun svld1GatherS32indexS32(pg1: Svbool4T, base1: ConstPtr, indices1: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svld1GatherS32indexS32(pg.sveInto(), base, indices)
 }
 
@@ -8057,7 +8057,7 @@ public fun svld1GatherS32indexU32(pg: SvboolT, base: ConstPtr, indices: Svint32T
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1GatherS64indexF64(pg: SvboolT, base: ConstPtr, indices: Svint64T): Svfloat64T {
-    fun svld1GatherS64indexF64(pg1: Svbool2T, base1: ConstPtr, indices1: Svint64T): Svfloat64T = null as Svfloat64T
+    fun svld1GatherS64indexF64(pg1: Svbool2T, base1: ConstPtr, indices1: Svint64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svld1GatherS64indexF64(pg.sveInto(), base, indices)
 }
 
@@ -8069,7 +8069,7 @@ public fun svld1GatherS64indexF64(pg: SvboolT, base: ConstPtr, indices: Svint64T
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1GatherS64indexS64(pg: SvboolT, base: ConstPtr, indices: Svint64T): Svint64T {
-    fun svld1GatherS64indexS64(pg1: Svbool2T, base1: ConstPtr, indices1: Svint64T): Svint64T = null as Svint64T
+    fun svld1GatherS64indexS64(pg1: Svbool2T, base1: ConstPtr, indices1: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svld1GatherS64indexS64(pg.sveInto(), base, indices)
 }
 
@@ -8090,7 +8090,7 @@ public fun svld1GatherS64indexU64(pg: SvboolT, base: ConstPtr, indices: Svint64T
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1GatherU32indexF32(pg: SvboolT, base: ConstPtr, indices: Svuint32T): Svfloat32T {
-    fun svld1GatherU32indexF32(pg1: Svbool4T, base1: ConstPtr, indices1: Svint32T): Svfloat32T = null as Svfloat32T
+    fun svld1GatherU32indexF32(pg1: Svbool4T, base1: ConstPtr, indices1: Svint32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svld1GatherU32indexF32(pg.sveInto(), base, indices.asSigned())
 }
 
@@ -8102,7 +8102,7 @@ public fun svld1GatherU32indexF32(pg: SvboolT, base: ConstPtr, indices: Svuint32
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1GatherU32indexS32(pg: SvboolT, base: ConstPtr, indices: Svuint32T): Svint32T {
-    fun svld1GatherU32indexS32(pg1: Svbool4T, base1: ConstPtr, indices1: Svint32T): Svint32T = null as Svint32T
+    fun svld1GatherU32indexS32(pg1: Svbool4T, base1: ConstPtr, indices1: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svld1GatherU32indexS32(pg.sveInto(), base, indices.asSigned())
 }
 
@@ -8150,7 +8150,7 @@ public fun svld1GatherU64indexU64(pg: SvboolT, base: ConstPtr, indices: Svuint64
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1GatherS32offsetF32(pg: SvboolT, base: ConstPtr, offsets: Svint32T): Svfloat32T {
-    fun svld1GatherS32offsetF32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Svfloat32T = null as Svfloat32T
+    fun svld1GatherS32offsetF32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svld1GatherS32offsetF32(pg.sveInto(), base, offsets)
 }
 
@@ -8162,7 +8162,7 @@ public fun svld1GatherS32offsetF32(pg: SvboolT, base: ConstPtr, offsets: Svint32
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1GatherS32offsetS32(pg: SvboolT, base: ConstPtr, offsets: Svint32T): Svint32T {
-    fun svld1GatherS32offsetS32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Svint32T = null as Svint32T
+    fun svld1GatherS32offsetS32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svld1GatherS32offsetS32(pg.sveInto(), base, offsets)
 }
 
@@ -8183,7 +8183,7 @@ public fun svld1GatherS32offsetU32(pg: SvboolT, base: ConstPtr, offsets: Svint32
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1GatherS64offsetF64(pg: SvboolT, base: ConstPtr, offsets: Svint64T): Svfloat64T {
-    fun svld1GatherS64offsetF64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Svfloat64T = null as Svfloat64T
+    fun svld1GatherS64offsetF64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svld1GatherS64offsetF64(pg.sveInto(), base, offsets)
 }
 
@@ -8195,7 +8195,7 @@ public fun svld1GatherS64offsetF64(pg: SvboolT, base: ConstPtr, offsets: Svint64
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1GatherS64offsetS64(pg: SvboolT, base: ConstPtr, offsets: Svint64T): Svint64T {
-    fun svld1GatherS64offsetS64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Svint64T = null as Svint64T
+    fun svld1GatherS64offsetS64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svld1GatherS64offsetS64(pg.sveInto(), base, offsets)
 }
 
@@ -8216,7 +8216,7 @@ public fun svld1GatherS64offsetU64(pg: SvboolT, base: ConstPtr, offsets: Svint64
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1GatherU32offsetF32(pg: SvboolT, base: ConstPtr, offsets: Svuint32T): Svfloat32T {
-    fun svld1GatherU32offsetF32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Svfloat32T = null as Svfloat32T
+    fun svld1GatherU32offsetF32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svld1GatherU32offsetF32(pg.sveInto(), base, offsets.asSigned())
 }
 
@@ -8228,7 +8228,7 @@ public fun svld1GatherU32offsetF32(pg: SvboolT, base: ConstPtr, offsets: Svuint3
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1GatherU32offsetS32(pg: SvboolT, base: ConstPtr, offsets: Svuint32T): Svint32T {
-    fun svld1GatherU32offsetS32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Svint32T = null as Svint32T
+    fun svld1GatherU32offsetS32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svld1GatherU32offsetS32(pg.sveInto(), base, offsets.asSigned())
 }
 
@@ -8397,7 +8397,7 @@ public fun svld1GatherU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: Long
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
 public fun svld1GatherU32baseOffsetF32(pg: SvboolT, bases: Svuint32T, offset: Long): Svfloat32T {
-    fun svld1GatherU32baseOffsetF32(pg1: Svbool4T, bases1: Svint32T, offset1: Long): Svfloat32T = null as Svfloat32T
+    fun svld1GatherU32baseOffsetF32(pg1: Svbool4T, bases1: Svint32T, offset1: Long): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svld1GatherU32baseOffsetF32(pg.sveInto(), bases.asSigned(), offset)
 }
 
@@ -8410,7 +8410,7 @@ public fun svld1GatherU32baseOffsetF32(pg: SvboolT, bases: Svuint32T, offset: Lo
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
 public fun svld1GatherU32baseOffsetS32(pg: SvboolT, bases: Svuint32T, offset: Long): Svint32T {
-    fun svld1GatherU32baseOffsetS32(pg1: Svbool4T, bases1: Svint32T, offset1: Long): Svint32T = null as Svint32T
+    fun svld1GatherU32baseOffsetS32(pg1: Svbool4T, bases1: Svint32T, offset1: Long): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svld1GatherU32baseOffsetS32(pg.sveInto(), bases.asSigned(), offset)
 }
 
@@ -8433,7 +8433,7 @@ public fun svld1GatherU32baseOffsetU32(pg: SvboolT, bases: Svuint32T, offset: Lo
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
 public fun svld1GatherU64baseOffsetF64(pg: SvboolT, bases: Svuint64T, offset: Long): Svfloat64T {
-    fun svld1GatherU64baseOffsetF64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Svfloat64T = null as Svfloat64T
+    fun svld1GatherU64baseOffsetF64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svld1GatherU64baseOffsetF64(pg.sveInto(), bases.asSigned(), offset)
 }
 
@@ -8446,7 +8446,7 @@ public fun svld1GatherU64baseOffsetF64(pg: SvboolT, bases: Svuint64T, offset: Lo
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
 public fun svld1GatherU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset: Long): Svint64T {
-    fun svld1GatherU64baseOffsetS64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Svint64T = null as Svint64T
+    fun svld1GatherU64baseOffsetS64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svld1GatherU64baseOffsetS64(pg.sveInto(), bases.asSigned(), offset)
 }
 
@@ -8558,7 +8558,7 @@ public fun svld1VnumU64(pg: SvboolT, base: ConstPtr, vnum: Long): Svuint64T = sv
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1roF32(pg: SvboolT, base: ConstPtr): Svfloat32T {
-    fun svld1roF32(pg1: Svbool4T, base1: ConstPtr): Svfloat32T = null as Svfloat32T
+    fun svld1roF32(pg1: Svbool4T, base1: ConstPtr): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svld1roF32(pg.sveInto(), base)
 }
 
@@ -8570,7 +8570,7 @@ public fun svld1roF32(pg: SvboolT, base: ConstPtr): Svfloat32T {
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1roF64(pg: SvboolT, base: ConstPtr): Svfloat64T {
-    fun svld1roF64(pg1: Svbool2T, base1: ConstPtr): Svfloat64T = null as Svfloat64T
+    fun svld1roF64(pg1: Svbool2T, base1: ConstPtr): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svld1roF64(pg.sveInto(), base)
 }
 
@@ -8582,7 +8582,7 @@ public fun svld1roF64(pg: SvboolT, base: ConstPtr): Svfloat64T {
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1roS8(pg: SvboolT, base: ConstPtr): Svint8T {
-    fun svld1roS8(pg1: SvboolT, base1: ConstPtr): Svint8T = null as Svint8T
+    fun svld1roS8(pg1: SvboolT, base1: ConstPtr): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svld1roS8(pg, base)
 }
 
@@ -8594,7 +8594,7 @@ public fun svld1roS8(pg: SvboolT, base: ConstPtr): Svint8T {
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1roS16(pg: SvboolT, base: ConstPtr): Svint16T {
-    fun svld1roS16(pg1: Svbool8T, base1: ConstPtr): Svint16T = null as Svint16T
+    fun svld1roS16(pg1: Svbool8T, base1: ConstPtr): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svld1roS16(pg.sveInto(), base)
 }
 
@@ -8606,7 +8606,7 @@ public fun svld1roS16(pg: SvboolT, base: ConstPtr): Svint16T {
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1roS32(pg: SvboolT, base: ConstPtr): Svint32T {
-    fun svld1roS32(pg1: Svbool4T, base1: ConstPtr): Svint32T = null as Svint32T
+    fun svld1roS32(pg1: Svbool4T, base1: ConstPtr): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svld1roS32(pg.sveInto(), base)
 }
 
@@ -8618,7 +8618,7 @@ public fun svld1roS32(pg: SvboolT, base: ConstPtr): Svint32T {
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1roS64(pg: SvboolT, base: ConstPtr): Svint64T {
-    fun svld1roS64(pg1: Svbool2T, base1: ConstPtr): Svint64T = null as Svint64T
+    fun svld1roS64(pg1: Svbool2T, base1: ConstPtr): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svld1roS64(pg.sveInto(), base)
 }
 
@@ -8666,7 +8666,7 @@ public fun svld1roU64(pg: SvboolT, base: ConstPtr): Svuint64T = svld1roS64(pg, b
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1rqF32(pg: SvboolT, base: ConstPtr): Svfloat32T {
-    fun svld1rqF32(pg1: Svbool4T, base1: ConstPtr): Svfloat32T = null as Svfloat32T
+    fun svld1rqF32(pg1: Svbool4T, base1: ConstPtr): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svld1rqF32(pg.sveInto(), base)
 }
 
@@ -8678,7 +8678,7 @@ public fun svld1rqF32(pg: SvboolT, base: ConstPtr): Svfloat32T {
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1rqF64(pg: SvboolT, base: ConstPtr): Svfloat64T {
-    fun svld1rqF64(pg1: Svbool2T, base1: ConstPtr): Svfloat64T = null as Svfloat64T
+    fun svld1rqF64(pg1: Svbool2T, base1: ConstPtr): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svld1rqF64(pg.sveInto(), base)
 }
 
@@ -8690,7 +8690,7 @@ public fun svld1rqF64(pg: SvboolT, base: ConstPtr): Svfloat64T {
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1rqS8(pg: SvboolT, base: ConstPtr): Svint8T {
-    fun svld1rqS8(pg1: SvboolT, base1: ConstPtr): Svint8T = null as Svint8T
+    fun svld1rqS8(pg1: SvboolT, base1: ConstPtr): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svld1rqS8(pg, base)
 }
 
@@ -8702,7 +8702,7 @@ public fun svld1rqS8(pg: SvboolT, base: ConstPtr): Svint8T {
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1rqS16(pg: SvboolT, base: ConstPtr): Svint16T {
-    fun svld1rqS16(pg1: Svbool8T, base1: ConstPtr): Svint16T = null as Svint16T
+    fun svld1rqS16(pg1: Svbool8T, base1: ConstPtr): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svld1rqS16(pg.sveInto(), base)
 }
 
@@ -8714,7 +8714,7 @@ public fun svld1rqS16(pg: SvboolT, base: ConstPtr): Svint16T {
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1rqS32(pg: SvboolT, base: ConstPtr): Svint32T {
-    fun svld1rqS32(pg1: Svbool4T, base1: ConstPtr): Svint32T = null as Svint32T
+    fun svld1rqS32(pg1: Svbool4T, base1: ConstPtr): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svld1rqS32(pg.sveInto(), base)
 }
 
@@ -8726,7 +8726,7 @@ public fun svld1rqS32(pg: SvboolT, base: ConstPtr): Svint32T {
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1rqS64(pg: SvboolT, base: ConstPtr): Svint64T {
-    fun svld1rqS64(pg1: Svbool2T, base1: ConstPtr): Svint64T = null as Svint64T
+    fun svld1rqS64(pg1: Svbool2T, base1: ConstPtr): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svld1rqS64(pg.sveInto(), base)
 }
 
@@ -8774,8 +8774,8 @@ public fun svld1rqU64(pg: SvboolT, base: ConstPtr): Svuint64T = svld1rqS64(pg, b
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1sbGatherS32offsetS32(pg: SvboolT, base: ConstPtr, offsets: Svint32T): Svint32T {
-    fun svld1sbGatherS32offsetS32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i8 = null as Nxv4i8
-    return Simd.simdCast(svld1sbGatherS32offsetS32(pg.sveInto(), base, offsets))
+    fun svld1sbGatherS32offsetS32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).alignBytes)); val res = (ObjectSlotLayout<Nxv4i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).alignBytes)); res }
+    return run { val _simdArg0 = svld1sbGatherS32offsetS32(pg.sveInto(), base, offsets); _simdArg0 }
 }
 
 /**
@@ -8786,8 +8786,8 @@ public fun svld1sbGatherS32offsetS32(pg: SvboolT, base: ConstPtr, offsets: Svint
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1shGatherS32offsetS32(pg: SvboolT, base: ConstPtr, offsets: Svint32T): Svint32T {
-    fun svld1shGatherS32offsetS32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i16 = null as Nxv4i16
-    return Simd.simdCast(svld1shGatherS32offsetS32(pg.sveInto(), base, offsets))
+    fun svld1shGatherS32offsetS32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).alignBytes)); val res = (ObjectSlotLayout<Nxv4i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).alignBytes)); res }
+    return run { val _simdArg0 = svld1shGatherS32offsetS32(pg.sveInto(), base, offsets); _simdArg0 }
 }
 
 /**
@@ -8816,8 +8816,8 @@ public fun svld1shGatherS32offsetU32(pg: SvboolT, base: ConstPtr, offsets: Svint
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1sbGatherS64offsetS64(pg: SvboolT, base: ConstPtr, offsets: Svint64T): Svint64T {
-    fun svld1sbGatherS64offsetS64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Nxv2i8 = null as Nxv2i8
-    return Simd.simdCast(svld1sbGatherS64offsetS64(pg.sveInto(), base, offsets))
+    fun svld1sbGatherS64offsetS64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Nxv2i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i8>()).alignBytes)); val res = (ObjectSlotLayout<Nxv2i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i8>()).alignBytes)); res }
+    return run { val _simdArg0 = svld1sbGatherS64offsetS64(pg.sveInto(), base, offsets); _simdArg0 }
 }
 
 /**
@@ -8828,8 +8828,8 @@ public fun svld1sbGatherS64offsetS64(pg: SvboolT, base: ConstPtr, offsets: Svint
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1shGatherS64offsetS64(pg: SvboolT, base: ConstPtr, offsets: Svint64T): Svint64T {
-    fun svld1shGatherS64offsetS64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Nxv2i16 = null as Nxv2i16
-    return Simd.simdCast(svld1shGatherS64offsetS64(pg.sveInto(), base, offsets))
+    fun svld1shGatherS64offsetS64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Nxv2i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).alignBytes)); val res = (ObjectSlotLayout<Nxv2i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).alignBytes)); res }
+    return run { val _simdArg0 = svld1shGatherS64offsetS64(pg.sveInto(), base, offsets); _simdArg0 }
 }
 
 /**
@@ -8840,8 +8840,8 @@ public fun svld1shGatherS64offsetS64(pg: SvboolT, base: ConstPtr, offsets: Svint
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1swGatherS64offsetS64(pg: SvboolT, base: ConstPtr, offsets: Svint64T): Svint64T {
-    fun svld1swGatherS64offsetS64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Nxv2i32 = null as Nxv2i32
-    return Simd.simdCast(svld1swGatherS64offsetS64(pg.sveInto(), base, offsets))
+    fun svld1swGatherS64offsetS64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Nxv2i32 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).alignBytes)); val res = (ObjectSlotLayout<Nxv2i32>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).alignBytes)); res }
+    return run { val _simdArg0 = svld1swGatherS64offsetS64(pg.sveInto(), base, offsets); _simdArg0 }
 }
 
 /**
@@ -8879,8 +8879,8 @@ public fun svld1swGatherS64offsetU64(pg: SvboolT, base: ConstPtr, offsets: Svint
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1sbGatherU32offsetS32(pg: SvboolT, base: ConstPtr, offsets: Svuint32T): Svint32T {
-    fun svld1sbGatherU32offsetS32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i8 = null as Nxv4i8
-    return Simd.simdCast(svld1sbGatherU32offsetS32(pg.sveInto(), base, offsets.asSigned()))
+    fun svld1sbGatherU32offsetS32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).alignBytes)); val res = (ObjectSlotLayout<Nxv4i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).alignBytes)); res }
+    return run { val _simdArg0 = svld1sbGatherU32offsetS32(pg.sveInto(), base, offsets.asSigned()); _simdArg0 }
 }
 
 /**
@@ -8891,8 +8891,8 @@ public fun svld1sbGatherU32offsetS32(pg: SvboolT, base: ConstPtr, offsets: Svuin
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1shGatherU32offsetS32(pg: SvboolT, base: ConstPtr, offsets: Svuint32T): Svint32T {
-    fun svld1shGatherU32offsetS32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i16 = null as Nxv4i16
-    return Simd.simdCast(svld1shGatherU32offsetS32(pg.sveInto(), base, offsets.asSigned()))
+    fun svld1shGatherU32offsetS32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).alignBytes)); val res = (ObjectSlotLayout<Nxv4i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).alignBytes)); res }
+    return run { val _simdArg0 = svld1shGatherU32offsetS32(pg.sveInto(), base, offsets.asSigned()); _simdArg0 }
 }
 
 /**
@@ -8976,8 +8976,8 @@ public fun svld1swGatherU64offsetU64(pg: SvboolT, base: ConstPtr, offsets: Svuin
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
 public fun svld1sbGatherU32baseOffsetS32(pg: SvboolT, bases: Svuint32T, offset: Long): Svint32T {
-    fun svld1sbGatherU32baseOffsetS32(pg1: Svbool4T, bases1: Svint32T, offset1: Long): Nxv4i8 = null as Nxv4i8
-    return Simd.simdCast(svld1sbGatherU32baseOffsetS32(pg.sveInto(), bases.asSigned(), offset))
+    fun svld1sbGatherU32baseOffsetS32(pg1: Svbool4T, bases1: Svint32T, offset1: Long): Nxv4i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).alignBytes)); val res = (ObjectSlotLayout<Nxv4i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).alignBytes)); res }
+    return run { val _simdArg0 = svld1sbGatherU32baseOffsetS32(pg.sveInto(), bases.asSigned(), offset); _simdArg0 }
 }
 
 /**
@@ -8989,8 +8989,8 @@ public fun svld1sbGatherU32baseOffsetS32(pg: SvboolT, bases: Svuint32T, offset: 
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
 public fun svld1shGatherU32baseOffsetS32(pg: SvboolT, bases: Svuint32T, offset: Long): Svint32T {
-    fun svld1shGatherU32baseOffsetS32(pg1: Svbool4T, bases1: Svint32T, offset1: Long): Nxv4i16 = null as Nxv4i16
-    return Simd.simdCast(svld1shGatherU32baseOffsetS32(pg.sveInto(), bases.asSigned(), offset))
+    fun svld1shGatherU32baseOffsetS32(pg1: Svbool4T, bases1: Svint32T, offset1: Long): Nxv4i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).alignBytes)); val res = (ObjectSlotLayout<Nxv4i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).alignBytes)); res }
+    return run { val _simdArg0 = svld1shGatherU32baseOffsetS32(pg.sveInto(), bases.asSigned(), offset); _simdArg0 }
 }
 
 /**
@@ -9022,8 +9022,8 @@ public fun svld1shGatherU32baseOffsetU32(pg: SvboolT, bases: Svuint32T, offset: 
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
 public fun svld1sbGatherU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset: Long): Svint64T {
-    fun svld1sbGatherU64baseOffsetS64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Nxv2i8 = null as Nxv2i8
-    return Simd.simdCast(svld1sbGatherU64baseOffsetS64(pg.sveInto(), bases.asSigned(), offset))
+    fun svld1sbGatherU64baseOffsetS64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Nxv2i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i8>()).alignBytes)); val res = (ObjectSlotLayout<Nxv2i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i8>()).alignBytes)); res }
+    return run { val _simdArg0 = svld1sbGatherU64baseOffsetS64(pg.sveInto(), bases.asSigned(), offset); _simdArg0 }
 }
 
 /**
@@ -9035,8 +9035,8 @@ public fun svld1sbGatherU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset: 
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
 public fun svld1shGatherU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset: Long): Svint64T {
-    fun svld1shGatherU64baseOffsetS64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Nxv2i16 = null as Nxv2i16
-    return Simd.simdCast(svld1shGatherU64baseOffsetS64(pg.sveInto(), bases.asSigned(), offset))
+    fun svld1shGatherU64baseOffsetS64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Nxv2i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).alignBytes)); val res = (ObjectSlotLayout<Nxv2i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).alignBytes)); res }
+    return run { val _simdArg0 = svld1shGatherU64baseOffsetS64(pg.sveInto(), bases.asSigned(), offset); _simdArg0 }
 }
 
 /**
@@ -9048,8 +9048,8 @@ public fun svld1shGatherU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset: 
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
 public fun svld1swGatherU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset: Long): Svint64T {
-    fun svld1swGatherU64baseOffsetS64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Nxv2i32 = null as Nxv2i32
-    return Simd.simdCast(svld1swGatherU64baseOffsetS64(pg.sveInto(), bases.asSigned(), offset))
+    fun svld1swGatherU64baseOffsetS64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Nxv2i32 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).alignBytes)); val res = (ObjectSlotLayout<Nxv2i32>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).alignBytes)); res }
+    return run { val _simdArg0 = svld1swGatherU64baseOffsetS64(pg.sveInto(), bases.asSigned(), offset); _simdArg0 }
 }
 
 /**
@@ -9190,8 +9190,8 @@ public fun svld1swGatherU64baseU64(pg: SvboolT, bases: Svuint64T): Svuint64T = s
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1sbS16(pg: SvboolT, base: ConstPtr): Svint16T {
-    fun svld1sbS16(pg1: Svbool8T, base1: ConstPtr): Nxv8i8 = null as Nxv8i8
-    return Simd.simdCast(svld1sbS16(pg.sveInto(), base))
+    fun svld1sbS16(pg1: Svbool8T, base1: ConstPtr): Nxv8i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv8i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv8i8>()).alignBytes)); val res = (ObjectSlotLayout<Nxv8i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv8i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv8i8>()).alignBytes)); res }
+    return run { val _simdArg0 = svld1sbS16(pg.sveInto(), base); _simdArg0 }
 }
 
 /**
@@ -9202,8 +9202,8 @@ public fun svld1sbS16(pg: SvboolT, base: ConstPtr): Svint16T {
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1sbS32(pg: SvboolT, base: ConstPtr): Svint32T {
-    fun svld1sbS32(pg1: Svbool4T, base1: ConstPtr): Nxv4i8 = null as Nxv4i8
-    return Simd.simdCast(svld1sbS32(pg.sveInto(), base))
+    fun svld1sbS32(pg1: Svbool4T, base1: ConstPtr): Nxv4i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).alignBytes)); val res = (ObjectSlotLayout<Nxv4i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).alignBytes)); res }
+    return run { val _simdArg0 = svld1sbS32(pg.sveInto(), base); _simdArg0 }
 }
 
 /**
@@ -9214,8 +9214,8 @@ public fun svld1sbS32(pg: SvboolT, base: ConstPtr): Svint32T {
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1shS32(pg: SvboolT, base: ConstPtr): Svint32T {
-    fun svld1shS32(pg1: Svbool4T, base1: ConstPtr): Nxv4i16 = null as Nxv4i16
-    return Simd.simdCast(svld1shS32(pg.sveInto(), base))
+    fun svld1shS32(pg1: Svbool4T, base1: ConstPtr): Nxv4i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).alignBytes)); val res = (ObjectSlotLayout<Nxv4i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).alignBytes)); res }
+    return run { val _simdArg0 = svld1shS32(pg.sveInto(), base); _simdArg0 }
 }
 
 /**
@@ -9226,8 +9226,8 @@ public fun svld1shS32(pg: SvboolT, base: ConstPtr): Svint32T {
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1sbS64(pg: SvboolT, base: ConstPtr): Svint64T {
-    fun svld1sbS64(pg1: Svbool2T, base1: ConstPtr): Nxv2i8 = null as Nxv2i8
-    return Simd.simdCast(svld1sbS64(pg.sveInto(), base))
+    fun svld1sbS64(pg1: Svbool2T, base1: ConstPtr): Nxv2i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i8>()).alignBytes)); val res = (ObjectSlotLayout<Nxv2i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i8>()).alignBytes)); res }
+    return run { val _simdArg0 = svld1sbS64(pg.sveInto(), base); _simdArg0 }
 }
 
 /**
@@ -9238,8 +9238,8 @@ public fun svld1sbS64(pg: SvboolT, base: ConstPtr): Svint64T {
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1shS64(pg: SvboolT, base: ConstPtr): Svint64T {
-    fun svld1shS64(pg1: Svbool2T, base1: ConstPtr): Nxv2i16 = null as Nxv2i16
-    return Simd.simdCast(svld1shS64(pg.sveInto(), base))
+    fun svld1shS64(pg1: Svbool2T, base1: ConstPtr): Nxv2i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).alignBytes)); val res = (ObjectSlotLayout<Nxv2i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).alignBytes)); res }
+    return run { val _simdArg0 = svld1shS64(pg.sveInto(), base); _simdArg0 }
 }
 
 /**
@@ -9250,8 +9250,8 @@ public fun svld1shS64(pg: SvboolT, base: ConstPtr): Svint64T {
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1swS64(pg: SvboolT, base: ConstPtr): Svint64T {
-    fun svld1swS64(pg1: Svbool2T, base1: ConstPtr): Nxv2i32 = null as Nxv2i32
-    return Simd.simdCast(svld1swS64(pg.sveInto(), base))
+    fun svld1swS64(pg1: Svbool2T, base1: ConstPtr): Nxv2i32 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).alignBytes)); val res = (ObjectSlotLayout<Nxv2i32>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).alignBytes)); res }
+    return run { val _simdArg0 = svld1swS64(pg.sveInto(), base); _simdArg0 }
 }
 
 /**
@@ -9424,8 +9424,8 @@ public fun svld1swVnumU64(pg: SvboolT, base: ConstPtr, vnum: Long): Svuint64T = 
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1shGatherS32indexS32(pg: SvboolT, base: ConstPtr, indices: Svint32T): Svint32T {
-    fun svld1shGatherS32indexS32(pg1: Svbool4T, base1: ConstPtr, indices1: Svint32T): Nxv4i16 = null as Nxv4i16
-    return Simd.simdCast(svld1shGatherS32indexS32(pg.sveInto(), base, indices))
+    fun svld1shGatherS32indexS32(pg1: Svbool4T, base1: ConstPtr, indices1: Svint32T): Nxv4i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).alignBytes)); val res = (ObjectSlotLayout<Nxv4i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).alignBytes)); res }
+    return run { val _simdArg0 = svld1shGatherS32indexS32(pg.sveInto(), base, indices); _simdArg0 }
 }
 
 /**
@@ -9445,8 +9445,8 @@ public fun svld1shGatherS32indexU32(pg: SvboolT, base: ConstPtr, indices: Svint3
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1shGatherS64indexS64(pg: SvboolT, base: ConstPtr, indices: Svint64T): Svint64T {
-    fun svld1shGatherS64indexS64(pg1: Svbool2T, base1: ConstPtr, indices1: Svint64T): Nxv2i16 = null as Nxv2i16
-    return Simd.simdCast(svld1shGatherS64indexS64(pg.sveInto(), base, indices))
+    fun svld1shGatherS64indexS64(pg1: Svbool2T, base1: ConstPtr, indices1: Svint64T): Nxv2i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).alignBytes)); val res = (ObjectSlotLayout<Nxv2i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).alignBytes)); res }
+    return run { val _simdArg0 = svld1shGatherS64indexS64(pg.sveInto(), base, indices); _simdArg0 }
 }
 
 /**
@@ -9457,8 +9457,8 @@ public fun svld1shGatherS64indexS64(pg: SvboolT, base: ConstPtr, indices: Svint6
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1swGatherS64indexS64(pg: SvboolT, base: ConstPtr, indices: Svint64T): Svint64T {
-    fun svld1swGatherS64indexS64(pg1: Svbool2T, base1: ConstPtr, indices1: Svint64T): Nxv2i32 = null as Nxv2i32
-    return Simd.simdCast(svld1swGatherS64indexS64(pg.sveInto(), base, indices))
+    fun svld1swGatherS64indexS64(pg1: Svbool2T, base1: ConstPtr, indices1: Svint64T): Nxv2i32 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).alignBytes)); val res = (ObjectSlotLayout<Nxv2i32>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).alignBytes)); res }
+    return run { val _simdArg0 = svld1swGatherS64indexS64(pg.sveInto(), base, indices); _simdArg0 }
 }
 
 /**
@@ -9487,8 +9487,8 @@ public fun svld1swGatherS64indexU64(pg: SvboolT, base: ConstPtr, indices: Svint6
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1shGatherU32indexS32(pg: SvboolT, base: ConstPtr, indices: Svuint32T): Svint32T {
-    fun svld1shGatherU32indexS32(pg1: Svbool4T, base1: ConstPtr, indices1: Svint32T): Nxv4i16 = null as Nxv4i16
-    return Simd.simdCast(svld1shGatherU32indexS32(pg.sveInto(), base, indices.asSigned()))
+    fun svld1shGatherU32indexS32(pg1: Svbool4T, base1: ConstPtr, indices1: Svint32T): Nxv4i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).alignBytes)); val res = (ObjectSlotLayout<Nxv4i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).alignBytes)); res }
+    return run { val _simdArg0 = svld1shGatherU32indexS32(pg.sveInto(), base, indices.asSigned()); _simdArg0 }
 }
 
 /**
@@ -9622,8 +9622,8 @@ public fun svld1uhGatherS32offsetS32(pg: SvboolT, base: ConstPtr, offsets: Svint
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1ubGatherS32offsetU32(pg: SvboolT, base: ConstPtr, offsets: Svint32T): Svuint32T {
-    fun svld1ubGatherS32offsetU32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i8 = null as Nxv4i8
-    return Simd.simdCast<Nxv4u8>(svld1ubGatherS32offsetU32(pg.sveInto(), base.asSigned(), offsets).asUnsigned())
+    fun svld1ubGatherS32offsetU32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).alignBytes)); val res = (ObjectSlotLayout<Nxv4i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).alignBytes)); res }
+    return run { val _simdArg0 = svld1ubGatherS32offsetU32(pg.sveInto(), base.asSigned(), offsets).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -9634,8 +9634,8 @@ public fun svld1ubGatherS32offsetU32(pg: SvboolT, base: ConstPtr, offsets: Svint
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1uhGatherS32offsetU32(pg: SvboolT, base: ConstPtr, offsets: Svint32T): Svuint32T {
-    fun svld1uhGatherS32offsetU32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i16 = null as Nxv4i16
-    return Simd.simdCast<Nxv4u16>(svld1uhGatherS32offsetU32(pg.sveInto(), base.asSigned(), offsets).asUnsigned())
+    fun svld1uhGatherS32offsetU32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).alignBytes)); val res = (ObjectSlotLayout<Nxv4i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).alignBytes)); res }
+    return run { val _simdArg0 = svld1uhGatherS32offsetU32(pg.sveInto(), base.asSigned(), offsets).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -9673,8 +9673,8 @@ public fun svld1uwGatherS64offsetS64(pg: SvboolT, base: ConstPtr, offsets: Svint
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1ubGatherS64offsetU64(pg: SvboolT, base: ConstPtr, offsets: Svint64T): Svuint64T {
-    fun svld1ubGatherS64offsetU64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Nxv2i8 = null as Nxv2i8
-    return Simd.simdCast<Nxv2u8>(svld1ubGatherS64offsetU64(pg.sveInto(), base.asSigned(), offsets).asUnsigned())
+    fun svld1ubGatherS64offsetU64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Nxv2i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i8>()).alignBytes)); val res = (ObjectSlotLayout<Nxv2i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i8>()).alignBytes)); res }
+    return run { val _simdArg0 = svld1ubGatherS64offsetU64(pg.sveInto(), base.asSigned(), offsets).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -9685,8 +9685,8 @@ public fun svld1ubGatherS64offsetU64(pg: SvboolT, base: ConstPtr, offsets: Svint
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1uhGatherS64offsetU64(pg: SvboolT, base: ConstPtr, offsets: Svint64T): Svuint64T {
-    fun svld1uhGatherS64offsetU64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Nxv2i16 = null as Nxv2i16
-    return Simd.simdCast<Nxv2u16>(svld1uhGatherS64offsetU64(pg.sveInto(), base.asSigned(), offsets).asUnsigned())
+    fun svld1uhGatherS64offsetU64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Nxv2i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).alignBytes)); val res = (ObjectSlotLayout<Nxv2i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).alignBytes)); res }
+    return run { val _simdArg0 = svld1uhGatherS64offsetU64(pg.sveInto(), base.asSigned(), offsets).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -9697,8 +9697,8 @@ public fun svld1uhGatherS64offsetU64(pg: SvboolT, base: ConstPtr, offsets: Svint
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1uwGatherS64offsetU64(pg: SvboolT, base: ConstPtr, offsets: Svint64T): Svuint64T {
-    fun svld1uwGatherS64offsetU64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Nxv2i32 = null as Nxv2i32
-    return Simd.simdCast<Nxv2u32>(svld1uwGatherS64offsetU64(pg.sveInto(), base.asSigned(), offsets).asUnsigned())
+    fun svld1uwGatherS64offsetU64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Nxv2i32 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).alignBytes)); val res = (ObjectSlotLayout<Nxv2i32>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).alignBytes)); res }
+    return run { val _simdArg0 = svld1uwGatherS64offsetU64(pg.sveInto(), base.asSigned(), offsets).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -9727,8 +9727,8 @@ public fun svld1uhGatherU32offsetS32(pg: SvboolT, base: ConstPtr, offsets: Svuin
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1ubGatherU32offsetU32(pg: SvboolT, base: ConstPtr, offsets: Svuint32T): Svuint32T {
-    fun svld1ubGatherU32offsetU32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i8 = null as Nxv4i8
-    return Simd.simdCast<Nxv4u8>(svld1ubGatherU32offsetU32(pg.sveInto(), base.asSigned(), offsets.asSigned()).asUnsigned())
+    fun svld1ubGatherU32offsetU32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).alignBytes)); val res = (ObjectSlotLayout<Nxv4i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).alignBytes)); res }
+    return run { val _simdArg0 = svld1ubGatherU32offsetU32(pg.sveInto(), base.asSigned(), offsets.asSigned()).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -9739,8 +9739,8 @@ public fun svld1ubGatherU32offsetU32(pg: SvboolT, base: ConstPtr, offsets: Svuin
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1uhGatherU32offsetU32(pg: SvboolT, base: ConstPtr, offsets: Svuint32T): Svuint32T {
-    fun svld1uhGatherU32offsetU32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i16 = null as Nxv4i16
-    return Simd.simdCast<Nxv4u16>(svld1uhGatherU32offsetU32(pg.sveInto(), base.asSigned(), offsets.asSigned()).asUnsigned())
+    fun svld1uhGatherU32offsetU32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).alignBytes)); val res = (ObjectSlotLayout<Nxv4i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).alignBytes)); res }
+    return run { val _simdArg0 = svld1uhGatherU32offsetU32(pg.sveInto(), base.asSigned(), offsets.asSigned()).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -9826,8 +9826,8 @@ public fun svld1uhGatherU32baseOffsetS32(pg: SvboolT, bases: Svuint32T, offset: 
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
 public fun svld1ubGatherU32baseOffsetU32(pg: SvboolT, bases: Svuint32T, offset: Long): Svuint32T {
-    fun svld1ubGatherU32baseOffsetU32(pg1: Svbool4T, bases1: Svint32T, offset1: Long): Nxv4i8 = null as Nxv4i8
-    return Simd.simdCast<Nxv4u8>(svld1ubGatherU32baseOffsetU32(pg.sveInto(), bases.asSigned(), offset).asUnsigned())
+    fun svld1ubGatherU32baseOffsetU32(pg1: Svbool4T, bases1: Svint32T, offset1: Long): Nxv4i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).alignBytes)); val res = (ObjectSlotLayout<Nxv4i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).alignBytes)); res }
+    return run { val _simdArg0 = svld1ubGatherU32baseOffsetU32(pg.sveInto(), bases.asSigned(), offset).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -9839,8 +9839,8 @@ public fun svld1ubGatherU32baseOffsetU32(pg: SvboolT, bases: Svuint32T, offset: 
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
 public fun svld1uhGatherU32baseOffsetU32(pg: SvboolT, bases: Svuint32T, offset: Long): Svuint32T {
-    fun svld1uhGatherU32baseOffsetU32(pg1: Svbool4T, bases1: Svint32T, offset1: Long): Nxv4i16 = null as Nxv4i16
-    return Simd.simdCast<Nxv4u16>(svld1uhGatherU32baseOffsetU32(pg.sveInto(), bases.asSigned(), offset).asUnsigned())
+    fun svld1uhGatherU32baseOffsetU32(pg1: Svbool4T, bases1: Svint32T, offset1: Long): Nxv4i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).alignBytes)); val res = (ObjectSlotLayout<Nxv4i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).alignBytes)); res }
+    return run { val _simdArg0 = svld1uhGatherU32baseOffsetU32(pg.sveInto(), bases.asSigned(), offset).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -9882,8 +9882,8 @@ public fun svld1uwGatherU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset: 
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
 public fun svld1ubGatherU64baseOffsetU64(pg: SvboolT, bases: Svuint64T, offset: Long): Svuint64T {
-    fun svld1ubGatherU64baseOffsetU64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Nxv2i8 = null as Nxv2i8
-    return Simd.simdCast<Nxv2u8>(svld1ubGatherU64baseOffsetU64(pg.sveInto(), bases.asSigned(), offset).asUnsigned())
+    fun svld1ubGatherU64baseOffsetU64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Nxv2i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i8>()).alignBytes)); val res = (ObjectSlotLayout<Nxv2i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i8>()).alignBytes)); res }
+    return run { val _simdArg0 = svld1ubGatherU64baseOffsetU64(pg.sveInto(), bases.asSigned(), offset).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -9895,8 +9895,8 @@ public fun svld1ubGatherU64baseOffsetU64(pg: SvboolT, bases: Svuint64T, offset: 
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
 public fun svld1uhGatherU64baseOffsetU64(pg: SvboolT, bases: Svuint64T, offset: Long): Svuint64T {
-    fun svld1uhGatherU64baseOffsetU64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Nxv2i16 = null as Nxv2i16
-    return Simd.simdCast<Nxv2u16>(svld1uhGatherU64baseOffsetU64(pg.sveInto(), bases.asSigned(), offset).asUnsigned())
+    fun svld1uhGatherU64baseOffsetU64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Nxv2i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).alignBytes)); val res = (ObjectSlotLayout<Nxv2i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).alignBytes)); res }
+    return run { val _simdArg0 = svld1uhGatherU64baseOffsetU64(pg.sveInto(), bases.asSigned(), offset).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -9908,8 +9908,8 @@ public fun svld1uhGatherU64baseOffsetU64(pg: SvboolT, bases: Svuint64T, offset: 
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
 public fun svld1uwGatherU64baseOffsetU64(pg: SvboolT, bases: Svuint64T, offset: Long): Svuint64T {
-    fun svld1uwGatherU64baseOffsetU64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Nxv2i32 = null as Nxv2i32
-    return Simd.simdCast<Nxv2u32>(svld1uwGatherU64baseOffsetU64(pg.sveInto(), bases.asSigned(), offset).asUnsigned())
+    fun svld1uwGatherU64baseOffsetU64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Nxv2i32 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).alignBytes)); val res = (ObjectSlotLayout<Nxv2i32>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).alignBytes)); res }
+    return run { val _simdArg0 = svld1uwGatherU64baseOffsetU64(pg.sveInto(), bases.asSigned(), offset).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -10020,8 +10020,8 @@ public fun svld1uwGatherU64baseU64(pg: SvboolT, bases: Svuint64T): Svuint64T = s
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1ubS16(pg: SvboolT, base: ConstPtr): Svint16T {
-    fun svld1ubS16(pg1: Svbool8T, base1: ConstPtr): Nxv8i8 = null as Nxv8i8
-    return Simd.simdCast<Nxv8u8>(svld1ubS16(pg.sveInto(), base.asSigned()).asUnsigned())
+    fun svld1ubS16(pg1: Svbool8T, base1: ConstPtr): Nxv8i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv8i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv8i8>()).alignBytes)); val res = (ObjectSlotLayout<Nxv8i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv8i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv8i8>()).alignBytes)); res }
+    return run { val _simdArg0 = svld1ubS16(pg.sveInto(), base.asSigned()).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -10032,8 +10032,8 @@ public fun svld1ubS16(pg: SvboolT, base: ConstPtr): Svint16T {
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1ubS32(pg: SvboolT, base: ConstPtr): Svint32T {
-    fun svld1ubS32(pg1: Svbool4T, base1: ConstPtr): Nxv4i8 = null as Nxv4i8
-    return Simd.simdCast<Nxv4u8>(svld1ubS32(pg.sveInto(), base.asSigned()).asUnsigned())
+    fun svld1ubS32(pg1: Svbool4T, base1: ConstPtr): Nxv4i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).alignBytes)); val res = (ObjectSlotLayout<Nxv4i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).alignBytes)); res }
+    return run { val _simdArg0 = svld1ubS32(pg.sveInto(), base.asSigned()).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -10044,8 +10044,8 @@ public fun svld1ubS32(pg: SvboolT, base: ConstPtr): Svint32T {
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1uhS32(pg: SvboolT, base: ConstPtr): Svint32T {
-    fun svld1uhS32(pg1: Svbool4T, base1: ConstPtr): Nxv4i16 = null as Nxv4i16
-    return Simd.simdCast<Nxv4u16>(svld1uhS32(pg.sveInto(), base.asSigned()).asUnsigned())
+    fun svld1uhS32(pg1: Svbool4T, base1: ConstPtr): Nxv4i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).alignBytes)); val res = (ObjectSlotLayout<Nxv4i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).alignBytes)); res }
+    return run { val _simdArg0 = svld1uhS32(pg.sveInto(), base.asSigned()).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -10056,8 +10056,8 @@ public fun svld1uhS32(pg: SvboolT, base: ConstPtr): Svint32T {
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1ubS64(pg: SvboolT, base: ConstPtr): Svint64T {
-    fun svld1ubS64(pg1: Svbool2T, base1: ConstPtr): Nxv2i8 = null as Nxv2i8
-    return Simd.simdCast<Nxv2u8>(svld1ubS64(pg.sveInto(), base.asSigned()).asUnsigned())
+    fun svld1ubS64(pg1: Svbool2T, base1: ConstPtr): Nxv2i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i8>()).alignBytes)); val res = (ObjectSlotLayout<Nxv2i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i8>()).alignBytes)); res }
+    return run { val _simdArg0 = svld1ubS64(pg.sveInto(), base.asSigned()).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -10068,8 +10068,8 @@ public fun svld1ubS64(pg: SvboolT, base: ConstPtr): Svint64T {
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1uhS64(pg: SvboolT, base: ConstPtr): Svint64T {
-    fun svld1uhS64(pg1: Svbool2T, base1: ConstPtr): Nxv2i16 = null as Nxv2i16
-    return Simd.simdCast<Nxv2u16>(svld1uhS64(pg.sveInto(), base.asSigned()).asUnsigned())
+    fun svld1uhS64(pg1: Svbool2T, base1: ConstPtr): Nxv2i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).alignBytes)); val res = (ObjectSlotLayout<Nxv2i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).alignBytes)); res }
+    return run { val _simdArg0 = svld1uhS64(pg.sveInto(), base.asSigned()).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -10080,8 +10080,8 @@ public fun svld1uhS64(pg: SvboolT, base: ConstPtr): Svint64T {
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1uwS64(pg: SvboolT, base: ConstPtr): Svint64T {
-    fun svld1uwS64(pg1: Svbool2T, base1: ConstPtr): Nxv2i32 = null as Nxv2i32
-    return Simd.simdCast<Nxv2u32>(svld1uwS64(pg.sveInto(), base.asSigned()).asUnsigned())
+    fun svld1uwS64(pg1: Svbool2T, base1: ConstPtr): Nxv2i32 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).alignBytes)); val res = (ObjectSlotLayout<Nxv2i32>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).alignBytes)); res }
+    return run { val _simdArg0 = svld1uwS64(pg.sveInto(), base.asSigned()).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -10263,8 +10263,8 @@ public fun svld1uhGatherS32indexS32(pg: SvboolT, base: ConstPtr, indices: Svint3
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1uhGatherS32indexU32(pg: SvboolT, base: ConstPtr, indices: Svint32T): Svuint32T {
-    fun svld1uhGatherS32indexU32(pg1: Svbool4T, base1: ConstPtr, indices1: Svint32T): Nxv4i16 = null as Nxv4i16
-    return Simd.simdCast<Nxv4u16>(svld1uhGatherS32indexU32(pg.sveInto(), base.asSigned(), indices).asUnsigned())
+    fun svld1uhGatherS32indexU32(pg1: Svbool4T, base1: ConstPtr, indices1: Svint32T): Nxv4i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).alignBytes)); val res = (ObjectSlotLayout<Nxv4i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).alignBytes)); res }
+    return run { val _simdArg0 = svld1uhGatherS32indexU32(pg.sveInto(), base.asSigned(), indices).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -10293,8 +10293,8 @@ public fun svld1uwGatherS64indexS64(pg: SvboolT, base: ConstPtr, indices: Svint6
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1uhGatherS64indexU64(pg: SvboolT, base: ConstPtr, indices: Svint64T): Svuint64T {
-    fun svld1uhGatherS64indexU64(pg1: Svbool2T, base1: ConstPtr, indices1: Svint64T): Nxv2i16 = null as Nxv2i16
-    return Simd.simdCast<Nxv2u16>(svld1uhGatherS64indexU64(pg.sveInto(), base.asSigned(), indices).asUnsigned())
+    fun svld1uhGatherS64indexU64(pg1: Svbool2T, base1: ConstPtr, indices1: Svint64T): Nxv2i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).alignBytes)); val res = (ObjectSlotLayout<Nxv2i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).alignBytes)); res }
+    return run { val _simdArg0 = svld1uhGatherS64indexU64(pg.sveInto(), base.asSigned(), indices).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -10305,8 +10305,8 @@ public fun svld1uhGatherS64indexU64(pg: SvboolT, base: ConstPtr, indices: Svint6
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1uwGatherS64indexU64(pg: SvboolT, base: ConstPtr, indices: Svint64T): Svuint64T {
-    fun svld1uwGatherS64indexU64(pg1: Svbool2T, base1: ConstPtr, indices1: Svint64T): Nxv2i32 = null as Nxv2i32
-    return Simd.simdCast<Nxv2u32>(svld1uwGatherS64indexU64(pg.sveInto(), base.asSigned(), indices).asUnsigned())
+    fun svld1uwGatherS64indexU64(pg1: Svbool2T, base1: ConstPtr, indices1: Svint64T): Nxv2i32 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).alignBytes)); val res = (ObjectSlotLayout<Nxv2i32>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).alignBytes)); res }
+    return run { val _simdArg0 = svld1uwGatherS64indexU64(pg.sveInto(), base.asSigned(), indices).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -10326,8 +10326,8 @@ public fun svld1uhGatherU32indexS32(pg: SvboolT, base: ConstPtr, indices: Svuint
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld1uhGatherU32indexU32(pg: SvboolT, base: ConstPtr, indices: Svuint32T): Svuint32T {
-    fun svld1uhGatherU32indexU32(pg1: Svbool4T, base1: ConstPtr, indices1: Svint32T): Nxv4i16 = null as Nxv4i16
-    return Simd.simdCast<Nxv4u16>(svld1uhGatherU32indexU32(pg.sveInto(), base.asSigned(), indices.asSigned()).asUnsigned())
+    fun svld1uhGatherU32indexU32(pg1: Svbool4T, base1: ConstPtr, indices1: Svint32T): Nxv4i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).alignBytes)); val res = (ObjectSlotLayout<Nxv4i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).alignBytes)); res }
+    return run { val _simdArg0 = svld1uhGatherU32indexU32(pg.sveInto(), base.asSigned(), indices.asSigned()).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -10434,7 +10434,7 @@ public fun svld1uwGatherU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: Lo
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld2F32(pg: SvboolT, base: ConstPtr): Svfloat32x2T {
-    fun svld2F32(pg1: Svbool4T, base1: ConstPtr): Svfloat32x2T = null as Svfloat32x2T
+    fun svld2F32(pg1: Svbool4T, base1: ConstPtr): Svfloat32x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32x2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32x2T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32x2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32x2T>()).alignBytes)); res }
     return svld2F32(pg.sveInto(), base)
 }
 
@@ -10446,7 +10446,7 @@ public fun svld2F32(pg: SvboolT, base: ConstPtr): Svfloat32x2T {
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld2F64(pg: SvboolT, base: ConstPtr): Svfloat64x2T {
-    fun svld2F64(pg1: Svbool2T, base1: ConstPtr): Svfloat64x2T = null as Svfloat64x2T
+    fun svld2F64(pg1: Svbool2T, base1: ConstPtr): Svfloat64x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64x2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64x2T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64x2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64x2T>()).alignBytes)); res }
     return svld2F64(pg.sveInto(), base)
 }
 
@@ -10458,7 +10458,7 @@ public fun svld2F64(pg: SvboolT, base: ConstPtr): Svfloat64x2T {
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld2S8(pg: SvboolT, base: ConstPtr): Svint8x2T {
-    fun svld2S8(pg1: SvboolT, base1: ConstPtr): Svint8x2T = null as Svint8x2T
+    fun svld2S8(pg1: SvboolT, base1: ConstPtr): Svint8x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8x2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8x2T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8x2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8x2T>()).alignBytes)); res }
     return svld2S8(pg, base)
 }
 
@@ -10470,7 +10470,7 @@ public fun svld2S8(pg: SvboolT, base: ConstPtr): Svint8x2T {
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld2S16(pg: SvboolT, base: ConstPtr): Svint16x2T {
-    fun svld2S16(pg1: Svbool8T, base1: ConstPtr): Svint16x2T = null as Svint16x2T
+    fun svld2S16(pg1: Svbool8T, base1: ConstPtr): Svint16x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16x2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16x2T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16x2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16x2T>()).alignBytes)); res }
     return svld2S16(pg.sveInto(), base)
 }
 
@@ -10482,7 +10482,7 @@ public fun svld2S16(pg: SvboolT, base: ConstPtr): Svint16x2T {
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld2S32(pg: SvboolT, base: ConstPtr): Svint32x2T {
-    fun svld2S32(pg1: Svbool4T, base1: ConstPtr): Svint32x2T = null as Svint32x2T
+    fun svld2S32(pg1: Svbool4T, base1: ConstPtr): Svint32x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32x2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32x2T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32x2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32x2T>()).alignBytes)); res }
     return svld2S32(pg.sveInto(), base)
 }
 
@@ -10494,7 +10494,7 @@ public fun svld2S32(pg: SvboolT, base: ConstPtr): Svint32x2T {
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld2S64(pg: SvboolT, base: ConstPtr): Svint64x2T {
-    fun svld2S64(pg1: Svbool2T, base1: ConstPtr): Svint64x2T = null as Svint64x2T
+    fun svld2S64(pg1: Svbool2T, base1: ConstPtr): Svint64x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64x2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64x2T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64x2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64x2T>()).alignBytes)); res }
     return svld2S64(pg.sveInto(), base)
 }
 
@@ -10632,7 +10632,7 @@ public fun svld2VnumU64(pg: SvboolT, base: ConstPtr, vnum: Long): Svuint64x2T = 
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld3F32(pg: SvboolT, base: ConstPtr): Svfloat32x3T {
-    fun svld3F32(pg1: Svbool4T, base1: ConstPtr): Svfloat32x3T = null as Svfloat32x3T
+    fun svld3F32(pg1: Svbool4T, base1: ConstPtr): Svfloat32x3T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32x3T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32x3T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32x3T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32x3T>()).alignBytes)); res }
     return svld3F32(pg.sveInto(), base)
 }
 
@@ -10644,7 +10644,7 @@ public fun svld3F32(pg: SvboolT, base: ConstPtr): Svfloat32x3T {
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld3F64(pg: SvboolT, base: ConstPtr): Svfloat64x3T {
-    fun svld3F64(pg1: Svbool2T, base1: ConstPtr): Svfloat64x3T = null as Svfloat64x3T
+    fun svld3F64(pg1: Svbool2T, base1: ConstPtr): Svfloat64x3T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64x3T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64x3T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64x3T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64x3T>()).alignBytes)); res }
     return svld3F64(pg.sveInto(), base)
 }
 
@@ -10656,7 +10656,7 @@ public fun svld3F64(pg: SvboolT, base: ConstPtr): Svfloat64x3T {
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld3S8(pg: SvboolT, base: ConstPtr): Svint8x3T {
-    fun svld3S8(pg1: SvboolT, base1: ConstPtr): Svint8x3T = null as Svint8x3T
+    fun svld3S8(pg1: SvboolT, base1: ConstPtr): Svint8x3T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8x3T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8x3T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8x3T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8x3T>()).alignBytes)); res }
     return svld3S8(pg, base)
 }
 
@@ -10668,7 +10668,7 @@ public fun svld3S8(pg: SvboolT, base: ConstPtr): Svint8x3T {
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld3S16(pg: SvboolT, base: ConstPtr): Svint16x3T {
-    fun svld3S16(pg1: Svbool8T, base1: ConstPtr): Svint16x3T = null as Svint16x3T
+    fun svld3S16(pg1: Svbool8T, base1: ConstPtr): Svint16x3T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16x3T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16x3T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16x3T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16x3T>()).alignBytes)); res }
     return svld3S16(pg.sveInto(), base)
 }
 
@@ -10680,7 +10680,7 @@ public fun svld3S16(pg: SvboolT, base: ConstPtr): Svint16x3T {
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld3S32(pg: SvboolT, base: ConstPtr): Svint32x3T {
-    fun svld3S32(pg1: Svbool4T, base1: ConstPtr): Svint32x3T = null as Svint32x3T
+    fun svld3S32(pg1: Svbool4T, base1: ConstPtr): Svint32x3T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32x3T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32x3T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32x3T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32x3T>()).alignBytes)); res }
     return svld3S32(pg.sveInto(), base)
 }
 
@@ -10692,7 +10692,7 @@ public fun svld3S32(pg: SvboolT, base: ConstPtr): Svint32x3T {
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld3S64(pg: SvboolT, base: ConstPtr): Svint64x3T {
-    fun svld3S64(pg1: Svbool2T, base1: ConstPtr): Svint64x3T = null as Svint64x3T
+    fun svld3S64(pg1: Svbool2T, base1: ConstPtr): Svint64x3T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64x3T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64x3T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64x3T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64x3T>()).alignBytes)); res }
     return svld3S64(pg.sveInto(), base)
 }
 
@@ -10830,7 +10830,7 @@ public fun svld3VnumU64(pg: SvboolT, base: ConstPtr, vnum: Long): Svuint64x3T = 
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld4F32(pg: SvboolT, base: ConstPtr): Svfloat32x4T {
-    fun svld4F32(pg1: Svbool4T, base1: ConstPtr): Svfloat32x4T = null as Svfloat32x4T
+    fun svld4F32(pg1: Svbool4T, base1: ConstPtr): Svfloat32x4T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32x4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32x4T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32x4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32x4T>()).alignBytes)); res }
     return svld4F32(pg.sveInto(), base)
 }
 
@@ -10842,7 +10842,7 @@ public fun svld4F32(pg: SvboolT, base: ConstPtr): Svfloat32x4T {
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld4F64(pg: SvboolT, base: ConstPtr): Svfloat64x4T {
-    fun svld4F64(pg1: Svbool2T, base1: ConstPtr): Svfloat64x4T = null as Svfloat64x4T
+    fun svld4F64(pg1: Svbool2T, base1: ConstPtr): Svfloat64x4T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64x4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64x4T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64x4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64x4T>()).alignBytes)); res }
     return svld4F64(pg.sveInto(), base)
 }
 
@@ -10854,7 +10854,7 @@ public fun svld4F64(pg: SvboolT, base: ConstPtr): Svfloat64x4T {
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld4S8(pg: SvboolT, base: ConstPtr): Svint8x4T {
-    fun svld4S8(pg1: SvboolT, base1: ConstPtr): Svint8x4T = null as Svint8x4T
+    fun svld4S8(pg1: SvboolT, base1: ConstPtr): Svint8x4T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8x4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8x4T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8x4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8x4T>()).alignBytes)); res }
     return svld4S8(pg, base)
 }
 
@@ -10866,7 +10866,7 @@ public fun svld4S8(pg: SvboolT, base: ConstPtr): Svint8x4T {
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld4S16(pg: SvboolT, base: ConstPtr): Svint16x4T {
-    fun svld4S16(pg1: Svbool8T, base1: ConstPtr): Svint16x4T = null as Svint16x4T
+    fun svld4S16(pg1: Svbool8T, base1: ConstPtr): Svint16x4T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16x4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16x4T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16x4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16x4T>()).alignBytes)); res }
     return svld4S16(pg.sveInto(), base)
 }
 
@@ -10878,7 +10878,7 @@ public fun svld4S16(pg: SvboolT, base: ConstPtr): Svint16x4T {
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld4S32(pg: SvboolT, base: ConstPtr): Svint32x4T {
-    fun svld4S32(pg1: Svbool4T, base1: ConstPtr): Svint32x4T = null as Svint32x4T
+    fun svld4S32(pg1: Svbool4T, base1: ConstPtr): Svint32x4T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32x4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32x4T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32x4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32x4T>()).alignBytes)); res }
     return svld4S32(pg.sveInto(), base)
 }
 
@@ -10890,7 +10890,7 @@ public fun svld4S32(pg: SvboolT, base: ConstPtr): Svint32x4T {
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  */
 public fun svld4S64(pg: SvboolT, base: ConstPtr): Svint64x4T {
-    fun svld4S64(pg1: Svbool2T, base1: ConstPtr): Svint64x4T = null as Svint64x4T
+    fun svld4S64(pg1: Svbool2T, base1: ConstPtr): Svint64x4T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64x4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64x4T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64x4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64x4T>()).alignBytes)); res }
     return svld4S64(pg.sveInto(), base)
 }
 
@@ -11029,7 +11029,7 @@ public fun svld4VnumU64(pg: SvboolT, base: ConstPtr, vnum: Long): Svuint64x4T = 
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldff1F32(pg: SvboolT, base: ConstPtr): Svfloat32T {
-    fun svldff1F32(pg1: Svbool4T, base1: ConstPtr): Svfloat32T = null as Svfloat32T
+    fun svldff1F32(pg1: Svbool4T, base1: ConstPtr): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svldff1F32(pg.sveInto(), base)
 }
 
@@ -11042,7 +11042,7 @@ public fun svldff1F32(pg: SvboolT, base: ConstPtr): Svfloat32T {
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldff1F64(pg: SvboolT, base: ConstPtr): Svfloat64T {
-    fun svldff1F64(pg1: Svbool2T, base1: ConstPtr): Svfloat64T = null as Svfloat64T
+    fun svldff1F64(pg1: Svbool2T, base1: ConstPtr): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svldff1F64(pg.sveInto(), base)
 }
 
@@ -11055,7 +11055,7 @@ public fun svldff1F64(pg: SvboolT, base: ConstPtr): Svfloat64T {
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldff1S8(pg: SvboolT, base: ConstPtr): Svint8T {
-    fun svldff1S8(pg1: SvboolT, base1: ConstPtr): Svint8T = null as Svint8T
+    fun svldff1S8(pg1: SvboolT, base1: ConstPtr): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svldff1S8(pg, base)
 }
 
@@ -11068,7 +11068,7 @@ public fun svldff1S8(pg: SvboolT, base: ConstPtr): Svint8T {
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldff1S16(pg: SvboolT, base: ConstPtr): Svint16T {
-    fun svldff1S16(pg1: Svbool8T, base1: ConstPtr): Svint16T = null as Svint16T
+    fun svldff1S16(pg1: Svbool8T, base1: ConstPtr): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svldff1S16(pg.sveInto(), base)
 }
 
@@ -11081,7 +11081,7 @@ public fun svldff1S16(pg: SvboolT, base: ConstPtr): Svint16T {
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldff1S32(pg: SvboolT, base: ConstPtr): Svint32T {
-    fun svldff1S32(pg1: Svbool4T, base1: ConstPtr): Svint32T = null as Svint32T
+    fun svldff1S32(pg1: Svbool4T, base1: ConstPtr): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svldff1S32(pg.sveInto(), base)
 }
 
@@ -11094,7 +11094,7 @@ public fun svldff1S32(pg: SvboolT, base: ConstPtr): Svint32T {
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldff1S64(pg: SvboolT, base: ConstPtr): Svint64T {
-    fun svldff1S64(pg1: Svbool2T, base1: ConstPtr): Svint64T = null as Svint64T
+    fun svldff1S64(pg1: Svbool2T, base1: ConstPtr): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svldff1S64(pg.sveInto(), base)
 }
 
@@ -11147,7 +11147,7 @@ public fun svldff1U64(pg: SvboolT, base: ConstPtr): Svuint64T = svldff1S64(pg, b
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldff1GatherS32indexF32(pg: SvboolT, base: ConstPtr, indices: Svint32T): Svfloat32T {
-    fun svldff1GatherS32indexF32(pg1: Svbool4T, base1: ConstPtr, indices1: Svint32T): Svfloat32T = null as Svfloat32T
+    fun svldff1GatherS32indexF32(pg1: Svbool4T, base1: ConstPtr, indices1: Svint32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svldff1GatherS32indexF32(pg.sveInto(), base, indices)
 }
 
@@ -11160,7 +11160,7 @@ public fun svldff1GatherS32indexF32(pg: SvboolT, base: ConstPtr, indices: Svint3
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldff1GatherS32indexS32(pg: SvboolT, base: ConstPtr, indices: Svint32T): Svint32T {
-    fun svldff1GatherS32indexS32(pg1: Svbool4T, base1: ConstPtr, indices1: Svint32T): Svint32T = null as Svint32T
+    fun svldff1GatherS32indexS32(pg1: Svbool4T, base1: ConstPtr, indices1: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svldff1GatherS32indexS32(pg.sveInto(), base, indices)
 }
 
@@ -11183,7 +11183,7 @@ public fun svldff1GatherS32indexU32(pg: SvboolT, base: ConstPtr, indices: Svint3
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldff1GatherS64indexF64(pg: SvboolT, base: ConstPtr, indices: Svint64T): Svfloat64T {
-    fun svldff1GatherS64indexF64(pg1: Svbool2T, base1: ConstPtr, indices1: Svint64T): Svfloat64T = null as Svfloat64T
+    fun svldff1GatherS64indexF64(pg1: Svbool2T, base1: ConstPtr, indices1: Svint64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svldff1GatherS64indexF64(pg.sveInto(), base, indices)
 }
 
@@ -11196,7 +11196,7 @@ public fun svldff1GatherS64indexF64(pg: SvboolT, base: ConstPtr, indices: Svint6
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldff1GatherS64indexS64(pg: SvboolT, base: ConstPtr, indices: Svint64T): Svint64T {
-    fun svldff1GatherS64indexS64(pg1: Svbool2T, base1: ConstPtr, indices1: Svint64T): Svint64T = null as Svint64T
+    fun svldff1GatherS64indexS64(pg1: Svbool2T, base1: ConstPtr, indices1: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svldff1GatherS64indexS64(pg.sveInto(), base, indices)
 }
 
@@ -11219,7 +11219,7 @@ public fun svldff1GatherS64indexU64(pg: SvboolT, base: ConstPtr, indices: Svint6
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldff1GatherU32indexF32(pg: SvboolT, base: ConstPtr, indices: Svuint32T): Svfloat32T {
-    fun svldff1GatherU32indexF32(pg1: Svbool4T, base1: ConstPtr, indices1: Svint32T): Svfloat32T = null as Svfloat32T
+    fun svldff1GatherU32indexF32(pg1: Svbool4T, base1: ConstPtr, indices1: Svint32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svldff1GatherU32indexF32(pg.sveInto(), base, indices.asSigned())
 }
 
@@ -11232,7 +11232,7 @@ public fun svldff1GatherU32indexF32(pg: SvboolT, base: ConstPtr, indices: Svuint
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldff1GatherU32indexS32(pg: SvboolT, base: ConstPtr, indices: Svuint32T): Svint32T {
-    fun svldff1GatherU32indexS32(pg1: Svbool4T, base1: ConstPtr, indices1: Svint32T): Svint32T = null as Svint32T
+    fun svldff1GatherU32indexS32(pg1: Svbool4T, base1: ConstPtr, indices1: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svldff1GatherU32indexS32(pg.sveInto(), base, indices.asSigned())
 }
 
@@ -11285,7 +11285,7 @@ public fun svldff1GatherU64indexU64(pg: SvboolT, base: ConstPtr, indices: Svuint
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldff1GatherS32offsetF32(pg: SvboolT, base: ConstPtr, offsets: Svint32T): Svfloat32T {
-    fun svldff1GatherS32offsetF32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Svfloat32T = null as Svfloat32T
+    fun svldff1GatherS32offsetF32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svldff1GatherS32offsetF32(pg.sveInto(), base, offsets)
 }
 
@@ -11298,7 +11298,7 @@ public fun svldff1GatherS32offsetF32(pg: SvboolT, base: ConstPtr, offsets: Svint
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldff1GatherS32offsetS32(pg: SvboolT, base: ConstPtr, offsets: Svint32T): Svint32T {
-    fun svldff1GatherS32offsetS32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Svint32T = null as Svint32T
+    fun svldff1GatherS32offsetS32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svldff1GatherS32offsetS32(pg.sveInto(), base, offsets)
 }
 
@@ -11321,7 +11321,7 @@ public fun svldff1GatherS32offsetU32(pg: SvboolT, base: ConstPtr, offsets: Svint
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldff1GatherS64offsetF64(pg: SvboolT, base: ConstPtr, offsets: Svint64T): Svfloat64T {
-    fun svldff1GatherS64offsetF64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Svfloat64T = null as Svfloat64T
+    fun svldff1GatherS64offsetF64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svldff1GatherS64offsetF64(pg.sveInto(), base, offsets)
 }
 
@@ -11334,7 +11334,7 @@ public fun svldff1GatherS64offsetF64(pg: SvboolT, base: ConstPtr, offsets: Svint
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldff1GatherS64offsetS64(pg: SvboolT, base: ConstPtr, offsets: Svint64T): Svint64T {
-    fun svldff1GatherS64offsetS64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Svint64T = null as Svint64T
+    fun svldff1GatherS64offsetS64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svldff1GatherS64offsetS64(pg.sveInto(), base, offsets)
 }
 
@@ -11357,7 +11357,7 @@ public fun svldff1GatherS64offsetU64(pg: SvboolT, base: ConstPtr, offsets: Svint
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldff1GatherU32offsetF32(pg: SvboolT, base: ConstPtr, offsets: Svuint32T): Svfloat32T {
-    fun svldff1GatherU32offsetF32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Svfloat32T = null as Svfloat32T
+    fun svldff1GatherU32offsetF32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svldff1GatherU32offsetF32(pg.sveInto(), base, offsets.asSigned())
 }
 
@@ -11370,7 +11370,7 @@ public fun svldff1GatherU32offsetF32(pg: SvboolT, base: ConstPtr, offsets: Svuin
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldff1GatherU32offsetS32(pg: SvboolT, base: ConstPtr, offsets: Svuint32T): Svint32T {
-    fun svldff1GatherU32offsetS32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Svint32T = null as Svint32T
+    fun svldff1GatherU32offsetS32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svldff1GatherU32offsetS32(pg.sveInto(), base, offsets.asSigned())
 }
 
@@ -11556,7 +11556,7 @@ public fun svldff1GatherU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: Lo
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
 public fun svldff1GatherU32baseOffsetF32(pg: SvboolT, bases: Svuint32T, offset: Long): Svfloat32T {
-    fun svldff1GatherU32baseOffsetF32(pg1: Svbool4T, bases1: Svint32T, offset1: Long): Svfloat32T = null as Svfloat32T
+    fun svldff1GatherU32baseOffsetF32(pg1: Svbool4T, bases1: Svint32T, offset1: Long): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svldff1GatherU32baseOffsetF32(pg.sveInto(), bases.asSigned(), offset)
 }
 
@@ -11570,7 +11570,7 @@ public fun svldff1GatherU32baseOffsetF32(pg: SvboolT, bases: Svuint32T, offset: 
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
 public fun svldff1GatherU32baseOffsetS32(pg: SvboolT, bases: Svuint32T, offset: Long): Svint32T {
-    fun svldff1GatherU32baseOffsetS32(pg1: Svbool4T, bases1: Svint32T, offset1: Long): Svint32T = null as Svint32T
+    fun svldff1GatherU32baseOffsetS32(pg1: Svbool4T, bases1: Svint32T, offset1: Long): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svldff1GatherU32baseOffsetS32(pg.sveInto(), bases.asSigned(), offset)
 }
 
@@ -11595,7 +11595,7 @@ public fun svldff1GatherU32baseOffsetU32(pg: SvboolT, bases: Svuint32T, offset: 
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
 public fun svldff1GatherU64baseOffsetF64(pg: SvboolT, bases: Svuint64T, offset: Long): Svfloat64T {
-    fun svldff1GatherU64baseOffsetF64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Svfloat64T = null as Svfloat64T
+    fun svldff1GatherU64baseOffsetF64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svldff1GatherU64baseOffsetF64(pg.sveInto(), bases.asSigned(), offset)
 }
 
@@ -11609,7 +11609,7 @@ public fun svldff1GatherU64baseOffsetF64(pg: SvboolT, bases: Svuint64T, offset: 
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
 public fun svldff1GatherU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset: Long): Svint64T {
-    fun svldff1GatherU64baseOffsetS64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Svint64T = null as Svint64T
+    fun svldff1GatherU64baseOffsetS64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svldff1GatherU64baseOffsetS64(pg.sveInto(), bases.asSigned(), offset)
 }
 
@@ -11733,8 +11733,8 @@ public fun svldff1VnumU64(pg: SvboolT, base: ConstPtr, vnum: Long): Svuint64T = 
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldff1sbGatherS32offsetS32(pg: SvboolT, base: ConstPtr, offsets: Svint32T): Svint32T {
-    fun svldff1sbGatherS32offsetS32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i8 = null as Nxv4i8
-    return Simd.simdCast(svldff1sbGatherS32offsetS32(pg.sveInto(), base, offsets))
+    fun svldff1sbGatherS32offsetS32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).alignBytes)); val res = (ObjectSlotLayout<Nxv4i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).alignBytes)); res }
+    return run { val _simdArg0 = svldff1sbGatherS32offsetS32(pg.sveInto(), base, offsets); _simdArg0 }
 }
 
 /**
@@ -11746,8 +11746,8 @@ public fun svldff1sbGatherS32offsetS32(pg: SvboolT, base: ConstPtr, offsets: Svi
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldff1shGatherS32offsetS32(pg: SvboolT, base: ConstPtr, offsets: Svint32T): Svint32T {
-    fun svldff1shGatherS32offsetS32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i16 = null as Nxv4i16
-    return Simd.simdCast(svldff1shGatherS32offsetS32(pg.sveInto(), base, offsets))
+    fun svldff1shGatherS32offsetS32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).alignBytes)); val res = (ObjectSlotLayout<Nxv4i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).alignBytes)); res }
+    return run { val _simdArg0 = svldff1shGatherS32offsetS32(pg.sveInto(), base, offsets); _simdArg0 }
 }
 
 /**
@@ -11779,8 +11779,8 @@ public fun svldff1shGatherS32offsetU32(pg: SvboolT, base: ConstPtr, offsets: Svi
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldff1sbGatherS64offsetS64(pg: SvboolT, base: ConstPtr, offsets: Svint64T): Svint64T {
-    fun svldff1sbGatherS64offsetS64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Nxv2i8 = null as Nxv2i8
-    return Simd.simdCast(svldff1sbGatherS64offsetS64(pg.sveInto(), base, offsets))
+    fun svldff1sbGatherS64offsetS64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Nxv2i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i8>()).alignBytes)); val res = (ObjectSlotLayout<Nxv2i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i8>()).alignBytes)); res }
+    return run { val _simdArg0 = svldff1sbGatherS64offsetS64(pg.sveInto(), base, offsets); _simdArg0 }
 }
 
 /**
@@ -11792,8 +11792,8 @@ public fun svldff1sbGatherS64offsetS64(pg: SvboolT, base: ConstPtr, offsets: Svi
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldff1shGatherS64offsetS64(pg: SvboolT, base: ConstPtr, offsets: Svint64T): Svint64T {
-    fun svldff1shGatherS64offsetS64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Nxv2i16 = null as Nxv2i16
-    return Simd.simdCast(svldff1shGatherS64offsetS64(pg.sveInto(), base, offsets))
+    fun svldff1shGatherS64offsetS64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Nxv2i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).alignBytes)); val res = (ObjectSlotLayout<Nxv2i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).alignBytes)); res }
+    return run { val _simdArg0 = svldff1shGatherS64offsetS64(pg.sveInto(), base, offsets); _simdArg0 }
 }
 
 /**
@@ -11805,8 +11805,8 @@ public fun svldff1shGatherS64offsetS64(pg: SvboolT, base: ConstPtr, offsets: Svi
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldff1swGatherS64offsetS64(pg: SvboolT, base: ConstPtr, offsets: Svint64T): Svint64T {
-    fun svldff1swGatherS64offsetS64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Nxv2i32 = null as Nxv2i32
-    return Simd.simdCast(svldff1swGatherS64offsetS64(pg.sveInto(), base, offsets))
+    fun svldff1swGatherS64offsetS64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Nxv2i32 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).alignBytes)); val res = (ObjectSlotLayout<Nxv2i32>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).alignBytes)); res }
+    return run { val _simdArg0 = svldff1swGatherS64offsetS64(pg.sveInto(), base, offsets); _simdArg0 }
 }
 
 /**
@@ -11848,8 +11848,8 @@ public fun svldff1swGatherS64offsetU64(pg: SvboolT, base: ConstPtr, offsets: Svi
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldff1sbGatherU32offsetS32(pg: SvboolT, base: ConstPtr, offsets: Svuint32T): Svint32T {
-    fun svldff1sbGatherU32offsetS32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i8 = null as Nxv4i8
-    return Simd.simdCast(svldff1sbGatherU32offsetS32(pg.sveInto(), base, offsets.asSigned()))
+    fun svldff1sbGatherU32offsetS32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).alignBytes)); val res = (ObjectSlotLayout<Nxv4i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).alignBytes)); res }
+    return run { val _simdArg0 = svldff1sbGatherU32offsetS32(pg.sveInto(), base, offsets.asSigned()); _simdArg0 }
 }
 
 /**
@@ -11861,8 +11861,8 @@ public fun svldff1sbGatherU32offsetS32(pg: SvboolT, base: ConstPtr, offsets: Svu
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldff1shGatherU32offsetS32(pg: SvboolT, base: ConstPtr, offsets: Svuint32T): Svint32T {
-    fun svldff1shGatherU32offsetS32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i16 = null as Nxv4i16
-    return Simd.simdCast(svldff1shGatherU32offsetS32(pg.sveInto(), base, offsets.asSigned()))
+    fun svldff1shGatherU32offsetS32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).alignBytes)); val res = (ObjectSlotLayout<Nxv4i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).alignBytes)); res }
+    return run { val _simdArg0 = svldff1shGatherU32offsetS32(pg.sveInto(), base, offsets.asSigned()); _simdArg0 }
 }
 
 /**
@@ -11955,8 +11955,8 @@ public fun svldff1swGatherU64offsetU64(pg: SvboolT, base: ConstPtr, offsets: Svu
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
 public fun svldff1sbGatherU32baseOffsetS32(pg: SvboolT, bases: Svuint32T, offset: Long): Svint32T {
-    fun svldff1sbGatherU32baseOffsetS32(pg1: Svbool4T, bases1: Svint32T, offset1: Long): Nxv4i8 = null as Nxv4i8
-    return Simd.simdCast(svldff1sbGatherU32baseOffsetS32(pg.sveInto(), bases.asSigned(), offset))
+    fun svldff1sbGatherU32baseOffsetS32(pg1: Svbool4T, bases1: Svint32T, offset1: Long): Nxv4i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).alignBytes)); val res = (ObjectSlotLayout<Nxv4i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).alignBytes)); res }
+    return run { val _simdArg0 = svldff1sbGatherU32baseOffsetS32(pg.sveInto(), bases.asSigned(), offset); _simdArg0 }
 }
 
 /**
@@ -11969,8 +11969,8 @@ public fun svldff1sbGatherU32baseOffsetS32(pg: SvboolT, bases: Svuint32T, offset
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
 public fun svldff1shGatherU32baseOffsetS32(pg: SvboolT, bases: Svuint32T, offset: Long): Svint32T {
-    fun svldff1shGatherU32baseOffsetS32(pg1: Svbool4T, bases1: Svint32T, offset1: Long): Nxv4i16 = null as Nxv4i16
-    return Simd.simdCast(svldff1shGatherU32baseOffsetS32(pg.sveInto(), bases.asSigned(), offset))
+    fun svldff1shGatherU32baseOffsetS32(pg1: Svbool4T, bases1: Svint32T, offset1: Long): Nxv4i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).alignBytes)); val res = (ObjectSlotLayout<Nxv4i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).alignBytes)); res }
+    return run { val _simdArg0 = svldff1shGatherU32baseOffsetS32(pg.sveInto(), bases.asSigned(), offset); _simdArg0 }
 }
 
 /**
@@ -12005,8 +12005,8 @@ public fun svldff1shGatherU32baseOffsetU32(pg: SvboolT, bases: Svuint32T, offset
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
 public fun svldff1sbGatherU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset: Long): Svint64T {
-    fun svldff1sbGatherU64baseOffsetS64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Nxv2i8 = null as Nxv2i8
-    return Simd.simdCast(svldff1sbGatherU64baseOffsetS64(pg.sveInto(), bases.asSigned(), offset))
+    fun svldff1sbGatherU64baseOffsetS64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Nxv2i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i8>()).alignBytes)); val res = (ObjectSlotLayout<Nxv2i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i8>()).alignBytes)); res }
+    return run { val _simdArg0 = svldff1sbGatherU64baseOffsetS64(pg.sveInto(), bases.asSigned(), offset); _simdArg0 }
 }
 
 /**
@@ -12019,8 +12019,8 @@ public fun svldff1sbGatherU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
 public fun svldff1shGatherU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset: Long): Svint64T {
-    fun svldff1shGatherU64baseOffsetS64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Nxv2i16 = null as Nxv2i16
-    return Simd.simdCast(svldff1shGatherU64baseOffsetS64(pg.sveInto(), bases.asSigned(), offset))
+    fun svldff1shGatherU64baseOffsetS64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Nxv2i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).alignBytes)); val res = (ObjectSlotLayout<Nxv2i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).alignBytes)); res }
+    return run { val _simdArg0 = svldff1shGatherU64baseOffsetS64(pg.sveInto(), bases.asSigned(), offset); _simdArg0 }
 }
 
 /**
@@ -12033,8 +12033,8 @@ public fun svldff1shGatherU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
 public fun svldff1swGatherU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset: Long): Svint64T {
-    fun svldff1swGatherU64baseOffsetS64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Nxv2i32 = null as Nxv2i32
-    return Simd.simdCast(svldff1swGatherU64baseOffsetS64(pg.sveInto(), bases.asSigned(), offset))
+    fun svldff1swGatherU64baseOffsetS64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Nxv2i32 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).alignBytes)); val res = (ObjectSlotLayout<Nxv2i32>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).alignBytes)); res }
+    return run { val _simdArg0 = svldff1swGatherU64baseOffsetS64(pg.sveInto(), bases.asSigned(), offset); _simdArg0 }
 }
 
 /**
@@ -12189,8 +12189,8 @@ public fun svldff1swGatherU64baseU64(pg: SvboolT, bases: Svuint64T): Svuint64T =
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldff1sbS16(pg: SvboolT, base: ConstPtr): Svint16T {
-    fun svldff1sbS16(pg1: Svbool8T, base1: ConstPtr): Nxv8i8 = null as Nxv8i8
-    return Simd.simdCast(svldff1sbS16(pg.sveInto(), base))
+    fun svldff1sbS16(pg1: Svbool8T, base1: ConstPtr): Nxv8i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv8i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv8i8>()).alignBytes)); val res = (ObjectSlotLayout<Nxv8i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv8i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv8i8>()).alignBytes)); res }
+    return run { val _simdArg0 = svldff1sbS16(pg.sveInto(), base); _simdArg0 }
 }
 
 /**
@@ -12202,8 +12202,8 @@ public fun svldff1sbS16(pg: SvboolT, base: ConstPtr): Svint16T {
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldff1sbS32(pg: SvboolT, base: ConstPtr): Svint32T {
-    fun svldff1sbS32(pg1: Svbool4T, base1: ConstPtr): Nxv4i8 = null as Nxv4i8
-    return Simd.simdCast(svldff1sbS32(pg.sveInto(), base))
+    fun svldff1sbS32(pg1: Svbool4T, base1: ConstPtr): Nxv4i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).alignBytes)); val res = (ObjectSlotLayout<Nxv4i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).alignBytes)); res }
+    return run { val _simdArg0 = svldff1sbS32(pg.sveInto(), base); _simdArg0 }
 }
 
 /**
@@ -12215,8 +12215,8 @@ public fun svldff1sbS32(pg: SvboolT, base: ConstPtr): Svint32T {
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldff1shS32(pg: SvboolT, base: ConstPtr): Svint32T {
-    fun svldff1shS32(pg1: Svbool4T, base1: ConstPtr): Nxv4i16 = null as Nxv4i16
-    return Simd.simdCast(svldff1shS32(pg.sveInto(), base))
+    fun svldff1shS32(pg1: Svbool4T, base1: ConstPtr): Nxv4i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).alignBytes)); val res = (ObjectSlotLayout<Nxv4i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).alignBytes)); res }
+    return run { val _simdArg0 = svldff1shS32(pg.sveInto(), base); _simdArg0 }
 }
 
 /**
@@ -12228,8 +12228,8 @@ public fun svldff1shS32(pg: SvboolT, base: ConstPtr): Svint32T {
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldff1sbS64(pg: SvboolT, base: ConstPtr): Svint64T {
-    fun svldff1sbS64(pg1: Svbool2T, base1: ConstPtr): Nxv2i8 = null as Nxv2i8
-    return Simd.simdCast(svldff1sbS64(pg.sveInto(), base))
+    fun svldff1sbS64(pg1: Svbool2T, base1: ConstPtr): Nxv2i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i8>()).alignBytes)); val res = (ObjectSlotLayout<Nxv2i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i8>()).alignBytes)); res }
+    return run { val _simdArg0 = svldff1sbS64(pg.sveInto(), base); _simdArg0 }
 }
 
 /**
@@ -12241,8 +12241,8 @@ public fun svldff1sbS64(pg: SvboolT, base: ConstPtr): Svint64T {
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldff1shS64(pg: SvboolT, base: ConstPtr): Svint64T {
-    fun svldff1shS64(pg1: Svbool2T, base1: ConstPtr): Nxv2i16 = null as Nxv2i16
-    return Simd.simdCast(svldff1shS64(pg.sveInto(), base))
+    fun svldff1shS64(pg1: Svbool2T, base1: ConstPtr): Nxv2i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).alignBytes)); val res = (ObjectSlotLayout<Nxv2i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).alignBytes)); res }
+    return run { val _simdArg0 = svldff1shS64(pg.sveInto(), base); _simdArg0 }
 }
 
 /**
@@ -12254,8 +12254,8 @@ public fun svldff1shS64(pg: SvboolT, base: ConstPtr): Svint64T {
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldff1swS64(pg: SvboolT, base: ConstPtr): Svint64T {
-    fun svldff1swS64(pg1: Svbool2T, base1: ConstPtr): Nxv2i32 = null as Nxv2i32
-    return Simd.simdCast(svldff1swS64(pg.sveInto(), base))
+    fun svldff1swS64(pg1: Svbool2T, base1: ConstPtr): Nxv2i32 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).alignBytes)); val res = (ObjectSlotLayout<Nxv2i32>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).alignBytes)); res }
+    return run { val _simdArg0 = svldff1swS64(pg.sveInto(), base); _simdArg0 }
 }
 
 /**
@@ -12447,8 +12447,8 @@ public fun svldff1swVnumU64(pg: SvboolT, base: ConstPtr, vnum: Long): Svuint64T 
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldff1shGatherS32indexS32(pg: SvboolT, base: ConstPtr, indices: Svint32T): Svint32T {
-    fun svldff1shGatherS32indexS32(pg1: Svbool4T, base1: ConstPtr, indices1: Svint32T): Nxv4i16 = null as Nxv4i16
-    return Simd.simdCast(svldff1shGatherS32indexS32(pg.sveInto(), base, indices))
+    fun svldff1shGatherS32indexS32(pg1: Svbool4T, base1: ConstPtr, indices1: Svint32T): Nxv4i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).alignBytes)); val res = (ObjectSlotLayout<Nxv4i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).alignBytes)); res }
+    return run { val _simdArg0 = svldff1shGatherS32indexS32(pg.sveInto(), base, indices); _simdArg0 }
 }
 
 /**
@@ -12470,8 +12470,8 @@ public fun svldff1shGatherS32indexU32(pg: SvboolT, base: ConstPtr, indices: Svin
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldff1shGatherS64indexS64(pg: SvboolT, base: ConstPtr, indices: Svint64T): Svint64T {
-    fun svldff1shGatherS64indexS64(pg1: Svbool2T, base1: ConstPtr, indices1: Svint64T): Nxv2i16 = null as Nxv2i16
-    return Simd.simdCast(svldff1shGatherS64indexS64(pg.sveInto(), base, indices))
+    fun svldff1shGatherS64indexS64(pg1: Svbool2T, base1: ConstPtr, indices1: Svint64T): Nxv2i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).alignBytes)); val res = (ObjectSlotLayout<Nxv2i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).alignBytes)); res }
+    return run { val _simdArg0 = svldff1shGatherS64indexS64(pg.sveInto(), base, indices); _simdArg0 }
 }
 
 /**
@@ -12483,8 +12483,8 @@ public fun svldff1shGatherS64indexS64(pg: SvboolT, base: ConstPtr, indices: Svin
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldff1swGatherS64indexS64(pg: SvboolT, base: ConstPtr, indices: Svint64T): Svint64T {
-    fun svldff1swGatherS64indexS64(pg1: Svbool2T, base1: ConstPtr, indices1: Svint64T): Nxv2i32 = null as Nxv2i32
-    return Simd.simdCast(svldff1swGatherS64indexS64(pg.sveInto(), base, indices))
+    fun svldff1swGatherS64indexS64(pg1: Svbool2T, base1: ConstPtr, indices1: Svint64T): Nxv2i32 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).alignBytes)); val res = (ObjectSlotLayout<Nxv2i32>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).alignBytes)); res }
+    return run { val _simdArg0 = svldff1swGatherS64indexS64(pg.sveInto(), base, indices); _simdArg0 }
 }
 
 /**
@@ -12516,8 +12516,8 @@ public fun svldff1swGatherS64indexU64(pg: SvboolT, base: ConstPtr, indices: Svin
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldff1shGatherU32indexS32(pg: SvboolT, base: ConstPtr, indices: Svuint32T): Svint32T {
-    fun svldff1shGatherU32indexS32(pg1: Svbool4T, base1: ConstPtr, indices1: Svint32T): Nxv4i16 = null as Nxv4i16
-    return Simd.simdCast(svldff1shGatherU32indexS32(pg.sveInto(), base, indices.asSigned()))
+    fun svldff1shGatherU32indexS32(pg1: Svbool4T, base1: ConstPtr, indices1: Svint32T): Nxv4i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).alignBytes)); val res = (ObjectSlotLayout<Nxv4i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).alignBytes)); res }
+    return run { val _simdArg0 = svldff1shGatherU32indexS32(pg.sveInto(), base, indices.asSigned()); _simdArg0 }
 }
 
 /**
@@ -12665,8 +12665,8 @@ public fun svldff1uhGatherS32offsetS32(pg: SvboolT, base: ConstPtr, offsets: Svi
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldff1ubGatherS32offsetU32(pg: SvboolT, base: ConstPtr, offsets: Svint32T): Svuint32T {
-    fun svldff1ubGatherS32offsetU32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i8 = null as Nxv4i8
-    return Simd.simdCast<Nxv4u8>(svldff1ubGatherS32offsetU32(pg.sveInto(), base.asSigned(), offsets).asUnsigned())
+    fun svldff1ubGatherS32offsetU32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).alignBytes)); val res = (ObjectSlotLayout<Nxv4i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).alignBytes)); res }
+    return run { val _simdArg0 = svldff1ubGatherS32offsetU32(pg.sveInto(), base.asSigned(), offsets).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -12678,8 +12678,8 @@ public fun svldff1ubGatherS32offsetU32(pg: SvboolT, base: ConstPtr, offsets: Svi
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldff1uhGatherS32offsetU32(pg: SvboolT, base: ConstPtr, offsets: Svint32T): Svuint32T {
-    fun svldff1uhGatherS32offsetU32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i16 = null as Nxv4i16
-    return Simd.simdCast<Nxv4u16>(svldff1uhGatherS32offsetU32(pg.sveInto(), base.asSigned(), offsets).asUnsigned())
+    fun svldff1uhGatherS32offsetU32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).alignBytes)); val res = (ObjectSlotLayout<Nxv4i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).alignBytes)); res }
+    return run { val _simdArg0 = svldff1uhGatherS32offsetU32(pg.sveInto(), base.asSigned(), offsets).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -12721,8 +12721,8 @@ public fun svldff1uwGatherS64offsetS64(pg: SvboolT, base: ConstPtr, offsets: Svi
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldff1ubGatherS64offsetU64(pg: SvboolT, base: ConstPtr, offsets: Svint64T): Svuint64T {
-    fun svldff1ubGatherS64offsetU64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Nxv2i8 = null as Nxv2i8
-    return Simd.simdCast<Nxv2u8>(svldff1ubGatherS64offsetU64(pg.sveInto(), base.asSigned(), offsets).asUnsigned())
+    fun svldff1ubGatherS64offsetU64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Nxv2i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i8>()).alignBytes)); val res = (ObjectSlotLayout<Nxv2i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i8>()).alignBytes)); res }
+    return run { val _simdArg0 = svldff1ubGatherS64offsetU64(pg.sveInto(), base.asSigned(), offsets).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -12734,8 +12734,8 @@ public fun svldff1ubGatherS64offsetU64(pg: SvboolT, base: ConstPtr, offsets: Svi
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldff1uhGatherS64offsetU64(pg: SvboolT, base: ConstPtr, offsets: Svint64T): Svuint64T {
-    fun svldff1uhGatherS64offsetU64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Nxv2i16 = null as Nxv2i16
-    return Simd.simdCast<Nxv2u16>(svldff1uhGatherS64offsetU64(pg.sveInto(), base.asSigned(), offsets).asUnsigned())
+    fun svldff1uhGatherS64offsetU64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Nxv2i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).alignBytes)); val res = (ObjectSlotLayout<Nxv2i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).alignBytes)); res }
+    return run { val _simdArg0 = svldff1uhGatherS64offsetU64(pg.sveInto(), base.asSigned(), offsets).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -12747,8 +12747,8 @@ public fun svldff1uhGatherS64offsetU64(pg: SvboolT, base: ConstPtr, offsets: Svi
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldff1uwGatherS64offsetU64(pg: SvboolT, base: ConstPtr, offsets: Svint64T): Svuint64T {
-    fun svldff1uwGatherS64offsetU64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Nxv2i32 = null as Nxv2i32
-    return Simd.simdCast<Nxv2u32>(svldff1uwGatherS64offsetU64(pg.sveInto(), base.asSigned(), offsets).asUnsigned())
+    fun svldff1uwGatherS64offsetU64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Nxv2i32 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).alignBytes)); val res = (ObjectSlotLayout<Nxv2i32>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).alignBytes)); res }
+    return run { val _simdArg0 = svldff1uwGatherS64offsetU64(pg.sveInto(), base.asSigned(), offsets).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -12780,8 +12780,8 @@ public fun svldff1uhGatherU32offsetS32(pg: SvboolT, base: ConstPtr, offsets: Svu
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldff1ubGatherU32offsetU32(pg: SvboolT, base: ConstPtr, offsets: Svuint32T): Svuint32T {
-    fun svldff1ubGatherU32offsetU32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i8 = null as Nxv4i8
-    return Simd.simdCast<Nxv4u8>(svldff1ubGatherU32offsetU32(pg.sveInto(), base.asSigned(), offsets.asSigned()).asUnsigned())
+    fun svldff1ubGatherU32offsetU32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).alignBytes)); val res = (ObjectSlotLayout<Nxv4i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).alignBytes)); res }
+    return run { val _simdArg0 = svldff1ubGatherU32offsetU32(pg.sveInto(), base.asSigned(), offsets.asSigned()).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -12793,8 +12793,8 @@ public fun svldff1ubGatherU32offsetU32(pg: SvboolT, base: ConstPtr, offsets: Svu
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldff1uhGatherU32offsetU32(pg: SvboolT, base: ConstPtr, offsets: Svuint32T): Svuint32T {
-    fun svldff1uhGatherU32offsetU32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i16 = null as Nxv4i16
-    return Simd.simdCast<Nxv4u16>(svldff1uhGatherU32offsetU32(pg.sveInto(), base.asSigned(), offsets.asSigned()).asUnsigned())
+    fun svldff1uhGatherU32offsetU32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).alignBytes)); val res = (ObjectSlotLayout<Nxv4i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).alignBytes)); res }
+    return run { val _simdArg0 = svldff1uhGatherU32offsetU32(pg.sveInto(), base.asSigned(), offsets.asSigned()).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -12889,8 +12889,8 @@ public fun svldff1uhGatherU32baseOffsetS32(pg: SvboolT, bases: Svuint32T, offset
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
 public fun svldff1ubGatherU32baseOffsetU32(pg: SvboolT, bases: Svuint32T, offset: Long): Svuint32T {
-    fun svldff1ubGatherU32baseOffsetU32(pg1: Svbool4T, bases1: Svint32T, offset1: Long): Nxv4i8 = null as Nxv4i8
-    return Simd.simdCast<Nxv4u8>(svldff1ubGatherU32baseOffsetU32(pg.sveInto(), bases.asSigned(), offset).asUnsigned())
+    fun svldff1ubGatherU32baseOffsetU32(pg1: Svbool4T, bases1: Svint32T, offset1: Long): Nxv4i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).alignBytes)); val res = (ObjectSlotLayout<Nxv4i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).alignBytes)); res }
+    return run { val _simdArg0 = svldff1ubGatherU32baseOffsetU32(pg.sveInto(), bases.asSigned(), offset).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -12903,8 +12903,8 @@ public fun svldff1ubGatherU32baseOffsetU32(pg: SvboolT, bases: Svuint32T, offset
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
 public fun svldff1uhGatherU32baseOffsetU32(pg: SvboolT, bases: Svuint32T, offset: Long): Svuint32T {
-    fun svldff1uhGatherU32baseOffsetU32(pg1: Svbool4T, bases1: Svint32T, offset1: Long): Nxv4i16 = null as Nxv4i16
-    return Simd.simdCast<Nxv4u16>(svldff1uhGatherU32baseOffsetU32(pg.sveInto(), bases.asSigned(), offset).asUnsigned())
+    fun svldff1uhGatherU32baseOffsetU32(pg1: Svbool4T, bases1: Svint32T, offset1: Long): Nxv4i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).alignBytes)); val res = (ObjectSlotLayout<Nxv4i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).alignBytes)); res }
+    return run { val _simdArg0 = svldff1uhGatherU32baseOffsetU32(pg.sveInto(), bases.asSigned(), offset).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -12950,8 +12950,8 @@ public fun svldff1uwGatherU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
 public fun svldff1ubGatherU64baseOffsetU64(pg: SvboolT, bases: Svuint64T, offset: Long): Svuint64T {
-    fun svldff1ubGatherU64baseOffsetU64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Nxv2i8 = null as Nxv2i8
-    return Simd.simdCast<Nxv2u8>(svldff1ubGatherU64baseOffsetU64(pg.sveInto(), bases.asSigned(), offset).asUnsigned())
+    fun svldff1ubGatherU64baseOffsetU64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Nxv2i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i8>()).alignBytes)); val res = (ObjectSlotLayout<Nxv2i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i8>()).alignBytes)); res }
+    return run { val _simdArg0 = svldff1ubGatherU64baseOffsetU64(pg.sveInto(), bases.asSigned(), offset).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -12964,8 +12964,8 @@ public fun svldff1ubGatherU64baseOffsetU64(pg: SvboolT, bases: Svuint64T, offset
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
 public fun svldff1uhGatherU64baseOffsetU64(pg: SvboolT, bases: Svuint64T, offset: Long): Svuint64T {
-    fun svldff1uhGatherU64baseOffsetU64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Nxv2i16 = null as Nxv2i16
-    return Simd.simdCast<Nxv2u16>(svldff1uhGatherU64baseOffsetU64(pg.sveInto(), bases.asSigned(), offset).asUnsigned())
+    fun svldff1uhGatherU64baseOffsetU64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Nxv2i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).alignBytes)); val res = (ObjectSlotLayout<Nxv2i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).alignBytes)); res }
+    return run { val _simdArg0 = svldff1uhGatherU64baseOffsetU64(pg.sveInto(), bases.asSigned(), offset).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -12978,8 +12978,8 @@ public fun svldff1uhGatherU64baseOffsetU64(pg: SvboolT, bases: Svuint64T, offset
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
 public fun svldff1uwGatherU64baseOffsetU64(pg: SvboolT, bases: Svuint64T, offset: Long): Svuint64T {
-    fun svldff1uwGatherU64baseOffsetU64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Nxv2i32 = null as Nxv2i32
-    return Simd.simdCast<Nxv2u32>(svldff1uwGatherU64baseOffsetU64(pg.sveInto(), bases.asSigned(), offset).asUnsigned())
+    fun svldff1uwGatherU64baseOffsetU64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Nxv2i32 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).alignBytes)); val res = (ObjectSlotLayout<Nxv2i32>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).alignBytes)); res }
+    return run { val _simdArg0 = svldff1uwGatherU64baseOffsetU64(pg.sveInto(), bases.asSigned(), offset).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -13101,8 +13101,8 @@ public fun svldff1uwGatherU64baseU64(pg: SvboolT, bases: Svuint64T): Svuint64T =
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldff1ubS16(pg: SvboolT, base: ConstPtr): Svint16T {
-    fun svldff1ubS16(pg1: Svbool8T, base1: ConstPtr): Nxv8i8 = null as Nxv8i8
-    return Simd.simdCast<Nxv8u8>(svldff1ubS16(pg.sveInto(), base.asSigned()).asUnsigned())
+    fun svldff1ubS16(pg1: Svbool8T, base1: ConstPtr): Nxv8i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv8i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv8i8>()).alignBytes)); val res = (ObjectSlotLayout<Nxv8i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv8i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv8i8>()).alignBytes)); res }
+    return run { val _simdArg0 = svldff1ubS16(pg.sveInto(), base.asSigned()).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -13114,8 +13114,8 @@ public fun svldff1ubS16(pg: SvboolT, base: ConstPtr): Svint16T {
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldff1ubS32(pg: SvboolT, base: ConstPtr): Svint32T {
-    fun svldff1ubS32(pg1: Svbool4T, base1: ConstPtr): Nxv4i8 = null as Nxv4i8
-    return Simd.simdCast<Nxv4u8>(svldff1ubS32(pg.sveInto(), base.asSigned()).asUnsigned())
+    fun svldff1ubS32(pg1: Svbool4T, base1: ConstPtr): Nxv4i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).alignBytes)); val res = (ObjectSlotLayout<Nxv4i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).alignBytes)); res }
+    return run { val _simdArg0 = svldff1ubS32(pg.sveInto(), base.asSigned()).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -13127,8 +13127,8 @@ public fun svldff1ubS32(pg: SvboolT, base: ConstPtr): Svint32T {
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldff1uhS32(pg: SvboolT, base: ConstPtr): Svint32T {
-    fun svldff1uhS32(pg1: Svbool4T, base1: ConstPtr): Nxv4i16 = null as Nxv4i16
-    return Simd.simdCast<Nxv4u16>(svldff1uhS32(pg.sveInto(), base.asSigned()).asUnsigned())
+    fun svldff1uhS32(pg1: Svbool4T, base1: ConstPtr): Nxv4i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).alignBytes)); val res = (ObjectSlotLayout<Nxv4i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).alignBytes)); res }
+    return run { val _simdArg0 = svldff1uhS32(pg.sveInto(), base.asSigned()).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -13140,8 +13140,8 @@ public fun svldff1uhS32(pg: SvboolT, base: ConstPtr): Svint32T {
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldff1ubS64(pg: SvboolT, base: ConstPtr): Svint64T {
-    fun svldff1ubS64(pg1: Svbool2T, base1: ConstPtr): Nxv2i8 = null as Nxv2i8
-    return Simd.simdCast<Nxv2u8>(svldff1ubS64(pg.sveInto(), base.asSigned()).asUnsigned())
+    fun svldff1ubS64(pg1: Svbool2T, base1: ConstPtr): Nxv2i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i8>()).alignBytes)); val res = (ObjectSlotLayout<Nxv2i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i8>()).alignBytes)); res }
+    return run { val _simdArg0 = svldff1ubS64(pg.sveInto(), base.asSigned()).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -13153,8 +13153,8 @@ public fun svldff1ubS64(pg: SvboolT, base: ConstPtr): Svint64T {
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldff1uhS64(pg: SvboolT, base: ConstPtr): Svint64T {
-    fun svldff1uhS64(pg1: Svbool2T, base1: ConstPtr): Nxv2i16 = null as Nxv2i16
-    return Simd.simdCast<Nxv2u16>(svldff1uhS64(pg.sveInto(), base.asSigned()).asUnsigned())
+    fun svldff1uhS64(pg1: Svbool2T, base1: ConstPtr): Nxv2i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).alignBytes)); val res = (ObjectSlotLayout<Nxv2i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).alignBytes)); res }
+    return run { val _simdArg0 = svldff1uhS64(pg.sveInto(), base.asSigned()).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -13166,8 +13166,8 @@ public fun svldff1uhS64(pg: SvboolT, base: ConstPtr): Svint64T {
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldff1uwS64(pg: SvboolT, base: ConstPtr): Svint64T {
-    fun svldff1uwS64(pg1: Svbool2T, base1: ConstPtr): Nxv2i32 = null as Nxv2i32
-    return Simd.simdCast<Nxv2u32>(svldff1uwS64(pg.sveInto(), base.asSigned()).asUnsigned())
+    fun svldff1uwS64(pg1: Svbool2T, base1: ConstPtr): Nxv2i32 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).alignBytes)); val res = (ObjectSlotLayout<Nxv2i32>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).alignBytes)); res }
+    return run { val _simdArg0 = svldff1uwS64(pg.sveInto(), base.asSigned()).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -13369,8 +13369,8 @@ public fun svldff1uhGatherS32indexS32(pg: SvboolT, base: ConstPtr, indices: Svin
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldff1uhGatherS32indexU32(pg: SvboolT, base: ConstPtr, indices: Svint32T): Svuint32T {
-    fun svldff1uhGatherS32indexU32(pg1: Svbool4T, base1: ConstPtr, indices1: Svint32T): Nxv4i16 = null as Nxv4i16
-    return Simd.simdCast<Nxv4u16>(svldff1uhGatherS32indexU32(pg.sveInto(), base.asSigned(), indices).asUnsigned())
+    fun svldff1uhGatherS32indexU32(pg1: Svbool4T, base1: ConstPtr, indices1: Svint32T): Nxv4i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).alignBytes)); val res = (ObjectSlotLayout<Nxv4i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).alignBytes)); res }
+    return run { val _simdArg0 = svldff1uhGatherS32indexU32(pg.sveInto(), base.asSigned(), indices).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -13402,8 +13402,8 @@ public fun svldff1uwGatherS64indexS64(pg: SvboolT, base: ConstPtr, indices: Svin
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldff1uhGatherS64indexU64(pg: SvboolT, base: ConstPtr, indices: Svint64T): Svuint64T {
-    fun svldff1uhGatherS64indexU64(pg1: Svbool2T, base1: ConstPtr, indices1: Svint64T): Nxv2i16 = null as Nxv2i16
-    return Simd.simdCast<Nxv2u16>(svldff1uhGatherS64indexU64(pg.sveInto(), base.asSigned(), indices).asUnsigned())
+    fun svldff1uhGatherS64indexU64(pg1: Svbool2T, base1: ConstPtr, indices1: Svint64T): Nxv2i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).alignBytes)); val res = (ObjectSlotLayout<Nxv2i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).alignBytes)); res }
+    return run { val _simdArg0 = svldff1uhGatherS64indexU64(pg.sveInto(), base.asSigned(), indices).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -13415,8 +13415,8 @@ public fun svldff1uhGatherS64indexU64(pg: SvboolT, base: ConstPtr, indices: Svin
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldff1uwGatherS64indexU64(pg: SvboolT, base: ConstPtr, indices: Svint64T): Svuint64T {
-    fun svldff1uwGatherS64indexU64(pg1: Svbool2T, base1: ConstPtr, indices1: Svint64T): Nxv2i32 = null as Nxv2i32
-    return Simd.simdCast<Nxv2u32>(svldff1uwGatherS64indexU64(pg.sveInto(), base.asSigned(), indices).asUnsigned())
+    fun svldff1uwGatherS64indexU64(pg1: Svbool2T, base1: ConstPtr, indices1: Svint64T): Nxv2i32 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).alignBytes)); val res = (ObjectSlotLayout<Nxv2i32>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).alignBytes)); res }
+    return run { val _simdArg0 = svldff1uwGatherS64indexU64(pg.sveInto(), base.asSigned(), indices).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -13438,8 +13438,8 @@ public fun svldff1uhGatherU32indexS32(pg: SvboolT, base: ConstPtr, indices: Svui
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldff1uhGatherU32indexU32(pg: SvboolT, base: ConstPtr, indices: Svuint32T): Svuint32T {
-    fun svldff1uhGatherU32indexU32(pg1: Svbool4T, base1: ConstPtr, indices1: Svint32T): Nxv4i16 = null as Nxv4i16
-    return Simd.simdCast<Nxv4u16>(svldff1uhGatherU32indexU32(pg.sveInto(), base.asSigned(), indices.asSigned()).asUnsigned())
+    fun svldff1uhGatherU32indexU32(pg1: Svbool4T, base1: ConstPtr, indices1: Svint32T): Nxv4i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).alignBytes)); val res = (ObjectSlotLayout<Nxv4i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).alignBytes)); res }
+    return run { val _simdArg0 = svldff1uhGatherU32indexU32(pg.sveInto(), base.asSigned(), indices.asSigned()).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -13557,7 +13557,7 @@ public fun svldff1uwGatherU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: 
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldnf1F32(pg: SvboolT, base: ConstPtr): Svfloat32T {
-    fun svldnf1F32(pg1: Svbool4T, base1: ConstPtr): Svfloat32T = null as Svfloat32T
+    fun svldnf1F32(pg1: Svbool4T, base1: ConstPtr): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svldnf1F32(pg.sveInto(), base)
 }
 
@@ -13570,7 +13570,7 @@ public fun svldnf1F32(pg: SvboolT, base: ConstPtr): Svfloat32T {
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldnf1F64(pg: SvboolT, base: ConstPtr): Svfloat64T {
-    fun svldnf1F64(pg1: Svbool2T, base1: ConstPtr): Svfloat64T = null as Svfloat64T
+    fun svldnf1F64(pg1: Svbool2T, base1: ConstPtr): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svldnf1F64(pg.sveInto(), base)
 }
 
@@ -13583,7 +13583,7 @@ public fun svldnf1F64(pg: SvboolT, base: ConstPtr): Svfloat64T {
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldnf1S8(pg: SvboolT, base: ConstPtr): Svint8T {
-    fun svldnf1S8(pg1: SvboolT, base1: ConstPtr): Svint8T = null as Svint8T
+    fun svldnf1S8(pg1: SvboolT, base1: ConstPtr): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svldnf1S8(pg, base)
 }
 
@@ -13596,7 +13596,7 @@ public fun svldnf1S8(pg: SvboolT, base: ConstPtr): Svint8T {
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldnf1S16(pg: SvboolT, base: ConstPtr): Svint16T {
-    fun svldnf1S16(pg1: Svbool8T, base1: ConstPtr): Svint16T = null as Svint16T
+    fun svldnf1S16(pg1: Svbool8T, base1: ConstPtr): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svldnf1S16(pg.sveInto(), base)
 }
 
@@ -13609,7 +13609,7 @@ public fun svldnf1S16(pg: SvboolT, base: ConstPtr): Svint16T {
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldnf1S32(pg: SvboolT, base: ConstPtr): Svint32T {
-    fun svldnf1S32(pg1: Svbool4T, base1: ConstPtr): Svint32T = null as Svint32T
+    fun svldnf1S32(pg1: Svbool4T, base1: ConstPtr): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svldnf1S32(pg.sveInto(), base)
 }
 
@@ -13622,7 +13622,7 @@ public fun svldnf1S32(pg: SvboolT, base: ConstPtr): Svint32T {
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldnf1S64(pg: SvboolT, base: ConstPtr): Svint64T {
-    fun svldnf1S64(pg1: Svbool2T, base1: ConstPtr): Svint64T = null as Svint64T
+    fun svldnf1S64(pg1: Svbool2T, base1: ConstPtr): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svldnf1S64(pg.sveInto(), base)
 }
 
@@ -13775,8 +13775,8 @@ public fun svldnf1VnumU64(pg: SvboolT, base: ConstPtr, vnum: Long): Svuint64T = 
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldnf1sbS16(pg: SvboolT, base: ConstPtr): Svint16T {
-    fun svldnf1sbS16(pg1: Svbool8T, base1: ConstPtr): Nxv8i8 = null as Nxv8i8
-    return Simd.simdCast(svldnf1sbS16(pg.sveInto(), base))
+    fun svldnf1sbS16(pg1: Svbool8T, base1: ConstPtr): Nxv8i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv8i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv8i8>()).alignBytes)); val res = (ObjectSlotLayout<Nxv8i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv8i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv8i8>()).alignBytes)); res }
+    return run { val _simdArg0 = svldnf1sbS16(pg.sveInto(), base); _simdArg0 }
 }
 
 /**
@@ -13788,8 +13788,8 @@ public fun svldnf1sbS16(pg: SvboolT, base: ConstPtr): Svint16T {
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldnf1sbS32(pg: SvboolT, base: ConstPtr): Svint32T {
-    fun svldnf1sbS32(pg1: Svbool4T, base1: ConstPtr): Nxv4i8 = null as Nxv4i8
-    return Simd.simdCast(svldnf1sbS32(pg.sveInto(), base))
+    fun svldnf1sbS32(pg1: Svbool4T, base1: ConstPtr): Nxv4i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).alignBytes)); val res = (ObjectSlotLayout<Nxv4i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).alignBytes)); res }
+    return run { val _simdArg0 = svldnf1sbS32(pg.sveInto(), base); _simdArg0 }
 }
 
 /**
@@ -13801,8 +13801,8 @@ public fun svldnf1sbS32(pg: SvboolT, base: ConstPtr): Svint32T {
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldnf1shS32(pg: SvboolT, base: ConstPtr): Svint32T {
-    fun svldnf1shS32(pg1: Svbool4T, base1: ConstPtr): Nxv4i16 = null as Nxv4i16
-    return Simd.simdCast(svldnf1shS32(pg.sveInto(), base))
+    fun svldnf1shS32(pg1: Svbool4T, base1: ConstPtr): Nxv4i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).alignBytes)); val res = (ObjectSlotLayout<Nxv4i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).alignBytes)); res }
+    return run { val _simdArg0 = svldnf1shS32(pg.sveInto(), base); _simdArg0 }
 }
 
 /**
@@ -13814,8 +13814,8 @@ public fun svldnf1shS32(pg: SvboolT, base: ConstPtr): Svint32T {
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldnf1sbS64(pg: SvboolT, base: ConstPtr): Svint64T {
-    fun svldnf1sbS64(pg1: Svbool2T, base1: ConstPtr): Nxv2i8 = null as Nxv2i8
-    return Simd.simdCast(svldnf1sbS64(pg.sveInto(), base))
+    fun svldnf1sbS64(pg1: Svbool2T, base1: ConstPtr): Nxv2i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i8>()).alignBytes)); val res = (ObjectSlotLayout<Nxv2i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i8>()).alignBytes)); res }
+    return run { val _simdArg0 = svldnf1sbS64(pg.sveInto(), base); _simdArg0 }
 }
 
 /**
@@ -13827,8 +13827,8 @@ public fun svldnf1sbS64(pg: SvboolT, base: ConstPtr): Svint64T {
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldnf1shS64(pg: SvboolT, base: ConstPtr): Svint64T {
-    fun svldnf1shS64(pg1: Svbool2T, base1: ConstPtr): Nxv2i16 = null as Nxv2i16
-    return Simd.simdCast(svldnf1shS64(pg.sveInto(), base))
+    fun svldnf1shS64(pg1: Svbool2T, base1: ConstPtr): Nxv2i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).alignBytes)); val res = (ObjectSlotLayout<Nxv2i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).alignBytes)); res }
+    return run { val _simdArg0 = svldnf1shS64(pg.sveInto(), base); _simdArg0 }
 }
 
 /**
@@ -13840,8 +13840,8 @@ public fun svldnf1shS64(pg: SvboolT, base: ConstPtr): Svint64T {
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldnf1swS64(pg: SvboolT, base: ConstPtr): Svint64T {
-    fun svldnf1swS64(pg1: Svbool2T, base1: ConstPtr): Nxv2i32 = null as Nxv2i32
-    return Simd.simdCast(svldnf1swS64(pg.sveInto(), base))
+    fun svldnf1swS64(pg1: Svbool2T, base1: ConstPtr): Nxv2i32 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).alignBytes)); val res = (ObjectSlotLayout<Nxv2i32>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).alignBytes)); res }
+    return run { val _simdArg0 = svldnf1swS64(pg.sveInto(), base); _simdArg0 }
 }
 
 /**
@@ -14033,8 +14033,8 @@ public fun svldnf1swVnumU64(pg: SvboolT, base: ConstPtr, vnum: Long): Svuint64T 
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldnf1ubS16(pg: SvboolT, base: ConstPtr): Svint16T {
-    fun svldnf1ubS16(pg1: Svbool8T, base1: ConstPtr): Nxv8i8 = null as Nxv8i8
-    return Simd.simdCast<Nxv8u8>(svldnf1ubS16(pg.sveInto(), base.asSigned()).asUnsigned())
+    fun svldnf1ubS16(pg1: Svbool8T, base1: ConstPtr): Nxv8i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv8i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv8i8>()).alignBytes)); val res = (ObjectSlotLayout<Nxv8i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv8i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv8i8>()).alignBytes)); res }
+    return run { val _simdArg0 = svldnf1ubS16(pg.sveInto(), base.asSigned()).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -14046,8 +14046,8 @@ public fun svldnf1ubS16(pg: SvboolT, base: ConstPtr): Svint16T {
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldnf1ubS32(pg: SvboolT, base: ConstPtr): Svint32T {
-    fun svldnf1ubS32(pg1: Svbool4T, base1: ConstPtr): Nxv4i8 = null as Nxv4i8
-    return Simd.simdCast<Nxv4u8>(svldnf1ubS32(pg.sveInto(), base.asSigned()).asUnsigned())
+    fun svldnf1ubS32(pg1: Svbool4T, base1: ConstPtr): Nxv4i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).alignBytes)); val res = (ObjectSlotLayout<Nxv4i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i8>()).alignBytes)); res }
+    return run { val _simdArg0 = svldnf1ubS32(pg.sveInto(), base.asSigned()).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -14059,8 +14059,8 @@ public fun svldnf1ubS32(pg: SvboolT, base: ConstPtr): Svint32T {
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldnf1uhS32(pg: SvboolT, base: ConstPtr): Svint32T {
-    fun svldnf1uhS32(pg1: Svbool4T, base1: ConstPtr): Nxv4i16 = null as Nxv4i16
-    return Simd.simdCast<Nxv4u16>(svldnf1uhS32(pg.sveInto(), base.asSigned()).asUnsigned())
+    fun svldnf1uhS32(pg1: Svbool4T, base1: ConstPtr): Nxv4i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).alignBytes)); val res = (ObjectSlotLayout<Nxv4i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv4i16>()).alignBytes)); res }
+    return run { val _simdArg0 = svldnf1uhS32(pg.sveInto(), base.asSigned()).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -14072,8 +14072,8 @@ public fun svldnf1uhS32(pg: SvboolT, base: ConstPtr): Svint32T {
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldnf1ubS64(pg: SvboolT, base: ConstPtr): Svint64T {
-    fun svldnf1ubS64(pg1: Svbool2T, base1: ConstPtr): Nxv2i8 = null as Nxv2i8
-    return Simd.simdCast<Nxv2u8>(svldnf1ubS64(pg.sveInto(), base.asSigned()).asUnsigned())
+    fun svldnf1ubS64(pg1: Svbool2T, base1: ConstPtr): Nxv2i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i8>()).alignBytes)); val res = (ObjectSlotLayout<Nxv2i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i8>()).alignBytes)); res }
+    return run { val _simdArg0 = svldnf1ubS64(pg.sveInto(), base.asSigned()).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -14085,8 +14085,8 @@ public fun svldnf1ubS64(pg: SvboolT, base: ConstPtr): Svint64T {
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldnf1uhS64(pg: SvboolT, base: ConstPtr): Svint64T {
-    fun svldnf1uhS64(pg1: Svbool2T, base1: ConstPtr): Nxv2i16 = null as Nxv2i16
-    return Simd.simdCast<Nxv2u16>(svldnf1uhS64(pg.sveInto(), base.asSigned()).asUnsigned())
+    fun svldnf1uhS64(pg1: Svbool2T, base1: ConstPtr): Nxv2i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).alignBytes)); val res = (ObjectSlotLayout<Nxv2i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i16>()).alignBytes)); res }
+    return run { val _simdArg0 = svldnf1uhS64(pg.sveInto(), base.asSigned()).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -14098,8 +14098,8 @@ public fun svldnf1uhS64(pg: SvboolT, base: ConstPtr): Svint64T {
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  */
 public fun svldnf1uwS64(pg: SvboolT, base: ConstPtr): Svint64T {
-    fun svldnf1uwS64(pg1: Svbool2T, base1: ConstPtr): Nxv2i32 = null as Nxv2i32
-    return Simd.simdCast<Nxv2u32>(svldnf1uwS64(pg.sveInto(), base.asSigned()).asUnsigned())
+    fun svldnf1uwS64(pg1: Svbool2T, base1: ConstPtr): Nxv2i32 = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).alignBytes)); val res = (ObjectSlotLayout<Nxv2i32>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nxv2i32>()).alignBytes)); res }
+    return run { val _simdArg0 = svldnf1uwS64(pg.sveInto(), base.asSigned()).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -14291,7 +14291,7 @@ public fun svldnf1uwVnumU64(pg: SvboolT, base: ConstPtr, vnum: Long): Svuint64T 
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
 public fun svldnt1F32(pg: SvboolT, base: ConstPtr): Svfloat32T {
-    fun svldnt1F32(pg1: Svbool4T, base1: ConstPtr): Svfloat32T = null as Svfloat32T
+    fun svldnt1F32(pg1: Svbool4T, base1: ConstPtr): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svldnt1F32(pg.sveInto(), base)
 }
 
@@ -14304,7 +14304,7 @@ public fun svldnt1F32(pg: SvboolT, base: ConstPtr): Svfloat32T {
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
 public fun svldnt1F64(pg: SvboolT, base: ConstPtr): Svfloat64T {
-    fun svldnt1F64(pg1: Svbool2T, base1: ConstPtr): Svfloat64T = null as Svfloat64T
+    fun svldnt1F64(pg1: Svbool2T, base1: ConstPtr): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svldnt1F64(pg.sveInto(), base)
 }
 
@@ -14317,7 +14317,7 @@ public fun svldnt1F64(pg: SvboolT, base: ConstPtr): Svfloat64T {
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
 public fun svldnt1S8(pg: SvboolT, base: ConstPtr): Svint8T {
-    fun svldnt1S8(pg1: SvboolT, base1: ConstPtr): Svint8T = null as Svint8T
+    fun svldnt1S8(pg1: SvboolT, base1: ConstPtr): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svldnt1S8(pg, base)
 }
 
@@ -14330,7 +14330,7 @@ public fun svldnt1S8(pg: SvboolT, base: ConstPtr): Svint8T {
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
 public fun svldnt1S16(pg: SvboolT, base: ConstPtr): Svint16T {
-    fun svldnt1S16(pg1: Svbool8T, base1: ConstPtr): Svint16T = null as Svint16T
+    fun svldnt1S16(pg1: Svbool8T, base1: ConstPtr): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svldnt1S16(pg.sveInto(), base)
 }
 
@@ -14343,7 +14343,7 @@ public fun svldnt1S16(pg: SvboolT, base: ConstPtr): Svint16T {
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
 public fun svldnt1S32(pg: SvboolT, base: ConstPtr): Svint32T {
-    fun svldnt1S32(pg1: Svbool4T, base1: ConstPtr): Svint32T = null as Svint32T
+    fun svldnt1S32(pg1: Svbool4T, base1: ConstPtr): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svldnt1S32(pg.sveInto(), base)
 }
 
@@ -14356,7 +14356,7 @@ public fun svldnt1S32(pg: SvboolT, base: ConstPtr): Svint32T {
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
 public fun svldnt1S64(pg: SvboolT, base: ConstPtr): Svint64T {
-    fun svldnt1S64(pg1: Svbool2T, base1: ConstPtr): Svint64T = null as Svint64T
+    fun svldnt1S64(pg1: Svbool2T, base1: ConstPtr): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svldnt1S64(pg.sveInto(), base)
 }
 
@@ -14565,7 +14565,7 @@ public fun svlenU64(op: Svuint64T): ULong = svcntd()
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svlsl[_s8]_m)
  */
 public fun svlslS8M(pg: SvboolT, op1: Svint8T, op2: Svuint8T): Svint8T {
-    fun svlslS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    fun svlslS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svlslS8M(pg, op1, op2.asSigned())
 }
 
@@ -14604,7 +14604,7 @@ public fun svlslNS8Z(pg: SvboolT, op1: Svint8T, op2: UByte): Svint8T = svlslS8Z(
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svlsl[_s16]_m)
  */
 public fun svlslS16M(pg: SvboolT, op1: Svint16T, op2: Svuint16T): Svint16T {
-    fun svlslS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    fun svlslS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svlslS16M(pg.sveInto(), op1, op2.asSigned())
 }
 
@@ -14643,7 +14643,7 @@ public fun svlslNS16Z(pg: SvboolT, op1: Svint16T, op2: UShort): Svint16T = svlsl
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svlsl[_s32]_m)
  */
 public fun svlslS32M(pg: SvboolT, op1: Svint32T, op2: Svuint32T): Svint32T {
-    fun svlslS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    fun svlslS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svlslS32M(pg.sveInto(), op1, op2.asSigned())
 }
 
@@ -14682,7 +14682,7 @@ public fun svlslNS32Z(pg: SvboolT, op1: Svint32T, op2: UInt): Svint32T = svlslS3
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svlsl[_s64]_m)
  */
 public fun svlslS64M(pg: SvboolT, op1: Svint64T, op2: Svuint64T): Svint64T {
-    fun svlslS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    fun svlslS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svlslS64M(pg.sveInto(), op1, op2.asSigned())
 }
 
@@ -14865,7 +14865,7 @@ public fun svlslNU64Z(pg: SvboolT, op1: Svuint64T, op2: ULong): Svuint64T = svls
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svlslWide[_s8]_m)
  */
 public fun svlslWideS8M(pg: SvboolT, op1: Svint8T, op2: Svuint64T): Svint8T {
-    fun svlslWideS8M(pg1: SvboolT, op11: Svint8T, op21: Svint64T): Svint8T = null as Svint8T
+    fun svlslWideS8M(pg1: SvboolT, op11: Svint8T, op21: Svint64T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svlslWideS8M(pg, op1, op2.asSigned())
 }
 
@@ -14904,7 +14904,7 @@ public fun svlslWideNS8Z(pg: SvboolT, op1: Svint8T, op2: ULong): Svint8T = svlsl
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svlslWide[_s16]_m)
  */
 public fun svlslWideS16M(pg: SvboolT, op1: Svint16T, op2: Svuint64T): Svint16T {
-    fun svlslWideS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint64T): Svint16T = null as Svint16T
+    fun svlslWideS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint64T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svlslWideS16M(pg.sveInto(), op1, op2.asSigned())
 }
 
@@ -14943,7 +14943,7 @@ public fun svlslWideNS16Z(pg: SvboolT, op1: Svint16T, op2: ULong): Svint16T = sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svlslWide[_s32]_m)
  */
 public fun svlslWideS32M(pg: SvboolT, op1: Svint32T, op2: Svuint64T): Svint32T {
-    fun svlslWideS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint64T): Svint32T = null as Svint32T
+    fun svlslWideS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint64T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svlslWideS32M(pg.sveInto(), op1, op2.asSigned())
 }
 
@@ -15090,7 +15090,7 @@ public fun svlslWideNU32Z(pg: SvboolT, op1: Svuint32T, op2: ULong): Svuint32T = 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svlsr[_u8]_m)
  */
 public fun svlsrU8M(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T {
-    fun svlsrU8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    fun svlsrU8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svlsrU8M(pg, op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -15129,7 +15129,7 @@ public fun svlsrNU8Z(pg: SvboolT, op1: Svuint8T, op2: UByte): Svuint8T = svlsrU8
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svlsr[_u16]_m)
  */
 public fun svlsrU16M(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T {
-    fun svlsrU16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    fun svlsrU16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svlsrU16M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -15168,7 +15168,7 @@ public fun svlsrNU16Z(pg: SvboolT, op1: Svuint16T, op2: UShort): Svuint16T = svl
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svlsr[_u32]_m)
  */
 public fun svlsrU32M(pg: SvboolT, op1: Svuint32T, op2: Svuint32T): Svuint32T {
-    fun svlsrU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    fun svlsrU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svlsrU32M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -15207,7 +15207,7 @@ public fun svlsrNU32Z(pg: SvboolT, op1: Svuint32T, op2: UInt): Svuint32T = svlsr
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svlsr[_u64]_m)
  */
 public fun svlsrU64M(pg: SvboolT, op1: Svuint64T, op2: Svuint64T): Svuint64T {
-    fun svlsrU64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    fun svlsrU64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svlsrU64M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -15246,7 +15246,7 @@ public fun svlsrNU64Z(pg: SvboolT, op1: Svuint64T, op2: ULong): Svuint64T = svls
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svlsrWide[_u8]_m)
  */
 public fun svlsrWideU8M(pg: SvboolT, op1: Svuint8T, op2: Svuint64T): Svuint8T {
-    fun svlsrWideU8M(pg1: SvboolT, op11: Svint8T, op21: Svint64T): Svint8T = null as Svint8T
+    fun svlsrWideU8M(pg1: SvboolT, op11: Svint8T, op21: Svint64T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svlsrWideU8M(pg, op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -15285,7 +15285,7 @@ public fun svlsrWideNU8Z(pg: SvboolT, op1: Svuint8T, op2: ULong): Svuint8T = svl
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svlsrWide[_u16]_m)
  */
 public fun svlsrWideU16M(pg: SvboolT, op1: Svuint16T, op2: Svuint64T): Svuint16T {
-    fun svlsrWideU16M(pg1: Svbool8T, op11: Svint16T, op21: Svint64T): Svint16T = null as Svint16T
+    fun svlsrWideU16M(pg1: Svbool8T, op11: Svint16T, op21: Svint64T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svlsrWideU16M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -15324,7 +15324,7 @@ public fun svlsrWideNU16Z(pg: SvboolT, op1: Svuint16T, op2: ULong): Svuint16T = 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svlsrWide[_u32]_m)
  */
 public fun svlsrWideU32M(pg: SvboolT, op1: Svuint32T, op2: Svuint64T): Svuint32T {
-    fun svlsrWideU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint64T): Svint32T = null as Svint32T
+    fun svlsrWideU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint64T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svlsrWideU32M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -15363,7 +15363,7 @@ public fun svlsrWideNU32Z(pg: SvboolT, op1: Svuint32T, op2: ULong): Svuint32T = 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmad[_f32]_m)
  */
 public fun svmadF32M(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T, op3: Svfloat32T): Svfloat32T {
-    fun svmadF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T, op31: Svfloat32T): Svfloat32T = null as Svfloat32T
+    fun svmadF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T, op31: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svmadF32M(pg.sveInto(), op1, op2, op3)
 }
 
@@ -15402,7 +15402,7 @@ public fun svmadNF32Z(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T, op3: Float)
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmad[_f64]_m)
  */
 public fun svmadF64M(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T, op3: Svfloat64T): Svfloat64T {
-    fun svmadF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T, op31: Svfloat64T): Svfloat64T = null as Svfloat64T
+    fun svmadF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T, op31: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svmadF64M(pg.sveInto(), op1, op2, op3)
 }
 
@@ -15441,7 +15441,7 @@ public fun svmadNF64Z(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T, op3: Double
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmad[_s8]_m)
  */
 public fun svmadS8M(pg: SvboolT, op1: Svint8T, op2: Svint8T, op3: Svint8T): Svint8T {
-    fun svmadS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T, op31: Svint8T): Svint8T = null as Svint8T
+    fun svmadS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T, op31: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svmadS8M(pg, op1, op2, op3)
 }
 
@@ -15480,7 +15480,7 @@ public fun svmadNS8Z(pg: SvboolT, op1: Svint8T, op2: Svint8T, op3: Byte): Svint8
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmad[_s16]_m)
  */
 public fun svmadS16M(pg: SvboolT, op1: Svint16T, op2: Svint16T, op3: Svint16T): Svint16T {
-    fun svmadS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T, op31: Svint16T): Svint16T = null as Svint16T
+    fun svmadS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T, op31: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svmadS16M(pg.sveInto(), op1, op2, op3)
 }
 
@@ -15519,7 +15519,7 @@ public fun svmadNS16Z(pg: SvboolT, op1: Svint16T, op2: Svint16T, op3: Short): Sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmad[_s32]_m)
  */
 public fun svmadS32M(pg: SvboolT, op1: Svint32T, op2: Svint32T, op3: Svint32T): Svint32T {
-    fun svmadS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T, op31: Svint32T): Svint32T = null as Svint32T
+    fun svmadS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T, op31: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svmadS32M(pg.sveInto(), op1, op2, op3)
 }
 
@@ -15558,7 +15558,7 @@ public fun svmadNS32Z(pg: SvboolT, op1: Svint32T, op2: Svint32T, op3: Int): Svin
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmad[_s64]_m)
  */
 public fun svmadS64M(pg: SvboolT, op1: Svint64T, op2: Svint64T, op3: Svint64T): Svint64T {
-    fun svmadS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T, op31: Svint64T): Svint64T = null as Svint64T
+    fun svmadS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T, op31: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svmadS64M(pg.sveInto(), op1, op2, op3)
 }
 
@@ -15741,7 +15741,7 @@ public fun svmadNU64Z(pg: SvboolT, op1: Svuint64T, op2: Svuint64T, op3: ULong): 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmax[_f32]_m)
  */
 public fun svmaxF32M(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T): Svfloat32T {
-    fun svmaxF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = null as Svfloat32T
+    fun svmaxF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svmaxF32M(pg.sveInto(), op1, op2)
 }
 
@@ -15780,7 +15780,7 @@ public fun svmaxNF32Z(pg: SvboolT, op1: Svfloat32T, op2: Float): Svfloat32T = sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmax[_f64]_m)
  */
 public fun svmaxF64M(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T): Svfloat64T {
-    fun svmaxF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = null as Svfloat64T
+    fun svmaxF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svmaxF64M(pg.sveInto(), op1, op2)
 }
 
@@ -15819,7 +15819,7 @@ public fun svmaxNF64Z(pg: SvboolT, op1: Svfloat64T, op2: Double): Svfloat64T = s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmax[_s8]_m)
  */
 public fun svmaxS8M(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T {
-    fun svmaxS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    fun svmaxS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svmaxS8M(pg, op1, op2)
 }
 
@@ -15858,7 +15858,7 @@ public fun svmaxNS8Z(pg: SvboolT, op1: Svint8T, op2: Byte): Svint8T = svmaxS8Z(p
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmax[_s16]_m)
  */
 public fun svmaxS16M(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T {
-    fun svmaxS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    fun svmaxS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svmaxS16M(pg.sveInto(), op1, op2)
 }
 
@@ -15897,7 +15897,7 @@ public fun svmaxNS16Z(pg: SvboolT, op1: Svint16T, op2: Short): Svint16T = svmaxS
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmax[_s32]_m)
  */
 public fun svmaxS32M(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T {
-    fun svmaxS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    fun svmaxS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svmaxS32M(pg.sveInto(), op1, op2)
 }
 
@@ -15936,7 +15936,7 @@ public fun svmaxNS32Z(pg: SvboolT, op1: Svint32T, op2: Int): Svint32T = svmaxS32
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmax[_s64]_m)
  */
 public fun svmaxS64M(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T {
-    fun svmaxS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    fun svmaxS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svmaxS64M(pg.sveInto(), op1, op2)
 }
 
@@ -15975,7 +15975,7 @@ public fun svmaxNS64Z(pg: SvboolT, op1: Svint64T, op2: Long): Svint64T = svmaxS6
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmax[_u8]_m)
  */
 public fun svmaxU8M(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T {
-    fun svmaxU8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    fun svmaxU8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svmaxU8M(pg, op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -16014,7 +16014,7 @@ public fun svmaxNU8Z(pg: SvboolT, op1: Svuint8T, op2: UByte): Svuint8T = svmaxU8
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmax[_u16]_m)
  */
 public fun svmaxU16M(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T {
-    fun svmaxU16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    fun svmaxU16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svmaxU16M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -16053,7 +16053,7 @@ public fun svmaxNU16Z(pg: SvboolT, op1: Svuint16T, op2: UShort): Svuint16T = svm
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmax[_u32]_m)
  */
 public fun svmaxU32M(pg: SvboolT, op1: Svuint32T, op2: Svuint32T): Svuint32T {
-    fun svmaxU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    fun svmaxU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svmaxU32M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -16092,7 +16092,7 @@ public fun svmaxNU32Z(pg: SvboolT, op1: Svuint32T, op2: UInt): Svuint32T = svmax
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmax[_u64]_m)
  */
 public fun svmaxU64M(pg: SvboolT, op1: Svuint64T, op2: Svuint64T): Svuint64T {
-    fun svmaxU64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    fun svmaxU64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svmaxU64M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -16131,7 +16131,7 @@ public fun svmaxNU64Z(pg: SvboolT, op1: Svuint64T, op2: ULong): Svuint64T = svma
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmaxnm[_f32]_m)
  */
 public fun svmaxnmF32M(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T): Svfloat32T {
-    fun svmaxnmF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = null as Svfloat32T
+    fun svmaxnmF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svmaxnmF32M(pg.sveInto(), op1, op2)
 }
 
@@ -16170,7 +16170,7 @@ public fun svmaxnmNF32Z(pg: SvboolT, op1: Svfloat32T, op2: Float): Svfloat32T = 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmaxnm[_f64]_m)
  */
 public fun svmaxnmF64M(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T): Svfloat64T {
-    fun svmaxnmF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = null as Svfloat64T
+    fun svmaxnmF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svmaxnmF64M(pg.sveInto(), op1, op2)
 }
 
@@ -16317,7 +16317,7 @@ public fun svmaxvU64(pg: SvboolT, op: Svuint64T): ULong {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmin[_f32]_m)
  */
 public fun svminF32M(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T): Svfloat32T {
-    fun svminF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = null as Svfloat32T
+    fun svminF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svminF32M(pg.sveInto(), op1, op2)
 }
 
@@ -16356,7 +16356,7 @@ public fun svminNF32Z(pg: SvboolT, op1: Svfloat32T, op2: Float): Svfloat32T = sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmin[_f64]_m)
  */
 public fun svminF64M(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T): Svfloat64T {
-    fun svminF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = null as Svfloat64T
+    fun svminF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svminF64M(pg.sveInto(), op1, op2)
 }
 
@@ -16395,7 +16395,7 @@ public fun svminNF64Z(pg: SvboolT, op1: Svfloat64T, op2: Double): Svfloat64T = s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmin[_s8]_m)
  */
 public fun svminS8M(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T {
-    fun svminS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    fun svminS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svminS8M(pg, op1, op2)
 }
 
@@ -16434,7 +16434,7 @@ public fun svminNS8Z(pg: SvboolT, op1: Svint8T, op2: Byte): Svint8T = svminS8Z(p
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmin[_s16]_m)
  */
 public fun svminS16M(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T {
-    fun svminS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    fun svminS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svminS16M(pg.sveInto(), op1, op2)
 }
 
@@ -16473,7 +16473,7 @@ public fun svminNS16Z(pg: SvboolT, op1: Svint16T, op2: Short): Svint16T = svminS
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmin[_s32]_m)
  */
 public fun svminS32M(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T {
-    fun svminS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    fun svminS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svminS32M(pg.sveInto(), op1, op2)
 }
 
@@ -16512,7 +16512,7 @@ public fun svminNS32Z(pg: SvboolT, op1: Svint32T, op2: Int): Svint32T = svminS32
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmin[_s64]_m)
  */
 public fun svminS64M(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T {
-    fun svminS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    fun svminS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svminS64M(pg.sveInto(), op1, op2)
 }
 
@@ -16551,7 +16551,7 @@ public fun svminNS64Z(pg: SvboolT, op1: Svint64T, op2: Long): Svint64T = svminS6
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmin[_u8]_m)
  */
 public fun svminU8M(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T {
-    fun svminU8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    fun svminU8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svminU8M(pg, op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -16590,7 +16590,7 @@ public fun svminNU8Z(pg: SvboolT, op1: Svuint8T, op2: UByte): Svuint8T = svminU8
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmin[_u16]_m)
  */
 public fun svminU16M(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T {
-    fun svminU16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    fun svminU16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svminU16M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -16629,7 +16629,7 @@ public fun svminNU16Z(pg: SvboolT, op1: Svuint16T, op2: UShort): Svuint16T = svm
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmin[_u32]_m)
  */
 public fun svminU32M(pg: SvboolT, op1: Svuint32T, op2: Svuint32T): Svuint32T {
-    fun svminU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    fun svminU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svminU32M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -16668,7 +16668,7 @@ public fun svminNU32Z(pg: SvboolT, op1: Svuint32T, op2: UInt): Svuint32T = svmin
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmin[_u64]_m)
  */
 public fun svminU64M(pg: SvboolT, op1: Svuint64T, op2: Svuint64T): Svuint64T {
-    fun svminU64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    fun svminU64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svminU64M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -16707,7 +16707,7 @@ public fun svminNU64Z(pg: SvboolT, op1: Svuint64T, op2: ULong): Svuint64T = svmi
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svminnm[_f32]_m)
  */
 public fun svminnmF32M(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T): Svfloat32T {
-    fun svminnmF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = null as Svfloat32T
+    fun svminnmF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svminnmF32M(pg.sveInto(), op1, op2)
 }
 
@@ -16746,7 +16746,7 @@ public fun svminnmNF32Z(pg: SvboolT, op1: Svfloat32T, op2: Float): Svfloat32T = 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svminnm[_f64]_m)
  */
 public fun svminnmF64M(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T): Svfloat64T {
-    fun svminnmF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = null as Svfloat64T
+    fun svminnmF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svminnmF64M(pg.sveInto(), op1, op2)
 }
 
@@ -16893,7 +16893,7 @@ public fun svminvU64(pg: SvboolT, op: Svuint64T): ULong {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmla[_f32]_m)
  */
 public fun svmlaF32M(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T, op3: Svfloat32T): Svfloat32T {
-    fun svmlaF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T, op31: Svfloat32T): Svfloat32T = null as Svfloat32T
+    fun svmlaF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T, op31: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svmlaF32M(pg.sveInto(), op1, op2, op3)
 }
 
@@ -16932,7 +16932,7 @@ public fun svmlaNF32Z(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T, op3: Float)
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmla[_f64]_m)
  */
 public fun svmlaF64M(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T, op3: Svfloat64T): Svfloat64T {
-    fun svmlaF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T, op31: Svfloat64T): Svfloat64T = null as Svfloat64T
+    fun svmlaF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T, op31: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svmlaF64M(pg.sveInto(), op1, op2, op3)
 }
 
@@ -16971,7 +16971,7 @@ public fun svmlaNF64Z(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T, op3: Double
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmla[_s8]_m)
  */
 public fun svmlaS8M(pg: SvboolT, op1: Svint8T, op2: Svint8T, op3: Svint8T): Svint8T {
-    fun svmlaS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T, op31: Svint8T): Svint8T = null as Svint8T
+    fun svmlaS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T, op31: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svmlaS8M(pg, op1, op2, op3)
 }
 
@@ -17010,7 +17010,7 @@ public fun svmlaNS8Z(pg: SvboolT, op1: Svint8T, op2: Svint8T, op3: Byte): Svint8
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmla[_s16]_m)
  */
 public fun svmlaS16M(pg: SvboolT, op1: Svint16T, op2: Svint16T, op3: Svint16T): Svint16T {
-    fun svmlaS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T, op31: Svint16T): Svint16T = null as Svint16T
+    fun svmlaS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T, op31: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svmlaS16M(pg.sveInto(), op1, op2, op3)
 }
 
@@ -17049,7 +17049,7 @@ public fun svmlaNS16Z(pg: SvboolT, op1: Svint16T, op2: Svint16T, op3: Short): Sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmla[_s32]_m)
  */
 public fun svmlaS32M(pg: SvboolT, op1: Svint32T, op2: Svint32T, op3: Svint32T): Svint32T {
-    fun svmlaS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T, op31: Svint32T): Svint32T = null as Svint32T
+    fun svmlaS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T, op31: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svmlaS32M(pg.sveInto(), op1, op2, op3)
 }
 
@@ -17088,7 +17088,7 @@ public fun svmlaNS32Z(pg: SvboolT, op1: Svint32T, op2: Svint32T, op3: Int): Svin
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmla[_s64]_m)
  */
 public fun svmlaS64M(pg: SvboolT, op1: Svint64T, op2: Svint64T, op3: Svint64T): Svint64T {
-    fun svmlaS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T, op31: Svint64T): Svint64T = null as Svint64T
+    fun svmlaS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T, op31: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svmlaS64M(pg.sveInto(), op1, op2, op3)
 }
 
@@ -17271,7 +17271,7 @@ public fun svmlaNU64Z(pg: SvboolT, op1: Svuint64T, op2: Svuint64T, op3: ULong): 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlaLane[_f32])
  */
 public fun svmlaLaneF32(op1: Svfloat32T, op2: Svfloat32T, op3: Svfloat32T, immIndex: Int): Svfloat32T {
-    fun svmlaLaneF32(op11: Svfloat32T, op21: Svfloat32T, op31: Svfloat32T, immIndex1: Int): Svfloat32T = null as Svfloat32T
+    fun svmlaLaneF32(op11: Svfloat32T, op21: Svfloat32T, op31: Svfloat32T, immIndex1: Int): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
     }
@@ -17283,7 +17283,7 @@ public fun svmlaLaneF32(op1: Svfloat32T, op2: Svfloat32T, op3: Svfloat32T, immIn
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlaLane[_f64])
  */
 public fun svmlaLaneF64(op1: Svfloat64T, op2: Svfloat64T, op3: Svfloat64T, immIndex: Int): Svfloat64T {
-    fun svmlaLaneF64(op11: Svfloat64T, op21: Svfloat64T, op31: Svfloat64T, immIndex1: Int): Svfloat64T = null as Svfloat64T
+    fun svmlaLaneF64(op11: Svfloat64T, op21: Svfloat64T, op31: Svfloat64T, immIndex1: Int): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 1) { "IMM_INDEX is not in range 0-1" }
     }
@@ -17295,7 +17295,7 @@ public fun svmlaLaneF64(op1: Svfloat64T, op2: Svfloat64T, op3: Svfloat64T, immIn
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmls[_f32]_m)
  */
 public fun svmlsF32M(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T, op3: Svfloat32T): Svfloat32T {
-    fun svmlsF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T, op31: Svfloat32T): Svfloat32T = null as Svfloat32T
+    fun svmlsF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T, op31: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svmlsF32M(pg.sveInto(), op1, op2, op3)
 }
 
@@ -17334,7 +17334,7 @@ public fun svmlsNF32Z(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T, op3: Float)
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmls[_f64]_m)
  */
 public fun svmlsF64M(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T, op3: Svfloat64T): Svfloat64T {
-    fun svmlsF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T, op31: Svfloat64T): Svfloat64T = null as Svfloat64T
+    fun svmlsF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T, op31: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svmlsF64M(pg.sveInto(), op1, op2, op3)
 }
 
@@ -17373,7 +17373,7 @@ public fun svmlsNF64Z(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T, op3: Double
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmls[_s8]_m)
  */
 public fun svmlsS8M(pg: SvboolT, op1: Svint8T, op2: Svint8T, op3: Svint8T): Svint8T {
-    fun svmlsS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T, op31: Svint8T): Svint8T = null as Svint8T
+    fun svmlsS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T, op31: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svmlsS8M(pg, op1, op2, op3)
 }
 
@@ -17412,7 +17412,7 @@ public fun svmlsNS8Z(pg: SvboolT, op1: Svint8T, op2: Svint8T, op3: Byte): Svint8
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmls[_s16]_m)
  */
 public fun svmlsS16M(pg: SvboolT, op1: Svint16T, op2: Svint16T, op3: Svint16T): Svint16T {
-    fun svmlsS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T, op31: Svint16T): Svint16T = null as Svint16T
+    fun svmlsS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T, op31: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svmlsS16M(pg.sveInto(), op1, op2, op3)
 }
 
@@ -17451,7 +17451,7 @@ public fun svmlsNS16Z(pg: SvboolT, op1: Svint16T, op2: Svint16T, op3: Short): Sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmls[_s32]_m)
  */
 public fun svmlsS32M(pg: SvboolT, op1: Svint32T, op2: Svint32T, op3: Svint32T): Svint32T {
-    fun svmlsS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T, op31: Svint32T): Svint32T = null as Svint32T
+    fun svmlsS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T, op31: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svmlsS32M(pg.sveInto(), op1, op2, op3)
 }
 
@@ -17490,7 +17490,7 @@ public fun svmlsNS32Z(pg: SvboolT, op1: Svint32T, op2: Svint32T, op3: Int): Svin
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmls[_s64]_m)
  */
 public fun svmlsS64M(pg: SvboolT, op1: Svint64T, op2: Svint64T, op3: Svint64T): Svint64T {
-    fun svmlsS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T, op31: Svint64T): Svint64T = null as Svint64T
+    fun svmlsS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T, op31: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svmlsS64M(pg.sveInto(), op1, op2, op3)
 }
 
@@ -17673,7 +17673,7 @@ public fun svmlsNU64Z(pg: SvboolT, op1: Svuint64T, op2: Svuint64T, op3: ULong): 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlsLane[_f32])
  */
 public fun svmlsLaneF32(op1: Svfloat32T, op2: Svfloat32T, op3: Svfloat32T, immIndex: Int): Svfloat32T {
-    fun svmlsLaneF32(op11: Svfloat32T, op21: Svfloat32T, op31: Svfloat32T, immIndex1: Int): Svfloat32T = null as Svfloat32T
+    fun svmlsLaneF32(op11: Svfloat32T, op21: Svfloat32T, op31: Svfloat32T, immIndex1: Int): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
     }
@@ -17685,7 +17685,7 @@ public fun svmlsLaneF32(op1: Svfloat32T, op2: Svfloat32T, op3: Svfloat32T, immIn
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlsLane[_f64])
  */
 public fun svmlsLaneF64(op1: Svfloat64T, op2: Svfloat64T, op3: Svfloat64T, immIndex: Int): Svfloat64T {
-    fun svmlsLaneF64(op11: Svfloat64T, op21: Svfloat64T, op31: Svfloat64T, immIndex1: Int): Svfloat64T = null as Svfloat64T
+    fun svmlsLaneF64(op11: Svfloat64T, op21: Svfloat64T, op31: Svfloat64T, immIndex1: Int): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 1) { "IMM_INDEX is not in range 0-1" }
     }
@@ -17697,7 +17697,7 @@ public fun svmlsLaneF64(op1: Svfloat64T, op2: Svfloat64T, op3: Svfloat64T, immIn
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmmla[_f32])
  */
 public fun svmmlaF32(op1: Svfloat32T, op2: Svfloat32T, op3: Svfloat32T): Svfloat32T {
-    fun svmmlaF32(op11: Svfloat32T, op21: Svfloat32T, op31: Svfloat32T): Svfloat32T = null as Svfloat32T
+    fun svmmlaF32(op11: Svfloat32T, op21: Svfloat32T, op31: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svmmlaF32(op1, op2, op3)
 }
 
@@ -17706,7 +17706,7 @@ public fun svmmlaF32(op1: Svfloat32T, op2: Svfloat32T, op3: Svfloat32T): Svfloat
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmmla[_f64])
  */
 public fun svmmlaF64(op1: Svfloat64T, op2: Svfloat64T, op3: Svfloat64T): Svfloat64T {
-    fun svmmlaF64(op11: Svfloat64T, op21: Svfloat64T, op31: Svfloat64T): Svfloat64T = null as Svfloat64T
+    fun svmmlaF64(op11: Svfloat64T, op21: Svfloat64T, op31: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svmmlaF64(op1, op2, op3)
 }
 
@@ -17715,7 +17715,7 @@ public fun svmmlaF64(op1: Svfloat64T, op2: Svfloat64T, op3: Svfloat64T): Svfloat
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmmla[_s32])
  */
 public fun svmmlaS32(op1: Svint32T, op2: Svint8T, op3: Svint8T): Svint32T {
-    fun svmmlaS32(op11: Svint32T, op21: Svint8T, op31: Svint8T): Svint32T = null as Svint32T
+    fun svmmlaS32(op11: Svint32T, op21: Svint8T, op31: Svint8T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svmmlaS32(op1, op2, op3)
 }
 
@@ -17724,7 +17724,7 @@ public fun svmmlaS32(op1: Svint32T, op2: Svint8T, op3: Svint8T): Svint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmmla[_u32])
  */
 public fun svmmlaU32(op1: Svuint32T, op2: Svuint8T, op3: Svuint8T): Svuint32T {
-    fun svmmlaU32(op11: Svint32T, op21: Svint8T, op31: Svint8T): Svint32T = null as Svint32T
+    fun svmmlaU32(op11: Svint32T, op21: Svint8T, op31: Svint8T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svmmlaU32(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
 }
 
@@ -17739,7 +17739,7 @@ public fun svmovBZ(pg: SvboolT, op: SvboolT): SvboolT = svandBZ(pg, op, op)
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmsb[_f32]_m)
  */
 public fun svmsbF32M(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T, op3: Svfloat32T): Svfloat32T {
-    fun svmsbF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T, op31: Svfloat32T): Svfloat32T = null as Svfloat32T
+    fun svmsbF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T, op31: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svmsbF32M(pg.sveInto(), op1, op2, op3)
 }
 
@@ -17778,7 +17778,7 @@ public fun svmsbNF32Z(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T, op3: Float)
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmsb[_f64]_m)
  */
 public fun svmsbF64M(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T, op3: Svfloat64T): Svfloat64T {
-    fun svmsbF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T, op31: Svfloat64T): Svfloat64T = null as Svfloat64T
+    fun svmsbF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T, op31: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svmsbF64M(pg.sveInto(), op1, op2, op3)
 }
 
@@ -17817,7 +17817,7 @@ public fun svmsbNF64Z(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T, op3: Double
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmsb[_s8]_m)
  */
 public fun svmsbS8M(pg: SvboolT, op1: Svint8T, op2: Svint8T, op3: Svint8T): Svint8T {
-    fun svmsbS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T, op31: Svint8T): Svint8T = null as Svint8T
+    fun svmsbS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T, op31: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svmsbS8M(pg, op1, op2, op3)
 }
 
@@ -17856,7 +17856,7 @@ public fun svmsbNS8Z(pg: SvboolT, op1: Svint8T, op2: Svint8T, op3: Byte): Svint8
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmsb[_s16]_m)
  */
 public fun svmsbS16M(pg: SvboolT, op1: Svint16T, op2: Svint16T, op3: Svint16T): Svint16T {
-    fun svmsbS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T, op31: Svint16T): Svint16T = null as Svint16T
+    fun svmsbS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T, op31: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svmsbS16M(pg.sveInto(), op1, op2, op3)
 }
 
@@ -17895,7 +17895,7 @@ public fun svmsbNS16Z(pg: SvboolT, op1: Svint16T, op2: Svint16T, op3: Short): Sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmsb[_s32]_m)
  */
 public fun svmsbS32M(pg: SvboolT, op1: Svint32T, op2: Svint32T, op3: Svint32T): Svint32T {
-    fun svmsbS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T, op31: Svint32T): Svint32T = null as Svint32T
+    fun svmsbS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T, op31: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svmsbS32M(pg.sveInto(), op1, op2, op3)
 }
 
@@ -17934,7 +17934,7 @@ public fun svmsbNS32Z(pg: SvboolT, op1: Svint32T, op2: Svint32T, op3: Int): Svin
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmsb[_s64]_m)
  */
 public fun svmsbS64M(pg: SvboolT, op1: Svint64T, op2: Svint64T, op3: Svint64T): Svint64T {
-    fun svmsbS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T, op31: Svint64T): Svint64T = null as Svint64T
+    fun svmsbS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T, op31: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svmsbS64M(pg.sveInto(), op1, op2, op3)
 }
 
@@ -18117,7 +18117,7 @@ public fun svmsbNU64Z(pg: SvboolT, op1: Svuint64T, op2: Svuint64T, op3: ULong): 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmul[_f32]_m)
  */
 public fun svmulF32M(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T): Svfloat32T {
-    fun svmulF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = null as Svfloat32T
+    fun svmulF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svmulF32M(pg.sveInto(), op1, op2)
 }
 
@@ -18156,7 +18156,7 @@ public fun svmulNF32Z(pg: SvboolT, op1: Svfloat32T, op2: Float): Svfloat32T = sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmul[_f64]_m)
  */
 public fun svmulF64M(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T): Svfloat64T {
-    fun svmulF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = null as Svfloat64T
+    fun svmulF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svmulF64M(pg.sveInto(), op1, op2)
 }
 
@@ -18195,7 +18195,7 @@ public fun svmulNF64Z(pg: SvboolT, op1: Svfloat64T, op2: Double): Svfloat64T = s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmul[_s8]_m)
  */
 public fun svmulS8M(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T {
-    fun svmulS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    fun svmulS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svmulS8M(pg, op1, op2)
 }
 
@@ -18234,7 +18234,7 @@ public fun svmulNS8Z(pg: SvboolT, op1: Svint8T, op2: Byte): Svint8T = svmulS8Z(p
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmul[_s16]_m)
  */
 public fun svmulS16M(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T {
-    fun svmulS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    fun svmulS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svmulS16M(pg.sveInto(), op1, op2)
 }
 
@@ -18273,7 +18273,7 @@ public fun svmulNS16Z(pg: SvboolT, op1: Svint16T, op2: Short): Svint16T = svmulS
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmul[_s32]_m)
  */
 public fun svmulS32M(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T {
-    fun svmulS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    fun svmulS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svmulS32M(pg.sveInto(), op1, op2)
 }
 
@@ -18312,7 +18312,7 @@ public fun svmulNS32Z(pg: SvboolT, op1: Svint32T, op2: Int): Svint32T = svmulS32
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmul[_s64]_m)
  */
 public fun svmulS64M(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T {
-    fun svmulS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    fun svmulS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svmulS64M(pg.sveInto(), op1, op2)
 }
 
@@ -18495,7 +18495,7 @@ public fun svmulNU64Z(pg: SvboolT, op1: Svuint64T, op2: ULong): Svuint64T = svmu
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmulh[_s8]_m)
  */
 public fun svmulhS8M(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T {
-    fun svmulhS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    fun svmulhS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svmulhS8M(pg, op1, op2)
 }
 
@@ -18534,7 +18534,7 @@ public fun svmulhNS8Z(pg: SvboolT, op1: Svint8T, op2: Byte): Svint8T = svmulhS8Z
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmulh[_s16]_m)
  */
 public fun svmulhS16M(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T {
-    fun svmulhS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    fun svmulhS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svmulhS16M(pg.sveInto(), op1, op2)
 }
 
@@ -18573,7 +18573,7 @@ public fun svmulhNS16Z(pg: SvboolT, op1: Svint16T, op2: Short): Svint16T = svmul
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmulh[_s32]_m)
  */
 public fun svmulhS32M(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T {
-    fun svmulhS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    fun svmulhS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svmulhS32M(pg.sveInto(), op1, op2)
 }
 
@@ -18612,7 +18612,7 @@ public fun svmulhNS32Z(pg: SvboolT, op1: Svint32T, op2: Int): Svint32T = svmulhS
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmulh[_s64]_m)
  */
 public fun svmulhS64M(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T {
-    fun svmulhS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    fun svmulhS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svmulhS64M(pg.sveInto(), op1, op2)
 }
 
@@ -18651,7 +18651,7 @@ public fun svmulhNS64Z(pg: SvboolT, op1: Svint64T, op2: Long): Svint64T = svmulh
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmulh[_u8]_m)
  */
 public fun svmulhU8M(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T {
-    fun svmulhU8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    fun svmulhU8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svmulhU8M(pg, op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -18690,7 +18690,7 @@ public fun svmulhNU8Z(pg: SvboolT, op1: Svuint8T, op2: UByte): Svuint8T = svmulh
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmulh[_u16]_m)
  */
 public fun svmulhU16M(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T {
-    fun svmulhU16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    fun svmulhU16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svmulhU16M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -18729,7 +18729,7 @@ public fun svmulhNU16Z(pg: SvboolT, op1: Svuint16T, op2: UShort): Svuint16T = sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmulh[_u32]_m)
  */
 public fun svmulhU32M(pg: SvboolT, op1: Svuint32T, op2: Svuint32T): Svuint32T {
-    fun svmulhU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    fun svmulhU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svmulhU32M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -18768,7 +18768,7 @@ public fun svmulhNU32Z(pg: SvboolT, op1: Svuint32T, op2: UInt): Svuint32T = svmu
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmulh[_u64]_m)
  */
 public fun svmulhU64M(pg: SvboolT, op1: Svuint64T, op2: Svuint64T): Svuint64T {
-    fun svmulhU64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    fun svmulhU64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svmulhU64M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -18807,7 +18807,7 @@ public fun svmulhNU64Z(pg: SvboolT, op1: Svuint64T, op2: ULong): Svuint64T = svm
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmulx[_f32]_m)
  */
 public fun svmulxF32M(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T): Svfloat32T {
-    fun svmulxF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = null as Svfloat32T
+    fun svmulxF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svmulxF32M(pg.sveInto(), op1, op2)
 }
 
@@ -18846,7 +18846,7 @@ public fun svmulxNF32Z(pg: SvboolT, op1: Svfloat32T, op2: Float): Svfloat32T = s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmulx[_f64]_m)
  */
 public fun svmulxF64M(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T): Svfloat64T {
-    fun svmulxF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = null as Svfloat64T
+    fun svmulxF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svmulxF64M(pg.sveInto(), op1, op2)
 }
 
@@ -18885,7 +18885,7 @@ public fun svmulxNF64Z(pg: SvboolT, op1: Svfloat64T, op2: Double): Svfloat64T = 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svnand[_b]_z)
  */
 public fun svnandBZ(pg: SvboolT, op1: SvboolT, op2: SvboolT): SvboolT {
-    fun svnandBZ(pg1: SvboolT, op11: SvboolT, op21: SvboolT): SvboolT = null as SvboolT
+    fun svnandBZ(pg1: SvboolT, op11: SvboolT, op21: SvboolT): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svnandBZ(pg, op1, op2)
 }
 
@@ -18894,7 +18894,7 @@ public fun svnandBZ(pg: SvboolT, op1: SvboolT, op2: SvboolT): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svneg[_f32]_m)
  */
 public fun svnegF32M(inactive: Svfloat32T, pg: SvboolT, op: Svfloat32T): Svfloat32T {
-    fun svnegF32M(inactive1: Svfloat32T, pg1: Svbool4T, op1: Svfloat32T): Svfloat32T = null as Svfloat32T
+    fun svnegF32M(inactive1: Svfloat32T, pg1: Svbool4T, op1: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svnegF32M(inactive, pg.sveInto(), op)
 }
 
@@ -18915,7 +18915,7 @@ public fun svnegF32Z(pg: SvboolT, op: Svfloat32T): Svfloat32T = svnegF32M(svdupN
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svneg[_f64]_m)
  */
 public fun svnegF64M(inactive: Svfloat64T, pg: SvboolT, op: Svfloat64T): Svfloat64T {
-    fun svnegF64M(inactive1: Svfloat64T, pg1: Svbool2T, op1: Svfloat64T): Svfloat64T = null as Svfloat64T
+    fun svnegF64M(inactive1: Svfloat64T, pg1: Svbool2T, op1: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svnegF64M(inactive, pg.sveInto(), op)
 }
 
@@ -18936,7 +18936,7 @@ public fun svnegF64Z(pg: SvboolT, op: Svfloat64T): Svfloat64T = svnegF64M(svdupN
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svneg[_s8]_m)
  */
 public fun svnegS8M(inactive: Svint8T, pg: SvboolT, op: Svint8T): Svint8T {
-    fun svnegS8M(inactive1: Svint8T, pg1: SvboolT, op1: Svint8T): Svint8T = null as Svint8T
+    fun svnegS8M(inactive1: Svint8T, pg1: SvboolT, op1: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svnegS8M(inactive, pg, op)
 }
 
@@ -18957,7 +18957,7 @@ public fun svnegS8Z(pg: SvboolT, op: Svint8T): Svint8T = svnegS8M(svdupNS8(0), p
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svneg[_s16]_m)
  */
 public fun svnegS16M(inactive: Svint16T, pg: SvboolT, op: Svint16T): Svint16T {
-    fun svnegS16M(inactive1: Svint16T, pg1: Svbool8T, op1: Svint16T): Svint16T = null as Svint16T
+    fun svnegS16M(inactive1: Svint16T, pg1: Svbool8T, op1: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svnegS16M(inactive, pg.sveInto(), op)
 }
 
@@ -18978,7 +18978,7 @@ public fun svnegS16Z(pg: SvboolT, op: Svint16T): Svint16T = svnegS16M(svdupNS16(
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svneg[_s32]_m)
  */
 public fun svnegS32M(inactive: Svint32T, pg: SvboolT, op: Svint32T): Svint32T {
-    fun svnegS32M(inactive1: Svint32T, pg1: Svbool4T, op1: Svint32T): Svint32T = null as Svint32T
+    fun svnegS32M(inactive1: Svint32T, pg1: Svbool4T, op1: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svnegS32M(inactive, pg.sveInto(), op)
 }
 
@@ -18999,7 +18999,7 @@ public fun svnegS32Z(pg: SvboolT, op: Svint32T): Svint32T = svnegS32M(svdupNS32(
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svneg[_s64]_m)
  */
 public fun svnegS64M(inactive: Svint64T, pg: SvboolT, op: Svint64T): Svint64T {
-    fun svnegS64M(inactive1: Svint64T, pg1: Svbool2T, op1: Svint64T): Svint64T = null as Svint64T
+    fun svnegS64M(inactive1: Svint64T, pg1: Svbool2T, op1: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svnegS64M(inactive, pg.sveInto(), op)
 }
 
@@ -19020,7 +19020,7 @@ public fun svnegS64Z(pg: SvboolT, op: Svint64T): Svint64T = svnegS64M(svdupNS64(
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svnmad[_f32]_m)
  */
 public fun svnmadF32M(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T, op3: Svfloat32T): Svfloat32T {
-    fun svnmadF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T, op31: Svfloat32T): Svfloat32T = null as Svfloat32T
+    fun svnmadF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T, op31: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svnmadF32M(pg.sveInto(), op1, op2, op3)
 }
 
@@ -19059,7 +19059,7 @@ public fun svnmadNF32Z(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T, op3: Float
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svnmad[_f64]_m)
  */
 public fun svnmadF64M(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T, op3: Svfloat64T): Svfloat64T {
-    fun svnmadF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T, op31: Svfloat64T): Svfloat64T = null as Svfloat64T
+    fun svnmadF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T, op31: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svnmadF64M(pg.sveInto(), op1, op2, op3)
 }
 
@@ -19098,7 +19098,7 @@ public fun svnmadNF64Z(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T, op3: Doubl
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svnmla[_f32]_m)
  */
 public fun svnmlaF32M(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T, op3: Svfloat32T): Svfloat32T {
-    fun svnmlaF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T, op31: Svfloat32T): Svfloat32T = null as Svfloat32T
+    fun svnmlaF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T, op31: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svnmlaF32M(pg.sveInto(), op1, op2, op3)
 }
 
@@ -19137,7 +19137,7 @@ public fun svnmlaNF32Z(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T, op3: Float
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svnmla[_f64]_m)
  */
 public fun svnmlaF64M(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T, op3: Svfloat64T): Svfloat64T {
-    fun svnmlaF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T, op31: Svfloat64T): Svfloat64T = null as Svfloat64T
+    fun svnmlaF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T, op31: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svnmlaF64M(pg.sveInto(), op1, op2, op3)
 }
 
@@ -19176,7 +19176,7 @@ public fun svnmlaNF64Z(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T, op3: Doubl
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svnmls[_f32]_m)
  */
 public fun svnmlsF32M(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T, op3: Svfloat32T): Svfloat32T {
-    fun svnmlsF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T, op31: Svfloat32T): Svfloat32T = null as Svfloat32T
+    fun svnmlsF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T, op31: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svnmlsF32M(pg.sveInto(), op1, op2, op3)
 }
 
@@ -19215,7 +19215,7 @@ public fun svnmlsNF32Z(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T, op3: Float
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svnmls[_f64]_m)
  */
 public fun svnmlsF64M(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T, op3: Svfloat64T): Svfloat64T {
-    fun svnmlsF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T, op31: Svfloat64T): Svfloat64T = null as Svfloat64T
+    fun svnmlsF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T, op31: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svnmlsF64M(pg.sveInto(), op1, op2, op3)
 }
 
@@ -19254,7 +19254,7 @@ public fun svnmlsNF64Z(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T, op3: Doubl
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svnmsb[_f32]_m)
  */
 public fun svnmsbF32M(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T, op3: Svfloat32T): Svfloat32T {
-    fun svnmsbF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T, op31: Svfloat32T): Svfloat32T = null as Svfloat32T
+    fun svnmsbF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T, op31: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svnmsbF32M(pg.sveInto(), op1, op2, op3)
 }
 
@@ -19293,7 +19293,7 @@ public fun svnmsbNF32Z(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T, op3: Float
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svnmsb[_f64]_m)
  */
 public fun svnmsbF64M(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T, op3: Svfloat64T): Svfloat64T {
-    fun svnmsbF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T, op31: Svfloat64T): Svfloat64T = null as Svfloat64T
+    fun svnmsbF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T, op31: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svnmsbF64M(pg.sveInto(), op1, op2, op3)
 }
 
@@ -19332,7 +19332,7 @@ public fun svnmsbNF64Z(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T, op3: Doubl
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svnor[_b]_z)
  */
 public fun svnorBZ(pg: SvboolT, op1: SvboolT, op2: SvboolT): SvboolT {
-    fun svnorBZ(pg1: SvboolT, op11: SvboolT, op21: SvboolT): SvboolT = null as SvboolT
+    fun svnorBZ(pg1: SvboolT, op11: SvboolT, op21: SvboolT): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svnorBZ(pg, op1, op2)
 }
 
@@ -19347,7 +19347,7 @@ public fun svnotBZ(pg: SvboolT, op: SvboolT): SvboolT = sveorBZ(pg, op, pg)
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svnot[_s8]_m)
  */
 public fun svnotS8M(inactive: Svint8T, pg: SvboolT, op: Svint8T): Svint8T {
-    fun svnotS8M(inactive1: Svint8T, pg1: SvboolT, op1: Svint8T): Svint8T = null as Svint8T
+    fun svnotS8M(inactive1: Svint8T, pg1: SvboolT, op1: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svnotS8M(inactive, pg, op)
 }
 
@@ -19368,7 +19368,7 @@ public fun svnotS8Z(pg: SvboolT, op: Svint8T): Svint8T = svnotS8M(svdupNS8(0), p
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svnot[_s16]_m)
  */
 public fun svnotS16M(inactive: Svint16T, pg: SvboolT, op: Svint16T): Svint16T {
-    fun svnotS16M(inactive1: Svint16T, pg1: Svbool8T, op1: Svint16T): Svint16T = null as Svint16T
+    fun svnotS16M(inactive1: Svint16T, pg1: Svbool8T, op1: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svnotS16M(inactive, pg.sveInto(), op)
 }
 
@@ -19389,7 +19389,7 @@ public fun svnotS16Z(pg: SvboolT, op: Svint16T): Svint16T = svnotS16M(svdupNS16(
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svnot[_s32]_m)
  */
 public fun svnotS32M(inactive: Svint32T, pg: SvboolT, op: Svint32T): Svint32T {
-    fun svnotS32M(inactive1: Svint32T, pg1: Svbool4T, op1: Svint32T): Svint32T = null as Svint32T
+    fun svnotS32M(inactive1: Svint32T, pg1: Svbool4T, op1: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svnotS32M(inactive, pg.sveInto(), op)
 }
 
@@ -19410,7 +19410,7 @@ public fun svnotS32Z(pg: SvboolT, op: Svint32T): Svint32T = svnotS32M(svdupNS32(
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svnot[_s64]_m)
  */
 public fun svnotS64M(inactive: Svint64T, pg: SvboolT, op: Svint64T): Svint64T {
-    fun svnotS64M(inactive1: Svint64T, pg1: Svbool2T, op1: Svint64T): Svint64T = null as Svint64T
+    fun svnotS64M(inactive1: Svint64T, pg1: Svbool2T, op1: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svnotS64M(inactive, pg.sveInto(), op)
 }
 
@@ -19503,7 +19503,7 @@ public fun svnotU64Z(pg: SvboolT, op: Svuint64T): Svuint64T = svnotU64M(svdupNU6
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svorn[_b]_z)
  */
 public fun svornBZ(pg: SvboolT, op1: SvboolT, op2: SvboolT): SvboolT {
-    fun svornBZ(pg1: SvboolT, op11: SvboolT, op21: SvboolT): SvboolT = null as SvboolT
+    fun svornBZ(pg1: SvboolT, op11: SvboolT, op21: SvboolT): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svornBZ(pg, op1, op2)
 }
 
@@ -19512,7 +19512,7 @@ public fun svornBZ(pg: SvboolT, op1: SvboolT, op2: SvboolT): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svorr[_b]_z)
  */
 public fun svorrBZ(pg: SvboolT, op1: SvboolT, op2: SvboolT): SvboolT {
-    fun svorrBZ(pg1: SvboolT, op11: SvboolT, op21: SvboolT): SvboolT = null as SvboolT
+    fun svorrBZ(pg1: SvboolT, op11: SvboolT, op21: SvboolT): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svorrBZ(pg, op1, op2)
 }
 
@@ -19521,7 +19521,7 @@ public fun svorrBZ(pg: SvboolT, op1: SvboolT, op2: SvboolT): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svorr[_s8]_m)
  */
 public fun svorrS8M(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T {
-    fun svorrS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    fun svorrS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svorrS8M(pg, op1, op2)
 }
 
@@ -19560,7 +19560,7 @@ public fun svorrNS8Z(pg: SvboolT, op1: Svint8T, op2: Byte): Svint8T = svorrS8Z(p
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svorr[_s16]_m)
  */
 public fun svorrS16M(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T {
-    fun svorrS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    fun svorrS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svorrS16M(pg.sveInto(), op1, op2)
 }
 
@@ -19599,7 +19599,7 @@ public fun svorrNS16Z(pg: SvboolT, op1: Svint16T, op2: Short): Svint16T = svorrS
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svorr[_s32]_m)
  */
 public fun svorrS32M(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T {
-    fun svorrS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    fun svorrS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svorrS32M(pg.sveInto(), op1, op2)
 }
 
@@ -19638,7 +19638,7 @@ public fun svorrNS32Z(pg: SvboolT, op1: Svint32T, op2: Int): Svint32T = svorrS32
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svorr[_s64]_m)
  */
 public fun svorrS64M(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T {
-    fun svorrS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    fun svorrS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svorrS64M(pg.sveInto(), op1, op2)
 }
 
@@ -19887,7 +19887,7 @@ public fun svpfalseB(): SvboolT = svdupqNB8(false, false, false, false, false, f
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svpfirst[_b])
  */
 public fun svpfirstB(pg: SvboolT, op: SvboolT): SvboolT {
-    fun svpfirstB(pg1: SvboolT, op1: SvboolT): SvboolT = null as SvboolT
+    fun svpfirstB(pg1: SvboolT, op1: SvboolT): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svpfirstB(pg, op)
 }
 
@@ -19896,7 +19896,7 @@ public fun svpfirstB(pg: SvboolT, op: SvboolT): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svpnextB8)
  */
 public fun svpnextB8(pg: SvboolT, op: SvboolT): SvboolT {
-    fun svpnextB8(pg1: SvboolT, op1: SvboolT): SvboolT = null as SvboolT
+    fun svpnextB8(pg1: SvboolT, op1: SvboolT): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svpnextB8(pg, op)
 }
 
@@ -19905,7 +19905,7 @@ public fun svpnextB8(pg: SvboolT, op: SvboolT): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svpnextB16)
  */
 public fun svpnextB16(pg: SvboolT, op: SvboolT): SvboolT {
-    fun svpnextB16(pg1: Svbool8T, op1: Svbool8T): Svbool8T = null as Svbool8T
+    fun svpnextB16(pg1: Svbool8T, op1: Svbool8T): Svbool8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool8T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool8T>()).alignBytes)); res }
     return svpnextB16(pg.sveInto(), op.sveInto()).sveInto()
 }
 
@@ -19914,7 +19914,7 @@ public fun svpnextB16(pg: SvboolT, op: SvboolT): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svpnextB32)
  */
 public fun svpnextB32(pg: SvboolT, op: SvboolT): SvboolT {
-    fun svpnextB32(pg1: Svbool4T, op1: Svbool4T): Svbool4T = null as Svbool4T
+    fun svpnextB32(pg1: Svbool4T, op1: Svbool4T): Svbool4T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); res }
     return svpnextB32(pg.sveInto(), op.sveInto()).sveInto()
 }
 
@@ -19923,7 +19923,7 @@ public fun svpnextB32(pg: SvboolT, op: SvboolT): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svpnextB64)
  */
 public fun svpnextB64(pg: SvboolT, op: SvboolT): SvboolT {
-    fun svpnextB64(pg1: Svbool2T, op1: Svbool2T): Svbool2T = null as Svbool2T
+    fun svpnextB64(pg1: Svbool2T, op1: Svbool2T): Svbool2T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool2T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool2T>()).alignBytes)); res }
     return svpnextB64(pg.sveInto(), op.sveInto()).sveInto()
 }
 
@@ -20431,7 +20431,7 @@ public fun svptrueB64(): SvboolT = svptruePatB64(svpattern.SV_ALL)
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svptruePatB8)
  */
 public fun svptruePatB8(pattern: Svpattern): SvboolT {
-    fun svptruePatB8(pattern: Svpattern): SvboolT = null as SvboolT
+    fun svptruePatB8(pattern: Svpattern): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svptruePatB8(pattern)
 }
 
@@ -20440,7 +20440,7 @@ public fun svptruePatB8(pattern: Svpattern): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svptruePatB16)
  */
 public fun svptruePatB16(pattern: Svpattern): SvboolT {
-    fun svptruePatB16(pattern: Svpattern): Svbool8T = null as Svbool8T
+    fun svptruePatB16(pattern: Svpattern): Svbool8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool8T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool8T>()).alignBytes)); res }
     return svptruePatB16(pattern).sveInto()
 }
 
@@ -20449,7 +20449,7 @@ public fun svptruePatB16(pattern: Svpattern): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svptruePatB32)
  */
 public fun svptruePatB32(pattern: Svpattern): SvboolT {
-    fun svptruePatB32(pattern: Svpattern): Svbool4T = null as Svbool4T
+    fun svptruePatB32(pattern: Svpattern): Svbool4T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); res }
     return svptruePatB32(pattern).sveInto()
 }
 
@@ -20458,7 +20458,7 @@ public fun svptruePatB32(pattern: Svpattern): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svptruePatB64)
  */
 public fun svptruePatB64(pattern: Svpattern): SvboolT {
-    fun svptruePatB64(pattern: Svpattern): Svbool2T = null as Svbool2T
+    fun svptruePatB64(pattern: Svpattern): Svbool2T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool2T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool2T>()).alignBytes)); res }
     return svptruePatB64(pattern).sveInto()
 }
 
@@ -20467,7 +20467,7 @@ public fun svptruePatB64(pattern: Svpattern): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_s8])
  */
 public fun svqaddS8(op1: Svint8T, op2: Svint8T): Svint8T {
-    fun svqaddS8(op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    fun svqaddS8(op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svqaddS8(op1, op2)
 }
 
@@ -20482,7 +20482,7 @@ public fun svqaddNS8(op1: Svint8T, op2: Byte): Svint8T = svqaddS8(op1, svdupNS8(
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_s16])
  */
 public fun svqaddS16(op1: Svint16T, op2: Svint16T): Svint16T {
-    fun svqaddS16(op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    fun svqaddS16(op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svqaddS16(op1, op2)
 }
 
@@ -20497,7 +20497,7 @@ public fun svqaddNS16(op1: Svint16T, op2: Short): Svint16T = svqaddS16(op1, svdu
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_s32])
  */
 public fun svqaddS32(op1: Svint32T, op2: Svint32T): Svint32T {
-    fun svqaddS32(op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    fun svqaddS32(op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svqaddS32(op1, op2)
 }
 
@@ -20512,7 +20512,7 @@ public fun svqaddNS32(op1: Svint32T, op2: Int): Svint32T = svqaddS32(op1, svdupN
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_s64])
  */
 public fun svqaddS64(op1: Svint64T, op2: Svint64T): Svint64T {
-    fun svqaddS64(op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    fun svqaddS64(op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svqaddS64(op1, op2)
 }
 
@@ -20527,7 +20527,7 @@ public fun svqaddNS64(op1: Svint64T, op2: Long): Svint64T = svqaddS64(op1, svdup
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_u8])
  */
 public fun svqaddU8(op1: Svuint8T, op2: Svuint8T): Svuint8T {
-    fun svqaddU8(op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    fun svqaddU8(op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svqaddU8(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -20542,7 +20542,7 @@ public fun svqaddNU8(op1: Svuint8T, op2: UByte): Svuint8T = svqaddU8(op1, svdupN
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_u16])
  */
 public fun svqaddU16(op1: Svuint16T, op2: Svuint16T): Svuint16T {
-    fun svqaddU16(op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    fun svqaddU16(op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svqaddU16(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -20557,7 +20557,7 @@ public fun svqaddNU16(op1: Svuint16T, op2: UShort): Svuint16T = svqaddU16(op1, s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_u32])
  */
 public fun svqaddU32(op1: Svuint32T, op2: Svuint32T): Svuint32T {
-    fun svqaddU32(op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    fun svqaddU32(op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svqaddU32(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -20572,7 +20572,7 @@ public fun svqaddNU32(op1: Svuint32T, op2: UInt): Svuint32T = svqaddU32(op1, svd
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_u64])
  */
 public fun svqaddU64(op1: Svuint64T, op2: Svuint64T): Svuint64T {
-    fun svqaddU64(op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    fun svqaddU64(op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svqaddU64(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -20875,7 +20875,7 @@ public fun svqdecdPatNU64(op: ULong, pattern: Svpattern, immFactor: Int): ULong 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdechPat[_s16])
  */
 public fun svqdechPatS16(op: Svint16T, pattern: Svpattern, immFactor: Int): Svint16T {
-    fun svqdechPatS16(op1: Svint16T, pattern: Svpattern, immFactor: Int): Svint16T = null as Svint16T
+    fun svqdechPatS16(op1: Svint16T, pattern: Svpattern, immFactor: Int): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     run {
         check(1 <= immFactor && immFactor <= 16) { "IMM_FACTOR is not in range 1-16" }
     }
@@ -20887,7 +20887,7 @@ public fun svqdechPatS16(op: Svint16T, pattern: Svpattern, immFactor: Int): Svin
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdecwPat[_s32])
  */
 public fun svqdecwPatS32(op: Svint32T, pattern: Svpattern, immFactor: Int): Svint32T {
-    fun svqdecwPatS32(op1: Svint32T, pattern: Svpattern, immFactor: Int): Svint32T = null as Svint32T
+    fun svqdecwPatS32(op1: Svint32T, pattern: Svpattern, immFactor: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     run {
         check(1 <= immFactor && immFactor <= 16) { "IMM_FACTOR is not in range 1-16" }
     }
@@ -20899,7 +20899,7 @@ public fun svqdecwPatS32(op: Svint32T, pattern: Svpattern, immFactor: Int): Svin
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdecdPat[_s64])
  */
 public fun svqdecdPatS64(op: Svint64T, pattern: Svpattern, immFactor: Int): Svint64T {
-    fun svqdecdPatS64(op1: Svint64T, pattern: Svpattern, immFactor: Int): Svint64T = null as Svint64T
+    fun svqdecdPatS64(op1: Svint64T, pattern: Svpattern, immFactor: Int): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     run {
         check(1 <= immFactor && immFactor <= 16) { "IMM_FACTOR is not in range 1-16" }
     }
@@ -20911,7 +20911,7 @@ public fun svqdecdPatS64(op: Svint64T, pattern: Svpattern, immFactor: Int): Svin
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdechPat[_u16])
  */
 public fun svqdechPatU16(op: Svuint16T, pattern: Svpattern, immFactor: Int): Svuint16T {
-    fun svqdechPatU16(op1: Svint16T, pattern: Svpattern, immFactor: Int): Svint16T = null as Svint16T
+    fun svqdechPatU16(op1: Svint16T, pattern: Svpattern, immFactor: Int): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     run {
         check(1 <= immFactor && immFactor <= 16) { "IMM_FACTOR is not in range 1-16" }
     }
@@ -20923,7 +20923,7 @@ public fun svqdechPatU16(op: Svuint16T, pattern: Svpattern, immFactor: Int): Svu
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdecwPat[_u32])
  */
 public fun svqdecwPatU32(op: Svuint32T, pattern: Svpattern, immFactor: Int): Svuint32T {
-    fun svqdecwPatU32(op1: Svint32T, pattern: Svpattern, immFactor: Int): Svint32T = null as Svint32T
+    fun svqdecwPatU32(op1: Svint32T, pattern: Svpattern, immFactor: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     run {
         check(1 <= immFactor && immFactor <= 16) { "IMM_FACTOR is not in range 1-16" }
     }
@@ -20935,7 +20935,7 @@ public fun svqdecwPatU32(op: Svuint32T, pattern: Svpattern, immFactor: Int): Svu
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdecdPat[_u64])
  */
 public fun svqdecdPatU64(op: Svuint64T, pattern: Svpattern, immFactor: Int): Svuint64T {
-    fun svqdecdPatU64(op1: Svint64T, pattern: Svpattern, immFactor: Int): Svint64T = null as Svint64T
+    fun svqdecdPatU64(op1: Svint64T, pattern: Svpattern, immFactor: Int): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     run {
         check(1 <= immFactor && immFactor <= 16) { "IMM_FACTOR is not in range 1-16" }
     }
@@ -21127,7 +21127,7 @@ public fun svqdecpNU64B64(op: ULong, pg: SvboolT): ULong {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdecp[_s16])
  */
 public fun svqdecpS16(op: Svint16T, pg: SvboolT): Svint16T {
-    fun svqdecpS16(op1: Svint16T, pg1: Svbool8T): Svint16T = null as Svint16T
+    fun svqdecpS16(op1: Svint16T, pg1: Svbool8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svqdecpS16(op, pg.sveInto())
 }
 
@@ -21136,7 +21136,7 @@ public fun svqdecpS16(op: Svint16T, pg: SvboolT): Svint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdecp[_s32])
  */
 public fun svqdecpS32(op: Svint32T, pg: SvboolT): Svint32T {
-    fun svqdecpS32(op1: Svint32T, pg1: Svbool4T): Svint32T = null as Svint32T
+    fun svqdecpS32(op1: Svint32T, pg1: Svbool4T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svqdecpS32(op, pg.sveInto())
 }
 
@@ -21145,7 +21145,7 @@ public fun svqdecpS32(op: Svint32T, pg: SvboolT): Svint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdecp[_s64])
  */
 public fun svqdecpS64(op: Svint64T, pg: SvboolT): Svint64T {
-    fun svqdecpS64(op1: Svint64T, pg1: Svbool2T): Svint64T = null as Svint64T
+    fun svqdecpS64(op1: Svint64T, pg1: Svbool2T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svqdecpS64(op, pg.sveInto())
 }
 
@@ -21154,7 +21154,7 @@ public fun svqdecpS64(op: Svint64T, pg: SvboolT): Svint64T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdecp[_u16])
  */
 public fun svqdecpU16(op: Svuint16T, pg: SvboolT): Svuint16T {
-    fun svqdecpU16(op1: Svint16T, pg1: Svbool8T): Svint16T = null as Svint16T
+    fun svqdecpU16(op1: Svint16T, pg1: Svbool8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svqdecpU16(op.asSigned(), pg.sveInto()).asUnsigned()
 }
 
@@ -21163,7 +21163,7 @@ public fun svqdecpU16(op: Svuint16T, pg: SvboolT): Svuint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdecp[_u32])
  */
 public fun svqdecpU32(op: Svuint32T, pg: SvboolT): Svuint32T {
-    fun svqdecpU32(op1: Svint32T, pg1: Svbool4T): Svint32T = null as Svint32T
+    fun svqdecpU32(op1: Svint32T, pg1: Svbool4T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svqdecpU32(op.asSigned(), pg.sveInto()).asUnsigned()
 }
 
@@ -21172,7 +21172,7 @@ public fun svqdecpU32(op: Svuint32T, pg: SvboolT): Svuint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdecp[_u64])
  */
 public fun svqdecpU64(op: Svuint64T, pg: SvboolT): Svuint64T {
-    fun svqdecpU64(op1: Svint64T, pg1: Svbool2T): Svint64T = null as Svint64T
+    fun svqdecpU64(op1: Svint64T, pg1: Svbool2T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svqdecpU64(op.asSigned(), pg.sveInto()).asUnsigned()
 }
 
@@ -21469,7 +21469,7 @@ public fun svqincdPatNU64(op: ULong, pattern: Svpattern, immFactor: Int): ULong 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqinchPat[_s16])
  */
 public fun svqinchPatS16(op: Svint16T, pattern: Svpattern, immFactor: Int): Svint16T {
-    fun svqinchPatS16(op1: Svint16T, pattern: Svpattern, immFactor: Int): Svint16T = null as Svint16T
+    fun svqinchPatS16(op1: Svint16T, pattern: Svpattern, immFactor: Int): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     run {
         check(1 <= immFactor && immFactor <= 16) { "IMM_FACTOR is not in range 1-16" }
     }
@@ -21481,7 +21481,7 @@ public fun svqinchPatS16(op: Svint16T, pattern: Svpattern, immFactor: Int): Svin
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqincwPat[_s32])
  */
 public fun svqincwPatS32(op: Svint32T, pattern: Svpattern, immFactor: Int): Svint32T {
-    fun svqincwPatS32(op1: Svint32T, pattern: Svpattern, immFactor: Int): Svint32T = null as Svint32T
+    fun svqincwPatS32(op1: Svint32T, pattern: Svpattern, immFactor: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     run {
         check(1 <= immFactor && immFactor <= 16) { "IMM_FACTOR is not in range 1-16" }
     }
@@ -21493,7 +21493,7 @@ public fun svqincwPatS32(op: Svint32T, pattern: Svpattern, immFactor: Int): Svin
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqincdPat[_s64])
  */
 public fun svqincdPatS64(op: Svint64T, pattern: Svpattern, immFactor: Int): Svint64T {
-    fun svqincdPatS64(op1: Svint64T, pattern: Svpattern, immFactor: Int): Svint64T = null as Svint64T
+    fun svqincdPatS64(op1: Svint64T, pattern: Svpattern, immFactor: Int): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     run {
         check(1 <= immFactor && immFactor <= 16) { "IMM_FACTOR is not in range 1-16" }
     }
@@ -21505,7 +21505,7 @@ public fun svqincdPatS64(op: Svint64T, pattern: Svpattern, immFactor: Int): Svin
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqinchPat[_u16])
  */
 public fun svqinchPatU16(op: Svuint16T, pattern: Svpattern, immFactor: Int): Svuint16T {
-    fun svqinchPatU16(op1: Svint16T, pattern: Svpattern, immFactor: Int): Svint16T = null as Svint16T
+    fun svqinchPatU16(op1: Svint16T, pattern: Svpattern, immFactor: Int): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     run {
         check(1 <= immFactor && immFactor <= 16) { "IMM_FACTOR is not in range 1-16" }
     }
@@ -21517,7 +21517,7 @@ public fun svqinchPatU16(op: Svuint16T, pattern: Svpattern, immFactor: Int): Svu
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqincwPat[_u32])
  */
 public fun svqincwPatU32(op: Svuint32T, pattern: Svpattern, immFactor: Int): Svuint32T {
-    fun svqincwPatU32(op1: Svint32T, pattern: Svpattern, immFactor: Int): Svint32T = null as Svint32T
+    fun svqincwPatU32(op1: Svint32T, pattern: Svpattern, immFactor: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     run {
         check(1 <= immFactor && immFactor <= 16) { "IMM_FACTOR is not in range 1-16" }
     }
@@ -21529,7 +21529,7 @@ public fun svqincwPatU32(op: Svuint32T, pattern: Svpattern, immFactor: Int): Svu
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqincdPat[_u64])
  */
 public fun svqincdPatU64(op: Svuint64T, pattern: Svpattern, immFactor: Int): Svuint64T {
-    fun svqincdPatU64(op1: Svint64T, pattern: Svpattern, immFactor: Int): Svint64T = null as Svint64T
+    fun svqincdPatU64(op1: Svint64T, pattern: Svpattern, immFactor: Int): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     run {
         check(1 <= immFactor && immFactor <= 16) { "IMM_FACTOR is not in range 1-16" }
     }
@@ -21721,7 +21721,7 @@ public fun svqincpNU64B64(op: ULong, pg: SvboolT): ULong {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqincp[_s16])
  */
 public fun svqincpS16(op: Svint16T, pg: SvboolT): Svint16T {
-    fun svqincpS16(op1: Svint16T, pg1: Svbool8T): Svint16T = null as Svint16T
+    fun svqincpS16(op1: Svint16T, pg1: Svbool8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svqincpS16(op, pg.sveInto())
 }
 
@@ -21730,7 +21730,7 @@ public fun svqincpS16(op: Svint16T, pg: SvboolT): Svint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqincp[_s32])
  */
 public fun svqincpS32(op: Svint32T, pg: SvboolT): Svint32T {
-    fun svqincpS32(op1: Svint32T, pg1: Svbool4T): Svint32T = null as Svint32T
+    fun svqincpS32(op1: Svint32T, pg1: Svbool4T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svqincpS32(op, pg.sveInto())
 }
 
@@ -21739,7 +21739,7 @@ public fun svqincpS32(op: Svint32T, pg: SvboolT): Svint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqincp[_s64])
  */
 public fun svqincpS64(op: Svint64T, pg: SvboolT): Svint64T {
-    fun svqincpS64(op1: Svint64T, pg1: Svbool2T): Svint64T = null as Svint64T
+    fun svqincpS64(op1: Svint64T, pg1: Svbool2T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svqincpS64(op, pg.sveInto())
 }
 
@@ -21748,7 +21748,7 @@ public fun svqincpS64(op: Svint64T, pg: SvboolT): Svint64T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqincp[_u16])
  */
 public fun svqincpU16(op: Svuint16T, pg: SvboolT): Svuint16T {
-    fun svqincpU16(op1: Svint16T, pg1: Svbool8T): Svint16T = null as Svint16T
+    fun svqincpU16(op1: Svint16T, pg1: Svbool8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svqincpU16(op.asSigned(), pg.sveInto()).asUnsigned()
 }
 
@@ -21757,7 +21757,7 @@ public fun svqincpU16(op: Svuint16T, pg: SvboolT): Svuint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqincp[_u32])
  */
 public fun svqincpU32(op: Svuint32T, pg: SvboolT): Svuint32T {
-    fun svqincpU32(op1: Svint32T, pg1: Svbool4T): Svint32T = null as Svint32T
+    fun svqincpU32(op1: Svint32T, pg1: Svbool4T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svqincpU32(op.asSigned(), pg.sveInto()).asUnsigned()
 }
 
@@ -21766,7 +21766,7 @@ public fun svqincpU32(op: Svuint32T, pg: SvboolT): Svuint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqincp[_u64])
  */
 public fun svqincpU64(op: Svuint64T, pg: SvboolT): Svuint64T {
-    fun svqincpU64(op1: Svint64T, pg1: Svbool2T): Svint64T = null as Svint64T
+    fun svqincpU64(op1: Svint64T, pg1: Svbool2T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svqincpU64(op.asSigned(), pg.sveInto()).asUnsigned()
 }
 
@@ -21775,7 +21775,7 @@ public fun svqincpU64(op: Svuint64T, pg: SvboolT): Svuint64T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_s8])
  */
 public fun svqsubS8(op1: Svint8T, op2: Svint8T): Svint8T {
-    fun svqsubS8(op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    fun svqsubS8(op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svqsubS8(op1, op2)
 }
 
@@ -21790,7 +21790,7 @@ public fun svqsubNS8(op1: Svint8T, op2: Byte): Svint8T = svqsubS8(op1, svdupNS8(
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_s16])
  */
 public fun svqsubS16(op1: Svint16T, op2: Svint16T): Svint16T {
-    fun svqsubS16(op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    fun svqsubS16(op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svqsubS16(op1, op2)
 }
 
@@ -21805,7 +21805,7 @@ public fun svqsubNS16(op1: Svint16T, op2: Short): Svint16T = svqsubS16(op1, svdu
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_s32])
  */
 public fun svqsubS32(op1: Svint32T, op2: Svint32T): Svint32T {
-    fun svqsubS32(op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    fun svqsubS32(op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svqsubS32(op1, op2)
 }
 
@@ -21820,7 +21820,7 @@ public fun svqsubNS32(op1: Svint32T, op2: Int): Svint32T = svqsubS32(op1, svdupN
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_s64])
  */
 public fun svqsubS64(op1: Svint64T, op2: Svint64T): Svint64T {
-    fun svqsubS64(op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    fun svqsubS64(op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svqsubS64(op1, op2)
 }
 
@@ -21835,7 +21835,7 @@ public fun svqsubNS64(op1: Svint64T, op2: Long): Svint64T = svqsubS64(op1, svdup
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_u8])
  */
 public fun svqsubU8(op1: Svuint8T, op2: Svuint8T): Svuint8T {
-    fun svqsubU8(op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    fun svqsubU8(op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svqsubU8(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -21850,7 +21850,7 @@ public fun svqsubNU8(op1: Svuint8T, op2: UByte): Svuint8T = svqsubU8(op1, svdupN
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_u16])
  */
 public fun svqsubU16(op1: Svuint16T, op2: Svuint16T): Svuint16T {
-    fun svqsubU16(op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    fun svqsubU16(op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svqsubU16(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -21865,7 +21865,7 @@ public fun svqsubNU16(op1: Svuint16T, op2: UShort): Svuint16T = svqsubU16(op1, s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_u32])
  */
 public fun svqsubU32(op1: Svuint32T, op2: Svuint32T): Svuint32T {
-    fun svqsubU32(op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    fun svqsubU32(op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svqsubU32(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -21880,7 +21880,7 @@ public fun svqsubNU32(op1: Svuint32T, op2: UInt): Svuint32T = svqsubU32(op1, svd
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_u64])
  */
 public fun svqsubU64(op1: Svuint64T, op2: Svuint64T): Svuint64T {
-    fun svqsubU64(op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    fun svqsubU64(op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svqsubU64(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -21895,7 +21895,7 @@ public fun svqsubNU64(op1: Svuint64T, op2: ULong): Svuint64T = svqsubU64(op1, sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrbit[_s8]_m)
  */
 public fun svrbitS8M(inactive: Svint8T, pg: SvboolT, op: Svint8T): Svint8T {
-    fun svrbitS8M(inactive1: Svint8T, pg1: SvboolT, op1: Svint8T): Svint8T = null as Svint8T
+    fun svrbitS8M(inactive1: Svint8T, pg1: SvboolT, op1: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svrbitS8M(inactive, pg, op)
 }
 
@@ -21916,7 +21916,7 @@ public fun svrbitS8Z(pg: SvboolT, op: Svint8T): Svint8T = svrbitS8M(svdupNS8(0),
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrbit[_s16]_m)
  */
 public fun svrbitS16M(inactive: Svint16T, pg: SvboolT, op: Svint16T): Svint16T {
-    fun svrbitS16M(inactive1: Svint16T, pg1: Svbool8T, op1: Svint16T): Svint16T = null as Svint16T
+    fun svrbitS16M(inactive1: Svint16T, pg1: Svbool8T, op1: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svrbitS16M(inactive, pg.sveInto(), op)
 }
 
@@ -21937,7 +21937,7 @@ public fun svrbitS16Z(pg: SvboolT, op: Svint16T): Svint16T = svrbitS16M(svdupNS1
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrbit[_s32]_m)
  */
 public fun svrbitS32M(inactive: Svint32T, pg: SvboolT, op: Svint32T): Svint32T {
-    fun svrbitS32M(inactive1: Svint32T, pg1: Svbool4T, op1: Svint32T): Svint32T = null as Svint32T
+    fun svrbitS32M(inactive1: Svint32T, pg1: Svbool4T, op1: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svrbitS32M(inactive, pg.sveInto(), op)
 }
 
@@ -21958,7 +21958,7 @@ public fun svrbitS32Z(pg: SvboolT, op: Svint32T): Svint32T = svrbitS32M(svdupNS3
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrbit[_s64]_m)
  */
 public fun svrbitS64M(inactive: Svint64T, pg: SvboolT, op: Svint64T): Svint64T {
-    fun svrbitS64M(inactive1: Svint64T, pg1: Svbool2T, op1: Svint64T): Svint64T = null as Svint64T
+    fun svrbitS64M(inactive1: Svint64T, pg1: Svbool2T, op1: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svrbitS64M(inactive, pg.sveInto(), op)
 }
 
@@ -22057,7 +22057,7 @@ public fun svrdffr(): SvboolT = svrdffrZ(svptrueB8())
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrdffrZ)
  */
 public fun svrdffrZ(pg: SvboolT): SvboolT {
-    fun svrdffrZ(pg1: SvboolT): SvboolT = null as SvboolT
+    fun svrdffrZ(pg1: SvboolT): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svrdffrZ(pg)
 }
 
@@ -22066,7 +22066,7 @@ public fun svrdffrZ(pg: SvboolT): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrecpe[_f32])
  */
 public fun svrecpeF32(op: Svfloat32T): Svfloat32T {
-    fun svrecpeF32(op1: Svfloat32T): Svfloat32T = null as Svfloat32T
+    fun svrecpeF32(op1: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svrecpeF32(op)
 }
 
@@ -22075,7 +22075,7 @@ public fun svrecpeF32(op: Svfloat32T): Svfloat32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrecpe[_f64])
  */
 public fun svrecpeF64(op: Svfloat64T): Svfloat64T {
-    fun svrecpeF64(op1: Svfloat64T): Svfloat64T = null as Svfloat64T
+    fun svrecpeF64(op1: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svrecpeF64(op)
 }
 
@@ -22084,7 +22084,7 @@ public fun svrecpeF64(op: Svfloat64T): Svfloat64T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrecps[_f32])
  */
 public fun svrecpsF32(op1: Svfloat32T, op2: Svfloat32T): Svfloat32T {
-    fun svrecpsF32(op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = null as Svfloat32T
+    fun svrecpsF32(op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svrecpsF32(op1, op2)
 }
 
@@ -22093,7 +22093,7 @@ public fun svrecpsF32(op1: Svfloat32T, op2: Svfloat32T): Svfloat32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrecps[_f64])
  */
 public fun svrecpsF64(op1: Svfloat64T, op2: Svfloat64T): Svfloat64T {
-    fun svrecpsF64(op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = null as Svfloat64T
+    fun svrecpsF64(op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svrecpsF64(op1, op2)
 }
 
@@ -22102,7 +22102,7 @@ public fun svrecpsF64(op1: Svfloat64T, op2: Svfloat64T): Svfloat64T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrecpx[_f32]_m)
  */
 public fun svrecpxF32M(inactive: Svfloat32T, pg: SvboolT, op: Svfloat32T): Svfloat32T {
-    fun svrecpxF32M(inactive1: Svfloat32T, pg1: Svbool4T, op1: Svfloat32T): Svfloat32T = null as Svfloat32T
+    fun svrecpxF32M(inactive1: Svfloat32T, pg1: Svbool4T, op1: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svrecpxF32M(inactive, pg.sveInto(), op)
 }
 
@@ -22123,7 +22123,7 @@ public fun svrecpxF32Z(pg: SvboolT, op: Svfloat32T): Svfloat32T = svrecpxF32M(sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrecpx[_f64]_m)
  */
 public fun svrecpxF64M(inactive: Svfloat64T, pg: SvboolT, op: Svfloat64T): Svfloat64T {
-    fun svrecpxF64M(inactive1: Svfloat64T, pg1: Svbool2T, op1: Svfloat64T): Svfloat64T = null as Svfloat64T
+    fun svrecpxF64M(inactive1: Svfloat64T, pg1: Svbool2T, op1: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svrecpxF64M(inactive, pg.sveInto(), op)
 }
 
@@ -22744,7 +22744,7 @@ public fun svreinterpretU64U64(op: Svuint64T): Svuint64T = transmuteWithLayouts(
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrevB16)
  */
 public fun svrevB16(op: SvboolT): SvboolT {
-    fun svrevB16(op1: SvboolT): SvboolT = null as SvboolT
+    fun svrevB16(op1: SvboolT): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svrevB16(op.sveInto())
 }
 
@@ -22753,7 +22753,7 @@ public fun svrevB16(op: SvboolT): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrevB32)
  */
 public fun svrevB32(op: SvboolT): SvboolT {
-    fun svrevB32(op1: SvboolT): SvboolT = null as SvboolT
+    fun svrevB32(op1: SvboolT): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svrevB32(op.sveInto())
 }
 
@@ -22762,7 +22762,7 @@ public fun svrevB32(op: SvboolT): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrevB64)
  */
 public fun svrevB64(op: SvboolT): SvboolT {
-    fun svrevB64(op1: SvboolT): SvboolT = null as SvboolT
+    fun svrevB64(op1: SvboolT): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svrevB64(op.sveInto())
 }
 
@@ -22771,7 +22771,7 @@ public fun svrevB64(op: SvboolT): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrev[_f32])
  */
 public fun svrevF32(op: Svfloat32T): Svfloat32T {
-    fun svrevF32(op1: Svfloat32T): Svfloat32T = null as Svfloat32T
+    fun svrevF32(op1: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svrevF32(op)
 }
 
@@ -22780,7 +22780,7 @@ public fun svrevF32(op: Svfloat32T): Svfloat32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrev[_f64])
  */
 public fun svrevF64(op: Svfloat64T): Svfloat64T {
-    fun svrevF64(op1: Svfloat64T): Svfloat64T = null as Svfloat64T
+    fun svrevF64(op1: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svrevF64(op)
 }
 
@@ -22789,7 +22789,7 @@ public fun svrevF64(op: Svfloat64T): Svfloat64T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrev[_s8])
  */
 public fun svrevS8(op: Svint8T): Svint8T {
-    fun svrevS8(op1: Svint8T): Svint8T = null as Svint8T
+    fun svrevS8(op1: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svrevS8(op)
 }
 
@@ -22798,7 +22798,7 @@ public fun svrevS8(op: Svint8T): Svint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrev[_s16])
  */
 public fun svrevS16(op: Svint16T): Svint16T {
-    fun svrevS16(op1: Svint16T): Svint16T = null as Svint16T
+    fun svrevS16(op1: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svrevS16(op)
 }
 
@@ -22807,7 +22807,7 @@ public fun svrevS16(op: Svint16T): Svint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrev[_s32])
  */
 public fun svrevS32(op: Svint32T): Svint32T {
-    fun svrevS32(op1: Svint32T): Svint32T = null as Svint32T
+    fun svrevS32(op1: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svrevS32(op)
 }
 
@@ -22816,7 +22816,7 @@ public fun svrevS32(op: Svint32T): Svint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrev[_s64])
  */
 public fun svrevS64(op: Svint64T): Svint64T {
-    fun svrevS64(op1: Svint64T): Svint64T = null as Svint64T
+    fun svrevS64(op1: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svrevS64(op)
 }
 
@@ -22849,7 +22849,7 @@ public fun svrevU64(op: Svuint64T): Svuint64T = svrevS64(op.asSigned()).asUnsign
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrev[_b8])
  */
 public fun svrevB8(op: SvboolT): SvboolT {
-    fun svrevB8(op1: SvboolT): SvboolT = null as SvboolT
+    fun svrevB8(op1: SvboolT): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svrevB8(op)
 }
 
@@ -22858,7 +22858,7 @@ public fun svrevB8(op: SvboolT): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrevb[_s16]_m)
  */
 public fun svrevbS16M(inactive: Svint16T, pg: SvboolT, op: Svint16T): Svint16T {
-    fun svrevbS16M(inactive1: Svint16T, pg1: Svbool8T, op1: Svint16T): Svint16T = null as Svint16T
+    fun svrevbS16M(inactive1: Svint16T, pg1: Svbool8T, op1: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svrevbS16M(inactive, pg.sveInto(), op)
 }
 
@@ -22879,7 +22879,7 @@ public fun svrevbS16Z(pg: SvboolT, op: Svint16T): Svint16T = svrevbS16M(svdupNS1
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrevb[_s32]_m)
  */
 public fun svrevbS32M(inactive: Svint32T, pg: SvboolT, op: Svint32T): Svint32T {
-    fun svrevbS32M(inactive1: Svint32T, pg1: Svbool4T, op1: Svint32T): Svint32T = null as Svint32T
+    fun svrevbS32M(inactive1: Svint32T, pg1: Svbool4T, op1: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svrevbS32M(inactive, pg.sveInto(), op)
 }
 
@@ -22900,7 +22900,7 @@ public fun svrevbS32Z(pg: SvboolT, op: Svint32T): Svint32T = svrevbS32M(svdupNS3
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrevb[_s64]_m)
  */
 public fun svrevbS64M(inactive: Svint64T, pg: SvboolT, op: Svint64T): Svint64T {
-    fun svrevbS64M(inactive1: Svint64T, pg1: Svbool2T, op1: Svint64T): Svint64T = null as Svint64T
+    fun svrevbS64M(inactive1: Svint64T, pg1: Svbool2T, op1: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svrevbS64M(inactive, pg.sveInto(), op)
 }
 
@@ -22975,7 +22975,7 @@ public fun svrevbU64Z(pg: SvboolT, op: Svuint64T): Svuint64T = svrevbU64M(svdupN
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrevh[_s32]_m)
  */
 public fun svrevhS32M(inactive: Svint32T, pg: SvboolT, op: Svint32T): Svint32T {
-    fun svrevhS32M(inactive1: Svint32T, pg1: Svbool4T, op1: Svint32T): Svint32T = null as Svint32T
+    fun svrevhS32M(inactive1: Svint32T, pg1: Svbool4T, op1: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svrevhS32M(inactive, pg.sveInto(), op)
 }
 
@@ -22996,7 +22996,7 @@ public fun svrevhS32Z(pg: SvboolT, op: Svint32T): Svint32T = svrevhS32M(svdupNS3
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrevh[_s64]_m)
  */
 public fun svrevhS64M(inactive: Svint64T, pg: SvboolT, op: Svint64T): Svint64T {
-    fun svrevhS64M(inactive1: Svint64T, pg1: Svbool2T, op1: Svint64T): Svint64T = null as Svint64T
+    fun svrevhS64M(inactive1: Svint64T, pg1: Svbool2T, op1: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svrevhS64M(inactive, pg.sveInto(), op)
 }
 
@@ -23053,7 +23053,7 @@ public fun svrevhU64Z(pg: SvboolT, op: Svuint64T): Svuint64T = svrevhU64M(svdupN
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrevw[_s64]_m)
  */
 public fun svrevwS64M(inactive: Svint64T, pg: SvboolT, op: Svint64T): Svint64T {
-    fun svrevwS64M(inactive1: Svint64T, pg1: Svbool2T, op1: Svint64T): Svint64T = null as Svint64T
+    fun svrevwS64M(inactive1: Svint64T, pg1: Svbool2T, op1: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svrevwS64M(inactive, pg.sveInto(), op)
 }
 
@@ -23092,7 +23092,7 @@ public fun svrevwU64Z(pg: SvboolT, op: Svuint64T): Svuint64T = svrevwU64M(svdupN
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrinta[_f32]_m)
  */
 public fun svrintaF32M(inactive: Svfloat32T, pg: SvboolT, op: Svfloat32T): Svfloat32T {
-    fun svrintaF32M(inactive1: Svfloat32T, pg1: Svbool4T, op1: Svfloat32T): Svfloat32T = null as Svfloat32T
+    fun svrintaF32M(inactive1: Svfloat32T, pg1: Svbool4T, op1: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svrintaF32M(inactive, pg.sveInto(), op)
 }
 
@@ -23113,7 +23113,7 @@ public fun svrintaF32Z(pg: SvboolT, op: Svfloat32T): Svfloat32T = svrintaF32M(sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrinta[_f64]_m)
  */
 public fun svrintaF64M(inactive: Svfloat64T, pg: SvboolT, op: Svfloat64T): Svfloat64T {
-    fun svrintaF64M(inactive1: Svfloat64T, pg1: Svbool2T, op1: Svfloat64T): Svfloat64T = null as Svfloat64T
+    fun svrintaF64M(inactive1: Svfloat64T, pg1: Svbool2T, op1: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svrintaF64M(inactive, pg.sveInto(), op)
 }
 
@@ -23134,7 +23134,7 @@ public fun svrintaF64Z(pg: SvboolT, op: Svfloat64T): Svfloat64T = svrintaF64M(sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrinti[_f32]_m)
  */
 public fun svrintiF32M(inactive: Svfloat32T, pg: SvboolT, op: Svfloat32T): Svfloat32T {
-    fun svrintiF32M(inactive1: Svfloat32T, pg1: Svbool4T, op1: Svfloat32T): Svfloat32T = null as Svfloat32T
+    fun svrintiF32M(inactive1: Svfloat32T, pg1: Svbool4T, op1: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svrintiF32M(inactive, pg.sveInto(), op)
 }
 
@@ -23155,7 +23155,7 @@ public fun svrintiF32Z(pg: SvboolT, op: Svfloat32T): Svfloat32T = svrintiF32M(sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrinti[_f64]_m)
  */
 public fun svrintiF64M(inactive: Svfloat64T, pg: SvboolT, op: Svfloat64T): Svfloat64T {
-    fun svrintiF64M(inactive1: Svfloat64T, pg1: Svbool2T, op1: Svfloat64T): Svfloat64T = null as Svfloat64T
+    fun svrintiF64M(inactive1: Svfloat64T, pg1: Svbool2T, op1: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svrintiF64M(inactive, pg.sveInto(), op)
 }
 
@@ -23176,7 +23176,7 @@ public fun svrintiF64Z(pg: SvboolT, op: Svfloat64T): Svfloat64T = svrintiF64M(sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrintm[_f32]_m)
  */
 public fun svrintmF32M(inactive: Svfloat32T, pg: SvboolT, op: Svfloat32T): Svfloat32T {
-    fun svrintmF32M(inactive1: Svfloat32T, pg1: Svbool4T, op1: Svfloat32T): Svfloat32T = null as Svfloat32T
+    fun svrintmF32M(inactive1: Svfloat32T, pg1: Svbool4T, op1: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svrintmF32M(inactive, pg.sveInto(), op)
 }
 
@@ -23197,7 +23197,7 @@ public fun svrintmF32Z(pg: SvboolT, op: Svfloat32T): Svfloat32T = svrintmF32M(sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrintm[_f64]_m)
  */
 public fun svrintmF64M(inactive: Svfloat64T, pg: SvboolT, op: Svfloat64T): Svfloat64T {
-    fun svrintmF64M(inactive1: Svfloat64T, pg1: Svbool2T, op1: Svfloat64T): Svfloat64T = null as Svfloat64T
+    fun svrintmF64M(inactive1: Svfloat64T, pg1: Svbool2T, op1: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svrintmF64M(inactive, pg.sveInto(), op)
 }
 
@@ -23218,7 +23218,7 @@ public fun svrintmF64Z(pg: SvboolT, op: Svfloat64T): Svfloat64T = svrintmF64M(sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrintn[_f32]_m)
  */
 public fun svrintnF32M(inactive: Svfloat32T, pg: SvboolT, op: Svfloat32T): Svfloat32T {
-    fun svrintnF32M(inactive1: Svfloat32T, pg1: Svbool4T, op1: Svfloat32T): Svfloat32T = null as Svfloat32T
+    fun svrintnF32M(inactive1: Svfloat32T, pg1: Svbool4T, op1: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svrintnF32M(inactive, pg.sveInto(), op)
 }
 
@@ -23239,7 +23239,7 @@ public fun svrintnF32Z(pg: SvboolT, op: Svfloat32T): Svfloat32T = svrintnF32M(sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrintn[_f64]_m)
  */
 public fun svrintnF64M(inactive: Svfloat64T, pg: SvboolT, op: Svfloat64T): Svfloat64T {
-    fun svrintnF64M(inactive1: Svfloat64T, pg1: Svbool2T, op1: Svfloat64T): Svfloat64T = null as Svfloat64T
+    fun svrintnF64M(inactive1: Svfloat64T, pg1: Svbool2T, op1: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svrintnF64M(inactive, pg.sveInto(), op)
 }
 
@@ -23260,7 +23260,7 @@ public fun svrintnF64Z(pg: SvboolT, op: Svfloat64T): Svfloat64T = svrintnF64M(sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrintp[_f32]_m)
  */
 public fun svrintpF32M(inactive: Svfloat32T, pg: SvboolT, op: Svfloat32T): Svfloat32T {
-    fun svrintpF32M(inactive1: Svfloat32T, pg1: Svbool4T, op1: Svfloat32T): Svfloat32T = null as Svfloat32T
+    fun svrintpF32M(inactive1: Svfloat32T, pg1: Svbool4T, op1: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svrintpF32M(inactive, pg.sveInto(), op)
 }
 
@@ -23281,7 +23281,7 @@ public fun svrintpF32Z(pg: SvboolT, op: Svfloat32T): Svfloat32T = svrintpF32M(sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrintp[_f64]_m)
  */
 public fun svrintpF64M(inactive: Svfloat64T, pg: SvboolT, op: Svfloat64T): Svfloat64T {
-    fun svrintpF64M(inactive1: Svfloat64T, pg1: Svbool2T, op1: Svfloat64T): Svfloat64T = null as Svfloat64T
+    fun svrintpF64M(inactive1: Svfloat64T, pg1: Svbool2T, op1: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svrintpF64M(inactive, pg.sveInto(), op)
 }
 
@@ -23302,7 +23302,7 @@ public fun svrintpF64Z(pg: SvboolT, op: Svfloat64T): Svfloat64T = svrintpF64M(sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrintx[_f32]_m)
  */
 public fun svrintxF32M(inactive: Svfloat32T, pg: SvboolT, op: Svfloat32T): Svfloat32T {
-    fun svrintxF32M(inactive1: Svfloat32T, pg1: Svbool4T, op1: Svfloat32T): Svfloat32T = null as Svfloat32T
+    fun svrintxF32M(inactive1: Svfloat32T, pg1: Svbool4T, op1: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svrintxF32M(inactive, pg.sveInto(), op)
 }
 
@@ -23323,7 +23323,7 @@ public fun svrintxF32Z(pg: SvboolT, op: Svfloat32T): Svfloat32T = svrintxF32M(sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrintx[_f64]_m)
  */
 public fun svrintxF64M(inactive: Svfloat64T, pg: SvboolT, op: Svfloat64T): Svfloat64T {
-    fun svrintxF64M(inactive1: Svfloat64T, pg1: Svbool2T, op1: Svfloat64T): Svfloat64T = null as Svfloat64T
+    fun svrintxF64M(inactive1: Svfloat64T, pg1: Svbool2T, op1: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svrintxF64M(inactive, pg.sveInto(), op)
 }
 
@@ -23344,7 +23344,7 @@ public fun svrintxF64Z(pg: SvboolT, op: Svfloat64T): Svfloat64T = svrintxF64M(sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrintz[_f32]_m)
  */
 public fun svrintzF32M(inactive: Svfloat32T, pg: SvboolT, op: Svfloat32T): Svfloat32T {
-    fun svrintzF32M(inactive1: Svfloat32T, pg1: Svbool4T, op1: Svfloat32T): Svfloat32T = null as Svfloat32T
+    fun svrintzF32M(inactive1: Svfloat32T, pg1: Svbool4T, op1: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svrintzF32M(inactive, pg.sveInto(), op)
 }
 
@@ -23365,7 +23365,7 @@ public fun svrintzF32Z(pg: SvboolT, op: Svfloat32T): Svfloat32T = svrintzF32M(sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrintz[_f64]_m)
  */
 public fun svrintzF64M(inactive: Svfloat64T, pg: SvboolT, op: Svfloat64T): Svfloat64T {
-    fun svrintzF64M(inactive1: Svfloat64T, pg1: Svbool2T, op1: Svfloat64T): Svfloat64T = null as Svfloat64T
+    fun svrintzF64M(inactive1: Svfloat64T, pg1: Svbool2T, op1: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svrintzF64M(inactive, pg.sveInto(), op)
 }
 
@@ -23386,7 +23386,7 @@ public fun svrintzF64Z(pg: SvboolT, op: Svfloat64T): Svfloat64T = svrintzF64M(sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrsqrte[_f32])
  */
 public fun svrsqrteF32(op: Svfloat32T): Svfloat32T {
-    fun svrsqrteF32(op1: Svfloat32T): Svfloat32T = null as Svfloat32T
+    fun svrsqrteF32(op1: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svrsqrteF32(op)
 }
 
@@ -23395,7 +23395,7 @@ public fun svrsqrteF32(op: Svfloat32T): Svfloat32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrsqrte[_f64])
  */
 public fun svrsqrteF64(op: Svfloat64T): Svfloat64T {
-    fun svrsqrteF64(op1: Svfloat64T): Svfloat64T = null as Svfloat64T
+    fun svrsqrteF64(op1: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svrsqrteF64(op)
 }
 
@@ -23404,7 +23404,7 @@ public fun svrsqrteF64(op: Svfloat64T): Svfloat64T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrsqrts[_f32])
  */
 public fun svrsqrtsF32(op1: Svfloat32T, op2: Svfloat32T): Svfloat32T {
-    fun svrsqrtsF32(op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = null as Svfloat32T
+    fun svrsqrtsF32(op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svrsqrtsF32(op1, op2)
 }
 
@@ -23413,7 +23413,7 @@ public fun svrsqrtsF32(op1: Svfloat32T, op2: Svfloat32T): Svfloat32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrsqrts[_f64])
  */
 public fun svrsqrtsF64(op1: Svfloat64T, op2: Svfloat64T): Svfloat64T {
-    fun svrsqrtsF64(op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = null as Svfloat64T
+    fun svrsqrtsF64(op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svrsqrtsF64(op1, op2)
 }
 
@@ -23422,7 +23422,7 @@ public fun svrsqrtsF64(op1: Svfloat64T, op2: Svfloat64T): Svfloat64T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svscale[_f32]_m)
  */
 public fun svscaleF32M(pg: SvboolT, op1: Svfloat32T, op2: Svint32T): Svfloat32T {
-    fun svscaleF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svint32T): Svfloat32T = null as Svfloat32T
+    fun svscaleF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svint32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svscaleF32M(pg.sveInto(), op1, op2)
 }
 
@@ -23461,7 +23461,7 @@ public fun svscaleNF32Z(pg: SvboolT, op1: Svfloat32T, op2: Int): Svfloat32T = sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svscale[_f64]_m)
  */
 public fun svscaleF64M(pg: SvboolT, op1: Svfloat64T, op2: Svint64T): Svfloat64T {
-    fun svscaleF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svint64T): Svfloat64T = null as Svfloat64T
+    fun svscaleF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svint64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svscaleF64M(pg.sveInto(), op1, op2)
 }
 
@@ -23499,67 +23499,67 @@ public fun svscaleNF64Z(pg: SvboolT, op1: Svfloat64T, op2: Long): Svfloat64T = s
  * Conditionally select elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsel[_b])
  */
-public fun svselB(pg: SvboolT, op1: SvboolT, op2: SvboolT): SvboolT = simdSelect(pg, op1, op2)
+public fun svselB(pg: SvboolT, op1: SvboolT, op2: SvboolT): SvboolT = run { val _simdArg0 = pg; val _simdArg1 = op1; val _simdArg2 = op2; _simdArg1 }
 
 /**
  * Conditionally select elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsel[_f32])
  */
-public fun svselF32(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T): Svfloat32T = simdSelect<Svbool4T>(pg.sveInto(), op1, op2)
+public fun svselF32(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T): Svfloat32T = run { val _simdArg0 = pg.sveInto(); val _simdArg1 = op1; val _simdArg2 = op2; _simdArg1 }
 
 /**
  * Conditionally select elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsel[_f64])
  */
-public fun svselF64(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T): Svfloat64T = simdSelect<Svbool2T>(pg.sveInto(), op1, op2)
+public fun svselF64(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T): Svfloat64T = run { val _simdArg0 = pg.sveInto(); val _simdArg1 = op1; val _simdArg2 = op2; _simdArg1 }
 
 /**
  * Conditionally select elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsel[_s8])
  */
-public fun svselS8(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T = simdSelect<SvboolT>(pg, op1, op2)
+public fun svselS8(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T = run { val _simdArg0 = pg; val _simdArg1 = op1; val _simdArg2 = op2; _simdArg1 }
 
 /**
  * Conditionally select elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsel[_s16])
  */
-public fun svselS16(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T = simdSelect<Svbool8T>(pg.sveInto(), op1, op2)
+public fun svselS16(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T = run { val _simdArg0 = pg.sveInto(); val _simdArg1 = op1; val _simdArg2 = op2; _simdArg1 }
 
 /**
  * Conditionally select elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsel[_s32])
  */
-public fun svselS32(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T = simdSelect<Svbool4T>(pg.sveInto(), op1, op2)
+public fun svselS32(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T = run { val _simdArg0 = pg.sveInto(); val _simdArg1 = op1; val _simdArg2 = op2; _simdArg1 }
 
 /**
  * Conditionally select elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsel[_s64])
  */
-public fun svselS64(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T = simdSelect<Svbool2T>(pg.sveInto(), op1, op2)
+public fun svselS64(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T = run { val _simdArg0 = pg.sveInto(); val _simdArg1 = op1; val _simdArg2 = op2; _simdArg1 }
 
 /**
  * Conditionally select elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsel[_u8])
  */
-public fun svselU8(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T = simdSelect<SvboolT>(pg, op1, op2)
+public fun svselU8(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T = run { val _simdArg0 = pg; val _simdArg1 = op1; val _simdArg2 = op2; _simdArg1 }
 
 /**
  * Conditionally select elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsel[_u16])
  */
-public fun svselU16(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T = simdSelect<Svbool8T>(pg.sveInto(), op1, op2)
+public fun svselU16(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T = run { val _simdArg0 = pg.sveInto(); val _simdArg1 = op1; val _simdArg2 = op2; _simdArg1 }
 
 /**
  * Conditionally select elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsel[_u32])
  */
-public fun svselU32(pg: SvboolT, op1: Svuint32T, op2: Svuint32T): Svuint32T = simdSelect<Svbool4T>(pg.sveInto(), op1, op2)
+public fun svselU32(pg: SvboolT, op1: Svuint32T, op2: Svuint32T): Svuint32T = run { val _simdArg0 = pg.sveInto(); val _simdArg1 = op1; val _simdArg2 = op2; _simdArg1 }
 
 /**
  * Conditionally select elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsel[_u64])
  */
-public fun svselU64(pg: SvboolT, op1: Svuint64T, op2: Svuint64T): Svuint64T = simdSelect<Svbool2T>(pg.sveInto(), op1, op2)
+public fun svselU64(pg: SvboolT, op1: Svuint64T, op2: Svuint64T): Svuint64T = run { val _simdArg0 = pg.sveInto(); val _simdArg1 = op1; val _simdArg2 = op2; _simdArg1 }
 
 /**
  * Change one vector in a tuple of two vectors
@@ -23905,7 +23905,7 @@ public fun svsetffr() {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsplice[_f32])
  */
 public fun svspliceF32(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T): Svfloat32T {
-    fun svspliceF32(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = null as Svfloat32T
+    fun svspliceF32(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svspliceF32(pg.sveInto(), op1, op2)
 }
 
@@ -23914,7 +23914,7 @@ public fun svspliceF32(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T): Svfloat32
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsplice[_f64])
  */
 public fun svspliceF64(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T): Svfloat64T {
-    fun svspliceF64(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = null as Svfloat64T
+    fun svspliceF64(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svspliceF64(pg.sveInto(), op1, op2)
 }
 
@@ -23923,7 +23923,7 @@ public fun svspliceF64(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T): Svfloat64
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsplice[_s8])
  */
 public fun svspliceS8(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T {
-    fun svspliceS8(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    fun svspliceS8(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svspliceS8(pg, op1, op2)
 }
 
@@ -23932,7 +23932,7 @@ public fun svspliceS8(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsplice[_s16])
  */
 public fun svspliceS16(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T {
-    fun svspliceS16(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    fun svspliceS16(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svspliceS16(pg.sveInto(), op1, op2)
 }
 
@@ -23941,7 +23941,7 @@ public fun svspliceS16(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsplice[_s32])
  */
 public fun svspliceS32(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T {
-    fun svspliceS32(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    fun svspliceS32(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svspliceS32(pg.sveInto(), op1, op2)
 }
 
@@ -23950,7 +23950,7 @@ public fun svspliceS32(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsplice[_s64])
  */
 public fun svspliceS64(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T {
-    fun svspliceS64(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    fun svspliceS64(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svspliceS64(pg.sveInto(), op1, op2)
 }
 
@@ -23983,7 +23983,7 @@ public fun svspliceU64(pg: SvboolT, op1: Svuint64T, op2: Svuint64T): Svuint64T =
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsqrt[_f32]_m)
  */
 public fun svsqrtF32M(inactive: Svfloat32T, pg: SvboolT, op: Svfloat32T): Svfloat32T {
-    fun svsqrtF32M(inactive1: Svfloat32T, pg1: Svbool4T, op1: Svfloat32T): Svfloat32T = null as Svfloat32T
+    fun svsqrtF32M(inactive1: Svfloat32T, pg1: Svbool4T, op1: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svsqrtF32M(inactive, pg.sveInto(), op)
 }
 
@@ -24004,7 +24004,7 @@ public fun svsqrtF32Z(pg: SvboolT, op: Svfloat32T): Svfloat32T = svsqrtF32M(svdu
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsqrt[_f64]_m)
  */
 public fun svsqrtF64M(inactive: Svfloat64T, pg: SvboolT, op: Svfloat64T): Svfloat64T {
-    fun svsqrtF64M(inactive1: Svfloat64T, pg1: Svbool2T, op1: Svfloat64T): Svfloat64T = null as Svfloat64T
+    fun svsqrtF64M(inactive1: Svfloat64T, pg1: Svbool2T, op1: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svsqrtF64M(inactive, pg.sveInto(), op)
 }
 
@@ -24751,7 +24751,7 @@ public fun svst1VnumU64(pg: SvboolT, base: MutPtr, vnum: Long, data: Svuint64T) 
  */
 public fun svst1bS16(pg: SvboolT, base: MutPtr, data: Svint16T) {
     fun svst1bS16(data1: Nxv8i8, pg1: Svbool8T, ptr: MutPtr) {}
-    svst1bS16(Simd.simdCast(data), pg.sveInto(), base)
+    svst1bS16(run { val _simdArg0 = data; _simdArg0 }, pg.sveInto(), base)
 }
 
 /**
@@ -24763,7 +24763,7 @@ public fun svst1bS16(pg: SvboolT, base: MutPtr, data: Svint16T) {
  */
 public fun svst1bS32(pg: SvboolT, base: MutPtr, data: Svint32T) {
     fun svst1bS32(data1: Nxv4i8, pg1: Svbool4T, ptr: MutPtr) {}
-    svst1bS32(Simd.simdCast(data), pg.sveInto(), base)
+    svst1bS32(run { val _simdArg0 = data; _simdArg0 }, pg.sveInto(), base)
 }
 
 /**
@@ -24775,7 +24775,7 @@ public fun svst1bS32(pg: SvboolT, base: MutPtr, data: Svint32T) {
  */
 public fun svst1hS32(pg: SvboolT, base: MutPtr, data: Svint32T) {
     fun svst1hS32(data1: Nxv4i16, pg1: Svbool4T, ptr: MutPtr) {}
-    svst1hS32(Simd.simdCast(data), pg.sveInto(), base)
+    svst1hS32(run { val _simdArg0 = data; _simdArg0 }, pg.sveInto(), base)
 }
 
 /**
@@ -24787,7 +24787,7 @@ public fun svst1hS32(pg: SvboolT, base: MutPtr, data: Svint32T) {
  */
 public fun svst1bS64(pg: SvboolT, base: MutPtr, data: Svint64T) {
     fun svst1bS64(data1: Nxv2i8, pg1: Svbool2T, ptr: MutPtr) {}
-    svst1bS64(Simd.simdCast(data), pg.sveInto(), base)
+    svst1bS64(run { val _simdArg0 = data; _simdArg0 }, pg.sveInto(), base)
 }
 
 /**
@@ -24799,7 +24799,7 @@ public fun svst1bS64(pg: SvboolT, base: MutPtr, data: Svint64T) {
  */
 public fun svst1hS64(pg: SvboolT, base: MutPtr, data: Svint64T) {
     fun svst1hS64(data1: Nxv2i16, pg1: Svbool2T, ptr: MutPtr) {}
-    svst1hS64(Simd.simdCast(data), pg.sveInto(), base)
+    svst1hS64(run { val _simdArg0 = data; _simdArg0 }, pg.sveInto(), base)
 }
 
 /**
@@ -24811,7 +24811,7 @@ public fun svst1hS64(pg: SvboolT, base: MutPtr, data: Svint64T) {
  */
 public fun svst1wS64(pg: SvboolT, base: MutPtr, data: Svint64T) {
     fun svst1wS64(data1: Nxv2i32, pg1: Svbool2T, ptr: MutPtr) {}
-    svst1wS64(Simd.simdCast(data), pg.sveInto(), base)
+    svst1wS64(run { val _simdArg0 = data; _simdArg0 }, pg.sveInto(), base)
 }
 
 /**
@@ -24889,7 +24889,7 @@ public fun svst1wU64(pg: SvboolT, base: MutPtr, data: Svuint64T) {
  */
 public fun svst1bScatterS32offsetS32(pg: SvboolT, base: MutPtr, offsets: Svint32T, data: Svint32T) {
     fun svst1bScatterS32offsetS32(data1: Nxv4i8, pg1: Svbool4T, base1: MutPtr, offsets1: Svint32T) {}
-    svst1bScatterS32offsetS32(Simd.simdCast(data), pg.sveInto(), base, offsets)
+    svst1bScatterS32offsetS32(run { val _simdArg0 = data; _simdArg0 }, pg.sveInto(), base, offsets)
 }
 
 /**
@@ -24901,7 +24901,7 @@ public fun svst1bScatterS32offsetS32(pg: SvboolT, base: MutPtr, offsets: Svint32
  */
 public fun svst1hScatterS32offsetS32(pg: SvboolT, base: MutPtr, offsets: Svint32T, data: Svint32T) {
     fun svst1hScatterS32offsetS32(data1: Nxv4i16, pg1: Svbool4T, base1: MutPtr, offsets1: Svint32T) {}
-    svst1hScatterS32offsetS32(Simd.simdCast(data), pg.sveInto(), base, offsets)
+    svst1hScatterS32offsetS32(run { val _simdArg0 = data; _simdArg0 }, pg.sveInto(), base, offsets)
 }
 
 /**
@@ -24935,7 +24935,7 @@ public fun svst1hScatterS32offsetU32(pg: SvboolT, base: MutPtr, offsets: Svint32
  */
 public fun svst1bScatterS64offsetS64(pg: SvboolT, base: MutPtr, offsets: Svint64T, data: Svint64T) {
     fun svst1bScatterS64offsetS64(data1: Nxv2i8, pg1: Svbool2T, base1: MutPtr, offsets1: Svint64T) {}
-    svst1bScatterS64offsetS64(Simd.simdCast(data), pg.sveInto(), base, offsets)
+    svst1bScatterS64offsetS64(run { val _simdArg0 = data; _simdArg0 }, pg.sveInto(), base, offsets)
 }
 
 /**
@@ -24947,7 +24947,7 @@ public fun svst1bScatterS64offsetS64(pg: SvboolT, base: MutPtr, offsets: Svint64
  */
 public fun svst1hScatterS64offsetS64(pg: SvboolT, base: MutPtr, offsets: Svint64T, data: Svint64T) {
     fun svst1hScatterS64offsetS64(data1: Nxv2i16, pg1: Svbool2T, base1: MutPtr, offsets1: Svint64T) {}
-    svst1hScatterS64offsetS64(Simd.simdCast(data), pg.sveInto(), base, offsets)
+    svst1hScatterS64offsetS64(run { val _simdArg0 = data; _simdArg0 }, pg.sveInto(), base, offsets)
 }
 
 /**
@@ -24959,7 +24959,7 @@ public fun svst1hScatterS64offsetS64(pg: SvboolT, base: MutPtr, offsets: Svint64
  */
 public fun svst1wScatterS64offsetS64(pg: SvboolT, base: MutPtr, offsets: Svint64T, data: Svint64T) {
     fun svst1wScatterS64offsetS64(data1: Nxv2i32, pg1: Svbool2T, base1: MutPtr, offsets1: Svint64T) {}
-    svst1wScatterS64offsetS64(Simd.simdCast(data), pg.sveInto(), base, offsets)
+    svst1wScatterS64offsetS64(run { val _simdArg0 = data; _simdArg0 }, pg.sveInto(), base, offsets)
 }
 
 /**
@@ -25004,7 +25004,7 @@ public fun svst1wScatterS64offsetU64(pg: SvboolT, base: MutPtr, offsets: Svint64
  */
 public fun svst1bScatterU32offsetS32(pg: SvboolT, base: MutPtr, offsets: Svuint32T, data: Svint32T) {
     fun svst1bScatterU32offsetS32(data1: Nxv4i8, pg1: Svbool4T, base1: MutPtr, offsets1: Svint32T) {}
-    svst1bScatterU32offsetS32(Simd.simdCast(data), pg.sveInto(), base, offsets.asSigned())
+    svst1bScatterU32offsetS32(run { val _simdArg0 = data; _simdArg0 }, pg.sveInto(), base, offsets.asSigned())
 }
 
 /**
@@ -25016,7 +25016,7 @@ public fun svst1bScatterU32offsetS32(pg: SvboolT, base: MutPtr, offsets: Svuint3
  */
 public fun svst1hScatterU32offsetS32(pg: SvboolT, base: MutPtr, offsets: Svuint32T, data: Svint32T) {
     fun svst1hScatterU32offsetS32(data1: Nxv4i16, pg1: Svbool4T, base1: MutPtr, offsets1: Svint32T) {}
-    svst1hScatterU32offsetS32(Simd.simdCast(data), pg.sveInto(), base, offsets.asSigned())
+    svst1hScatterU32offsetS32(run { val _simdArg0 = data; _simdArg0 }, pg.sveInto(), base, offsets.asSigned())
 }
 
 /**
@@ -25117,7 +25117,7 @@ public fun svst1wScatterU64offsetU64(pg: SvboolT, base: MutPtr, offsets: Svuint6
  */
 public fun svst1bScatterU32baseOffsetS32(pg: SvboolT, bases: Svuint32T, offset: Long, data: Svint32T) {
     fun svst1bScatterU32baseOffsetS32(data1: Nxv4i8, pg1: Svbool4T, bases1: Svint32T, offset1: Long) {}
-    svst1bScatterU32baseOffsetS32(Simd.simdCast(data), pg.sveInto(), bases.asSigned(), offset)
+    svst1bScatterU32baseOffsetS32(run { val _simdArg0 = data; _simdArg0 }, pg.sveInto(), bases.asSigned(), offset)
 }
 
 /**
@@ -25130,7 +25130,7 @@ public fun svst1bScatterU32baseOffsetS32(pg: SvboolT, bases: Svuint32T, offset: 
  */
 public fun svst1hScatterU32baseOffsetS32(pg: SvboolT, bases: Svuint32T, offset: Long, data: Svint32T) {
     fun svst1hScatterU32baseOffsetS32(data1: Nxv4i16, pg1: Svbool4T, bases1: Svint32T, offset1: Long) {}
-    svst1hScatterU32baseOffsetS32(Simd.simdCast(data), pg.sveInto(), bases.asSigned(), offset)
+    svst1hScatterU32baseOffsetS32(run { val _simdArg0 = data; _simdArg0 }, pg.sveInto(), bases.asSigned(), offset)
 }
 
 /**
@@ -25167,7 +25167,7 @@ public fun svst1hScatterU32baseOffsetU32(pg: SvboolT, bases: Svuint32T, offset: 
  */
 public fun svst1bScatterU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset: Long, data: Svint64T) {
     fun svst1bScatterU64baseOffsetS64(data1: Nxv2i8, pg1: Svbool2T, bases1: Svint64T, offset1: Long) {}
-    svst1bScatterU64baseOffsetS64(Simd.simdCast(data), pg.sveInto(), bases.asSigned(), offset)
+    svst1bScatterU64baseOffsetS64(run { val _simdArg0 = data; _simdArg0 }, pg.sveInto(), bases.asSigned(), offset)
 }
 
 /**
@@ -25180,7 +25180,7 @@ public fun svst1bScatterU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset: 
  */
 public fun svst1hScatterU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset: Long, data: Svint64T) {
     fun svst1hScatterU64baseOffsetS64(data1: Nxv2i16, pg1: Svbool2T, bases1: Svint64T, offset1: Long) {}
-    svst1hScatterU64baseOffsetS64(Simd.simdCast(data), pg.sveInto(), bases.asSigned(), offset)
+    svst1hScatterU64baseOffsetS64(run { val _simdArg0 = data; _simdArg0 }, pg.sveInto(), bases.asSigned(), offset)
 }
 
 /**
@@ -25193,7 +25193,7 @@ public fun svst1hScatterU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset: 
  */
 public fun svst1wScatterU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset: Long, data: Svint64T) {
     fun svst1wScatterU64baseOffsetS64(data1: Nxv2i32, pg1: Svbool2T, bases1: Svint64T, offset1: Long) {}
-    svst1wScatterU64baseOffsetS64(Simd.simdCast(data), pg.sveInto(), bases.asSigned(), offset)
+    svst1wScatterU64baseOffsetS64(run { val _simdArg0 = data; _simdArg0 }, pg.sveInto(), bases.asSigned(), offset)
 }
 
 /**
@@ -25493,7 +25493,7 @@ public fun svst1wVnumU64(pg: SvboolT, base: MutPtr, vnum: Long, data: Svuint64T)
  */
 public fun svst1hScatterS32indexS32(pg: SvboolT, base: MutPtr, indices: Svint32T, data: Svint32T) {
     fun svst1hScatterS32indexS32(data1: Nxv4i16, pg1: Svbool4T, base1: MutPtr, indices1: Svint32T) {}
-    svst1hScatterS32indexS32(Simd.simdCast(data), pg.sveInto(), base, indices)
+    svst1hScatterS32indexS32(run { val _simdArg0 = data; _simdArg0 }, pg.sveInto(), base, indices)
 }
 
 /**
@@ -25516,7 +25516,7 @@ public fun svst1hScatterS32indexU32(pg: SvboolT, base: MutPtr, indices: Svint32T
  */
 public fun svst1hScatterS64indexS64(pg: SvboolT, base: MutPtr, indices: Svint64T, data: Svint64T) {
     fun svst1hScatterS64indexS64(data1: Nxv2i16, pg1: Svbool2T, base1: MutPtr, indices1: Svint64T) {}
-    svst1hScatterS64indexS64(Simd.simdCast(data), pg.sveInto(), base, indices)
+    svst1hScatterS64indexS64(run { val _simdArg0 = data; _simdArg0 }, pg.sveInto(), base, indices)
 }
 
 /**
@@ -25528,7 +25528,7 @@ public fun svst1hScatterS64indexS64(pg: SvboolT, base: MutPtr, indices: Svint64T
  */
 public fun svst1wScatterS64indexS64(pg: SvboolT, base: MutPtr, indices: Svint64T, data: Svint64T) {
     fun svst1wScatterS64indexS64(data1: Nxv2i32, pg1: Svbool2T, base1: MutPtr, indices1: Svint64T) {}
-    svst1wScatterS64indexS64(Simd.simdCast(data), pg.sveInto(), base, indices)
+    svst1wScatterS64indexS64(run { val _simdArg0 = data; _simdArg0 }, pg.sveInto(), base, indices)
 }
 
 /**
@@ -25562,7 +25562,7 @@ public fun svst1wScatterS64indexU64(pg: SvboolT, base: MutPtr, indices: Svint64T
  */
 public fun svst1hScatterU32indexS32(pg: SvboolT, base: MutPtr, indices: Svuint32T, data: Svint32T) {
     fun svst1hScatterU32indexS32(data1: Nxv4i16, pg1: Svbool4T, base1: MutPtr, indices1: Svint32T) {}
-    svst1hScatterU32indexS32(Simd.simdCast(data), pg.sveInto(), base, indices.asSigned())
+    svst1hScatterU32indexS32(run { val _simdArg0 = data; _simdArg0 }, pg.sveInto(), base, indices.asSigned())
 }
 
 /**
@@ -26621,7 +26621,7 @@ public fun svstnt1VnumU64(pg: SvboolT, base: MutPtr, vnum: Long, data: Svuint64T
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsub[_f32]_m)
  */
 public fun svsubF32M(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T): Svfloat32T {
-    fun svsubF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = null as Svfloat32T
+    fun svsubF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svsubF32M(pg.sveInto(), op1, op2)
 }
 
@@ -26660,7 +26660,7 @@ public fun svsubNF32Z(pg: SvboolT, op1: Svfloat32T, op2: Float): Svfloat32T = sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsub[_f64]_m)
  */
 public fun svsubF64M(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T): Svfloat64T {
-    fun svsubF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = null as Svfloat64T
+    fun svsubF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svsubF64M(pg.sveInto(), op1, op2)
 }
 
@@ -26699,7 +26699,7 @@ public fun svsubNF64Z(pg: SvboolT, op1: Svfloat64T, op2: Double): Svfloat64T = s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsub[_s8]_m)
  */
 public fun svsubS8M(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T {
-    fun svsubS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    fun svsubS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svsubS8M(pg, op1, op2)
 }
 
@@ -26738,7 +26738,7 @@ public fun svsubNS8Z(pg: SvboolT, op1: Svint8T, op2: Byte): Svint8T = svsubS8Z(p
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsub[_s16]_m)
  */
 public fun svsubS16M(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T {
-    fun svsubS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    fun svsubS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svsubS16M(pg.sveInto(), op1, op2)
 }
 
@@ -26777,7 +26777,7 @@ public fun svsubNS16Z(pg: SvboolT, op1: Svint16T, op2: Short): Svint16T = svsubS
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsub[_s32]_m)
  */
 public fun svsubS32M(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T {
-    fun svsubS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    fun svsubS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svsubS32M(pg.sveInto(), op1, op2)
 }
 
@@ -26816,7 +26816,7 @@ public fun svsubNS32Z(pg: SvboolT, op1: Svint32T, op2: Int): Svint32T = svsubS32
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsub[_s64]_m)
  */
 public fun svsubS64M(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T {
-    fun svsubS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    fun svsubS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svsubS64M(pg.sveInto(), op1, op2)
 }
 
@@ -26999,7 +26999,7 @@ public fun svsubNU64Z(pg: SvboolT, op1: Svuint64T, op2: ULong): Svuint64T = svsu
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubr[_f32]_m)
  */
 public fun svsubrF32M(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T): Svfloat32T {
-    fun svsubrF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = null as Svfloat32T
+    fun svsubrF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svsubrF32M(pg.sveInto(), op1, op2)
 }
 
@@ -27038,7 +27038,7 @@ public fun svsubrNF32Z(pg: SvboolT, op1: Svfloat32T, op2: Float): Svfloat32T = s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubr[_f64]_m)
  */
 public fun svsubrF64M(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T): Svfloat64T {
-    fun svsubrF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = null as Svfloat64T
+    fun svsubrF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svsubrF64M(pg.sveInto(), op1, op2)
 }
 
@@ -27077,7 +27077,7 @@ public fun svsubrNF64Z(pg: SvboolT, op1: Svfloat64T, op2: Double): Svfloat64T = 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubr[_s8]_m)
  */
 public fun svsubrS8M(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T {
-    fun svsubrS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    fun svsubrS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svsubrS8M(pg, op1, op2)
 }
 
@@ -27116,7 +27116,7 @@ public fun svsubrNS8Z(pg: SvboolT, op1: Svint8T, op2: Byte): Svint8T = svsubrS8Z
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubr[_s16]_m)
  */
 public fun svsubrS16M(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T {
-    fun svsubrS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    fun svsubrS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svsubrS16M(pg.sveInto(), op1, op2)
 }
 
@@ -27155,7 +27155,7 @@ public fun svsubrNS16Z(pg: SvboolT, op1: Svint16T, op2: Short): Svint16T = svsub
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubr[_s32]_m)
  */
 public fun svsubrS32M(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T {
-    fun svsubrS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    fun svsubrS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svsubrS32M(pg.sveInto(), op1, op2)
 }
 
@@ -27194,7 +27194,7 @@ public fun svsubrNS32Z(pg: SvboolT, op1: Svint32T, op2: Int): Svint32T = svsubrS
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubr[_s64]_m)
  */
 public fun svsubrS64M(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T {
-    fun svsubrS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    fun svsubrS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svsubrS64M(pg.sveInto(), op1, op2)
 }
 
@@ -27377,7 +27377,7 @@ public fun svsubrNU64Z(pg: SvboolT, op1: Svuint64T, op2: ULong): Svuint64T = svs
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsudotLane[_s32])
  */
 public fun svsudotLaneS32(op1: Svint32T, op2: Svint8T, op3: Svuint8T, immIndex: Int): Svint32T {
-    fun svsudotLaneS32(op11: Svint32T, op21: Svint8T, op31: Svint8T, immIndex: Int): Svint32T = null as Svint32T
+    fun svsudotLaneS32(op11: Svint32T, op21: Svint8T, op31: Svint8T, immIndex: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
     }
@@ -27401,7 +27401,7 @@ public fun svsudotNS32(op1: Svint32T, op2: Svint8T, op3: UByte): Svint32T = svsu
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtbl[_f32])
  */
 public fun svtblF32(data: Svfloat32T, indices: Svuint32T): Svfloat32T {
-    fun svtblF32(data1: Svfloat32T, indices1: Svint32T): Svfloat32T = null as Svfloat32T
+    fun svtblF32(data1: Svfloat32T, indices1: Svint32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svtblF32(data, indices.asSigned())
 }
 
@@ -27410,7 +27410,7 @@ public fun svtblF32(data: Svfloat32T, indices: Svuint32T): Svfloat32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtbl[_f64])
  */
 public fun svtblF64(data: Svfloat64T, indices: Svuint64T): Svfloat64T {
-    fun svtblF64(data1: Svfloat64T, indices1: Svint64T): Svfloat64T = null as Svfloat64T
+    fun svtblF64(data1: Svfloat64T, indices1: Svint64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svtblF64(data, indices.asSigned())
 }
 
@@ -27419,7 +27419,7 @@ public fun svtblF64(data: Svfloat64T, indices: Svuint64T): Svfloat64T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtbl[_s8])
  */
 public fun svtblS8(data: Svint8T, indices: Svuint8T): Svint8T {
-    fun svtblS8(data1: Svint8T, indices1: Svint8T): Svint8T = null as Svint8T
+    fun svtblS8(data1: Svint8T, indices1: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svtblS8(data, indices.asSigned())
 }
 
@@ -27428,7 +27428,7 @@ public fun svtblS8(data: Svint8T, indices: Svuint8T): Svint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtbl[_s16])
  */
 public fun svtblS16(data: Svint16T, indices: Svuint16T): Svint16T {
-    fun svtblS16(data1: Svint16T, indices1: Svint16T): Svint16T = null as Svint16T
+    fun svtblS16(data1: Svint16T, indices1: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svtblS16(data, indices.asSigned())
 }
 
@@ -27437,7 +27437,7 @@ public fun svtblS16(data: Svint16T, indices: Svuint16T): Svint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtbl[_s32])
  */
 public fun svtblS32(data: Svint32T, indices: Svuint32T): Svint32T {
-    fun svtblS32(data1: Svint32T, indices1: Svint32T): Svint32T = null as Svint32T
+    fun svtblS32(data1: Svint32T, indices1: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svtblS32(data, indices.asSigned())
 }
 
@@ -27446,7 +27446,7 @@ public fun svtblS32(data: Svint32T, indices: Svuint32T): Svint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtbl[_s64])
  */
 public fun svtblS64(data: Svint64T, indices: Svuint64T): Svint64T {
-    fun svtblS64(data1: Svint64T, indices1: Svint64T): Svint64T = null as Svint64T
+    fun svtblS64(data1: Svint64T, indices1: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svtblS64(data, indices.asSigned())
 }
 
@@ -27479,7 +27479,7 @@ public fun svtblU64(data: Svuint64T, indices: Svuint64T): Svuint64T = svtblS64(d
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtmad[_f32])
  */
 public fun svtmadF32(op1: Svfloat32T, op2: Svfloat32T, imm3: Int): Svfloat32T {
-    fun svtmadF32(op11: Svfloat32T, op21: Svfloat32T, imm3: Int): Svfloat32T = null as Svfloat32T
+    fun svtmadF32(op11: Svfloat32T, op21: Svfloat32T, imm3: Int): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     run {
         check(0 <= imm3 && imm3 <= 7) { "IMM3 is not in range 0-7" }
     }
@@ -27491,7 +27491,7 @@ public fun svtmadF32(op1: Svfloat32T, op2: Svfloat32T, imm3: Int): Svfloat32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtmad[_f64])
  */
 public fun svtmadF64(op1: Svfloat64T, op2: Svfloat64T, imm3: Int): Svfloat64T {
-    fun svtmadF64(op11: Svfloat64T, op21: Svfloat64T, imm3: Int): Svfloat64T = null as Svfloat64T
+    fun svtmadF64(op11: Svfloat64T, op21: Svfloat64T, imm3: Int): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     run {
         check(0 <= imm3 && imm3 <= 7) { "IMM3 is not in range 0-7" }
     }
@@ -27503,7 +27503,7 @@ public fun svtmadF64(op1: Svfloat64T, op2: Svfloat64T, imm3: Int): Svfloat64T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtrn1B16)
  */
 public fun svtrn1B16(op1: SvboolT, op2: SvboolT): SvboolT {
-    fun svtrn1B16(op11: SvboolT, op21: SvboolT): SvboolT = null as SvboolT
+    fun svtrn1B16(op11: SvboolT, op21: SvboolT): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svtrn1B16(op1.sveInto(), op2.sveInto())
 }
 
@@ -27512,7 +27512,7 @@ public fun svtrn1B16(op1: SvboolT, op2: SvboolT): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtrn1B32)
  */
 public fun svtrn1B32(op1: SvboolT, op2: SvboolT): SvboolT {
-    fun svtrn1B32(op11: SvboolT, op21: SvboolT): SvboolT = null as SvboolT
+    fun svtrn1B32(op11: SvboolT, op21: SvboolT): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svtrn1B32(op1.sveInto(), op2.sveInto())
 }
 
@@ -27521,7 +27521,7 @@ public fun svtrn1B32(op1: SvboolT, op2: SvboolT): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtrn1B64)
  */
 public fun svtrn1B64(op1: SvboolT, op2: SvboolT): SvboolT {
-    fun svtrn1B64(op11: SvboolT, op21: SvboolT): SvboolT = null as SvboolT
+    fun svtrn1B64(op11: SvboolT, op21: SvboolT): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svtrn1B64(op1.sveInto(), op2.sveInto())
 }
 
@@ -27530,7 +27530,7 @@ public fun svtrn1B64(op1: SvboolT, op2: SvboolT): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtrn1[_f32])
  */
 public fun svtrn1F32(op1: Svfloat32T, op2: Svfloat32T): Svfloat32T {
-    fun svtrn1F32(op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = null as Svfloat32T
+    fun svtrn1F32(op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svtrn1F32(op1, op2)
 }
 
@@ -27539,7 +27539,7 @@ public fun svtrn1F32(op1: Svfloat32T, op2: Svfloat32T): Svfloat32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtrn1[_f64])
  */
 public fun svtrn1F64(op1: Svfloat64T, op2: Svfloat64T): Svfloat64T {
-    fun svtrn1F64(op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = null as Svfloat64T
+    fun svtrn1F64(op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svtrn1F64(op1, op2)
 }
 
@@ -27548,7 +27548,7 @@ public fun svtrn1F64(op1: Svfloat64T, op2: Svfloat64T): Svfloat64T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtrn1[_s8])
  */
 public fun svtrn1S8(op1: Svint8T, op2: Svint8T): Svint8T {
-    fun svtrn1S8(op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    fun svtrn1S8(op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svtrn1S8(op1, op2)
 }
 
@@ -27557,7 +27557,7 @@ public fun svtrn1S8(op1: Svint8T, op2: Svint8T): Svint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtrn1[_s16])
  */
 public fun svtrn1S16(op1: Svint16T, op2: Svint16T): Svint16T {
-    fun svtrn1S16(op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    fun svtrn1S16(op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svtrn1S16(op1, op2)
 }
 
@@ -27566,7 +27566,7 @@ public fun svtrn1S16(op1: Svint16T, op2: Svint16T): Svint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtrn1[_s32])
  */
 public fun svtrn1S32(op1: Svint32T, op2: Svint32T): Svint32T {
-    fun svtrn1S32(op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    fun svtrn1S32(op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svtrn1S32(op1, op2)
 }
 
@@ -27575,7 +27575,7 @@ public fun svtrn1S32(op1: Svint32T, op2: Svint32T): Svint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtrn1[_s64])
  */
 public fun svtrn1S64(op1: Svint64T, op2: Svint64T): Svint64T {
-    fun svtrn1S64(op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    fun svtrn1S64(op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svtrn1S64(op1, op2)
 }
 
@@ -27608,7 +27608,7 @@ public fun svtrn1U64(op1: Svuint64T, op2: Svuint64T): Svuint64T = svtrn1S64(op1.
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtrn1[_b8])
  */
 public fun svtrn1B8(op1: SvboolT, op2: SvboolT): SvboolT {
-    fun svtrn1B8(op11: SvboolT, op21: SvboolT): SvboolT = null as SvboolT
+    fun svtrn1B8(op11: SvboolT, op21: SvboolT): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svtrn1B8(op1, op2)
 }
 
@@ -27617,7 +27617,7 @@ public fun svtrn1B8(op1: SvboolT, op2: SvboolT): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtrn1q[_f32])
  */
 public fun svtrn1qF32(op1: Svfloat32T, op2: Svfloat32T): Svfloat32T {
-    fun svtrn1qF32(op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = null as Svfloat32T
+    fun svtrn1qF32(op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svtrn1qF32(op1, op2)
 }
 
@@ -27626,7 +27626,7 @@ public fun svtrn1qF32(op1: Svfloat32T, op2: Svfloat32T): Svfloat32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtrn1q[_f64])
  */
 public fun svtrn1qF64(op1: Svfloat64T, op2: Svfloat64T): Svfloat64T {
-    fun svtrn1qF64(op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = null as Svfloat64T
+    fun svtrn1qF64(op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svtrn1qF64(op1, op2)
 }
 
@@ -27635,7 +27635,7 @@ public fun svtrn1qF64(op1: Svfloat64T, op2: Svfloat64T): Svfloat64T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtrn1q[_s8])
  */
 public fun svtrn1qS8(op1: Svint8T, op2: Svint8T): Svint8T {
-    fun svtrn1qS8(op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    fun svtrn1qS8(op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svtrn1qS8(op1, op2)
 }
 
@@ -27644,7 +27644,7 @@ public fun svtrn1qS8(op1: Svint8T, op2: Svint8T): Svint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtrn1q[_s16])
  */
 public fun svtrn1qS16(op1: Svint16T, op2: Svint16T): Svint16T {
-    fun svtrn1qS16(op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    fun svtrn1qS16(op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svtrn1qS16(op1, op2)
 }
 
@@ -27653,7 +27653,7 @@ public fun svtrn1qS16(op1: Svint16T, op2: Svint16T): Svint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtrn1q[_s32])
  */
 public fun svtrn1qS32(op1: Svint32T, op2: Svint32T): Svint32T {
-    fun svtrn1qS32(op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    fun svtrn1qS32(op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svtrn1qS32(op1, op2)
 }
 
@@ -27662,7 +27662,7 @@ public fun svtrn1qS32(op1: Svint32T, op2: Svint32T): Svint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtrn1q[_s64])
  */
 public fun svtrn1qS64(op1: Svint64T, op2: Svint64T): Svint64T {
-    fun svtrn1qS64(op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    fun svtrn1qS64(op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svtrn1qS64(op1, op2)
 }
 
@@ -27695,7 +27695,7 @@ public fun svtrn1qU64(op1: Svuint64T, op2: Svuint64T): Svuint64T = svtrn1qS64(op
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtrn2B16)
  */
 public fun svtrn2B16(op1: SvboolT, op2: SvboolT): SvboolT {
-    fun svtrn2B16(op11: SvboolT, op21: SvboolT): SvboolT = null as SvboolT
+    fun svtrn2B16(op11: SvboolT, op21: SvboolT): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svtrn2B16(op1.sveInto(), op2.sveInto())
 }
 
@@ -27704,7 +27704,7 @@ public fun svtrn2B16(op1: SvboolT, op2: SvboolT): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtrn2B32)
  */
 public fun svtrn2B32(op1: SvboolT, op2: SvboolT): SvboolT {
-    fun svtrn2B32(op11: SvboolT, op21: SvboolT): SvboolT = null as SvboolT
+    fun svtrn2B32(op11: SvboolT, op21: SvboolT): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svtrn2B32(op1.sveInto(), op2.sveInto())
 }
 
@@ -27713,7 +27713,7 @@ public fun svtrn2B32(op1: SvboolT, op2: SvboolT): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtrn2B64)
  */
 public fun svtrn2B64(op1: SvboolT, op2: SvboolT): SvboolT {
-    fun svtrn2B64(op11: SvboolT, op21: SvboolT): SvboolT = null as SvboolT
+    fun svtrn2B64(op11: SvboolT, op21: SvboolT): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svtrn2B64(op1.sveInto(), op2.sveInto())
 }
 
@@ -27722,7 +27722,7 @@ public fun svtrn2B64(op1: SvboolT, op2: SvboolT): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtrn2[_f32])
  */
 public fun svtrn2F32(op1: Svfloat32T, op2: Svfloat32T): Svfloat32T {
-    fun svtrn2F32(op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = null as Svfloat32T
+    fun svtrn2F32(op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svtrn2F32(op1, op2)
 }
 
@@ -27731,7 +27731,7 @@ public fun svtrn2F32(op1: Svfloat32T, op2: Svfloat32T): Svfloat32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtrn2[_f64])
  */
 public fun svtrn2F64(op1: Svfloat64T, op2: Svfloat64T): Svfloat64T {
-    fun svtrn2F64(op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = null as Svfloat64T
+    fun svtrn2F64(op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svtrn2F64(op1, op2)
 }
 
@@ -27740,7 +27740,7 @@ public fun svtrn2F64(op1: Svfloat64T, op2: Svfloat64T): Svfloat64T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtrn2[_s8])
  */
 public fun svtrn2S8(op1: Svint8T, op2: Svint8T): Svint8T {
-    fun svtrn2S8(op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    fun svtrn2S8(op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svtrn2S8(op1, op2)
 }
 
@@ -27749,7 +27749,7 @@ public fun svtrn2S8(op1: Svint8T, op2: Svint8T): Svint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtrn2[_s16])
  */
 public fun svtrn2S16(op1: Svint16T, op2: Svint16T): Svint16T {
-    fun svtrn2S16(op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    fun svtrn2S16(op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svtrn2S16(op1, op2)
 }
 
@@ -27758,7 +27758,7 @@ public fun svtrn2S16(op1: Svint16T, op2: Svint16T): Svint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtrn2[_s32])
  */
 public fun svtrn2S32(op1: Svint32T, op2: Svint32T): Svint32T {
-    fun svtrn2S32(op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    fun svtrn2S32(op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svtrn2S32(op1, op2)
 }
 
@@ -27767,7 +27767,7 @@ public fun svtrn2S32(op1: Svint32T, op2: Svint32T): Svint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtrn2[_s64])
  */
 public fun svtrn2S64(op1: Svint64T, op2: Svint64T): Svint64T {
-    fun svtrn2S64(op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    fun svtrn2S64(op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svtrn2S64(op1, op2)
 }
 
@@ -27800,7 +27800,7 @@ public fun svtrn2U64(op1: Svuint64T, op2: Svuint64T): Svuint64T = svtrn2S64(op1.
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtrn2[_b8])
  */
 public fun svtrn2B8(op1: SvboolT, op2: SvboolT): SvboolT {
-    fun svtrn2B8(op11: SvboolT, op21: SvboolT): SvboolT = null as SvboolT
+    fun svtrn2B8(op11: SvboolT, op21: SvboolT): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svtrn2B8(op1, op2)
 }
 
@@ -27809,7 +27809,7 @@ public fun svtrn2B8(op1: SvboolT, op2: SvboolT): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtrn2q[_f32])
  */
 public fun svtrn2qF32(op1: Svfloat32T, op2: Svfloat32T): Svfloat32T {
-    fun svtrn2qF32(op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = null as Svfloat32T
+    fun svtrn2qF32(op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svtrn2qF32(op1, op2)
 }
 
@@ -27818,7 +27818,7 @@ public fun svtrn2qF32(op1: Svfloat32T, op2: Svfloat32T): Svfloat32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtrn2q[_f64])
  */
 public fun svtrn2qF64(op1: Svfloat64T, op2: Svfloat64T): Svfloat64T {
-    fun svtrn2qF64(op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = null as Svfloat64T
+    fun svtrn2qF64(op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svtrn2qF64(op1, op2)
 }
 
@@ -27827,7 +27827,7 @@ public fun svtrn2qF64(op1: Svfloat64T, op2: Svfloat64T): Svfloat64T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtrn2q[_s8])
  */
 public fun svtrn2qS8(op1: Svint8T, op2: Svint8T): Svint8T {
-    fun svtrn2qS8(op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    fun svtrn2qS8(op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svtrn2qS8(op1, op2)
 }
 
@@ -27836,7 +27836,7 @@ public fun svtrn2qS8(op1: Svint8T, op2: Svint8T): Svint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtrn2q[_s16])
  */
 public fun svtrn2qS16(op1: Svint16T, op2: Svint16T): Svint16T {
-    fun svtrn2qS16(op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    fun svtrn2qS16(op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svtrn2qS16(op1, op2)
 }
 
@@ -27845,7 +27845,7 @@ public fun svtrn2qS16(op1: Svint16T, op2: Svint16T): Svint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtrn2q[_s32])
  */
 public fun svtrn2qS32(op1: Svint32T, op2: Svint32T): Svint32T {
-    fun svtrn2qS32(op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    fun svtrn2qS32(op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svtrn2qS32(op1, op2)
 }
 
@@ -27854,7 +27854,7 @@ public fun svtrn2qS32(op1: Svint32T, op2: Svint32T): Svint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtrn2q[_s64])
  */
 public fun svtrn2qS64(op1: Svint64T, op2: Svint64T): Svint64T {
-    fun svtrn2qS64(op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    fun svtrn2qS64(op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svtrn2qS64(op1, op2)
 }
 
@@ -27887,7 +27887,7 @@ public fun svtrn2qU64(op1: Svuint64T, op2: Svuint64T): Svuint64T = svtrn2qS64(op
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtsmul[_f32])
  */
 public fun svtsmulF32(op1: Svfloat32T, op2: Svuint32T): Svfloat32T {
-    fun svtsmulF32(op11: Svfloat32T, op21: Svint32T): Svfloat32T = null as Svfloat32T
+    fun svtsmulF32(op11: Svfloat32T, op21: Svint32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svtsmulF32(op1, op2.asSigned())
 }
 
@@ -27896,7 +27896,7 @@ public fun svtsmulF32(op1: Svfloat32T, op2: Svuint32T): Svfloat32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtsmul[_f64])
  */
 public fun svtsmulF64(op1: Svfloat64T, op2: Svuint64T): Svfloat64T {
-    fun svtsmulF64(op11: Svfloat64T, op21: Svint64T): Svfloat64T = null as Svfloat64T
+    fun svtsmulF64(op11: Svfloat64T, op21: Svint64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svtsmulF64(op1, op2.asSigned())
 }
 
@@ -27905,7 +27905,7 @@ public fun svtsmulF64(op1: Svfloat64T, op2: Svuint64T): Svfloat64T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtssel[_f32])
  */
 public fun svtsselF32(op1: Svfloat32T, op2: Svuint32T): Svfloat32T {
-    fun svtsselF32(op11: Svfloat32T, op21: Svint32T): Svfloat32T = null as Svfloat32T
+    fun svtsselF32(op11: Svfloat32T, op21: Svint32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svtsselF32(op1, op2.asSigned())
 }
 
@@ -27914,7 +27914,7 @@ public fun svtsselF32(op1: Svfloat32T, op2: Svuint32T): Svfloat32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtssel[_f64])
  */
 public fun svtsselF64(op1: Svfloat64T, op2: Svuint64T): Svfloat64T {
-    fun svtsselF64(op11: Svfloat64T, op21: Svint64T): Svfloat64T = null as Svfloat64T
+    fun svtsselF64(op11: Svfloat64T, op21: Svint64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svtsselF64(op1, op2.asSigned())
 }
 
@@ -28243,7 +28243,7 @@ public fun svundefU64(): Svuint64T = svdupNU64(0uL)
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svusdotLane[_s32])
  */
 public fun svusdotLaneS32(op1: Svint32T, op2: Svuint8T, op3: Svint8T, immIndex: Int): Svint32T {
-    fun svusdotLaneS32(op11: Svint32T, op21: Svint8T, op31: Svint8T, immIndex: Int): Svint32T = null as Svint32T
+    fun svusdotLaneS32(op11: Svint32T, op21: Svint8T, op31: Svint8T, immIndex: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
     }
@@ -28255,7 +28255,7 @@ public fun svusdotLaneS32(op1: Svint32T, op2: Svuint8T, op3: Svint8T, immIndex: 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svusdot[_s32])
  */
 public fun svusdotS32(op1: Svint32T, op2: Svuint8T, op3: Svint8T): Svint32T {
-    fun svusdotS32(op11: Svint32T, op21: Svint8T, op31: Svint8T): Svint32T = null as Svint32T
+    fun svusdotS32(op11: Svint32T, op21: Svint8T, op31: Svint8T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svusdotS32(op1, op2.asSigned(), op3)
 }
 
@@ -28270,7 +28270,7 @@ public fun svusdotNS32(op1: Svint32T, op2: Svuint8T, op3: Byte): Svint32T = svus
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svusmmla[_s32])
  */
 public fun svusmmlaS32(op1: Svint32T, op2: Svuint8T, op3: Svint8T): Svint32T {
-    fun svusmmlaS32(op11: Svint32T, op21: Svint8T, op31: Svint8T): Svint32T = null as Svint32T
+    fun svusmmlaS32(op11: Svint32T, op21: Svint8T, op31: Svint8T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svusmmlaS32(op1, op2.asSigned(), op3)
 }
 
@@ -28279,7 +28279,7 @@ public fun svusmmlaS32(op1: Svint32T, op2: Svuint8T, op3: Svint8T): Svint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuzp1B16)
  */
 public fun svuzp1B16(op1: SvboolT, op2: SvboolT): SvboolT {
-    fun svuzp1B16(op11: SvboolT, op21: SvboolT): SvboolT = null as SvboolT
+    fun svuzp1B16(op11: SvboolT, op21: SvboolT): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svuzp1B16(op1.sveInto(), op2.sveInto())
 }
 
@@ -28288,7 +28288,7 @@ public fun svuzp1B16(op1: SvboolT, op2: SvboolT): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuzp1B32)
  */
 public fun svuzp1B32(op1: SvboolT, op2: SvboolT): SvboolT {
-    fun svuzp1B32(op11: SvboolT, op21: SvboolT): SvboolT = null as SvboolT
+    fun svuzp1B32(op11: SvboolT, op21: SvboolT): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svuzp1B32(op1.sveInto(), op2.sveInto())
 }
 
@@ -28297,7 +28297,7 @@ public fun svuzp1B32(op1: SvboolT, op2: SvboolT): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuzp1B64)
  */
 public fun svuzp1B64(op1: SvboolT, op2: SvboolT): SvboolT {
-    fun svuzp1B64(op11: SvboolT, op21: SvboolT): SvboolT = null as SvboolT
+    fun svuzp1B64(op11: SvboolT, op21: SvboolT): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svuzp1B64(op1.sveInto(), op2.sveInto())
 }
 
@@ -28306,7 +28306,7 @@ public fun svuzp1B64(op1: SvboolT, op2: SvboolT): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuzp1[_f32])
  */
 public fun svuzp1F32(op1: Svfloat32T, op2: Svfloat32T): Svfloat32T {
-    fun svuzp1F32(op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = null as Svfloat32T
+    fun svuzp1F32(op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svuzp1F32(op1, op2)
 }
 
@@ -28315,7 +28315,7 @@ public fun svuzp1F32(op1: Svfloat32T, op2: Svfloat32T): Svfloat32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuzp1[_f64])
  */
 public fun svuzp1F64(op1: Svfloat64T, op2: Svfloat64T): Svfloat64T {
-    fun svuzp1F64(op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = null as Svfloat64T
+    fun svuzp1F64(op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svuzp1F64(op1, op2)
 }
 
@@ -28324,7 +28324,7 @@ public fun svuzp1F64(op1: Svfloat64T, op2: Svfloat64T): Svfloat64T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuzp1[_s8])
  */
 public fun svuzp1S8(op1: Svint8T, op2: Svint8T): Svint8T {
-    fun svuzp1S8(op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    fun svuzp1S8(op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svuzp1S8(op1, op2)
 }
 
@@ -28333,7 +28333,7 @@ public fun svuzp1S8(op1: Svint8T, op2: Svint8T): Svint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuzp1[_s16])
  */
 public fun svuzp1S16(op1: Svint16T, op2: Svint16T): Svint16T {
-    fun svuzp1S16(op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    fun svuzp1S16(op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svuzp1S16(op1, op2)
 }
 
@@ -28342,7 +28342,7 @@ public fun svuzp1S16(op1: Svint16T, op2: Svint16T): Svint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuzp1[_s32])
  */
 public fun svuzp1S32(op1: Svint32T, op2: Svint32T): Svint32T {
-    fun svuzp1S32(op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    fun svuzp1S32(op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svuzp1S32(op1, op2)
 }
 
@@ -28351,7 +28351,7 @@ public fun svuzp1S32(op1: Svint32T, op2: Svint32T): Svint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuzp1[_s64])
  */
 public fun svuzp1S64(op1: Svint64T, op2: Svint64T): Svint64T {
-    fun svuzp1S64(op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    fun svuzp1S64(op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svuzp1S64(op1, op2)
 }
 
@@ -28384,7 +28384,7 @@ public fun svuzp1U64(op1: Svuint64T, op2: Svuint64T): Svuint64T = svuzp1S64(op1.
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuzp1[_b8])
  */
 public fun svuzp1B8(op1: SvboolT, op2: SvboolT): SvboolT {
-    fun svuzp1B8(op11: SvboolT, op21: SvboolT): SvboolT = null as SvboolT
+    fun svuzp1B8(op11: SvboolT, op21: SvboolT): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svuzp1B8(op1, op2)
 }
 
@@ -28393,7 +28393,7 @@ public fun svuzp1B8(op1: SvboolT, op2: SvboolT): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuzp1q[_f32])
  */
 public fun svuzp1qF32(op1: Svfloat32T, op2: Svfloat32T): Svfloat32T {
-    fun svuzp1qF32(op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = null as Svfloat32T
+    fun svuzp1qF32(op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svuzp1qF32(op1, op2)
 }
 
@@ -28402,7 +28402,7 @@ public fun svuzp1qF32(op1: Svfloat32T, op2: Svfloat32T): Svfloat32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuzp1q[_f64])
  */
 public fun svuzp1qF64(op1: Svfloat64T, op2: Svfloat64T): Svfloat64T {
-    fun svuzp1qF64(op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = null as Svfloat64T
+    fun svuzp1qF64(op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svuzp1qF64(op1, op2)
 }
 
@@ -28411,7 +28411,7 @@ public fun svuzp1qF64(op1: Svfloat64T, op2: Svfloat64T): Svfloat64T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuzp1q[_s8])
  */
 public fun svuzp1qS8(op1: Svint8T, op2: Svint8T): Svint8T {
-    fun svuzp1qS8(op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    fun svuzp1qS8(op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svuzp1qS8(op1, op2)
 }
 
@@ -28420,7 +28420,7 @@ public fun svuzp1qS8(op1: Svint8T, op2: Svint8T): Svint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuzp1q[_s16])
  */
 public fun svuzp1qS16(op1: Svint16T, op2: Svint16T): Svint16T {
-    fun svuzp1qS16(op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    fun svuzp1qS16(op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svuzp1qS16(op1, op2)
 }
 
@@ -28429,7 +28429,7 @@ public fun svuzp1qS16(op1: Svint16T, op2: Svint16T): Svint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuzp1q[_s32])
  */
 public fun svuzp1qS32(op1: Svint32T, op2: Svint32T): Svint32T {
-    fun svuzp1qS32(op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    fun svuzp1qS32(op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svuzp1qS32(op1, op2)
 }
 
@@ -28438,7 +28438,7 @@ public fun svuzp1qS32(op1: Svint32T, op2: Svint32T): Svint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuzp1q[_s64])
  */
 public fun svuzp1qS64(op1: Svint64T, op2: Svint64T): Svint64T {
-    fun svuzp1qS64(op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    fun svuzp1qS64(op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svuzp1qS64(op1, op2)
 }
 
@@ -28471,7 +28471,7 @@ public fun svuzp1qU64(op1: Svuint64T, op2: Svuint64T): Svuint64T = svuzp1qS64(op
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuzp2B16)
  */
 public fun svuzp2B16(op1: SvboolT, op2: SvboolT): SvboolT {
-    fun svuzp2B16(op11: SvboolT, op21: SvboolT): SvboolT = null as SvboolT
+    fun svuzp2B16(op11: SvboolT, op21: SvboolT): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svuzp2B16(op1.sveInto(), op2.sveInto())
 }
 
@@ -28480,7 +28480,7 @@ public fun svuzp2B16(op1: SvboolT, op2: SvboolT): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuzp2B32)
  */
 public fun svuzp2B32(op1: SvboolT, op2: SvboolT): SvboolT {
-    fun svuzp2B32(op11: SvboolT, op21: SvboolT): SvboolT = null as SvboolT
+    fun svuzp2B32(op11: SvboolT, op21: SvboolT): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svuzp2B32(op1.sveInto(), op2.sveInto())
 }
 
@@ -28489,7 +28489,7 @@ public fun svuzp2B32(op1: SvboolT, op2: SvboolT): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuzp2B64)
  */
 public fun svuzp2B64(op1: SvboolT, op2: SvboolT): SvboolT {
-    fun svuzp2B64(op11: SvboolT, op21: SvboolT): SvboolT = null as SvboolT
+    fun svuzp2B64(op11: SvboolT, op21: SvboolT): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svuzp2B64(op1.sveInto(), op2.sveInto())
 }
 
@@ -28498,7 +28498,7 @@ public fun svuzp2B64(op1: SvboolT, op2: SvboolT): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuzp2[_f32])
  */
 public fun svuzp2F32(op1: Svfloat32T, op2: Svfloat32T): Svfloat32T {
-    fun svuzp2F32(op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = null as Svfloat32T
+    fun svuzp2F32(op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svuzp2F32(op1, op2)
 }
 
@@ -28507,7 +28507,7 @@ public fun svuzp2F32(op1: Svfloat32T, op2: Svfloat32T): Svfloat32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuzp2[_f64])
  */
 public fun svuzp2F64(op1: Svfloat64T, op2: Svfloat64T): Svfloat64T {
-    fun svuzp2F64(op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = null as Svfloat64T
+    fun svuzp2F64(op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svuzp2F64(op1, op2)
 }
 
@@ -28516,7 +28516,7 @@ public fun svuzp2F64(op1: Svfloat64T, op2: Svfloat64T): Svfloat64T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuzp2[_s8])
  */
 public fun svuzp2S8(op1: Svint8T, op2: Svint8T): Svint8T {
-    fun svuzp2S8(op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    fun svuzp2S8(op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svuzp2S8(op1, op2)
 }
 
@@ -28525,7 +28525,7 @@ public fun svuzp2S8(op1: Svint8T, op2: Svint8T): Svint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuzp2[_s16])
  */
 public fun svuzp2S16(op1: Svint16T, op2: Svint16T): Svint16T {
-    fun svuzp2S16(op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    fun svuzp2S16(op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svuzp2S16(op1, op2)
 }
 
@@ -28534,7 +28534,7 @@ public fun svuzp2S16(op1: Svint16T, op2: Svint16T): Svint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuzp2[_s32])
  */
 public fun svuzp2S32(op1: Svint32T, op2: Svint32T): Svint32T {
-    fun svuzp2S32(op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    fun svuzp2S32(op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svuzp2S32(op1, op2)
 }
 
@@ -28543,7 +28543,7 @@ public fun svuzp2S32(op1: Svint32T, op2: Svint32T): Svint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuzp2[_s64])
  */
 public fun svuzp2S64(op1: Svint64T, op2: Svint64T): Svint64T {
-    fun svuzp2S64(op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    fun svuzp2S64(op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svuzp2S64(op1, op2)
 }
 
@@ -28576,7 +28576,7 @@ public fun svuzp2U64(op1: Svuint64T, op2: Svuint64T): Svuint64T = svuzp2S64(op1.
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuzp2[_b8])
  */
 public fun svuzp2B8(op1: SvboolT, op2: SvboolT): SvboolT {
-    fun svuzp2B8(op11: SvboolT, op21: SvboolT): SvboolT = null as SvboolT
+    fun svuzp2B8(op11: SvboolT, op21: SvboolT): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svuzp2B8(op1, op2)
 }
 
@@ -28585,7 +28585,7 @@ public fun svuzp2B8(op1: SvboolT, op2: SvboolT): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuzp2q[_f32])
  */
 public fun svuzp2qF32(op1: Svfloat32T, op2: Svfloat32T): Svfloat32T {
-    fun svuzp2qF32(op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = null as Svfloat32T
+    fun svuzp2qF32(op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svuzp2qF32(op1, op2)
 }
 
@@ -28594,7 +28594,7 @@ public fun svuzp2qF32(op1: Svfloat32T, op2: Svfloat32T): Svfloat32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuzp2q[_f64])
  */
 public fun svuzp2qF64(op1: Svfloat64T, op2: Svfloat64T): Svfloat64T {
-    fun svuzp2qF64(op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = null as Svfloat64T
+    fun svuzp2qF64(op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svuzp2qF64(op1, op2)
 }
 
@@ -28603,7 +28603,7 @@ public fun svuzp2qF64(op1: Svfloat64T, op2: Svfloat64T): Svfloat64T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuzp2q[_s8])
  */
 public fun svuzp2qS8(op1: Svint8T, op2: Svint8T): Svint8T {
-    fun svuzp2qS8(op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    fun svuzp2qS8(op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svuzp2qS8(op1, op2)
 }
 
@@ -28612,7 +28612,7 @@ public fun svuzp2qS8(op1: Svint8T, op2: Svint8T): Svint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuzp2q[_s16])
  */
 public fun svuzp2qS16(op1: Svint16T, op2: Svint16T): Svint16T {
-    fun svuzp2qS16(op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    fun svuzp2qS16(op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svuzp2qS16(op1, op2)
 }
 
@@ -28621,7 +28621,7 @@ public fun svuzp2qS16(op1: Svint16T, op2: Svint16T): Svint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuzp2q[_s32])
  */
 public fun svuzp2qS32(op1: Svint32T, op2: Svint32T): Svint32T {
-    fun svuzp2qS32(op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    fun svuzp2qS32(op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svuzp2qS32(op1, op2)
 }
 
@@ -28630,7 +28630,7 @@ public fun svuzp2qS32(op1: Svint32T, op2: Svint32T): Svint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuzp2q[_s64])
  */
 public fun svuzp2qS64(op1: Svint64T, op2: Svint64T): Svint64T {
-    fun svuzp2qS64(op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    fun svuzp2qS64(op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svuzp2qS64(op1, op2)
 }
 
@@ -28663,7 +28663,7 @@ public fun svuzp2qU64(op1: Svuint64T, op2: Svuint64T): Svuint64T = svuzp2qS64(op
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhileleB8[_s32])
  */
 public fun svwhileleB8S32(op1: Int, op2: Int): SvboolT {
-    fun svwhileleB8S32(op11: Int, op21: Int): SvboolT = null as SvboolT
+    fun svwhileleB8S32(op11: Int, op21: Int): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svwhileleB8S32(op1, op2)
 }
 
@@ -28672,7 +28672,7 @@ public fun svwhileleB8S32(op1: Int, op2: Int): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhileleB16[_s32])
  */
 public fun svwhileleB16S32(op1: Int, op2: Int): SvboolT {
-    fun svwhileleB16S32(op11: Int, op21: Int): Svbool8T = null as Svbool8T
+    fun svwhileleB16S32(op11: Int, op21: Int): Svbool8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool8T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool8T>()).alignBytes)); res }
     return svwhileleB16S32(op1, op2).sveInto()
 }
 
@@ -28681,7 +28681,7 @@ public fun svwhileleB16S32(op1: Int, op2: Int): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhileleB32[_s32])
  */
 public fun svwhileleB32S32(op1: Int, op2: Int): SvboolT {
-    fun svwhileleB32S32(op11: Int, op21: Int): Svbool4T = null as Svbool4T
+    fun svwhileleB32S32(op11: Int, op21: Int): Svbool4T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); res }
     return svwhileleB32S32(op1, op2).sveInto()
 }
 
@@ -28690,7 +28690,7 @@ public fun svwhileleB32S32(op1: Int, op2: Int): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhileleB64[_s32])
  */
 public fun svwhileleB64S32(op1: Int, op2: Int): SvboolT {
-    fun svwhileleB64S32(op11: Int, op21: Int): Svbool2T = null as Svbool2T
+    fun svwhileleB64S32(op11: Int, op21: Int): Svbool2T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool2T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool2T>()).alignBytes)); res }
     return svwhileleB64S32(op1, op2).sveInto()
 }
 
@@ -28699,7 +28699,7 @@ public fun svwhileleB64S32(op1: Int, op2: Int): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhileleB8[_s64])
  */
 public fun svwhileleB8S64(op1: Long, op2: Long): SvboolT {
-    fun svwhileleB8S64(op11: Long, op21: Long): SvboolT = null as SvboolT
+    fun svwhileleB8S64(op11: Long, op21: Long): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svwhileleB8S64(op1, op2)
 }
 
@@ -28708,7 +28708,7 @@ public fun svwhileleB8S64(op1: Long, op2: Long): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhileleB16[_s64])
  */
 public fun svwhileleB16S64(op1: Long, op2: Long): SvboolT {
-    fun svwhileleB16S64(op11: Long, op21: Long): Svbool8T = null as Svbool8T
+    fun svwhileleB16S64(op11: Long, op21: Long): Svbool8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool8T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool8T>()).alignBytes)); res }
     return svwhileleB16S64(op1, op2).sveInto()
 }
 
@@ -28717,7 +28717,7 @@ public fun svwhileleB16S64(op1: Long, op2: Long): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhileleB32[_s64])
  */
 public fun svwhileleB32S64(op1: Long, op2: Long): SvboolT {
-    fun svwhileleB32S64(op11: Long, op21: Long): Svbool4T = null as Svbool4T
+    fun svwhileleB32S64(op11: Long, op21: Long): Svbool4T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); res }
     return svwhileleB32S64(op1, op2).sveInto()
 }
 
@@ -28726,7 +28726,7 @@ public fun svwhileleB32S64(op1: Long, op2: Long): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhileleB64[_s64])
  */
 public fun svwhileleB64S64(op1: Long, op2: Long): SvboolT {
-    fun svwhileleB64S64(op11: Long, op21: Long): Svbool2T = null as Svbool2T
+    fun svwhileleB64S64(op11: Long, op21: Long): Svbool2T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool2T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool2T>()).alignBytes)); res }
     return svwhileleB64S64(op1, op2).sveInto()
 }
 
@@ -28735,7 +28735,7 @@ public fun svwhileleB64S64(op1: Long, op2: Long): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhileleB8[_u32])
  */
 public fun svwhileleB8U32(op1: UInt, op2: UInt): SvboolT {
-    fun svwhileleB8U32(op11: Int, op21: Int): SvboolT = null as SvboolT
+    fun svwhileleB8U32(op11: Int, op21: Int): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svwhileleB8U32(op1.asSigned(), op2.asSigned())
 }
 
@@ -28744,7 +28744,7 @@ public fun svwhileleB8U32(op1: UInt, op2: UInt): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhileleB16[_u32])
  */
 public fun svwhileleB16U32(op1: UInt, op2: UInt): SvboolT {
-    fun svwhileleB16U32(op11: Int, op21: Int): Svbool8T = null as Svbool8T
+    fun svwhileleB16U32(op11: Int, op21: Int): Svbool8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool8T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool8T>()).alignBytes)); res }
     return svwhileleB16U32(op1.asSigned(), op2.asSigned()).sveInto()
 }
 
@@ -28753,7 +28753,7 @@ public fun svwhileleB16U32(op1: UInt, op2: UInt): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhileleB32[_u32])
  */
 public fun svwhileleB32U32(op1: UInt, op2: UInt): SvboolT {
-    fun svwhileleB32U32(op11: Int, op21: Int): Svbool4T = null as Svbool4T
+    fun svwhileleB32U32(op11: Int, op21: Int): Svbool4T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); res }
     return svwhileleB32U32(op1.asSigned(), op2.asSigned()).sveInto()
 }
 
@@ -28762,7 +28762,7 @@ public fun svwhileleB32U32(op1: UInt, op2: UInt): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhileleB64[_u32])
  */
 public fun svwhileleB64U32(op1: UInt, op2: UInt): SvboolT {
-    fun svwhileleB64U32(op11: Int, op21: Int): Svbool2T = null as Svbool2T
+    fun svwhileleB64U32(op11: Int, op21: Int): Svbool2T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool2T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool2T>()).alignBytes)); res }
     return svwhileleB64U32(op1.asSigned(), op2.asSigned()).sveInto()
 }
 
@@ -28771,7 +28771,7 @@ public fun svwhileleB64U32(op1: UInt, op2: UInt): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhileleB8[_u64])
  */
 public fun svwhileleB8U64(op1: ULong, op2: ULong): SvboolT {
-    fun svwhileleB8U64(op11: Long, op21: Long): SvboolT = null as SvboolT
+    fun svwhileleB8U64(op11: Long, op21: Long): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svwhileleB8U64(op1.asSigned(), op2.asSigned())
 }
 
@@ -28780,7 +28780,7 @@ public fun svwhileleB8U64(op1: ULong, op2: ULong): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhileleB16[_u64])
  */
 public fun svwhileleB16U64(op1: ULong, op2: ULong): SvboolT {
-    fun svwhileleB16U64(op11: Long, op21: Long): Svbool8T = null as Svbool8T
+    fun svwhileleB16U64(op11: Long, op21: Long): Svbool8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool8T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool8T>()).alignBytes)); res }
     return svwhileleB16U64(op1.asSigned(), op2.asSigned()).sveInto()
 }
 
@@ -28789,7 +28789,7 @@ public fun svwhileleB16U64(op1: ULong, op2: ULong): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhileleB32[_u64])
  */
 public fun svwhileleB32U64(op1: ULong, op2: ULong): SvboolT {
-    fun svwhileleB32U64(op11: Long, op21: Long): Svbool4T = null as Svbool4T
+    fun svwhileleB32U64(op11: Long, op21: Long): Svbool4T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); res }
     return svwhileleB32U64(op1.asSigned(), op2.asSigned()).sveInto()
 }
 
@@ -28798,7 +28798,7 @@ public fun svwhileleB32U64(op1: ULong, op2: ULong): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhileleB64[_u64])
  */
 public fun svwhileleB64U64(op1: ULong, op2: ULong): SvboolT {
-    fun svwhileleB64U64(op11: Long, op21: Long): Svbool2T = null as Svbool2T
+    fun svwhileleB64U64(op11: Long, op21: Long): Svbool2T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool2T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool2T>()).alignBytes)); res }
     return svwhileleB64U64(op1.asSigned(), op2.asSigned()).sveInto()
 }
 
@@ -28807,7 +28807,7 @@ public fun svwhileleB64U64(op1: ULong, op2: ULong): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhileltB8[_s32])
  */
 public fun svwhileltB8S32(op1: Int, op2: Int): SvboolT {
-    fun svwhileltB8S32(op11: Int, op21: Int): SvboolT = null as SvboolT
+    fun svwhileltB8S32(op11: Int, op21: Int): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svwhileltB8S32(op1, op2)
 }
 
@@ -28816,7 +28816,7 @@ public fun svwhileltB8S32(op1: Int, op2: Int): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhileltB16[_s32])
  */
 public fun svwhileltB16S32(op1: Int, op2: Int): SvboolT {
-    fun svwhileltB16S32(op11: Int, op21: Int): Svbool8T = null as Svbool8T
+    fun svwhileltB16S32(op11: Int, op21: Int): Svbool8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool8T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool8T>()).alignBytes)); res }
     return svwhileltB16S32(op1, op2).sveInto()
 }
 
@@ -28825,7 +28825,7 @@ public fun svwhileltB16S32(op1: Int, op2: Int): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhileltB32[_s32])
  */
 public fun svwhileltB32S32(op1: Int, op2: Int): SvboolT {
-    fun svwhileltB32S32(op11: Int, op21: Int): Svbool4T = null as Svbool4T
+    fun svwhileltB32S32(op11: Int, op21: Int): Svbool4T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); res }
     return svwhileltB32S32(op1, op2).sveInto()
 }
 
@@ -28834,7 +28834,7 @@ public fun svwhileltB32S32(op1: Int, op2: Int): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhileltB64[_s32])
  */
 public fun svwhileltB64S32(op1: Int, op2: Int): SvboolT {
-    fun svwhileltB64S32(op11: Int, op21: Int): Svbool2T = null as Svbool2T
+    fun svwhileltB64S32(op11: Int, op21: Int): Svbool2T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool2T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool2T>()).alignBytes)); res }
     return svwhileltB64S32(op1, op2).sveInto()
 }
 
@@ -28843,7 +28843,7 @@ public fun svwhileltB64S32(op1: Int, op2: Int): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhileltB8[_s64])
  */
 public fun svwhileltB8S64(op1: Long, op2: Long): SvboolT {
-    fun svwhileltB8S64(op11: Long, op21: Long): SvboolT = null as SvboolT
+    fun svwhileltB8S64(op11: Long, op21: Long): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svwhileltB8S64(op1, op2)
 }
 
@@ -28852,7 +28852,7 @@ public fun svwhileltB8S64(op1: Long, op2: Long): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhileltB16[_s64])
  */
 public fun svwhileltB16S64(op1: Long, op2: Long): SvboolT {
-    fun svwhileltB16S64(op11: Long, op21: Long): Svbool8T = null as Svbool8T
+    fun svwhileltB16S64(op11: Long, op21: Long): Svbool8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool8T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool8T>()).alignBytes)); res }
     return svwhileltB16S64(op1, op2).sveInto()
 }
 
@@ -28861,7 +28861,7 @@ public fun svwhileltB16S64(op1: Long, op2: Long): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhileltB32[_s64])
  */
 public fun svwhileltB32S64(op1: Long, op2: Long): SvboolT {
-    fun svwhileltB32S64(op11: Long, op21: Long): Svbool4T = null as Svbool4T
+    fun svwhileltB32S64(op11: Long, op21: Long): Svbool4T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); res }
     return svwhileltB32S64(op1, op2).sveInto()
 }
 
@@ -28870,7 +28870,7 @@ public fun svwhileltB32S64(op1: Long, op2: Long): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhileltB64[_s64])
  */
 public fun svwhileltB64S64(op1: Long, op2: Long): SvboolT {
-    fun svwhileltB64S64(op11: Long, op21: Long): Svbool2T = null as Svbool2T
+    fun svwhileltB64S64(op11: Long, op21: Long): Svbool2T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool2T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool2T>()).alignBytes)); res }
     return svwhileltB64S64(op1, op2).sveInto()
 }
 
@@ -28879,7 +28879,7 @@ public fun svwhileltB64S64(op1: Long, op2: Long): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhileltB8[_u32])
  */
 public fun svwhileltB8U32(op1: UInt, op2: UInt): SvboolT {
-    fun svwhileltB8U32(op11: Int, op21: Int): SvboolT = null as SvboolT
+    fun svwhileltB8U32(op11: Int, op21: Int): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svwhileltB8U32(op1.asSigned(), op2.asSigned())
 }
 
@@ -28888,7 +28888,7 @@ public fun svwhileltB8U32(op1: UInt, op2: UInt): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhileltB16[_u32])
  */
 public fun svwhileltB16U32(op1: UInt, op2: UInt): SvboolT {
-    fun svwhileltB16U32(op11: Int, op21: Int): Svbool8T = null as Svbool8T
+    fun svwhileltB16U32(op11: Int, op21: Int): Svbool8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool8T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool8T>()).alignBytes)); res }
     return svwhileltB16U32(op1.asSigned(), op2.asSigned()).sveInto()
 }
 
@@ -28897,7 +28897,7 @@ public fun svwhileltB16U32(op1: UInt, op2: UInt): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhileltB32[_u32])
  */
 public fun svwhileltB32U32(op1: UInt, op2: UInt): SvboolT {
-    fun svwhileltB32U32(op11: Int, op21: Int): Svbool4T = null as Svbool4T
+    fun svwhileltB32U32(op11: Int, op21: Int): Svbool4T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); res }
     return svwhileltB32U32(op1.asSigned(), op2.asSigned()).sveInto()
 }
 
@@ -28906,7 +28906,7 @@ public fun svwhileltB32U32(op1: UInt, op2: UInt): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhileltB64[_u32])
  */
 public fun svwhileltB64U32(op1: UInt, op2: UInt): SvboolT {
-    fun svwhileltB64U32(op11: Int, op21: Int): Svbool2T = null as Svbool2T
+    fun svwhileltB64U32(op11: Int, op21: Int): Svbool2T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool2T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool2T>()).alignBytes)); res }
     return svwhileltB64U32(op1.asSigned(), op2.asSigned()).sveInto()
 }
 
@@ -28915,7 +28915,7 @@ public fun svwhileltB64U32(op1: UInt, op2: UInt): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhileltB8[_u64])
  */
 public fun svwhileltB8U64(op1: ULong, op2: ULong): SvboolT {
-    fun svwhileltB8U64(op11: Long, op21: Long): SvboolT = null as SvboolT
+    fun svwhileltB8U64(op11: Long, op21: Long): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svwhileltB8U64(op1.asSigned(), op2.asSigned())
 }
 
@@ -28924,7 +28924,7 @@ public fun svwhileltB8U64(op1: ULong, op2: ULong): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhileltB16[_u64])
  */
 public fun svwhileltB16U64(op1: ULong, op2: ULong): SvboolT {
-    fun svwhileltB16U64(op11: Long, op21: Long): Svbool8T = null as Svbool8T
+    fun svwhileltB16U64(op11: Long, op21: Long): Svbool8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool8T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool8T>()).alignBytes)); res }
     return svwhileltB16U64(op1.asSigned(), op2.asSigned()).sveInto()
 }
 
@@ -28933,7 +28933,7 @@ public fun svwhileltB16U64(op1: ULong, op2: ULong): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhileltB32[_u64])
  */
 public fun svwhileltB32U64(op1: ULong, op2: ULong): SvboolT {
-    fun svwhileltB32U64(op11: Long, op21: Long): Svbool4T = null as Svbool4T
+    fun svwhileltB32U64(op11: Long, op21: Long): Svbool4T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool4T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool4T>()).alignBytes)); res }
     return svwhileltB32U64(op1.asSigned(), op2.asSigned()).sveInto()
 }
 
@@ -28942,7 +28942,7 @@ public fun svwhileltB32U64(op1: ULong, op2: ULong): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhileltB64[_u64])
  */
 public fun svwhileltB64U64(op1: ULong, op2: ULong): SvboolT {
-    fun svwhileltB64U64(op11: Long, op21: Long): Svbool2T = null as Svbool2T
+    fun svwhileltB64U64(op11: Long, op21: Long): Svbool2T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svbool2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool2T>()).alignBytes)); val res = (ObjectSlotLayout<Svbool2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svbool2T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svbool2T>()).alignBytes)); res }
     return svwhileltB64U64(op1.asSigned(), op2.asSigned()).sveInto()
 }
 
@@ -28960,7 +28960,7 @@ public fun svwrffr(op: SvboolT) {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svzip1B16)
  */
 public fun svzip1B16(op1: SvboolT, op2: SvboolT): SvboolT {
-    fun svzip1B16(op11: SvboolT, op21: SvboolT): SvboolT = null as SvboolT
+    fun svzip1B16(op11: SvboolT, op21: SvboolT): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svzip1B16(op1.sveInto(), op2.sveInto())
 }
 
@@ -28969,7 +28969,7 @@ public fun svzip1B16(op1: SvboolT, op2: SvboolT): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svzip1B32)
  */
 public fun svzip1B32(op1: SvboolT, op2: SvboolT): SvboolT {
-    fun svzip1B32(op11: SvboolT, op21: SvboolT): SvboolT = null as SvboolT
+    fun svzip1B32(op11: SvboolT, op21: SvboolT): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svzip1B32(op1.sveInto(), op2.sveInto())
 }
 
@@ -28978,7 +28978,7 @@ public fun svzip1B32(op1: SvboolT, op2: SvboolT): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svzip1B64)
  */
 public fun svzip1B64(op1: SvboolT, op2: SvboolT): SvboolT {
-    fun svzip1B64(op11: SvboolT, op21: SvboolT): SvboolT = null as SvboolT
+    fun svzip1B64(op11: SvboolT, op21: SvboolT): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svzip1B64(op1.sveInto(), op2.sveInto())
 }
 
@@ -28987,7 +28987,7 @@ public fun svzip1B64(op1: SvboolT, op2: SvboolT): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svzip1[_f32])
  */
 public fun svzip1F32(op1: Svfloat32T, op2: Svfloat32T): Svfloat32T {
-    fun svzip1F32(op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = null as Svfloat32T
+    fun svzip1F32(op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svzip1F32(op1, op2)
 }
 
@@ -28996,7 +28996,7 @@ public fun svzip1F32(op1: Svfloat32T, op2: Svfloat32T): Svfloat32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svzip1[_f64])
  */
 public fun svzip1F64(op1: Svfloat64T, op2: Svfloat64T): Svfloat64T {
-    fun svzip1F64(op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = null as Svfloat64T
+    fun svzip1F64(op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svzip1F64(op1, op2)
 }
 
@@ -29005,7 +29005,7 @@ public fun svzip1F64(op1: Svfloat64T, op2: Svfloat64T): Svfloat64T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svzip1[_s8])
  */
 public fun svzip1S8(op1: Svint8T, op2: Svint8T): Svint8T {
-    fun svzip1S8(op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    fun svzip1S8(op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svzip1S8(op1, op2)
 }
 
@@ -29014,7 +29014,7 @@ public fun svzip1S8(op1: Svint8T, op2: Svint8T): Svint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svzip1[_s16])
  */
 public fun svzip1S16(op1: Svint16T, op2: Svint16T): Svint16T {
-    fun svzip1S16(op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    fun svzip1S16(op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svzip1S16(op1, op2)
 }
 
@@ -29023,7 +29023,7 @@ public fun svzip1S16(op1: Svint16T, op2: Svint16T): Svint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svzip1[_s32])
  */
 public fun svzip1S32(op1: Svint32T, op2: Svint32T): Svint32T {
-    fun svzip1S32(op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    fun svzip1S32(op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svzip1S32(op1, op2)
 }
 
@@ -29032,7 +29032,7 @@ public fun svzip1S32(op1: Svint32T, op2: Svint32T): Svint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svzip1[_s64])
  */
 public fun svzip1S64(op1: Svint64T, op2: Svint64T): Svint64T {
-    fun svzip1S64(op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    fun svzip1S64(op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svzip1S64(op1, op2)
 }
 
@@ -29065,7 +29065,7 @@ public fun svzip1U64(op1: Svuint64T, op2: Svuint64T): Svuint64T = svzip1S64(op1.
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svzip1[_b8])
  */
 public fun svzip1B8(op1: SvboolT, op2: SvboolT): SvboolT {
-    fun svzip1B8(op11: SvboolT, op21: SvboolT): SvboolT = null as SvboolT
+    fun svzip1B8(op11: SvboolT, op21: SvboolT): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svzip1B8(op1, op2)
 }
 
@@ -29074,7 +29074,7 @@ public fun svzip1B8(op1: SvboolT, op2: SvboolT): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svzip1q[_f32])
  */
 public fun svzip1qF32(op1: Svfloat32T, op2: Svfloat32T): Svfloat32T {
-    fun svzip1qF32(op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = null as Svfloat32T
+    fun svzip1qF32(op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svzip1qF32(op1, op2)
 }
 
@@ -29083,7 +29083,7 @@ public fun svzip1qF32(op1: Svfloat32T, op2: Svfloat32T): Svfloat32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svzip1q[_f64])
  */
 public fun svzip1qF64(op1: Svfloat64T, op2: Svfloat64T): Svfloat64T {
-    fun svzip1qF64(op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = null as Svfloat64T
+    fun svzip1qF64(op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svzip1qF64(op1, op2)
 }
 
@@ -29092,7 +29092,7 @@ public fun svzip1qF64(op1: Svfloat64T, op2: Svfloat64T): Svfloat64T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svzip1q[_s8])
  */
 public fun svzip1qS8(op1: Svint8T, op2: Svint8T): Svint8T {
-    fun svzip1qS8(op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    fun svzip1qS8(op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svzip1qS8(op1, op2)
 }
 
@@ -29101,7 +29101,7 @@ public fun svzip1qS8(op1: Svint8T, op2: Svint8T): Svint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svzip1q[_s16])
  */
 public fun svzip1qS16(op1: Svint16T, op2: Svint16T): Svint16T {
-    fun svzip1qS16(op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    fun svzip1qS16(op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svzip1qS16(op1, op2)
 }
 
@@ -29110,7 +29110,7 @@ public fun svzip1qS16(op1: Svint16T, op2: Svint16T): Svint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svzip1q[_s32])
  */
 public fun svzip1qS32(op1: Svint32T, op2: Svint32T): Svint32T {
-    fun svzip1qS32(op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    fun svzip1qS32(op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svzip1qS32(op1, op2)
 }
 
@@ -29119,7 +29119,7 @@ public fun svzip1qS32(op1: Svint32T, op2: Svint32T): Svint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svzip1q[_s64])
  */
 public fun svzip1qS64(op1: Svint64T, op2: Svint64T): Svint64T {
-    fun svzip1qS64(op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    fun svzip1qS64(op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svzip1qS64(op1, op2)
 }
 
@@ -29152,7 +29152,7 @@ public fun svzip1qU64(op1: Svuint64T, op2: Svuint64T): Svuint64T = svzip1qS64(op
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svzip2B16)
  */
 public fun svzip2B16(op1: SvboolT, op2: SvboolT): SvboolT {
-    fun svzip2B16(op11: SvboolT, op21: SvboolT): SvboolT = null as SvboolT
+    fun svzip2B16(op11: SvboolT, op21: SvboolT): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svzip2B16(op1.sveInto(), op2.sveInto())
 }
 
@@ -29161,7 +29161,7 @@ public fun svzip2B16(op1: SvboolT, op2: SvboolT): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svzip2B32)
  */
 public fun svzip2B32(op1: SvboolT, op2: SvboolT): SvboolT {
-    fun svzip2B32(op11: SvboolT, op21: SvboolT): SvboolT = null as SvboolT
+    fun svzip2B32(op11: SvboolT, op21: SvboolT): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svzip2B32(op1.sveInto(), op2.sveInto())
 }
 
@@ -29170,7 +29170,7 @@ public fun svzip2B32(op1: SvboolT, op2: SvboolT): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svzip2B64)
  */
 public fun svzip2B64(op1: SvboolT, op2: SvboolT): SvboolT {
-    fun svzip2B64(op11: SvboolT, op21: SvboolT): SvboolT = null as SvboolT
+    fun svzip2B64(op11: SvboolT, op21: SvboolT): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svzip2B64(op1.sveInto(), op2.sveInto())
 }
 
@@ -29179,7 +29179,7 @@ public fun svzip2B64(op1: SvboolT, op2: SvboolT): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svzip2[_f32])
  */
 public fun svzip2F32(op1: Svfloat32T, op2: Svfloat32T): Svfloat32T {
-    fun svzip2F32(op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = null as Svfloat32T
+    fun svzip2F32(op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svzip2F32(op1, op2)
 }
 
@@ -29188,7 +29188,7 @@ public fun svzip2F32(op1: Svfloat32T, op2: Svfloat32T): Svfloat32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svzip2[_f64])
  */
 public fun svzip2F64(op1: Svfloat64T, op2: Svfloat64T): Svfloat64T {
-    fun svzip2F64(op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = null as Svfloat64T
+    fun svzip2F64(op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svzip2F64(op1, op2)
 }
 
@@ -29197,7 +29197,7 @@ public fun svzip2F64(op1: Svfloat64T, op2: Svfloat64T): Svfloat64T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svzip2[_s8])
  */
 public fun svzip2S8(op1: Svint8T, op2: Svint8T): Svint8T {
-    fun svzip2S8(op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    fun svzip2S8(op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svzip2S8(op1, op2)
 }
 
@@ -29206,7 +29206,7 @@ public fun svzip2S8(op1: Svint8T, op2: Svint8T): Svint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svzip2[_s16])
  */
 public fun svzip2S16(op1: Svint16T, op2: Svint16T): Svint16T {
-    fun svzip2S16(op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    fun svzip2S16(op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svzip2S16(op1, op2)
 }
 
@@ -29215,7 +29215,7 @@ public fun svzip2S16(op1: Svint16T, op2: Svint16T): Svint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svzip2[_s32])
  */
 public fun svzip2S32(op1: Svint32T, op2: Svint32T): Svint32T {
-    fun svzip2S32(op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    fun svzip2S32(op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svzip2S32(op1, op2)
 }
 
@@ -29224,7 +29224,7 @@ public fun svzip2S32(op1: Svint32T, op2: Svint32T): Svint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svzip2[_s64])
  */
 public fun svzip2S64(op1: Svint64T, op2: Svint64T): Svint64T {
-    fun svzip2S64(op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    fun svzip2S64(op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svzip2S64(op1, op2)
 }
 
@@ -29257,7 +29257,7 @@ public fun svzip2U64(op1: Svuint64T, op2: Svuint64T): Svuint64T = svzip2S64(op1.
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svzip2[_b8])
  */
 public fun svzip2B8(op1: SvboolT, op2: SvboolT): SvboolT {
-    fun svzip2B8(op11: SvboolT, op21: SvboolT): SvboolT = null as SvboolT
+    fun svzip2B8(op11: SvboolT, op21: SvboolT): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); val res = (ObjectSlotLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<SvboolT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<SvboolT>()).alignBytes)); res }
     return svzip2B8(op1, op2)
 }
 
@@ -29266,7 +29266,7 @@ public fun svzip2B8(op1: SvboolT, op2: SvboolT): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svzip2q[_f32])
  */
 public fun svzip2qF32(op1: Svfloat32T, op2: Svfloat32T): Svfloat32T {
-    fun svzip2qF32(op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = null as Svfloat32T
+    fun svzip2qF32(op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat32T>()).alignBytes)); res }
     return svzip2qF32(op1, op2)
 }
 
@@ -29275,7 +29275,7 @@ public fun svzip2qF32(op1: Svfloat32T, op2: Svfloat32T): Svfloat32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svzip2q[_f64])
  */
 public fun svzip2qF64(op1: Svfloat64T, op2: Svfloat64T): Svfloat64T {
-    fun svzip2qF64(op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = null as Svfloat64T
+    fun svzip2qF64(op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); val res = (ObjectSlotLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svfloat64T>()).alignBytes)); res }
     return svzip2qF64(op1, op2)
 }
 
@@ -29284,7 +29284,7 @@ public fun svzip2qF64(op1: Svfloat64T, op2: Svfloat64T): Svfloat64T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svzip2q[_s8])
  */
 public fun svzip2qS8(op1: Svint8T, op2: Svint8T): Svint8T {
-    fun svzip2qS8(op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    fun svzip2qS8(op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); val res = (ObjectSlotLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint8T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint8T>()).alignBytes)); res }
     return svzip2qS8(op1, op2)
 }
 
@@ -29293,7 +29293,7 @@ public fun svzip2qS8(op1: Svint8T, op2: Svint8T): Svint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svzip2q[_s16])
  */
 public fun svzip2qS16(op1: Svint16T, op2: Svint16T): Svint16T {
-    fun svzip2qS16(op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    fun svzip2qS16(op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); val res = (ObjectSlotLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint16T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint16T>()).alignBytes)); res }
     return svzip2qS16(op1, op2)
 }
 
@@ -29302,7 +29302,7 @@ public fun svzip2qS16(op1: Svint16T, op2: Svint16T): Svint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svzip2q[_s32])
  */
 public fun svzip2qS32(op1: Svint32T, op2: Svint32T): Svint32T {
-    fun svzip2qS32(op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    fun svzip2qS32(op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); val res = (ObjectSlotLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint32T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint32T>()).alignBytes)); res }
     return svzip2qS32(op1, op2)
 }
 
@@ -29311,7 +29311,7 @@ public fun svzip2qS32(op1: Svint32T, op2: Svint32T): Svint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svzip2q[_s64])
  */
 public fun svzip2qS64(op1: Svint64T, op2: Svint64T): Svint64T {
-    fun svzip2qS64(op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    fun svzip2qS64(op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); val res = (ObjectSlotLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Svint64T>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Svint64T>()).alignBytes)); res }
     return svzip2qS64(op1, op2)
 }
 

@@ -2,11 +2,11 @@
 
 package io.github.kotlinmania.rustlang.std.sys.exit
 
-import io.github.kotlinmania.rustlang.std.ffi.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 
 private object SysExitJniBridge {
     init {
-        System.loadLibrary("std_jni")
+        System.loadLibrary("kmcore_jni")
     }
 
     @JvmStatic

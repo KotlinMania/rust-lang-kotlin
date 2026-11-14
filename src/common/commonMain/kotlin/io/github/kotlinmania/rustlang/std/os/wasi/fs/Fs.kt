@@ -1,39 +1,41 @@
 // port-lint: source os/wasi/fs.rs
 package io.github.kotlinmania.rustlang.std.os.wasi.fs
 
-import io.github.kotlinmania.libc.fuchsia.S_IFBLK
-import io.github.kotlinmania.libc.fuchsia.S_IFCHR
-import io.github.kotlinmania.libc.fuchsia.S_IFSOCK
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.libc.wasi.S_IFBLK
+import io.github.kotlinmania.rustlang.libc.wasi.S_IFCHR
+import io.github.kotlinmania.rustlang.libc.wasi.S_IFSOCK
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.fs.DirEntry
 import io.github.kotlinmania.rustlang.std.fs.File
 import io.github.kotlinmania.rustlang.std.fs.FileType
 import io.github.kotlinmania.rustlang.std.fs.Metadata
 import io.github.kotlinmania.rustlang.std.fs.OpenOptions
+import io.github.kotlinmania.rustlang.std.io.ErrorKind
+import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.sys.pal.wasi.err2io
-import io.github.kotlinmania.rustlang.std.wasip1.ADVICE_DONTNEED
-import io.github.kotlinmania.rustlang.std.wasip1.ADVICE_NOREUSE
-import io.github.kotlinmania.rustlang.std.wasip1.ADVICE_NORMAL
-import io.github.kotlinmania.rustlang.std.wasip1.ADVICE_RANDOM
-import io.github.kotlinmania.rustlang.std.wasip1.ADVICE_SEQUENTIAL
-import io.github.kotlinmania.rustlang.std.wasip1.ADVICE_WILLNEED
-import io.github.kotlinmania.rustlang.std.wasip1.Fd
-import io.github.kotlinmania.rustlang.std.wasip1.fdAdvise
-import io.github.kotlinmania.rustlang.std.wasip1.fdAllocate
-import io.github.kotlinmania.rustlang.std.wasip1.fdFdstatSetFlags
-import io.github.kotlinmania.rustlang.std.wasip1.fdFdstatSetRights
-import io.github.kotlinmania.rustlang.std.wasip1.pathCreateDirectory
-import io.github.kotlinmania.rustlang.std.wasip1.pathLink
-import io.github.kotlinmania.rustlang.std.wasip1.pathRemoveDirectory
-import io.github.kotlinmania.rustlang.std.wasip1.pathRename
-import io.github.kotlinmania.rustlang.std.wasip1.pathSymlink
-import io.github.kotlinmania.rustlang.std.wasip1.pathUnlinkFile
+import io.github.kotlinmania.rustlang.wasip1.ADVICE_DONTNEED
+import io.github.kotlinmania.rustlang.wasip1.ADVICE_NOREUSE
+import io.github.kotlinmania.rustlang.wasip1.ADVICE_NORMAL
+import io.github.kotlinmania.rustlang.wasip1.ADVICE_RANDOM
+import io.github.kotlinmania.rustlang.wasip1.ADVICE_SEQUENTIAL
+import io.github.kotlinmania.rustlang.wasip1.ADVICE_WILLNEED
+import io.github.kotlinmania.rustlang.wasip1.Fd
+import io.github.kotlinmania.rustlang.wasip1.fdAdvise
+import io.github.kotlinmania.rustlang.wasip1.fdAllocate
+import io.github.kotlinmania.rustlang.wasip1.fdFdstatSetFlags
+import io.github.kotlinmania.rustlang.wasip1.fdFdstatSetRights
+import io.github.kotlinmania.rustlang.wasip1.pathCreateDirectory
+import io.github.kotlinmania.rustlang.wasip1.pathLink
+import io.github.kotlinmania.rustlang.wasip1.pathRemoveDirectory
+import io.github.kotlinmania.rustlang.wasip1.pathRename
+import io.github.kotlinmania.rustlang.wasip1.pathSymlink
+import io.github.kotlinmania.rustlang.wasip1.pathUnlinkFile
 
 // WASIp1-specific extensions to primitives in the [std.fs] module.
 
@@ -134,7 +136,7 @@ public interface FileExt {
             }
         }
         return if (!buf1.isEmpty()) {
-            Result.Err(Error.READ_EXACT_EOF)
+            Result.Err(io.github.kotlinmania.rustlang.std.io.Error.READ_EXACT_EOF)
         } else {
             Result.Ok(Unit)
         }
@@ -206,7 +208,7 @@ public interface FileExt {
                 val matchVal = this.writeAt(buf1, offset1)
                 when {
                     matchVal is Result.Ok<*> && matchVal.value == 0 -> {
-                        return Result.Err(Error.WRITE_ALL_EOF)
+                        return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.WRITE_ALL_EOF)
                     }
                     matchVal is Result.Ok<*> -> {
                         val n = (matchVal as Result.Ok<*>).value
@@ -324,7 +326,7 @@ public fun File.advise(offset: ULong, len: ULong, advice: UByte): Result<Unit, E
                 ADVICE_NOREUSE
             }
             else -> {
-                return Result.Err(io.constError(ErrorKind.InvalidInput, "invalid parameter 'advice'"))
+                return Result.Err(constError(ErrorKind.InvalidInput, "invalid parameter 'advice'"))
             }
         }
     return fdAdvise(((this.asRawFd() as Any?) as Fd), offset, len, advice1).mapErr(err2io)
@@ -464,4 +466,4 @@ public fun symlink(oldPath: Path, fd: File, newPath: Path): Result<Unit, Error> 
  */
 public fun symlinkPath(oldPath: Path, newPath: Path): Result<Unit, Error> = io.github.kotlinmania.rustlang.std.sys.fs.symlink(oldPath, newPath)
 
-public fun osstr2str(f: OsStr): Result<String, Error> = f.toStr().okOrElse({ io.constError(ErrorKind.Uncategorized, "input must be utf-8") })
+public fun osstr2str(f: OsStr): Result<String, Error> = f.toStr().okOrElse({ constError(ErrorKind.Uncategorized, "input must be utf-8") })

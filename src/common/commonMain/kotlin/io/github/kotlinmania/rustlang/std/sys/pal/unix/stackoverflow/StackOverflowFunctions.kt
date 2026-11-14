@@ -12,5 +12,5 @@ public fun init() {
         return
     }
     // SAFETY: guaranteed by caller.
-    init()
+    io.github.kotlinmania.rustlang.std.sys.pal.unix.stackoverflow.handlernone.init()
 }

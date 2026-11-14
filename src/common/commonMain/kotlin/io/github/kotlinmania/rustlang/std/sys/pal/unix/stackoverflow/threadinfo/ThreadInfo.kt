@@ -1,7 +1,6 @@
 // port-lint: source sys/pal/unix/stack_overflow/thread_info.rs
 package io.github.kotlinmania.rustlang.std.sys.pal.unix.stackoverflow.threadinfo
 
-import io.github.kotlinmania.libc.pause
 import io.github.kotlinmania.rustlang.core.hint.spinLoop
 import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
@@ -11,6 +10,7 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
+import io.github.kotlinmania.rustlang.libc.pause
 import io.github.kotlinmania.rustlang.std.process.abort
 import io.github.kotlinmania.rustlang.std.sync.nonpoison.mutex.Mutex
 import io.github.kotlinmania.rustlang.std.sys.io.error.unix.errnoLocation
@@ -162,7 +162,7 @@ public fun spinLockInSetup(thisRef: Int): UnlockOnDrop {
                 // we just stop the current thread until that time. We use `pause`
                 // instead of spinning to avoid priority inversion.
                 // SAFETY: this doesn't have any safety preconditions.
-                else -> drop(pause())
+                else -> (pause()).let { }
             }
         }
     }

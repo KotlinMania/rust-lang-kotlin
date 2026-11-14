@@ -1,6 +1,7 @@
 // port-lint: source pin.rs
 package io.github.kotlinmania.rustlang.core.pin
 
+import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.fmt.Pointer
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
@@ -8,11 +9,10 @@ import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
-import io.github.kotlinmania.rustlang.core.ops.DerefPure
-import io.github.kotlinmania.rustlang.core.ops.LegacyReceiver
+import io.github.kotlinmania.rustlang.core.ops.deref.DerefPure
+import io.github.kotlinmania.rustlang.core.ops.deref.LegacyReceiver
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 
 // Types that pin data to a location in memory.
 //
@@ -1335,7 +1335,7 @@ public open class Pin<Ptr>(
          *         val p: Pin<T> = pin.asRef()
          *         // ...
          *     }
-         *     drop(pin)
+         *     (pin).let { }
          *     val content = Rc.getMut(x).unwrap()
          *     // Potential UB down the road ⚠️
          *     // Now, if `x` was the only reference, we have a mutable reference to

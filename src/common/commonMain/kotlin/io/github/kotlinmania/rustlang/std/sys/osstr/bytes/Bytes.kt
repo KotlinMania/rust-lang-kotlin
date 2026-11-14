@@ -24,7 +24,7 @@ import io.github.kotlinmania.rustlang.std.sys.IntoInner
 // The underlying OsString/OsStr implementation on Unix and many other
 // systems: just a `List<UByte>`/`[UByte]`.
 
-internal open class Buf(
+public open class Buf internal constructor(
     public val fieldStorage: MutPtr,
     public val fieldLayout: TypeLayout<List<UByte>>,
 ) : IntoInner<List<UByte>>, FromInner<List<UByte>, Buf>, AsInner<List<UByte>> {
@@ -32,7 +32,7 @@ internal open class Buf(
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    public constructor(inner: List<UByte>, fieldLayout: TypeLayout<List<UByte>>) : this(allocateNativeCell(inner, fieldLayout), fieldLayout)
+    internal constructor(inner: List<UByte>, fieldLayout: TypeLayout<List<UByte>>) : this(allocateNativeCell(inner, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<Buf> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Buf(ptr, layout) }, { it.inner })
 
@@ -142,6 +142,10 @@ internal open class Buf(
     }
 
     public companion object {
+        public operator fun invoke(inner: List<UByte>, fieldLayout: TypeLayout<List<UByte>>): Buf = Buf(inner, fieldLayout)
+
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<List<UByte>>): Buf = Buf(fieldStorage, fieldLayout)
+
         public fun fromInner(inner: List<UByte>, fieldLayout: TypeLayout<List<UByte>>): Buf = Buf(inner = inner, fieldLayout = fieldLayout)
 
         public fun fromEncodedBytesUnchecked(s: List<UByte>, fieldLayout: TypeLayout<List<UByte>>): Buf = Buf(inner = s, fieldLayout = fieldLayout)
@@ -157,7 +161,7 @@ internal open class Buf(
     }
 }
 
-internal open class Slice(
+public open class Slice internal constructor(
     public val fieldStorage: MutPtr,
     public val fieldLayout: TypeLayout<List<UByte>>,
 ) : CloneToUninit {
@@ -165,7 +169,7 @@ internal open class Slice(
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    public constructor(inner: List<UByte>, fieldLayout: TypeLayout<List<UByte>>) : this(allocateNativeCell(inner, fieldLayout), fieldLayout)
+    internal constructor(inner: List<UByte>, fieldLayout: TypeLayout<List<UByte>>) : this(allocateNativeCell(inner, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<Slice> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Slice(ptr, layout) }, { it.inner })
 
@@ -267,6 +271,10 @@ internal open class Slice(
     }
 
     public companion object {
+        public operator fun invoke(inner: List<UByte>, fieldLayout: TypeLayout<List<UByte>>): Slice = Slice(inner, fieldLayout)
+
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<List<UByte>>): Slice = Slice(fieldStorage, fieldLayout)
+
         public fun fromEncodedBytesUnchecked(s: List<UByte>): Slice = transmute(s)
 
         public fun fromStr(s: String): Slice = Slice.fromEncodedBytesUnchecked(s.encodeToByteArray().map { it.toUByte() })

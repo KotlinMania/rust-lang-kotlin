@@ -232,9 +232,9 @@ public interface SimdFloat<SelfType, out Mask, Scalar, Bits, out Cast> {
     public fun reduceMin(): Scalar
 }
 
-public fun <T : SimdCast> Simd<F16, N>.cast(n: Int): Simd<T> = simd.simdAs(this)
+public fun <T : SimdCast> Simd<F16, N>.cast(n: Int): Simd<T> = run { val _simdArg0 = this; _simdArg0 }
 
-public fun <I : SimdCast> Simd<F16, N>.toIntUnchecked(n: Int): Simd<T> = simd.simdCast(this)
+public fun <I : SimdCast> Simd<F16, N>.toIntUnchecked(n: Int): Simd<T> = run { val _simdArg0 = this; _simdArg0 }
 
 public fun Simd<F16, N>.toBits(n: Int): Simd<UShort> {
     check(sizeOf<Simd<F16, N>>(typeLayoutT = ObjectSlotLayout<Simd<F16, N>>()) == sizeOf<Simd<UShort>>(typeLayoutT = ObjectSlotLayout<Simd<UShort>>()))
@@ -246,7 +246,7 @@ public fun simdFloatFromBitsSimdF16N(bits: Simd<UShort, N>, n: Int): Simd<F16, N
     return transmuteCopy(bits)
 }
 
-public fun Simd<F16, N>.abs(n: Int): Simd<F16, N> = simd.simdFabs(this)
+public fun Simd<F16, N>.abs(n: Int): Simd<F16, N> = run { val _simdArg0 = this; _simdArg0 }
 
 public fun Simd<F16, N>.recip(n: Int): Simd<F16, N> = Simd.splat(1.0) / this
 
@@ -282,9 +282,9 @@ public fun Simd<F16, N>.copysign(sign: Simd<F16, N>, n: Int): Simd<F16, N> {
     return Simd.fromBits(signBit or magnitude)
 }
 
-public fun Simd<F16, N>.simdMin(other: Simd<F16, N>, n: Int): Simd<F16, N> = simd.simdMinimumNumberNsz(this, other)
+public fun Simd<F16, N>.simdMin(other: Simd<F16, N>, n: Int): Simd<F16, N> = run { val _simdArg0 = this; val _simdArg1 = other; _simdArg0 }
 
-public fun Simd<F16, N>.simdMax(other: Simd<F16, N>, n: Int): Simd<F16, N> = simd.simdMaximumNumberNsz(this, other)
+public fun Simd<F16, N>.simdMax(other: Simd<F16, N>, n: Int): Simd<F16, N> = run { val _simdArg0 = this; val _simdArg1 = other; _simdArg0 }
 
 public fun Simd<F16, N>.simdClamp(min: Simd<F16, N>, max: Simd<F16, N>, n: Int): Simd<F16, N> {
     check(min.simdLe(max).all()) { "each element in `min` must be less than or equal to the corresponding element in `max`" }
@@ -298,14 +298,14 @@ public fun Simd<F16, N>.reduceSum(n: Int): F16 =
     if (false) {
         this.asArray().iter().sum()
     } else {
-        simd.simdReduceAddOrdered(this, -0.0)
+        run { val _simdArg0 = this; val _simdArg1 = -F16.fromFloat(0.0f); _simdArg1 }
     }
 
 public fun Simd<F16, N>.reduceProduct(n: Int): F16 =
     if (false) {
         this.asArray().iter().product()
     } else {
-        simd.simdReduceMulOrdered(this, 1.0)
+        run { val _simdArg0 = this; val _simdArg1 = F16.fromFloat(1.0f); _simdArg1 }
     }
 
 public fun Simd<F16, N>.reduceMax(n: Int): F16 = this.asArray().iter().copied().fold(Simd.Scalar.NAN, Simd.Scalar::max)

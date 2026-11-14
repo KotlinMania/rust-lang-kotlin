@@ -11,6 +11,7 @@ import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.Leaf
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.LeafOrInternal
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.Mut
 import io.github.kotlinmania.rustlang.core.alloc.AllocatorClone
+import io.github.kotlinmania.rustlang.core.mem.replace
 import io.github.kotlinmania.rustlang.core.result.Result
 
 public class DebugStruct(
@@ -374,20 +375,26 @@ public sealed class Entry<K, V, A : AllocatorClone> {
  * A view into a vacant entry in a `BTreeMap`.
  * It is part of the [Entry] enum.
  */
-public open class VacantEntry<K, V, A : AllocatorClone>(
-    internal var key: K,
-    /**
-     * `None` for a (empty) map without root
-     */
-    internal var handle: Handle<NodeRef<Mut, K, V, Leaf>, Edge>?,
-    internal var dormantMap: DormantMutRef<MutableMap<K, V>>,
+public open class VacantEntry<K, V, A : AllocatorClone> internal constructor(
+    public var key: K,
+    handleCtorArg: Handle<NodeRef<Mut, K, V, Leaf>, Edge>?,
+    dormantMapCtorArg: DormantMutRef<MutableMap<K, V>>,
     /**
      * The BTreeMap will outlive this IntoIter so we don't care about drop order for `alloc`.
      */
-    internal var alloc: A,
+    public var alloc: A,
     // Be invariant in `K` and `V`
-    internal var marker: Unit,
+    public var marker: Unit,
 ) {
+    /**
+     * `None` for a (empty) map without root
+     */
+    public var handle: Handle<NodeRef<Mut, K, V, Leaf>, Edge>? = handleCtorArg
+        internal set
+
+    public var dormantMap: DormantMutRef<MutableMap<K, V>> = dormantMapCtorArg
+        internal set
+
     public open fun fmt(f: StringBuilder) {
         DebugTuple(f, "VacantEntry").field(this.key()).finish()
     }
@@ -485,7 +492,7 @@ public open class VacantEntry<K, V, A : AllocatorClone>(
                 else -> {
                     val handle = matchVal
                     handle.insertRecursing(this.key, value, this.alloc.clone(), { ins ->
-                        drop(ins.left)
+                        (ins.left).let { }
                         // SAFETY: Pushing a new root node doesn't invalidate
                         // handles to existing nodes.
                         val map1 = this.dormantMap.reborrow()
@@ -499,22 +506,44 @@ public open class VacantEntry<K, V, A : AllocatorClone>(
         this.dormantMap.reborrow().length += 1
         return OccupiedEntry(handle = handle1.forgetNodeType(), dormantMap = this.dormantMap, alloc = this.alloc, marker = Unit)
     }
+
+    public companion object {
+        public operator fun <K, V, A : AllocatorClone> invoke(
+            key: K,
+            handle: Handle<NodeRef<Mut, K, V, Leaf>, Edge>?,
+            dormantMap: DormantMutRef<MutableMap<K, V>>,
+            alloc: A,
+            marker: Unit,
+        ): VacantEntry<K, V, A> = VacantEntry<K, V, A>(
+            key = key,
+            handleCtorArg = handle,
+            dormantMapCtorArg = dormantMap,
+            alloc = alloc,
+            marker = marker,
+        )
+    }
 }
 
 /**
  * A view into an occupied entry in a `BTreeMap`.
  * It is part of the [Entry] enum.
  */
-public open class OccupiedEntry<K, V, A : AllocatorClone>(
-    internal var handle: Handle<NodeRef<Mut, K, V, LeafOrInternal>, KV>,
-    internal var dormantMap: DormantMutRef<MutableMap<K, V>>,
+public open class OccupiedEntry<K, V, A : AllocatorClone> internal constructor(
+    handleCtorArg: Handle<NodeRef<Mut, K, V, LeafOrInternal>, KV>,
+    dormantMapCtorArg: DormantMutRef<MutableMap<K, V>>,
     /**
      * The BTreeMap will outlive this IntoIter so we don't care about drop order for `alloc`.
      */
-    internal var alloc: A,
+    public var alloc: A,
     // Be invariant in `K` and `V`
-    internal var marker: Unit,
+    public var marker: Unit,
 ) {
+    public var handle: Handle<NodeRef<Mut, K, V, LeafOrInternal>, KV> = handleCtorArg
+        internal set
+
+    public var dormantMap: DormantMutRef<MutableMap<K, V>> = dormantMapCtorArg
+        internal set
+
     public open fun fmt(f: StringBuilder) {
         DebugStruct(f, "OccupiedEntry").field("key", this.key()).field("value", this.get()).finish()
     }
@@ -535,7 +564,7 @@ public open class OccupiedEntry<K, V, A : AllocatorClone>(
     /**
      * Converts the entry into a reference to its key.
      */
-    internal open fun intoKey(): K = this.handle.intoKvMut().first
+    public open fun intoKey(): K = this.handle.intoKvMut().first
 
     /**
      * Take ownership of the key and value from the map.
@@ -687,7 +716,7 @@ public open class OccupiedEntry<K, V, A : AllocatorClone>(
     public open fun remove(): V = this.removeKv().second
 
     // Body of `removeEntry`, probably separate because the name reflects the returned pair.
-    internal open fun removeKv(): Pair<K, V> {
+    public open fun removeKv(): Pair<K, V> {
         var emptiedInternalRoot = false
         val (oldKv, _) = this.handle.removeKvTracking({ emptiedInternalRoot = true }, this.alloc.clone())
         // SAFETY: we consumed the intermediate root borrow, `self.handle`.
@@ -698,6 +727,20 @@ public open class OccupiedEntry<K, V, A : AllocatorClone>(
             root.popInternalLevel(this.alloc)
         }
         return oldKv
+    }
+
+    public companion object {
+        public operator fun <K, V, A : AllocatorClone> invoke(
+            handle: Handle<NodeRef<Mut, K, V, LeafOrInternal>, KV>,
+            dormantMap: DormantMutRef<MutableMap<K, V>>,
+            alloc: A,
+            marker: Unit,
+        ): OccupiedEntry<K, V, A> = OccupiedEntry<K, V, A>(
+            handleCtorArg = handle,
+            dormantMapCtorArg = dormantMap,
+            alloc = alloc,
+            marker = marker,
+        )
     }
 }
 

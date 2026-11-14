@@ -6,6 +6,10 @@ import io.github.kotlinmania.rustlang.alloc.boxed.Box
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
+import io.github.kotlinmania.rustlang.core.mem.forget
+import io.github.kotlinmania.rustlang.core.mem.replace
+import io.github.kotlinmania.rustlang.core.mem.swap
+import io.github.kotlinmania.rustlang.core.mem.take
 import io.github.kotlinmania.rustlang.core.num.rustCheckedSub
 import io.github.kotlinmania.rustlang.core.num.rustSaturatingSub
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
@@ -533,7 +537,7 @@ public open class LinkedList<T, A : Allocator> internal constructor(
     public open fun clear() {
         // We need to drop the nodes while keeping self.alloc
         // We can do this by moving (head, tail, len) into a new list that borrows self.alloc
-        drop(LinkedList(head = this.head.also { this.head = null }, tail = this.tail.also { this.tail = null }, len = take(this.len), alloc = this.alloc, marker = Unit))
+        (LinkedList(head = this.head.also { this.head = null }, tail = this.tail.also { this.tail = null }, len = take(this.len), alloc = this.alloc, marker = Unit)).let { }
     }
 
     /**

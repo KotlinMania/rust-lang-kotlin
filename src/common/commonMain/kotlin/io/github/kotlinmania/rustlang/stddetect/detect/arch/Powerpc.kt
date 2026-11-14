@@ -12,7 +12,7 @@ import io.github.kotlinmania.rustlang.stddetect.detect.checkFor
  * PLEASE: do not use this, it is an implementation detail subject
  * to change.
  */
-internal sealed class Feature {
+public sealed class Feature {
     /**
      * Altivec
      */
@@ -50,7 +50,7 @@ internal sealed class Feature {
      */
     public data object Power9Vector : Feature()
 
-    internal open fun toStr(): String =
+    public open fun toStr(): String =
         when (this) {
             Feature.altivec -> "altivec"
             Feature.vsx -> "vsx"
@@ -64,9 +64,9 @@ internal sealed class Feature {
         }
 
     public companion object {
-        internal val ALL: List<Feature> = listOf(Feature::altivec, Feature::vsx, Feature::power8, Feature::power8Altivec, Feature::power8Vector, Feature::power8Crypto, Feature::power9, Feature::power9Altivec, Feature::power9Vector)
+        public val ALL: List<Feature> = listOf(Feature::altivec, Feature::vsx, Feature::power8, Feature::power8Altivec, Feature::power8Vector, Feature::power8Crypto, Feature::power9, Feature::power9Altivec, Feature::power9Vector)
 
-        internal fun fromStr(s: String): Result<Feature, Unit> =
+        public fun fromStr(s: String): Result<Feature, Unit> =
             when (s) {
                 "altivec" -> Result.Ok(Feature::altivec)
                 "vsx" -> Result.Ok(Feature::vsx)

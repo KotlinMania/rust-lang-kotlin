@@ -4,17 +4,17 @@
 package io.github.kotlinmania.rustlang.core.net.ipaddr
 
 import io.github.kotlinmania.rustlang.core.U128
+import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.intrinsics.transmute
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.net.displaybuffer.DisplayBuffer
-import io.github.kotlinmania.rustlang.core.ops.BitAnd
-import io.github.kotlinmania.rustlang.core.ops.BitAndAssign
-import io.github.kotlinmania.rustlang.core.ops.BitOr
-import io.github.kotlinmania.rustlang.core.ops.BitOrAssign
-import io.github.kotlinmania.rustlang.core.ops.Not
+import io.github.kotlinmania.rustlang.core.ops.bit.BitAnd
+import io.github.kotlinmania.rustlang.core.ops.bit.BitAndAssign
+import io.github.kotlinmania.rustlang.core.ops.bit.BitOr
+import io.github.kotlinmania.rustlang.core.ops.bit.BitOrAssign
+import io.github.kotlinmania.rustlang.core.ops.bit.Not
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 
 /**
  * An IP address, either IPv4 or IPv6.

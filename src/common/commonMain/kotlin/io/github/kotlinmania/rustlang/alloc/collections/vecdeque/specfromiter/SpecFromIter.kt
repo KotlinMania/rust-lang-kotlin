@@ -8,7 +8,7 @@ import io.github.kotlinmania.rustlang.alloc.vec.Vec
 /**
  * Specialization trait used for `VecDeque.fromIter`
  */
-internal interface SpecFromIter<T, I, SelfType> {
+public interface SpecFromIter<T, I, SelfType> {
     public fun specFromIter(iter: I): SelfType
 }
 

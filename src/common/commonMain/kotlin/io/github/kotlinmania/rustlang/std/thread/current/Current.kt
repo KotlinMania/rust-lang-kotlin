@@ -21,15 +21,15 @@ public val DESTROYED: MutPtr = withoutProvenanceMut(2)
 
 public var ID: Cell<Any?> = Cell.new(null)
 
-internal val CHEAP: Boolean = true
+public val CHEAP: Boolean = true
 
-internal fun get(): Any? = ID.get()
+public fun get(): Any? = ID.get()
 
-internal fun set(id: Any) {
+public fun set(id: Any) {
     ID.set(id)
 }
 
-internal fun getOrInit(): Any =
+public fun getOrInit(): Any =
     (get() ?: run {
         val id = ThreadId.new()
         set(id)
@@ -40,7 +40,7 @@ internal fun getOrInit(): Any =
  * Tries to set the thread handle for the current thread. Fails if a handle was
  * already set or if the thread ID of `thread` would change an already-set ID.
  */
-internal fun setCurrent(thread: Thread): Result<Unit, Thread> {
+public fun setCurrent(thread: Thread): Result<Unit, Thread> {
     if (((CURRENT.get()).rawAddress.toULong() != (NONE).rawAddress.toULong())) {
         return Result.Err(thread)
     }
@@ -110,7 +110,7 @@ public fun currentId(): Any {
  * allowed to fall back to a non-OS ID (such as the Rust thread ID) or a non-unique ID (such as a
  * PID) if the thread ID cannot be retrieved.
  */
-internal fun currentOsId(): ULong = currentOsId().unwrapOrElse({ currentId().asU64().get() })
+public fun currentOsId(): ULong = io.github.kotlinmania.rustlang.std.sys.thread.unix.currentOsId().unwrapOrElse({ currentId().asU64().get() })
 
 /**
  * Gets a reference to the handle of the thread that invokes it, if the handle
@@ -137,7 +137,7 @@ public fun <R> tryWithCurrent(f: (Thread?) -> R): R {
  * Modulo thread local accesses, this function is safe to call from signal
  * handlers and in similar circumstances where allocations are not possible.
  */
-internal fun <R> withCurrentName(f: (String?) -> R): R =
+public fun <R> withCurrentName(f: (String?) -> R): R =
     tryWithCurrent({ thread ->
         val name =
             if (thread != null) {
@@ -145,7 +145,7 @@ internal fun <R> withCurrentName(f: (String?) -> R): R =
                 // If there is a current thread handle, try to use the name stored
                 // there.
                 thread1.name()
-            } else if (io.github.kotlinmania.rustlang.std.thread.current.id.get() != null && get() != null && id == main) {
+            } else if (io.github.kotlinmania.rustlang.std.thread.mainthread.get() != null && get() != null && id == main) {
                 // The main thread doesn't always have a thread handle, we must
                 // identify it through its ID instead. The checks are ordered so
                 // that the current ID is only loaded if it is actually needed,
@@ -162,7 +162,7 @@ internal fun <R> withCurrentName(f: (String?) -> R): R =
  * local storage was already destroyed, this creates a new unnamed temporary
  * handle to allow thread parking in nearly all situations.
  */
-internal fun currentOrUnnamed(): Thread {
+public fun currentOrUnnamed(): Thread {
     val current = CURRENT.get()
     return if (((current).rawAddress.toULong() > (DESTROYED).rawAddress.toULong())) {
         run {
@@ -240,12 +240,12 @@ public fun initCurrent(current: MutPtr): Thread =
  * This should be run in [rt.threadCleanup] to reset the thread
  * handle.
  */
-internal fun dropCurrent() {
+public fun dropCurrent() {
     val current = CURRENT.get()
     if (((current).rawAddress.toULong() > (DESTROYED).rawAddress.toULong())) {
         run {
             CURRENT.set(DESTROYED)
-            drop(Thread.fromRaw(current))
+            (Thread.fromRaw(current)).let { }
         }
     }
 }

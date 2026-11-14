@@ -1,6 +1,7 @@
 package io.github.kotlinmania.rustlang.core.str
 
 import io.github.kotlinmania.rustlang.core.char.isAscii
+import io.github.kotlinmania.rustlang.core.cmp.Eq
 import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
 import io.github.kotlinmania.rustlang.core.intrinsics.constEvalSelect
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
@@ -8,11 +9,11 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.option.Option
 import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.eq
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.core.slice.SliceIndex
@@ -49,6 +50,7 @@ import io.github.kotlinmania.rustlang.core.str.iter.SplitN
 import io.github.kotlinmania.rustlang.core.str.iter.SplitNInternal
 import io.github.kotlinmania.rustlang.core.str.iter.SplitTerminator
 import io.github.kotlinmania.rustlang.core.str.iter.SplitWhitespace
+import io.github.kotlinmania.rustlang.core.str.pattern.Pattern
 import io.github.kotlinmania.rustlang.core.str.pattern.Searcher
 import io.github.kotlinmania.rustlang.core.str.traits.FromStr
 import io.github.kotlinmania.rustlang.core.ubchecks.assertUnsafePrecondition
@@ -91,7 +93,7 @@ public fun sliceErrorFailRt(s: String, begin: Int, end: Int): Nothing {
                 val leftVal = matchVal.first
                 val rightVal = matchVal.second
                 if (!(leftVal == rightVal)) {
-                    val kind = eq
+                    val kind = Eq
                     assertFailed(kind, leftVal, rightVal, Option.None)
                 }
             }

@@ -263,7 +263,7 @@ public open class Once(
      * be running, so the state must be either "incomplete", "poisoned" or
      * "complete".
      */
-    internal open fun state(): OnceExclusiveState = this.inner.state()
+    public open fun state(): OnceExclusiveState = this.inner.state()
 
     /**
      * Sets current state of the `Once` instance.
@@ -272,7 +272,7 @@ public open class Once(
      * be running, so the state must be either "incomplete", "poisoned" or
      * "complete".
      */
-    internal open fun setState(newState: OnceExclusiveState) {
+    public open fun setState(newState: OnceExclusiveState) {
         this.inner.setState(newState)
     }
 
@@ -284,12 +284,12 @@ public open class Once(
         /**
          * Creates a new `Once` value.
          */
-        public fun new(): Once = Once(inner = io.github.kotlinmania.rustlang.std.sys.sync.once.futex.Once.new())
+        public fun new(): Once = Once(inner = io.github.kotlinmania.rustlang.std.sys.sync.once.new())
 
         /**
          * Creates a new `Once` value that starts already completed.
          */
-        internal fun newComplete(): Once = Once(inner = io.github.kotlinmania.rustlang.std.sys.sync.once.futex.Once.newComplete())
+        public fun newComplete(): Once = Once(inner = io.github.kotlinmania.rustlang.std.sys.sync.once.newComplete())
 
         /**
          * Creates a new `Once` value, same as [Once.new].
@@ -303,7 +303,7 @@ public open class Once(
  * can be used to query the poison status of the [Once].
  */
 public open class OnceState(
-    internal var inner: io.github.kotlinmania.rustlang.std.sys.sync.once.futex.OnceState,
+    public var inner: io.github.kotlinmania.rustlang.std.sys.sync.once.futex.OnceState,
 ) {
     /**
      * Returns `true` if the associated [Once] was poisoned prior to the
@@ -346,7 +346,7 @@ public open class OnceState(
     /**
      * Poison the associated [Once] without explicitly panicking.
      */
-    internal open fun poison() {
+    public open fun poison() {
         this.inner.poison()
     }
 
@@ -359,7 +359,7 @@ public open class OnceState(
  * Used for the internal implementation of `sys.sync.once` on different platforms and the
  * [`LazyLock`](sync.LazyLock) implementation.
  */
-internal sealed class OnceExclusiveState {
+public sealed class OnceExclusiveState {
     public data object Incomplete : OnceExclusiveState()
     public data object Poisoned : OnceExclusiveState()
     public data object Complete : OnceExclusiveState()

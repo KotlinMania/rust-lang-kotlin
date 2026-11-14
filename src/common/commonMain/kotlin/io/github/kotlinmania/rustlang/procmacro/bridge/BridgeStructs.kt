@@ -1,5 +1,6 @@
 package io.github.kotlinmania.rustlang.procmacro.bridge
 
+import io.github.kotlinmania.rustlang.core.marker.PhantomData
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
@@ -13,7 +14,7 @@ import io.github.kotlinmania.rustlang.procmacro.bridge.rpc.Encode
 import io.github.kotlinmania.rustlang.procmacro.bridge.symbol.Symbol
 import io.github.kotlinmania.rustlang.procmacro.diagnostic.Level
 
-internal open class Methods {
+public open class Methods {
     public companion object {
         public fun typeLayout(): TypeLayout<Methods> =
             object : TypeLayout<Methods> {
@@ -62,7 +63,7 @@ public open class Marked<T, M>(
     public override fun unmark(): T = this.value
 
     public companion object {
-        public fun <T, M> mark(unmarked: T): Marked<T, M> = Marked(value = unmarked, marker = Unit)
+        public fun <T, M> mark(unmarked: T): Marked<T, M> = Marked(value = unmarked, marker = PhantomData)
     }
 }
 

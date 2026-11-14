@@ -1,7 +1,6 @@
 // port-lint: source string.rs
 package io.github.kotlinmania.rustlang.alloc.string
 
-import io.github.kotlinmania.ops.DerefPure
 import io.github.kotlinmania.rustlang.alloc.borrow.Cow
 import io.github.kotlinmania.rustlang.alloc.collections.TryReserveError
 import io.github.kotlinmania.rustlang.alloc.fmt.format
@@ -12,10 +11,11 @@ import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.fmt.Arguments
-import io.github.kotlinmania.rustlang.core.io.error.error
+import io.github.kotlinmania.rustlang.core.hint.unlikely
 import io.github.kotlinmania.rustlang.core.iter.sources.fromfn.fromFn
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.copy
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
@@ -24,9 +24,12 @@ import io.github.kotlinmania.rustlang.core.num.rustSaturatingSub
 import io.github.kotlinmania.rustlang.core.num.saturating.Saturating
 import io.github.kotlinmania.rustlang.core.ops.arith.Add
 import io.github.kotlinmania.rustlang.core.ops.arith.AddAssign
+import io.github.kotlinmania.rustlang.core.ops.deref.DerefPure
+import io.github.kotlinmania.rustlang.core.ops.range.Range
 import io.github.kotlinmania.rustlang.core.ops.range.RangeBounds
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
@@ -466,7 +469,7 @@ public open class String(
      * Appends a given string slice onto the end of this `String`, returning
      * [TryReserveError] otherwise.
      */
-    internal open fun tryPushStr(string: String): Result<Unit, TryReserveError> = this.vec.tryExtendFromSliceOfBytes(string.encodeToByteArray().map { it.toUByte() })
+    public open fun tryPushStr(string: String): Result<Unit, TryReserveError> = this.vec.tryExtendFromSliceOfBytes(string.encodeToByteArray().map { it.toUByte() })
 
     public open fun pushStrSlice(slice: List<String>) {
         // use saturating arithmetic to ensure that in the case of an overflow, reserve() throws OOM
@@ -507,7 +510,7 @@ public open class String(
      * ```
      */
     public open fun <R> extendFromWithin(src: R) where R : RangeBounds<Int> {
-        val src1 = slice.range(src, 0 until this.length)
+        val src1 = Range(src, 0 until this.length)
         check(this.isCharBoundary(start))
         check(this.isCharBoundary(end))
         this.vec.extendFromWithin(src1)
@@ -853,7 +856,7 @@ public open class String(
         // Both pointers are valid for `len - next` bytes.
         // * new length is less than old length.
         run {
-            ptr.copy(ConstPtr((this.vec.asPtr()).rawAddress + ((next).toLong() * (PrimitiveLayouts.U8).strideBytes)), MutPtr((this.vec.asMutPtr()).rawAddress + ((idx).toLong() * (PrimitiveLayouts.U8).strideBytes)), len - next)
+            copy(ConstPtr((this.vec.asPtr()).rawAddress + ((next).toLong() * (PrimitiveLayouts.U8).strideBytes)), MutPtr((this.vec.asMutPtr()).rawAddress + ((idx).toLong() * (PrimitiveLayouts.U8).strideBytes)), len - next)
             this.vec.setLen(len - (next - idx))
         }
         return ch1
@@ -919,7 +922,7 @@ public open class String(
                 // covering the whole haystack, and laying on utf8
                 // boundaries.
                 run {
-                    ptr.copy(MutPtr((ptr).rawAddress + ((start).toLong() * (PrimitiveLayouts.U8).strideBytes)), MutPtr((ptr).rawAddress + ((len).toLong() * (PrimitiveLayouts.U8).strideBytes)), count)
+                    copy(MutPtr((ptr).rawAddress + ((start).toLong() * (PrimitiveLayouts.U8).strideBytes)), MutPtr((ptr).rawAddress + ((len).toLong() * (PrimitiveLayouts.U8).strideBytes)), count)
                 }
             }
             len += count
@@ -982,7 +985,7 @@ public open class String(
                     break
                 }
             }
-        drop(chars)
+        (chars).let { }
         // Slow path: at least one character is going to be removed.
         val g = PanicGuard(s = this, write = write)
         while (read < len) {
@@ -1005,14 +1008,14 @@ public open class String(
                 // within bounds because it is always behind `read`.
                 run {
                     val ptr = g.s.vec.asMutPtr()
-                    ptr.copy(MutPtr((ptr).rawAddress + ((read).toLong() * (PrimitiveLayouts.U8).strideBytes)), MutPtr((ptr).rawAddress + ((g.write).toLong() * (PrimitiveLayouts.U8).strideBytes)), chLen)
+                    copy(MutPtr((ptr).rawAddress + ((read).toLong() * (PrimitiveLayouts.U8).strideBytes)), MutPtr((ptr).rawAddress + ((g.write).toLong() * (PrimitiveLayouts.U8).strideBytes)), chLen)
                 }
                 g.write += chLen
             }
             read += chLen
         }
         // All bytes processed; commit the final length by dropping the guard.
-        drop(g)
+        (g).let { }
     }
 
     /**
@@ -1048,7 +1051,7 @@ public open class String(
         // bytes ahead. This is safe because sufficient capacity was reserved, and `idx`
         // is a char boundary.
         run {
-            ptr.copy(ConstPtr((this.vec.asPtr()).rawAddress + ((idx).toLong() * (PrimitiveLayouts.U8).strideBytes)), MutPtr((this.vec.asMutPtr()).rawAddress + ((idx + chLen).toLong() * (PrimitiveLayouts.U8).strideBytes)), len - idx)
+            copy(ConstPtr((this.vec.asPtr()).rawAddress + ((idx).toLong() * (PrimitiveLayouts.U8).strideBytes)), MutPtr((this.vec.asMutPtr()).rawAddress + ((idx + chLen).toLong() * (PrimitiveLayouts.U8).strideBytes)), len - idx)
         }
         // SAFETY: Encode the character into the vacated region if `idx != len`,
         // or into the uninitialized spare capacity otherwise.
@@ -1092,13 +1095,13 @@ public open class String(
         // ahead. This is safe because sufficient capacity was just reserved, and `idx`
         // is a char boundary.
         run {
-            ptr.copy(ConstPtr((this.vec.asPtr()).rawAddress + ((idx).toLong() * (PrimitiveLayouts.U8).strideBytes)), MutPtr((this.vec.asMutPtr()).rawAddress + ((idx + amt).toLong() * (PrimitiveLayouts.U8).strideBytes)), len - idx)
+            copy(ConstPtr((this.vec.asPtr()).rawAddress + ((idx).toLong() * (PrimitiveLayouts.U8).strideBytes)), MutPtr((this.vec.asMutPtr()).rawAddress + ((idx + amt).toLong() * (PrimitiveLayouts.U8).strideBytes)), len - idx)
         }
         // SAFETY: Copy the new string slice into the vacated region if `idx != len`,
         // or into the uninitialized spare capacity otherwise. The borrow checker
         // ensures that the source and destination do not overlap.
         run {
-            ptr.copyNonoverlapping(string.asPtr(), MutPtr((this.vec.asMutPtr()).rawAddress + ((idx).toLong() * (PrimitiveLayouts.U8).strideBytes)), amt)
+            copyNonoverlapping(string.asPtr(), MutPtr((this.vec.asMutPtr()).rawAddress + ((idx).toLong() * (PrimitiveLayouts.U8).strideBytes)), amt)
         }
         // SAFETY: Update the length to include the newly added bytes.
         run {
@@ -1254,7 +1257,7 @@ public open class String(
         // of the vector version. The data is just plain bytes.
         // Because the range removal happens in Drop, if the Drain iterator is leaked,
         // the removal will not happen.
-        val structVal = slice.range(range, 0 until this.length)
+        val structVal = Range(range, 0 until this.length)
         val start = structVal.start
         val end = structVal.end
         check(this.isCharBoundary(start))
@@ -1332,7 +1335,7 @@ public open class String(
      */
     public open fun <R> replaceRange(range: R, replaceWith: String) where R : RangeBounds<Int> {
         // We avoid #81138 (nondeterministic RangeBounds impls) because we only use `range` once, here.
-        val checkedRange = slice.range(range, 0 until this.length)
+        val checkedRange = Range(range, 0 until this.length)
         check(this.isCharBoundary(checkedRange.start)) { "start of range should be a character boundary" }
         check(this.isCharBoundary(checkedRange.end)) { "end of range should be a character boundary" }
         if (replaceWith.length > checkedRange.len()) {

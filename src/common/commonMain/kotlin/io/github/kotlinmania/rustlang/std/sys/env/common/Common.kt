@@ -24,6 +24,6 @@ public open class Env(
     public open fun sizeHint(): Pair<Int, Int?> = run { val n = this.iter.size; Pair(n, n) }
 
     public companion object {
-        internal fun new(env: List<Pair<OsString, OsString>>): Env = Env(iter = ArrayDeque((env).toList()))
+        public fun new(env: List<Pair<OsString, OsString>>): Env = Env(iter = ArrayDeque((env).toList()))
     }
 }

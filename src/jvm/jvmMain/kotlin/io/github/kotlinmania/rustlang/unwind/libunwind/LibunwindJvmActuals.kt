@@ -2,7 +2,7 @@
 
 package io.github.kotlinmania.rustlang.unwind.libunwind
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.unwind.types.UnwindReasonCode
@@ -30,9 +30,9 @@ private object LibunwindJniBridge {
             }
         val libFileName =
             when (hostPlatform) {
-                "windows" -> "unwind_jni.dll"
-                "macos" -> "libunwind_jni.dylib"
-                else -> "libunwind_jni.so"
+                "windows" -> "kmcore_jni.dll"
+                "macos" -> "libkmcore_jni.dylib"
+                else -> "libkmcore_jni.so"
             }
         val pathSep = System.getProperty("path.separator", ":")
         val libPathProp = System.getProperty("java.library.path", "")
@@ -48,7 +48,7 @@ private object LibunwindJniBridge {
         val stream = LibunwindJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
-            val extracted = java.nio.file.Files.createTempFile("unwind_jni-", suffix).toFile()
+            val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
             extracted.deleteOnExit()
             stream.use { input ->
                 extracted.outputStream().use { output ->
@@ -58,7 +58,7 @@ private object LibunwindJniBridge {
             System.load(extracted.absolutePath)
             return
         }
-        System.loadLibrary("unwind_jni")
+        System.loadLibrary("kmcore_jni")
     }
 
     @JvmStatic

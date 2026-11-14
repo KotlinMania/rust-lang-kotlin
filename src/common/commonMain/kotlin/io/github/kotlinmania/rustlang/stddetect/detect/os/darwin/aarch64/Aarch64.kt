@@ -1,7 +1,7 @@
 // port-lint: source detect/os/darwin/aarch64.rs
 package io.github.kotlinmania.rustlang.stddetect.detect.os.darwin.aarch64
 
-import io.github.kotlinmania.rustlang.core.ffi.CStr
+import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
@@ -18,7 +18,7 @@ public fun sysctlbyname(name: CStr): Boolean {
     val enabled by localStorageL13C4
     val localStorageL14C4 = AddressableLocal(4, PrimitiveLayouts.USIZE64)
     val enabledPtr = (MutPtr(localStorageL13C4.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
-    val ret = io.github.kotlinmania.libc.sysctlbyname(name.asPtr(), enabledPtr, RustMutableReference(localStorageL14C4.asMutPtr(), localStorageL14C4.layout), MutPtr(0L), 0)
+    val ret = io.github.kotlinmania.rustlang.libc.sysctlbyname(name.asPtr(), enabledPtr, RustMutableReference(localStorageL14C4.asMutPtr(), localStorageL14C4.layout), MutPtr(0L), 0)
     return when (ret) {
         0 -> enabled != 0
         else -> false
@@ -28,7 +28,7 @@ public fun sysctlbyname(name: CStr): Boolean {
 /**
  * Try to read the features using sysctlbyname.
  */
-internal fun detectFeatures(): Initializer {
+public fun detectFeatures(): Initializer {
     val value = Cache.Initializer.default()
     var enableFeature =
         { f, enable ->

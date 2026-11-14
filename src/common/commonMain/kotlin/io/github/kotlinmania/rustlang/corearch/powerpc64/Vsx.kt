@@ -3,7 +3,6 @@ package io.github.kotlinmania.rustlang.corearch.powerpc64
 
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.corearch.mem.transmute
 import io.github.kotlinmania.rustlang.corearch.s390x.vector.VectorSignedInt
 
 // PowerPC Vector Scalar eXtensions (VSX) intrinsics.
@@ -25,6 +24,18 @@ public interface VectorXloads<out Result> {
 }
 
 public fun ConstPtr.vecXlLen(l: Int): TTL = transmute(vecLxvl(ConstPtr(this.rawAddress, this.rawMeta), l))
+
+public fun ConstPtr.vecXlLenFromConstPtrUByte(l: Int): TTL = transmute(vecLxvl(this, l))
+
+public fun ConstPtr.vecXlLenFromConstPtrShort(l: Int): TTL = transmute(vecLxvl(ConstPtr(this.rawAddress, this.rawMeta), l))
+
+public fun ConstPtr.vecXlLenFromConstPtrUShort(l: Int): TTL = transmute(vecLxvl(ConstPtr(this.rawAddress, this.rawMeta), l))
+
+public fun ConstPtr.vecXlLenFromConstPtrInt(l: Int): TTL = transmute(vecLxvl(ConstPtr(this.rawAddress, this.rawMeta), l))
+
+public fun ConstPtr.vecXlLenFromConstPtrUInt(l: Int): TTL = transmute(vecLxvl(ConstPtr(this.rawAddress, this.rawMeta), l))
+
+public fun ConstPtr.vecXlLenFromConstPtrFloat(l: Int): TTL = transmute(vecLxvl(ConstPtr(this.rawAddress, this.rawMeta), l))
 
 public fun vecStxvl(v: VectorSignedInt, a: MutPtr, l: ULong) {
     stxvl(v, a, l shl 56)

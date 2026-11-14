@@ -210,7 +210,7 @@ public sealed class TestFn {
             is DynBenchAsTestFn -> PadNone
         }
 
-    internal open fun intoRunnable(): Runnable =
+    public open fun intoRunnable(): Runnable =
         when (this) {
             is StaticTestFn -> {
                 val (f) = this
@@ -250,18 +250,66 @@ public sealed class TestFn {
     }
 }
 
-internal sealed class Runnable {
+public sealed class Runnable {
     public data class Test(public var value: RunnableTest) : Runnable()
     public data class Bench(public var value: RunnableBench) : Runnable()
 }
 
-internal sealed class RunnableTest {
+public sealed class RunnableTest {
     public data class Static(public var value: FnCallback) : RunnableTest()
-    public data class Dynamic(public var value: () -> Result<Unit, String>) : RunnableTest()
-    public data class StaticBenchAsTest(public var value: FnCallback1) : RunnableTest()
-    public data class DynamicBenchAsTest(public var value: (Bencher) -> Result<Unit, String>) : RunnableTest()
+    public class Dynamic internal constructor(valueCtorArg: () -> Result<Unit, String>) : RunnableTest() {
+        public var value: () -> Result<Unit, String> = valueCtorArg
+            internal set
 
-    internal open fun run(): Result<Unit, String> =
+        public operator fun component1(): () -> Result<Unit, String> = this.value
+
+        public fun copy(value: () -> Result<Unit, String> = this.value): Dynamic = Dynamic(valueCtorArg = value)
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is Dynamic) return false
+            if (this.value != other.value) return false
+            return true
+        }
+
+        override fun hashCode(): Int = this.value.hashCode()
+
+        public companion object {
+            public operator fun invoke(
+                value: () -> Result<Unit, String>,
+            ): Dynamic = Dynamic(
+                valueCtorArg = value,
+            )
+        }
+    }
+    public data class StaticBenchAsTest(public var value: FnCallback1) : RunnableTest()
+    public class DynamicBenchAsTest internal constructor(valueCtorArg: (Bencher) -> Result<Unit, String>) : RunnableTest() {
+        public var value: (Bencher) -> Result<Unit, String> = valueCtorArg
+            internal set
+
+        public operator fun component1(): (Bencher) -> Result<Unit, String> = this.value
+
+        public fun copy(value: (Bencher) -> Result<Unit, String> = this.value): DynamicBenchAsTest = DynamicBenchAsTest(valueCtorArg = value)
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is DynamicBenchAsTest) return false
+            if (this.value != other.value) return false
+            return true
+        }
+
+        override fun hashCode(): Int = this.value.hashCode()
+
+        public companion object {
+            public operator fun invoke(
+                value: (Bencher) -> Result<Unit, String>,
+            ): DynamicBenchAsTest = DynamicBenchAsTest(
+                valueCtorArg = value,
+            )
+        }
+    }
+
+    public open fun run(): Result<Unit, String> =
         when (this) {
             is RunnableTest.Static -> {
                 val (f) = this
@@ -281,7 +329,7 @@ internal sealed class RunnableTest {
             }
         }
 
-    internal open fun isDynamic(): Boolean =
+    public open fun isDynamic(): Boolean =
         when (this) {
             is RunnableTest.Static -> false
             is RunnableTest.StaticBenchAsTest -> false
@@ -290,11 +338,35 @@ internal sealed class RunnableTest {
         }
 }
 
-internal sealed class RunnableBench {
+public sealed class RunnableBench {
     public data class Static(public var value: FnCallback1) : RunnableBench()
-    public data class Dynamic(public var value: (Bencher) -> Result<Unit, String>) : RunnableBench()
+    public class Dynamic internal constructor(valueCtorArg: (Bencher) -> Result<Unit, String>) : RunnableBench() {
+        public var value: (Bencher) -> Result<Unit, String> = valueCtorArg
+            internal set
 
-    internal open fun run(id: TestId, desc: TestDesc, monitorCh: Sender<CompletedTest>, nocapture: Boolean) {
+        public operator fun component1(): (Bencher) -> Result<Unit, String> = this.value
+
+        public fun copy(value: (Bencher) -> Result<Unit, String> = this.value): Dynamic = Dynamic(valueCtorArg = value)
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is Dynamic) return false
+            if (this.value != other.value) return false
+            return true
+        }
+
+        override fun hashCode(): Int = this.value.hashCode()
+
+        public companion object {
+            public operator fun invoke(
+                value: (Bencher) -> Result<Unit, String>,
+            ): Dynamic = Dynamic(
+                valueCtorArg = value,
+            )
+        }
+    }
+
+    public open fun run(id: TestId, desc: TestDesc, monitorCh: Sender<CompletedTest>, nocapture: Boolean) {
         when (this) {
             is RunnableBench.Static -> {
                 val (f) = this

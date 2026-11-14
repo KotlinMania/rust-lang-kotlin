@@ -1,9 +1,9 @@
 // port-lint: source sys/random/apple.rs
 package io.github.kotlinmania.rustlang.std.sys.random.apple
 
-import io.github.kotlinmania.libc.CCRandomGenerateBytes
-import io.github.kotlinmania.libc.kCCSuccess
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
+import io.github.kotlinmania.rustlang.libc.CCRandomGenerateBytes
+import io.github.kotlinmania.rustlang.libc.kCCSuccess
 
 // Random data on Apple platforms.
 //

@@ -1,5 +1,7 @@
 package io.github.kotlinmania.rustlang.corearch.aarch64.sve
 
+import io.github.kotlinmania.rustlang.core.intrinsics.kmAllocZeroed
+import io.github.kotlinmania.rustlang.core.intrinsics.kmDealloc
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 
@@ -15,7 +17,7 @@ public open class SvboolT(
     public open fun clone(): SvboolT = SvboolT(value)
 
     public override fun sveInto(): Svbool2T {
-        fun convertFromSvbool(b: SvboolT): Svbool2T = null as Svbool2T
+        fun convertFromSvbool(b: SvboolT): Svbool2T = run { val ptr = kmAllocZeroed(maxOf(1L, (Svbool2T.typeLayout()).sizeBytes), maxOf(1L, (Svbool2T.typeLayout()).alignBytes)); val res = (Svbool2T.typeLayout()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (Svbool2T.typeLayout()).sizeBytes), maxOf(1L, (Svbool2T.typeLayout()).alignBytes)); res }
         return convertFromSvbool(this)
     }
 
@@ -402,7 +404,7 @@ public open class Svuint64T(
     }
 }
 
-internal open class Nxv2i8(
+public open class Nxv2i8(
     public var value: Byte,
 ) : AsUnsigned<Any?, Nxv2u8> {
     public var field0: Byte
@@ -438,7 +440,7 @@ internal open class Nxv2i8(
     }
 }
 
-internal open class Nxv4i8(
+public open class Nxv4i8(
     public var value: Byte,
 ) : AsUnsigned<Any?, Nxv4u8> {
     public var field0: Byte
@@ -474,7 +476,7 @@ internal open class Nxv4i8(
     }
 }
 
-internal open class Nxv8i8(
+public open class Nxv8i8(
     public var value: Byte,
 ) : AsUnsigned<Any?, Nxv8u8> {
     public var field0: Byte
@@ -510,7 +512,7 @@ internal open class Nxv8i8(
     }
 }
 
-internal open class Nxv2i16(
+public open class Nxv2i16(
     public var value: Short,
 ) : AsUnsigned<Any?, Nxv2u16> {
     public var field0: Short
@@ -546,7 +548,7 @@ internal open class Nxv2i16(
     }
 }
 
-internal open class Nxv4i16(
+public open class Nxv4i16(
     public var value: Short,
 ) : AsUnsigned<Any?, Nxv4u16> {
     public var field0: Short
@@ -582,7 +584,7 @@ internal open class Nxv4i16(
     }
 }
 
-internal open class Nxv2i32(
+public open class Nxv2i32(
     public var value: Int,
 ) : AsUnsigned<Any?, Nxv2u32> {
     public var field0: Int
@@ -618,7 +620,7 @@ internal open class Nxv2i32(
     }
 }
 
-internal open class Nxv2u8(
+public open class Nxv2u8(
     public var value: UByte,
 ) : AsSigned<Any?, Nxv2i8> {
     public var field0: UByte
@@ -654,7 +656,7 @@ internal open class Nxv2u8(
     }
 }
 
-internal open class Nxv4u8(
+public open class Nxv4u8(
     public var value: UByte,
 ) : AsSigned<Any?, Nxv4i8> {
     public var field0: UByte
@@ -690,7 +692,7 @@ internal open class Nxv4u8(
     }
 }
 
-internal open class Nxv8u8(
+public open class Nxv8u8(
     public var value: UByte,
 ) : AsSigned<Any?, Nxv8i8> {
     public var field0: UByte
@@ -726,7 +728,7 @@ internal open class Nxv8u8(
     }
 }
 
-internal open class Nxv2u16(
+public open class Nxv2u16(
     public var value: UShort,
 ) : AsSigned<Any?, Nxv2i16> {
     public var field0: UShort
@@ -762,7 +764,7 @@ internal open class Nxv2u16(
     }
 }
 
-internal open class Nxv4u16(
+public open class Nxv4u16(
     public var value: UShort,
 ) : AsSigned<Any?, Nxv4i16> {
     public var field0: UShort
@@ -798,7 +800,7 @@ internal open class Nxv4u16(
     }
 }
 
-internal open class Nxv2u32(
+public open class Nxv2u32(
     public var value: UInt,
 ) : AsSigned<Any?, Nxv2i32> {
     public var field0: UInt
@@ -2022,7 +2024,7 @@ public open class Svuint64x4T(
     }
 }
 
-internal open class Svbool2T(
+public open class Svbool2T(
     public var value: Boolean,
 ) : SveInto<SvboolT> {
     public var field0: Boolean
@@ -2034,7 +2036,7 @@ internal open class Svbool2T(
     public open fun clone(): Svbool2T = Svbool2T(value)
 
     public override fun sveInto(): SvboolT {
-        fun convertToSvbool(b: Svbool2T): SvboolT = null as SvboolT
+        fun convertToSvbool(b: Svbool2T): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (SvboolT.typeLayout()).sizeBytes), maxOf(1L, (SvboolT.typeLayout()).alignBytes)); val res = (SvboolT.typeLayout()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (SvboolT.typeLayout()).sizeBytes), maxOf(1L, (SvboolT.typeLayout()).alignBytes)); res }
         return convertToSvbool(this)
     }
 
@@ -2061,7 +2063,7 @@ internal open class Svbool2T(
     }
 }
 
-internal open class Svbool4T(
+public open class Svbool4T(
     public var value: Boolean,
 ) : SveInto<SvboolT> {
     public var field0: Boolean
@@ -2097,7 +2099,7 @@ internal open class Svbool4T(
     }
 }
 
-internal open class Svbool8T(
+public open class Svbool8T(
     public var value: Boolean,
 ) : SveInto<SvboolT> {
     public var field0: Boolean

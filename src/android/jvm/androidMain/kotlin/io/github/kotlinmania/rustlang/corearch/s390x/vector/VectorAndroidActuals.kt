@@ -12,7 +12,7 @@ import io.github.kotlinmania.rustlang.corearch.simd.I8x16
 
 private object S390xVectorJniBridge {
     init {
-        System.loadLibrary("corearch_jni")
+        System.loadLibrary("kmcore_jni")
     }
 
     @JvmStatic

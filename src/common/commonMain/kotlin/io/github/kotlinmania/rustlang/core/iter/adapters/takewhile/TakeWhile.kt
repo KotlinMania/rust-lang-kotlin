@@ -1,8 +1,8 @@
 // port-lint: source iter/adapters/take_while.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.takewhile
 
-import io.github.kotlinmania.rustlang.core.iter.TrustedFused
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedFused
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -10,6 +10,7 @@ import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
 
 public class DebugStruct(
@@ -148,7 +149,7 @@ public open class TakeWhile<I, P>(
                 }
             }
 
-        internal fun <I, P> new(iter: I, predicate: P): TakeWhile<I, P> = TakeWhile(iter = iter, flag = false, predicate = predicate)
+        public fun <I, P> new(iter: I, predicate: P): TakeWhile<I, P> = TakeWhile(iter = iter, flag = false, predicate = predicate)
     }
 }
 

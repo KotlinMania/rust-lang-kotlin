@@ -1,17 +1,7 @@
 // port-lint: source sys/fd/unix.rs
 package io.github.kotlinmania.rustlang.std.sys.fd.unix
 
-import io.github.kotlinmania.libc.cint.max
-import io.github.kotlinmania.libc.fuchsia.FIOCLEX
-import io.github.kotlinmania.libc.fuchsia.FIONBIO
-import io.github.kotlinmania.libc.preadv
-import io.github.kotlinmania.libc.pwritev
-import io.github.kotlinmania.libc.readv
-import io.github.kotlinmania.libc.unix.aix.IOV_MAX
-import io.github.kotlinmania.libc.unix.linuxlike.android.Ioctl
-import io.github.kotlinmania.libc.unix.linuxlike.emscripten.pread64
-import io.github.kotlinmania.libc.unix.linuxlike.emscripten.pwrite64
-import io.github.kotlinmania.libc.writev
+import io.github.kotlinmania.rustlang.alloc.io.read.Read
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
@@ -20,6 +10,18 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
+import io.github.kotlinmania.rustlang.libc.cint.MAX
+import io.github.kotlinmania.rustlang.libc.preadv
+import io.github.kotlinmania.rustlang.libc.pwritev
+import io.github.kotlinmania.rustlang.libc.read
+import io.github.kotlinmania.rustlang.libc.readv
+import io.github.kotlinmania.rustlang.libc.unix.bsd.FIOCLEX
+import io.github.kotlinmania.rustlang.libc.unix.bsd.IOV_MAX
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.Ioctl
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.musl.pread64
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.musl.pwrite64
+import io.github.kotlinmania.rustlang.libc.wasi.FIONBIO
+import io.github.kotlinmania.rustlang.libc.writev
 import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.os.fd.AsFd
 import io.github.kotlinmania.rustlang.std.os.fd.AsRawFd
@@ -31,7 +33,6 @@ import io.github.kotlinmania.rustlang.std.os.fd.RawFd
 import io.github.kotlinmania.rustlang.std.sys.AsInner
 import io.github.kotlinmania.rustlang.std.sys.FromInner
 import io.github.kotlinmania.rustlang.std.sys.IntoInner
-import io.github.kotlinmania.rustlang.std.sys.fs.unix.runtimesymbols.read
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
 
 public open class FileDesc(
@@ -46,7 +47,7 @@ public open class FileDesc(
     public open fun tryClone(): Result<FileDesc, Error> = this.duplicate()
 
     public open fun read(buf: MutableList<UByte>): Result<Int, Error> {
-        val ret = when (val tryResult = cvt(io.github.kotlinmania.libc.read(this.asRawFd(), (buf.asMutPtr()).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, minOf(buf.size, READ_LIMIT)))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        val ret = when (val tryResult = cvt(io.github.kotlinmania.rustlang.libc.read(this.asRawFd(), (buf.asMutPtr()).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, minOf(buf.size, READ_LIMIT)))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         return Result.Ok(ret.toInt())
     }
 
@@ -90,7 +91,7 @@ public open class FileDesc(
     }
 
     public open fun write(buf: List<UByte>): Result<Int, Error> {
-        val ret = when (val tryResult = cvt(io.github.kotlinmania.libc.write(this.asRawFd(), (buf.asPtr()).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, minOf(buf.size, READ_LIMIT)))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        val ret = when (val tryResult = cvt(io.github.kotlinmania.rustlang.libc.write(this.asRawFd(), (buf.asPtr()).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, minOf(buf.size, READ_LIMIT)))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         return Result.Ok(ret.toInt())
     }
 
@@ -117,7 +118,6 @@ public open class FileDesc(
 
     public open fun setNonblocking(nonblocking: Boolean): Result<Unit, Error> {
         return run {
-            val v = nonblocking.toInt()
             when (val tryResult = cvt(Ioctl(this.asRawFd(), FIONBIO, v))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
             Result.Ok(Unit)
         }
@@ -155,6 +155,6 @@ public open class FileDesc(
 // Meanwhile on QNX, reads/writes/sends larger than INT_MAX return the wrong
 // number of bytes written (eg, writing 2^31 bytes returns (2^64 - 2^31) instead
 // of the correct byte count).
-public val READ_LIMIT: Int = max.toInt()
+public val READ_LIMIT: Int = MAX.toInt()
 
 public fun maxIov(): Int = IOV_MAX.toInt()

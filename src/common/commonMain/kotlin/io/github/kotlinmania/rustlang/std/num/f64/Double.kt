@@ -1,11 +1,9 @@
 // port-lint: source num/f64.rs
 package io.github.kotlinmania.rustlang.std.num.f64
 
-import io.github.kotlinmania.intrinsics.log
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
-import io.github.kotlinmania.rustlang.std.cmath.Erf
 import io.github.kotlinmania.rustlang.std.sys.cmath.expm1
 import io.github.kotlinmania.rustlang.std.sys.cmath.lgammaR
 import io.github.kotlinmania.rustlang.std.sys.cmath.log1p
@@ -297,7 +295,7 @@ public fun Double.powi(n: Int): Double = Double.powi(this, n)
  * check(Double.powf(0.0, 0.0) == 1.0)
  * ```
  */
-public fun Double.powf(n: Double): Double = io.github.kotlinmania.intrinsics.powf(this, n)
+public fun Double.powf(n: Double): Double = powf(this, n)
 
 /**
  * Returns the square root of a number.
@@ -342,7 +340,7 @@ public fun Double.sqrt(): Double = Double.sqrt(this)
  * check(absDifference < 1e-10)
  * ```
  */
-public fun Double.exp(): Double = io.github.kotlinmania.intrinsics.exp(this)
+public fun Double.exp(): Double = exp(this)
 
 /**
  * Returns `2 ^(self)`.
@@ -361,7 +359,7 @@ public fun Double.exp(): Double = io.github.kotlinmania.intrinsics.exp(this)
  * check(absDifference < 1e-10)
  * ```
  */
-public fun Double.exp2(): Double = io.github.kotlinmania.intrinsics.exp2(this)
+public fun Double.exp2(): Double = exp2(this)
 
 /**
  * Returns the natural logarithm of the number.
@@ -448,7 +446,7 @@ public fun Double.log(base: Double): Double = ln(this) / ln(base)
  * check((-42.0).log2().isNan())
  * ```
  */
-public fun Double.log2(): Double = io.github.kotlinmania.intrinsics.log2(this)
+public fun Double.log2(): Double = log2(this)
 
 /**
  * Returns the base 10 logarithm of the number.
@@ -475,7 +473,7 @@ public fun Double.log2(): Double = io.github.kotlinmania.intrinsics.log2(this)
  * check((-42.0).log10().isNan())
  * ```
  */
-public fun Double.log10(): Double = io.github.kotlinmania.intrinsics.log10(this)
+public fun Double.log10(): Double = log10(this)
 
 /**
  * The positive difference of two numbers.
@@ -565,7 +563,7 @@ public fun Double.hypot(other: Double): Double = io.github.kotlinmania.rustlang.
  * check(absDifference < 1e-10)
  * ```
  */
-public fun Double.sin(): Double = io.github.kotlinmania.intrinsics.sin(this)
+public fun Double.sin(): Double = sin(this)
 
 /**
  * Computes the cosine of a number (in radians).
@@ -583,7 +581,7 @@ public fun Double.sin(): Double = io.github.kotlinmania.intrinsics.sin(this)
  * check(absDifference < 1e-10)
  * ```
  */
-public fun Double.cos(): Double = io.github.kotlinmania.intrinsics.cos(this)
+public fun Double.cos(): Double = cos(this)
 
 /**
  * Computes the tangent of a number (in radians).
@@ -1002,7 +1000,7 @@ public fun Double.lnGamma(): Pair<Double, Int> {
  * }
  * ```
  */
-public fun Double.erf(): Double = Erf(this)
+public fun Double.erf(): Double = io.github.kotlinmania.rustlang.std.sys.cmath.erf(this)
 
 /**
  * Complementary error function.

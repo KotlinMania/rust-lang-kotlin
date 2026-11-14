@@ -668,11 +668,11 @@ public open class BTreeSet<T, A : AllocatorClone>(
      */
     public open fun entry(value: T): Entry<T, A> =
         when (val matchVal = this.map.entry(value)) {
-            is map.Entry.Occupied -> {
+            is io.github.kotlinmania.rustlang.alloc.collections.btree.map.entry.Entry.Occupied -> {
                 val (entry) = matchVal
                 Entry.Occupied(OccupiedEntry(inner = entry))
             }
-            is map.Entry.Vacant -> {
+            is io.github.kotlinmania.rustlang.alloc.collections.btree.map.entry.Entry.Vacant -> {
                 val (entry1) = matchVal
                 Entry.Vacant(VacantEntry(inner = entry1))
             }
@@ -1033,7 +1033,7 @@ public open class BTreeSet<T, A : AllocatorClone>(
         this.insert(elem)
     }
 
-    public open fun <I : Iterable<T>> extend(iter: I) {
+    public open fun <I : Iterable<T>> extendT(iter: I) {
         this.extend(iter.iterator().cloned())
     }
 

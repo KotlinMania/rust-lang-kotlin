@@ -28,9 +28,9 @@ private object NumImpLibmJniBridge {
             }
         val libFileName =
             when (hostPlatform) {
-                "windows" -> "core_jni.dll"
-                "macos" -> "libcore_jni.dylib"
-                else -> "libcore_jni.so"
+                "windows" -> "kmcore_jni.dll"
+                "macos" -> "libkmcore_jni.dylib"
+                else -> "libkmcore_jni.so"
             }
         val pathSep = System.getProperty("path.separator", ":")
         val libPathProp = System.getProperty("java.library.path", "")
@@ -46,7 +46,7 @@ private object NumImpLibmJniBridge {
         val stream = NumImpLibmJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
-            val extracted = java.nio.file.Files.createTempFile("core_jni-", suffix).toFile()
+            val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
             extracted.deleteOnExit()
             stream.use { input ->
                 extracted.outputStream().use { output ->
@@ -56,7 +56,7 @@ private object NumImpLibmJniBridge {
             System.load(extracted.absolutePath)
             return
         }
-        System.loadLibrary("core_jni")
+        System.loadLibrary("kmcore_jni")
     }
 
     @JvmStatic
@@ -306,431 +306,431 @@ private object NumImpLibmJniBridge {
     external fun coreNumImpLibmTgamma(x: Double): Double
 }
 
-internal actual fun powidf2(a: Double, b: Int): Double =
+public actual fun powidf2(a: Double, b: Int): Double =
     NumImpLibmJniBridge.coreNumImpLibmPowidf2(a, b)
 
-internal actual fun powisf2(a: kotlin.Float, b: Int): kotlin.Float =
+public actual fun powisf2(a: kotlin.Float, b: Int): kotlin.Float =
     NumImpLibmJniBridge.coreNumImpLibmPowisf2(a, b)
 
-internal actual fun powitf2(a: F128, b: Int): F128 =
-    null as F128
+public actual fun powitf2(a: F128, b: Int): F128 =
+    F128()
 
-internal actual fun cbrt(x: Double): Double =
+public actual fun cbrt(x: Double): Double =
     NumImpLibmJniBridge.coreNumImpLibmCbrt(x)
 
-internal actual fun cbrtf(n: kotlin.Float): kotlin.Float =
+public actual fun cbrtf(n: kotlin.Float): kotlin.Float =
     NumImpLibmJniBridge.coreNumImpLibmCbrtf(n)
 
-internal actual fun ceil(x: Double): Double =
+public actual fun ceil(x: Double): Double =
     NumImpLibmJniBridge.coreNumImpLibmCeil(x)
 
-internal actual fun ceilf(x: kotlin.Float): kotlin.Float =
+public actual fun ceilf(x: kotlin.Float): kotlin.Float =
     NumImpLibmJniBridge.coreNumImpLibmCeilf(x)
 
-internal actual fun ceilf128(x: F128): F128 =
-    null as F128
+public actual fun ceilf128(x: F128): F128 =
+    F128()
 
-internal actual fun ceilf16(x: F16): F16 =
-    null as F16
+public actual fun ceilf16(x: F16): F16 =
+    F16()
 
-internal actual fun copysign(x: Double, y: Double): Double =
+public actual fun copysign(x: Double, y: Double): Double =
     NumImpLibmJniBridge.coreNumImpLibmCopysign(x, y)
 
-internal actual fun copysignf(x: kotlin.Float, y: kotlin.Float): kotlin.Float =
+public actual fun copysignf(x: kotlin.Float, y: kotlin.Float): kotlin.Float =
     NumImpLibmJniBridge.coreNumImpLibmCopysignf(x, y)
 
-internal actual fun copysignf128(x: F128, y: F128): F128 =
-    null as F128
+public actual fun copysignf128(x: F128, y: F128): F128 =
+    F128()
 
-internal actual fun copysignf16(x: F16, y: F16): F16 =
-    null as F16
+public actual fun copysignf16(x: F16, y: F16): F16 =
+    F16()
 
-internal actual fun fabs(x: Double): Double =
+public actual fun fabs(x: Double): Double =
     NumImpLibmJniBridge.coreNumImpLibmFabs(x)
 
-internal actual fun fabsf(x: kotlin.Float): kotlin.Float =
+public actual fun fabsf(x: kotlin.Float): kotlin.Float =
     NumImpLibmJniBridge.coreNumImpLibmFabsf(x)
 
-internal actual fun fabsf128(x: F128): F128 =
-    null as F128
+public actual fun fabsf128(x: F128): F128 =
+    F128()
 
-internal actual fun fabsf16(x: F16): F16 =
-    null as F16
+public actual fun fabsf16(x: F16): F16 =
+    F16()
 
-internal actual fun fdim(a: Double, b: Double): Double =
+public actual fun fdim(a: Double, b: Double): Double =
     NumImpLibmJniBridge.coreNumImpLibmFdim(a, b)
 
-internal actual fun fdimf(a: kotlin.Float, b: kotlin.Float): kotlin.Float =
+public actual fun fdimf(a: kotlin.Float, b: kotlin.Float): kotlin.Float =
     NumImpLibmJniBridge.coreNumImpLibmFdimf(a, b)
 
-internal actual fun fdimf128(x: F128, y: F128): F128 =
-    null as F128
+public actual fun fdimf128(x: F128, y: F128): F128 =
+    F128()
 
-internal actual fun fdimf16(x: F16, y: F16): F16 =
-    null as F16
+public actual fun fdimf16(x: F16, y: F16): F16 =
+    F16()
 
-internal actual fun floor(x: Double): Double =
+public actual fun floor(x: Double): Double =
     NumImpLibmJniBridge.coreNumImpLibmFloor(x)
 
-internal actual fun floorf(x: kotlin.Float): kotlin.Float =
+public actual fun floorf(x: kotlin.Float): kotlin.Float =
     NumImpLibmJniBridge.coreNumImpLibmFloorf(x)
 
-internal actual fun floorf128(x: F128): F128 =
-    null as F128
+public actual fun floorf128(x: F128): F128 =
+    F128()
 
-internal actual fun floorf16(x: F16): F16 =
-    null as F16
+public actual fun floorf16(x: F16): F16 =
+    F16()
 
-internal actual fun fma(x: Double, y: Double, z: Double): Double =
+public actual fun fma(x: Double, y: Double, z: Double): Double =
     NumImpLibmJniBridge.coreNumImpLibmFma(x, y, z)
 
-internal actual fun fmaf(x: kotlin.Float, y: kotlin.Float, z: kotlin.Float): kotlin.Float =
+public actual fun fmaf(x: kotlin.Float, y: kotlin.Float, z: kotlin.Float): kotlin.Float =
     NumImpLibmJniBridge.coreNumImpLibmFmaf(x, y, z)
 
-internal actual fun fmaf128(x: F128, y: F128, z: F128): F128 =
-    null as F128
+public actual fun fmaf128(x: F128, y: F128, z: F128): F128 =
+    F128()
 
-internal actual fun fmaf16(x: F16, y: F16, z: F16): F16 =
-    null as F16
+public actual fun fmaf16(x: F16, y: F16, z: F16): F16 =
+    F16()
 
-internal actual fun fmax(x: Double, y: Double): Double =
+public actual fun fmax(x: Double, y: Double): Double =
     NumImpLibmJniBridge.coreNumImpLibmFmax(x, y)
 
-internal actual fun fmaxf(x: kotlin.Float, y: kotlin.Float): kotlin.Float =
+public actual fun fmaxf(x: kotlin.Float, y: kotlin.Float): kotlin.Float =
     NumImpLibmJniBridge.coreNumImpLibmFmaxf(x, y)
 
-internal actual fun fmaxf128(x: F128, y: F128): F128 =
-    null as F128
+public actual fun fmaxf128(x: F128, y: F128): F128 =
+    F128()
 
-internal actual fun fmaxf16(x: F16, y: F16): F16 =
-    null as F16
+public actual fun fmaxf16(x: F16, y: F16): F16 =
+    F16()
 
-internal actual fun fmaximum(x: Double, y: Double): Double =
+public actual fun fmaximum(x: Double, y: Double): Double =
     NumImpLibmJniBridge.coreNumImpLibmFmaximum(x, y)
 
-internal actual fun fmaximumf(x: kotlin.Float, y: kotlin.Float): kotlin.Float =
+public actual fun fmaximumf(x: kotlin.Float, y: kotlin.Float): kotlin.Float =
     NumImpLibmJniBridge.coreNumImpLibmFmaximumf(x, y)
 
-internal actual fun fmaximumf128(x: F128, y: F128): F128 =
-    null as F128
+public actual fun fmaximumf128(x: F128, y: F128): F128 =
+    F128()
 
-internal actual fun fmaximumf16(x: F16, y: F16): F16 =
-    null as F16
+public actual fun fmaximumf16(x: F16, y: F16): F16 =
+    F16()
 
-internal actual fun fmin(x: Double, y: Double): Double =
+public actual fun fmin(x: Double, y: Double): Double =
     NumImpLibmJniBridge.coreNumImpLibmFmin(x, y)
 
-internal actual fun fminf(x: kotlin.Float, y: kotlin.Float): kotlin.Float =
+public actual fun fminf(x: kotlin.Float, y: kotlin.Float): kotlin.Float =
     NumImpLibmJniBridge.coreNumImpLibmFminf(x, y)
 
-internal actual fun fminf128(x: F128, y: F128): F128 =
-    null as F128
+public actual fun fminf128(x: F128, y: F128): F128 =
+    F128()
 
-internal actual fun fminf16(x: F16, y: F16): F16 =
-    null as F16
+public actual fun fminf16(x: F16, y: F16): F16 =
+    F16()
 
-internal actual fun fminimum(x: Double, y: Double): Double =
+public actual fun fminimum(x: Double, y: Double): Double =
     NumImpLibmJniBridge.coreNumImpLibmFminimum(x, y)
 
-internal actual fun fminimumf(x: kotlin.Float, y: kotlin.Float): kotlin.Float =
+public actual fun fminimumf(x: kotlin.Float, y: kotlin.Float): kotlin.Float =
     NumImpLibmJniBridge.coreNumImpLibmFminimumf(x, y)
 
-internal actual fun fminimumf128(x: F128, y: F128): F128 =
-    null as F128
+public actual fun fminimumf128(x: F128, y: F128): F128 =
+    F128()
 
-internal actual fun fminimumf16(x: F16, y: F16): F16 =
-    null as F16
+public actual fun fminimumf16(x: F16, y: F16): F16 =
+    F16()
 
-internal actual fun fmod(x: Double, y: Double): Double =
+public actual fun fmod(x: Double, y: Double): Double =
     NumImpLibmJniBridge.coreNumImpLibmFmod(x, y)
 
-internal actual fun fmodf(x: kotlin.Float, y: kotlin.Float): kotlin.Float =
+public actual fun fmodf(x: kotlin.Float, y: kotlin.Float): kotlin.Float =
     NumImpLibmJniBridge.coreNumImpLibmFmodf(x, y)
 
-internal actual fun fmodf128(x: F128, y: F128): F128 =
-    null as F128
+public actual fun fmodf128(x: F128, y: F128): F128 =
+    F128()
 
-internal actual fun fmodf16(x: F16, y: F16): F16 =
-    null as F16
+public actual fun fmodf16(x: F16, y: F16): F16 =
+    F16()
 
-internal actual fun rint(x: Double): Double =
+public actual fun rint(x: Double): Double =
     NumImpLibmJniBridge.coreNumImpLibmRint(x)
 
-internal actual fun rintf(x: kotlin.Float): kotlin.Float =
+public actual fun rintf(x: kotlin.Float): kotlin.Float =
     NumImpLibmJniBridge.coreNumImpLibmRintf(x)
 
-internal actual fun rintf128(x: F128): F128 =
-    null as F128
+public actual fun rintf128(x: F128): F128 =
+    F128()
 
-internal actual fun rintf16(x: F16): F16 =
-    null as F16
+public actual fun rintf16(x: F16): F16 =
+    F16()
 
-internal actual fun round(x: Double): Double =
+public actual fun round(x: Double): Double =
     NumImpLibmJniBridge.coreNumImpLibmRound(x)
 
-internal actual fun roundeven(x: Double): Double =
+public actual fun roundeven(x: Double): Double =
     NumImpLibmJniBridge.coreNumImpLibmRoundeven(x)
 
-internal actual fun roundevenf(x: kotlin.Float): kotlin.Float =
+public actual fun roundevenf(x: kotlin.Float): kotlin.Float =
     NumImpLibmJniBridge.coreNumImpLibmRoundevenf(x)
 
-internal actual fun roundevenf128(x: F128): F128 =
-    null as F128
+public actual fun roundevenf128(x: F128): F128 =
+    F128()
 
-internal actual fun roundevenf16(x: F16): F16 =
-    null as F16
+public actual fun roundevenf16(x: F16): F16 =
+    F16()
 
-internal actual fun roundf(x: kotlin.Float): kotlin.Float =
+public actual fun roundf(x: kotlin.Float): kotlin.Float =
     NumImpLibmJniBridge.coreNumImpLibmRoundf(x)
 
-internal actual fun roundf128(x: F128): F128 =
-    null as F128
+public actual fun roundf128(x: F128): F128 =
+    F128()
 
-internal actual fun roundf16(x: F16): F16 =
-    null as F16
+public actual fun roundf16(x: F16): F16 =
+    F16()
 
-internal actual fun sqrt(x: Double): Double =
+public actual fun sqrt(x: Double): Double =
     NumImpLibmJniBridge.coreNumImpLibmSqrt(x)
 
-internal actual fun sqrtf(x: kotlin.Float): kotlin.Float =
+public actual fun sqrtf(x: kotlin.Float): kotlin.Float =
     NumImpLibmJniBridge.coreNumImpLibmSqrtf(x)
 
-internal actual fun sqrtf128(x: F128): F128 =
-    null as F128
+public actual fun sqrtf128(x: F128): F128 =
+    F128()
 
-internal actual fun sqrtf16(x: F16): F16 =
-    null as F16
+public actual fun sqrtf16(x: F16): F16 =
+    F16()
 
-internal actual fun trunc(x: Double): Double =
+public actual fun trunc(x: Double): Double =
     NumImpLibmJniBridge.coreNumImpLibmTrunc(x)
 
-internal actual fun truncf(x: kotlin.Float): kotlin.Float =
+public actual fun truncf(x: kotlin.Float): kotlin.Float =
     NumImpLibmJniBridge.coreNumImpLibmTruncf(x)
 
-internal actual fun truncf128(x: F128): F128 =
-    null as F128
+public actual fun truncf128(x: F128): F128 =
+    F128()
 
-internal actual fun truncf16(x: F16): F16 =
-    null as F16
+public actual fun truncf16(x: F16): F16 =
+    F16()
 
-internal actual fun mulsc3(a: kotlin.Float, b: kotlin.Float, c: kotlin.Float, d: kotlin.Float): Complex<kotlin.Float> =
+public actual fun mulsc3(a: kotlin.Float, b: kotlin.Float, c: kotlin.Float, d: kotlin.Float): Complex<kotlin.Float> =
     null as Complex<kotlin.Float>
 
-internal actual fun muldc3(a: Double, b: Double, c: Double, d: Double): Complex<Double> =
+public actual fun muldc3(a: Double, b: Double, c: Double, d: Double): Complex<Double> =
     null as Complex<Double>
 
-internal actual fun divsc3(a: kotlin.Float, b: kotlin.Float, c: kotlin.Float, d: kotlin.Float): Complex<kotlin.Float> =
+public actual fun divsc3(a: kotlin.Float, b: kotlin.Float, c: kotlin.Float, d: kotlin.Float): Complex<kotlin.Float> =
     null as Complex<kotlin.Float>
 
-internal actual fun divdc3(a: Double, b: Double, c: Double, d: Double): Complex<Double> =
+public actual fun divdc3(a: Double, b: Double, c: Double, d: Double): Complex<Double> =
     null as Complex<Double>
 
-internal actual fun rustMulhc3(a: F16, b: F16, c: F16, d: F16): Complex<F16> =
+public actual fun rustMulhc3(a: F16, b: F16, c: F16, d: F16): Complex<F16> =
     null as Complex<F16>
 
-internal actual fun rustMultc3(a: F128, b: F128, c: F128, d: F128): Complex<F128> =
+public actual fun rustMultc3(a: F128, b: F128, c: F128, d: F128): Complex<F128> =
     null as Complex<F128>
 
-internal actual fun rustDivhc3(a: F16, b: F16, c: F16, d: F16): Complex<F16> =
+public actual fun rustDivhc3(a: F16, b: F16, c: F16, d: F16): Complex<F16> =
     null as Complex<F16>
 
-internal actual fun rustDivtc3(a: F128, b: F128, c: F128, d: F128): Complex<F128> =
+public actual fun rustDivtc3(a: F128, b: F128, c: F128, d: F128): Complex<F128> =
     null as Complex<F128>
 
-internal actual fun acosf(n: kotlin.Float): kotlin.Float =
+public actual fun acosf(n: kotlin.Float): kotlin.Float =
     NumImpLibmJniBridge.coreNumImpLibmAcosf(n)
 
-internal actual fun asinf(n: kotlin.Float): kotlin.Float =
+public actual fun asinf(n: kotlin.Float): kotlin.Float =
     NumImpLibmJniBridge.coreNumImpLibmAsinf(n)
 
-internal actual fun atan2f(a: kotlin.Float, b: kotlin.Float): kotlin.Float =
+public actual fun atan2f(a: kotlin.Float, b: kotlin.Float): kotlin.Float =
     NumImpLibmJniBridge.coreNumImpLibmAtan2f(a, b)
 
-internal actual fun atanf(n: kotlin.Float): kotlin.Float =
+public actual fun atanf(n: kotlin.Float): kotlin.Float =
     NumImpLibmJniBridge.coreNumImpLibmAtanf(n)
 
-internal actual fun cosf(x: kotlin.Float): kotlin.Float =
+public actual fun cosf(x: kotlin.Float): kotlin.Float =
     NumImpLibmJniBridge.coreNumImpLibmCosf(x)
 
-internal actual fun coshf(n: kotlin.Float): kotlin.Float =
+public actual fun coshf(n: kotlin.Float): kotlin.Float =
     NumImpLibmJniBridge.coreNumImpLibmCoshf(n)
 
-internal actual fun erfcf(x: kotlin.Float): kotlin.Float =
+public actual fun erfcf(x: kotlin.Float): kotlin.Float =
     NumImpLibmJniBridge.coreNumImpLibmErfcf(x)
 
-internal actual fun erff(x: kotlin.Float): kotlin.Float =
+public actual fun erff(x: kotlin.Float): kotlin.Float =
     NumImpLibmJniBridge.coreNumImpLibmErff(x)
 
-internal actual fun exp2f(x: kotlin.Float): kotlin.Float =
+public actual fun exp2f(x: kotlin.Float): kotlin.Float =
     NumImpLibmJniBridge.coreNumImpLibmExp2f(x)
 
-internal actual fun expf(x: kotlin.Float): kotlin.Float =
+public actual fun expf(x: kotlin.Float): kotlin.Float =
     NumImpLibmJniBridge.coreNumImpLibmExpf(x)
 
-internal actual fun expm1f(n: kotlin.Float): kotlin.Float =
+public actual fun expm1f(n: kotlin.Float): kotlin.Float =
     NumImpLibmJniBridge.coreNumImpLibmExpm1f(n)
 
-internal actual fun hypotf(x: kotlin.Float, y: kotlin.Float): kotlin.Float =
+public actual fun hypotf(x: kotlin.Float, y: kotlin.Float): kotlin.Float =
     NumImpLibmJniBridge.coreNumImpLibmHypotf(x, y)
 
-internal actual fun ldexpf(f: kotlin.Float, n: Int): kotlin.Float =
+public actual fun ldexpf(f: kotlin.Float, n: Int): kotlin.Float =
     NumImpLibmJniBridge.coreNumImpLibmLdexpf(f, n)
 
-internal actual fun log10f(x: kotlin.Float): kotlin.Float =
+public actual fun log10f(x: kotlin.Float): kotlin.Float =
     NumImpLibmJniBridge.coreNumImpLibmLog10f(x)
 
-internal actual fun log1pf(n: kotlin.Float): kotlin.Float =
+public actual fun log1pf(n: kotlin.Float): kotlin.Float =
     NumImpLibmJniBridge.coreNumImpLibmLog1pf(n)
 
-internal actual fun log2f(x: kotlin.Float): kotlin.Float =
+public actual fun log2f(x: kotlin.Float): kotlin.Float =
     NumImpLibmJniBridge.coreNumImpLibmLog2f(x)
 
-internal actual fun logf(x: kotlin.Float): kotlin.Float =
+public actual fun logf(x: kotlin.Float): kotlin.Float =
     NumImpLibmJniBridge.coreNumImpLibmLogf(x)
 
-internal actual fun powf(x: kotlin.Float, y: kotlin.Float): kotlin.Float =
+public actual fun powf(x: kotlin.Float, y: kotlin.Float): kotlin.Float =
     NumImpLibmJniBridge.coreNumImpLibmPowf(x, y)
 
-internal actual fun sinf(x: kotlin.Float): kotlin.Float =
+public actual fun sinf(x: kotlin.Float): kotlin.Float =
     NumImpLibmJniBridge.coreNumImpLibmSinf(x)
 
-internal actual fun sinhf(n: kotlin.Float): kotlin.Float =
+public actual fun sinhf(n: kotlin.Float): kotlin.Float =
     NumImpLibmJniBridge.coreNumImpLibmSinhf(n)
 
-internal actual fun tanf(n: kotlin.Float): kotlin.Float =
+public actual fun tanf(n: kotlin.Float): kotlin.Float =
     NumImpLibmJniBridge.coreNumImpLibmTanf(n)
 
-internal actual fun tanhf(n: kotlin.Float): kotlin.Float =
+public actual fun tanhf(n: kotlin.Float): kotlin.Float =
     NumImpLibmJniBridge.coreNumImpLibmTanhf(n)
 
-internal actual fun tgammaf(x: kotlin.Float): kotlin.Float =
+public actual fun tgammaf(x: kotlin.Float): kotlin.Float =
     NumImpLibmJniBridge.coreNumImpLibmTgammaf(x)
 
-internal actual fun acos(x: Double): Double =
+public actual fun acos(x: Double): Double =
     NumImpLibmJniBridge.coreNumImpLibmAcos(x)
 
-internal actual fun asin(x: Double): Double =
+public actual fun asin(x: Double): Double =
     NumImpLibmJniBridge.coreNumImpLibmAsin(x)
 
-internal actual fun atan(x: Double): Double =
+public actual fun atan(x: Double): Double =
     NumImpLibmJniBridge.coreNumImpLibmAtan(x)
 
-internal actual fun atan2(x: Double, y: Double): Double =
+public actual fun atan2(x: Double, y: Double): Double =
     NumImpLibmJniBridge.coreNumImpLibmAtan2(x, y)
 
-internal actual fun cos(x: Double): Double =
+public actual fun cos(x: Double): Double =
     NumImpLibmJniBridge.coreNumImpLibmCos(x)
 
-internal actual fun cosh(x: Double): Double =
+public actual fun cosh(x: Double): Double =
     NumImpLibmJniBridge.coreNumImpLibmCosh(x)
 
-internal actual fun erf(x: Double): Double =
+public actual fun erf(x: Double): Double =
     NumImpLibmJniBridge.coreNumImpLibmErf(x)
 
-internal actual fun erfc(x: Double): Double =
+public actual fun erfc(x: Double): Double =
     NumImpLibmJniBridge.coreNumImpLibmErfc(x)
 
-internal actual fun exp(x: Double): Double =
+public actual fun exp(x: Double): Double =
     NumImpLibmJniBridge.coreNumImpLibmExp(x)
 
-internal actual fun exp2(x: Double): Double =
+public actual fun exp2(x: Double): Double =
     NumImpLibmJniBridge.coreNumImpLibmExp2(x)
 
-internal actual fun expm1(x: Double): Double =
+public actual fun expm1(x: Double): Double =
     NumImpLibmJniBridge.coreNumImpLibmExpm1(x)
 
-internal actual fun hypot(x: Double, y: Double): Double =
+public actual fun hypot(x: Double, y: Double): Double =
     NumImpLibmJniBridge.coreNumImpLibmHypot(x, y)
 
-internal actual fun ldexp(f: Double, n: Int): Double =
+public actual fun ldexp(f: Double, n: Int): Double =
     NumImpLibmJniBridge.coreNumImpLibmLdexp(f, n)
 
-internal actual fun log(x: Double): Double =
+public actual fun log(x: Double): Double =
     NumImpLibmJniBridge.coreNumImpLibmLog(x)
 
-internal actual fun log10(x: Double): Double =
+public actual fun log10(x: Double): Double =
     NumImpLibmJniBridge.coreNumImpLibmLog10(x)
 
-internal actual fun log1p(x: Double): Double =
+public actual fun log1p(x: Double): Double =
     NumImpLibmJniBridge.coreNumImpLibmLog1p(x)
 
-internal actual fun log2(x: Double): Double =
+public actual fun log2(x: Double): Double =
     NumImpLibmJniBridge.coreNumImpLibmLog2(x)
 
-internal actual fun pow(x: Double, y: Double): Double =
+public actual fun pow(x: Double, y: Double): Double =
     NumImpLibmJniBridge.coreNumImpLibmPow(x, y)
 
-internal actual fun sin(x: Double): Double =
+public actual fun sin(x: Double): Double =
     NumImpLibmJniBridge.coreNumImpLibmSin(x)
 
-internal actual fun sinh(x: Double): Double =
+public actual fun sinh(x: Double): Double =
     NumImpLibmJniBridge.coreNumImpLibmSinh(x)
 
-internal actual fun tan(x: Double): Double =
+public actual fun tan(x: Double): Double =
     NumImpLibmJniBridge.coreNumImpLibmTan(x)
 
-internal actual fun tanh(x: Double): Double =
+public actual fun tanh(x: Double): Double =
     NumImpLibmJniBridge.coreNumImpLibmTanh(x)
 
-internal actual fun tgamma(x: Double): Double =
+public actual fun tgamma(x: Double): Double =
     NumImpLibmJniBridge.coreNumImpLibmTgamma(x)
 
-internal actual fun acosf128(x: F128): F128 =
-    null as F128
+public actual fun acosf128(x: F128): F128 =
+    F128()
 
-internal actual fun asinf128(x: F128): F128 =
-    null as F128
+public actual fun asinf128(x: F128): F128 =
+    F128()
 
-internal actual fun atanf128(x: F128): F128 =
-    null as F128
+public actual fun atanf128(x: F128): F128 =
+    F128()
 
-internal actual fun cbrtf128(x: F128): F128 =
-    null as F128
+public actual fun cbrtf128(x: F128): F128 =
+    F128()
 
-internal actual fun cosf128(x: F128): F128 =
-    null as F128
+public actual fun cosf128(x: F128): F128 =
+    F128()
 
-internal actual fun erff128(x: F128): F128 =
-    null as F128
+public actual fun erff128(x: F128): F128 =
+    F128()
 
-internal actual fun expf128(x: F128): F128 =
-    null as F128
+public actual fun expf128(x: F128): F128 =
+    F128()
 
-internal actual fun exp2f128(x: F128): F128 =
-    null as F128
+public actual fun exp2f128(x: F128): F128 =
+    F128()
 
-internal actual fun expm1f128(x: F128): F128 =
-    null as F128
+public actual fun expm1f128(x: F128): F128 =
+    F128()
 
-internal actual fun hypotf128(x: F128, y: F128): F128 =
-    null as F128
+public actual fun hypotf128(x: F128, y: F128): F128 =
+    F128()
 
-internal actual fun ldexpf128(f: F128, n: Int): F128 =
-    null as F128
+public actual fun ldexpf128(f: F128, n: Int): F128 =
+    F128()
 
-internal actual fun log10f128(x: F128): F128 =
-    null as F128
+public actual fun log10f128(x: F128): F128 =
+    F128()
 
-internal actual fun log1pf128(x: F128): F128 =
-    null as F128
+public actual fun log1pf128(x: F128): F128 =
+    F128()
 
-internal actual fun log2f128(x: F128): F128 =
-    null as F128
+public actual fun log2f128(x: F128): F128 =
+    F128()
 
-internal actual fun logf128(x: F128): F128 =
-    null as F128
+public actual fun logf128(x: F128): F128 =
+    F128()
 
-internal actual fun powf128(x: F128, y: F128): F128 =
-    null as F128
+public actual fun powf128(x: F128, y: F128): F128 =
+    F128()
 
-internal actual fun sinf128(x: F128): F128 =
-    null as F128
+public actual fun sinf128(x: F128): F128 =
+    F128()
 
-internal actual fun tanf128(x: F128): F128 =
-    null as F128
+public actual fun tanf128(x: F128): F128 =
+    F128()
 
-internal actual fun tanhf128(x: F128): F128 =
-    null as F128
+public actual fun tanhf128(x: F128): F128 =
+    F128()
 
-internal actual fun tgammaf128(x: F128): F128 =
-    null as F128
+public actual fun tgammaf128(x: F128): F128 =
+    F128()

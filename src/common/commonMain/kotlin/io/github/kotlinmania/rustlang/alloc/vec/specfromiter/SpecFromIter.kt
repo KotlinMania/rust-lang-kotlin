@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.alloc.vec.specfromiter
 import io.github.kotlinmania.rustlang.alloc.vec.Vec
 import io.github.kotlinmania.rustlang.alloc.vec.intoiter.IntoIter
 import io.github.kotlinmania.rustlang.alloc.vec.specfromiternested.SpecFromIterNested
+import io.github.kotlinmania.rustlang.core.mem.copy
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 
 /**
@@ -26,7 +27,7 @@ import io.github.kotlinmania.rustlang.core.slice.asPtr
  * +-----------------------------------+
  * ```
  */
-internal interface SpecFromIter<T, I, SelfType> {
+public interface SpecFromIter<T, I, SelfType> {
     public fun fromIter(iter: I): SelfType
 }
 
@@ -47,7 +48,7 @@ public fun <T> specFromIterFromIterVecT(iterator: IntoIter<T>): List<T> {
         // ignore-tidy-undocumented-unchecked
         run {
             if (hasAdvanced) {
-                ptr.copy(it.ptr.asPtr(), it.buf.asPtr(), it.len())
+                copy(it.ptr.asPtr(), it.buf.asPtr(), it.len())
             }
             return Vec.fromParts(it.buf, it.len(), it.cap)
         }

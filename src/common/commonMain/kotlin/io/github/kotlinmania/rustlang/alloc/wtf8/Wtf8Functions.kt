@@ -11,7 +11,7 @@ import io.github.kotlinmania.rustlang.core.wtf8.Wtf8
 /**
  * Creates an owned `Wtf8Buf` from a borrowed `Wtf8`.
  */
-internal fun toOwned(slice: Wtf8): Wtf8Buf = Wtf8Buf(bytes = slice.asBytes().toMutableList(), isKnownUtf8 = false)
+public fun toOwned(slice: Wtf8): Wtf8Buf = Wtf8Buf(bytes = slice.asBytes().toMutableList(), isKnownUtf8 = false)
 
 /**
  * Lossily converts the string to UTF-8.
@@ -21,7 +21,7 @@ internal fun toOwned(slice: Wtf8): Wtf8Buf = Wtf8Buf(bytes = slice.asBytes().toM
  *
  * This only copies the data if necessary (if it contains any surrogate).
  */
-internal fun toStringLossy(slice: Wtf8): String {
+public fun toStringLossy(slice: Wtf8): String {
     val (surrogatePos, _) = slice.nextSurrogate(0) ?: // SAFETY: `nextSurrogate` found no surrogate, so the well-formed WTF-8
 // bytes are valid UTF-8.
 return String.fromUtf8Unchecked(slice.asBytes())
@@ -48,7 +48,7 @@ return String.fromUtf8Unchecked(slice.asBytes())
     }
 }
 
-internal fun cloneInto(slice: Wtf8, buf: Wtf8Buf) {
+public fun cloneInto(slice: Wtf8, buf: Wtf8Buf) {
     buf.isKnownUtf8 = false
     slice.asBytes().cloneInto(buf.bytes)
 }

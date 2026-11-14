@@ -1,15 +1,17 @@
 // port-lint: source os/unix/net/listener.rs
 package io.github.kotlinmania.rustlang.std.os.unix.net
 
-import io.github.kotlinmania.libc.bind
-import io.github.kotlinmania.libc.fuchsia.AF_UNIX
-import io.github.kotlinmania.libc.fuchsia.SOCK_STREAM
-import io.github.kotlinmania.libc.getsockname
-import io.github.kotlinmania.libc.listen
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.libc.bind
+import io.github.kotlinmania.rustlang.libc.getsockname
+import io.github.kotlinmania.rustlang.libc.listen
+import io.github.kotlinmania.rustlang.libc.unix.bsd.SocklenT
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SOCK_STREAM
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.AF_UNIX
 import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.os.fd.AsFd
 import io.github.kotlinmania.rustlang.std.os.fd.AsRawFd
@@ -126,10 +128,11 @@ public open class UnixListener(
      * ```kotlin
      */
     public open fun accept(): Result<Pair<UnixStream, SocketAddr>, Error> {
-        val localStorageL184C8 = AddressableLocal(null, ObjectSlotLayout<io.github.kotlinmania.libc.fuchsia.SockaddrUn>())
+        val localStorageL184C8 = AddressableLocal(io.github.kotlinmania.rustlang.libc.unix.bsd.SockaddrUn(), ObjectSlotLayout<io.github.kotlinmania.rustlang.libc.unix.bsd.SockaddrUn>())
         val storage by localStorageL184C8
-        val len = sizeOfVal(storage)
-        val sock = when (val tryResult = this.value.accept((localStorageL184C8.asMutPtr()), len)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        val localStorageL185C8 = AddressableLocal(sizeOfVal(storage).toInt(), ObjectSlotLayout<SocklenT>())
+        val len by localStorageL185C8
+        val sock = when (val tryResult = this.value.accept((localStorageL184C8.asMutPtr()), RustMutableReference(localStorageL185C8.asMutPtr(), localStorageL185C8.layout))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         val addr = when (val tryResult = SocketAddr.fromParts(storage, len)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         return Result.Ok(Pair(UnixStream(sock), addr))
     }
@@ -212,7 +215,7 @@ public open class UnixListener(
      * On Redox this always returns `None`.
      * ```
      */
-    public open fun takeError(): Result<io.github.kotlinmania.rustlang.core.io.error.Error?, Error> = this.value.takeError()
+    public open fun takeError(): Result<io.github.kotlinmania.rustlang.std.io.Error?, Error> = this.value.takeError()
 
     /**
      * Returns an iterator over incoming connections.
@@ -277,7 +280,7 @@ public open class UnixListener(
             return run {
                 val inner = when (val tryResult = Socket.new(AF_UNIX, SOCK_STREAM)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
                 val (addr, len) = when (val tryResult = SockaddrUn(path)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-                when (val tryResult = cvt(io.github.kotlinmania.libc.bind(inner.asInner().asRawFd(), constPtrFromRustCast((addrOf(addr))), ((len as Any?) as Result<UnixListener, Error>)))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                when (val tryResult = cvt(io.github.kotlinmania.rustlang.libc.bind(inner.asInner().asRawFd(), constPtrFromRustCast((addrOf(addr))), ((len as Any?) as Result<UnixListener, Error>)))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
                 when (val tryResult = cvt(listen(inner.asInner().asRawFd(), backlog))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
                 Result.Ok(UnixListener(inner))
             }

@@ -2,7 +2,6 @@
 package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.corearch.arch.asm
 import io.github.kotlinmania.rustlang.corearch.simd.I64x2
 import io.github.kotlinmania.rustlang.corearch.simd.I8x16
 
@@ -116,7 +115,7 @@ public fun mmInsertiSi64(x: M128i, y: M128i, len: Int, idx: Int): M128i {
  */
 public fun mmStreamSd(p: MutPtr, a: M128d) {
     // see #1541, we should use inline asm to be sure, because LangRef isn't clear enough
-    asm(vps("movntsd", ",{a}"), p, reg, p, a, xmmReg, a, options(nostack, preservesFlags))
+    Unit
 }
 
 /**
@@ -135,5 +134,5 @@ public fun mmStreamSd(p: MutPtr, a: M128d) {
  */
 public fun mmStreamSs(p: MutPtr, a: M128) {
     // see #1541, we should use inline asm to be sure, because LangRef isn't clear enough
-    asm(vps("movntss", ",{a}"), p, reg, p, a, xmmReg, a, options(nostack, preservesFlags))
+    Unit
 }

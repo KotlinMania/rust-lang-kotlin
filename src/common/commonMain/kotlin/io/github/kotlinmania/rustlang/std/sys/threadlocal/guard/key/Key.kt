@@ -4,8 +4,8 @@ package io.github.kotlinmania.rustlang.std.sys.threadlocal.guard.key
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.std.rt.threadCleanup
 import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.racy.LazyKey
-import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.sgx.set
 import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.tests.destructors
+import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.unix.set
 import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.windows.DTORS
 
 // A lot of UNIX platforms don't have a specialized way to register TLS destructors for native TLS

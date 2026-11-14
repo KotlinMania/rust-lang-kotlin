@@ -3,19 +3,19 @@
 
 package io.github.kotlinmania.rustlang.core.fmt.num
 
-import io.github.kotlinmania.numfmt.Formatted
-import io.github.kotlinmania.numfmt.Part
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.char.isAscii
 import io.github.kotlinmania.rustlang.core.char.isAsciiAlphabetic
+import io.github.kotlinmania.rustlang.core.cmp.Eq
 import io.github.kotlinmania.rustlang.core.fmt.numbuffer.NumBuffer
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
+import io.github.kotlinmania.rustlang.core.num.imp.fmt.Formatted
+import io.github.kotlinmania.rustlang.core.num.imp.fmt.Part
 import io.github.kotlinmania.rustlang.core.num.rustCheckedPow
 import io.github.kotlinmania.rustlang.core.num.rustPow
 import io.github.kotlinmania.rustlang.core.option.Option
-import io.github.kotlinmania.rustlang.core.panicking.AssertKind
 import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
@@ -286,7 +286,7 @@ public fun expU128(f: StringBuilder, n: U128, isNonnegative: Boolean, letterE: U
                                     val leftVal = matchVal1.first
                                     val rightVal = matchVal1.second
                                     if (!(leftVal == rightVal)) {
-                                        val kind = AssertKind.Eq
+                                        val kind = Eq
                                         assertFailed(kind, leftVal, rightVal, Option.None)
                                     }
                                 }

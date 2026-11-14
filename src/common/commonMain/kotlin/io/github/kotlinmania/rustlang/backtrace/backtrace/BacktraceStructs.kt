@@ -37,7 +37,7 @@ public class DebugStruct(
  * until runtime.
  */
 public open class Frame(
-    internal var inner: FrameImp,
+    public var inner: FrameImp,
 ) {
     public open fun clone(): Frame = Frame(inner)
 

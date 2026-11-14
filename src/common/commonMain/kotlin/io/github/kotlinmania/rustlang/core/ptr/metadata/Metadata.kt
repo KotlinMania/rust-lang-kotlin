@@ -3,6 +3,8 @@ package io.github.kotlinmania.rustlang.core.ptr.metadata
 
 import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
 import io.github.kotlinmania.rustlang.core.clone.TrivialClone
+import io.github.kotlinmania.rustlang.core.cmp.Eq
+import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.hash.Hash
 import io.github.kotlinmania.rustlang.core.intrinsics.aggregateRawPtr
 import io.github.kotlinmania.rustlang.core.intrinsics.ptrMetadata
@@ -11,11 +13,9 @@ import io.github.kotlinmania.rustlang.core.intrinsics.vtableAlign
 import io.github.kotlinmania.rustlang.core.intrinsics.vtableSize
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
-import io.github.kotlinmania.rustlang.core.ptr.Eq
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 
 public class DebugTuple(
     private val out: StringBuilder,

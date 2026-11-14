@@ -6,7 +6,7 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 
 private object MipsMsaJniBridge {
     init {
-        System.loadLibrary("corearch_jni")
+        System.loadLibrary("kmcore_jni")
     }
 
     @JvmStatic

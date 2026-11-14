@@ -4,7 +4,7 @@ package io.github.kotlinmania.rustlang.panicunwind.dummy
 
 private object DummyJniBridge {
     init {
-        System.loadLibrary("panicunwind_jni")
+        System.loadLibrary("kmcore_jni")
     }
 
     @JvmStatic

@@ -4,6 +4,8 @@ package io.github.kotlinmania.rustlang.std.sys.env.unsupported
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
+import io.github.kotlinmania.rustlang.std.io.ErrorKind
+import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.io.error.Error
 
 public open class Env(
@@ -37,6 +39,6 @@ public fun env(): Env {
 
 public fun getenv(arg0: OsStr): OsString? = null
 
-public fun setenv(arg0: OsStr, arg1: OsStr): Result<Unit, Error> = Result.Err(io.constError(ErrorKind.Unsupported, "cannot set env vars on this platform"))
+public fun setenv(arg0: OsStr, arg1: OsStr): Result<Unit, Error> = Result.Err(constError(ErrorKind.Unsupported, "cannot set env vars on this platform"))
 
-public fun unsetenv(arg0: OsStr): Result<Unit, Error> = Result.Err(io.constError(ErrorKind.Unsupported, "cannot unset env vars on this platform"))
+public fun unsetenv(arg0: OsStr): Result<Unit, Error> = Result.Err(constError(ErrorKind.Unsupported, "cannot unset env vars on this platform"))

@@ -32,7 +32,7 @@ public val PIO2_1T: Double = 1.58932547735281966916e-08
  * use double precision for everything except passing x
  * use __rem_pio2_large() for large x
  */
-internal fun remPio2f(x: kotlin.Float): Pair<Int, Double> {
+public fun remPio2f(x: kotlin.Float): Pair<Int, Double> {
     val x64 = x.toDouble()
     val tx: DoubleArray  = doubleArrayOf(0.0)
     val ty: DoubleArray  = doubleArrayOf(0.0)

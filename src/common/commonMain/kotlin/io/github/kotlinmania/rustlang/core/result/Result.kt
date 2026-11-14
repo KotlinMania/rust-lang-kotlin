@@ -2,13 +2,14 @@
 package io.github.kotlinmania.rustlang.core.result
 
 import io.github.kotlinmania.rustlang.core.clone.UseCloned
+import io.github.kotlinmania.rustlang.core.hint.unreachableUnchecked
+import io.github.kotlinmania.rustlang.core.iter.adapters.tryProcess
 import io.github.kotlinmania.rustlang.core.mem.forget
-import io.github.kotlinmania.rustlang.core.num.f128.consts.E
-import io.github.kotlinmania.rustlang.core.ops.Deref
-import io.github.kotlinmania.rustlang.core.ops.DerefMut
-import io.github.kotlinmania.rustlang.core.ops.Try
-import io.github.kotlinmania.rustlang.core.ops.Yeet
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
+import io.github.kotlinmania.rustlang.core.ops.deref.Deref
+import io.github.kotlinmania.rustlang.core.ops.deref.DerefMut
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Yeet
 
 // Error handling with the `Result` type.
 //
@@ -1954,7 +1955,7 @@ public open class IntoIter<T>(
  * Since the third element caused an underflow, no further elements were taken,
  * so the final value of `shared` is 6 (= `3 + 2 + 1`), not 16.
  */
-public fun <T, E, V, I : Iterable<Result<T, E>>> fromIteratorFromIterResultVE(iter: I): Result<V, E> = Iter.tryProcess(iter.iterator(), { i -> i.collect() })
+public fun <T, E, V, I : Iterable<Result<T, E>>> fromIteratorFromIterResultVE(iter: I): Result<V, E> = tryProcess(iter.iterator(), { i -> i.collect() })
 
 public fun <T, E, F> fromResidualResultTF(residual: Result<Nothing, E>): Result<T, F> =
     when (residual) {

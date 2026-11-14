@@ -3,13 +3,11 @@
 
 package io.github.kotlinmania.rustlang.alloc.rcs.arc
 
-import io.github.kotlinmania.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.alloc.alloc.Global
+import io.github.kotlinmania.rustlang.alloc.alloc.handleAllocError
 import io.github.kotlinmania.rustlang.alloc.borrow.Cow
 import io.github.kotlinmania.rustlang.alloc.borrow.ToOwned
 import io.github.kotlinmania.rustlang.alloc.boxed.Box
-import io.github.kotlinmania.rustlang.alloc.collections.btree.node.B
-import io.github.kotlinmania.rustlang.alloc.handleAllocError
 import io.github.kotlinmania.rustlang.alloc.rcs.rc.isDangling
 import io.github.kotlinmania.rustlang.alloc.string.String
 import io.github.kotlinmania.rustlang.alloc.vec.Vec
@@ -25,7 +23,7 @@ import io.github.kotlinmania.rustlang.core.clone.CloneToUninit
 import io.github.kotlinmania.rustlang.core.clone.Share
 import io.github.kotlinmania.rustlang.core.clone.UseCloned
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
-import io.github.kotlinmania.rustlang.core.ffi.CStr
+import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.fmt.Pointer
 import io.github.kotlinmania.rustlang.core.intrinsics.kmSpinLoopHint
 import io.github.kotlinmania.rustlang.core.mem.AlignedTypeLayout
@@ -37,6 +35,7 @@ import io.github.kotlinmania.rustlang.core.mem.alignOf
 import io.github.kotlinmania.rustlang.core.mem.alignment.Alignment
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
@@ -47,12 +46,18 @@ import io.github.kotlinmania.rustlang.core.pin.Pin
 import io.github.kotlinmania.rustlang.core.pin.PinSafePointer
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.addrEq
+import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
+import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
+import io.github.kotlinmania.rustlang.core.ptr.eq
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
+import io.github.kotlinmania.rustlang.core.ptr.write
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.rawMutSliceList
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
+import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 
 /**
  * A soft limit on the amount of references that may be made to an `Arc`.
@@ -350,9 +355,9 @@ public open class Arc<T, A : Allocator> internal constructor(
      * }
      * val foo = Foo()
      * val foo2 = foo
-     * drop(foo)
+     * (foo).let { }
      * // Doesn't print anything
-     * drop(foo2)
+     * (foo2).let { }
      * // Prints "dropped!"
      * ```
      */
@@ -386,7 +391,7 @@ public open class Arc<T, A : Allocator> internal constructor(
      *
      * We can only do this when `T: Eq` as a `PartialEq` might be deliberately irreflexive.
      */
-    public open fun eqTA(other: Arc<T, A>): Boolean = eq(this.ptr.asPtr(), other.ptr.asPtr()) || this == other
+    public open fun eqTA(other: Arc<T, A>): Boolean = io.github.kotlinmania.rustlang.core.ptr.eq(this.ptr.asPtr(), other.ptr.asPtr()) || this == other
 
     public open fun neTA(other: Arc<T, A>): Boolean = !eq(this.ptr.asPtr(), other.ptr.asPtr()) && this != other
 
@@ -522,7 +527,7 @@ public open class Arc<T, A : Allocator> internal constructor(
     }
 
     public open fun fmtPointer(f: StringBuilder) {
-        fmt.Pointer.fmt((this), f)
+        Pointer.fmt((this), f)
     }
 
     public override fun hashCode(): Int {
@@ -999,7 +1004,7 @@ public open class Arc<T, A : Allocator> internal constructor(
             val inner = read(Arc.getMutUnchecked(thisRef1))
             // SAFETY: Pointer is valid for reads.
             val alloc = read(thisRef1.alloc)
-            drop(Weak(ptr = thisRef1.ptr, alloc = alloc))
+            (Weak(ptr = thisRef1.ptr, alloc = alloc)).let { }
             return inner
         }
 
@@ -1458,7 +1463,7 @@ public open class Arc<T, A : Allocator> internal constructor(
          */
         public fun <A : Allocator> decrementStrongCountIn(ptr: ConstPtr, alloc: A) {
             // SAFETY: Upheld by caller.
-            drop(Arc.fromRawIn(ptr, alloc))
+            (Arc.fromRawIn(ptr, alloc)).let { }
         }
 
         /**
@@ -1496,7 +1501,7 @@ public open class Arc<T, A : Allocator> internal constructor(
                 // Free the allocation without dropping its contents
                 val (bptr, alloc) = Box.intoRawWithAllocator(src)
                 val src1 = Box.fromRawIn(mutPtrFromRustCast(bptr), alloc)
-                drop(src1)
+                (src1).let { }
                 Arc.fromPtrIn(ptr, alloc)
             }
         }
@@ -1765,7 +1770,7 @@ public open class Arc<T, A : Allocator> internal constructor(
          * check(Arc.isUnique(x))
          * val y = x
          * check(!Arc.isUnique(x))
-         * drop(y)
+         * (y).let { }
          * // Weak references also count, because they could be upgraded at any time.
          * val z = Arc.downgrade(x)
          * check(!Arc.isUnique(x))
@@ -1918,7 +1923,7 @@ public open class Weak<T, A : Allocator> internal constructor(
      * check(ptr.eq(strong, weak.asPtr()))
      * // The strong here keeps it alive, so we can still access the object.
      * check("hello" == weak.asPtr())
-     * drop(strong)
+     * (strong).let { }
      * // But not any more. We can do weak.asPtr(), but accessing the pointer would lead to
      * // undefined behavior.
      * // assertEq("hello", unchecked { &*weak.asPtr() });
@@ -1961,7 +1966,7 @@ public open class Weak<T, A : Allocator> internal constructor(
      *     val (raw, alloc) = weak.intoRawWithAllocator()
      *     check(1 == Arc.weakCount(strong))
      *     check("hello" == raw)
-     *     drop(Weak.fromRawIn(raw, alloc))
+     *     (Weak.fromRawIn(raw, alloc)).let { }
      *     check(0 == Arc.weakCount(strong))
      * }
      * ```
@@ -1997,8 +2002,8 @@ public open class Weak<T, A : Allocator> internal constructor(
      * val strongFive: Arc? = weakFive.upgrade()
      * check(strongFive != null)
      * // Destroy all strong pointers.
-     * drop(strongFive)
-     * drop(five)
+     * (strongFive).let { }
+     * (five).let { }
      * check(weakFive.upgrade() == null)
      * ```
      */
@@ -2182,9 +2187,9 @@ public open class Weak<T, A : Allocator> internal constructor(
      * val foo = Foo()
      * val weakFoo = Arc.downgrade(foo)
      * val otherWeakFoo = Weak.clone(weakFoo)
-     * drop(weakFoo)
+     * (weakFoo).let { }
      * // Doesn't print anything
-     * drop(foo)
+     * (foo).let { }
      * // Prints "dropped!"
      * check(otherWeakFoo.upgrade() == null)
      * ```
@@ -2279,7 +2284,7 @@ public open class Weak<T, A : Allocator> internal constructor(
          * check(2 == Arc.weakCount(strong))
          * check("hello" == Weak.fromRaw(raw1).upgrade().unwrap())
          * check(1 == Arc.weakCount(strong))
-         * drop(strong)
+         * (strong).let { }
          * // Decrement the last weak count.
          * check(Weak.fromRaw(raw2).upgrade() == null)
          * ```
@@ -3211,7 +3216,7 @@ public open class WeakInner internal constructor(
  * check(2 == Arc.weakCount(strong))
  * check("hello" == Weak.fromRaw(raw1).upgrade().unwrap())
  * check(1 == Arc.weakCount(strong))
- * drop(strong)
+ * (strong).let { }
  * // Decrement the last weak count.
  * check(Weak.fromRaw(raw2).upgrade() == null)
  * ```
@@ -3245,7 +3250,7 @@ public fun <T> Weak.Companion.fromRaw(ptr: ConstPtr): Weak<T> {
  * val raw = weak.intoRaw()
  * check(1 == Arc.weakCount(strong))
  * check("hello" == raw)
- * drop(Weak.fromRaw(raw))
+ * (Weak.fromRaw(raw)).let { }
  * check(0 == Arc.weakCount(strong))
  * ```
  *
@@ -3759,7 +3764,7 @@ public open class UniqueArc<T, A : Allocator> internal constructor(
     }
 
     public open fun fmtPointer(f: StringBuilder) {
-        fmt.Pointer.fmt((this), f)
+        Pointer.fmt((this), f)
     }
 
     public open fun borrow(): T = this
@@ -3993,7 +3998,7 @@ public open class UniqueArc<T, A : Allocator> internal constructor(
             // We do not use the data inside ever again.
             val value = dataPtr.read()
             // Drop the strong-weak ref
-            drop(Weak(ptr = innerPtr, alloc = alloc))
+            (Weak(ptr = innerPtr, alloc = alloc)).let { }
             return Pair(value, alloc)
         }
 

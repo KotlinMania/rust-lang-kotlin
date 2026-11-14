@@ -4,7 +4,7 @@ package io.github.kotlinmania.rustlang.corearch.riscvshared
 
 private object RiscvsharedZkJniBridge {
     init {
-        System.loadLibrary("corearch_jni")
+        System.loadLibrary("kmcore_jni")
     }
 
     @JvmStatic

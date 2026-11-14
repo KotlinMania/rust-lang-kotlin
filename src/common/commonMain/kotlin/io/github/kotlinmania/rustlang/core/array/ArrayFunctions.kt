@@ -2,29 +2,27 @@ package io.github.kotlinmania.rustlang.core.array
 
 import io.github.kotlinmania.rustlang.core.array.drain.Drain
 import io.github.kotlinmania.rustlang.core.array.iter.IntoIter
-import io.github.kotlinmania.rustlang.core.fmt.Formatter
+import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.intrinsics.transmuteUnchecked
-import io.github.kotlinmania.rustlang.core.iter.TrustedLen
 import io.github.kotlinmania.rustlang.core.iter.sources.repeatn.repeatN
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.ops.ChangeOutputType
-import io.github.kotlinmania.rustlang.core.ops.FromResidual
-import io.github.kotlinmania.rustlang.core.ops.Residual
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
-import io.github.kotlinmania.rustlang.core.ops.index
+import io.github.kotlinmania.rustlang.core.ops.trytrait.ChangeOutputType
+import io.github.kotlinmania.rustlang.core.ops.trytrait.FromResidual
 import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Residual
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.hash
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.iter.Iter
-import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 
 /**
  * Creates an array of type `[T; N]` by repeatedly cloning a value.
@@ -206,7 +204,7 @@ public fun <R : Try<R, Any?, Any?>> tryFromFnErased(buffer: MutableList<MaybeUni
  *
  * Used for [Iterator.nextChunk].
  */
-internal fun <T> iterNextChunk(iter: Any, n: Int): Result<List<T>, IntoIter<T>> = iter.specNextChunk()
+public fun <T> iterNextChunk(iter: Any, n: Int): Result<List<T>, IntoIter<T>> = iter.specNextChunk()
 
 // SAFETY: `from` must have len items, and len items must be < N.
 public fun <T> write(to: List<MaybeUninit<T>>, from: Any, len: Int, n: Int) {
@@ -259,7 +257,7 @@ public fun <T> iterNextChunkErased(buffer: MutableList<MaybeUninit<T>>, iter: An
  *
  * Used for [DoubleEndedIterator.nextChunkBack].
  */
-internal fun <T> iterNextChunkBack(iter: Any, n: Int): Result<List<T>, IntoIter<T>> = iter.specNextChunkBack()
+public fun <T> iterNextChunkBack(iter: Any, n: Int): Result<List<T>, IntoIter<T>> = iter.specNextChunkBack()
 
 // SAFETY: `from` must have len items, and len items must be < N.
 public fun <T> writeBack(to: List<MaybeUninit<T>>, from: Any, len: Int, n: Int) {
@@ -381,8 +379,10 @@ public fun <T> tryFromTArrayn(slice: MutableList<T>, n: Int): Result<List<T>, Tr
  * ```kotlin
  * @file:OptIn(ExperimentalUnsignedTypes.cls)
  *
+ * import hash
+ *
  * public fun doctestEntry() {
- *     val b = RandomState.new()
+ *     val b = hash.RandomState.new()
  *     val a: UByteArray = ubyteArrayOf(0xa8u, 0x3cu, 0x09u)
  *     val s: List<UByte> = listOf(0xa8u.toUByte(), 0x3cu.toUByte(), 0x09u.toUByte())
  *     check(b.hashOne(a) == b.hashOne(s))
@@ -393,7 +393,7 @@ public fun <T, H> List<T>.hashFromTArrayn(state: H, n: Int) {
     this.hash(state)
 }
 
-public fun <T> List<T>.fmtFromTArrayn(f: Formatter, n: Int): Result<Unit, Unit> = run { f.append((this).toString()); Result.Ok(Unit) }
+public fun <T> List<T>.fmtFromTArrayn(f: StringBuilder, n: Int): Result<Unit, Unit> = run { f.append((this).toString()); Result.Ok(Unit) }
 
 public fun <T> List<T>.intoIter(n: Int): Iter<T> = this.iter()
 

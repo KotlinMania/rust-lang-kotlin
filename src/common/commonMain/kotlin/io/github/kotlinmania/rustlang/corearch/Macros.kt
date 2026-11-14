@@ -10,8 +10,8 @@ import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 
 // Utility macros.
 
-internal open class SimdShuffleIdx(
-    internal var value: UIntArray,
+public open class SimdShuffleIdx(
+    public var value: UIntArray,
 ) {
     public var field0: UIntArray
         get() = value
@@ -45,7 +45,7 @@ internal open class SimdShuffleIdx(
 /**
  * The first N indices `[0, 1, 2, ...]`.
  */
-internal fun identity(n: Int): UIntArray {
+public fun identity(n: Int): UIntArray {
     val out = UIntArray(n) { 0u }
     var i = 0
     while (i < n) {
@@ -58,7 +58,7 @@ internal fun identity(n: Int): UIntArray {
 /**
  * The first N even indices `[0, 2, 4, ...]`.
  */
-internal fun even(n: Int): UIntArray {
+public fun even(n: Int): UIntArray {
     val out = UIntArray(n) { 0u }
     var i = 0
     while (i < n) {
@@ -71,7 +71,7 @@ internal fun even(n: Int): UIntArray {
 /**
  * The first N odd indices `[1, 3, 5, ...]`.
  */
-internal fun odd(n: Int): UIntArray {
+public fun odd(n: Int): UIntArray {
     val out = UIntArray(n) { 0u }
     var i = 0
     while (i < n) {
@@ -84,7 +84,7 @@ internal fun odd(n: Int): UIntArray {
 /**
  * Multiples of N offset by K `[K, K + N, K + 2N, ...]`.
  */
-internal fun deinterleaveMask(lanes: Int, n: Int, k: Int): UIntArray {
+public fun deinterleaveMask(lanes: Int, n: Int, k: Int): UIntArray {
     val out = UIntArray(lanes) { 0u }
     var i = 0
     while (i < lanes) {
@@ -94,7 +94,7 @@ internal fun deinterleaveMask(lanes: Int, n: Int, k: Int): UIntArray {
     return out
 }
 
-internal fun interleaveMask(lanes: Int, n: Int, k: Int): UIntArray {
+public fun interleaveMask(lanes: Int, n: Int, k: Int): UIntArray {
     val out = UIntArray(lanes) { 0u }
     var j = 0
     while (j < lanes) {

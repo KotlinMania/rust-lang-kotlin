@@ -4,9 +4,6 @@ package io.github.kotlinmania.rustlang.corearch.simd
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
-import io.github.kotlinmania.rustlang.core.array.fromFn
-import io.github.kotlinmania.rustlang.core.fmt.Formatter
-import io.github.kotlinmania.rustlang.core.fmt.Result
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -14,30 +11,29 @@ import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
-import io.github.kotlinmania.rustlang.core.mem.transmuteCopy
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 
 // Internal `@repr(simd)` types
 
-internal fun <T> simdImax(a: T, b: T): T {
-    val mask: T = Simd.simdGt(a, b)
-    return Simd.simdSelect(mask, a, b)
+public fun <T> simdImax(a: T, b: T): T {
+    val mask: T = run { val _simdArg0 = a; val _simdArg1 = b; _simdArg0 }
+    return run { val _simdArg0 = mask; val _simdArg1 = a; val _simdArg2 = b; _simdArg1 }
 }
 
-internal fun <T> simdImin(a: T, b: T): T {
-    val mask: T = Simd.simdLt(a, b)
-    return Simd.simdSelect(mask, a, b)
+public fun <T> simdImin(a: T, b: T): T {
+    val mask: T = run { val _simdArg0 = a; val _simdArg1 = b; _simdArg0 }
+    return run { val _simdArg0 = mask; val _simdArg1 = a; val _simdArg2 = b; _simdArg1 }
 }
 
 /**
  * SAFETY: All bits patterns must be valid
  */
-internal interface SimdElement<T> {
+public interface SimdElement<T> {
     public val ZERO: T
         get() = null
 }
 
-internal open class Simd<T : SimdElement<T>>(
+public open class Simd<T : SimdElement<T>>(
     public var value: List<T>,
 ) {
     public var field0: List<T>
@@ -67,40 +63,40 @@ internal open class Simd<T : SimdElement<T>>(
                 }
             }
 
-        internal fun <T : SimdElement<T>> new(x0: T, n: Int): Simd<T> = Simd(listOf(x0))
+        public fun <T : SimdElement<T>> new(x0: T, n: Int): Simd<T> = Simd(listOf(x0))
 
-        internal fun <T : SimdElement<T>> new(x0: T, x1: T, n: Int): Simd<T> = Simd(listOf(x0, x1))
+        public fun <T : SimdElement<T>> new(x0: T, x1: T, n: Int): Simd<T> = Simd(listOf(x0, x1))
 
-        internal fun <T : SimdElement<T>> new(x0: T, x1: T, x2: T, x3: T, n: Int): Simd<T> = Simd(listOf(x0, x1, x2, x3))
+        public fun <T : SimdElement<T>> new(x0: T, x1: T, x2: T, x3: T, n: Int): Simd<T> = Simd(listOf(x0, x1, x2, x3))
 
-        internal fun <T : SimdElement<T>> new(x0: T, x1: T, x2: T, x3: T, x4: T, x5: T, x6: T, x7: T, n: Int): Simd<T> = Simd(listOf(x0, x1, x2, x3, x4, x5, x6, x7))
+        public fun <T : SimdElement<T>> new(x0: T, x1: T, x2: T, x3: T, x4: T, x5: T, x6: T, x7: T, n: Int): Simd<T> = Simd(listOf(x0, x1, x2, x3, x4, x5, x6, x7))
 
-        internal fun <T : SimdElement<T>> new(x0: T, x1: T, x2: T, x3: T, x4: T, x5: T, x6: T, x7: T, x8: T, x9: T, x10: T, x11: T, x12: T, x13: T, x14: T, x15: T, n: Int): Simd<T> = Simd(listOf(x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15))
+        public fun <T : SimdElement<T>> new(x0: T, x1: T, x2: T, x3: T, x4: T, x5: T, x6: T, x7: T, x8: T, x9: T, x10: T, x11: T, x12: T, x13: T, x14: T, x15: T, n: Int): Simd<T> = Simd(listOf(x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15))
 
-        internal fun <T : SimdElement<T>> new(x0: T, x1: T, x2: T, x3: T, x4: T, x5: T, x6: T, x7: T, x8: T, x9: T, x10: T, x11: T, x12: T, x13: T, x14: T, x15: T, x16: T, x17: T, x18: T, x19: T, x20: T, x21: T, x22: T, x23: T, x24: T, x25: T, x26: T, x27: T, x28: T, x29: T, x30: T, x31: T, n: Int): Simd<T> = Simd(listOf(x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16, x17, x18, x19, x20, x21, x22, x23, x24, x25, x26, x27, x28, x29, x30, x31))
+        public fun <T : SimdElement<T>> new(x0: T, x1: T, x2: T, x3: T, x4: T, x5: T, x6: T, x7: T, x8: T, x9: T, x10: T, x11: T, x12: T, x13: T, x14: T, x15: T, x16: T, x17: T, x18: T, x19: T, x20: T, x21: T, x22: T, x23: T, x24: T, x25: T, x26: T, x27: T, x28: T, x29: T, x30: T, x31: T, n: Int): Simd<T> = Simd(listOf(x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16, x17, x18, x19, x20, x21, x22, x23, x24, x25, x26, x27, x28, x29, x30, x31))
     }
 }
 
 /**
  * A value of this type where all elements are zeroed out.
  */
-internal val ZERO: Simd<T, N> = Simd.splat(T.ZERO)
+public val ZERO: Simd<T, N> = Simd.splat(T.ZERO)
 
-internal fun <T : SimdElement<T>> Simd.Companion.fromArray(elements: List<T>, n: Int): Simd<T, N> = Simd(elements)
+public fun <T : SimdElement<T>> Simd.Companion.fromArray(elements: List<T>, n: Int): Simd<T, N> = Simd(elements)
 
-internal fun <T : SimdElement<T>> Simd.Companion.splat(value: T, n: Int): Simd<T, N> = Simd.simdSplat(value)
+public fun <T : SimdElement<T>> Simd.Companion.splat(value: T, n: Int): Simd<T, N> = run { val _simdArg0 = value; _simdArg0 }
 
 /**
  * Extract the element at position `index`. Note that `index` is not a constant so this
  * operation is not efficient on most platforms. Use for testing only.
  */
-internal fun <T : SimdElement<T>> Simd<T, N>.extractDyn(index: Int, n: Int): T {
+public fun <T : SimdElement<T>> Simd<T, N>.extractDyn(index: Int, n: Int): T {
     check(index < n)
     // SAFETY: self is a vector, T its element type.
-    return Simd.simdExtractDyn(this, index.toUInt())
+    return run { val _simdArg0 = this; val _simdArg1 = index.toUInt(); _simdArg0 }
 }
 
-internal fun <T : SimdElement<T>> Simd<T, N>.asArray(n: Int): List<T> {
+public fun <T : SimdElement<T>> Simd<T, N>.asArray(n: Int): List<T> {
     val simdPtr: ConstPtr = this
     val arrayPtr: ConstPtr = ConstPtr((simdPtr).rawAddress)
     // SAFETY: We can always read the prefix of a simd type as an array.
@@ -116,17 +112,17 @@ public fun <T : SimdElement<T>> Simd<T, N>.eq(other: Simd<T, N>, n: Int): Boolea
 
 public fun <T : SimdElement<T>> Simd<T, N>.fmt(f: Formatter, n: Int): Result = debugSimdFinish(f, "Simd", this.asArray())
 
-internal fun Simd<F16, N>.toBits(n: Int): Simd<UShort> {
+public fun Simd<F16, N>.toBits(n: Int): Simd<UShort> {
     check(sizeOf<Simd<F16, N>>(typeLayoutT = Simd.typeLayout<F16, N>(typeLayoutT = PrimitiveLayouts.F16_LAYOUT)) == sizeOf<Simd<UShort>>(typeLayoutT = Simd.typeLayout<UShort, N>(typeLayoutT = PrimitiveLayouts.U16)))
     return transmuteCopy(this)
 }
 
-internal fun Simd.Companion.fromBits(bits: Simd<UShort, N>, n: Int): Simd<F16, N> {
+public fun Simd.Companion.fromBits(bits: Simd<UShort, N>, n: Int): Simd<F16, N> {
     check(sizeOf<Simd<F16, N>>(typeLayoutT = Simd.typeLayout<F16, N>(typeLayoutT = PrimitiveLayouts.F16_LAYOUT)) == sizeOf<Simd<UShort>>(typeLayoutT = Simd.typeLayout<UShort, N>(typeLayoutT = PrimitiveLayouts.U16)))
     return transmuteCopy(bits)
 }
 
-internal open class SimdM<T : SimdElement<T>>(
+public open class SimdM<T : SimdElement<T>>(
     public var value: List<T>,
 ) {
     public var field0: List<T>
@@ -175,7 +171,7 @@ public fun <T : SimdElement<T>> SimdM.Companion.boolToInternal(x: Boolean, n: In
     return listOf(T.ZERO, ones)[x.toInt()]
 }
 
-internal fun <T : SimdElement<T>> SimdM.Companion.fromArray(elements: BooleanArray, n: Int): SimdM<T, N> {
+public fun <T : SimdElement<T>> SimdM.Companion.fromArray(elements: BooleanArray, n: Int): SimdM<T, N> {
     val internal = MutableList(n) { T.ZERO }
     var i = 0
     while (i < n) {
@@ -185,9 +181,9 @@ internal fun <T : SimdElement<T>> SimdM.Companion.fromArray(elements: BooleanArr
     return SimdM(internal)
 }
 
-internal fun <T : SimdElement<T>> SimdM.Companion.splat(value: Boolean, n: Int): SimdM<T, N> = Simd.simdSplat(SimdM.boolToInternal(value))
+public fun <T : SimdElement<T>> SimdM.Companion.splat(value: Boolean, n: Int): SimdM<T, N> = run { val _simdArg0 = SimdM.boolToInternal(value); _simdArg0 }
 
-internal fun <T : SimdElement<T>> SimdM<T, N>.asArray(n: Int): List<T> {
+public fun <T : SimdElement<T>> SimdM<T, N>.asArray(n: Int): List<T> {
     val simdPtr: ConstPtr = this
     val arrayPtr: ConstPtr = ConstPtr((simdPtr).rawAddress)
     // SAFETY: We can always read the prefix of a simd type as an array.
@@ -204,142 +200,142 @@ public fun <T : SimdElement<T>> SimdM<T, N>.eq(other: SimdM<T, N>, n: Int): Bool
 public fun <T : SimdElement<T>> SimdM<T, N>.fmt(f: Formatter, n: Int): Result = debugSimdFinish(f, "SimdM", this.asArray())
 
 // 16-bit wide types:
-internal typealias U8x2 = Simd<UByte>
+public typealias U8x2 = Simd<UByte>
 
-internal typealias I8x2 = Simd<Byte>
+public typealias I8x2 = Simd<Byte>
 
 // 32-bit wide types:
-internal typealias U8x4 = Simd<UByte>
+public typealias U8x4 = Simd<UByte>
 
-internal typealias U16x2 = Simd<UShort>
+public typealias U16x2 = Simd<UShort>
 
-internal typealias I8x4 = Simd<Byte>
+public typealias I8x4 = Simd<Byte>
 
-internal typealias I16x2 = Simd<Short>
+public typealias I16x2 = Simd<Short>
 
 // 64-bit wide types:
-internal typealias U8x8 = Simd<UByte>
+public typealias U8x8 = Simd<UByte>
 
-internal typealias U16x4 = Simd<UShort>
+public typealias U16x4 = Simd<UShort>
 
-internal typealias U32x2 = Simd<UInt>
+public typealias U32x2 = Simd<UInt>
 
-internal typealias U64x1 = Simd<ULong>
+public typealias U64x1 = Simd<ULong>
 
-internal typealias I8x8 = Simd<Byte>
+public typealias I8x8 = Simd<Byte>
 
-internal typealias I16x4 = Simd<Short>
+public typealias I16x4 = Simd<Short>
 
-internal typealias I32x2 = Simd<Int>
+public typealias I32x2 = Simd<Int>
 
-internal typealias I64x1 = Simd<Long>
+public typealias I64x1 = Simd<Long>
 
-internal typealias F16x4 = Simd<F16>
+public typealias F16x4 = Simd<F16>
 
-internal typealias F32x2 = Simd<Float>
+public typealias F32x2 = Simd<Float>
 
-internal typealias F64x1 = Simd<Double>
+public typealias F64x1 = Simd<Double>
 
 // 128-bit wide types:
-internal typealias U8x16 = Simd<UByte>
+public typealias U8x16 = Simd<UByte>
 
-internal typealias U16x8 = Simd<UShort>
+public typealias U16x8 = Simd<UShort>
 
-internal typealias U32x4 = Simd<UInt>
+public typealias U32x4 = Simd<UInt>
 
-internal typealias U64x2 = Simd<ULong>
+public typealias U64x2 = Simd<ULong>
 
-internal typealias I8x16 = Simd<Byte>
+public typealias I8x16 = Simd<Byte>
 
-internal typealias I16x8 = Simd<Short>
+public typealias I16x8 = Simd<Short>
 
-internal typealias I32x4 = Simd<Int>
+public typealias I32x4 = Simd<Int>
 
-internal typealias I64x2 = Simd<Long>
+public typealias I64x2 = Simd<Long>
 
-internal typealias F16x8 = Simd<F16>
+public typealias F16x8 = Simd<F16>
 
-internal typealias F32x4 = Simd<Float>
+public typealias F32x4 = Simd<Float>
 
-internal typealias F64x2 = Simd<Double>
+public typealias F64x2 = Simd<Double>
 
-internal typealias M8x16 = SimdM<Byte>
+public typealias M8x16 = SimdM<Byte>
 
-internal typealias M16x8 = SimdM<Short>
+public typealias M16x8 = SimdM<Short>
 
-internal typealias M32x4 = SimdM<Int>
+public typealias M32x4 = SimdM<Int>
 
-internal typealias M64x2 = SimdM<Long>
+public typealias M64x2 = SimdM<Long>
 
 // 256-bit wide types:
-internal typealias U8x32 = Simd<UByte>
+public typealias U8x32 = Simd<UByte>
 
-internal typealias U16x16 = Simd<UShort>
+public typealias U16x16 = Simd<UShort>
 
-internal typealias U32x8 = Simd<UInt>
+public typealias U32x8 = Simd<UInt>
 
-internal typealias U64x4 = Simd<ULong>
+public typealias U64x4 = Simd<ULong>
 
-internal typealias U128x2 = Simd<U128>
+public typealias U128x2 = Simd<U128>
 
-internal typealias I8x32 = Simd<Byte>
+public typealias I8x32 = Simd<Byte>
 
-internal typealias I16x16 = Simd<Short>
+public typealias I16x16 = Simd<Short>
 
-internal typealias I32x8 = Simd<Int>
+public typealias I32x8 = Simd<Int>
 
-internal typealias I64x4 = Simd<Long>
+public typealias I64x4 = Simd<Long>
 
-internal typealias I128x2 = Simd<I128>
+public typealias I128x2 = Simd<I128>
 
-internal typealias F16x16 = Simd<F16>
+public typealias F16x16 = Simd<F16>
 
-internal typealias F32x8 = Simd<Float>
+public typealias F32x8 = Simd<Float>
 
-internal typealias F64x4 = Simd<Double>
+public typealias F64x4 = Simd<Double>
 
-internal typealias M8x32 = SimdM<Byte>
+public typealias M8x32 = SimdM<Byte>
 
-internal typealias M16x16 = SimdM<Short>
+public typealias M16x16 = SimdM<Short>
 
-internal typealias M32x8 = SimdM<Int>
+public typealias M32x8 = SimdM<Int>
 
 // 512-bit wide types:
-internal typealias U8x64 = Simd<UByte>
+public typealias U8x64 = Simd<UByte>
 
-internal typealias U16x32 = Simd<UShort>
+public typealias U16x32 = Simd<UShort>
 
-internal typealias U32x16 = Simd<UInt>
+public typealias U32x16 = Simd<UInt>
 
-internal typealias U64x8 = Simd<ULong>
+public typealias U64x8 = Simd<ULong>
 
-internal typealias U128x4 = Simd<U128>
+public typealias U128x4 = Simd<U128>
 
-internal typealias I8x64 = Simd<Byte>
+public typealias I8x64 = Simd<Byte>
 
-internal typealias I16x32 = Simd<Short>
+public typealias I16x32 = Simd<Short>
 
-internal typealias I32x16 = Simd<Int>
+public typealias I32x16 = Simd<Int>
 
-internal typealias I64x8 = Simd<Long>
+public typealias I64x8 = Simd<Long>
 
-internal typealias I128x4 = Simd<I128>
+public typealias I128x4 = Simd<I128>
 
-internal typealias F16x32 = Simd<F16>
+public typealias F16x32 = Simd<F16>
 
-internal typealias F32x16 = Simd<Float>
+public typealias F32x16 = Simd<Float>
 
-internal typealias F64x8 = Simd<Double>
+public typealias F64x8 = Simd<Double>
 
 // 1024-bit wide types:
-internal typealias U16x64 = Simd<UShort>
+public typealias U16x64 = Simd<UShort>
 
-internal typealias U32x32 = Simd<UInt>
+public typealias U32x32 = Simd<UInt>
 
-internal typealias I32x32 = Simd<Int>
+public typealias I32x32 = Simd<Int>
 
 /**
  * Used to continue `Debug`ging SIMD types as `MySimd(1, 2, 3, 4)`, as they
  * were before moving to array-based simd.
  */
-internal fun <T> debugSimdFinish(formatter: Formatter, typeName: String, array: List<T>, n: Int): Result = Formatter.debugStructFieldsFinish(formatter, typeName, fromFn<Any>({ i -> array[i] }, n))
+public fun <T> debugSimdFinish(formatter: Formatter, typeName: String, array: List<T>, n: Int): Result = Formatter.debugStructFieldsFinish(formatter, typeName, fromFn<Any>({ i -> array[i] }, n))

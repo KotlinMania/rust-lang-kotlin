@@ -5,6 +5,8 @@ package io.github.kotlinmania.rustlang.panicunwind.seh
 
 import io.github.kotlinmania.rustlang.alloc.panicking.PanicPayload
 import io.github.kotlinmania.rustlang.core.RustAny
+import io.github.kotlinmania.rustlang.core.intrinsics.kmAllocZeroed
+import io.github.kotlinmania.rustlang.core.intrinsics.kmDealloc
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
@@ -207,7 +209,7 @@ public fun exceptionCleanup(e: MutPtr) {
         val matchVal = (ObjectSlotLayout<Exception>()).readNative((e).rawAddress)
         if (matchVal.data != null) {
             val b = matchVal.data
-            drop(b)
+            (b).let { }
             rustDropPanic()
         }
     }
@@ -218,10 +220,10 @@ public fun exceptionCopy(dest: MutPtr, src: MutPtr): MutPtr =
         throwException(null)
     }
 
-internal fun panic(data: PanicPayload): UInt = throwException(data.takeBox())
+public fun panic(data: PanicPayload): UInt = throwException(data.takeBox())
 
 public fun throwException(data: RustAny?): Nothing {
-    fun cxxThrowException(pExceptionObject: MutPtr, pThrowInfo: ConstPtr): Nothing = null as Nothing
+    fun cxxThrowException(pExceptionObject: MutPtr, pThrowInfo: ConstPtr): Nothing = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nothing>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nothing>()).alignBytes)); val res = (ObjectSlotLayout<Nothing>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nothing>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nothing>()).alignBytes)); res }
     // _CxxThrowException executes entirely on this stack frame, so there's no
     // need to otherwise transfer `data` to the heap. We just pass a stack
     // pointer to this function.
@@ -232,12 +234,12 @@ public fun throwException(data: RustAny?): Nothing {
     val localStorageL207C4 = AddressableLocal(Exception(canary = addrOf(TYPE_DESCRIPTOR), data = data), ObjectSlotLayout<Any?>())
     val throwInfo: ConstPtr
     return run {
-        asm(cfgSelect(targetArch, "x86", "lea {}, [2f]", targetArch, "x86_64", "lea {}, [rip + 2f]", targetArch, "arm", concat, "movw {0}, :lower16:2f\n", "movt {0}, :upper16:2f", any, targetArch, "aarch64", targetArch, "arm64ec", concat, "adrp {0}, 2f\n", "add {0}, {0}, :lo12:2f"), ".pushsection .rdata,\"dr\"", ".p2align 2", "2:", ".long 0", imgrel("{cleanup}"), ".long 0", imgrel("3f"), "3:", ".long 1", imgrel("4f"), "4:", ".long 0", imgrel("{type_desc}"), ".long 0", ".long -1", ".long 0", ".long {exception_size}", imgrel("{copy}"), ".popsection", out, reg, throwInfo, cleanup, sym, exceptionCleanup, typeDesc, sym, TYPE_DESCRIPTOR, exceptionSize, sizeOf, Exception, copy, sym, exceptionCopy, options(readonly, nostack))
+        Unit
         cxxThrowException((localStorageL207C4.asMutPtr()), throwInfo)
     }
 }
 
-internal fun cleanup(payload: MutPtr): RustAny {
+public fun cleanup(payload: MutPtr): RustAny {
     // A null payload here means that we got here from the catch (...) of
     // __rust_try. This happens when a non-Rust foreign exception is caught.
     if (((payload).rawAddress == 0L)) {

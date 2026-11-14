@@ -16,7 +16,7 @@ import io.github.kotlinmania.rustlang.std.sys.args.unix.imp.argcArgv
  * One-time global initialization.
  */
 public fun init(argc: Int, argv: ConstPtr) {
-    init(argc, argv)
+    io.github.kotlinmania.rustlang.std.sys.args.unix.imp.init(argc, argv)
 }
 
 /**

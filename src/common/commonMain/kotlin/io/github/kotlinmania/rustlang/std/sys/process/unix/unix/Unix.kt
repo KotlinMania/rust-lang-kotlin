@@ -3,95 +3,6 @@
 
 package io.github.kotlinmania.rustlang.std.sys.process.unix.unix
 
-import io.github.kotlinmania.libc.CInt
-import io.github.kotlinmania.libc.SysPidfdOpen
-import io.github.kotlinmania.libc.chdir
-import io.github.kotlinmania.libc.chroot
-import io.github.kotlinmania.libc.clockGetres
-import io.github.kotlinmania.libc.execvp
-import io.github.kotlinmania.libc.fuchsia.AF_UNIX
-import io.github.kotlinmania.libc.fuchsia.CLD_CONTINUED
-import io.github.kotlinmania.libc.fuchsia.CLD_DUMPED
-import io.github.kotlinmania.libc.fuchsia.CLD_EXITED
-import io.github.kotlinmania.libc.fuchsia.CLD_KILLED
-import io.github.kotlinmania.libc.fuchsia.CLD_STOPPED
-import io.github.kotlinmania.libc.fuchsia.CLD_TRAPPED
-import io.github.kotlinmania.libc.fuchsia.CLOCK_MONOTONIC
-import io.github.kotlinmania.libc.fuchsia.Cmsghdr
-import io.github.kotlinmania.libc.fuchsia.EINVAL
-import io.github.kotlinmania.libc.fuchsia.EPERM
-import io.github.kotlinmania.libc.fuchsia.MSG_CMSG_CLOEXEC
-import io.github.kotlinmania.libc.fuchsia.MSG_EOR
-import io.github.kotlinmania.libc.fuchsia.Msghdr
-import io.github.kotlinmania.libc.fuchsia.PidT
-import io.github.kotlinmania.libc.fuchsia.SIGABRT
-import io.github.kotlinmania.libc.fuchsia.SIGALRM
-import io.github.kotlinmania.libc.fuchsia.SIGBUS
-import io.github.kotlinmania.libc.fuchsia.SIGCHLD
-import io.github.kotlinmania.libc.fuchsia.SIGCONT
-import io.github.kotlinmania.libc.fuchsia.SIGFPE
-import io.github.kotlinmania.libc.fuchsia.SIGHUP
-import io.github.kotlinmania.libc.fuchsia.SIGILL
-import io.github.kotlinmania.libc.fuchsia.SIGINT
-import io.github.kotlinmania.libc.fuchsia.SIGIO
-import io.github.kotlinmania.libc.fuchsia.SIGKILL
-import io.github.kotlinmania.libc.fuchsia.SIGPIPE
-import io.github.kotlinmania.libc.fuchsia.SIGPROF
-import io.github.kotlinmania.libc.fuchsia.SIGPWR
-import io.github.kotlinmania.libc.fuchsia.SIGQUIT
-import io.github.kotlinmania.libc.fuchsia.SIGSEGV
-import io.github.kotlinmania.libc.fuchsia.SIGSTKFLT
-import io.github.kotlinmania.libc.fuchsia.SIGSTOP
-import io.github.kotlinmania.libc.fuchsia.SIGSYS
-import io.github.kotlinmania.libc.fuchsia.SIGTERM
-import io.github.kotlinmania.libc.fuchsia.SIGTRAP
-import io.github.kotlinmania.libc.fuchsia.SIGTSTP
-import io.github.kotlinmania.libc.fuchsia.SIGTTIN
-import io.github.kotlinmania.libc.fuchsia.SIGTTOU
-import io.github.kotlinmania.libc.fuchsia.SIGURG
-import io.github.kotlinmania.libc.fuchsia.SIGUSR1
-import io.github.kotlinmania.libc.fuchsia.SIGUSR2
-import io.github.kotlinmania.libc.fuchsia.SIGVTALRM
-import io.github.kotlinmania.libc.fuchsia.SIGWINCH
-import io.github.kotlinmania.libc.fuchsia.SIGXCPU
-import io.github.kotlinmania.libc.fuchsia.SIGXFSZ
-import io.github.kotlinmania.libc.fuchsia.SIG_DFL
-import io.github.kotlinmania.libc.fuchsia.SOCK_SEQPACKET
-import io.github.kotlinmania.libc.fuchsia.SOL_SOCKET
-import io.github.kotlinmania.libc.fuchsia.Sigaction
-import io.github.kotlinmania.libc.fuchsia.SiginfoT
-import io.github.kotlinmania.libc.fuchsia.Timespec
-import io.github.kotlinmania.libc.fuchsia.WNOHANG
-import io.github.kotlinmania.libc.fuchsia.cmsgData
-import io.github.kotlinmania.libc.fuchsia.cmsgFirsthdr
-import io.github.kotlinmania.libc.fuchsia.cmsgLen
-import io.github.kotlinmania.libc.fuchsia.wcoredump
-import io.github.kotlinmania.libc.fuchsia.wexitstatus
-import io.github.kotlinmania.libc.fuchsia.wifcontinued
-import io.github.kotlinmania.libc.fuchsia.wifexited
-import io.github.kotlinmania.libc.fuchsia.wifsignaled
-import io.github.kotlinmania.libc.fuchsia.wifstopped
-import io.github.kotlinmania.libc.fuchsia.wstopsig
-import io.github.kotlinmania.libc.fuchsia.wtermsig
-import io.github.kotlinmania.libc.getpid
-import io.github.kotlinmania.libc.hermit.STDERR_FILENO
-import io.github.kotlinmania.libc.hermit.STDIN_FILENO
-import io.github.kotlinmania.libc.hermit.STDOUT_FILENO
-import io.github.kotlinmania.libc.kill
-import io.github.kotlinmania.libc.killpg
-import io.github.kotlinmania.libc.recvmsg
-import io.github.kotlinmania.libc.sendmsg
-import io.github.kotlinmania.libc.setgid
-import io.github.kotlinmania.libc.setgroups
-import io.github.kotlinmania.libc.setpgid
-import io.github.kotlinmania.libc.setsid
-import io.github.kotlinmania.libc.setuid
-import io.github.kotlinmania.libc.solid.SIGEMT
-import io.github.kotlinmania.libc.solid.SIGINFO
-import io.github.kotlinmania.libc.syscall
-import io.github.kotlinmania.libc.unix.bsd.netbsdlike.netbsd.dup2
-import io.github.kotlinmania.libc.unix.linuxlike.linux.gnu.exit
-import io.github.kotlinmania.libc.waitpid
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
@@ -105,16 +16,103 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.time.Duration
+import io.github.kotlinmania.rustlang.libc.CInt
+import io.github.kotlinmania.rustlang.libc.SysPidfdOpen
+import io.github.kotlinmania.rustlang.libc.WCOREDUMP
+import io.github.kotlinmania.rustlang.libc.WEXITSTATUS
+import io.github.kotlinmania.rustlang.libc.WIFCONTINUED
+import io.github.kotlinmania.rustlang.libc.WIFEXITED
+import io.github.kotlinmania.rustlang.libc.WIFSIGNALED
+import io.github.kotlinmania.rustlang.libc.WIFSTOPPED
+import io.github.kotlinmania.rustlang.libc.WSTOPSIG
+import io.github.kotlinmania.rustlang.libc.WTERMSIG
+import io.github.kotlinmania.rustlang.libc.chdir
+import io.github.kotlinmania.rustlang.libc.chroot
+import io.github.kotlinmania.rustlang.libc.clockGetres
+import io.github.kotlinmania.rustlang.libc.dup2
+import io.github.kotlinmania.rustlang.libc.execvp
+import io.github.kotlinmania.rustlang.libc.getpid
+import io.github.kotlinmania.rustlang.libc.helenos.CLOCK_MONOTONIC
+import io.github.kotlinmania.rustlang.libc.helenos.PidT
+import io.github.kotlinmania.rustlang.libc.killpg
+import io.github.kotlinmania.rustlang.libc.new.glibc.sysdeps.unix.linux.bits.types.siginfot.kill
+import io.github.kotlinmania.rustlang.libc.new.glibc.sysdeps.unix.linux.bits.types.siginfot.syscall
+import io.github.kotlinmania.rustlang.libc.new.musl.signal.SiginfoT
+import io.github.kotlinmania.rustlang.libc.recvmsg
+import io.github.kotlinmania.rustlang.libc.sendmsg
+import io.github.kotlinmania.rustlang.libc.setgid
+import io.github.kotlinmania.rustlang.libc.setgroups
+import io.github.kotlinmania.rustlang.libc.setpgid
+import io.github.kotlinmania.rustlang.libc.setsid
+import io.github.kotlinmania.rustlang.libc.setuid
+import io.github.kotlinmania.rustlang.libc.unix.SIG_DFL
+import io.github.kotlinmania.rustlang.libc.unix.Timespec
+import io.github.kotlinmania.rustlang.libc.unix.bsd.CLD_CONTINUED
+import io.github.kotlinmania.rustlang.libc.unix.bsd.CLD_DUMPED
+import io.github.kotlinmania.rustlang.libc.unix.bsd.CLD_EXITED
+import io.github.kotlinmania.rustlang.libc.unix.bsd.CLD_KILLED
+import io.github.kotlinmania.rustlang.libc.unix.bsd.CLD_STOPPED
+import io.github.kotlinmania.rustlang.libc.unix.bsd.CLD_TRAPPED
+import io.github.kotlinmania.rustlang.libc.unix.bsd.Cmsghdr
+import io.github.kotlinmania.rustlang.libc.unix.bsd.Msghdr
+import io.github.kotlinmania.rustlang.libc.unix.bsd.SIGBUS
+import io.github.kotlinmania.rustlang.libc.unix.bsd.SIGCHLD
+import io.github.kotlinmania.rustlang.libc.unix.bsd.SIGCONT
+import io.github.kotlinmania.rustlang.libc.unix.bsd.SIGINFO
+import io.github.kotlinmania.rustlang.libc.unix.bsd.SIGIO
+import io.github.kotlinmania.rustlang.libc.unix.bsd.SIGPROF
+import io.github.kotlinmania.rustlang.libc.unix.bsd.SIGSTOP
+import io.github.kotlinmania.rustlang.libc.unix.bsd.SIGSYS
+import io.github.kotlinmania.rustlang.libc.unix.bsd.SIGTSTP
+import io.github.kotlinmania.rustlang.libc.unix.bsd.SIGTTIN
+import io.github.kotlinmania.rustlang.libc.unix.bsd.SIGTTOU
+import io.github.kotlinmania.rustlang.libc.unix.bsd.SIGURG
+import io.github.kotlinmania.rustlang.libc.unix.bsd.SIGUSR1
+import io.github.kotlinmania.rustlang.libc.unix.bsd.SIGUSR2
+import io.github.kotlinmania.rustlang.libc.unix.bsd.SIGVTALRM
+import io.github.kotlinmania.rustlang.libc.unix.bsd.SIGWINCH
+import io.github.kotlinmania.rustlang.libc.unix.bsd.SIGXCPU
+import io.github.kotlinmania.rustlang.libc.unix.bsd.SIGXFSZ
+import io.github.kotlinmania.rustlang.libc.unix.bsd.WNOHANG
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SIGEMT
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SOCK_SEQPACKET
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.Sigaction
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.AF_UNIX
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.MSG_CMSG_CLOEXEC
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.MSG_EOR
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.SIGALRM
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.SIGHUP
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.SIGKILL
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.SIGPIPE
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.SIGQUIT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.SIGTRAP
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.SIGPWR
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.SIGSTKFLT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.exit
+import io.github.kotlinmania.rustlang.libc.waitpid
+import io.github.kotlinmania.rustlang.libc.wasi.EINVAL
+import io.github.kotlinmania.rustlang.libc.wasi.EPERM
+import io.github.kotlinmania.rustlang.libc.wasi.SOL_SOCKET
+import io.github.kotlinmania.rustlang.libc.wasi.STDERR_FILENO
+import io.github.kotlinmania.rustlang.libc.wasi.STDIN_FILENO
+import io.github.kotlinmania.rustlang.libc.wasi.STDOUT_FILENO
+import io.github.kotlinmania.rustlang.libc.windows.SIGABRT
+import io.github.kotlinmania.rustlang.libc.windows.SIGFPE
+import io.github.kotlinmania.rustlang.libc.windows.SIGILL
+import io.github.kotlinmania.rustlang.libc.windows.SIGINT
+import io.github.kotlinmania.rustlang.libc.windows.SIGSEGV
+import io.github.kotlinmania.rustlang.libc.windows.SIGTERM
+import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.panic.alwaysAbort
 import io.github.kotlinmania.rustlang.std.process.Child
 import io.github.kotlinmania.rustlang.std.process.StdioPipes
@@ -123,7 +121,6 @@ import io.github.kotlinmania.rustlang.std.sync.lazylock.LazyLock
 import io.github.kotlinmania.rustlang.std.sys.env.unix.envReadLock
 import io.github.kotlinmania.rustlang.std.sys.env.unix.environ
 import io.github.kotlinmania.rustlang.std.sys.fd.unix.FileDesc
-import io.github.kotlinmania.rustlang.std.sys.io.error.generic.errno
 import io.github.kotlinmania.rustlang.std.sys.net.connection.wasip1.Socket
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvtR
@@ -196,7 +193,7 @@ public fun Command.spawn(default: Stdio, needsStdin: Boolean): Result<Pair<Proce
     val CLOEXEC_MSG_FOOTER: UByteArray = "NOEX".encodeToByteArray().toUByteArray()
     val envp = this.captureEnv()
     if (this.sawNul()) {
-        return Result.Err(io.constError(ErrorKind.InvalidInput, "nul byte found in provided data"))
+        return Result.Err(constError(ErrorKind.InvalidInput, "nul byte found in provided data"))
     }
     val (ours, theirs) = when (val tryResult = this.setupIo(default, needsStdin)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
     when (val matchVal = when (val tryResult = this.posixSpawn(theirs, envp.asRef())) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }) {
@@ -224,7 +221,7 @@ public fun Command.spawn(default: Stdio, needsStdin: Boolean): Result<Pair<Proce
         alwaysAbort()
         forget(envLock)
         // avoid non-async-signal-safe unlocking
-        drop(input1)
+        (input1).let { }
         if (this.getCreatePidfd()) {
             this.sendPidfd(output1)
         }
@@ -249,8 +246,8 @@ public fun Command.spawn(default: Stdio, needsStdin: Boolean): Result<Pair<Proce
         }
         exit(1)
     }
-    drop(envLock)
-    drop(output1)
+    (envLock).let { }
+    (output1).let { }
     val pidfd =
         if (this.getCreatePidfd()) {
             this.recvPidfd(input1)
@@ -298,14 +295,14 @@ public fun Command.spawn(default: Stdio, needsStdin: Boolean): Result<Pair<Proce
 // what `PROHIBITED` means here (e.g. if calls to these functions are
 // allowed to exist in dead code), but it sounds bad, so we go out of our
 // way to avoid that all-together.
-public val ERR_APPLE_TV_WATCH_NO_FORK_EXEC: Error = io.constError(ErrorKind.Unsupported, "`fork`+`exec`-based process spawning is not supported on this target")
+public val ERR_APPLE_TV_WATCH_NO_FORK_EXEC: Error = constError(ErrorKind.Unsupported, "`fork`+`exec`-based process spawning is not supported on this target")
 
-public fun Command.doFork(): Result<PidT, io.github.kotlinmania.rustlang.core.io.error.Error> = Result.Err(Command.ERR_APPLE_TV_WATCH_NO_FORK_EXEC)
+public fun Command.doFork(): Result<PidT, io.github.kotlinmania.rustlang.std.io.Error> = Result.Err(Command.ERR_APPLE_TV_WATCH_NO_FORK_EXEC)
 
-public fun Command.exec(default: Stdio): io.github.kotlinmania.rustlang.core.io.error.Error {
+public fun Command.exec(default: Stdio): io.github.kotlinmania.rustlang.std.io.Error {
     val envp = this.captureEnv()
     if (this.sawNul()) {
-        return io.constError(ErrorKind.InvalidInput, "nul byte found in provided data")
+        return constError(ErrorKind.InvalidInput, "nul byte found in provided data")
     }
     return run {
         val matchVal = this.setupIo(default, true)
@@ -356,7 +353,7 @@ public fun Command.exec(default: Stdio): io.github.kotlinmania.rustlang.core.io.
 // allocation). Instead we just close it manually. This will never
 // have the drop glue anyway because this code never returns (the
 // child will either exec() or invoke libc.exit)
-public fun Command.doExec(stdio: ChildPipes, maybeEnvp: CStringArray?): Result<Nothing, io.github.kotlinmania.rustlang.core.io.error.Error> {
+public fun Command.doExec(stdio: ChildPipes, maybeEnvp: CStringArray?): Result<Nothing, io.github.kotlinmania.rustlang.std.io.Error> {
     when (val matchVal = stdio.stdin.fd()) {
         null -> {}
         else -> {
@@ -448,8 +445,8 @@ public fun Command.doExec(stdio: ChildPipes, maybeEnvp: CStringArray?): Result<N
     // emscripten has no signal support.
     if (!onBrokenPipeUsed()) {
         run {
-            val action: Sigaction?  = null
-            action!!.saSigaction = SIG_DFL
+            val action: Sigaction  = Sigaction()
+            action.saSigaction = SIG_DFL
             when (val tryResult = cvt(Sigaction(SIGPIPE, action, MutPtr(0L)))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         }
     }
@@ -483,7 +480,7 @@ public fun Command.doExec(stdio: ChildPipes, maybeEnvp: CStringArray?): Result<N
         (PrimitiveLayouts.constPtrLayout(64L)).writeNative((environ()).rawAddress, envp.asPtr())
     }
     execvp(this.getProgramCstr().asPtr(), this.getArgv().asPtr())
-    return Result.Err(Error.lastOsError())
+    return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
 }
 
 public fun Command.posixSpawn(arg0: ChildPipes, arg1: CStringArray?): Result<Process?, Error> = Result.Ok(null)
@@ -499,16 +496,16 @@ public fun Command.sendPidfd(sock: Socket) {
         // pidfdOpen sets CLOEXEC by default
         val pidfd = syscall(SysPidfdOpen, childPid.toLong(), 0L)
         val localStorageL862C12 = AddressableArrayLocal.fromIntArray(intArrayOf(pidfd.toInt()))
-        val cmsg: Cmsg?  = null
+        val cmsg: Cmsg  = MaybeUninit.zeroed(ObjectSlotLayout<Cmsg>()).assumeInit()
         // 0-length message to send through the socket so we can pass along the fd
         val localStorageL875C12 = AddressableLocal(listOf(IoSlice.new("".encodeToByteArray())), ObjectSlotLayout<Any?>())
-        val localStorageL876C12 = AddressableLocal(null, ObjectSlotLayout<Msghdr>())
+        val localStorageL876C12 = AddressableLocal(Msghdr(), ObjectSlotLayout<Msghdr>())
         val msg by localStorageL876C12
         msg.msgIov = (localStorageL875C12.asMutPtr())
         msg.msgIovlen = 1
         // only attach cmsg if we successfully acquired the pidfd
         if (pidfd >= 0) {
-            msg.msgControllen = ((sizeOfVal(cmsg!!.buf) as Any?) as Unit)
+            msg.msgControllen = ((sizeOfVal(cmsg.buf) as Any?) as Unit)
             msg.msgControl = (addrOfMut(cmsg.buf))
             val hdr = cmsgFirsthdr((localStorageL876C12.asMutPtr()))
             hdr.cmsgLevel = SOL_SOCKET
@@ -549,10 +546,10 @@ public fun Command.recvPidfd(sock: Socket): PidT {
             public var buf: UByteArray? = null,
             public var align: Cmsghdr? = null,
         )
-        val localStorageL922C12 = AddressableLocal(null, ObjectSlotLayout<Cmsg>())
+        val localStorageL922C12 = AddressableLocal(MaybeUninit.zeroed(ObjectSlotLayout<Cmsg>()).assumeInit(), ObjectSlotLayout<Cmsg>())
         // 0-length read to get the fd
         val localStorageL924C12 = AddressableLocal(listOf(IoSliceMut.new(listOf())), ObjectSlotLayout<Any?>())
-        val localStorageL926C12 = AddressableLocal(null, ObjectSlotLayout<Msghdr>())
+        val localStorageL926C12 = AddressableLocal(Msghdr(), ObjectSlotLayout<Msghdr>())
         val msg by localStorageL926C12
         msg.msgIov = (localStorageL924C12.asMutPtr())
         msg.msgIovlen = 1
@@ -593,7 +590,7 @@ public open class Process(
 
     public open fun kill(): Result<Unit, Error> = this.sendSignal(SIGKILL)
 
-    internal open fun sendSignal(signal: Int): Result<Unit, Error> {
+    public open fun sendSignal(signal: Int): Result<Unit, Error> {
         // If we've already waited on this process then the pid can be recycled and
         // used for another process, and we probably shouldn't be sending signals to
         // random processes, so return Ok because the process has exited already.
@@ -611,7 +608,7 @@ public open class Process(
         return cvt(kill(this.pid, signal)).map({ Unit })
     }
 
-    internal open fun sendProcessGroupSignal(signal: Int): Result<Unit, Error> {
+    public open fun sendProcessGroupSignal(signal: Int): Result<Unit, Error> {
         // See note in `sendSignal` regarding recycled PIDs.
         if (this.status != null) {
             return Result.Ok(Unit)
@@ -644,8 +641,9 @@ public open class Process(
                 return Result.Ok(status1)
             }
         }
-        val status2 = 0
-        when (val tryResult = cvtR({ waitpid(this.pid, status2, 0) })) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        val localStorageL1044C8 = AddressableLocal(0, ObjectSlotLayout<CInt>())
+        val status2 by localStorageL1044C8
+        when (val tryResult = cvtR({ waitpid(this.pid, RustMutableReference(localStorageL1044C8.asMutPtr(), localStorageL1044C8.layout), 0) })) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         this.status = ExitStatus.new(status2)
         return Result.Ok(ExitStatus.new(status2))
     }
@@ -670,8 +668,9 @@ public open class Process(
                 return Result.Ok(status1)
             }
         }
-        val status3 = 0
-        val pid = when (val tryResult = cvt(waitpid(this.pid, status3, WNOHANG))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        val localStorageL1062C8 = AddressableLocal(0, ObjectSlotLayout<CInt>())
+        val status3 by localStorageL1062C8
+        val pid = when (val tryResult = cvt(waitpid(this.pid, RustMutableReference(localStorageL1062C8.asMutPtr(), localStorageL1062C8.layout), WNOHANG))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         return if (pid == 0) {
             Result.Ok(null)
         } else {
@@ -713,7 +712,7 @@ public open class ExitStatus(
 
     public open fun clone(): ExitStatus = ExitStatus(value)
 
-    public open fun exited(): Boolean = wifexited(this.value)
+    public open fun exited(): Boolean = WIFEXITED(this.value)
 
     public open fun exitOk(): Result<Unit, ExitStatusError> {
         // This assumes that WIFEXITED(status) && WEXITSTATUS==0 corresponds to status==0. This is
@@ -732,15 +731,15 @@ public open class ExitStatus(
         }
     }
 
-    public open fun code(): Int? = this.exited().then({ wexitstatus(this.value) })
+    public open fun code(): Int? = this.exited().then({ WEXITSTATUS(this.value) })
 
-    public open fun signal(): Int? = wifsignaled(this.value).then({ wtermsig(this.value) })
+    public open fun signal(): Int? = WIFSIGNALED(this.value).then({ WTERMSIG(this.value) })
 
-    public open fun coreDumped(): Boolean = (wifsignaled(this.value) && wcoredump(this.value)).toUByte()
+    public open fun coreDumped(): Boolean = (WIFSIGNALED(this.value) && WCOREDUMP(this.value)).toUByte()
 
-    public open fun stoppedSignal(): Int? = wifstopped(this.value).then({ wstopsig(this.value) })
+    public open fun stoppedSignal(): Int? = WIFSTOPPED(this.value).then({ WSTOPSIG(this.value) })
 
-    public open fun continued(): Boolean = wifcontinued(this.value)
+    public open fun continued(): Boolean = WIFCONTINUED(this.value)
 
     public open fun intoRaw(): CInt = this.value
 
@@ -919,6 +918,6 @@ public open class ExitStatusError internal constructor(
     }
 }
 
-public fun Child.pidfd(): Result<io.github.kotlinmania.rustlang.std.os.linux.process.PidFd, Error> = (this.handle.pidfd?.let({ fd -> transmute<PidFd, io.github.kotlinmania.rustlang.std.os.linux.process.PidFd>(fd) })?.let { Result.Ok(it) } ?: Result.Err(io.constError(ErrorKind.Uncategorized, "no pidfd was created.")))
+public fun Child.pidfd(): Result<io.github.kotlinmania.rustlang.std.os.linux.process.PidFd, Error> = (this.handle.pidfd?.let({ fd -> transmute<PidFd, io.github.kotlinmania.rustlang.std.os.linux.process.PidFd>(fd) })?.let { Result.Ok(it) } ?: Result.Err(constError(ErrorKind.Uncategorized, "no pidfd was created.")))
 
 public fun Child.intoPidfd(): Result<io.github.kotlinmania.rustlang.std.os.linux.process.PidFd, Child> = ((this.handle.pidfd.also { this.handle.pidfd = null })?.let(io.github.kotlinmania.rustlang.std.os.linux.process.PidFd.fromInner)?.let { Result.Ok(it) } ?: Result.Err(this))

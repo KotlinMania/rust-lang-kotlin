@@ -516,7 +516,7 @@ public fun includeBytes(file: String = ""): String =
  * # Examples
  *
  * ```kotlin
- * public fun foo() {
+ * fun foo() {
  *     check(modulePath().endsWith("test"))
  * }
  * foo()

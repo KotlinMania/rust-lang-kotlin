@@ -134,7 +134,7 @@ public open class Sender<T>(
     /**
      * The `oneshot` channel is simply a wrapper around a `mpmc` channel.
      */
-    public var inner: Sender<T>,
+    public var inner: io.github.kotlinmania.rustlang.std.sync.mpmc.Sender<T>,
 ) {
     // SAFETY: Sending a value requires ownership of the sender. Shared references only inspect
     // channel state, so they cannot send a value of a non-`Send` type from another thread.
@@ -231,7 +231,7 @@ public open class Receiver<T>(
     /**
      * The `oneshot` channel is simply a wrapper around a `mpmc` channel.
      */
-    public var inner: Receiver<T>,
+    public var inner: io.github.kotlinmania.rustlang.std.sync.mpmc.Receiver<T>,
 ) {
     // SAFETY: Receiving a value requires ownership of the receiver. Shared references only inspect
     // channel state, so they cannot access a value of a non-`Send` type from another thread.
@@ -342,8 +342,8 @@ public open class Receiver<T>(
      */
     public open fun tryRecv(): Result<T, TryRecvError<T>> =
         this.inner.tryRecv().mapErr({ err -> when (err) {
-            TryRecvError.Empty -> TryRecvError.Empty(this)
-            TryRecvError.Disconnected -> TryRecvError.Disconnected
+            io.github.kotlinmania.rustlang.std.sync.mpmc.TryRecvError.Empty -> TryRecvError.Empty(this)
+            io.github.kotlinmania.rustlang.std.sync.mpmc.TryRecvError.Disconnected -> TryRecvError.Disconnected
         } })
 
     /**
@@ -381,8 +381,8 @@ public open class Receiver<T>(
      */
     public open fun recvTimeout(timeout: Duration): Result<T, RecvTimeoutError<T>> =
         this.inner.recvTimeout(timeout).mapErr({ err -> when (err) {
-            RecvTimeoutError.Timeout -> RecvTimeoutError.Timeout(this)
-            RecvTimeoutError.Disconnected -> RecvTimeoutError.Disconnected
+            io.github.kotlinmania.rustlang.std.sync.mpmc.RecvTimeoutError.Timeout -> RecvTimeoutError.Timeout(this)
+            io.github.kotlinmania.rustlang.std.sync.mpmc.RecvTimeoutError.Disconnected -> RecvTimeoutError.Disconnected
         } })
 
     /**
@@ -421,8 +421,8 @@ public open class Receiver<T>(
      */
     public open fun recvDeadline(deadline: Instant): Result<T, RecvTimeoutError<T>> =
         this.inner.recvDeadline(deadline).mapErr({ err -> when (err) {
-            RecvTimeoutError.Timeout -> RecvTimeoutError.Timeout(this)
-            RecvTimeoutError.Disconnected -> RecvTimeoutError.Disconnected
+            io.github.kotlinmania.rustlang.std.sync.mpmc.RecvTimeoutError.Timeout -> RecvTimeoutError.Timeout(this)
+            io.github.kotlinmania.rustlang.std.sync.mpmc.RecvTimeoutError.Disconnected -> RecvTimeoutError.Disconnected
         } })
 
     public open fun fmt(f: StringBuilder) {
@@ -514,7 +514,7 @@ public sealed class TryRecvError<T> {
  *                 val (rx) = matchVal.value as RecvTimeoutError.Timeout
  *                 println("Timed out waiting for message!")
  *                 // Note that you can reuse the receiver without dropping it.
- *                 drop(rx)
+ *                 (rx).let { }
  *             }
  *             else -> println("Sender dropped!")
  *         }

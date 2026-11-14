@@ -9,7 +9,7 @@ import io.github.kotlinmania.rustlang.corearch.simd.I64x2
 import io.github.kotlinmania.rustlang.corearch.simd.I64x4
 import io.github.kotlinmania.rustlang.corearch.simd.I8x32
 
-// The host must provide the C companion wrapper exports in import module corearch.
+// The host must provide the C companion wrapper exports in import module kmcore.
 public actual fun roundpd256(a: M256d, b: Int): M256d =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86AvxRoundpd256")
 
@@ -49,13 +49,13 @@ public actual fun vcvtpd2dq(a: M256d): I32x4 =
 public actual fun vcvttps2dq(a: M256): I32x8 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86AvxVcvttps2dq")
 
-@kotlin.wasm.WasmImport("corearch", "corearchX86AvxVzeroall")
+@kotlin.wasm.WasmImport("kmcore", "corearchX86AvxVzeroall")
 private external fun wasiCorearchX86AvxVzeroall(): Unit
 
 public actual fun vzeroall(): Unit =
     wasiCorearchX86AvxVzeroall()
 
-@kotlin.wasm.WasmImport("corearch", "corearchX86AvxVzeroupper")
+@kotlin.wasm.WasmImport("kmcore", "corearchX86AvxVzeroupper")
 private external fun wasiCorearchX86AvxVzeroupper(): Unit
 
 public actual fun vzeroupper(): Unit =

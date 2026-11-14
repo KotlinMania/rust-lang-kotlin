@@ -150,4 +150,4 @@ public open class DecodeUtf16Error(
  * Creates an iterator over the UTF-16 encoded code points in `iter`,
  * returning unpaired surrogates as `Err`s. See [char.decodeUtf16].
  */
-internal fun <I : Iterable<UShort>> decodeUtf16(iter: I): DecodeUtf16<IntoIter> = DecodeUtf16(iter = iter.iterator(), buf = null)
+public fun <I : Iterable<UShort>> decodeUtf16(iter: I): DecodeUtf16<IntoIter> = DecodeUtf16(iter = iter.iterator(), buf = null)

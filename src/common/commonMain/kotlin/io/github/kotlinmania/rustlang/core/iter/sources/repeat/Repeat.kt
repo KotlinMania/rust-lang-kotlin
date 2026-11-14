@@ -1,7 +1,7 @@
 // port-lint: source iter/sources/repeat.rs
 package io.github.kotlinmania.rustlang.core.iter.sources.repeat
 
-import io.github.kotlinmania.rustlang.core.iter.TrustedLen
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero

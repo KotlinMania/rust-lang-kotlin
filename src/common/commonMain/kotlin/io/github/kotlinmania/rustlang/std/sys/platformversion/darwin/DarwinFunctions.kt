@@ -2,7 +2,6 @@
 
 package io.github.kotlinmania.rustlang.std.sys.platformversion.darwin
 
-import io.github.kotlinmania.libc.sysctlbyname
 import io.github.kotlinmania.rustlang.core.bytestr.ByteStr
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
@@ -16,6 +15,9 @@ import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU32
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
+import io.github.kotlinmania.rustlang.libc.sysctlbyname
+import io.github.kotlinmania.rustlang.std.env.varOs
+import io.github.kotlinmania.rustlang.std.fs.read
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.path.PathBuf
 import io.github.kotlinmania.rustlang.std.sys.platformversion.darwin.corefoundation.CFDictionaryRef
@@ -303,7 +305,7 @@ public fun parseOsVersion(version: List<UByte>): Result<OSVersion, ParseIntError
  */
 public fun rootRelative(path: String): Path =
     if (false) {
-        val root = PathBuf.from(env.varOs("IPHONE_SIMULATOR_ROOT").expect("environment variable `IPHONE_SIMULATOR_ROOT` must be set when executing under simulator"))
+        val root = PathBuf.from((varOs("IPHONE_SIMULATOR_ROOT") ?: error("environment variable `IPHONE_SIMULATOR_ROOT` must be set when executing under simulator")))
         // Convert absolute path to relative path, to make the `.push` work as expected.
         root.push((Path.new(path).takeIf { it.startsWith("/") }?.removePrefix("/"))!!)
         root.into()

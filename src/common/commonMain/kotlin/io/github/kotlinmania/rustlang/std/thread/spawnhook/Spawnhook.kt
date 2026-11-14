@@ -31,7 +31,7 @@ public open class SpawnHooks(
             if (!(true)) break
             val hook = matchVal.hook
             val n = matchVal.next
-            drop(hook)
+            (hook).let { }
             next = n
         }
     }
@@ -117,7 +117,7 @@ public fun addSpawnHook(hook: (Thread) -> G) {
  *
  * Returns the functions to be called on the newly spawned thread.
  */
-internal fun runSpawnHooks(thread: Thread): ChildSpawnHooks {
+public fun runSpawnHooks(thread: Thread): ChildSpawnHooks {
     // Get a snapshot of the spawn hooks.
     // (Increments the refcount to the first node.)
     return when (val matchVal = SPAWN_HOOKS.tryWith({ hooks ->
@@ -147,12 +147,12 @@ internal fun runSpawnHooks(thread: Thread): ChildSpawnHooks {
  * This struct is sent to the new thread.
  * It contains the inherited hooks and the closures to be run.
  */
-internal open class ChildSpawnHooks(
+public open class ChildSpawnHooks(
     public var hooks: SpawnHooks,
     public var toRun: List<() -> Unit>,
 ) {
     // This is run on the newly spawned thread, directly at the start.
-    internal open fun inheritAndRun() {
+    public open fun inheritAndRun() {
         SPAWN_HOOKS.set(this.hooks)
         for (run in this.toRun) {
             run()

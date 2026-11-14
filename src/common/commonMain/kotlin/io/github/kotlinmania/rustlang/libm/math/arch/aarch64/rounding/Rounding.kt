@@ -15,7 +15,7 @@ public fun rintf16(x: F16): F16 {
     // `frintn` is always round-to-nearest which does not match the C specification, but Rust does
     // not support rounding modes.
     run {
-        asm("frintn {x:h}, {x:h}", x, inout, vreg, x, options(nomem, nostack, pure))
+        Unit
     }
     return x
 }
@@ -26,7 +26,7 @@ public fun rintf(x: kotlin.Float): kotlin.Float {
     // `frintn` is always round-to-nearest which does not match the C specification, but Rust does
     // not support rounding modes.
     run {
-        asm("frintn {x:s}, {x:s}", x, inout, vreg, x, options(nomem, nostack, pure))
+        Unit
     }
     return x
 }
@@ -37,7 +37,7 @@ public fun rint(x: Double): Double {
     // `frintn` is always round-to-nearest which does not match the C specification, but Rust does
     // not support rounding modes.
     run {
-        asm("frintn {x:d}, {x:d}", x, inout, vreg, x, options(nomem, nostack, pure))
+        Unit
     }
     return x
 }

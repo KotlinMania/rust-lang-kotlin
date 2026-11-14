@@ -13,24 +13,24 @@ import io.github.kotlinmania.rustlang.std.time.Instant
 import io.github.kotlinmania.rustlang.std.sys.pal.sync as pal
 
 public open class Condvar internal constructor(
-    cvarCtorArg: OnceBox<Condvar>,
+    cvarCtorArg: OnceBox<pal.Condvar>,
     mutexCtorArg: Atomic<Int>,
 ) {
-    public var cvar: OnceBox<Condvar> = cvarCtorArg
+    public var cvar: OnceBox<pal.Condvar> = cvarCtorArg
         internal set
 
     public var mutex: Atomic<Int> = mutexCtorArg
         internal set
 
-    public open fun get(): Pin<Condvar> =
+    public open fun get(): Pin<pal.Condvar> =
         this.cvar.getOrInit({
-            var cvar = Box.pin(Condvar.new())
+            var cvar = Box.pin(pal.Condvar.new())
             // SAFETY: we only call `init` once per `pal.Condvar`, namely here.
             cvar.asMut().init()
             cvar
         })
 
-    public open fun verify(mutex: Pin<Mutex>) {
+    public open fun verify(mutex: Pin<pal.Mutex>) {
         val addr = mutex.addr()
         // Relaxed is okay here because we never read through `self.mutex`, and only use it to
         // compare addresses.
@@ -74,7 +74,7 @@ public open class Condvar internal constructor(
         // must have been initialized already.
         val mutex1 = mutex.pal.getUnchecked()
         this.verify(mutex1)
-        return if (Condvar.PRECISE_TIMEOUT) {
+        return if (pal.Condvar.PRECISE_TIMEOUT) {
             // SAFETY: we called `init` above, we verified that this condition
             // variable is only used with `mutex` and the caller guarantees that
             // `mutex` is locked by the current thread.
@@ -92,7 +92,7 @@ public open class Condvar internal constructor(
 
     public companion object {
         public operator fun invoke(
-            cvar: OnceBox<Condvar>,
+            cvar: OnceBox<pal.Condvar>,
             mutex: Atomic<Int>,
         ): Condvar = Condvar(
             cvarCtorArg = cvar,

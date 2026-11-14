@@ -8,9 +8,9 @@ import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 
 // A helper struct for in-place iteration that drops the destination slice of iteration,
 // i.e. the head. The source slice (the tail) is dropped by IntoIter.
-internal open class InPlaceDrop<T>(
-    internal var inner: MutPtr,
-    internal var dst: MutPtr,
+public open class InPlaceDrop<T>(
+    public var inner: MutPtr,
+    public var dst: MutPtr,
 ) {
     public open fun len(): Int {
         // ignore-tidy-undocumented-unchecked
@@ -52,11 +52,11 @@ internal open class InPlaceDrop<T>(
 // A helper struct for in-place collection that drops the destination items together with
 // the source allocation - i.e. before the reallocation happened - to avoid leaking them
 // if some other destructor panics.
-internal open class InPlaceDstDataSrcBufDrop<Src, Dest>(
-    internal var ptr: NonNull,
-    internal var len: Int,
-    internal var srcCap: Int,
-    internal var src: Unit,
+public open class InPlaceDstDataSrcBufDrop<Src, Dest>(
+    public var ptr: NonNull,
+    public var len: Int,
+    public var srcCap: Int,
+    public var src: Unit,
 ) {
     public open fun drop() {
         // ignore-tidy-undocumented-unchecked

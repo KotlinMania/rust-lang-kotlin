@@ -26,7 +26,7 @@ import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.s390x.cache
  * [intel64Ref]: http://www.intel.de/content/dam/www/public/us/en/documents/manuals/64-ia-32-architectures-software-developer-instruction-set-reference-manual-325383.pdf
  * [amd64Ref]: http://support.amd.com/TechDocs/24594.pdf
  */
-internal fun detectFeatures(): cache.Initializer {
+public fun detectFeatures(): cache.Initializer {
     val value = cache.Initializer.default()
     if (false) {
         // doesn't support this because it is untrusted data

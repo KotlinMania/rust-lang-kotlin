@@ -3,6 +3,7 @@
 
 package io.github.kotlinmania.rustlang.core.num.imp.flt2dec.strategy.dragon
 
+import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
@@ -13,7 +14,6 @@ import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.estimator.estimateSca
 import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.roundUp
 import io.github.kotlinmania.rustlang.core.num.rustCheckedAdd
 import io.github.kotlinmania.rustlang.core.num.rustCheckedSub
-import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 
 // Almost direct (but slightly optimized) Rust translation of Figure 3 of "Printing
 // Floating-Point Numbers Quickly and Accurately"[^1].

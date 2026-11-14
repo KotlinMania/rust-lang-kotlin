@@ -6,7 +6,7 @@ import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.intrinsics.floatToIntUnchecked
-import io.github.kotlinmania.rustlang.core.num.IntErrorKind
+import io.github.kotlinmania.rustlang.core.num.error.IntErrorKind
 import io.github.kotlinmania.rustlang.core.num.error.TryFromIntError
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -82,8 +82,8 @@ public fun F16.toIntSaturating(): UByte = this.toUByte()
 public fun F16.toIntChecked(): UByte? {
     val LOW_THRESHOLD: F16 =
         run {
-            val intMin = ((UByte.MIN_VALUE as Any?) as F16)
-            val oneBelowIfRepresentable = intMin - 1.0
+            val intMin = F16.fromUByte(UByte.MIN_VALUE)
+            val oneBelowIfRepresentable = intMin - F16.fromFloat(1.0f)
             if (oneBelowIfRepresentable == intMin) {
                 intMin.nextDown()
             } else {
@@ -93,7 +93,7 @@ public fun F16.toIntChecked(): UByte? {
     val HIGH_THRESHOLD: F16 =
         run {
             val half = (UByte.MAX_VALUE / 2u) + 1u
-            ((half as Any?) as F16) + ((half as Any?) as F16)
+            F16.fromUByte(half) + F16.fromUByte(half)
         }
     return if (LOW_THRESHOLD < this && this < HIGH_THRESHOLD) {
         this.toIntUnchecked()
@@ -109,8 +109,8 @@ public fun F16.toIntSaturatingUShort(): UShort = this.toUShort()
 public fun F16.toIntCheckedUShort(): UShort? {
     val LOW_THRESHOLD: F16 =
         run {
-            val intMin = ((UShort.MIN_VALUE as Any?) as F16)
-            val oneBelowIfRepresentable = intMin - 1.0
+            val intMin = F16.fromUShort(UShort.MIN_VALUE)
+            val oneBelowIfRepresentable = intMin - F16.fromFloat(1.0f)
             if (oneBelowIfRepresentable == intMin) {
                 intMin.nextDown()
             } else {
@@ -120,7 +120,7 @@ public fun F16.toIntCheckedUShort(): UShort? {
     val HIGH_THRESHOLD: F16 =
         run {
             val half = (UShort.MAX_VALUE / 2u) + 1u
-            ((half as Any?) as F16) + ((half as Any?) as F16)
+            F16.fromUShort(half) + F16.fromUShort(half)
         }
     return if (LOW_THRESHOLD < this && this < HIGH_THRESHOLD) {
         (this.toIntUnchecked()).toUShort()
@@ -136,8 +136,8 @@ public fun F16.toIntSaturatingUInt(): UInt = this.toUInt()
 public fun F16.toIntCheckedUInt(): UInt? {
     val LOW_THRESHOLD: F16 =
         run {
-            val intMin = ((UInt.MIN_VALUE as Any?) as F16)
-            val oneBelowIfRepresentable = intMin - 1.0
+            val intMin = F16.fromUInt(UInt.MIN_VALUE)
+            val oneBelowIfRepresentable = intMin - F16.fromFloat(1.0f)
             if (oneBelowIfRepresentable == intMin) {
                 intMin.nextDown()
             } else {
@@ -147,7 +147,7 @@ public fun F16.toIntCheckedUInt(): UInt? {
     val HIGH_THRESHOLD: F16 =
         run {
             val half = (UInt.MAX_VALUE / 2u) + 1u
-            ((half as Any?) as F16) + ((half as Any?) as F16)
+            F16.fromUInt(half) + F16.fromUInt(half)
         }
     return if (LOW_THRESHOLD < this && this < HIGH_THRESHOLD) {
         (this.toIntUnchecked()).toUInt()
@@ -163,8 +163,8 @@ public fun F16.toIntSaturatingULong(): ULong = this.toULong()
 public fun F16.toIntCheckedULong(): ULong? {
     val LOW_THRESHOLD: F16 =
         run {
-            val intMin = ((ULong.MIN_VALUE as Any?) as F16)
-            val oneBelowIfRepresentable = intMin - 1.0
+            val intMin = F16.fromULong(ULong.MIN_VALUE)
+            val oneBelowIfRepresentable = intMin - F16.fromFloat(1.0f)
             if (oneBelowIfRepresentable == intMin) {
                 intMin.nextDown()
             } else {
@@ -174,7 +174,7 @@ public fun F16.toIntCheckedULong(): ULong? {
     val HIGH_THRESHOLD: F16 =
         run {
             val half = (ULong.MAX_VALUE / 2uL) + 1uL
-            ((half as Any?) as F16) + ((half as Any?) as F16)
+            F16.fromULong(half) + F16.fromULong(half)
         }
     return if (LOW_THRESHOLD < this && this < HIGH_THRESHOLD) {
         (this.toIntUnchecked()).toULong()
@@ -185,13 +185,13 @@ public fun F16.toIntCheckedULong(): ULong? {
 
 public fun F16.toIntUncheckedU128(): U128 = floatToIntUnchecked(this)
 
-public fun F16.toIntSaturatingU128(): U128 = U128.fromLong(this.toLong())
+public fun F16.toIntSaturatingU128(): U128 = U128.fromULong(this.toULong())
 
 public fun F16.toIntCheckedU128(): U128? {
     val LOW_THRESHOLD: F16 =
         run {
-            val intMin = ((U128.MIN_VALUE as Any?) as F16)
-            val oneBelowIfRepresentable = intMin - 1.0
+            val intMin = F16.fromDouble(U128.MIN_VALUE.toDouble())
+            val oneBelowIfRepresentable = intMin - F16.fromFloat(1.0f)
             if (oneBelowIfRepresentable == intMin) {
                 intMin.nextDown()
             } else {
@@ -201,7 +201,7 @@ public fun F16.toIntCheckedU128(): U128? {
     val HIGH_THRESHOLD: F16 =
         run {
             val half = (U128.MAX_VALUE / U128(0x0uL, 0x2uL)) + U128(0x0uL, 0x1uL)
-            ((half as Any?) as F16) + ((half as Any?) as F16)
+            F16.fromDouble(half.toDouble()) + F16.fromDouble(half.toDouble())
         }
     return if (LOW_THRESHOLD < this && this < HIGH_THRESHOLD) {
         this.toIntUnchecked()
@@ -217,8 +217,8 @@ public fun F16.toIntSaturatingInt(): Int = this.toInt()
 public fun F16.toIntCheckedInt(): Int? {
     val LOW_THRESHOLD: F16 =
         run {
-            val intMin = ((0 as Any?) as F16)
-            val oneBelowIfRepresentable = intMin - 1.0
+            val intMin = F16.fromInt(0)
+            val oneBelowIfRepresentable = intMin - F16.fromFloat(1.0f)
             if (oneBelowIfRepresentable == intMin) {
                 intMin.nextDown()
             } else {
@@ -228,7 +228,7 @@ public fun F16.toIntCheckedInt(): Int? {
     val HIGH_THRESHOLD: F16 =
         run {
             val half = (Int.MAX_VALUE / 2) + 1
-            ((half as Any?) as F16) + ((half as Any?) as F16)
+            F16.fromInt(half) + F16.fromInt(half)
         }
     return if (LOW_THRESHOLD < this && this < HIGH_THRESHOLD) {
         (this.toIntUnchecked()).toInt()
@@ -244,8 +244,8 @@ public fun F16.toIntSaturatingByte(): Byte = this.toByte()
 public fun F16.toIntCheckedByte(): Byte? {
     val LOW_THRESHOLD: F16 =
         run {
-            val intMin = ((Byte.MIN_VALUE as Any?) as F16)
-            val oneBelowIfRepresentable = intMin - 1.0
+            val intMin = F16.fromByte(Byte.MIN_VALUE)
+            val oneBelowIfRepresentable = intMin - F16.fromFloat(1.0f)
             if (oneBelowIfRepresentable == intMin) {
                 intMin.nextDown()
             } else {
@@ -255,7 +255,7 @@ public fun F16.toIntCheckedByte(): Byte? {
     val HIGH_THRESHOLD: F16 =
         run {
             val half = (Byte.MAX_VALUE / 2) + 1
-            ((half as Any?) as F16) + ((half as Any?) as F16)
+            F16.fromByte(half) + F16.fromByte(half)
         }
     return if (LOW_THRESHOLD < this && this < HIGH_THRESHOLD) {
         (this.toIntUnchecked()).toByte()
@@ -271,8 +271,8 @@ public fun F16.toIntSaturatingShort(): Short = this.toShort()
 public fun F16.toIntCheckedShort(): Short? {
     val LOW_THRESHOLD: F16 =
         run {
-            val intMin = ((Short.MIN_VALUE as Any?) as F16)
-            val oneBelowIfRepresentable = intMin - 1.0
+            val intMin = F16.fromShort(Short.MIN_VALUE)
+            val oneBelowIfRepresentable = intMin - F16.fromFloat(1.0f)
             if (oneBelowIfRepresentable == intMin) {
                 intMin.nextDown()
             } else {
@@ -282,7 +282,7 @@ public fun F16.toIntCheckedShort(): Short? {
     val HIGH_THRESHOLD: F16 =
         run {
             val half = (Short.MAX_VALUE / 2) + 1
-            ((half as Any?) as F16) + ((half as Any?) as F16)
+            F16.fromShort(half) + F16.fromShort(half)
         }
     return if (LOW_THRESHOLD < this && this < HIGH_THRESHOLD) {
         (this.toIntUnchecked()).toShort()
@@ -298,8 +298,8 @@ public fun F16.toIntSaturatingLong(): Long = this.toLong()
 public fun F16.toIntCheckedLong(): Long? {
     val LOW_THRESHOLD: F16 =
         run {
-            val intMin = ((Long.MIN_VALUE as Any?) as F16)
-            val oneBelowIfRepresentable = intMin - 1.0
+            val intMin = F16.fromLong(Long.MIN_VALUE)
+            val oneBelowIfRepresentable = intMin - F16.fromFloat(1.0f)
             if (oneBelowIfRepresentable == intMin) {
                 intMin.nextDown()
             } else {
@@ -309,7 +309,7 @@ public fun F16.toIntCheckedLong(): Long? {
     val HIGH_THRESHOLD: F16 =
         run {
             val half = (Long.MAX_VALUE / 2L) + 1L
-            ((half as Any?) as F16) + ((half as Any?) as F16)
+            F16.fromLong(half) + F16.fromLong(half)
         }
     return if (LOW_THRESHOLD < this && this < HIGH_THRESHOLD) {
         (this.toIntUnchecked()).toLong()
@@ -325,8 +325,8 @@ public fun F16.toIntSaturatingI128(): I128 = I128.fromLong(this.toLong())
 public fun F16.toIntCheckedI128(): I128? {
     val LOW_THRESHOLD: F16 =
         run {
-            val intMin = ((I128.MIN_VALUE as Any?) as F16)
-            val oneBelowIfRepresentable = intMin - 1.0
+            val intMin = F16.fromDouble(I128.MIN_VALUE.toDouble())
+            val oneBelowIfRepresentable = intMin - F16.fromFloat(1.0f)
             if (oneBelowIfRepresentable == intMin) {
                 intMin.nextDown()
             } else {
@@ -336,7 +336,7 @@ public fun F16.toIntCheckedI128(): I128? {
     val HIGH_THRESHOLD: F16 =
         run {
             val half = (I128.MAX_VALUE / I128(0x0L, 0x2uL)) + I128(0x0L, 0x1uL)
-            ((half as Any?) as F16) + ((half as Any?) as F16)
+            F16.fromDouble(half.toDouble()) + F16.fromDouble(half.toDouble())
         }
     return if (LOW_THRESHOLD < this && this < HIGH_THRESHOLD) {
         this.toIntUnchecked()
@@ -892,8 +892,8 @@ public fun F128.toIntSaturating(): UByte = this.toUByte()
 public fun F128.toIntChecked(): UByte? {
     val LOW_THRESHOLD: F128 =
         run {
-            val intMin = ((UByte.MIN_VALUE as Any?) as F128)
-            val oneBelowIfRepresentable = intMin - 1.0
+            val intMin = F128.fromUByte(UByte.MIN_VALUE)
+            val oneBelowIfRepresentable = intMin - F128.fromDouble(1.0)
             if (oneBelowIfRepresentable == intMin) {
                 intMin.nextDown()
             } else {
@@ -903,7 +903,7 @@ public fun F128.toIntChecked(): UByte? {
     val HIGH_THRESHOLD: F128 =
         run {
             val half = (UByte.MAX_VALUE / 2u) + 1u
-            ((half as Any?) as F128) + ((half as Any?) as F128)
+            F128.fromUByte(half) + F128.fromUByte(half)
         }
     return if (LOW_THRESHOLD < this && this < HIGH_THRESHOLD) {
         this.toIntUnchecked()
@@ -919,8 +919,8 @@ public fun F128.toIntSaturatingUShort(): UShort = this.toUShort()
 public fun F128.toIntCheckedUShort(): UShort? {
     val LOW_THRESHOLD: F128 =
         run {
-            val intMin = ((UShort.MIN_VALUE as Any?) as F128)
-            val oneBelowIfRepresentable = intMin - 1.0
+            val intMin = F128.fromUShort(UShort.MIN_VALUE)
+            val oneBelowIfRepresentable = intMin - F128.fromDouble(1.0)
             if (oneBelowIfRepresentable == intMin) {
                 intMin.nextDown()
             } else {
@@ -930,7 +930,7 @@ public fun F128.toIntCheckedUShort(): UShort? {
     val HIGH_THRESHOLD: F128 =
         run {
             val half = (UShort.MAX_VALUE / 2u) + 1u
-            ((half as Any?) as F128) + ((half as Any?) as F128)
+            F128.fromUShort(half) + F128.fromUShort(half)
         }
     return if (LOW_THRESHOLD < this && this < HIGH_THRESHOLD) {
         (this.toIntUnchecked()).toUShort()
@@ -946,8 +946,8 @@ public fun F128.toIntSaturatingUInt(): UInt = this.toUInt()
 public fun F128.toIntCheckedUInt(): UInt? {
     val LOW_THRESHOLD: F128 =
         run {
-            val intMin = ((UInt.MIN_VALUE as Any?) as F128)
-            val oneBelowIfRepresentable = intMin - 1.0
+            val intMin = F128.fromUInt(UInt.MIN_VALUE)
+            val oneBelowIfRepresentable = intMin - F128.fromDouble(1.0)
             if (oneBelowIfRepresentable == intMin) {
                 intMin.nextDown()
             } else {
@@ -957,7 +957,7 @@ public fun F128.toIntCheckedUInt(): UInt? {
     val HIGH_THRESHOLD: F128 =
         run {
             val half = (UInt.MAX_VALUE / 2u) + 1u
-            ((half as Any?) as F128) + ((half as Any?) as F128)
+            F128.fromUInt(half) + F128.fromUInt(half)
         }
     return if (LOW_THRESHOLD < this && this < HIGH_THRESHOLD) {
         (this.toIntUnchecked()).toUInt()
@@ -973,8 +973,8 @@ public fun F128.toIntSaturatingULong(): ULong = this.toULong()
 public fun F128.toIntCheckedULong(): ULong? {
     val LOW_THRESHOLD: F128 =
         run {
-            val intMin = ((ULong.MIN_VALUE as Any?) as F128)
-            val oneBelowIfRepresentable = intMin - 1.0
+            val intMin = F128.fromULong(ULong.MIN_VALUE)
+            val oneBelowIfRepresentable = intMin - F128.fromDouble(1.0)
             if (oneBelowIfRepresentable == intMin) {
                 intMin.nextDown()
             } else {
@@ -984,7 +984,7 @@ public fun F128.toIntCheckedULong(): ULong? {
     val HIGH_THRESHOLD: F128 =
         run {
             val half = (ULong.MAX_VALUE / 2uL) + 1uL
-            ((half as Any?) as F128) + ((half as Any?) as F128)
+            F128.fromULong(half) + F128.fromULong(half)
         }
     return if (LOW_THRESHOLD < this && this < HIGH_THRESHOLD) {
         (this.toIntUnchecked()).toULong()
@@ -995,13 +995,13 @@ public fun F128.toIntCheckedULong(): ULong? {
 
 public fun F128.toIntUncheckedU128(): U128 = floatToIntUnchecked(this)
 
-public fun F128.toIntSaturatingU128(): U128 = U128.fromLong(this.toLong())
+public fun F128.toIntSaturatingU128(): U128 = U128.fromULong(this.toULong())
 
 public fun F128.toIntCheckedU128(): U128? {
     val LOW_THRESHOLD: F128 =
         run {
-            val intMin = ((U128.MIN_VALUE as Any?) as F128)
-            val oneBelowIfRepresentable = intMin - 1.0
+            val intMin = F128.fromDouble(U128.MIN_VALUE.toDouble())
+            val oneBelowIfRepresentable = intMin - F128.fromDouble(1.0)
             if (oneBelowIfRepresentable == intMin) {
                 intMin.nextDown()
             } else {
@@ -1011,7 +1011,7 @@ public fun F128.toIntCheckedU128(): U128? {
     val HIGH_THRESHOLD: F128 =
         run {
             val half = (U128.MAX_VALUE / U128(0x0uL, 0x2uL)) + U128(0x0uL, 0x1uL)
-            ((half as Any?) as F128) + ((half as Any?) as F128)
+            F128.fromDouble(half.toDouble()) + F128.fromDouble(half.toDouble())
         }
     return if (LOW_THRESHOLD < this && this < HIGH_THRESHOLD) {
         this.toIntUnchecked()
@@ -1027,8 +1027,8 @@ public fun F128.toIntSaturatingInt(): Int = this.toInt()
 public fun F128.toIntCheckedInt(): Int? {
     val LOW_THRESHOLD: F128 =
         run {
-            val intMin = ((0 as Any?) as F128)
-            val oneBelowIfRepresentable = intMin - 1.0
+            val intMin = F128.fromInt(0)
+            val oneBelowIfRepresentable = intMin - F128.fromDouble(1.0)
             if (oneBelowIfRepresentable == intMin) {
                 intMin.nextDown()
             } else {
@@ -1038,7 +1038,7 @@ public fun F128.toIntCheckedInt(): Int? {
     val HIGH_THRESHOLD: F128 =
         run {
             val half = (Int.MAX_VALUE / 2) + 1
-            ((half as Any?) as F128) + ((half as Any?) as F128)
+            F128.fromInt(half) + F128.fromInt(half)
         }
     return if (LOW_THRESHOLD < this && this < HIGH_THRESHOLD) {
         (this.toIntUnchecked()).toInt()
@@ -1054,8 +1054,8 @@ public fun F128.toIntSaturatingByte(): Byte = this.toByte()
 public fun F128.toIntCheckedByte(): Byte? {
     val LOW_THRESHOLD: F128 =
         run {
-            val intMin = ((Byte.MIN_VALUE as Any?) as F128)
-            val oneBelowIfRepresentable = intMin - 1.0
+            val intMin = F128.fromByte(Byte.MIN_VALUE)
+            val oneBelowIfRepresentable = intMin - F128.fromDouble(1.0)
             if (oneBelowIfRepresentable == intMin) {
                 intMin.nextDown()
             } else {
@@ -1065,7 +1065,7 @@ public fun F128.toIntCheckedByte(): Byte? {
     val HIGH_THRESHOLD: F128 =
         run {
             val half = (Byte.MAX_VALUE / 2) + 1
-            ((half as Any?) as F128) + ((half as Any?) as F128)
+            F128.fromByte(half) + F128.fromByte(half)
         }
     return if (LOW_THRESHOLD < this && this < HIGH_THRESHOLD) {
         (this.toIntUnchecked()).toByte()
@@ -1081,8 +1081,8 @@ public fun F128.toIntSaturatingShort(): Short = this.toShort()
 public fun F128.toIntCheckedShort(): Short? {
     val LOW_THRESHOLD: F128 =
         run {
-            val intMin = ((Short.MIN_VALUE as Any?) as F128)
-            val oneBelowIfRepresentable = intMin - 1.0
+            val intMin = F128.fromShort(Short.MIN_VALUE)
+            val oneBelowIfRepresentable = intMin - F128.fromDouble(1.0)
             if (oneBelowIfRepresentable == intMin) {
                 intMin.nextDown()
             } else {
@@ -1092,7 +1092,7 @@ public fun F128.toIntCheckedShort(): Short? {
     val HIGH_THRESHOLD: F128 =
         run {
             val half = (Short.MAX_VALUE / 2) + 1
-            ((half as Any?) as F128) + ((half as Any?) as F128)
+            F128.fromShort(half) + F128.fromShort(half)
         }
     return if (LOW_THRESHOLD < this && this < HIGH_THRESHOLD) {
         (this.toIntUnchecked()).toShort()
@@ -1108,8 +1108,8 @@ public fun F128.toIntSaturatingLong(): Long = this.toLong()
 public fun F128.toIntCheckedLong(): Long? {
     val LOW_THRESHOLD: F128 =
         run {
-            val intMin = ((Long.MIN_VALUE as Any?) as F128)
-            val oneBelowIfRepresentable = intMin - 1.0
+            val intMin = F128.fromLong(Long.MIN_VALUE)
+            val oneBelowIfRepresentable = intMin - F128.fromDouble(1.0)
             if (oneBelowIfRepresentable == intMin) {
                 intMin.nextDown()
             } else {
@@ -1119,7 +1119,7 @@ public fun F128.toIntCheckedLong(): Long? {
     val HIGH_THRESHOLD: F128 =
         run {
             val half = (Long.MAX_VALUE / 2L) + 1L
-            ((half as Any?) as F128) + ((half as Any?) as F128)
+            F128.fromLong(half) + F128.fromLong(half)
         }
     return if (LOW_THRESHOLD < this && this < HIGH_THRESHOLD) {
         (this.toIntUnchecked()).toLong()
@@ -1135,8 +1135,8 @@ public fun F128.toIntSaturatingI128(): I128 = I128.fromLong(this.toLong())
 public fun F128.toIntCheckedI128(): I128? {
     val LOW_THRESHOLD: F128 =
         run {
-            val intMin = ((I128.MIN_VALUE as Any?) as F128)
-            val oneBelowIfRepresentable = intMin - 1.0
+            val intMin = F128.fromDouble(I128.MIN_VALUE.toDouble())
+            val oneBelowIfRepresentable = intMin - F128.fromDouble(1.0)
             if (oneBelowIfRepresentable == intMin) {
                 intMin.nextDown()
             } else {
@@ -1146,7 +1146,7 @@ public fun F128.toIntCheckedI128(): I128? {
     val HIGH_THRESHOLD: F128 =
         run {
             val half = (I128.MAX_VALUE / I128(0x0L, 0x2uL)) + I128(0x0L, 0x1uL)
-            ((half as Any?) as F128) + ((half as Any?) as F128)
+            F128.fromDouble(half.toDouble()) + F128.fromDouble(half.toDouble())
         }
     return if (LOW_THRESHOLD < this && this < HIGH_THRESHOLD) {
         this.toIntUnchecked()
@@ -1163,37 +1163,37 @@ public interface FloatToFloat<Flt> {
     public fun cast(): Flt
 }
 
-public fun F16.cast(): F16 = ((this as Any?) as F16)
+public fun F16.cast(): F16 = this
 
 public fun F16.castFloat(): kotlin.Float = this.toFloat()
 
 public fun F16.castDouble(): Double = this.toDouble()
 
-public fun F16.castF128(): F128 = ((this as Any?) as F128)
+public fun F16.castF128(): F128 = F128.fromF16(this)
 
-public fun kotlin.Float.cast(): F16 = ((this as Any?) as F16)
+public fun kotlin.Float.cast(): F16 = F16.fromFloat(this)
 
 public fun kotlin.Float.castFloat(): kotlin.Float = this
 
 public fun kotlin.Float.castDouble(): Double = this.toDouble()
 
-public fun kotlin.Float.castF128(): F128 = ((this as Any?) as F128)
+public fun kotlin.Float.castF128(): F128 = F128.fromFloat(this)
 
-public fun Double.cast(): F16 = ((this as Any?) as F16)
+public fun Double.cast(): F16 = F16.fromDouble(this)
 
 public fun Double.castFloat(): kotlin.Float = this.toFloat()
 
 public fun Double.castDouble(): Double = this
 
-public fun Double.castF128(): F128 = ((this as Any?) as F128)
+public fun Double.castF128(): F128 = F128.fromDouble(this)
 
-public fun F128.cast(): F16 = ((this as Any?) as F16)
+public fun F128.cast(): F16 = F16.fromDouble(this.toDouble())
 
 public fun F128.castFloat(): kotlin.Float = this.toFloat()
 
 public fun F128.castDouble(): Double = this.toDouble()
 
-public fun F128.castF128(): F128 = ((this as Any?) as F128)
+public fun F128.castF128(): F128 = this
 
 /**
  * Converts from [bool] to
@@ -1610,9 +1610,9 @@ public fun fromF16(small: Byte): F16 {
         check(I128.fromLong(F16.MIN.toLong()) <= I128.fromByte(Byte.MIN_VALUE))
     }
     if (false) {
-        check(U128.fromByte(Byte.MAX_VALUE) <= U128.fromLong(F16.MAX.toLong()))
+        check(U128.fromByte(Byte.MAX_VALUE) <= U128.fromULong(F16.MAX.toULong()))
     }
-    return ((small as Any?) as F16)
+    return F16.fromByte(small)
 }
 
 public fun fromFloat(small: Byte): kotlin.Float {
@@ -1640,9 +1640,9 @@ public fun fromF128(small: Byte): F128 {
         check(I128.fromLong(F128.MIN.toLong()) <= I128.fromByte(Byte.MIN_VALUE))
     }
     if (false) {
-        check(U128.fromByte(Byte.MAX_VALUE) <= U128.fromLong(F128.MAX.toLong()))
+        check(U128.fromByte(Byte.MAX_VALUE) <= U128.fromULong(F128.MAX.toULong()))
     }
-    return ((small as Any?) as F128)
+    return F128.fromByte(small)
 }
 
 public fun fromFloat(small: Short): kotlin.Float {
@@ -1670,9 +1670,9 @@ public fun fromF128(small: Short): F128 {
         check(I128.fromLong(F128.MIN.toLong()) <= I128.fromShort(Short.MIN_VALUE))
     }
     if (false) {
-        check(U128.fromShort(Short.MAX_VALUE) <= U128.fromLong(F128.MAX.toLong()))
+        check(U128.fromShort(Short.MAX_VALUE) <= U128.fromULong(F128.MAX.toULong()))
     }
-    return ((small as Any?) as F128)
+    return F128.fromShort(small)
 }
 
 public fun fromDouble(small: Int): Double {
@@ -1690,9 +1690,9 @@ public fun fromF128(small: Int): F128 {
         check(I128.fromLong(F128.MIN.toLong()) <= I128.fromInt(Int.MIN_VALUE))
     }
     if (false) {
-        check(U128.fromInt(Int.MAX_VALUE) <= U128.fromLong(F128.MAX.toLong()))
+        check(U128.fromInt(Int.MAX_VALUE) <= U128.fromULong(F128.MAX.toULong()))
     }
-    return ((small as Any?) as F128)
+    return F128.fromInt(small)
 }
 
 public fun fromF128(small: Long): F128 {
@@ -1700,9 +1700,9 @@ public fun fromF128(small: Long): F128 {
         check(I128.fromLong(F128.MIN.toLong()) <= I128.fromLong(Long.MIN_VALUE))
     }
     if (false) {
-        check(U128.fromLong(Long.MAX_VALUE) <= U128.fromLong(F128.MAX.toLong()))
+        check(U128.fromLong(Long.MAX_VALUE) <= U128.fromULong(F128.MAX.toULong()))
     }
-    return ((small as Any?) as F128)
+    return F128.fromLong(small)
 }
 
 public fun fromF16(small: UByte): F16 {
@@ -1710,9 +1710,9 @@ public fun fromF16(small: UByte): F16 {
         check(I128.fromLong(F16.MIN.toLong()) <= I128.fromUByte(UByte.MIN_VALUE))
     }
     if (false) {
-        check(U128.fromUByte(UByte.MAX_VALUE) <= U128.fromLong(F16.MAX.toLong()))
+        check(U128.fromUByte(UByte.MAX_VALUE) <= U128.fromULong(F16.MAX.toULong()))
     }
-    return ((small as Any?) as F16)
+    return F16.fromUByte(small)
 }
 
 public fun fromFloat(small: UByte): kotlin.Float {
@@ -1740,9 +1740,9 @@ public fun fromF128(small: UByte): F128 {
         check(I128.fromLong(F128.MIN.toLong()) <= I128.fromUByte(UByte.MIN_VALUE))
     }
     if (false) {
-        check(U128.fromUByte(UByte.MAX_VALUE) <= U128.fromLong(F128.MAX.toLong()))
+        check(U128.fromUByte(UByte.MAX_VALUE) <= U128.fromULong(F128.MAX.toULong()))
     }
-    return ((small as Any?) as F128)
+    return F128.fromUByte(small)
 }
 
 public fun fromFloat(small: UShort): kotlin.Float {
@@ -1770,9 +1770,9 @@ public fun fromF128(small: UShort): F128 {
         check(I128.fromLong(F128.MIN.toLong()) <= I128.fromUShort(UShort.MIN_VALUE))
     }
     if (false) {
-        check(U128.fromUShort(UShort.MAX_VALUE) <= U128.fromLong(F128.MAX.toLong()))
+        check(U128.fromUShort(UShort.MAX_VALUE) <= U128.fromULong(F128.MAX.toULong()))
     }
-    return ((small as Any?) as F128)
+    return F128.fromUShort(small)
 }
 
 public fun fromDouble(small: UInt): Double {
@@ -1790,9 +1790,9 @@ public fun fromF128(small: UInt): F128 {
         check(I128.fromLong(F128.MIN.toLong()) <= I128.fromUInt(UInt.MIN_VALUE))
     }
     if (false) {
-        check(U128.fromUInt(UInt.MAX_VALUE) <= U128.fromLong(F128.MAX.toLong()))
+        check(U128.fromUInt(UInt.MAX_VALUE) <= U128.fromULong(F128.MAX.toULong()))
     }
-    return ((small as Any?) as F128)
+    return F128.fromUInt(small)
 }
 
 public fun fromF128(small: ULong): F128 {
@@ -1800,9 +1800,9 @@ public fun fromF128(small: ULong): F128 {
         check(I128.fromLong(F128.MIN.toLong()) <= I128.fromULong(ULong.MIN_VALUE))
     }
     if (false) {
-        check(U128.fromULong(ULong.MAX_VALUE) <= U128.fromLong(F128.MAX.toLong()))
+        check(U128.fromULong(ULong.MAX_VALUE) <= U128.fromULong(F128.MAX.toULong()))
     }
-    return ((small as Any?) as F128)
+    return F128.fromULong(small)
 }
 
 public fun fromFloat(small: F16): kotlin.Float {
@@ -1810,7 +1810,7 @@ public fun fromFloat(small: F16): kotlin.Float {
         check(I128.fromLong(((-kotlin.Float.MAX_VALUE)).toLong()) <= I128.fromLong(F16.MIN.toLong()))
     }
     if (false) {
-        check(U128.fromLong(F16.MAX.toLong()) <= U128.fromULong(kotlin.Float.MAX_VALUE.toULong()))
+        check(U128.fromULong(F16.MAX.toULong()) <= U128.fromULong(kotlin.Float.MAX_VALUE.toULong()))
     }
     return small.toFloat()
 }
@@ -1820,7 +1820,7 @@ public fun fromDouble(small: F16): Double {
         check(I128.fromLong(((-Double.MAX_VALUE)).toLong()) <= I128.fromLong(F16.MIN.toLong()))
     }
     if (false) {
-        check(U128.fromLong(F16.MAX.toLong()) <= U128.fromULong(Double.MAX_VALUE.toULong()))
+        check(U128.fromULong(F16.MAX.toULong()) <= U128.fromULong(Double.MAX_VALUE.toULong()))
     }
     return small.toDouble()
 }
@@ -1830,9 +1830,9 @@ public fun fromF128(small: F16): F128 {
         check(I128.fromLong(F128.MIN.toLong()) <= I128.fromLong(F16.MIN.toLong()))
     }
     if (false) {
-        check(U128.fromLong(F16.MAX.toLong()) <= U128.fromLong(F128.MAX.toLong()))
+        check(U128.fromULong(F16.MAX.toULong()) <= U128.fromULong(F128.MAX.toULong()))
     }
-    return ((small as Any?) as F128)
+    return F128.fromF16(small)
 }
 
 public fun fromDouble(small: kotlin.Float): Double {
@@ -1850,9 +1850,9 @@ public fun fromF128(small: kotlin.Float): F128 {
         check(I128.fromLong(F128.MIN.toLong()) <= I128.fromLong(((-kotlin.Float.MAX_VALUE)).toLong()))
     }
     if (false) {
-        check(U128.fromULong(kotlin.Float.MAX_VALUE.toULong()) <= U128.fromLong(F128.MAX.toLong()))
+        check(U128.fromULong(kotlin.Float.MAX_VALUE.toULong()) <= U128.fromULong(F128.MAX.toULong()))
     }
-    return ((small as Any?) as F128)
+    return F128.fromFloat(small)
 }
 
 public fun fromF128(small: Double): F128 {
@@ -1860,9 +1860,9 @@ public fun fromF128(small: Double): F128 {
         check(I128.fromLong(F128.MIN.toLong()) <= I128.fromLong(((-Double.MAX_VALUE)).toLong()))
     }
     if (false) {
-        check(U128.fromULong(Double.MAX_VALUE.toULong()) <= U128.fromLong(F128.MAX.toLong()))
+        check(U128.fromULong(Double.MAX_VALUE.toULong()) <= U128.fromULong(F128.MAX.toULong()))
     }
-    return ((small as Any?) as F128)
+    return F128.fromDouble(small)
 }
 
 /**
@@ -1878,7 +1878,7 @@ public fun fromF128(small: Double): F128 {
  * }
  * ```
  */
-public fun fromF16(small: Boolean): F16 = ((small.toUByte() as Any?) as F16)
+public fun fromF16(small: Boolean): F16 = F16.fromUByte((small.toUByte()))
 
 /**
  * The resulting value is positive `0.0` for `false` and `1.0` for `true` values.
@@ -1917,7 +1917,7 @@ public fun fromDouble(small: Boolean): Double = (small.toUByte()).toDouble()
  * }
  * ```
  */
-public fun fromF128(small: Boolean): F128 = ((small.toUByte() as Any?) as F128)
+public fun fromF128(small: Boolean): F128 = F128.fromUByte((small.toUByte()))
 
 /**
  * Tries to create a bool from an integer type.

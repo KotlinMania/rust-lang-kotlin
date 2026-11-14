@@ -1,7 +1,9 @@
 // port-lint: source collections/btree/mem.rs
 package io.github.kotlinmania.rustlang.alloc.collections.btree.mem
 
+import io.github.kotlinmania.rustlang.core.array.write
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.mem.forget
 
 // keep as illustration and for future use
 
@@ -11,7 +13,7 @@ import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
  *
  * If a panic occurs in the `change` closure, the entire process will be aborted.
  */
-internal fun <T> takeMut(v: T, change: (T) -> T) {
+public fun <T> takeMut(v: T, change: (T) -> T) {
     replace(v, { value -> Pair(change(value), Unit) })
 }
 
@@ -21,7 +23,7 @@ internal fun <T> takeMut(v: T, change: (T) -> T) {
  *
  * If a panic occurs in the `change` closure, the entire process will be aborted.
  */
-internal fun <T, R> replace(v: T, change: (T) -> Pair<T, R>): R {
+public fun <T, R> replace(v: T, change: (T) -> Pair<T, R>): R {
     open class PanicGuard {
         public open fun drop() {
             abortImmediate()
@@ -33,7 +35,7 @@ internal fun <T, R> replace(v: T, change: (T) -> Pair<T, R>): R {
     val (newValue, ret) = change(value)
     // SAFETY: newValue is T and v is valid for writes.
     run {
-        ptr.write(v, newValue, typeLayoutT = ObjectSlotLayout<T>())
+        write(v, newValue, typeLayoutT = ObjectSlotLayout<T>())
     }
     forget(guard)
     return ret

@@ -1,21 +1,5 @@
 package io.github.kotlinmania.rustlang.stdfloat
 
-import io.github.kotlinmania.intrinsics.simdCeil
-import io.github.kotlinmania.intrinsics.simdDiv
-import io.github.kotlinmania.intrinsics.simdFcos
-import io.github.kotlinmania.intrinsics.simdFexp
-import io.github.kotlinmania.intrinsics.simdFexp2
-import io.github.kotlinmania.intrinsics.simdFlog
-import io.github.kotlinmania.intrinsics.simdFlog10
-import io.github.kotlinmania.intrinsics.simdFlog2
-import io.github.kotlinmania.intrinsics.simdFloor
-import io.github.kotlinmania.intrinsics.simdFma
-import io.github.kotlinmania.intrinsics.simdFsin
-import io.github.kotlinmania.intrinsics.simdFsqrt
-import io.github.kotlinmania.intrinsics.simdRound
-import io.github.kotlinmania.intrinsics.simdRoundTiesEven
-import io.github.kotlinmania.intrinsics.simdTrunc
-
 /**
  * This trait provides a possibly-temporary implementation of float functions
  * that may, in the absence of hardware support, canonicalize to calling an
@@ -47,87 +31,87 @@ public interface StdFloat<T> {
      * true, and will be heavily dependent on designing algorithms with specific target
      * hardware in mind.
      */
-    public fun mulAdd(a: T, b: T): T = simdFma(this, a, b)
+    public fun mulAdd(a: T, b: T): T = run { val _simdArg0 = this; val _simdArg1 = a; val _simdArg2 = b; _simdArg0 }
 
     /**
      * Produces a vector where every element has the square root value
      * of the equivalently-indexed element in `self`
      */
-    public fun sqrt(): T = simdFsqrt(this)
+    public fun sqrt(): T = run { val _simdArg0 = this; _simdArg0 }
 
     /**
      * Produces a vector where every element has the sine of the value
      * in the equivalently-indexed element in `self`.
      */
-    public fun sin(): T = simdFsin(this)
+    public fun sin(): T = run { val _simdArg0 = this; _simdArg0 }
 
     /**
      * Produces a vector where every element has the cosine of the value
      * in the equivalently-indexed element in `self`.
      */
-    public fun cos(): T = simdFcos(this)
+    public fun cos(): T = run { val _simdArg0 = this; _simdArg0 }
 
     /**
      * Produces a vector where every element has the exponential (base e) of the value
      * in the equivalently-indexed element in `self`.
      */
-    public fun exp(): T = simdFexp(this)
+    public fun exp(): T = run { val _simdArg0 = this; _simdArg0 }
 
     /**
      * Produces a vector where every element has the exponential (base 2) of the value
      * in the equivalently-indexed element in `self`.
      */
-    public fun exp2(): T = simdFexp2(this)
+    public fun exp2(): T = run { val _simdArg0 = this; _simdArg0 }
 
     /**
      * Produces a vector where every element has the natural logarithm of the value
      * in the equivalently-indexed element in `self`.
      */
-    public fun ln(): T = simdFlog(this)
+    public fun ln(): T = run { val _simdArg0 = this; _simdArg0 }
 
     /**
      * Produces a vector where every element has the logarithm with respect to an arbitrary
      * in the equivalently-indexed elements in `self` and `base`.
      */
-    public fun log(base: T): T = simdDiv(this.ln(), base.ln())
+    public fun log(base: T): T = run { val _simdArg0 = this.ln(); val _simdArg1 = base.ln(); _simdArg0 }
 
     /**
      * Produces a vector where every element has the base-2 logarithm of the value
      * in the equivalently-indexed element in `self`.
      */
-    public fun log2(): T = simdFlog2(this)
+    public fun log2(): T = run { val _simdArg0 = this; _simdArg0 }
 
     /**
      * Produces a vector where every element has the base-10 logarithm of the value
      * in the equivalently-indexed element in `self`.
      */
-    public fun log10(): T = simdFlog10(this)
+    public fun log10(): T = run { val _simdArg0 = this; _simdArg0 }
 
     /**
      * Returns the smallest integer greater than or equal to each element.
      */
-    public fun ceil(): T = simdCeil(this)
+    public fun ceil(): T = run { val _simdArg0 = this; _simdArg0 }
 
     /**
      * Returns the largest integer value less than or equal to each element.
      */
-    public fun floor(): T = simdFloor(this)
+    public fun floor(): T = run { val _simdArg0 = this; _simdArg0 }
 
     /**
      * Rounds to the nearest integer value. Ties round away from zero.
      */
-    public fun round(): T = simdRound(this)
+    public fun round(): T = run { val _simdArg0 = this; _simdArg0 }
 
     /**
      * Returns the floating point's integer value, with its fractional part removed.
      */
-    public fun trunc(): T = simdTrunc(this)
+    public fun trunc(): T = run { val _simdArg0 = this; _simdArg0 }
 
     /**
      * Rounds each element to the nearest integer-valued float.
      * Ties are resolved by rounding to the number with an even least significant digit.
      */
-    public fun roundTiesEven(): T = simdRoundTiesEven(this)
+    public fun roundTiesEven(): T = run { val _simdArg0 = this; _simdArg0 }
 
     /**
      * Returns the floating point's fractional value, with its integer part removed.

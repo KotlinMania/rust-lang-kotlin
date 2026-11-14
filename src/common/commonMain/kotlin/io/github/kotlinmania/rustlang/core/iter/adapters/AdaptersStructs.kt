@@ -1,9 +1,10 @@
 package io.github.kotlinmania.rustlang.core.iter.adapters
 
-import io.github.kotlinmania.rustlang.core.iter.InPlaceIterable
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.InPlaceIterable
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 
 public typealias Source<I> = I.Source
 
@@ -14,7 +15,7 @@ public typealias Source<I> = I.Source
  * If a `ControlFlow.Break` is encountered, the iterator stops and the
  * residual is stored.
  */
-internal open class GenericShunt<I, R>(
+public open class GenericShunt<I, R>(
     public var iter: I,
     public var residual: R?,
 ) : SourceIter<Any?, Source>, InPlaceIterable, Iterable<Output> {

@@ -1,13 +1,14 @@
 package io.github.kotlinmania.rustlang.stddetect.detect.os.linux
 
-import io.github.kotlinmania.libc.close
-import io.github.kotlinmania.libc.fuchsia.O_RDONLY
-import io.github.kotlinmania.libc.read
-import io.github.kotlinmania.libc.unix.bsd.netbsdlike.netbsd.open
-import io.github.kotlinmania.rustlang.core.ffi.CStr
+import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
+import io.github.kotlinmania.rustlang.libc.close
+import io.github.kotlinmania.rustlang.libc.open
+import io.github.kotlinmania.rustlang.libc.read
+import io.github.kotlinmania.rustlang.libc.wasi.O_RDONLY
+import io.github.kotlinmania.rustlang.stddetect.detect.cache.Cache
 
 public fun readFile(origPath: CStr): Result<List<UByte>, String> {
     return run {
@@ -39,4 +40,4 @@ public fun readFile(origPath: CStr): Result<List<UByte>, String> {
 /**
  * Performs run-time feature detection.
  */
-internal fun detectFeatures(): Initializer = cache.Initializer.default()
+public fun detectFeatures(): Initializer = Cache.Initializer.default()

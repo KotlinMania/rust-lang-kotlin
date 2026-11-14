@@ -12,7 +12,7 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
  * This is enough for almost all of the buffers we're likely to work with in
  * the Windows APIs we use.
  */
-internal open class Align8<T>(
+public open class Align8<T>(
     public val fieldStorage: MutPtr,
     public val fieldLayout: TypeLayout<T>,
 ) {

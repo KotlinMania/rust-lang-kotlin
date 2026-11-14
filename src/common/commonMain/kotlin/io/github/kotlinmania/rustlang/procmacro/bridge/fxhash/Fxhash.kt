@@ -15,7 +15,7 @@ import io.github.kotlinmania.rustlang.core.num.rustRotateLeft
 /**
  * Type alias for a hashmap using the `fx` hash algorithm.
  */
-internal typealias FxHashMap<K, V> = MutableMap<K, V>
+public typealias FxHashMap<K, V> = MutableMap<K, V>
 
 /**
  * A speedy hash algorithm for use within rustc. The hashmap in alloc by
@@ -30,7 +30,7 @@ internal typealias FxHashMap<K, V> = MutableMap<K, V>
  * similar or slightly worse than FNV, but the speed of the hash function
  * itself is much higher because it works on up to 8 bytes at a time.
  */
-internal open class FxHasher(
+public open class FxHasher(
     public var hash: Int,
 ) {
     public open fun addToHash(i: Int) {

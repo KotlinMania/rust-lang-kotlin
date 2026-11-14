@@ -9,7 +9,7 @@ import io.github.kotlinmania.rustlang.corearch.simd.F32x16
 import io.github.kotlinmania.rustlang.corearch.simd.I32x16
 import io.github.kotlinmania.rustlang.corearch.simd.U16x32
 
-// The host must provide the C companion wrapper exports in import module corearch.
+// The host must provide the C companion wrapper exports in import module kmcore.
 public actual fun ldtilecfg(memAddr: ConstPtr) {
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX8664AmxLdtilecfg")
 }
@@ -32,7 +32,7 @@ public actual fun tileloaddt164(dst: Byte, base: ConstPtr, stride: ULong) {
 public actual fun tileloaddt164Internal(rows: UShort, colsb: UShort, base: ConstPtr, stride: ULong): Tile =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX8664AmxTileloaddt164Internal")
 
-@kotlin.wasm.WasmImport("corearch", "corearchX8664AmxTilerelease")
+@kotlin.wasm.WasmImport("kmcore", "corearchX8664AmxTilerelease")
 private external fun wasiCorearchX8664AmxTilerelease(): Unit
 
 public actual fun tilerelease(): Unit =
@@ -46,7 +46,7 @@ public actual fun tilestored64Internal(rows: UShort, colsb: UShort, base: MutPtr
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX8664AmxTilestored64Internal")
 }
 
-@kotlin.wasm.WasmImport("corearch", "corearchX8664AmxTilezero")
+@kotlin.wasm.WasmImport("kmcore", "corearchX8664AmxTilezero")
 private external fun wasiCorearchX8664AmxTilezero(dst: Int): Unit
 
 public actual fun tilezero(dst: Byte): Unit =
@@ -55,7 +55,7 @@ public actual fun tilezero(dst: Byte): Unit =
 public actual fun tilezeroInternal(rows: UShort, colsb: UShort): Tile =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX8664AmxTilezeroInternal")
 
-@kotlin.wasm.WasmImport("corearch", "corearchX8664AmxTdpbf16ps")
+@kotlin.wasm.WasmImport("kmcore", "corearchX8664AmxTdpbf16ps")
 private external fun wasiCorearchX8664AmxTdpbf16ps(dst: Int, a: Int, b: Int): Unit
 
 public actual fun tdpbf16ps(dst: Byte, a: Byte, b: Byte): Unit =
@@ -64,7 +64,7 @@ public actual fun tdpbf16ps(dst: Byte, a: Byte, b: Byte): Unit =
 public actual fun tdpbf16psInternal(m: UShort, n: UShort, k: UShort, dst: Tile, a: Tile, b: Tile): Tile =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX8664AmxTdpbf16psInternal")
 
-@kotlin.wasm.WasmImport("corearch", "corearchX8664AmxTdpbuud")
+@kotlin.wasm.WasmImport("kmcore", "corearchX8664AmxTdpbuud")
 private external fun wasiCorearchX8664AmxTdpbuud(dst: Int, a: Int, b: Int): Unit
 
 public actual fun tdpbuud(dst: Byte, a: Byte, b: Byte): Unit =
@@ -73,7 +73,7 @@ public actual fun tdpbuud(dst: Byte, a: Byte, b: Byte): Unit =
 public actual fun tdpbuudInternal(m: UShort, n: UShort, k: UShort, dst: Tile, a: Tile, b: Tile): Tile =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX8664AmxTdpbuudInternal")
 
-@kotlin.wasm.WasmImport("corearch", "corearchX8664AmxTdpbusd")
+@kotlin.wasm.WasmImport("kmcore", "corearchX8664AmxTdpbusd")
 private external fun wasiCorearchX8664AmxTdpbusd(dst: Int, a: Int, b: Int): Unit
 
 public actual fun tdpbusd(dst: Byte, a: Byte, b: Byte): Unit =
@@ -82,7 +82,7 @@ public actual fun tdpbusd(dst: Byte, a: Byte, b: Byte): Unit =
 public actual fun tdpbusdInternal(m: UShort, n: UShort, k: UShort, dst: Tile, a: Tile, b: Tile): Tile =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX8664AmxTdpbusdInternal")
 
-@kotlin.wasm.WasmImport("corearch", "corearchX8664AmxTdpbsud")
+@kotlin.wasm.WasmImport("kmcore", "corearchX8664AmxTdpbsud")
 private external fun wasiCorearchX8664AmxTdpbsud(dst: Int, a: Int, b: Int): Unit
 
 public actual fun tdpbsud(dst: Byte, a: Byte, b: Byte): Unit =
@@ -91,7 +91,7 @@ public actual fun tdpbsud(dst: Byte, a: Byte, b: Byte): Unit =
 public actual fun tdpbsudInternal(m: UShort, n: UShort, k: UShort, dst: Tile, a: Tile, b: Tile): Tile =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX8664AmxTdpbsudInternal")
 
-@kotlin.wasm.WasmImport("corearch", "corearchX8664AmxTdpbssd")
+@kotlin.wasm.WasmImport("kmcore", "corearchX8664AmxTdpbssd")
 private external fun wasiCorearchX8664AmxTdpbssd(dst: Int, a: Int, b: Int): Unit
 
 public actual fun tdpbssd(dst: Byte, a: Byte, b: Byte): Unit =
@@ -100,7 +100,7 @@ public actual fun tdpbssd(dst: Byte, a: Byte, b: Byte): Unit =
 public actual fun tdpbssdInternal(m: UShort, n: UShort, k: UShort, dst: Tile, a: Tile, b: Tile): Tile =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX8664AmxTdpbssdInternal")
 
-@kotlin.wasm.WasmImport("corearch", "corearchX8664AmxTdpfp16ps")
+@kotlin.wasm.WasmImport("kmcore", "corearchX8664AmxTdpfp16ps")
 private external fun wasiCorearchX8664AmxTdpfp16ps(dst: Int, a: Int, b: Int): Unit
 
 public actual fun tdpfp16ps(dst: Byte, a: Byte, b: Byte): Unit =
@@ -109,7 +109,7 @@ public actual fun tdpfp16ps(dst: Byte, a: Byte, b: Byte): Unit =
 public actual fun tdpfp16psInternal(m: UShort, n: UShort, k: UShort, dst: Tile, a: Tile, b: Tile): Tile =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX8664AmxTdpfp16psInternal")
 
-@kotlin.wasm.WasmImport("corearch", "corearchX8664AmxTcmmimfp16ps")
+@kotlin.wasm.WasmImport("kmcore", "corearchX8664AmxTcmmimfp16ps")
 private external fun wasiCorearchX8664AmxTcmmimfp16ps(dst: Int, a: Int, b: Int): Unit
 
 public actual fun tcmmimfp16ps(dst: Byte, a: Byte, b: Byte): Unit =
@@ -118,7 +118,7 @@ public actual fun tcmmimfp16ps(dst: Byte, a: Byte, b: Byte): Unit =
 public actual fun tcmmimfp16psInternal(m: UShort, n: UShort, k: UShort, dst: Tile, a: Tile, b: Tile): Tile =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX8664AmxTcmmimfp16psInternal")
 
-@kotlin.wasm.WasmImport("corearch", "corearchX8664AmxTcmmrlfp16ps")
+@kotlin.wasm.WasmImport("kmcore", "corearchX8664AmxTcmmrlfp16ps")
 private external fun wasiCorearchX8664AmxTcmmrlfp16ps(dst: Int, a: Int, b: Int): Unit
 
 public actual fun tcmmrlfp16ps(dst: Byte, a: Byte, b: Byte): Unit =
@@ -127,7 +127,7 @@ public actual fun tcmmrlfp16ps(dst: Byte, a: Byte, b: Byte): Unit =
 public actual fun tcmmrlfp16psInternal(m: UShort, n: UShort, k: UShort, dst: Tile, a: Tile, b: Tile): Tile =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX8664AmxTcmmrlfp16psInternal")
 
-@kotlin.wasm.WasmImport("corearch", "corearchX8664AmxTdpbf8ps")
+@kotlin.wasm.WasmImport("kmcore", "corearchX8664AmxTdpbf8ps")
 private external fun wasiCorearchX8664AmxTdpbf8ps(dst: Int, a: Int, b: Int): Unit
 
 public actual fun tdpbf8ps(dst: Byte, a: Byte, b: Byte): Unit =
@@ -136,7 +136,7 @@ public actual fun tdpbf8ps(dst: Byte, a: Byte, b: Byte): Unit =
 public actual fun tdpbf8psInternal(m: UShort, n: UShort, k: UShort, dst: Tile, a: Tile, b: Tile): Tile =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX8664AmxTdpbf8psInternal")
 
-@kotlin.wasm.WasmImport("corearch", "corearchX8664AmxTdpbhf8ps")
+@kotlin.wasm.WasmImport("kmcore", "corearchX8664AmxTdpbhf8ps")
 private external fun wasiCorearchX8664AmxTdpbhf8ps(dst: Int, a: Int, b: Int): Unit
 
 public actual fun tdpbhf8ps(dst: Byte, a: Byte, b: Byte): Unit =
@@ -145,7 +145,7 @@ public actual fun tdpbhf8ps(dst: Byte, a: Byte, b: Byte): Unit =
 public actual fun tdpbhf8psInternal(m: UShort, n: UShort, k: UShort, dst: Tile, a: Tile, b: Tile): Tile =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX8664AmxTdpbhf8psInternal")
 
-@kotlin.wasm.WasmImport("corearch", "corearchX8664AmxTdphbf8ps")
+@kotlin.wasm.WasmImport("kmcore", "corearchX8664AmxTdphbf8ps")
 private external fun wasiCorearchX8664AmxTdphbf8ps(dst: Int, a: Int, b: Int): Unit
 
 public actual fun tdphbf8ps(dst: Byte, a: Byte, b: Byte): Unit =
@@ -154,7 +154,7 @@ public actual fun tdphbf8ps(dst: Byte, a: Byte, b: Byte): Unit =
 public actual fun tdphbf8psInternal(m: UShort, n: UShort, k: UShort, dst: Tile, a: Tile, b: Tile): Tile =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX8664AmxTdphbf8psInternal")
 
-@kotlin.wasm.WasmImport("corearch", "corearchX8664AmxTdphf8ps")
+@kotlin.wasm.WasmImport("kmcore", "corearchX8664AmxTdphf8ps")
 private external fun wasiCorearchX8664AmxTdphf8ps(dst: Int, a: Int, b: Int): Unit
 
 public actual fun tdphf8ps(dst: Byte, a: Byte, b: Byte): Unit =

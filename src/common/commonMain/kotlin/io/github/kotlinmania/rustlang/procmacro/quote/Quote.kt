@@ -14,7 +14,7 @@ import io.github.kotlinmania.rustlang.procmacro.Span
 import io.github.kotlinmania.rustlang.procmacro.TokenStream
 import io.github.kotlinmania.rustlang.procmacro.TokenTree
 import io.github.kotlinmania.rustlang.procmacro.totokens.ToTokens
-import io.github.kotlinmania.slice.Iter
+import io.github.kotlinmania.rustlang.std.path.Iter
 import io.github.kotlinmania.rustlang.procmacro.quote.HasIterator as HasIter
 import io.github.kotlinmania.rustlang.procmacro.quote.ThereIsNoIteratorInRepetition as DoesNotHaveIter
 
@@ -113,7 +113,7 @@ public fun <T> List<T>.quoteIntoIter(): Pair<ArrayDeque<T>, HasIter> = Pair(this
 
 public fun <T> List<T>.quoteIntoIterFromTArrayn(n: Int): Pair<ArrayDeque<T>, HasIter> = Pair(this.iter(), HasIter)
 
-public fun <T> MutableSet<T>.quoteIntoIter(): Pair<btreeset.Iter<T>, HasIter> = Pair(this.iter(), HasIter)
+public fun <T> MutableSet<T>.quoteIntoIter(): Pair<Iter<T>, HasIter> = Pair(this.iter(), HasIter)
 
 public fun <T : RepAsIteratorExt<Any?>> RepInterp<T>.quoteIntoIter(): Pair<Iter, HasIter> = this.value.quoteIntoIter()
 

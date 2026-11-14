@@ -2,12 +2,13 @@
 package io.github.kotlinmania.rustlang.core.iter.adapters.flatten
 
 import io.github.kotlinmania.rustlang.core.array.iter.IntoIter
-import io.github.kotlinmania.rustlang.core.iter.TrustedLen
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
 import io.github.kotlinmania.rustlang.core.iter.adapters.fuse.Fuse
 import io.github.kotlinmania.rustlang.core.iter.adapters.map.Map
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
 
 public class DebugStruct(
@@ -57,7 +58,7 @@ public open class FlatMap<I, U, F> internal constructor(
         }
     }
 
-    internal open fun intoParts(): Triple<IntoIter?, I?, IntoIter?> = Triple(this.inner.frontiter, this.inner.iter.intoInner().map({ it.intoInner() }), this.inner.backiter)
+    public open fun intoParts(): Triple<IntoIter?, I?, IntoIter?> = Triple(this.inner.frontiter, this.inner.iter.intoInner().map({ it.intoInner() }), this.inner.backiter)
 
     public open fun clone(): FlatMap<I, U, F> = FlatMap(inner = this.inner.clone())
 
@@ -97,7 +98,7 @@ public open class FlatMap<I, U, F> internal constructor(
             innerCtorArg = inner,
         )
 
-        internal fun <Item, IntoIter, I, U> new(iter: I, f: (I.Item) -> U): FlatMap<I, U, (I.Item) -> U> = FlatMap(inner = FlattenCompat.new(iter.map(f)))
+        public fun <Item, IntoIter, I, U> new(iter: I, f: (I.Item) -> U): FlatMap<I, U, (I.Item) -> U> = FlatMap(inner = FlattenCompat.new(iter.map(f)))
     }
 }
 
@@ -163,7 +164,7 @@ public open class Flatten<I> internal constructor(
             innerCtorArg = inner,
         )
 
-        internal fun <I> new(iter: I): Flatten<I> = Flatten(inner = FlattenCompat.new(iter))
+        public fun <I> new(iter: I): Flatten<I> = Flatten(inner = FlattenCompat.new(iter))
 
         /**
          * Creates a `Flatten` iterator from the default value of `I`.

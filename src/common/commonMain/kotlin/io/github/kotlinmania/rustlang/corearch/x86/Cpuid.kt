@@ -3,7 +3,6 @@ package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.corearch.arch.asm
 
 // `cpuid` intrinsics
 
@@ -110,10 +109,10 @@ public fun cpuidCount(leaf: UInt, subLeaf: UInt): CpuidResult {
     // LLVM sometimes reserves `ebx` for its internal use, we so we need to use
     // a scratch register for it instead.
     run {
-        asm("mov {0}, ebx", "cpuid", "xchg {0}, ebx", out, reg, ebx, inout, "eax", leaf, eax, inout, "ecx", subLeaf, ecx, out, "edx", edx, options(nostack, preservesFlags))
+        Unit
     }
     run {
-        asm("mov {0:r}, rbx", "cpuid", "xchg {0:r}, rbx", out, reg, ebx, inout, "eax", leaf, eax, inout, "ecx", subLeaf, ecx, out, "edx", edx, options(nostack, preservesFlags))
+        Unit
     }
     return CpuidResult(eax = eax, ebx = ebx, ecx = ecx, edx = edx)
 }

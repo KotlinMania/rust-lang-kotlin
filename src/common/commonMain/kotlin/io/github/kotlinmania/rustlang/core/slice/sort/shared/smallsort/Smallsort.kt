@@ -1,15 +1,20 @@
 // port-lint: source slice/sort/shared/smallsort.rs
 package io.github.kotlinmania.rustlang.core.slice.sort.shared.smallsort
 
+import io.github.kotlinmania.rustlang.core.hint.selectUnpredictable
 import io.github.kotlinmania.rustlang.core.intrinsics.abortImmediate
 import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.copy
+import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
+import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.rawMutSliceList
@@ -31,7 +36,7 @@ import io.github.kotlinmania.rustlang.core.slice.sort.shared.FreezeMarker
  * Using a trait allows us to specialize on `Freeze` which in turn allows us to make safe
  * abstractions.
  */
-internal interface StableSmallSortTypeImpl<T> {
+public interface StableSmallSortTypeImpl<T> {
     /**
      * For which input length <= return value of this function, is it valid to call `smallSort`.
      */
@@ -58,7 +63,7 @@ public fun <T> stableSmallSortTypeImplSmallSortT(v: MutableList<T>, scratch: Mut
  * Using a trait allows us to specialize on `Freeze` which in turn allows us to make safe
  * abstractions.
  */
-internal interface UnstableSmallSortTypeImpl<T> {
+public interface UnstableSmallSortTypeImpl<T> {
     /**
      * For which input length <= return value of this function, is it valid to call `smallSort`.
      */
@@ -86,7 +91,7 @@ public fun <T : FreezeMarker> unstableSmallSortTypeImplSmallSortT(v: MutableList
  * Note(constTraitImpl) use original ipnsort approach with chooseUnstableSmallSort,
  * as found here <https://github.com/Voultapher/sort-research-rs/blob/438fad5d0495f65d4b72aa87f0b62fc96611dff3/ipnsort/src/smallsort.rs#L83C10-L83C36>.
  */
-internal interface UnstableSmallSortFreezeTypeImpl<T> : FreezeMarker {
+public interface UnstableSmallSortFreezeTypeImpl<T> : FreezeMarker {
     public fun smallSortThreshold(): Int
 
     public fun smallSort(v: MutableList<T>, isLess: (T, T) -> Boolean)
@@ -133,7 +138,7 @@ public val SMALL_SORT_GENERAL_THRESHOLD: Int = 32
  *
  * SAFETY: If you change this value, you have to adjust [smallSortGeneral] !
  */
-internal val SMALL_SORT_GENERAL_SCRATCH_LEN: Int = SMALL_SORT_GENERAL_THRESHOLD + 16
+public val SMALL_SORT_GENERAL_SCRATCH_LEN: Int = SMALL_SORT_GENERAL_THRESHOLD + 16
 
 /**
  * SAFETY: If you change this value, you have to adjust [smallSortNetwork] !
@@ -763,7 +768,7 @@ public fun panicOnOrdViolation(): Nothing {
     error("user-provided comparison function does not correctly implement a total order")
 }
 
-internal fun <T> hasEfficientInPlaceSwap(typeLayoutT: TypeLayout<T>): Boolean {
+public fun <T> hasEfficientInPlaceSwap(typeLayoutT: TypeLayout<T>): Boolean {
     // Heuristic that holds true on all tested 64-bit capable architectures.
     return sizeOf<T>(typeLayoutT = typeLayoutT) <= 8
     // sizeOf::<u64>()

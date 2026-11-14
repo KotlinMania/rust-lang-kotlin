@@ -5,6 +5,8 @@ import io.github.kotlinmania.rustlang.core.RustAny
 import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
+import io.github.kotlinmania.rustlang.std.panic.AssertUnwindSafe
+import io.github.kotlinmania.rustlang.std.panic.catchUnwind
 import io.github.kotlinmania.rustlang.std.process.Termination
 import io.github.kotlinmania.rustlang.std.process.abort
 import io.github.kotlinmania.rustlang.std.sync.once.Once
@@ -12,8 +14,9 @@ import io.github.kotlinmania.rustlang.std.sys.backtrace.rustBeginShortBacktrace
 import io.github.kotlinmania.rustlang.std.sys.exit.uniqueThreadExit
 import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
 import io.github.kotlinmania.rustlang.std.sys.threadlocal.guard.key.keybased.CLEANUP
-import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.unix.set
+import io.github.kotlinmania.rustlang.std.thread.current.currentId
 import io.github.kotlinmania.rustlang.std.thread.current.dropCurrent
+import io.github.kotlinmania.rustlang.std.thread.mainthread.set
 
 // Runtime services
 //
@@ -71,7 +74,7 @@ public inline fun <reified T> handleRtPanic(e: RustAny): T {
 public fun init(argc: Int, argv: ConstPtr, sigpipe: UByte) {
     // Remember the main thread ID to give it the correct name.
     // SAFETY: this is the only time and place where we call this function.
-    set(thread.currentId())
+    set(currentId())
     io.github.kotlinmania.rustlang.std.sys.args.unix.init(argc, argv, sigpipe)
 }
 
@@ -81,7 +84,7 @@ public fun init(argc: Int, argv: ConstPtr, sigpipe: UByte) {
  * not fulfilled. Also note that this function is not guaranteed to be run, but
  * skipping it will cause leaks and therefore is to be avoided.
  */
-internal fun threadCleanup() {
+public fun threadCleanup() {
     // This function is run in situations where unwinding leads to an abort
     // (think `extern "C"` functions). Abort here instead so that we can
     // print a nice message.
@@ -93,7 +96,7 @@ internal fun threadCleanup() {
 // One-time runtime cleanup.
 // Runs after `main` or at program exit.
 // NOTE: this is not guaranteed to run, for example when the program aborts.
-internal fun cleanup() {
+public fun cleanup() {
     val CLEANUP: Once  = Once.new()
     CLEANUP.callOnce({ run {
         // Flush stdout and disable buffering.
@@ -126,7 +129,7 @@ public fun langStartInternal(main: () -> Int, argc: Int, argv: ConstPtr, sigpipe
             catchUnwind(main).unwrapOrElse({ payload ->
                 // Carefully dispose of the panic payload.
                 val payload1 = AssertUnwindSafe(payload)
-                catchUnwind({ drop(payload1.first) }).unwrapOrElse({ e ->
+                catchUnwind({ (payload1.first).let { } }).unwrapOrElse({ e ->
                     forget(e)
                     run {
                         when (val matchVal = panicOutput()) {

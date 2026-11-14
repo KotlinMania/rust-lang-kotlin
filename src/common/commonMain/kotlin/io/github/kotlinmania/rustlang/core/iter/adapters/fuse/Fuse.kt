@@ -1,13 +1,14 @@
 // port-lint: source iter/adapters/fuse.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.fuse
 
-import io.github.kotlinmania.rustlang.core.iter.TrustedFused
-import io.github.kotlinmania.rustlang.core.iter.TrustedLen
-import io.github.kotlinmania.rustlang.core.iter.TrustedRandomAccess
-import io.github.kotlinmania.rustlang.core.iter.TrustedRandomAccessNoCoerce
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
+import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccess
+import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccessNoCoerce
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.tryGetUnchecked
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedFused
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
 
 public typealias Source<I> = I.Source
@@ -36,7 +37,7 @@ public open class Fuse<I>(
 
     public open fun clone(): Fuse<I> = Fuse(iter)
 
-    internal open fun intoInner(): I? = this.iter
+    public open fun intoInner(): I? = this.iter
 
     // Any specialized implementation here is made internal
     // to avoid exposing default fns outside this trait.
@@ -313,7 +314,7 @@ public open class Fuse<I>(
     }
 
     public companion object {
-        internal fun <I> new(iter: I): Fuse<I> = Fuse(iter = iter)
+        public fun <I> new(iter: I): Fuse<I> = Fuse(iter = iter)
 
         /**
          * Creates a `Fuse` iterator from the default value of `I`.

@@ -17,7 +17,7 @@ import io.github.kotlinmania.rustlang.core.ubchecks.checkLanguageUb
 /**
  * Converts a `UInt` to a `char`. See [char.fromU32].
  */
-internal fun fromU32(i: UInt): Char? {
+public fun fromU32(i: UInt): Char? {
     // Note(const-Note): once Result.ok is const fn, use it here
     return run {
         val matchVal = charTryFromU32(i)
@@ -33,7 +33,7 @@ internal fun fromU32(i: UInt): Char? {
 /**
  * Converts a `UInt` to a `char`, ignoring validity. See [char.fromU32Unchecked].
  */
-internal fun fromU32Unchecked(i: UInt): Char {
+public fun fromU32Unchecked(i: UInt): Char {
     // SAFETY: the caller must guarantee that `i` is a valid char value.
     return run {
         assertUnsafePrecondition(checkLanguageUb, "invalid value for `char`", i, i, charTryFromU32, i, isOk)
@@ -339,7 +339,7 @@ public open class CharTryFromError(
 /**
  * Converts a digit in the given radix to a `char`. See [char.fromDigit].
  */
-internal fun fromDigit(num: UInt, radix: UInt): Char? {
+public fun fromDigit(num: UInt, radix: UInt): Char? {
     if (radix > 36u) {
         error("from_digit: radix is too high (maximum 36)")
     }

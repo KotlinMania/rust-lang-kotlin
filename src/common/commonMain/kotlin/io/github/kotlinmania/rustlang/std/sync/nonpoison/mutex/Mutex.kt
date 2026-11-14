@@ -141,7 +141,7 @@ public open class Mutex<T>(
         if (needsDrop<T>()) {
             // If the contained value has a non-trivial destructor, we
             // call that destructor after the lock has been released.
-            drop(this.replace(value))
+            (this.replace(value)).let { }
         } else {
             this.lock() = value
         }
@@ -363,7 +363,7 @@ public open class Mutex<T>(
          * }
          * ```
          */
-        public fun <T> new(t: T): Mutex<T> = Mutex(inner = io.github.kotlinmania.rustlang.std.sys.sync.mutex.futex.Mutex.new(), data = UnsafeCell.new(t))
+        public fun <T> new(t: T): Mutex<T> = Mutex(inner = io.github.kotlinmania.rustlang.std.sys.sync.mutex.new(), data = UnsafeCell.new(t))
 
         /**
          * Creates a new mutex in an unlocked state ready for use.
@@ -590,4 +590,4 @@ public open class MappedMutexGuard<T>(
 /**
  * For use in [`nonpoison.condvar`](condvar).
  */
-internal fun <T> guardLock(guard: MutexGuard<T>): io.github.kotlinmania.rustlang.std.sys.sync.mutex.futex.Mutex = guard.lock.inner
+public fun <T> guardLock(guard: MutexGuard<T>): io.github.kotlinmania.rustlang.std.sys.sync.mutex.futex.Mutex = guard.lock.inner

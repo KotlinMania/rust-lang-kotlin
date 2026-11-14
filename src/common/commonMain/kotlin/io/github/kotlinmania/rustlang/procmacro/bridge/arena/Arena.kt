@@ -3,10 +3,8 @@ package io.github.kotlinmania.rustlang.procmacro.bridge.arena
 
 import io.github.kotlinmania.rustlang.core.cell.Cell
 import io.github.kotlinmania.rustlang.core.cell.RefCell
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.slice.rawMutSliceList
 
 // A minimal arena allocator inspired by `rustcArena.DroplessArena`.
 //
@@ -24,11 +22,20 @@ import io.github.kotlinmania.rustlang.core.slice.rawMutSliceList
  * This arena doesn't have support for allocating anything other than byte
  * slices, as that is all that is necessary.
  */
-internal open class Arena(
-    public var start: Cell<MutPtr>,
-    public var end: Cell<MutPtr>,
-    public var chunks: RefCell<List<List<MaybeUninit<UByte>>>>,
+public open class Arena internal constructor(
+    startCtorArg: Cell<MutPtr>,
+    endCtorArg: Cell<MutPtr>,
+    chunksCtorArg: RefCell<List<List<MaybeUninit<UByte>>>>,
 ) {
+    public var start: Cell<MutPtr> = startCtorArg
+        internal set
+
+    public var end: Cell<MutPtr> = endCtorArg
+        internal set
+
+    public var chunks: RefCell<List<List<MaybeUninit<UByte>>>> = chunksCtorArg
+        internal set
+
     /**
      * Add a new chunk with at least `additional` free bytes.
      */
@@ -80,7 +87,7 @@ internal open class Arena(
             val newEnd1 = oldEnd.withAddr(newEnd)
             this.end.set(newEnd1)
             // SAFETY: `bytes` bytes starting at `newEnd` were just reserved.
-            rawMutSliceList(newEnd1, bytes.toInt(), PrimitiveLayouts.U8)
+            Slice.fromRawPartsMut(newEnd1, bytes)
         } else {
             null
         }
@@ -104,7 +111,7 @@ internal open class Arena(
     }
 
     // arena allocator
-    internal open fun allocStr(string: String): String {
+    public open fun allocStr(string: String): String {
         val alloc = this.allocRaw(string.length)
         val bytes = alloc.writeCopyOfSlice(string.encodeToByteArray().map { it.toUByte() })
         // SAFETY: we convert from `String` to `[UByte]`, clone it into the arena,
@@ -113,6 +120,16 @@ internal open class Arena(
     }
 
     public companion object {
-        internal fun new(): Arena = Arena(start = Cell.new(MutPtr(0L)), end = Cell.new(MutPtr(0L)), chunks = RefCell.new(mutableListOf()))
+        public operator fun invoke(
+            start: Cell<MutPtr>,
+            end: Cell<MutPtr>,
+            chunks: RefCell<List<List<MaybeUninit<UByte>>>>,
+        ): Arena = Arena(
+            startCtorArg = start,
+            endCtorArg = end,
+            chunksCtorArg = chunks,
+        )
+
+        public fun new(): Arena = Arena(start = Cell.new(MutPtr(0L)), end = Cell.new(MutPtr(0L)), chunks = RefCell.new(mutableListOf()))
     }
 }

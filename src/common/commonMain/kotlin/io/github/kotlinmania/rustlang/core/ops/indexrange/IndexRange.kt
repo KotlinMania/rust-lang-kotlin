@@ -2,15 +2,16 @@
 package io.github.kotlinmania.rustlang.core.ops.indexrange
 
 import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
+import io.github.kotlinmania.rustlang.core.intrinsics.ubChecks
 import io.github.kotlinmania.rustlang.core.intrinsics.uncheckedAdd
 import io.github.kotlinmania.rustlang.core.intrinsics.uncheckedSub
-import io.github.kotlinmania.rustlang.core.iter.TrustedLen
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.ubchecks.assertUnsafePrecondition
 
 /**
  * Like a `Range<Int>`, but with a safety invariant that `start <= end`.
@@ -20,7 +21,7 @@ import io.github.kotlinmania.rustlang.core.ubchecks.assertUnsafePrecondition
  * (Normal `Range` code needs to handle degenerate ranges like `10 .. 0`,
  *  which takes extra checks compared to only handling the canonical form.)
  */
-internal open class IndexRange(
+public open class IndexRange(
     public var start: Int,
     public var end: Int,
 ) : TrustedLen<IndexRange>, Iterable<Int> {
@@ -35,11 +36,11 @@ internal open class IndexRange(
 
     public open fun clone(): IndexRange = IndexRange(start, end)
 
-    internal open fun start(): Int = this.start
+    public open fun start(): Int = this.start
 
-    internal open fun end(): Int = this.end
+    public open fun end(): Int = this.end
 
-    internal open fun len(): Int {
+    public open fun len(): Int {
         // SAFETY: By invariant, this cannot wrap
         // Using the intrinsic because a UB check here impedes LLVM optimization. (#131563)
         return uncheckedSub(this.end, this.start)
@@ -80,7 +81,7 @@ internal open class IndexRange(
      *
      * This is designed to help implement `Iterator.advanceBy`.
      */
-    internal open fun takePrefix(n: Int): IndexRange {
+    public open fun takePrefix(n: Int): IndexRange {
         val mid =
             if (n <= this.len()) {
                 // SAFETY: We just checked that this will be between start and end,
@@ -102,7 +103,7 @@ internal open class IndexRange(
      *
      * This is designed to help implement `Iterator.advanceBackBy`.
      */
-    internal open fun takeSuffix(n: Int): IndexRange {
+    public open fun takeSuffix(n: Int): IndexRange {
         val mid =
             if (n <= this.len()) {
                 // SAFETY: We just checked that this will be between start and end,
@@ -216,11 +217,11 @@ internal open class IndexRange(
          * # Safety
          * - `start <= end`
          */
-        internal fun newUnchecked(start: Int, end: Int): IndexRange {
-            assertUnsafePrecondition(checkLibraryUb, "IndexRange::new_unchecked requires `start <= end`", start, start, end, end, start, end)
+        public fun newUnchecked(start: Int, end: Int): IndexRange {
+            ubChecks.assertUnsafePrecondition(checkLibraryUb, "IndexRange::new_unchecked requires `start <= end`", start, start, end, end, start, end)
             return IndexRange(start = start, end = end)
         }
 
-        internal fun zeroTo(end: Int): IndexRange = IndexRange(start = 0, end = end)
+        public fun zeroTo(end: Int): IndexRange = IndexRange(start = 0, end = end)
     }
 }

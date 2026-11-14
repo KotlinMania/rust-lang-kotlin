@@ -10,20 +10,9 @@ import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.time.Duration
 import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.os.windows.io.HandleOrNull
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.STACK_SIZE_PARAM_IS_A_RESERVATION
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.setThreadDescription
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.INFINITE
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.SystemInfo
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.WAIT_FAILED
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.createThread
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.getCurrentThread
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.getCurrentThreadId
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.getSystemInfo
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.switchToThread
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.waitForSingleObject
+import io.github.kotlinmania.rustlang.std.sys.c
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.dur2timeout
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.handle.Handle
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.stackoverflow.reserveStack
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.time.WaitableTimer
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.toU16s
 import io.github.kotlinmania.rustlang.std.thread.lifecycle.ThreadInit
@@ -38,9 +27,9 @@ public open class Thread internal constructor(
         internal set
 
     public open fun join() {
-        val rc = waitForSingleObject(this.handle.asRawHandle(), INFINITE)
-        if (rc == WAIT_FAILED) {
-            error("failed to join on thread: ${Error.lastOsError()}")
+        val rc = c.WaitForSingleObject(this.handle.asRawHandle(), c.INFINITE)
+        if (rc == c.WAIT_FAILED) {
+            error("failed to join on thread: ${io.github.kotlinmania.rustlang.std.io.Error.lastOsError()}")
         }
     }
 
@@ -63,7 +52,7 @@ public open class Thread internal constructor(
                 val init1 = Box.fromRaw(MutPtr(data.rawAddress, data.rawMeta))
                 val rustStart = init1.init()
                 // Reserve some stack space for if we otherwise run out of stack.
-                reserveStack()
+                stackoverflow.reserveStack()
                 rustStart()
                 return 0u
             }
@@ -74,7 +63,7 @@ public open class Thread internal constructor(
             // `data` is simply passed through to the new thread without being touched.
             val ret1 =
                 run {
-                    val ret = createThread(MutPtr(0L), stack, ::threadStart, mutPtrFromRustCast(data), STACK_SIZE_PARAM_IS_A_RESERVATION, MutPtr(0L))
+                    val ret = c.CreateThread(MutPtr(0L), stack, ::threadStart, mutPtrFromRustCast(data), c.STACK_SIZE_PARAM_IS_A_RESERVATION, MutPtr(0L))
                     HandleOrNull.fromRawHandle(ret)
                 }
             return when (val matchVal = ret1.tryInto()) {
@@ -85,8 +74,8 @@ public open class Thread internal constructor(
                 else -> {
                     // The thread failed to start and as a result data was not consumed. Therefore, it is
                     // safe to reconstruct the box so that it gets deallocated.
-                    drop(Box.fromRaw(data))
-                    Result.Err(Error.lastOsError())
+                    (Box.fromRaw(data)).let { }
+                    Result.Err(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
                 }
             }
         }
@@ -96,12 +85,12 @@ public open class Thread internal constructor(
 public fun availableParallelism(): Result<NonZero<Int>, Error> {
     val res =
         run {
-            val sysinfo: SystemInfo?  = null
-            getSystemInfo(sysinfo)
-            (sysinfo!!.dwNumberOfProcessors).toInt()
+            val sysinfo: c.SystemInfo  = c.SystemInfo()
+            c.GetSystemInfo(sysinfo)
+            sysinfo.dwNumberOfProcessors.toInt()
         }
     return when (res) {
-        0 -> Result.Err(Error.UNKNOWN_THREAD_COUNT)
+        0 -> Result.Err(io.github.kotlinmania.rustlang.std.io.Error.UNKNOWN_THREAD_COUNT)
         else -> {
             val cpus = res
             Result.Ok(NonZero.newUnchecked(cpus))
@@ -111,7 +100,7 @@ public fun availableParallelism(): Result<NonZero<Int>, Error> {
 
 public fun currentOsId(): ULong? {
     // SAFETY: FFI call with no preconditions.
-    val id: UInt = getCurrentThreadId()
+    val id: UInt = c.GetCurrentThreadId()
     // A return value of 0 indicates failed lookup.
     return if (id == 0u) {
         null
@@ -142,7 +131,7 @@ public fun setName(name: CStr) {
  * `name` must end with a zero value
  */
 public fun setNameWide(name: List<UShort>) {
-    setThreadDescription(getCurrentThread(), name.asPtr())
+    c.SetThreadDescription(c.GetCurrentThread(), name.asPtr())
 }
 
 public fun sleep(dur: Duration) {
@@ -154,12 +143,12 @@ public fun sleep(dur: Duration) {
     // Directly forward to `Sleep` for its zero duration behavior when indeed
     // zero in order to skip the `Instant.now` calls, useless in this case.
     if (dur.isZero()) {
-        sleep(0)
+        c.Sleep(0)
         // Attempt to use high-precision sleep (Windows 10, version 1803+).
         // On error, fallback to the standard `Sleep` function.
     } else if (highPrecisionSleep(dur).isErr()) {
         val start = Instant.now()
-        sleep(dur2timeout(dur))
+        c.Sleep(dur2timeout(dur))
         // See #149935: `Sleep` under Windows 7 and probably 8 as well seems a
         // bit buggy for us as it can last less than the requested time while
         // our API is meant to guarantee that. This is fixed by measuring the
@@ -170,7 +159,7 @@ public fun sleep(dur: Duration) {
         // that counts in "tick" units of ~15ms by default: a 1ms timeout
         // therefore passes the next tick boundary.
         if (start.elapsed() < dur) {
-            sleep(1)
+            c.Sleep(1)
         }
     }
 }
@@ -180,6 +169,6 @@ public fun yieldNow() {
     // but this also means that the yield was useless so this isn't really a
     // case that needs to be worried about.
     run {
-        switchToThread()
+        c.SwitchToThread()
     }
 }

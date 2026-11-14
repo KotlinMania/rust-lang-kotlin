@@ -9,6 +9,7 @@ import io.github.kotlinmania.rustlang.std.fs.FileType
 import io.github.kotlinmania.rustlang.std.fs.Metadata
 import io.github.kotlinmania.rustlang.std.fs.OpenOptions
 import io.github.kotlinmania.rustlang.std.fs.Permissions
+import io.github.kotlinmania.rustlang.std.io.defaultReadBuf
 import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.sys.FromInner
@@ -120,7 +121,7 @@ public interface FileExt {
             }
         }
         return if (!buf1.isEmpty()) {
-            Result.Err(Error.READ_EXACT_EOF)
+            Result.Err(io.github.kotlinmania.rustlang.std.io.Error.READ_EXACT_EOF)
         } else {
             Result.Ok(Unit)
         }
@@ -210,7 +211,7 @@ public interface FileExt {
             val n = buf.written() - prevWritten
             offset1 += n.toULong()
             if (n == 0) {
-                return Result.Err(Error.READ_EXACT_EOF)
+                return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.READ_EXACT_EOF)
             }
         }
         return Result.Ok(Unit)
@@ -294,7 +295,7 @@ public interface FileExt {
                 val matchVal = this.seekWrite(buf1, offset1)
                 when {
                     matchVal is Result.Ok<*> && matchVal.value == 0 -> {
-                        return Result.Err(Error.WRITE_ALL_EOF)
+                        return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.WRITE_ALL_EOF)
                     }
                     matchVal is Result.Ok<*> -> {
                         val n = (matchVal as Result.Ok<*>).value

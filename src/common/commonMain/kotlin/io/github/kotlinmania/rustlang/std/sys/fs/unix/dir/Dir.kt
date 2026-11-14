@@ -1,21 +1,23 @@
 // port-lint: source sys/fs/unix/dir.rs
 package io.github.kotlinmania.rustlang.std.sys.fs.unix.dir
 
-import io.github.kotlinmania.libc.CInt
-import io.github.kotlinmania.libc.fuchsia.AT_REMOVEDIR
-import io.github.kotlinmania.libc.fuchsia.AT_SYMLINK_NOFOLLOW
-import io.github.kotlinmania.libc.fuchsia.O_ACCMODE
-import io.github.kotlinmania.libc.fuchsia.O_CLOEXEC
-import io.github.kotlinmania.libc.fuchsia.O_DIRECTORY
-import io.github.kotlinmania.libc.fuchsia.O_PATH
-import io.github.kotlinmania.libc.mkdirat
-import io.github.kotlinmania.libc.renameat
-import io.github.kotlinmania.libc.unix.hurd.AT_STATX_SYNC_AS_STAT
-import io.github.kotlinmania.libc.unix.hurd.STATX_BASIC_STATS
-import io.github.kotlinmania.libc.unix.hurd.STATX_BTIME
-import io.github.kotlinmania.libc.unlinkat
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
+import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.libc.CInt
+import io.github.kotlinmania.rustlang.libc.mkdirat
+import io.github.kotlinmania.rustlang.libc.renameat
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.AT_STATX_SYNC_AS_STAT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.STATX_BASIC_STATS
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.STATX_BTIME
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.O_PATH
+import io.github.kotlinmania.rustlang.libc.unlinkat
+import io.github.kotlinmania.rustlang.libc.wasi.AT_REMOVEDIR
+import io.github.kotlinmania.rustlang.libc.wasi.AT_SYMLINK_NOFOLLOW
+import io.github.kotlinmania.rustlang.libc.wasi.O_ACCMODE
+import io.github.kotlinmania.rustlang.libc.wasi.O_CLOEXEC
+import io.github.kotlinmania.rustlang.libc.wasi.O_DIRECTORY
 import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.os.fd.BorrowedFd
 import io.github.kotlinmania.rustlang.std.os.fd.FromRawFd
@@ -34,13 +36,13 @@ import io.github.kotlinmania.rustlang.std.sys.fs.unsupported.FileAttr
 import io.github.kotlinmania.rustlang.std.sys.helpers.smallcstring.runPathWithCstr
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvtR
-import io.github.kotlinmania.libc.fstatat as fstatat64
-import io.github.kotlinmania.libc.openat as openat64
+import io.github.kotlinmania.rustlang.libc.fstatat as fstatat64
+import io.github.kotlinmania.rustlang.libc.openat as openat64
 
 public val TRAVERSE_DIRECTORY: Int = O_PATH
 
 public open class Dir(
-    internal var value: OwnedFd,
+    public var value: OwnedFd,
 ) {
     public var field0: OwnedFd
         get() = value
@@ -98,7 +100,7 @@ public open class Dir(
 
     public open fun createDirC(path: CStr): Result<Unit, Error> = cvt(mkdirat(this.value.asRawFd(), path.asPtr(), 511)).map({ Unit })
 
-    internal open fun metadataC(path: CStr, symlinkNofollow: Boolean): Result<FileAttr, Error> {
+    public open fun metadataC(path: CStr, symlinkNofollow: Boolean): Result<FileAttr, Error> {
         val fd = this.value.asRawFd()
         val flag =
             if (symlinkNofollow) {
@@ -113,7 +115,7 @@ public open class Dir(
                 return ret
             }
         })
-        val stat: Stat64?  = null
+        val stat: Stat64  = MaybeUninit.zeroed(ObjectSlotLayout<Stat64>()).assumeInit()
         when (val tryResult = cvt(fstatat64(fd, path.asPtr(), stat, flag))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         return Result.Ok(FileAttr.fromStat64(stat))
     }

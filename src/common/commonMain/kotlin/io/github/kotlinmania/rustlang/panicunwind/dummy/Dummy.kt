@@ -12,6 +12,6 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 // This is defined in std.rt
 public expect fun rustAbort(): Nothing
 
-internal fun cleanup(ptr: MutPtr): RustAny = rustAbort()
+public fun cleanup(ptr: MutPtr): RustAny = rustAbort()
 
-internal fun panic(data: PanicPayload): UInt = rustAbort()
+public fun panic(data: PanicPayload): UInt = rustAbort()

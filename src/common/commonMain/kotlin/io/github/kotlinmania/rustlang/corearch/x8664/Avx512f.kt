@@ -3,10 +3,8 @@ package io.github.kotlinmania.rustlang.corearch.x8664
 
 import io.github.kotlinmania.rustlang.corearch.loongarch64.lsx.M128
 import io.github.kotlinmania.rustlang.corearch.loongarch64.lsx.M128d
-import io.github.kotlinmania.rustlang.corearch.mem.transmute
 import io.github.kotlinmania.rustlang.corearch.simd.F32x4
 import io.github.kotlinmania.rustlang.corearch.simd.F64x2
-import io.github.kotlinmania.rustlang.corearch.simdInsert
 import io.github.kotlinmania.rustlang.corearch.x86.MM_FROUND_CUR_DIRECTION
 
 /**
@@ -45,7 +43,7 @@ public fun mmCvtsdU64(a: M128d): ULong = vcvtsd2usi64(a.asF64x2(), MM_FROUND_CUR
 public fun mmCvti64Ss(a: M128, b: Long): M128 =
     run {
         val b1 = b.toFloat()
-        simdInsert(a, 0, b1)
+        run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = b1; _simdArg0 }
     }
 
 /**
@@ -56,7 +54,7 @@ public fun mmCvti64Ss(a: M128, b: Long): M128 =
 public fun mmCvti64Sd(a: M128d, b: Long): M128d =
     run {
         val b1 = b.toDouble()
-        simdInsert(a, 0, b1)
+        run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = b1; _simdArg0 }
     }
 
 /**
@@ -67,7 +65,7 @@ public fun mmCvti64Sd(a: M128d, b: Long): M128d =
 public fun mmCvtu64Ss(a: M128, b: ULong): M128 =
     run {
         val b1 = b.toFloat()
-        simdInsert(a, 0, b1)
+        run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = b1; _simdArg0 }
     }
 
 /**
@@ -78,7 +76,7 @@ public fun mmCvtu64Ss(a: M128, b: ULong): M128 =
 public fun mmCvtu64Sd(a: M128d, b: ULong): M128d =
     run {
         val b1 = b.toDouble()
-        simdInsert(a, 0, b1)
+        run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = b1; _simdArg0 }
     }
 
 /**

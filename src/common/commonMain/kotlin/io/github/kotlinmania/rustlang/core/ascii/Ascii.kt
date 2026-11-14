@@ -99,9 +99,9 @@ public open class EscapeDefault internal constructor(
             valueCtorArg = value,
         )
 
-        internal fun new(c: UByte): EscapeDefault = EscapeDefault(EscapeIterInner.ascii(c))
+        public fun new(c: UByte): EscapeDefault = EscapeDefault(EscapeIterInner.ascii(c))
 
-        internal fun empty(): EscapeDefault = EscapeDefault(EscapeIterInner.empty())
+        public fun empty(): EscapeDefault = EscapeDefault(EscapeIterInner.empty())
     }
 }
 

@@ -4,7 +4,7 @@ package io.github.kotlinmania.rustlang.corearch.mips.msa
 
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 
-// The host must provide the C companion wrapper exports in import module corearch.
+// The host must provide the C companion wrapper exports in import module kmcore.
 public actual fun msaAddAB(a: V16i8, b: V16i8): V16i8 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaAddAB")
 
@@ -347,7 +347,7 @@ public actual fun msaCeqiW(a: V4i32, b: Int): V4i32 =
 public actual fun msaCeqiD(a: V2i64, b: Int): V2i64 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaCeqiD")
 
-@kotlin.wasm.WasmImport("corearch", "corearchMipsMsaMsaCfcmsa")
+@kotlin.wasm.WasmImport("kmcore", "corearchMipsMsaMsaCfcmsa")
 private external fun wasiCorearchMipsMsaMsaCfcmsa(a: Int): Int
 
 public actual fun msaCfcmsa(a: Int): Int =
@@ -473,7 +473,7 @@ public actual fun msaCopyUW(a: V4i32, b: Int): UInt =
 public actual fun msaCopyUD(a: V2i64, b: Int): ULong =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaCopyUD")
 
-@kotlin.wasm.WasmImport("corearch", "corearchMipsMsaMsaCtcmsa")
+@kotlin.wasm.WasmImport("kmcore", "corearchMipsMsaMsaCtcmsa")
 private external fun wasiCorearchMipsMsaMsaCtcmsa(imm5: Int, a: Int): Unit
 
 public actual fun msaCtcmsa(imm5: Int, a: Int): Unit =

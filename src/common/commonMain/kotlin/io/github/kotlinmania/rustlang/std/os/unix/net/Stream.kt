@@ -1,22 +1,22 @@
 // port-lint: source os/unix/net/stream.rs
 package io.github.kotlinmania.rustlang.std.os.unix.net
 
-import io.github.kotlinmania.libc.connect
-import io.github.kotlinmania.libc.fuchsia.AF_UNIX
-import io.github.kotlinmania.libc.fuchsia.SOCK_STREAM
-import io.github.kotlinmania.libc.fuchsia.SO_RCVTIMEO
-import io.github.kotlinmania.libc.fuchsia.SO_SNDTIMEO
-import io.github.kotlinmania.libc.getpeername
-import io.github.kotlinmania.libc.getsockname
-import io.github.kotlinmania.rustlang.alloc.io.read.Read
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
-import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.time.Duration
+import io.github.kotlinmania.rustlang.libc.connect
+import io.github.kotlinmania.rustlang.libc.getpeername
+import io.github.kotlinmania.rustlang.libc.getsockname
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SOCK_STREAM
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SO_RCVTIMEO
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SO_SNDTIMEO
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.AF_UNIX
+import io.github.kotlinmania.rustlang.std.io.BorrowedCursor
+import io.github.kotlinmania.rustlang.std.io.Read
+import io.github.kotlinmania.rustlang.std.io.Write
 import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.net.Shutdown
 import io.github.kotlinmania.rustlang.std.os.fd.AsFd
@@ -94,7 +94,7 @@ public val MSG_NOSIGNAL: CInt = 0x0
  * ```
  */
 public open class UnixStream(
-    internal var value: Socket,
+    public var value: Socket,
 ) : Read, Write, AsRawFd, FromRawFd<UnixStream>, IntoRawFd, AsFd, AsInner<Socket> {
     public var field0: Socket
         get() = value
@@ -358,7 +358,7 @@ public open class UnixStream(
      * On Redox this always returns `None`.
      * ```
      */
-    public open fun takeError(): Result<io.github.kotlinmania.rustlang.core.io.error.Error?, Error> = this.value.takeError()
+    public open fun takeError(): Result<io.github.kotlinmania.rustlang.std.io.Error?, Error> = this.value.takeError()
 
     /**
      * Shuts down the read, write, or both halves of this connection.
@@ -525,7 +525,7 @@ public open class UnixStream(
             return run {
                 val inner = when (val tryResult = Socket.new(AF_UNIX, SOCK_STREAM)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
                 val (addr, len) = when (val tryResult = SockaddrUn(path)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-                when (val tryResult = cvt(io.github.kotlinmania.libc.connect(inner.asRawFd(), constPtrFromRustCast((addrOf(addr))), len))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                when (val tryResult = cvt(io.github.kotlinmania.rustlang.libc.connect(inner.asRawFd(), constPtrFromRustCast((addrOf(addr))), len))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
                 Result.Ok(UnixStream(inner))
             }
         }

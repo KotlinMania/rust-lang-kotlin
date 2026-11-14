@@ -1,13 +1,12 @@
 // port-lint: source sys/thread_local/destructors/linux_like.rs
 package io.github.kotlinmania.rustlang.std.sys.threadlocal.destructors.linuxlike
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.std.mem.transmute
 
 // Destructor registration for Linux-like systems.
 //

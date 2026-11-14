@@ -1,12 +1,13 @@
 // port-lint: source path.rs
 package io.github.kotlinmania.rustlang.std.path
 
-import io.github.kotlinmania.cmp.Ordering
 import io.github.kotlinmania.rustlang.alloc.borrow.Cow
 import io.github.kotlinmania.rustlang.alloc.collections.TryReserveError
 import io.github.kotlinmania.rustlang.core.borrow.Borrow
 import io.github.kotlinmania.rustlang.core.char.isAscii
 import io.github.kotlinmania.rustlang.core.clone.CloneToUninit
+import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.error.Error
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
@@ -23,12 +24,15 @@ import io.github.kotlinmania.rustlang.core.result.and
 import io.github.kotlinmania.rustlang.core.result.or
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.core.str.traits.FromStr
-import io.github.kotlinmania.rustlang.std.error
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.std.fs.Metadata
 import io.github.kotlinmania.rustlang.std.fs.ReadDir
-import io.github.kotlinmania.rustlang.std.io.error.Error
+import io.github.kotlinmania.rustlang.std.fs.exists
+import io.github.kotlinmania.rustlang.std.fs.metadata
+import io.github.kotlinmania.rustlang.std.fs.symlinkMetadata
+import io.github.kotlinmania.rustlang.std.io.ErrorKind
+import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.path.Prefix.*
 import io.github.kotlinmania.rustlang.std.rc.Rc
 import io.github.kotlinmania.rustlang.std.sync.Arc
@@ -1981,7 +1985,7 @@ public open class Path internal constructor(
     }
 
     // The following (private!) function reveals the byte encoding used for OsStr.
-    internal open fun asU8Slice(): List<UByte> = this.inner.asEncodedBytes()
+    public open fun asU8Slice(): List<UByte> = this.inner.asEncodedBytes()
 
     /**
      * Yields the underlying [OsStr] slice.
@@ -2114,7 +2118,7 @@ public open class Path internal constructor(
      */
     public open fun isRelative(): Boolean = (!this.isAbsolute()).toUByte()
 
-    internal open fun prefix(): Prefix? = this.components().prefix
+    public open fun prefix(): Prefix? = this.components().prefix
 
     /**
      * Returns `true` if the `Path` has a root.
@@ -2777,7 +2781,7 @@ public open class Path internal constructor(
      * println("${metadata.fileType()}")
      * ```
      */
-    public open fun metadata(): Result<Metadata, Error> = metadata(this)
+    public open fun metadata(): Result<Metadata, Error> = io.github.kotlinmania.rustlang.std.fs.metadata(this)
 
     /**
      * Queries the metadata about a file without following symlinks.
@@ -2794,7 +2798,7 @@ public open class Path internal constructor(
      * println("${metadata.fileType()}")
      * ```
      */
-    public open fun symlinkMetadata(): Result<Metadata, Error> = symlinkMetadata(this)
+    public open fun symlinkMetadata(): Result<Metadata, Error> = io.github.kotlinmania.rustlang.std.fs.symlinkMetadata(this)
 
     /**
      * Returns the canonical, absolute form of the path with all intermediate
@@ -2820,7 +2824,7 @@ public open class Path internal constructor(
      * check(path.canonicalize().unwrap() == PathBuf.from("/foo/test/bar.rs"))
      * ```
      */
-    public open fun canonicalize(): Result<PathBuf, Error> = canonicalize(this)
+    public open fun canonicalize(): Result<PathBuf, Error> = io.github.kotlinmania.rustlang.std.fs.canonicalize(this)
 
     /**
      * Makes the path absolute without accessing the filesystem.
@@ -2942,7 +2946,7 @@ public open class Path internal constructor(
      * val pathLink = path.readLink().expect("the path should be an existing symbolic link")
      * ```
      */
-    public open fun readLink(): Result<PathBuf, Error> = readLink(this)
+    public open fun readLink(): Result<PathBuf, Error> = io.github.kotlinmania.rustlang.std.fs.readLink(this)
 
     /**
      * Returns an iterator over the entries within a directory.
@@ -2966,7 +2970,7 @@ public open class Path internal constructor(
      * }
      * ```
      */
-    public open fun readDir(): Result<ReadDir, Error> = readDir(this)
+    public open fun readDir(): Result<ReadDir, Error> = io.github.kotlinmania.rustlang.std.fs.readDir(this)
 
     /**
      * Returns `true` if the path points at an existing entity.
@@ -3284,7 +3288,7 @@ public open class Path internal constructor(
 
         // The following (private!) function allows construction of a path from a u8
         // slice, which is only safe when it is known to follow the OsStr encoding.
-        internal fun fromU8Slice(s: List<UByte>): Path = Path.new(OsStr.fromEncodedBytesUnchecked(s))
+        public fun fromU8Slice(s: List<UByte>): Path = Path.new(OsStr.fromEncodedBytesUnchecked(s))
 
         /**
          * Directly wraps a string slice as a `Path` slice.
@@ -3578,7 +3582,7 @@ public fun OsString.partialCmpCowPath(other: Path): Ordering? = Path.partialCmp(
 public fun absolute(path: Path): Result<PathBuf, Error> {
     val path1 = path
     return if (path1.asOsStr().isEmpty()) {
-        Result.Err(io.constError(ErrorKind.InvalidInput, "cannot make an empty path absolute"))
+        Result.Err(constError(ErrorKind.InvalidInput, "cannot make an empty path absolute"))
     } else {
         io.github.kotlinmania.rustlang.std.sys.path.unix.absolute(path1)
     }

@@ -15,7 +15,7 @@ import io.github.kotlinmania.rustlang.std.sync.Arc
 import io.github.kotlinmania.rustlang.std.sync.oncelock.OnceLock
 import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
 import io.github.kotlinmania.rustlang.std.sys.sync.threadparking.darwin.Parker
-import io.github.kotlinmania.rustlang.std.thread.current.currentOsId
+import io.github.kotlinmania.rustlang.std.sys.thread.unix.currentOsId
 import io.github.kotlinmania.rustlang.std.thread.mainthread.get
 
 public class DebugStruct(
@@ -46,12 +46,12 @@ public class DebugStruct(
 /**
  * Like a `String` it's guaranteed UTF-8 and like a `CString` it's null terminated.
  */
-internal open class ThreadNameString(
+public open class ThreadNameString(
     public var inner: CString,
 ) {
-    internal open fun asCstr(): CStr = this.inner
+    public open fun asCstr(): CStr = this.inner
 
-    internal open fun asStr(): String {
+    public open fun asStr(): String {
         // SAFETY: `ThreadNameString` is guaranteed to be UTF-8.
         return String.fromUtf8Unchecked(this.inner.toBytes())
     }
@@ -133,7 +133,7 @@ public open class Thread internal constructor(
      * `imp.currentOsId` must not allocate with the global allocator or call
      * `thread.current`.
      */
-    internal open fun setOsIdToCurrent() {
+    public open fun setOsIdToCurrent() {
         when (val matchVal = currentOsId()) {
             null -> {}
             else -> {
@@ -164,7 +164,7 @@ public open class Thread internal constructor(
      * # Safety
      * May only be called from the thread to which this handle belongs.
      */
-    internal open fun park() {
+    public open fun park() {
         this.inner.asRef().parker().park()
     }
 
@@ -175,7 +175,7 @@ public open class Thread internal constructor(
      * # Safety
      * May only be called from the thread to which this handle belongs.
      */
-    internal open fun parkTimeout(dur: Duration) {
+    public open fun parkTimeout(dur: Duration) {
         this.inner.asRef().parker().parkTimeout(dur)
     }
 
@@ -356,7 +356,7 @@ public open class Thread internal constructor(
         return constPtrFromRustCast(Arc.intoRawWithAllocator(inner).first)
     }
 
-    internal open fun cname(): CStr? =
+    public open fun cname(): CStr? =
         when (val matchVal = this.inner.name) {
             null -> {
                 if (get() == this.inner.id) {
@@ -382,7 +382,7 @@ public open class Thread internal constructor(
             innerCtorArg = inner,
         )
 
-        internal fun new(id: Any, name: String?): Thread {
+        public fun new(id: Any, name: String?): Thread {
             val name1 = name?.let(ThreadNameString::from)
             // We have to use `unchecked` here to construct the `Parker` in-place,
             // which is required for the UNIX implementation.
@@ -410,7 +410,7 @@ public open class Thread internal constructor(
          * Takes no name because passing one into `Thread.new` allocates with the
          * global allocator, which `thread.current` is documented never to use.
          */
-        internal fun newCurrent(id: Any): Thread {
+        public fun newCurrent(id: Any): Thread {
             val thread = Thread.new(id, null)
             thread.setOsIdToCurrent()
             return thread

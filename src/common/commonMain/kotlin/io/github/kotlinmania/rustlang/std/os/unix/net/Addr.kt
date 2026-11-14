@@ -1,39 +1,41 @@
 // port-lint: source os/unix/net/addr.rs
 package io.github.kotlinmania.rustlang.std.os.unix.net
 
-import io.github.kotlinmania.libc.CChar
-import io.github.kotlinmania.libc.CInt
-import io.github.kotlinmania.libc.fuchsia.AF_UNIX
-import io.github.kotlinmania.libc.fuchsia.SockaddrUn
-import io.github.kotlinmania.libc.fuchsia.SocklenT
 import io.github.kotlinmania.rustlang.core.bytestr.ByteStr
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
+import io.github.kotlinmania.rustlang.libc.CChar
+import io.github.kotlinmania.rustlang.libc.CInt
+import io.github.kotlinmania.rustlang.libc.unix.bsd.SockaddrUn
+import io.github.kotlinmania.rustlang.libc.unix.bsd.SocklenT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.AF_UNIX
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
+import io.github.kotlinmania.rustlang.std.io.ErrorKind
+import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.io.error.Error
-import io.github.kotlinmania.rustlang.std.linuxext.addr.SocketAddrExt
+import io.github.kotlinmania.rustlang.std.os.net.linuxext.addr.SocketAddrExt
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
 
 public val SUN_PATH_OFFSET: Int = 0
 
-internal fun sockaddrUn(path: Path): Result<Pair<SockaddrUn, SocklenT>, Error> {
+public fun sockaddrUn(path: Path): Result<Pair<SockaddrUn, SocklenT>, Error> {
     // SAFETY: All zeros is a valid representation for `sockaddrUn`.
-    val addr: SockaddrUn?  = null
-    addr!!.sunFamily = AF_UNIX.toUShort()
+    val addr: SockaddrUn  = SockaddrUn()
+    addr.sunFamily = AF_UNIX.toUShort()
     val bytes = path.asOsStr().encodeToByteArray().map { it.toUByte() }
     if (bytes.contains(0)) {
-        return Result.Err(io.constError(ErrorKind.InvalidInput, "paths must not contain interior null bytes"))
+        return Result.Err(constError(ErrorKind.InvalidInput, "paths must not contain interior null bytes"))
     }
     if (bytes.size >= addr.sunPath.size) {
-        return Result.Err(io.constError(ErrorKind.InvalidInput, "path must be shorter than SUN_LEN"))
+        return Result.Err(constError(ErrorKind.InvalidInput, "path must be shorter than SUN_LEN"))
     }
     // SAFETY: `bytes` and `addr.sunPath` are not overlapping and
     // both point to valid memory.
@@ -81,8 +83,8 @@ public sealed class AddressKind {
  * ```kotlin
  */
 public open class SocketAddr(
-    internal var addr: SockaddrUn,
-    internal var len: SocklenT,
+    public var addr: SockaddrUn,
+    public var len: SocklenT,
 ) : SocketAddrExt {
     public open fun clone(): SocketAddr = SocketAddr(addr, len)
 
@@ -185,17 +187,18 @@ public open class SocketAddr(
     }
 
     public companion object {
-        internal fun new(f: (MutPtr, MutPtr) -> CInt): Result<SocketAddr, Error> {
+        public fun new(f: (MutPtr, MutPtr) -> CInt): Result<SocketAddr, Error> {
             return run {
-                val localStorageL107C12 = AddressableLocal(null, ObjectSlotLayout<SockaddrUn>())
+                val localStorageL107C12 = AddressableLocal(SockaddrUn(), ObjectSlotLayout<SockaddrUn>())
                 val addr by localStorageL107C12
-                val len = sizeOf<SockaddrUn>(typeLayoutT = ObjectSlotLayout<SockaddrUn>())
-                when (val tryResult = cvt(f((localStorageL107C12.asMutPtr()), len))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                val localStorageL108C12 = AddressableLocal(sizeOf<SockaddrUn>(typeLayoutT = ObjectSlotLayout<SockaddrUn>()).toInt(), ObjectSlotLayout<SocklenT>())
+                val len by localStorageL108C12
+                when (val tryResult = cvt(f((localStorageL107C12.asMutPtr()), RustMutableReference(localStorageL108C12.asMutPtr(), localStorageL108C12.layout)))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
                 SocketAddr.fromParts(addr, len)
             }
         }
 
-        internal fun fromParts(addr: SockaddrUn, len: SocklenT): Result<SocketAddr, Error> {
+        public fun fromParts(addr: SockaddrUn, len: SocklenT): Result<SocketAddr, Error> {
             var len1 = len
             if (false) {
                 // on OpenBSD, getsockname(2) returns the actual size of the socket address,
@@ -211,7 +214,7 @@ public open class SocketAddr(
                 len1 = SUN_PATH_OFFSET
                 // i.e., zero-length address
             } else if (addr.sunFamily != AF_UNIX.toUShort()) {
-                return Result.Err(io.constError(ErrorKind.InvalidInput, "file descriptor did not correspond to a Unix socket"))
+                return Result.Err(constError(ErrorKind.InvalidInput, "file descriptor did not correspond to a Unix socket"))
             }
             return Result.Ok(SocketAddr(addr = addr, len = len1))
         }
@@ -248,10 +251,10 @@ public open class SocketAddr(
         public fun fromAbstractName(name: List<UByte>): Result<SocketAddr, Error> {
             val name1 = name
             return run {
-                val addr: SockaddrUn?  = null
-                addr!!.sunFamily = AF_UNIX.toUShort()
+                val addr: SockaddrUn  = SockaddrUn()
+                addr.sunFamily = AF_UNIX.toUShort()
                 if (name1.len() + 1 > addr.sunPath.size) {
-                    return Result.Err(io.constError(ErrorKind.InvalidInput, "abstract socket name must be shorter than SUN_LEN"))
+                    return Result.Err(constError(ErrorKind.InvalidInput, "abstract socket name must be shorter than SUN_LEN"))
                 }
                 copyNonoverlapping(name1.asPtr(), (MutPtr((addr.sunPath.asMutPtr()).rawAddress + ((1).toLong() * (PrimitiveLayouts.I8).strideBytes))).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, name1.len())
                 val len = (SUN_PATH_OFFSET + 1 + name1.len())

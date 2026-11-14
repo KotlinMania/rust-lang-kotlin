@@ -1,24 +1,24 @@
 // port-lint: source fmt/float.rs
 package io.github.kotlinmania.rustlang.core.fmt.float
 
-import io.github.kotlinmania.numfmt.Part
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
-import io.github.kotlinmania.rustlang.core.f16.abs
 import io.github.kotlinmania.rustlang.core.fmt.Formatter
 import io.github.kotlinmania.rustlang.core.fmt.Result
-import io.github.kotlinmania.rustlang.core.fmt.Sign
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.MAX_SIG_DIGITS
+import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.Sign
 import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.decoder.DecodableFloat
-import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.strategy.dragon.formatExact
-import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.strategy.dragon.formatShortest
+import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.strategy.grisu.formatExact
+import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.strategy.grisu.formatShortest
 import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.toExactExpStr
 import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.toExactFixedStr
 import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.toShortestExpStr
 import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.toShortestStr
+import io.github.kotlinmania.rustlang.core.num.imp.fmt.Part
+import kotlin.math.abs
 
 public interface GeneralFormat {
     /**
@@ -30,8 +30,8 @@ public interface GeneralFormat {
 
 public fun F16.alreadyRoundedValueShouldUseExponential(): Boolean {
     val maxAbs = 1e16
-    val abs = abs(this)
-    return (abs != 0.0 && abs < 1e-4) || abs >= maxAbs
+    val abs = F16.fromFloat(abs(this.toFloat()))
+    return (abs != F16.fromFloat(0.0f) && abs < F16.fromFloat(1e-4f)) || abs >= maxAbs
 }
 
 public fun kotlin.Float.alreadyRoundedValueShouldUseExponential(): Boolean {

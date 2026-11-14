@@ -1,15 +1,16 @@
 // port-lint: source range/iter.rs
 package io.github.kotlinmania.rustlang.core.range.iter
 
-import io.github.kotlinmania.rustlang.core.iter.Step
-import io.github.kotlinmania.rustlang.core.iter.TrustedLen
+import io.github.kotlinmania.rustlang.core.iter.range.Step
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
+import io.github.kotlinmania.rustlang.core.mem.replace
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
-import io.github.kotlinmania.rustlang.core.ops.range.RangeFrom
-import io.github.kotlinmania.rustlang.core.ops.range.RangeInclusive
 import io.github.kotlinmania.rustlang.core.range.Range
+import io.github.kotlinmania.rustlang.core.range.RangeFrom
+import io.github.kotlinmania.rustlang.core.range.RangeInclusive
 import io.github.kotlinmania.rustlang.core.result.Result
 
 // Safety: This macro must only be used on types that are `Copy` and result in ranges
@@ -19,7 +20,7 @@ import io.github.kotlinmania.rustlang.core.result.Result
  * By-value [Range] iterator.
  */
 public open class RangeIter<A>(
-    internal var value: Range<A>,
+    public var value: Range<A>,
 ) : TrustedLen<RangeIter<A>>, Iterable<A> {
     public var field0: Range<A>
         get() = value
@@ -56,7 +57,7 @@ public open class RangeIter<A>(
      * }
      * ```
      */
-    public open fun remainder(): Range<A> = Range(start = this.value.start, end = this.value.end)
+    public open fun remainder(): io.github.kotlinmania.rustlang.core.range.Range<A> = Range(start = this.value.start, end = this.value.end)
 
     public override fun next(): A? = this.value.next()
 
@@ -111,15 +112,15 @@ public val MAY_HAVE_SIDE_EFFECT8: Boolean = false
 
 public val MAY_HAVE_SIDE_EFFECT9: Boolean = false
 
-public fun <A : Step<A>> Range<A>.intoIter(): RangeIter<A> = RangeIter(this.into())
+public fun <A : Step<A>> io.github.kotlinmania.rustlang.core.range.Range<A>.intoIter(): RangeIter<A> = RangeIter(this.into())
 
 /**
  * By-value [RangeInclusive] iterator.
  */
 public open class RangeInclusiveIter<A>(
-    public var value: RangeInclusive<A>,
+    public var value: io.github.kotlinmania.rustlang.core.range.legacy.RangeInclusive<A>,
 ) : TrustedLen<RangeInclusiveIter<A>>, Iterable<A> {
-    public var field0: RangeInclusive<A>
+    public var field0: io.github.kotlinmania.rustlang.core.range.legacy.RangeInclusive<A>
         get() = value
         set(v) {
             value = v

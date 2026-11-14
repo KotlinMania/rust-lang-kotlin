@@ -1,8 +1,8 @@
 // port-lint: source float/conv.rs
 package io.github.kotlinmania.rustlang.compilerbuiltins.float.conv.inttofloat
 
-import io.github.kotlinmania.f128.EXP_BITS
-import io.github.kotlinmania.f128.SIG_BITS
+import io.github.kotlinmania.rustlang.compilerbuiltins.support.Float
+import io.github.kotlinmania.rustlang.compilerbuiltins.support.Int
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.num.rustLeadingZeros
@@ -115,7 +115,7 @@ public fun u32ToF128Bits(i: UInt): U128 {
     val m = (i.toULong()) shl (shiftFGtI<UInt, F128>(n) - 64u).toInt()
     val e = (exp<UInt, F128>(n)).toULong() - 1uL
     // High 64 bits of f128 representation.
-    val h = (e shl (SIG_BITS - 64).toInt()) + m
+    val h = (e shl (F128.SIG_BITS - F128.fromDouble(64.0)).toInt()) + m
     // Shift back to the high bits, the rest of the mantissa will always be 0.
     return (U128.fromULong(h)) shl 64
 }
@@ -209,8 +209,8 @@ public fun u128ToF128Bits(i: U128): U128 {
     }
     val n = rustLeadingZeros(i)
     // Mantissa with implicit bit set
-    val mBase = (i shl n.toInt()) shr EXP_BITS.toInt()
-    val adj = (i shl n.toInt()) shl (SIG_BITS + 1).toInt()
+    val mBase = (i shl n.toInt()) shr F128.EXP_BITS.toInt()
+    val adj = (i shl n.toInt()) shl (F128.SIG_BITS + F128.fromDouble(1.0)).toInt()
     val m = mAdj<F128>(mBase.toInt(), adj.toInt())
     val e = exp<U128, F128>(n) - 1
     return repr<F128>(e, m)

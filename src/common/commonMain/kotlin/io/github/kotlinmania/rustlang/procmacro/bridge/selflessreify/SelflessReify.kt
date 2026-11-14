@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.procmacro.bridge.selflessreify
 
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.mem.conjureZst
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.procmacro.bridge.BridgeConfig
 
@@ -43,7 +44,7 @@ import io.github.kotlinmania.rustlang.procmacro.bridge.BridgeConfig
 // }
 // ```
 
-internal fun <R> reifyToExternCFnHrtBridge(f: (BridgeConfig) -> R): (BridgeConfig) -> R {
+public fun <R> reifyToExternCFnHrtBridge(f: (BridgeConfig) -> R): (BridgeConfig) -> R {
     inline fun <reified R> wrapper(bridge: BridgeConfig): R {
         val f1 = conjureZst<(BridgeConfig) -> R>()
         return f1(bridge)

@@ -16,6 +16,7 @@ import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.num.rustCheckedMul
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.sort.unstable.sort
@@ -430,7 +431,7 @@ public fun <T> List<T>.repeat(n: Int, typeLayoutT: TypeLayout<T>): List<T> {
             // which is tracked via `m` - when `m == 0`, we've written `mostSignificantBit(n)`
             // elements to the buffer.
             run {
-                ptr.copyNonoverlapping<T>(buf.asPtr(), MutPtr(((buf.asMutPtr())).rawAddress + ((buf.size).toLong() * (ObjectSlotLayout<*>()).strideBytes)), buf.size, typeLayoutT = typeLayoutT)
+                copyNonoverlapping<T>(buf.asPtr(), MutPtr(((buf.asMutPtr())).rawAddress + ((buf.size).toLong() * (ObjectSlotLayout<*>()).strideBytes)), buf.size, typeLayoutT = typeLayoutT)
             }
             // `buf` has capacity of `self.len() * n`.
             val bufLen = buf.size
@@ -455,7 +456,7 @@ public fun <T> List<T>.repeat(n: Int, typeLayoutT: TypeLayout<T>): List<T> {
         // space with copies of the previous `len` elements.
         run {
             // This is non-overlapping since `2 ^ expn> rem`.
-            ptr.copyNonoverlapping<T>(buf.asPtr(), MutPtr(((buf.asMutPtr())).rawAddress + ((buf.size).toLong() * (ObjectSlotLayout<*>()).strideBytes)), remLen, typeLayoutT = typeLayoutT)
+            copyNonoverlapping<T>(buf.asPtr(), MutPtr(((buf.asMutPtr())).rawAddress + ((buf.size).toLong() * (ObjectSlotLayout<*>()).strideBytes)), remLen, typeLayoutT = typeLayoutT)
             // `buf.len() + remLen` equals to `buf.capacity()` (`= self.len() * n`).
             buf.setLen(capacity)
         }
@@ -638,7 +639,7 @@ public fun <T, A : Allocator> List<T>.borrowMut(): MutableList<T> = this
 // Specializable trait for implementing ToOwned.cloneInto. This is
 // public in the crate and has the Allocator parameter so that
 // vec.cloneFrom use it too.
-internal interface SpecCloneIntoVec<T, A : Allocator> {
+public interface SpecCloneIntoVec<T, A : Allocator> {
     public fun cloneInto(target: List<T>)
 }
 
@@ -659,6 +660,10 @@ public fun <T : TrivialClone, A : Allocator> List<T>.cloneIntoTA(target: List<T>
 }
 
 public fun <T> List<T>.toOwned(): List<T> = this.toMutableList()
+
+public fun <T> List<T>.cloneIntoFromTSlice(target: List<T>) {
+    this.cloneInto(target)
+}
 
 // ///////////////////////////////////////////////////////////////////////////
 // Sorting

@@ -3,13 +3,17 @@ package io.github.kotlinmania.rustlang.std.sys.sync.mutex.futex
 
 import io.github.kotlinmania.rustlang.core.intrinsics.kmSpinLoopHint
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Acquire
 import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Relaxed
+import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Release
+import io.github.kotlinmania.rustlang.std.sys.sync.futex.unix.SmallFutex
+import io.github.kotlinmania.rustlang.std.sys.sync.futex.unix.SmallPrimitive
 import io.github.kotlinmania.rustlang.std.sys.sync.futex.unix.futexWait
 import io.github.kotlinmania.rustlang.std.sys.sync.futex.unix.futexWake
 
-public typealias Futex = futex.SmallFutex
+public typealias Futex = SmallFutex
 
-public typealias State = futex.SmallPrimitive
+public typealias State = SmallPrimitive
 
 public open class Mutex(
     public var futex: Futex,

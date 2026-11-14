@@ -2,10 +2,10 @@
 
 package io.github.kotlinmania.rustlang.std.sys.exit
 
-import io.github.kotlinmania.rustlang.std.ffi.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 
-// The host must provide the C companion wrapper exports in import module std.
-@kotlin.wasm.WasmImport("std", "stdSysExitExit")
+// The host must provide the C companion wrapper exports in import module kmcore.
+@kotlin.wasm.WasmImport("kmcore", "stdSysExitExit")
 private external fun wasiStdSysExitExit(status: Int): Unit
 
 public actual fun exit(status: CInt): Nothing {

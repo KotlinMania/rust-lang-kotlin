@@ -1,8 +1,6 @@
 // port-lint: source sys/paths/unix.rs
 package io.github.kotlinmania.rustlang.std.sys.paths.unix
 
-import io.github.kotlinmania.libc.fuchsia.ERANGE
-import io.github.kotlinmania.libc.unix.bsd.apple.CS_DARWIN_USER_TEMP_DIR
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
@@ -11,10 +9,14 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.CS_DARWIN_USER_TEMP_DIR
+import io.github.kotlinmania.rustlang.libc.wasi.ERANGE
 import io.github.kotlinmania.rustlang.std.env.varOs
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.std.fs.readLink
+import io.github.kotlinmania.rustlang.std.io.ErrorKind
+import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.os.unix.ffi.OsStringExt
 import io.github.kotlinmania.rustlang.std.os.unix.ffi.asBytes
@@ -34,13 +36,13 @@ public fun getcwd(): Result<PathBuf, Error> {
     while (true) {
         run {
             val ptr = (buf.asMutPtr()).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
-            if (!io.github.kotlinmania.libc.getcwd(ptr, buf.capacity()).isNull()) {
+            if (!io.github.kotlinmania.rustlang.libc.getcwd(ptr, buf.capacity()).isNull()) {
                 val len = CStr.fromPtr((buf.asPtr()).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }).toBytes().len()
                 buf.setLen(len)
                 buf.shrinkToFit()
                 return Result.Ok(PathBuf.from(OsString.fromVec(buf)))
             } else {
-                val error = Error.lastOsError()
+                val error = io.github.kotlinmania.rustlang.std.io.Error.lastOsError()
                 if (error.rawOsError() != ERANGE) {
                     return Result.Err(error)
                 }
@@ -55,11 +57,11 @@ public fun getcwd(): Result<PathBuf, Error> {
 }
 
 public fun chdir(p: Path): Result<Unit, Error> {
-    val result = when (val tryResult = runPathWithCstr(p, { p1 -> Result.Ok(io.github.kotlinmania.libc.chdir(p1.asPtr())) })) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    val result = when (val tryResult = runPathWithCstr(p, { p1 -> Result.Ok(io.github.kotlinmania.rustlang.libc.chdir(p1.asPtr())) })) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
     return if (result == 0) {
         Result.Ok(Unit)
     } else {
-        Result.Err(Error.lastOsError())
+        Result.Err(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
     }
 }
 
@@ -127,7 +129,7 @@ public fun currentExe(): Result<PathBuf, Error> =
         when {
             matchVal is Result.Err<*> && (matchVal as Result.Err<*>).error.kind() == ErrorKind.NotFound -> {
                 val e = (matchVal as Result.Err<*>).error
-                Result.Err(io.constError(ErrorKind.Uncategorized, "no /proc/self/exe available. Is /proc mounted?"))
+                Result.Err(constError(ErrorKind.Uncategorized, "no /proc/self/exe available. Is /proc mounted?"))
             }
             else -> {
                 val other = matchVal

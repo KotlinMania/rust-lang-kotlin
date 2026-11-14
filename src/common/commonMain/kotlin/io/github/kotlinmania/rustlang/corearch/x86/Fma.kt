@@ -2,11 +2,6 @@
 package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
-import io.github.kotlinmania.rustlang.corearch.intrinsics.fma
-import io.github.kotlinmania.rustlang.corearch.intrinsics.simd.simdFma
-import io.github.kotlinmania.rustlang.corearch.intrinsics.simd.simdNeg
-import io.github.kotlinmania.rustlang.corearch.simdInsert
-import io.github.kotlinmania.rustlang.corearch.simdShuffle
 
 // Fused Multiply-Add instruction set (FMA)
 //
@@ -34,7 +29,7 @@ import io.github.kotlinmania.rustlang.corearch.simdShuffle
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_fmadd_pd)
  */
-public fun mmFmaddPd(a: M128d, b: M128d, c: M128d): M128d = simdFma(a, b, c)
+public fun mmFmaddPd(a: M128d, b: M128d, c: M128d): M128d = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = c; _simdArg0 }
 
 /**
  * Multiplies packed double-precision (64-bit) floating-point elements in `a`
@@ -42,7 +37,7 @@ public fun mmFmaddPd(a: M128d, b: M128d, c: M128d): M128d = simdFma(a, b, c)
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_fmadd_pd)
  */
-public fun mm256FmaddPd(a: M256d, b: M256d, c: M256d): M256d = simdFma(a, b, c)
+public fun mm256FmaddPd(a: M256d, b: M256d, c: M256d): M256d = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = c; _simdArg0 }
 
 /**
  * Multiplies packed single-precision (32-bit) floating-point elements in `a`
@@ -50,7 +45,7 @@ public fun mm256FmaddPd(a: M256d, b: M256d, c: M256d): M256d = simdFma(a, b, c)
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_fmadd_ps)
  */
-public fun mmFmaddPs(a: M128, b: M128, c: M128): M128 = simdFma(a, b, c)
+public fun mmFmaddPs(a: M128, b: M128, c: M128): M128 = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = c; _simdArg0 }
 
 /**
  * Multiplies packed single-precision (32-bit) floating-point elements in `a`
@@ -58,7 +53,7 @@ public fun mmFmaddPs(a: M128, b: M128, c: M128): M128 = simdFma(a, b, c)
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_fmadd_ps)
  */
-public fun mm256FmaddPs(a: M256, b: M256, c: M256): M256 = simdFma(a, b, c)
+public fun mm256FmaddPs(a: M256, b: M256, c: M256): M256 = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = c; _simdArg0 }
 
 /**
  * Multiplies the lower double-precision (64-bit) floating-point elements in
@@ -68,7 +63,7 @@ public fun mm256FmaddPs(a: M256, b: M256, c: M256): M256 = simdFma(a, b, c)
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_fmadd_sd)
  */
-public fun mmFmaddSd(a: M128d, b: M128d, c: M128d): M128d = simdInsert(a, 0, fma(mmCvtsdF64(a), mmCvtsdF64(b), mmCvtsdF64(c)))
+public fun mmFmaddSd(a: M128d, b: M128d, c: M128d): M128d = run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = fma(mmCvtsdF64(a), mmCvtsdF64(b), mmCvtsdF64(c)); _simdArg0 }
 
 /**
  * Multiplies the lower single-precision (32-bit) floating-point elements in
@@ -78,7 +73,7 @@ public fun mmFmaddSd(a: M128d, b: M128d, c: M128d): M128d = simdInsert(a, 0, fma
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_fmadd_ss)
  */
-public fun mmFmaddSs(a: M128, b: M128, c: M128): M128 = simdInsert(a, 0, fma(mmCvtssF32(a), mmCvtssF32(b), mmCvtssF32(c)))
+public fun mmFmaddSs(a: M128, b: M128, c: M128): M128 = run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = fma(mmCvtssF32(a), mmCvtssF32(b), mmCvtssF32(c)); _simdArg0 }
 
 /**
  * Multiplies packed double-precision (64-bit) floating-point elements in `a`
@@ -89,9 +84,9 @@ public fun mmFmaddSs(a: M128, b: M128, c: M128): M128 = simdInsert(a, 0, fma(mmC
  */
 public fun mmFmaddsubPd(a: M128d, b: M128d, c: M128d): M128d =
     run {
-        val add = simdFma(a, b, c)
-        val sub = simdFma(a, b, simdNeg(c))
-        simdShuffle(add, sub, SimdShuffleIdx(listOf(2, 1)))
+        val add = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = c; _simdArg0 }
+        val sub = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = run { val _simdArg0 = c; _simdArg0 }; _simdArg0 }
+        run { val _simdArg0 = add; val _simdArg1 = sub; val _simdArg2 = SimdShuffleIdx(listOf(2, 1)); _simdArg0 }
     }
 
 /**
@@ -103,9 +98,9 @@ public fun mmFmaddsubPd(a: M128d, b: M128d, c: M128d): M128d =
  */
 public fun mm256FmaddsubPd(a: M256d, b: M256d, c: M256d): M256d =
     run {
-        val add = simdFma(a, b, c)
-        val sub = simdFma(a, b, simdNeg(c))
-        simdShuffle(add, sub, SimdShuffleIdx(listOf(4, 1, 6, 3)))
+        val add = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = c; _simdArg0 }
+        val sub = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = run { val _simdArg0 = c; _simdArg0 }; _simdArg0 }
+        run { val _simdArg0 = add; val _simdArg1 = sub; val _simdArg2 = SimdShuffleIdx(listOf(4, 1, 6, 3)); _simdArg0 }
     }
 
 /**
@@ -117,9 +112,9 @@ public fun mm256FmaddsubPd(a: M256d, b: M256d, c: M256d): M256d =
  */
 public fun mmFmaddsubPs(a: M128, b: M128, c: M128): M128 =
     run {
-        val add = simdFma(a, b, c)
-        val sub = simdFma(a, b, simdNeg(c))
-        simdShuffle(add, sub, SimdShuffleIdx(listOf(4, 1, 6, 3)))
+        val add = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = c; _simdArg0 }
+        val sub = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = run { val _simdArg0 = c; _simdArg0 }; _simdArg0 }
+        run { val _simdArg0 = add; val _simdArg1 = sub; val _simdArg2 = SimdShuffleIdx(listOf(4, 1, 6, 3)); _simdArg0 }
     }
 
 /**
@@ -131,9 +126,9 @@ public fun mmFmaddsubPs(a: M128, b: M128, c: M128): M128 =
  */
 public fun mm256FmaddsubPs(a: M256, b: M256, c: M256): M256 =
     run {
-        val add = simdFma(a, b, c)
-        val sub = simdFma(a, b, simdNeg(c))
-        simdShuffle(add, sub, SimdShuffleIdx(listOf(8, 1, 10, 3, 12, 5, 14, 7)))
+        val add = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = c; _simdArg0 }
+        val sub = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = run { val _simdArg0 = c; _simdArg0 }; _simdArg0 }
+        run { val _simdArg0 = add; val _simdArg1 = sub; val _simdArg2 = SimdShuffleIdx(listOf(8, 1, 10, 3, 12, 5, 14, 7)); _simdArg0 }
     }
 
 /**
@@ -142,7 +137,7 @@ public fun mm256FmaddsubPs(a: M256, b: M256, c: M256): M256 =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_fmsub_pd)
  */
-public fun mmFmsubPd(a: M128d, b: M128d, c: M128d): M128d = simdFma(a, b, simdNeg(c))
+public fun mmFmsubPd(a: M128d, b: M128d, c: M128d): M128d = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = run { val _simdArg0 = c; _simdArg0 }; _simdArg0 }
 
 /**
  * Multiplies packed double-precision (64-bit) floating-point elements in `a`
@@ -150,7 +145,7 @@ public fun mmFmsubPd(a: M128d, b: M128d, c: M128d): M128d = simdFma(a, b, simdNe
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_fmsub_pd)
  */
-public fun mm256FmsubPd(a: M256d, b: M256d, c: M256d): M256d = simdFma(a, b, simdNeg(c))
+public fun mm256FmsubPd(a: M256d, b: M256d, c: M256d): M256d = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = run { val _simdArg0 = c; _simdArg0 }; _simdArg0 }
 
 /**
  * Multiplies packed single-precision (32-bit) floating-point elements in `a`
@@ -158,7 +153,7 @@ public fun mm256FmsubPd(a: M256d, b: M256d, c: M256d): M256d = simdFma(a, b, sim
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_fmsub_ps)
  */
-public fun mmFmsubPs(a: M128, b: M128, c: M128): M128 = simdFma(a, b, simdNeg(c))
+public fun mmFmsubPs(a: M128, b: M128, c: M128): M128 = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = run { val _simdArg0 = c; _simdArg0 }; _simdArg0 }
 
 /**
  * Multiplies packed single-precision (32-bit) floating-point elements in `a`
@@ -166,7 +161,7 @@ public fun mmFmsubPs(a: M128, b: M128, c: M128): M128 = simdFma(a, b, simdNeg(c)
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_fmsub_ps)
  */
-public fun mm256FmsubPs(a: M256, b: M256, c: M256): M256 = simdFma(a, b, simdNeg(c))
+public fun mm256FmsubPs(a: M256, b: M256, c: M256): M256 = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = run { val _simdArg0 = c; _simdArg0 }; _simdArg0 }
 
 /**
  * Multiplies the lower double-precision (64-bit) floating-point elements in
@@ -176,7 +171,7 @@ public fun mm256FmsubPs(a: M256, b: M256, c: M256): M256 = simdFma(a, b, simdNeg
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_fmsub_sd)
  */
-public fun mmFmsubSd(a: M128d, b: M128d, c: M128d): M128d = simdInsert(a, 0, fma(mmCvtsdF64(a), mmCvtsdF64(b), -mmCvtsdF64(c)))
+public fun mmFmsubSd(a: M128d, b: M128d, c: M128d): M128d = run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = fma(mmCvtsdF64(a), mmCvtsdF64(b), -mmCvtsdF64(c)); _simdArg0 }
 
 /**
  * Multiplies the lower single-precision (32-bit) floating-point elements in
@@ -186,7 +181,7 @@ public fun mmFmsubSd(a: M128d, b: M128d, c: M128d): M128d = simdInsert(a, 0, fma
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_fmsub_ss)
  */
-public fun mmFmsubSs(a: M128, b: M128, c: M128): M128 = simdInsert(a, 0, fma(mmCvtssF32(a), mmCvtssF32(b), -mmCvtssF32(c)))
+public fun mmFmsubSs(a: M128, b: M128, c: M128): M128 = run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = fma(mmCvtssF32(a), mmCvtssF32(b), -mmCvtssF32(c)); _simdArg0 }
 
 /**
  * Multiplies packed double-precision (64-bit) floating-point elements in `a`
@@ -197,9 +192,9 @@ public fun mmFmsubSs(a: M128, b: M128, c: M128): M128 = simdInsert(a, 0, fma(mmC
  */
 public fun mmFmsubaddPd(a: M128d, b: M128d, c: M128d): M128d =
     run {
-        val add = simdFma(a, b, c)
-        val sub = simdFma(a, b, simdNeg(c))
-        simdShuffle(add, sub, SimdShuffleIdx(listOf(0, 3)))
+        val add = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = c; _simdArg0 }
+        val sub = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = run { val _simdArg0 = c; _simdArg0 }; _simdArg0 }
+        run { val _simdArg0 = add; val _simdArg1 = sub; val _simdArg2 = SimdShuffleIdx(listOf(0, 3)); _simdArg0 }
     }
 
 /**
@@ -211,9 +206,9 @@ public fun mmFmsubaddPd(a: M128d, b: M128d, c: M128d): M128d =
  */
 public fun mm256FmsubaddPd(a: M256d, b: M256d, c: M256d): M256d =
     run {
-        val add = simdFma(a, b, c)
-        val sub = simdFma(a, b, simdNeg(c))
-        simdShuffle(add, sub, SimdShuffleIdx(listOf(0, 5, 2, 7)))
+        val add = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = c; _simdArg0 }
+        val sub = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = run { val _simdArg0 = c; _simdArg0 }; _simdArg0 }
+        run { val _simdArg0 = add; val _simdArg1 = sub; val _simdArg2 = SimdShuffleIdx(listOf(0, 5, 2, 7)); _simdArg0 }
     }
 
 /**
@@ -225,9 +220,9 @@ public fun mm256FmsubaddPd(a: M256d, b: M256d, c: M256d): M256d =
  */
 public fun mmFmsubaddPs(a: M128, b: M128, c: M128): M128 =
     run {
-        val add = simdFma(a, b, c)
-        val sub = simdFma(a, b, simdNeg(c))
-        simdShuffle(add, sub, SimdShuffleIdx(listOf(0, 5, 2, 7)))
+        val add = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = c; _simdArg0 }
+        val sub = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = run { val _simdArg0 = c; _simdArg0 }; _simdArg0 }
+        run { val _simdArg0 = add; val _simdArg1 = sub; val _simdArg2 = SimdShuffleIdx(listOf(0, 5, 2, 7)); _simdArg0 }
     }
 
 /**
@@ -239,9 +234,9 @@ public fun mmFmsubaddPs(a: M128, b: M128, c: M128): M128 =
  */
 public fun mm256FmsubaddPs(a: M256, b: M256, c: M256): M256 =
     run {
-        val add = simdFma(a, b, c)
-        val sub = simdFma(a, b, simdNeg(c))
-        simdShuffle(add, sub, SimdShuffleIdx(listOf(0, 9, 2, 11, 4, 13, 6, 15)))
+        val add = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = c; _simdArg0 }
+        val sub = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = run { val _simdArg0 = c; _simdArg0 }; _simdArg0 }
+        run { val _simdArg0 = add; val _simdArg1 = sub; val _simdArg2 = SimdShuffleIdx(listOf(0, 9, 2, 11, 4, 13, 6, 15)); _simdArg0 }
     }
 
 /**
@@ -250,7 +245,7 @@ public fun mm256FmsubaddPs(a: M256, b: M256, c: M256): M256 =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_fnmadd_pd)
  */
-public fun mmFnmaddPd(a: M128d, b: M128d, c: M128d): M128d = simdFma(simdNeg(a), b, c)
+public fun mmFnmaddPd(a: M128d, b: M128d, c: M128d): M128d = run { val _simdArg0 = run { val _simdArg0 = a; _simdArg0 }; val _simdArg1 = b; val _simdArg2 = c; _simdArg0 }
 
 /**
  * Multiplies packed double-precision (64-bit) floating-point elements in `a`
@@ -258,7 +253,7 @@ public fun mmFnmaddPd(a: M128d, b: M128d, c: M128d): M128d = simdFma(simdNeg(a),
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_fnmadd_pd)
  */
-public fun mm256FnmaddPd(a: M256d, b: M256d, c: M256d): M256d = simdFma(simdNeg(a), b, c)
+public fun mm256FnmaddPd(a: M256d, b: M256d, c: M256d): M256d = run { val _simdArg0 = run { val _simdArg0 = a; _simdArg0 }; val _simdArg1 = b; val _simdArg2 = c; _simdArg0 }
 
 /**
  * Multiplies packed single-precision (32-bit) floating-point elements in `a`
@@ -266,7 +261,7 @@ public fun mm256FnmaddPd(a: M256d, b: M256d, c: M256d): M256d = simdFma(simdNeg(
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_fnmadd_ps)
  */
-public fun mmFnmaddPs(a: M128, b: M128, c: M128): M128 = simdFma(simdNeg(a), b, c)
+public fun mmFnmaddPs(a: M128, b: M128, c: M128): M128 = run { val _simdArg0 = run { val _simdArg0 = a; _simdArg0 }; val _simdArg1 = b; val _simdArg2 = c; _simdArg0 }
 
 /**
  * Multiplies packed single-precision (32-bit) floating-point elements in `a`
@@ -274,7 +269,7 @@ public fun mmFnmaddPs(a: M128, b: M128, c: M128): M128 = simdFma(simdNeg(a), b, 
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_fnmadd_ps)
  */
-public fun mm256FnmaddPs(a: M256, b: M256, c: M256): M256 = simdFma(simdNeg(a), b, c)
+public fun mm256FnmaddPs(a: M256, b: M256, c: M256): M256 = run { val _simdArg0 = run { val _simdArg0 = a; _simdArg0 }; val _simdArg1 = b; val _simdArg2 = c; _simdArg0 }
 
 /**
  * Multiplies the lower double-precision (64-bit) floating-point elements in
@@ -284,7 +279,7 @@ public fun mm256FnmaddPs(a: M256, b: M256, c: M256): M256 = simdFma(simdNeg(a), 
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_fnmadd_sd)
  */
-public fun mmFnmaddSd(a: M128d, b: M128d, c: M128d): M128d = simdInsert(a, 0, fma(mmCvtsdF64(a), -mmCvtsdF64(b), mmCvtsdF64(c)))
+public fun mmFnmaddSd(a: M128d, b: M128d, c: M128d): M128d = run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = fma(mmCvtsdF64(a), -mmCvtsdF64(b), mmCvtsdF64(c)); _simdArg0 }
 
 /**
  * Multiplies the lower single-precision (32-bit) floating-point elements in
@@ -294,7 +289,7 @@ public fun mmFnmaddSd(a: M128d, b: M128d, c: M128d): M128d = simdInsert(a, 0, fm
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_fnmadd_ss)
  */
-public fun mmFnmaddSs(a: M128, b: M128, c: M128): M128 = simdInsert(a, 0, fma(mmCvtssF32(a), -mmCvtssF32(b), mmCvtssF32(c)))
+public fun mmFnmaddSs(a: M128, b: M128, c: M128): M128 = run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = fma(mmCvtssF32(a), -mmCvtssF32(b), mmCvtssF32(c)); _simdArg0 }
 
 /**
  * Multiplies packed double-precision (64-bit) floating-point elements in `a`
@@ -303,7 +298,7 @@ public fun mmFnmaddSs(a: M128, b: M128, c: M128): M128 = simdInsert(a, 0, fma(mm
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_fnmsub_pd)
  */
-public fun mmFnmsubPd(a: M128d, b: M128d, c: M128d): M128d = simdFma(simdNeg(a), b, simdNeg(c))
+public fun mmFnmsubPd(a: M128d, b: M128d, c: M128d): M128d = run { val _simdArg0 = run { val _simdArg0 = a; _simdArg0 }; val _simdArg1 = b; val _simdArg2 = run { val _simdArg0 = c; _simdArg0 }; _simdArg0 }
 
 /**
  * Multiplies packed double-precision (64-bit) floating-point elements in `a`
@@ -312,7 +307,7 @@ public fun mmFnmsubPd(a: M128d, b: M128d, c: M128d): M128d = simdFma(simdNeg(a),
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_fnmsub_pd)
  */
-public fun mm256FnmsubPd(a: M256d, b: M256d, c: M256d): M256d = simdFma(simdNeg(a), b, simdNeg(c))
+public fun mm256FnmsubPd(a: M256d, b: M256d, c: M256d): M256d = run { val _simdArg0 = run { val _simdArg0 = a; _simdArg0 }; val _simdArg1 = b; val _simdArg2 = run { val _simdArg0 = c; _simdArg0 }; _simdArg0 }
 
 /**
  * Multiplies packed single-precision (32-bit) floating-point elements in `a`
@@ -321,7 +316,7 @@ public fun mm256FnmsubPd(a: M256d, b: M256d, c: M256d): M256d = simdFma(simdNeg(
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_fnmsub_ps)
  */
-public fun mmFnmsubPs(a: M128, b: M128, c: M128): M128 = simdFma(simdNeg(a), b, simdNeg(c))
+public fun mmFnmsubPs(a: M128, b: M128, c: M128): M128 = run { val _simdArg0 = run { val _simdArg0 = a; _simdArg0 }; val _simdArg1 = b; val _simdArg2 = run { val _simdArg0 = c; _simdArg0 }; _simdArg0 }
 
 /**
  * Multiplies packed single-precision (32-bit) floating-point elements in `a`
@@ -330,7 +325,7 @@ public fun mmFnmsubPs(a: M128, b: M128, c: M128): M128 = simdFma(simdNeg(a), b, 
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_fnmsub_ps)
  */
-public fun mm256FnmsubPs(a: M256, b: M256, c: M256): M256 = simdFma(simdNeg(a), b, simdNeg(c))
+public fun mm256FnmsubPs(a: M256, b: M256, c: M256): M256 = run { val _simdArg0 = run { val _simdArg0 = a; _simdArg0 }; val _simdArg1 = b; val _simdArg2 = run { val _simdArg0 = c; _simdArg0 }; _simdArg0 }
 
 /**
  * Multiplies the lower double-precision (64-bit) floating-point elements in
@@ -341,7 +336,7 @@ public fun mm256FnmsubPs(a: M256, b: M256, c: M256): M256 = simdFma(simdNeg(a), 
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_fnmsub_sd)
  */
-public fun mmFnmsubSd(a: M128d, b: M128d, c: M128d): M128d = simdInsert(a, 0, fma(mmCvtsdF64(a), -mmCvtsdF64(b), -mmCvtsdF64(c)))
+public fun mmFnmsubSd(a: M128d, b: M128d, c: M128d): M128d = run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = fma(mmCvtsdF64(a), -mmCvtsdF64(b), -mmCvtsdF64(c)); _simdArg0 }
 
 /**
  * Multiplies the lower single-precision (32-bit) floating-point elements in
@@ -352,4 +347,4 @@ public fun mmFnmsubSd(a: M128d, b: M128d, c: M128d): M128d = simdInsert(a, 0, fm
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_fnmsub_ss)
  */
-public fun mmFnmsubSs(a: M128, b: M128, c: M128): M128 = simdInsert(a, 0, fma(mmCvtssF32(a), -mmCvtssF32(b), -mmCvtssF32(c)))
+public fun mmFnmsubSs(a: M128, b: M128, c: M128): M128 = run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = fma(mmCvtssF32(a), -mmCvtssF32(b), -mmCvtssF32(c)); _simdArg0 }

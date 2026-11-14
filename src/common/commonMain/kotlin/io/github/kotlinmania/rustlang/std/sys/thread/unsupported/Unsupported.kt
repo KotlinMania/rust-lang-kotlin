@@ -10,7 +10,7 @@ import io.github.kotlinmania.rustlang.std.thread.lifecycle.ThreadInit
 
 // Silence dead code warnings for the otherwise unused ThreadInit.init() call.
 public fun dummyInitCall(init: ThreadInit) {
-    drop(init.init())
+    (init.init()).let { }
 }
 
 public open class Thread(
@@ -28,13 +28,13 @@ public open class Thread(
 
     public companion object {
         // unchecked: see thread.Builder.spawnUnchecked for safety requirements
-        public fun new(stack: Int, init: ThreadInit): Result<Thread, Error> = Result.Err(Error.UNSUPPORTED_PLATFORM)
+        public fun new(stack: Int, init: ThreadInit): Result<Thread, Error> = Result.Err(io.github.kotlinmania.rustlang.std.io.Error.UNSUPPORTED_PLATFORM)
     }
 }
 
 public val DEFAULT_MIN_STACK_SIZE: Int = 64 * 1024
 
-public fun availableParallelism(): Result<NonZero<Int>, Error> = Result.Err(Error.UNKNOWN_THREAD_COUNT)
+public fun availableParallelism(): Result<NonZero<Int>, Error> = Result.Err(io.github.kotlinmania.rustlang.std.io.Error.UNKNOWN_THREAD_COUNT)
 
 public fun currentOsId(): ULong? = null
 

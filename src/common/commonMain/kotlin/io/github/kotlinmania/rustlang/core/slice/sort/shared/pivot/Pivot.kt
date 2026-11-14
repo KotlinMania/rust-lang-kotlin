@@ -1,6 +1,7 @@
 // port-lint: source slice/sort/shared/pivot.rs
 package io.github.kotlinmania.rustlang.core.slice.sort.shared.pivot
 
+import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
 import io.github.kotlinmania.rustlang.core.intrinsics.abortImmediate
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout

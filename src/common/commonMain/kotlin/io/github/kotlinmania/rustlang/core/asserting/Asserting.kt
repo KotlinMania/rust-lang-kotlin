@@ -4,7 +4,6 @@ package io.github.kotlinmania.rustlang.core.asserting
 import io.github.kotlinmania.rustlang.core.fmt.Formatter
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
-import io.github.kotlinmania.rustlang.core.num.f128.consts.E
 import io.github.kotlinmania.rustlang.core.result.Result
 
 // ***** TryCapture - Generic *****

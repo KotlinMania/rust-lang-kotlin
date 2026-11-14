@@ -28,7 +28,7 @@ public val PPC_FEATURE2_ARCH_3_00: Int = 0x00800000
 /**
  * Try to read the features from the auxiliary vector.
  */
-internal fun detectFeatures(): Initializer {
+public fun detectFeatures(): Initializer {
     val value = Cache.Initializer.default()
     val enableFeature =
         { value1: Initializer, f, enable ->

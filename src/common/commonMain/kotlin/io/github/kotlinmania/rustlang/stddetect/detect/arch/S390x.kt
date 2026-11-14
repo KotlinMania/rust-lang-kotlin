@@ -12,7 +12,7 @@ import io.github.kotlinmania.rustlang.stddetect.detect.checkFor
  * PLEASE: do not use this, it is an implementation detail subject
  * to change.
  */
-internal sealed class Feature {
+public sealed class Feature {
     /**
      * s390x concurrent-functions facility
      */
@@ -110,7 +110,7 @@ internal sealed class Feature {
      */
     public data object VectorPackedDecimalEnhancement3 : Feature()
 
-    internal open fun toStr(): String =
+    public open fun toStr(): String =
         when (this) {
             Feature.concurrentFunctions -> "concurrent-functions"
             Feature.deflateConversion -> "deflate-conversion"
@@ -139,9 +139,9 @@ internal sealed class Feature {
         }
 
     public companion object {
-        internal val ALL: List<Feature> = listOf(Feature::concurrentFunctions, Feature::deflateConversion, Feature::enhancedSort, Feature::guardedStorage, Feature::highWord, Feature::messageSecurityAssistExtension3, Feature::messageSecurityAssistExtension4, Feature::messageSecurityAssistExtension5, Feature::messageSecurityAssistExtension8, Feature::messageSecurityAssistExtension9, Feature::messageSecurityAssistExtension12, Feature::miscellaneousExtensions2, Feature::miscellaneousExtensions3, Feature::miscellaneousExtensions4, Feature::nnpAssist, Feature::transactionalExecution, Feature::vector, Feature::vectorEnhancements1, Feature::vectorEnhancements2, Feature::vectorEnhancements3, Feature::vectorPackedDecimal, Feature::vectorPackedDecimalEnhancement, Feature::vectorPackedDecimalEnhancement2, Feature::vectorPackedDecimalEnhancement3)
+        public val ALL: List<Feature> = listOf(Feature::concurrentFunctions, Feature::deflateConversion, Feature::enhancedSort, Feature::guardedStorage, Feature::highWord, Feature::messageSecurityAssistExtension3, Feature::messageSecurityAssistExtension4, Feature::messageSecurityAssistExtension5, Feature::messageSecurityAssistExtension8, Feature::messageSecurityAssistExtension9, Feature::messageSecurityAssistExtension12, Feature::miscellaneousExtensions2, Feature::miscellaneousExtensions3, Feature::miscellaneousExtensions4, Feature::nnpAssist, Feature::transactionalExecution, Feature::vector, Feature::vectorEnhancements1, Feature::vectorEnhancements2, Feature::vectorEnhancements3, Feature::vectorPackedDecimal, Feature::vectorPackedDecimalEnhancement, Feature::vectorPackedDecimalEnhancement2, Feature::vectorPackedDecimalEnhancement3)
 
-        internal fun fromStr(s: String): Result<Feature, Unit> =
+        public fun fromStr(s: String): Result<Feature, Unit> =
             when (s) {
                 "concurrent-functions" -> Result.Ok(Feature::concurrentFunctions)
                 "deflate-conversion" -> Result.Ok(Feature::deflateConversion)

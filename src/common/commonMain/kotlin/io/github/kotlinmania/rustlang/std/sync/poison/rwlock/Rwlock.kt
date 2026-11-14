@@ -582,7 +582,7 @@ public open class RwLock<T>(
          * val lock = RwLock.new(5)
          * ```
          */
-        public fun <T> new(t: T): RwLock<T> = RwLock(inner = io.github.kotlinmania.rustlang.std.sys.sync.rwlock.futex.RwLock.new(), poison = Flag.new(), data = UnsafeCell.new(t))
+        public fun <T> new(t: T): RwLock<T> = RwLock(inner = io.github.kotlinmania.rustlang.std.sys.sync.rwlock.new(), poison = Flag.new(), data = UnsafeCell.new(t))
 
         /**
          * Creates a new `RwLock<T>`, with the `Default` value for T.

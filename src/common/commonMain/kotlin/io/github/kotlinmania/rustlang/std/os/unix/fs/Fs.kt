@@ -1,14 +1,12 @@
 // port-lint: source os/unix/fs.rs
 package io.github.kotlinmania.rustlang.std.os.unix.fs
 
-import io.github.kotlinmania.libc.fuchsia.S_IFBLK
-import io.github.kotlinmania.libc.fuchsia.S_IFCHR
-import io.github.kotlinmania.libc.fuchsia.S_IFIFO
-import io.github.kotlinmania.libc.fuchsia.S_IFSOCK
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
-import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
-import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.libc.wasi.S_IFBLK
+import io.github.kotlinmania.rustlang.libc.wasi.S_IFCHR
+import io.github.kotlinmania.rustlang.libc.wasi.S_IFIFO
+import io.github.kotlinmania.rustlang.libc.wasi.S_IFSOCK
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.fs.DirBuilder
 import io.github.kotlinmania.rustlang.std.fs.DirEntry
@@ -17,6 +15,11 @@ import io.github.kotlinmania.rustlang.std.fs.FileType
 import io.github.kotlinmania.rustlang.std.fs.Metadata
 import io.github.kotlinmania.rustlang.std.fs.OpenOptions
 import io.github.kotlinmania.rustlang.std.fs.Permissions
+import io.github.kotlinmania.rustlang.std.io.IoSlice
+import io.github.kotlinmania.rustlang.std.io.IoSliceMut
+import io.github.kotlinmania.rustlang.std.io.defaultReadBuf
+import io.github.kotlinmania.rustlang.std.io.defaultReadVectored
+import io.github.kotlinmania.rustlang.std.io.defaultWriteVectored
 import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.os.fd.AsFd
 import io.github.kotlinmania.rustlang.std.path.Path
@@ -142,7 +145,7 @@ public interface FileExt {
             }
         }
         return if (!buf1.isEmpty()) {
-            Result.Err(Error.READ_EXACT_EOF)
+            Result.Err(io.github.kotlinmania.rustlang.std.io.Error.READ_EXACT_EOF)
         } else {
             Result.Ok(Unit)
         }
@@ -235,7 +238,7 @@ public interface FileExt {
             val n = buf.written() - prevWritten
             offset1 += n.toULong()
             if (n == 0) {
-                return Result.Err(Error.READ_EXACT_EOF)
+                return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.READ_EXACT_EOF)
             }
         }
         return Result.Ok(Unit)
@@ -355,7 +358,7 @@ public interface FileExt {
                 val matchVal = this.writeAt(buf1, offset1)
                 when {
                     matchVal is Result.Ok<*> && matchVal.value == 0 -> {
-                        return Result.Err(Error.WRITE_ALL_EOF)
+                        return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.WRITE_ALL_EOF)
                     }
                     matchVal is Result.Ok<*> -> {
                         val n = (matchVal as Result.Ok<*>).value

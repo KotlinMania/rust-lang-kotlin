@@ -1,10 +1,10 @@
 // port-lint: source iter/adapters/zip.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.zip
 
-import io.github.kotlinmania.rustlang.core.iter.InPlaceIterable
-import io.github.kotlinmania.rustlang.core.iter.SourceIter
-import io.github.kotlinmania.rustlang.core.iter.TrustedFused
-import io.github.kotlinmania.rustlang.core.iter.TrustedLen
+import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.InPlaceIterable
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedFused
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
@@ -291,7 +291,7 @@ public open class Zip<A, B>(
                 }
             }
 
-        internal fun <Item, A, B> new(a: A, b: B): Zip<A, B> = ZipImpl.new(a, b)
+        public fun <Item, A, B> new(a: A, b: B): Zip<A, B> = ZipImpl.new(a, b)
 
         public fun <A, B> newAB(a: A, b: B): Zip<A, B> = Zip(a = a, b = b, index = 0, len = 0)
 
@@ -441,7 +441,7 @@ public interface TrustedRandomAccessNoCoerce {
  *
  * Same requirements calling `getUnchecked` directly.
  */
-internal fun <Item, I> tryGetUnchecked(it: I, idx: Int): Item {
+public fun <Item, I> tryGetUnchecked(it: I, idx: Int): Item {
     // SAFETY: the caller must uphold the contract for
     // `Iterator.__iterator_get_unchecked`.
     return it.tryGetUnchecked(idx)

@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.core.ascii.asciichar
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.ascii.EscapeDefault
 import io.github.kotlinmania.rustlang.core.ascii.asciichar.AsciiChar.Apostrophe
+import io.github.kotlinmania.rustlang.core.ascii.asciichar.AsciiChar.Null
 import io.github.kotlinmania.rustlang.core.ascii.escapeDefault
 import io.github.kotlinmania.rustlang.core.char.isAsciiAlphabetic
 import io.github.kotlinmania.rustlang.core.char.isAsciiAlphanumeric

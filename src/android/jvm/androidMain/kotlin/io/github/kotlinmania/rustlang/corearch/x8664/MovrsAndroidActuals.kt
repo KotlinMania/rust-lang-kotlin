@@ -6,7 +6,7 @@ import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 
 private object X8664MovrsJniBridge {
     init {
-        System.loadLibrary("corearch_jni")
+        System.loadLibrary("kmcore_jni")
     }
 
     @JvmStatic

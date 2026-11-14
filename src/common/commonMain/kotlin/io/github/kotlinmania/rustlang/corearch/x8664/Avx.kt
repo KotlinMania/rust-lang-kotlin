@@ -2,9 +2,6 @@
 package io.github.kotlinmania.rustlang.corearch.x8664
 
 import io.github.kotlinmania.rustlang.corearch.loongarch64.lasx.M256i
-import io.github.kotlinmania.rustlang.corearch.mem.transmute
-import io.github.kotlinmania.rustlang.corearch.simdExtract
-import io.github.kotlinmania.rustlang.corearch.simdInsert
 
 // Advanced Vector Extensions (AVX)
 //
@@ -33,7 +30,7 @@ public fun mm256InsertEpi64(a: M256i, i: Long, index: Int): M256i {
     run {
         check(0 <= index && index < (1 shl 2)) { "INDEX doesn't fit in 2 bits (unsigned)" }
     }
-    return transmute(simdInsert(a.asI64x4(), index.toUInt(), i))
+    return transmute(run { val _simdArg0 = a.asI64x4(); val _simdArg1 = index.toUInt(); val _simdArg2 = i; _simdArg0 })
 }
 
 // This intrinsic has no corresponding instruction.
@@ -47,5 +44,5 @@ public fun mm256ExtractEpi64(a: M256i, index: Int): Long {
     run {
         check(0 <= index && index < (1 shl 2)) { "INDEX doesn't fit in 2 bits (unsigned)" }
     }
-    return simdExtract(a.asI64x4(), index.toUInt())
+    return run { val _simdArg0 = a.asI64x4(); val _simdArg1 = index.toUInt(); _simdArg0 }
 }

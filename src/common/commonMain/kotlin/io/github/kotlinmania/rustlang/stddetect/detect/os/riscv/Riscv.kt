@@ -26,7 +26,7 @@ import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.s390x.cache
  * inconsistencies is the responsibility of the feature detection logic and
  * its provider(s).
  */
-internal fun implyFeatures(value: cache.Initializer): cache.Initializer {
+public fun implyFeatures(value: cache.Initializer): cache.Initializer {
     while (true) {
         // Expect that the optimizer turns repeated operations into
         // a fewer number of bit-manipulation operations.

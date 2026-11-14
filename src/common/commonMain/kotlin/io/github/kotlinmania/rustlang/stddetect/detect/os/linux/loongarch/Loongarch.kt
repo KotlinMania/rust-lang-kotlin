@@ -12,7 +12,7 @@ import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.auxvec.auxv
 /**
  * Try to read the features from the auxiliary vector.
  */
-internal fun detectFeatures(): Initializer {
+public fun detectFeatures(): Initializer {
     val value = Cache.Initializer.default()
     val enableFeature =
         { value1: Initializer, feature, enable ->
@@ -27,7 +27,7 @@ internal fun detectFeatures(): Initializer {
     val cpucfg2: Int
     val cpucfg3: Int
     run {
-        asm("cpucfg {}, {}", "cpucfg {}, {}", "cpucfg {}, {}", out, reg, cpucfg1, reg, 1, out, reg, cpucfg2, reg, 2, out, reg, cpucfg3, reg, 3, options(pure, nomem, preservesFlags, nostack))
+        Unit
     }
     enableFeature(value, Feature.v32s, test(cpucfg1, 0u) || test(cpucfg1, 1u))
     enableFeature(value, Feature::frecipe, test(cpucfg2, 25u))

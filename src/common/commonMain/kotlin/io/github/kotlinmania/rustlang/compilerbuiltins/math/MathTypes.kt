@@ -1,6 +1,5 @@
 package io.github.kotlinmania.rustlang.compilerbuiltins.math
 
-import io.github.kotlinmania.rustlang.compilerbuiltins.math.libmmath.Erf
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
@@ -190,7 +189,7 @@ public fun cosh(x: Double): Double = io.github.kotlinmania.rustlang.compilerbuil
 
 public fun coshf(n: Float): Float = io.github.kotlinmania.rustlang.compilerbuiltins.math.libmmath.coshf(n)
 
-public fun erf(x: Double): Double = Erf(x)
+public fun erf(x: Double): Double = io.github.kotlinmania.rustlang.compilerbuiltins.math.libmmath.erf(x)
 
 public fun erfc(x: Double): Double = io.github.kotlinmania.rustlang.compilerbuiltins.math.libmmath.erfc(x)
 

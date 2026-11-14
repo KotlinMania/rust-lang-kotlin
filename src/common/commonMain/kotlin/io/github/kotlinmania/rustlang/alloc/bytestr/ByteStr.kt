@@ -11,7 +11,6 @@ import io.github.kotlinmania.rustlang.core.borrow.Borrow
 import io.github.kotlinmania.rustlang.core.borrow.BorrowMut
 import io.github.kotlinmania.rustlang.core.bytestr.ByteStr
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
-import io.github.kotlinmania.rustlang.core.iter.adapters.zip.index
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
@@ -69,11 +68,11 @@ public open class ByteString internal constructor(
 
     public open fun clone(): ByteString = ByteString(value, fieldLayout)
 
-    internal open fun asBytes(): List<UByte> = this.value
+    public open fun asBytes(): List<UByte> = this.value
 
-    internal open fun asBytestr(): ByteStr = ByteStr.new(this.value)
+    public open fun asBytestr(): ByteStr = ByteStr.new(this.value)
 
-    internal open fun asMutBytestr(): ByteStr = ByteStr.fromBytesMut(this.value)
+    public open fun asMutBytestr(): ByteStr = ByteStr.fromBytesMut(this.value)
 
     /**
      * Try to get a `String` representation of the `ByteString`, if it is

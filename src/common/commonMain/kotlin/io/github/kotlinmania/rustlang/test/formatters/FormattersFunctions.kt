@@ -2,7 +2,7 @@ package io.github.kotlinmania.rustlang.test.formatters
 
 import io.github.kotlinmania.rustlang.test.TestName
 
-internal fun writeStderrDelimiter(testOutput: List<UByte>, testName: TestName) {
+public fun writeStderrDelimiter(testOutput: List<UByte>, testName: TestName) {
     run {
         val matchVal = testOutput.last()
         when {

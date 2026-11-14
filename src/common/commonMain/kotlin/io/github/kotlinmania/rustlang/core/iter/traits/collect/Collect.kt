@@ -1,7 +1,7 @@
 // port-lint: source iter/traits/collect.rs
 package io.github.kotlinmania.rustlang.core.iter.traits.collect
 
-import io.github.kotlinmania.rustlang.core.iter.traits.TrustedLen
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.drop
 
 public typealias Item<I> = I.Item

@@ -1,7 +1,5 @@
 package io.github.kotlinmania.rustlang.corearch.aarch64.neon
 
-import io.github.kotlinmania.rustlang.core.fmt.Formatter
-import io.github.kotlinmania.rustlang.core.fmt.Result
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -9,8 +7,6 @@ import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.corearch.Mem
-import io.github.kotlinmania.rustlang.corearch.mem.transmute
 import io.github.kotlinmania.rustlang.corearch.simd.Simd
 import io.github.kotlinmania.rustlang.corearch.simd.debugSimdFinish
 
@@ -64,9 +60,9 @@ public open class Float64x1T(
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: Double): Float64x1T = Simd.simdSplat(value)
+        public fun splat(value: Double): Float64x1T = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Double>): Float64x1T = Mem.transmute(simd)
+        public fun from(simd: Simd<Double>): Float64x1T = transmute(simd)
     }
 }
 
@@ -120,9 +116,9 @@ public open class Float64x2T(
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: Double): Float64x2T = Simd.simdSplat(value)
+        public fun splat(value: Double): Float64x2T = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Double>): Float64x2T = Mem.transmute(simd)
+        public fun from(simd: Simd<Double>): Float64x2T = transmute(simd)
     }
 }
 

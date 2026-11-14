@@ -2,9 +2,6 @@
 package io.github.kotlinmania.rustlang.corearch.x8664
 
 import io.github.kotlinmania.rustlang.corearch.loongarch64.lsx.M128i
-import io.github.kotlinmania.rustlang.corearch.mem.transmute
-import io.github.kotlinmania.rustlang.corearch.simdExtract
-import io.github.kotlinmania.rustlang.corearch.simdInsert
 
 // `i686`s Streaming SIMD Extensions 4.1 (SSE4.1)
 
@@ -17,7 +14,7 @@ public fun mmExtractEpi64(a: M128i, imm1: Int): Long {
     run {
         check(0 <= imm1 && imm1 < (1 shl 1)) { "IMM1 doesn't fit in 1 bits (unsigned)" }
     }
-    return simdExtract(a.asI64x2(), imm1.toUInt())
+    return run { val _simdArg0 = a.asI64x2(); val _simdArg1 = imm1.toUInt(); _simdArg0 }
 }
 
 /**
@@ -30,5 +27,5 @@ public fun mmInsertEpi64(a: M128i, i: Long, imm1: Int): M128i {
     run {
         check(0 <= imm1 && imm1 < (1 shl 1)) { "IMM1 doesn't fit in 1 bits (unsigned)" }
     }
-    return transmute(simdInsert(a.asI64x2(), imm1.toUInt(), i))
+    return transmute(run { val _simdArg0 = a.asI64x2(); val _simdArg1 = imm1.toUInt(); val _simdArg2 = i; _simdArg0 })
 }

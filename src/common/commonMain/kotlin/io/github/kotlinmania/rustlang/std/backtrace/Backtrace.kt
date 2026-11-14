@@ -1,18 +1,13 @@
 // port-lint: source backtrace.rs
 package io.github.kotlinmania.rustlang.std.backtrace
 
-import io.github.kotlinmania.backtracers.BacktraceFmt
-import io.github.kotlinmania.backtracers.Frame
-import io.github.kotlinmania.backtracers.PrintFmt
-import io.github.kotlinmania.backtracers.SymbolName
-import io.github.kotlinmania.backtracers.resolveFrameUnsynchronized
-import io.github.kotlinmania.backtracers.traceUnsynchronized
+import io.github.kotlinmania.rustlang.backtrace.types.BytesOrWideString
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU8
-import io.github.kotlinmania.rustlang.std.backtracers.BytesOrWideString
 import io.github.kotlinmania.rustlang.std.env.currentDir
+import io.github.kotlinmania.rustlang.std.env.variable
 import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Relaxed
 import io.github.kotlinmania.rustlang.std.sync.lazylock.LazyLock
 import io.github.kotlinmania.rustlang.std.sys.backtrace.lock
@@ -208,13 +203,13 @@ public open class Backtrace(
             }
             val enabled =
                 run {
-                    val matchVal = env.variable("RUST_LIB_BACKTRACE")
+                    val matchVal = variable("RUST_LIB_BACKTRACE")
                     when (matchVal) { is Result.Ok<*> -> {
                         val s = matchVal.value
                         s != "0"
                     }; is Result.Err<*> -> {
                         run {
-                            val matchVal1 = env.variable("RUST_BACKTRACE")
+                            val matchVal1 = variable("RUST_BACKTRACE")
                             when (matchVal1) { is Result.Ok<*> -> {
                                 val s1 = matchVal1.value
                                 s1 != "0"
@@ -453,9 +448,9 @@ public sealed class BytesOrWide {
     }
 }
 
-internal typealias LazyResolve = () -> Capture
+public typealias LazyResolve = () -> Capture
 
-internal fun lazyResolve(capture: Capture): LazyResolve =
+public fun lazyResolve(capture: Capture): LazyResolve =
     {
         // Use the global backtrace lock to synchronize this as it's a
         // requirement of the `backtrace` crate, and then actually resolve

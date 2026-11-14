@@ -7,7 +7,7 @@ import io.github.kotlinmania.rustlang.libm.math.expf.expf
 public val K: Int = 235
 
 // expf(x)/2 for x >= log(FLT_MAX), slightly better than 0.5f*expf(x/2)*expf(x/2)
-internal fun kExpo2f(x: kotlin.Float): kotlin.Float {
+public fun kExpo2f(x: kotlin.Float): kotlin.Float {
     val kLn2 = kotlin.Float.fromBits(0x4322e3bcu.toInt())
     // note that k is odd and scale*scale overflows
     val scale = kotlin.Float.fromBits((((0x7f + K / 2).toUInt()) shl 23).toInt())

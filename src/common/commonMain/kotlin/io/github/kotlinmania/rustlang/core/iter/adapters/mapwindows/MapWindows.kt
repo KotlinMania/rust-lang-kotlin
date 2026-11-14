@@ -9,6 +9,8 @@ import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.num.rustCheckedMul
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
+import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
@@ -109,7 +111,7 @@ public open class Buffer<T>(
     public var start: Int,
 )
 
-internal fun <Item, I, F> MapWindows.Companion.new(iter: I, f: F, n: Int): MapWindows<I, F, N> {
+public fun <Item, I, F> MapWindows.Companion.new(iter: I, f: F, n: Int): MapWindows<I, F, N> {
     check(n != 0) { "array in `Iterator::map_windows` must contain more than 0 elements" }
     // Only ZST arrays' length can be so large.
     if (I.Item.IS_ZST) {

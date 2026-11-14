@@ -2,10 +2,10 @@
 package io.github.kotlinmania.rustlang.core.mem.typeinfo
 
 import io.github.kotlinmania.rustlang.core.RustTypeId
-import io.github.kotlinmania.rustlang.core.any.TypeId
 import io.github.kotlinmania.rustlang.core.intrinsics.fieldRepresentingTypeActualTypeId
 import io.github.kotlinmania.rustlang.core.intrinsics.fieldRepresentingTypeName
 import io.github.kotlinmania.rustlang.core.intrinsics.fieldRepresentingTypeOffset
+import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeId
 import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeIdArrayLen
 import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeIdElementTy
 import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeIdFieldRepresentingType
@@ -50,7 +50,7 @@ public open class Type(
          * be able to break invariants that other `TypeId` consuming crates
          * may have assumed to hold.
          */
-        public fun <T> of(): Type = TypeId<T>().info()
+        public fun <T> of(): Type = typeId<T>().info()
     }
 }
 
@@ -58,7 +58,7 @@ public open class Type(
  * Info of a trait implementation, you can retrieve the vtable with [Self.getVtable]
  */
 public open class TraitImpl<T>(
-    internal var vtable: DynMetadata<T>,
+    public var vtable: DynMetadata<T>,
 ) {
     /**
      * Gets the raw vtable for type reflection mapping
@@ -80,7 +80,7 @@ public fun RustTypeId.info(): Type = typeIdTypeOf(this)
  * This is identical to [TypeId.of] but without the static scope bound. It will be removed
  * in the future.
  */
-public fun <T> of(): RustTypeId = TypeId<T>()
+public fun <T> of(): RustTypeId = typeId<T>()
 
 /**
  * Compile-time type information.

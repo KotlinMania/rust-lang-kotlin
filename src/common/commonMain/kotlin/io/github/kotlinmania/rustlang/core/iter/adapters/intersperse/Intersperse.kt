@@ -83,7 +83,7 @@ public open class Intersperse<I>(
     }
 
     public companion object {
-        internal fun <Item, I> new(iter: I, separator: Item): Intersperse<I> = Intersperse(started = false, separator = separator, nextItem = null, iter = iter)
+        public fun <Item, I> new(iter: I, separator: Item): Intersperse<I> = Intersperse(started = false, separator = separator, nextItem = null, iter = iter)
     }
 }
 
@@ -140,7 +140,7 @@ public open class IntersperseWith<I, G>(
     public open fun <B> fold(init: B, f: (B, I.Item) -> B): B = intersperseFold(this.iter, init, f, this.separator, this.started, this.nextItem)
 
     public companion object {
-        internal fun <Item, I> new(iter: I, separator: () -> I.Item): IntersperseWith<I, G> = IntersperseWith(started = false, separator = separator, nextItem = null, iter = iter)
+        public fun <Item, I> new(iter: I, separator: () -> I.Item): IntersperseWith<I, G> = IntersperseWith(started = false, separator = separator, nextItem = null, iter = iter)
     }
 }
 

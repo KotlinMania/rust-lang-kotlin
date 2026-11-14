@@ -17,7 +17,7 @@ import io.github.kotlinmania.rustlang.corearch.simd.U8x16
 import io.github.kotlinmania.rustlang.corearch.simd.U8x32
 import io.github.kotlinmania.rustlang.corearch.simd.U8x64
 
-// The host must provide the C companion wrapper exports in import module corearch.
+// The host must provide the C companion wrapper exports in import module kmcore.
 public actual fun vpmulhrsw(a: I16x32, b: I16x32): I16x32 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512bwVpmulhrsw")
 

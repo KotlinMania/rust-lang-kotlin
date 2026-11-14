@@ -147,7 +147,7 @@ public open class SystemRng : Rng {
     public open fun clone(): SystemRng = SystemRng()
 
     public open fun fillBytes(bytes: MutableList<UByte>) {
-        io.github.kotlinmania.rustlang.std.sys.random.apple.fillBytes(bytes)
+        sys.fillBytes(bytes)
     }
 
     public companion object {

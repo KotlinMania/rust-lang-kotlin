@@ -1,6 +1,7 @@
 // port-lint: source slice/sort/select.rs
 package io.github.kotlinmania.rustlang.core.slice.sort.select
 
+import io.github.kotlinmania.rustlang.core.mem.swap
 import io.github.kotlinmania.rustlang.core.num.rustSaturatingMul
 import io.github.kotlinmania.rustlang.core.slice.sort.shared.pivot.choosePivot
 import io.github.kotlinmania.rustlang.core.slice.sort.shared.smallsort.insertionSortShiftLeft
@@ -17,7 +18,7 @@ import io.github.kotlinmania.rustlang.core.slice.sort.unstable.quicksort.partiti
 /**
  * Reorders the slice such that the element at `index` is at its final sorted position.
  */
-internal fun <T> partitionAtIndex(v: MutableList<T>, index: Int, isLess: (T, T) -> Boolean): Triple<MutableList<T>, T, MutableList<T>> {
+public fun <T> partitionAtIndex(v: MutableList<T>, index: Int, isLess: (T, T) -> Boolean): Triple<MutableList<T>, T, MutableList<T>> {
     val len = v.size
     // Puts a lower limit of 1 on `len`.
     if (index >= len) {

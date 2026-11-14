@@ -4,10 +4,11 @@ package io.github.kotlinmania.rustlang.alloc.io.copy.specialization
 import io.github.kotlinmania.rustlang.alloc.io.copy.CopyState
 import io.github.kotlinmania.rustlang.alloc.io.read.Read
 import io.github.kotlinmania.rustlang.core.io.error.Result
+import io.github.kotlinmania.rustlang.core.io.write.Write
 
 // Provides specialization for `io.copy`.
 
-internal interface SpecCopyInner {
+public interface SpecCopyInner {
     /**
      * The implementation of `io.copy` that can rely on platform specific specialization
      * provided by `libstd`.

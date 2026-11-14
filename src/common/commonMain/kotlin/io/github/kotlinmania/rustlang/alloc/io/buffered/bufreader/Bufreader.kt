@@ -1,6 +1,7 @@
 // port-lint: source io/buffered/bufreader.rs
 package io.github.kotlinmania.rustlang.alloc.io.buffered.bufreader
 
+import io.github.kotlinmania.rustlang.alloc.io.Error
 import io.github.kotlinmania.rustlang.alloc.io.buffered.bufreader.buffer.Buffer
 import io.github.kotlinmania.rustlang.alloc.io.bufread.BufRead
 import io.github.kotlinmania.rustlang.alloc.io.read.DEFAULT_BUF_SIZE

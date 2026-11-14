@@ -4,8 +4,6 @@ package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.U128
-import io.github.kotlinmania.rustlang.core.fmt.Formatter
-import io.github.kotlinmania.rustlang.core.fmt.Result
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
@@ -20,8 +18,6 @@ import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
-import io.github.kotlinmania.rustlang.corearch.Mem
-import io.github.kotlinmania.rustlang.corearch.mem.transmute
 import io.github.kotlinmania.rustlang.corearch.simd.F16x16
 import io.github.kotlinmania.rustlang.corearch.simd.F16x32
 import io.github.kotlinmania.rustlang.corearch.simd.F16x8
@@ -65,19 +61,19 @@ import io.github.kotlinmania.rustlang.corearch.simd.debugSimdFinish
  */
 public open class X87F80 internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<io.github.kotlinmania.rustlang.core.num.imp.x87f80.X87F80>,
+    public val fieldLayout: TypeLayout<X87F80>,
 ) {
-    public var field0: io.github.kotlinmania.rustlang.core.num.imp.x87f80.X87F80
+    public var field0: X87F80
         get() = value
         set(v) {
             value = v
         }
 
-    public var value: io.github.kotlinmania.rustlang.core.num.imp.x87f80.X87F80
+    public var value: X87F80
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(value: io.github.kotlinmania.rustlang.core.num.imp.x87f80.X87F80, fieldLayout: TypeLayout<io.github.kotlinmania.rustlang.core.num.imp.x87f80.X87F80>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(value: X87F80, fieldLayout: TypeLayout<X87F80>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<X87F80> = TransparentTypeLayout(fieldLayout, { ptr, layout -> X87F80(ptr, layout) }, { it.value })
 
@@ -99,9 +95,9 @@ public open class X87F80 internal constructor(
     }
 
     public companion object {
-        public operator fun invoke(value: io.github.kotlinmania.rustlang.core.num.imp.x87f80.X87F80, fieldLayout: TypeLayout<io.github.kotlinmania.rustlang.core.num.imp.x87f80.X87F80>): X87F80 = X87F80(value, fieldLayout)
+        public operator fun invoke(value: X87F80, fieldLayout: TypeLayout<X87F80>): X87F80 = X87F80(value, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<io.github.kotlinmania.rustlang.core.num.imp.x87f80.X87F80>): X87F80 = X87F80(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<X87F80>): X87F80 = X87F80(fieldStorage, fieldLayout)
 
         /**
          * Creates a floating point value from its representation as a byte array in native endian.
@@ -181,21 +177,21 @@ public open class M128i(
 
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "__m128i", this.asArray())
 
-    internal open fun asU8x16(): U8x16 = transmute(this)
+    public open fun asU8x16(): U8x16 = transmute(this)
 
-    internal open fun asU16x8(): U16x8 = transmute(this)
+    public open fun asU16x8(): U16x8 = transmute(this)
 
-    internal open fun asU32x4(): U32x4 = transmute(this)
+    public open fun asU32x4(): U32x4 = transmute(this)
 
-    internal open fun asU64x2(): U64x2 = transmute(this)
+    public open fun asU64x2(): U64x2 = transmute(this)
 
-    internal open fun asI8x16(): I8x16 = transmute(this)
+    public open fun asI8x16(): I8x16 = transmute(this)
 
-    internal open fun asI16x8(): I16x8 = transmute(this)
+    public open fun asI16x8(): I16x8 = transmute(this)
 
-    internal open fun asI32x4(): I32x4 = transmute(this)
+    public open fun asI32x4(): I32x4 = transmute(this)
 
-    internal open fun asI64x2(): I64x2 = transmute(this)
+    public open fun asI64x2(): I64x2 = transmute(this)
 
     public companion object {
         public fun typeLayout(): TypeLayout<M128i> =
@@ -221,9 +217,9 @@ public open class M128i(
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: Long): M128i = Simd.simdSplat(value)
+        public fun splat(value: Long): M128i = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Long>): M128i = Mem.transmute(simd)
+        public fun from(simd: Simd<Long>): M128i = transmute(simd)
     }
 }
 
@@ -283,7 +279,7 @@ public open class M128(
 
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "__m128", this.asArray())
 
-    internal open fun asF32x4(): F32x4 = transmute(this)
+    public open fun asF32x4(): F32x4 = transmute(this)
 
     public companion object {
         public fun typeLayout(): TypeLayout<M128> =
@@ -309,9 +305,9 @@ public open class M128(
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: Float): M128 = Simd.simdSplat(value)
+        public fun splat(value: Float): M128 = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Float>): M128 = Mem.transmute(simd)
+        public fun from(simd: Simd<Float>): M128 = transmute(simd)
     }
 }
 
@@ -371,7 +367,7 @@ public open class M128d(
 
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "__m128d", this.asArray())
 
-    internal open fun asF64x2(): F64x2 = transmute(this)
+    public open fun asF64x2(): F64x2 = transmute(this)
 
     public companion object {
         public fun typeLayout(): TypeLayout<M128d> =
@@ -397,9 +393,9 @@ public open class M128d(
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: Double): M128d = Simd.simdSplat(value)
+        public fun splat(value: Double): M128d = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Double>): M128d = Mem.transmute(simd)
+        public fun from(simd: Simd<Double>): M128d = transmute(simd)
     }
 }
 
@@ -463,21 +459,21 @@ public open class M256i(
 
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "__m256i", this.asArray())
 
-    internal open fun asU8x32(): U8x32 = transmute(this)
+    public open fun asU8x32(): U8x32 = transmute(this)
 
-    internal open fun asU16x16(): U16x16 = transmute(this)
+    public open fun asU16x16(): U16x16 = transmute(this)
 
-    internal open fun asU32x8(): U32x8 = transmute(this)
+    public open fun asU32x8(): U32x8 = transmute(this)
 
-    internal open fun asU64x4(): U64x4 = transmute(this)
+    public open fun asU64x4(): U64x4 = transmute(this)
 
-    internal open fun asI8x32(): I8x32 = transmute(this)
+    public open fun asI8x32(): I8x32 = transmute(this)
 
-    internal open fun asI16x16(): I16x16 = transmute(this)
+    public open fun asI16x16(): I16x16 = transmute(this)
 
-    internal open fun asI32x8(): I32x8 = transmute(this)
+    public open fun asI32x8(): I32x8 = transmute(this)
 
-    internal open fun asI64x4(): I64x4 = transmute(this)
+    public open fun asI64x4(): I64x4 = transmute(this)
 
     public companion object {
         public fun typeLayout(): TypeLayout<M256i> =
@@ -503,9 +499,9 @@ public open class M256i(
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: Long): M256i = Simd.simdSplat(value)
+        public fun splat(value: Long): M256i = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Long>): M256i = Mem.transmute(simd)
+        public fun from(simd: Simd<Long>): M256i = transmute(simd)
     }
 }
 
@@ -565,7 +561,7 @@ public open class M256(
 
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "__m256", this.asArray())
 
-    internal open fun asF32x8(): F32x8 = transmute(this)
+    public open fun asF32x8(): F32x8 = transmute(this)
 
     public companion object {
         public fun typeLayout(): TypeLayout<M256> =
@@ -591,9 +587,9 @@ public open class M256(
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: Float): M256 = Simd.simdSplat(value)
+        public fun splat(value: Float): M256 = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Float>): M256 = Mem.transmute(simd)
+        public fun from(simd: Simd<Float>): M256 = transmute(simd)
     }
 }
 
@@ -653,7 +649,7 @@ public open class M256d(
 
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "__m256d", this.asArray())
 
-    internal open fun asF64x4(): F64x4 = transmute(this)
+    public open fun asF64x4(): F64x4 = transmute(this)
 
     public companion object {
         public fun typeLayout(): TypeLayout<M256d> =
@@ -679,9 +675,9 @@ public open class M256d(
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: Double): M256d = Simd.simdSplat(value)
+        public fun splat(value: Double): M256d = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Double>): M256d = Mem.transmute(simd)
+        public fun from(simd: Simd<Double>): M256d = transmute(simd)
     }
 }
 
@@ -735,21 +731,21 @@ public open class M512i(
 
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "__m512i", this.asArray())
 
-    internal open fun asU8x64(): U8x64 = transmute(this)
+    public open fun asU8x64(): U8x64 = transmute(this)
 
-    internal open fun asU16x32(): U16x32 = transmute(this)
+    public open fun asU16x32(): U16x32 = transmute(this)
 
-    internal open fun asU32x16(): U32x16 = transmute(this)
+    public open fun asU32x16(): U32x16 = transmute(this)
 
-    internal open fun asU64x8(): U64x8 = transmute(this)
+    public open fun asU64x8(): U64x8 = transmute(this)
 
-    internal open fun asI8x64(): I8x64 = transmute(this)
+    public open fun asI8x64(): I8x64 = transmute(this)
 
-    internal open fun asI16x32(): I16x32 = transmute(this)
+    public open fun asI16x32(): I16x32 = transmute(this)
 
-    internal open fun asI32x16(): I32x16 = transmute(this)
+    public open fun asI32x16(): I32x16 = transmute(this)
 
-    internal open fun asI64x8(): I64x8 = transmute(this)
+    public open fun asI64x8(): I64x8 = transmute(this)
 
     public companion object {
         public fun typeLayout(): TypeLayout<M512i> =
@@ -775,9 +771,9 @@ public open class M512i(
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: Long): M512i = Simd.simdSplat(value)
+        public fun splat(value: Long): M512i = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Long>): M512i = Mem.transmute(simd)
+        public fun from(simd: Simd<Long>): M512i = transmute(simd)
     }
 }
 
@@ -827,7 +823,7 @@ public open class M512(
 
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "__m512", this.asArray())
 
-    internal open fun asF32x16(): F32x16 = transmute(this)
+    public open fun asF32x16(): F32x16 = transmute(this)
 
     public companion object {
         public fun typeLayout(): TypeLayout<M512> =
@@ -853,9 +849,9 @@ public open class M512(
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: Float): M512 = Simd.simdSplat(value)
+        public fun splat(value: Float): M512 = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Float>): M512 = Mem.transmute(simd)
+        public fun from(simd: Simd<Float>): M512 = transmute(simd)
     }
 }
 
@@ -905,7 +901,7 @@ public open class M512d(
 
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "__m512d", this.asArray())
 
-    internal open fun asF64x8(): F64x8 = transmute(this)
+    public open fun asF64x8(): F64x8 = transmute(this)
 
     public companion object {
         public fun typeLayout(): TypeLayout<M512d> =
@@ -931,9 +927,9 @@ public open class M512d(
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: Double): M512d = Simd.simdSplat(value)
+        public fun splat(value: Double): M512d = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Double>): M512d = Mem.transmute(simd)
+        public fun from(simd: Simd<Double>): M512d = transmute(simd)
     }
 }
 
@@ -973,13 +969,13 @@ public open class M128bh(
 
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "__m128bh", this.asArray())
 
-    internal open fun asU16x8(): U16x8 = transmute(this)
+    public open fun asU16x8(): U16x8 = transmute(this)
 
-    internal open fun asU32x4(): U32x4 = transmute(this)
+    public open fun asU32x4(): U32x4 = transmute(this)
 
-    internal open fun asI16x8(): I16x8 = transmute(this)
+    public open fun asI16x8(): I16x8 = transmute(this)
 
-    internal open fun asI32x4(): I32x4 = transmute(this)
+    public open fun asI32x4(): I32x4 = transmute(this)
 
     public companion object {
         public fun typeLayout(): TypeLayout<M128bh> =
@@ -1005,9 +1001,9 @@ public open class M128bh(
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: UShort): M128bh = Simd.simdSplat(value)
+        public fun splat(value: UShort): M128bh = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<UShort>): M128bh = Mem.transmute(simd)
+        public fun from(simd: Simd<UShort>): M128bh = transmute(simd)
     }
 }
 
@@ -1048,13 +1044,13 @@ public open class M256bh(
 
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "__m256bh", this.asArray())
 
-    internal open fun asU16x16(): U16x16 = transmute(this)
+    public open fun asU16x16(): U16x16 = transmute(this)
 
-    internal open fun asU32x8(): U32x8 = transmute(this)
+    public open fun asU32x8(): U32x8 = transmute(this)
 
-    internal open fun asI16x16(): I16x16 = transmute(this)
+    public open fun asI16x16(): I16x16 = transmute(this)
 
-    internal open fun asI32x8(): I32x8 = transmute(this)
+    public open fun asI32x8(): I32x8 = transmute(this)
 
     public companion object {
         public fun typeLayout(): TypeLayout<M256bh> =
@@ -1080,9 +1076,9 @@ public open class M256bh(
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: UShort): M256bh = Simd.simdSplat(value)
+        public fun splat(value: UShort): M256bh = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<UShort>): M256bh = Mem.transmute(simd)
+        public fun from(simd: Simd<UShort>): M256bh = transmute(simd)
     }
 }
 
@@ -1123,13 +1119,13 @@ public open class M512bh(
 
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "__m512bh", this.asArray())
 
-    internal open fun asU16x32(): U16x32 = transmute(this)
+    public open fun asU16x32(): U16x32 = transmute(this)
 
-    internal open fun asU32x16(): U32x16 = transmute(this)
+    public open fun asU32x16(): U32x16 = transmute(this)
 
-    internal open fun asI16x32(): I16x32 = transmute(this)
+    public open fun asI16x32(): I16x32 = transmute(this)
 
-    internal open fun asI32x16(): I32x16 = transmute(this)
+    public open fun asI32x16(): I32x16 = transmute(this)
 
     public companion object {
         public fun typeLayout(): TypeLayout<M512bh> =
@@ -1155,9 +1151,9 @@ public open class M512bh(
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: UShort): M512bh = Simd.simdSplat(value)
+        public fun splat(value: UShort): M512bh = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<UShort>): M512bh = Mem.transmute(simd)
+        public fun from(simd: Simd<UShort>): M512bh = transmute(simd)
     }
 }
 
@@ -1198,7 +1194,7 @@ public open class M128h(
 
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "__m128h", this.asArray())
 
-    internal open fun asF16x8(): F16x8 = transmute(this)
+    public open fun asF16x8(): F16x8 = transmute(this)
 
     public companion object {
         public fun typeLayout(): TypeLayout<M128h> =
@@ -1224,9 +1220,9 @@ public open class M128h(
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: F16): M128h = Simd.simdSplat(value)
+        public fun splat(value: F16): M128h = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<F16>): M128h = Mem.transmute(simd)
+        public fun from(simd: Simd<F16>): M128h = transmute(simd)
     }
 }
 
@@ -1267,7 +1263,7 @@ public open class M256h(
 
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "__m256h", this.asArray())
 
-    internal open fun asF16x16(): F16x16 = transmute(this)
+    public open fun asF16x16(): F16x16 = transmute(this)
 
     public companion object {
         public fun typeLayout(): TypeLayout<M256h> =
@@ -1293,9 +1289,9 @@ public open class M256h(
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: F16): M256h = Simd.simdSplat(value)
+        public fun splat(value: F16): M256h = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<F16>): M256h = Mem.transmute(simd)
+        public fun from(simd: Simd<F16>): M256h = transmute(simd)
     }
 }
 
@@ -1336,7 +1332,7 @@ public open class M512h(
 
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "__m512h", this.asArray())
 
-    internal open fun asF16x32(): F16x32 = transmute(this)
+    public open fun asF16x32(): F16x32 = transmute(this)
 
     public companion object {
         public fun typeLayout(): TypeLayout<M512h> =
@@ -1362,9 +1358,9 @@ public open class M512h(
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: F16): M512h = Simd.simdSplat(value)
+        public fun splat(value: F16): M512h = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<F16>): M512h = Mem.transmute(simd)
+        public fun from(simd: Simd<F16>): M512h = transmute(simd)
     }
 }
 

@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.core.iter.adapters.cycle
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
 
 /**
@@ -139,6 +140,6 @@ public open class Cycle<I>(
                 }
             }
 
-        internal fun <I> new(iter: I, cloneIFn: (I) -> I = { it }): Cycle<I> = Cycle(orig = cloneIFn(iter), iter = iter)
+        public fun <I> new(iter: I, cloneIFn: (I) -> I = { it }): Cycle<I> = Cycle(orig = cloneIFn(iter), iter = iter)
     }
 }

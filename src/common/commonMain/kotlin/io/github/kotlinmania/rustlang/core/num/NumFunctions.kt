@@ -3,6 +3,7 @@
 package io.github.kotlinmania.rustlang.core.num
 
 import io.github.kotlinmania.rustlang.core.ascii.EscapeDefault
+import io.github.kotlinmania.rustlang.core.ascii.escapeDefault
 import io.github.kotlinmania.rustlang.core.char.isAscii
 import io.github.kotlinmania.rustlang.core.char.isAsciiAlphabetic
 import io.github.kotlinmania.rustlang.core.char.isAsciiAlphanumeric
@@ -19,8 +20,6 @@ import io.github.kotlinmania.rustlang.core.char.toAsciiUppercase
 import io.github.kotlinmania.rustlang.core.convert.BoundedCastFromInt
 import io.github.kotlinmania.rustlang.core.convert.CheckedCastFromInt
 import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
-import io.github.kotlinmania.rustlang.core.intrinsics.CarryingMulAdd
-import io.github.kotlinmania.rustlang.core.intrinsics.CarrylessMul
 import io.github.kotlinmania.rustlang.core.intrinsics.addWithOverflow
 import io.github.kotlinmania.rustlang.core.intrinsics.disjointBitor
 import io.github.kotlinmania.rustlang.core.intrinsics.exactDiv
@@ -42,7 +41,9 @@ import io.github.kotlinmania.rustlang.core.io.util.Empty
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
+import io.github.kotlinmania.rustlang.core.num.IntErrorKind.*
 import io.github.kotlinmania.rustlang.core.num.error.ParseIntError
 import io.github.kotlinmania.rustlang.core.num.imp.intbits.U128
 import io.github.kotlinmania.rustlang.core.num.imp.intlog10.I128
@@ -2214,7 +2215,7 @@ public fun Byte.carryingMul(rhs: Byte, carry: Byte): Pair<UByte, Byte> = Byte.ca
  * }
  * ```
  */
-public fun Byte.carryingMulAdd(rhs: Byte, carry: Byte, add: Byte): Pair<UByte, Byte> = CarryingMulAdd(this, rhs, carry, add)
+public fun Byte.carryingMulAdd(rhs: Byte, carry: Byte, add: Byte): Pair<UByte, Byte> = io.github.kotlinmania.rustlang.core.intrinsics.carryingMulAdd(this, rhs, carry, add)
 
 /**
  * Calculates the divisor when `self` is divided by `rhs`.
@@ -5376,7 +5377,7 @@ public fun Short.carryingMul(rhs: Short, carry: Short): Pair<UShort, Short> = Sh
  * }
  * ```
  */
-public fun Short.carryingMulAdd(rhs: Short, carry: Short, add: Short): Pair<UShort, Short> = CarryingMulAdd(this, rhs, carry, add)
+public fun Short.carryingMulAdd(rhs: Short, carry: Short, add: Short): Pair<UShort, Short> = io.github.kotlinmania.rustlang.core.intrinsics.carryingMulAdd(this, rhs, carry, add)
 
 /**
  * Calculates the divisor when `self` is divided by `rhs`.
@@ -8508,7 +8509,7 @@ public fun Int.carryingMul(rhs: Int, carry: Int): Pair<UInt, Int> = Int.carrying
  * }
  * ```
  */
-public fun Int.carryingMulAdd(rhs: Int, carry: Int, add: Int): Pair<UInt, Int> = CarryingMulAdd(this, rhs, carry, add)
+public fun Int.carryingMulAdd(rhs: Int, carry: Int, add: Int): Pair<UInt, Int> = io.github.kotlinmania.rustlang.core.intrinsics.carryingMulAdd(this, rhs, carry, add)
 
 /**
  * Calculates the divisor when `self` is divided by `rhs`.
@@ -11640,7 +11641,7 @@ public fun Long.carryingMul(rhs: Long, carry: Long): Pair<ULong, Long> = Long.ca
  * }
  * ```
  */
-public fun Long.carryingMulAdd(rhs: Long, carry: Long, add: Long): Pair<ULong, Long> = CarryingMulAdd(this, rhs, carry, add)
+public fun Long.carryingMulAdd(rhs: Long, carry: Long, add: Long): Pair<ULong, Long> = io.github.kotlinmania.rustlang.core.intrinsics.carryingMulAdd(this, rhs, carry, add)
 
 /**
  * Calculates the divisor when `self` is divided by `rhs`.
@@ -14780,7 +14781,7 @@ public fun I128.carryingMul(rhs: I128, carry: I128): Pair<U128, I128> = I128.car
  * }
  * ```
  */
-public fun I128.carryingMulAdd(rhs: I128, carry: I128, add: I128): Pair<U128, I128> = CarryingMulAdd(this, rhs, carry, add)
+public fun I128.carryingMulAdd(rhs: I128, carry: I128, add: I128): Pair<U128, I128> = io.github.kotlinmania.rustlang.core.intrinsics.carryingMulAdd(this, rhs, carry, add)
 
 /**
  * Calculates the divisor when `self` is divided by `rhs`.
@@ -16551,7 +16552,7 @@ public fun UByte.uncheckedFunnelShr(right: UByte, n: UInt): UByte {
  * public fun doctestEntry() {}
  * ```
  */
-public fun UByte.carrylessMul(rhs: UByte): UByte = CarrylessMul(this, rhs)
+public fun UByte.carrylessMul(rhs: UByte): UByte = io.github.kotlinmania.rustlang.core.intrinsics.carrylessMul(this, rhs)
 
 /**
  * Reverses the byte order of the integer.
@@ -18445,7 +18446,7 @@ public fun UByte.carryingMul(rhs: UByte, carry: UByte): Pair<UByte, UByte> = UBy
  * }
  * ```
  */
-public fun UByte.carryingMulAdd(rhs: UByte, carry: UByte, add: UByte): Pair<UByte, UByte> = CarryingMulAdd(this, rhs, carry, add)
+public fun UByte.carryingMulAdd(rhs: UByte, carry: UByte, add: UByte): Pair<UByte, UByte> = io.github.kotlinmania.rustlang.core.intrinsics.carryingMulAdd(this, rhs, carry, add)
 
 /**
  * Calculates the divisor when `self` is divided by `rhs`.
@@ -19253,7 +19254,7 @@ public fun UByte.isAscii(): Boolean = this <= 127u.toUByte()
  * If the value of this byte is within the ASCII range, returns it as an
  * [ASCII character](ascii.Char).  Otherwise, returns `None`.
  */
-public fun UByte.asAscii(): io.github.kotlinmania.rustlang.core.ascii.Char? = Char.fromU8(this)
+public fun UByte.asAscii(): io.github.kotlinmania.rustlang.core.ascii.Char? = io.github.kotlinmania.rustlang.core.ascii.Char.fromU8(this)
 
 /**
  * Converts this byte to an [ASCII character](ascii.Char), without
@@ -19266,7 +19267,7 @@ public fun UByte.asAscii(): io.github.kotlinmania.rustlang.core.ascii.Char? = Ch
 public fun UByte.asAsciiUnchecked(): io.github.kotlinmania.rustlang.core.ascii.Char {
     assertUnsafePrecondition(checkLibraryUb, "as_ascii_unchecked requires that the byte is valid ASCII", it, this, it, isAscii)
     // SAFETY: the caller promised that this byte is ASCII.
-    return Char.fromU8Unchecked(this)
+    return io.github.kotlinmania.rustlang.core.ascii.Char.fromU8Unchecked(this)
 }
 
 /**
@@ -19316,7 +19317,7 @@ public fun UByte.toAsciiLowercase(): UByte {
 /**
  * Assumes self is ascii
  */
-internal fun UByte.asciiChangeCaseUnchecked(): UByte = this xor ASCII_CASE_MASK
+public fun UByte.asciiChangeCaseUnchecked(): UByte = this xor ASCII_CASE_MASK
 
 /**
  * Checks that two values are an ASCII case-insensitive match.
@@ -19819,7 +19820,7 @@ public fun UByte.isAsciiControl(): Boolean =
  */
 public fun UByte.escapeAscii(): EscapeDefault = escapeDefault(this)
 
-internal fun UByte.isUtf8CharBoundary(): Boolean {
+public fun UByte.isUtf8CharBoundary(): Boolean {
     // This is bit magic equivalent to: b < 128 || b >= 192
     return (this.toByte()) >= (-0x40).toByte()
 }
@@ -20360,7 +20361,7 @@ public fun UShort.uncheckedFunnelShr(right: UShort, n: UInt): UShort {
  * public fun doctestEntry() {}
  * ```
  */
-public fun UShort.carrylessMul(rhs: UShort): UShort = CarrylessMul(this, rhs)
+public fun UShort.carrylessMul(rhs: UShort): UShort = io.github.kotlinmania.rustlang.core.intrinsics.carrylessMul(this, rhs)
 
 /**
  * Reverses the byte order of the integer.
@@ -22254,7 +22255,7 @@ public fun UShort.carryingMul(rhs: UShort, carry: UShort): Pair<UShort, UShort> 
  * }
  * ```
  */
-public fun UShort.carryingMulAdd(rhs: UShort, carry: UShort, add: UShort): Pair<UShort, UShort> = CarryingMulAdd(this, rhs, carry, add)
+public fun UShort.carryingMulAdd(rhs: UShort, carry: UShort, add: UShort): Pair<UShort, UShort> = io.github.kotlinmania.rustlang.core.intrinsics.carryingMulAdd(this, rhs, carry, add)
 
 /**
  * Calculates the divisor when `self` is divided by `rhs`.
@@ -23579,7 +23580,7 @@ public fun UInt.uncheckedFunnelShr(right: UInt, n: UInt): UInt {
  * public fun doctestEntry() {}
  * ```
  */
-public fun UInt.carrylessMul(rhs: UInt): UInt = CarrylessMul(this, rhs)
+public fun UInt.carrylessMul(rhs: UInt): UInt = io.github.kotlinmania.rustlang.core.intrinsics.carrylessMul(this, rhs)
 
 /**
  * Reverses the byte order of the integer.
@@ -25473,7 +25474,7 @@ public fun UInt.carryingMul(rhs: UInt, carry: UInt): Pair<UInt, UInt> = UInt.car
  * }
  * ```
  */
-public fun UInt.carryingMulAdd(rhs: UInt, carry: UInt, add: UInt): Pair<UInt, UInt> = CarryingMulAdd(this, rhs, carry, add)
+public fun UInt.carryingMulAdd(rhs: UInt, carry: UInt, add: UInt): Pair<UInt, UInt> = io.github.kotlinmania.rustlang.core.intrinsics.carryingMulAdd(this, rhs, carry, add)
 
 /**
  * Calculates the divisor when `self` is divided by `rhs`.
@@ -26773,7 +26774,7 @@ public fun ULong.uncheckedFunnelShr(right: ULong, n: UInt): ULong {
  * public fun doctestEntry() {}
  * ```
  */
-public fun ULong.carrylessMul(rhs: ULong): ULong = CarrylessMul(this, rhs)
+public fun ULong.carrylessMul(rhs: ULong): ULong = io.github.kotlinmania.rustlang.core.intrinsics.carrylessMul(this, rhs)
 
 /**
  * Reverses the byte order of the integer.
@@ -28667,7 +28668,7 @@ public fun ULong.carryingMul(rhs: ULong, carry: ULong): Pair<ULong, ULong> = ULo
  * }
  * ```
  */
-public fun ULong.carryingMulAdd(rhs: ULong, carry: ULong, add: ULong): Pair<ULong, ULong> = CarryingMulAdd(this, rhs, carry, add)
+public fun ULong.carryingMulAdd(rhs: ULong, carry: ULong, add: ULong): Pair<ULong, ULong> = io.github.kotlinmania.rustlang.core.intrinsics.carryingMulAdd(this, rhs, carry, add)
 
 /**
  * Calculates the divisor when `self` is divided by `rhs`.
@@ -29967,7 +29968,7 @@ public fun U128.uncheckedFunnelShr(right: U128, n: UInt): U128 {
  * public fun doctestEntry() {}
  * ```
  */
-public fun U128.carrylessMul(rhs: U128): U128 = CarrylessMul(this, rhs)
+public fun U128.carrylessMul(rhs: U128): U128 = io.github.kotlinmania.rustlang.core.intrinsics.carrylessMul(this, rhs)
 
 /**
  * Reverses the byte order of the integer.
@@ -31861,7 +31862,7 @@ public fun U128.carryingMul(rhs: U128, carry: U128): Pair<U128, U128> = U128.car
  * }
  * ```
  */
-public fun U128.carryingMulAdd(rhs: U128, carry: U128, add: U128): Pair<U128, U128> = CarryingMulAdd(this, rhs, carry, add)
+public fun U128.carryingMulAdd(rhs: U128, carry: U128, add: U128): Pair<U128, U128> = io.github.kotlinmania.rustlang.core.intrinsics.carryingMulAdd(this, rhs, carry, add)
 
 /**
  * Calculates the divisor when `self` is divided by `rhs`.
@@ -32883,7 +32884,7 @@ public fun Int.uncheckedFunnelShr(right: Int, n: UInt): Int {
  * public fun doctestEntry() {}
  * ```
  */
-public fun Int.carrylessMul(rhs: Int): Int = CarrylessMul(this, rhs)
+public fun Int.carrylessMul(rhs: Int): Int = io.github.kotlinmania.rustlang.core.intrinsics.carrylessMul(this, rhs)
 
 /**
  * Returns an integer with the bit locations specified by `mask` packed
@@ -33236,12 +33237,12 @@ public fun Int.carryingCarrylessMul(rhs: Int, carry: Int): Pair<Int, Int> {
 /**
  * Returns an `Int` where every byte is equal to `x`.
  */
-internal fun Int.Companion.repeatU8(x: UByte): Int = run { val bytesTmp0 = UByteArray((sizeOf<Int>(typeLayoutT = PrimitiveLayouts.USIZE64)).toInt()) { x }; ((bytesTmp0[3].toInt() shl 24) or (bytesTmp0[2].toInt() shl 16) or (bytesTmp0[1].toInt() shl 8) or bytesTmp0[0].toInt()) }
+public fun Int.Companion.repeatU8(x: UByte): Int = run { val bytesTmp0 = UByteArray((sizeOf<Int>(typeLayoutT = PrimitiveLayouts.USIZE64)).toInt()) { x }; ((bytesTmp0[3].toInt() shl 24) or (bytesTmp0[2].toInt() shl 16) or (bytesTmp0[1].toInt() shl 8) or bytesTmp0[0].toInt()) }
 
 /**
  * Returns an `Int` where every byte pair is equal to `x`.
  */
-internal fun Int.Companion.repeatU16(x: UShort): Int {
+public fun Int.Companion.repeatU16(x: UShort): Int {
     var r = 0
     var i = 0
     while (i < sizeOf<Int>(typeLayoutT = PrimitiveLayouts.USIZE64)) {
@@ -33362,7 +33363,7 @@ public fun Int.Companion.fromAsciiBytes(src: List<UByte>): Result<Int, ParseIntE
  */
 public fun Int.Companion.fromAsciiBytesRadix(src: List<UByte>, radix: UInt): Result<Int, ParseIntError> = Int.fromAsciiBytesRadixImpl(src, radix)
 
-internal fun Int.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt): Result<Int, ParseIntError> {
+public fun Int.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt): Result<Int, ParseIntError> {
     if (2u > radix || radix > 36u) {
         fromAsciiBytesRadixPanic(radix)
     }
@@ -33594,7 +33595,7 @@ public fun Byte.Companion.fromAsciiBytes(src: List<UByte>): Result<Byte, ParseIn
  */
 public fun Byte.Companion.fromAsciiBytesRadix(src: List<UByte>, radix: UInt): Result<Byte, ParseIntError> = Byte.fromAsciiBytesRadixImpl(src, radix)
 
-internal fun Byte.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt): Result<Byte, ParseIntError> {
+public fun Byte.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt): Result<Byte, ParseIntError> {
     if (2u > radix || radix > 36u) {
         fromAsciiBytesRadixPanic(radix)
     }
@@ -33826,7 +33827,7 @@ public fun Short.Companion.fromAsciiBytes(src: List<UByte>): Result<Short, Parse
  */
 public fun Short.Companion.fromAsciiBytesRadix(src: List<UByte>, radix: UInt): Result<Short, ParseIntError> = Short.fromAsciiBytesRadixImpl(src, radix)
 
-internal fun Short.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt): Result<Short, ParseIntError> {
+public fun Short.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt): Result<Short, ParseIntError> {
     if (2u > radix || radix > 36u) {
         fromAsciiBytesRadixPanic(radix)
     }
@@ -34058,7 +34059,7 @@ public fun Long.Companion.fromAsciiBytes(src: List<UByte>): Result<Long, ParseIn
  */
 public fun Long.Companion.fromAsciiBytesRadix(src: List<UByte>, radix: UInt): Result<Long, ParseIntError> = Long.fromAsciiBytesRadixImpl(src, radix)
 
-internal fun Long.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt): Result<Long, ParseIntError> {
+public fun Long.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt): Result<Long, ParseIntError> {
     if (2u > radix || radix > 36u) {
         fromAsciiBytesRadixPanic(radix)
     }
@@ -34290,7 +34291,7 @@ public fun I128.Companion.fromAsciiBytes(src: List<UByte>): Result<I128, ParseIn
  */
 public fun I128.Companion.fromAsciiBytesRadix(src: List<UByte>, radix: UInt): Result<I128, ParseIntError> = I128.fromAsciiBytesRadixImpl(src, radix)
 
-internal fun I128.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt): Result<I128, ParseIntError> {
+public fun I128.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt): Result<I128, ParseIntError> {
     if (2u > radix || radix > 36u) {
         fromAsciiBytesRadixPanic(radix)
     }
@@ -34522,7 +34523,7 @@ public fun UByte.Companion.fromAsciiBytes(src: List<UByte>): Result<UByte, Parse
  */
 public fun UByte.Companion.fromAsciiBytesRadix(src: List<UByte>, radix: UInt): Result<UByte, ParseIntError> = UByte.fromAsciiBytesRadixImpl(src, radix)
 
-internal fun UByte.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt): Result<UByte, ParseIntError> {
+public fun UByte.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt): Result<UByte, ParseIntError> {
     if (2u > radix || radix > 36u) {
         fromAsciiBytesRadixPanic(radix)
     }
@@ -34754,7 +34755,7 @@ public fun UShort.Companion.fromAsciiBytes(src: List<UByte>): Result<UShort, Par
  */
 public fun UShort.Companion.fromAsciiBytesRadix(src: List<UByte>, radix: UInt): Result<UShort, ParseIntError> = UShort.fromAsciiBytesRadixImpl(src, radix)
 
-internal fun UShort.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt): Result<UShort, ParseIntError> {
+public fun UShort.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt): Result<UShort, ParseIntError> {
     if (2u > radix || radix > 36u) {
         fromAsciiBytesRadixPanic(radix)
     }
@@ -34986,7 +34987,7 @@ public fun UInt.Companion.fromAsciiBytes(src: List<UByte>): Result<UInt, ParseIn
  */
 public fun UInt.Companion.fromAsciiBytesRadix(src: List<UByte>, radix: UInt): Result<UInt, ParseIntError> = UInt.fromAsciiBytesRadixImpl(src, radix)
 
-internal fun UInt.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt): Result<UInt, ParseIntError> {
+public fun UInt.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt): Result<UInt, ParseIntError> {
     if (2u > radix || radix > 36u) {
         fromAsciiBytesRadixPanic(radix)
     }
@@ -35218,7 +35219,7 @@ public fun ULong.Companion.fromAsciiBytes(src: List<UByte>): Result<ULong, Parse
  */
 public fun ULong.Companion.fromAsciiBytesRadix(src: List<UByte>, radix: UInt): Result<ULong, ParseIntError> = ULong.fromAsciiBytesRadixImpl(src, radix)
 
-internal fun ULong.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt): Result<ULong, ParseIntError> {
+public fun ULong.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt): Result<ULong, ParseIntError> {
     if (2u > radix || radix > 36u) {
         fromAsciiBytesRadixPanic(radix)
     }
@@ -35450,7 +35451,7 @@ public fun U128.Companion.fromAsciiBytes(src: List<UByte>): Result<U128, ParseIn
  */
 public fun U128.Companion.fromAsciiBytesRadix(src: List<UByte>, radix: UInt): Result<U128, ParseIntError> = U128.fromAsciiBytesRadixImpl(src, radix)
 
-internal fun U128.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt): Result<U128, ParseIntError> {
+public fun U128.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt): Result<U128, ParseIntError> {
     if (2u > radix || radix > 36u) {
         fromAsciiBytesRadixPanic(radix)
     }

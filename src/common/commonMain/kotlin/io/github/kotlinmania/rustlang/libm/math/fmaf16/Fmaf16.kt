@@ -1,16 +1,6 @@
 // port-lint: source math/fmaf16.rs
 package io.github.kotlinmania.rustlang.libm.math.fmaf16
 
-import io.github.kotlinmania.f16.EXP_BIAS
-import io.github.kotlinmania.f16.EXP_MASK
-import io.github.kotlinmania.f16.EXP_MAX
-import io.github.kotlinmania.f16.IMPLICIT_BIT
-import io.github.kotlinmania.f16.INFINITY
-import io.github.kotlinmania.f16.NEG_INFINITY
-import io.github.kotlinmania.f16.SIGN_MASK
-import io.github.kotlinmania.f16.SIG_BITS
-import io.github.kotlinmania.f16.SIG_MASK
-import io.github.kotlinmania.f16.fromBits
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.num.rustLeadingZeros
 import io.github.kotlinmania.rustlang.libm.math.support.macros.cfgSelectNofmt
@@ -27,61 +17,61 @@ public val FIXED_FRAC_BITS: UInt = 43u
  * Computes `(x * y) + z`, rounded as one ternary operation (i.e. calculated with infinite precision).
  */
 public fun fmaf16(x: F16, y: F16, z: F16): F16 {
-    val ix = x.toBits() and SIGN_MASK.inv()
-    val iy = y.toBits() and SIGN_MASK.inv()
-    val iz = z.toBits() and SIGN_MASK.inv()
+    val ix = x.toBits() and (F16.SIGN_MASK.inv()).toUShort()
+    val iy = y.toBits() and (F16.SIGN_MASK.inv()).toUShort()
+    val iz = z.toBits() and (F16.SIGN_MASK.inv()).toUShort()
     val xneg = x.isSignNegative()
     val yneg = y.isSignNegative()
     val zneg = z.isSignNegative()
     val mneg = xneg xor yneg
-    if (ix == 0uL || ix >= EXP_MASK || iy == 0uL || iy >= EXP_MASK) {
+    if (ix == 0u.toUShort() || ix >= F16.EXP_MASK.toUShort() || iy == 0u.toUShort() || iy >= F16.EXP_MASK.toUShort()) {
         // Value will overflow, defer to non-fused operations.
         return x * y + z
     }
-    if (iz == 0uL) {
+    if (iz == 0u.toUShort()) {
         // Empty add component means we only need to multiply.
         return x * y
     }
-    if (iz >= EXP_MASK) {
+    if (iz >= F16.EXP_MASK.toUShort()) {
         // `z` is NaN or infinity, which sets the result.
         return z
     }
     var xexp = x.ex()
     var yexp = y.ex()
     var zexp = z.ex()
-    var xsig = ix and SIG_MASK
-    var ysig = iy and SIG_MASK
-    var zsig = iz and SIG_MASK
+    var xsig = ix and F16.SIG_MASK.toUShort()
+    var ysig = iy and F16.SIG_MASK.toUShort()
+    var zsig = iz and F16.SIG_MASK.toUShort()
     // If not subnormal, set the implicit bit
     if (xexp != 0) {
-        xsig = xsig or IMPLICIT_BIT
+        xsig = xsig or F16.IMPLICIT_BIT.toUShort()
     }
     if (yexp != 0) {
-        ysig = ysig or IMPLICIT_BIT
+        ysig = ysig or F16.IMPLICIT_BIT.toUShort()
     }
     if (zexp != 0) {
-        zsig = zsig or IMPLICIT_BIT
+        zsig = zsig or F16.IMPLICIT_BIT.toUShort()
     }
     // A biased exponent of 1 (min normal) and 0 (subnormal) have the same real exponent, so
     // adjust for this. Bias is now 14 rather than 15.
     xexp = xexp.saturatingSub(1)
     yexp = yexp.saturatingSub(1)
     zexp = zexp.saturatingSub(1)
-    val adjbias = EXP_BIAS - 1
+    val adjbias = F16.EXP_BIAS - F16.fromFloat(1.0f)
     // Exponent after multiplication. Bias doubles to 28.
     val mexp = xexp + yexp
-    val mbias = adjbias * 2
+    val mbias = adjbias * F16.fromFloat(2.0f)
     // Exit now if we know the result will overflow. We need to keep one beyond the infinite
     // exponent in case the addition rounds down to a finite number.
     //
     // Note that `EXP_MAX` (i.e. max finite) represents infinity here because our values are
     // acting with a bias of 14.
-    val infExp = mbias + EXP_MAX.unsigned()
-    if (mexp > infExp + 1) {
+    val infExp = mbias + F16.EXP_MAX.unsigned()
+    if (mexp > infExp + F16.fromFloat(1.0f)) {
         if (mneg) {
-            return NEG_INFINITY
+            return F16.NEG_INFINITY
         } else {
-            return INFINITY
+            return F16.INFINITY
         }
     }
     // Multiplication moves the explicit 1 from the 11th bit to the 22nd bit.
@@ -105,7 +95,7 @@ public fun fmaf16(x: F16, y: F16, z: F16): F16 {
         }
     }
     // Shift z to U21.43 as well.
-    val zshift = zexp + FIXED_FRAC_BITS - SIG_BITS - adjbias
+    val zshift = zexp + FIXED_FRAC_BITS - F16.SIG_BITS.toUInt() - adjbias.toUInt()
     val z64 = ULong.from(zsig) shl zshift.toInt()
     val sub = mneg xor zneg
     val rneg: Any?
@@ -140,11 +130,11 @@ public fun fmaf16(x: F16, y: F16, z: F16): F16 {
 public fun f16FromU2143(r64: ULong): F16 {
     var r641 = r64
     val extraBits = 64 - 16
-    val maxFiniteLz = 64 - SIG_BITS - extraBits - 1
+    val maxFiniteLz = F16.fromFloat(64.0f) - F16.SIG_BITS - extraBits - F16.fromFloat(1.0f)
     // 5
     // Check for overflow to infinity after addition, return before checking lz.
-    if (r641 and (ULong.MAX_VALUE shl (64 - maxFiniteLz).toInt()) != 0uL) {
-        return INFINITY
+    if (r641 and (ULong.MAX_VALUE shl (F16.fromFloat(64.0f) - maxFiniteLz).toInt()) != 0uL) {
+        return F16.INFINITY
     }
     // Shift the fixed point to floating point. There are 5 leading zeros before the largest
     // finite value's explicit one.
@@ -152,7 +142,7 @@ public fun f16FromU2143(r64: ULong): F16 {
     // We want `rexp` as one less than the actual value to be stored because it gets added to
     // a value with the leading one set. This value and the shift are clamped so subnormals
     // don't become normalized.
-    val expMaxBiasedM1 = EXP_MAX.unsigned() + EXP_BIAS - 1
+    val expMaxBiasedM1 = F16.EXP_MAX.unsigned() + F16.EXP_BIAS - F16.fromFloat(1.0f)
     // 29
     val lz = rustLeadingZeros(r641)
     val rexp = (expMaxBiasedM1 + maxFiniteLz).saturatingSub(lz)
@@ -167,7 +157,7 @@ public fun f16FromU2143(r64: ULong): F16 {
     // Truncate then round. Automatically accounts for subnormals with the unset explicit decimal
     // bit, since `rexp` is one less than the actual biased value.
     var r = (r641 shr extraBits.toInt()).toUShort()
-    r += (UShort.castFrom(rexp).toUInt() shl (SIG_BITS.toInt())).toUShort()
+    r += UShort.castFrom(rexp) shl F16.SIG_BITS.toInt()
     r += roundUp1
-    return fromBits(r)
+    return F16.fromBits(r)
 }

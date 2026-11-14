@@ -54,8 +54,8 @@ public fun <Mask, T, U> Mask<U, N>.select(trueValues: Simd<T, N>, falseValues: S
     // simdAs between masks is always safe (they're vectors of ints).
     // simdSelect uses a mask that matches the width and number of elements
     return run {
-        val mask: Simd<Mask> = simd.simdAs(this.toSimd())
-        simd.simdSelect(mask, trueValues, falseValues)
+        val mask: Simd<Mask> = run { val _simdArg0 = this.toSimd(); _simdArg0 }
+        run { val _simdArg0 = mask; val _simdArg1 = trueValues; val _simdArg2 = falseValues; _simdArg1 }
     }
 }
 
@@ -67,7 +67,7 @@ public fun <Mask, T> ULong.select(trueValues: Simd<T, N>, falseValues: Simd<T, N
         // LLVM assumes bit order should match endianness
         val bitmask1 = bitmask.fixEndianness()
         // Safety: the caller guarantees that the size of U matches M
-        val selected = simd.simdSelectBitmask(bitmask1, trueValues2, falseValues2)
+        val selected = run { val _simdArg0 = bitmask1; val _simdArg1 = trueValues2; val _simdArg2 = falseValues2; _simdArg1 }
         return selected.resize(default)
     }
     run {

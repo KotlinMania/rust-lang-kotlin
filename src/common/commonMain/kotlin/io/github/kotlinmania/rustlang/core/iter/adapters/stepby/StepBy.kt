@@ -2,8 +2,8 @@
 package io.github.kotlinmania.rustlang.core.iter.adapters.stepby
 
 import io.github.kotlinmania.rustlang.core.intrinsics.uncheckedAdd
-import io.github.kotlinmania.rustlang.core.iter.TrustedLen
 import io.github.kotlinmania.rustlang.core.iter.sources.fromfn.fromFn
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
@@ -12,6 +12,7 @@ import io.github.kotlinmania.rustlang.core.num.rustCheckedMul
 import io.github.kotlinmania.rustlang.core.num.rustSaturatingAdd
 import io.github.kotlinmania.rustlang.core.num.rustSaturatingMul
 import io.github.kotlinmania.rustlang.core.ops.range.Range
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.range.iter.RangeIter
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
@@ -278,7 +279,7 @@ public open class StepBy<I>(
                 }
             }
 
-        internal fun <I> new(iter: I, step: Int, setupIFn: (I, Int) -> Any?): StepBy<I> {
+        public fun <I> new(iter: I, step: Int, setupIFn: (I, Int) -> Any?): StepBy<I> {
             check(step != 0)
             val iter1 = setupIFn(iter, step)
             return StepBy(iter = iter1, stepMinusOne = step - 1, firstTake = true)

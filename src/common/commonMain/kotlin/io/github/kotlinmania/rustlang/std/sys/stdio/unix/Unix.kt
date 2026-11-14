@@ -1,18 +1,18 @@
 // port-lint: source sys/stdio/unix.rs
 package io.github.kotlinmania.rustlang.std.sys.stdio.unix
 
-import io.github.kotlinmania.libc.fuchsia.EBADF
-import io.github.kotlinmania.libc.hermit.STDERR_FILENO
-import io.github.kotlinmania.libc.hermit.STDIN_FILENO
-import io.github.kotlinmania.libc.hermit.STDOUT_FILENO
-import io.github.kotlinmania.rustlang.alloc.io.read.Read
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
-import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
-import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.libc.wasi.EBADF
+import io.github.kotlinmania.rustlang.libc.wasi.STDERR_FILENO
+import io.github.kotlinmania.rustlang.libc.wasi.STDIN_FILENO
+import io.github.kotlinmania.rustlang.libc.wasi.STDOUT_FILENO
+import io.github.kotlinmania.rustlang.std.io.Error
+import io.github.kotlinmania.rustlang.std.io.Read
+import io.github.kotlinmania.rustlang.std.io.Write
 import io.github.kotlinmania.rustlang.std.sys.fd.unix.FileDesc
 import io.github.kotlinmania.rustlang.std.sys.io.DEFAULT_BUF_SIZE
 

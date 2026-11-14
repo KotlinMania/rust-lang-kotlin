@@ -10,7 +10,6 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.num.f128.consts.E
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -832,18 +831,18 @@ public open class Request internal constructor(
  * module, although crates may also implement their own tags for more
  * complex types with internal scopes.
  */
-internal interface Type<out Reified>
+public interface Type<out Reified>
 
 /**
  * Similar to the [Type] trait, but represents a type which may be unsized (i.e., has a
  * `? Sized` bound). E.g., `String`.
  */
-internal interface MaybeSizedType<out Reified>
+public interface MaybeSizedType<out Reified>
 
 /**
  * Type-based tag for types bounded by `static`, i.e., with no borrowed elements.
  */
-internal open class Value<T>(
+public open class Value<T>(
     public var value: Unit,
 ) : Type<Any?, T> {
     public var field0: Unit
@@ -856,7 +855,7 @@ internal open class Value<T>(
 /**
  * Type-based tag similar to [Value] but which may be unsized (i.e., has a `? Sized` bound).
  */
-internal open class MaybeSizedValue<T>(
+public open class MaybeSizedValue<T>(
     public var value: Unit,
 ) : MaybeSizedType<Any?, T> {
     public var field0: Unit
@@ -870,7 +869,7 @@ internal open class MaybeSizedValue<T>(
  * Type-based tag for reference types (`T`, where T is represented by
  * `<I as MaybeSizedType<>>.Reified`.
  */
-internal open class Ref<I>(
+public open class Ref<I>(
     public var value: Unit,
 ) : Type<Any?, Reified> {
     public var field0: Unit
@@ -887,7 +886,7 @@ internal open class Ref<I>(
  * option. The type can be checked dynamically using `Tagged.tagId` and since this is statically
  * checked for the concrete type, there is some degree of type safety.
  */
-internal open class TaggedOption<I : Type<Any?>, Reified>(
+public open class TaggedOption<I : Type<Any?>, Reified> internal constructor(
     public val fieldStorage: MutPtr,
     public val fieldLayout: TypeLayout<Reified?>,
 ) : Erased {
@@ -901,12 +900,18 @@ internal open class TaggedOption<I : Type<Any?>, Reified>(
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    public constructor(value: Reified?, fieldLayout: TypeLayout<Reified?>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(value: Reified?, fieldLayout: TypeLayout<Reified?>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<TaggedOption<I, Reified>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> TaggedOption<I, Reified>(ptr, layout) }, { it.value })
+
+    public companion object {
+        public operator fun <I : Type<Any?>, Reified> invoke(value: Reified?, fieldLayout: TypeLayout<Reified?>): TaggedOption<I, Reified> = TaggedOption<I, Reified>(value, fieldLayout)
+
+        public fun <I : Type<Any?>, Reified> fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Reified?>): TaggedOption<I, Reified> = TaggedOption<I, Reified>(fieldStorage, fieldLayout)
+    }
 }
 
-internal fun <I : Type<Any?>> Tagged<TaggedOption<I, Reified>>.asRequest(): RustMutableReference<Request> {
+public fun <I : Type<Any?>> Tagged<TaggedOption<I, Reified>>.asRequest(): RustMutableReference<Request> {
     val erased = ((this as Any?) as Tagged<Erased>)
     // SAFETY: transmuting `Tagged<dynamic Erased<> + >` to `Request<>` is safe since
     // `Request` is repr(transparent).

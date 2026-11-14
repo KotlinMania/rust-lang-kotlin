@@ -48,4 +48,4 @@ import io.github.kotlinmania.rustlang.core.RustAny
  * }
  * ```
  */
-public typealias Result<T> = io.github.kotlinmania.rustlang.core.result.Result<T, RustAny>
+public typealias Result<T> = Result<T, RustAny>

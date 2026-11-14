@@ -47,15 +47,15 @@ public open class Builder(
     /**
      * A name for the thread-to-be, for identification in panic messages
      */
-    internal var name: String?,
+    public var name: String?,
     /**
      * The size of the stack for the spawned thread in bytes
      */
-    internal var stackSize: Int?,
+    public var stackSize: Int?,
     /**
      * Skip running and inheriting the thread spawn hooks
      */
-    internal var noHooks: Boolean,
+    public var noHooks: Boolean,
 ) {
     /**
      * Names the thread-to-be. Currently the name is used for identification

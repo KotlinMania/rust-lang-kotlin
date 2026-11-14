@@ -6,6 +6,7 @@ import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
 
 public typealias Source<I> = I.Source
@@ -39,7 +40,7 @@ public open class ArrayChunks<I> internal constructor(
     }
 }
 
-internal fun <Item, I> ArrayChunks.Companion.new(iter: I, n: Int): ArrayChunks<I, N> {
+public fun <Item, I> ArrayChunks.Companion.new(iter: I, n: Int): ArrayChunks<I, N> {
     check(n != 0) { "chunk size must be non-zero" }
     return ArrayChunks(iter = iter, remainder = null)
 }

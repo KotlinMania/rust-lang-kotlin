@@ -1,6 +1,7 @@
 package io.github.kotlinmania.rustlang.core.slice.sort.unstable
 
-import io.github.kotlinmania.rustlang.core.ops.RangeBounds
+import io.github.kotlinmania.rustlang.core.ops.range.RangeBounds
+import io.github.kotlinmania.rustlang.core.slice.index.range
 import io.github.kotlinmania.rustlang.core.slice.sort.select.partitionAtIndex
 import io.github.kotlinmania.rustlang.core.slice.sort.shared.findExistingRun
 import io.github.kotlinmania.rustlang.core.slice.sort.unstable.heapsort.heapsort

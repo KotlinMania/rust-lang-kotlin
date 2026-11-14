@@ -10,6 +10,9 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.copy
+import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
+import io.github.kotlinmania.rustlang.core.ptr.swapNonoverlapping
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 
 public typealias BufType = IntArray
@@ -23,7 +26,7 @@ public typealias BufType = IntArray
  *
  * The specified range must be valid for reading and writing.
  */
-internal fun <T> ptrRotate(left: Int, mid: MutPtr, right: Int, typeLayoutT: TypeLayout<T>) {
+public fun <T> ptrRotate(left: Int, mid: MutPtr, right: Int, typeLayoutT: TypeLayout<T>) {
     if (T.IS_ZST) {
         return
     }

@@ -29,7 +29,7 @@ public val S3: Double = -0.000198393348360966317347
 public val S4: Double = 0.0000027183114939898219064
 
 // 0x16cd878c3b46a7.0p-71
-internal fun kSinf(x: Double): kotlin.Float {
+public fun kSinf(x: Double): kotlin.Float {
     val z = x * x
     val w = z * z
     val r = S3 + z * S4

@@ -1,7 +1,7 @@
 // port-lint: source sys/thread_local/key/unix.rs
 package io.github.kotlinmania.rustlang.std.sys.threadlocal.key.unix
 
-import io.github.kotlinmania.rustlang.core.ffi.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
 import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts

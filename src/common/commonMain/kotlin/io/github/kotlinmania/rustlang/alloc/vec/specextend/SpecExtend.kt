@@ -7,7 +7,7 @@ import io.github.kotlinmania.rustlang.core.clone.TrivialClone
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 
 // Specialization trait used for Vec.extend
-internal interface SpecExtend<T, I> {
+public interface SpecExtend<T, I> {
     public fun specExtend(iter: I)
 }
 

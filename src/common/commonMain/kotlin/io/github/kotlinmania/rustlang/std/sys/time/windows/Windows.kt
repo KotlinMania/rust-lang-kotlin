@@ -7,14 +7,11 @@ import io.github.kotlinmania.rustlang.core.num.rustCheckedSub
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.time.Duration
 import io.github.kotlinmania.rustlang.std.sys.IntoInner
+import io.github.kotlinmania.rustlang.std.sys.c
 import io.github.kotlinmania.rustlang.std.sys.helpers.mulDivU64
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.Filetime
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.getSystemTimePreciseAsFileTime
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.time.INTERVALS_PER_SEC
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.time.checkedDur2intervals
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.time.intervals2dur
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.time.perfcounter.epsilon
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.time.perfcounter.frequency
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -54,7 +51,7 @@ public open class Instant(
         // On windows there's a threshold below which we consider two timestamps
         // equivalent due to measurement error. For more details + doc link,
         // check the docs on epsilon.
-        val epsilon = epsilon()
+        val epsilon = perfcounter.epsilon()
         return if (other.t > this.t && other.t - this.t <= epsilon) {
             Duration.new(0, 0)
         } else {
@@ -77,8 +74,8 @@ public open class Instant(
             // These relate to seconds by a factor of QueryPerformanceFrequency.
             // In order to keep unit conversions out of normal interval math, we
             // measure in QPC units and immediately convert to nanoseconds.
-            val freq = frequency().toULong()
-            val now = io.github.kotlinmania.rustlang.std.sys.pal.windows.time.perfcounter.now()
+            val freq = perfcounter.frequency().toULong()
+            val now = perfcounter.now()
             // We convert now to `ULong` to be able to use `Duration`.
             val instantNsec = mulDivU64(now.toULong(), NANOS_PER_SEC, freq)
             // We can add an arbitrary offset to shift the epoch of this clock. We do that to avoid
@@ -91,8 +88,8 @@ public open class Instant(
 }
 
 public open class SystemTime(
-    public var t: Filetime,
-) : IntoInner<Filetime> {
+    public var t: c.Filetime,
+) : IntoInner<c.Filetime> {
     public open fun clone(): SystemTime = SystemTime(t)
 
     public open fun intervals(): Long = (this.t.dwLowDateTime.toLong()) or ((this.t.dwHighDateTime.toLong()) shl 32)
@@ -131,7 +128,7 @@ public open class SystemTime(
         DebugStruct(f, "SystemTime").field("intervals", this.intervals()).finish()
     }
 
-    public override fun intoInner(): Filetime = this.t
+    public override fun intoInner(): c.Filetime = this.t
 
     public override fun hashCode(): Int {
         var state = 0
@@ -146,14 +143,14 @@ public open class SystemTime(
 
         public fun now(): SystemTime =
             run {
-                val t: SystemTime?  = null
-                getSystemTimePreciseAsFileTime(t!!.t)
+                val t: SystemTime  = SystemTime()
+                c.GetSystemTimePreciseAsFileTime(t.t)
                 t
             }
 
-        public fun fromIntervals(intervals: Long): SystemTime = SystemTime(t = Filetime(dwLowDateTime = intervals.toUInt(), dwHighDateTime = (intervals shr 32).toUInt()))
+        public fun fromIntervals(intervals: Long): SystemTime = SystemTime(t = c.Filetime(dwLowDateTime = intervals.toUInt(), dwHighDateTime = (intervals shr 32).toUInt()))
 
-        public fun from(t: Filetime): SystemTime = SystemTime(t = t)
+        public fun from(t: c.Filetime): SystemTime = SystemTime(t = t)
     }
 }
 

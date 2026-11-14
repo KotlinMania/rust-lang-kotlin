@@ -1,17 +1,20 @@
 // port-lint: source sys/time/unix.rs
 package io.github.kotlinmania.rustlang.std.sys.time.unix
 
-import io.github.kotlinmania.libc.fuchsia.CLOCK_MONOTONIC
-import io.github.kotlinmania.libc.fuchsia.CLOCK_REALTIME
-import io.github.kotlinmania.libc.fuchsia.ClockidT
-import io.github.kotlinmania.libc.unix.bsd.apple.CLOCK_UPTIME_RAW
-import io.github.kotlinmania.libc.unix.bsd.apple.KERN_SUCCESS
-import io.github.kotlinmania.libc.unix.bsd.apple.KernReturnT
 import io.github.kotlinmania.rustlang.core.U128
-import io.github.kotlinmania.rustlang.core.io.error.Error
+import io.github.kotlinmania.rustlang.core.intrinsics.kmAllocZeroed
+import io.github.kotlinmania.rustlang.core.intrinsics.kmDealloc
+import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.time.Duration
+import io.github.kotlinmania.rustlang.libc.helenos.CLOCK_MONOTONIC
+import io.github.kotlinmania.rustlang.libc.helenos.CLOCK_REALTIME
+import io.github.kotlinmania.rustlang.libc.helenos.ClockidT
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.CLOCK_UPTIME_RAW
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.KERN_SUCCESS
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.KernReturnT
+import io.github.kotlinmania.rustlang.std.io.Error
 import io.github.kotlinmania.rustlang.std.sys.AsInner
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.time.Timespec
 
@@ -43,7 +46,7 @@ public class DebugStruct(
 public val UNIX_EPOCH: SystemTime = SystemTime(t = Timespec.zero())
 
 public open class SystemTime(
-    internal var t: Timespec,
+    public var t: Timespec,
 ) {
     public open fun clone(): SystemTime = SystemTime(t)
 
@@ -89,7 +92,7 @@ public open class Instant(
         return Instant(t = (this.t.checkedSubDuration(other) ?: return null))
     }
 
-    internal open fun intoTimespec(): Timespec = this.t
+    public open fun intoTimespec(): Timespec = this.t
 
     /**
      * Returns `self` converted into units of `machAbsoluteTime`, or `None`
@@ -102,7 +105,7 @@ public open class Instant(
             public var numer: UInt,
             public var denom: UInt,
         )
-        fun machTimebaseInfo(info: MutPtr): KernReturnT = null as KernReturnT
+        fun machTimebaseInfo(info: MutPtr): KernReturnT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<KernReturnT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<KernReturnT>()).alignBytes)); val res = (ObjectSlotLayout<KernReturnT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<KernReturnT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<KernReturnT>()).alignBytes)); res }
         val secs = (ULong.tryFrom(this.t.tvSec).ok() ?: return null)
         val timebase = MachTimebaseInfo(numer = 0u, denom = 0u)
         check(machTimebaseInfo(timebase) == KERN_SUCCESS)
@@ -133,9 +136,9 @@ public open class Instant(
         // `CLOCK_UPTIME_RAW` is based on `machAbsoluteTime`, which is the
         // clock that all timeouts and deadlines are measured against inside
         // the kernel.
-        internal val CLOCK_ID: ClockidT = CLOCK_UPTIME_RAW
+        public val CLOCK_ID: ClockidT = CLOCK_UPTIME_RAW
 
-        internal val CLOCK_ID1: ClockidT = CLOCK_MONOTONIC
+        public val CLOCK_ID1: ClockidT = CLOCK_MONOTONIC
 
         public fun now(): Instant {
             // https://pubs.opengroup.org/onlinepubs/9799919799/functions/clockGetres.html

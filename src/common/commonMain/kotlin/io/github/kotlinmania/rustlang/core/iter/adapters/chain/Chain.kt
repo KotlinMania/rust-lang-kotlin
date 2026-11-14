@@ -1,8 +1,9 @@
 // port-lint: source iter/adapters/chain.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.chain
 
-import io.github.kotlinmania.rustlang.core.iter.TrustedLen
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.orElse
 
@@ -317,7 +318,7 @@ public open class Chain<A, B>(
     // Note: *both* must be fused to handle double-ended iterators.
 
     public companion object {
-        internal fun <A, B> new(a: A, b: B): Chain<A, B> = Chain(a = a, b = b)
+        public fun <A, B> new(a: A, b: B): Chain<A, B> = Chain(a = a, b = b)
 
         /**
          * Creates a `Chain` from the default values for `A` and `B`.

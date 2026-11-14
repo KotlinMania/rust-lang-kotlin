@@ -2,7 +2,7 @@
 
 package io.github.kotlinmania.rustlang.std.sys.alloc.unix
 
-import io.github.kotlinmania.rustlang.core.ffi.CSizeT
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CSizeT
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 
 private object SysAllocUnixJniBridge {
@@ -27,9 +27,9 @@ private object SysAllocUnixJniBridge {
             }
         val libFileName =
             when (hostPlatform) {
-                "windows" -> "std_jni.dll"
-                "macos" -> "libstd_jni.dylib"
-                else -> "libstd_jni.so"
+                "windows" -> "kmcore_jni.dll"
+                "macos" -> "libkmcore_jni.dylib"
+                else -> "libkmcore_jni.so"
             }
         val pathSep = System.getProperty("path.separator", ":")
         val libPathProp = System.getProperty("java.library.path", "")
@@ -45,7 +45,7 @@ private object SysAllocUnixJniBridge {
         val stream = SysAllocUnixJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
-            val extracted = java.nio.file.Files.createTempFile("std_jni-", suffix).toFile()
+            val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
             extracted.deleteOnExit()
             stream.use { input ->
                 extracted.outputStream().use { output ->
@@ -55,7 +55,7 @@ private object SysAllocUnixJniBridge {
             System.load(extracted.absolutePath)
             return
         }
-        System.loadLibrary("std_jni")
+        System.loadLibrary("kmcore_jni")
     }
 
     @JvmStatic

@@ -14,16 +14,16 @@ import io.github.kotlinmania.rustlang.std.sync.mpmc.zero.ZeroToken
  *
  * Each field contains data associated with a specific channel flavor.
  */
-internal open class Token(
-    internal var array: ArrayToken,
-    internal var list: ListToken,
-    internal var zero: ZeroToken,
+public open class Token(
+    public var array: ArrayToken,
+    public var list: ListToken,
+    public var zero: ZeroToken,
 )
 
 /**
  * Identifier associated with an operation by a specific thread on a specific channel.
  */
-internal open class Operation(
+public open class Operation(
     public var value: Int,
 ) {
     public var field0: Int
@@ -62,7 +62,7 @@ internal open class Operation(
          * reference should point to a variable that is specific to the thread and the operation,
          * and is alive for the entire duration of a blocking operation.
          */
-        internal fun <T> hook(r: T): Operation {
+        public fun <T> hook(r: T): Operation {
             val value = ((mutPtrFromRustCast(r))).rawAddress.toInt()
             // Make sure that the pointer address doesn't equal the numerical representation of
             // `Selected.{ Waiting, Aborted, Disconnected }`.
@@ -75,7 +75,7 @@ internal open class Operation(
 /**
  * Current state of a blocking operation.
  */
-internal sealed class Selected {
+public sealed class Selected {
     /**
      * Still waiting for an operation.
      */

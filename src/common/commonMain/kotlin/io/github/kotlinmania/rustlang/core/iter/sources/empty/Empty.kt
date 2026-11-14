@@ -1,7 +1,7 @@
 // port-lint: source iter/sources/empty.rs
 package io.github.kotlinmania.rustlang.core.iter.sources.empty
 
-import io.github.kotlinmania.rustlang.core.iter.TrustedLen
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.result.Result
 
 public class DebugStruct(

@@ -1,6 +1,7 @@
 // port-lint: source sys/process/env.rs
 package io.github.kotlinmania.rustlang.std.sys.process.env
 
+import io.github.kotlinmania.rustlang.std.env.varsOs
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.std.path.Iter
@@ -52,7 +53,7 @@ public open class CommandEnv(
     public open fun capture(): MutableMap<EnvKey, OsString> {
         val result = mutableMapOf()
         if (!this.clear) {
-            for ((k, v) in env.varsOs()) {
+            for ((k, v) in varsOs()) {
                 result.put(k.into(), v)
             }
         }
@@ -179,6 +180,6 @@ public open class CommandResolvedEnvs internal constructor(
             innerCtorArg = inner,
         )
 
-        internal fun new(map: MutableMap<EnvKey, OsString>): CommandResolvedEnvs = CommandResolvedEnvs(inner = map.intoIter())
+        public fun new(map: MutableMap<EnvKey, OsString>): CommandResolvedEnvs = CommandResolvedEnvs(inner = map.intoIter())
     }
 }

@@ -1,19 +1,18 @@
 package io.github.kotlinmania.rustlang.core.fmt
 
 import io.github.kotlinmania.rustlang.core.cell.Cell
+import io.github.kotlinmania.rustlang.core.cell.Ref
 import io.github.kotlinmania.rustlang.core.cell.RefCell
 import io.github.kotlinmania.rustlang.core.cell.RefMut
 import io.github.kotlinmania.rustlang.core.cell.SyncUnsafeCell
 import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
 import io.github.kotlinmania.rustlang.core.char.methods.EscapeDebugExtArgs
-import io.github.kotlinmania.rustlang.core.error.tags.Ref
 import io.github.kotlinmania.rustlang.core.fmt.builders.DebugStruct
 import io.github.kotlinmania.rustlang.core.fmt.builders.DebugTuple
 import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.num.f128.consts.E
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.slice.rawSliceList
@@ -210,7 +209,7 @@ public fun splitStrBySpace(s: String): Any = s.encodeToByteArray().map { it.toUB
  *
  * [problematic]: https://github.com/rust-lang/rust/issues/95489
  */
-internal fun pointerFmtInner(ptrAddr: Int, f: Formatter): Result {
+public fun pointerFmtInner(ptrAddr: Int, f: Formatter): Result {
     val oldOptions = f.options
     // The alternate flag is already treated by LowerHex as being special-
     // it denotes whether to prefix with 0x. We use it to work out whether
@@ -319,6 +318,114 @@ public fun <E : Debug, D : Debug, C : Debug, B : Debug, A : Debug, Z : Debug, Y 
     return builder.finish()
 }
 
+public fun <D : Debug, C : Debug, B : Debug, A : Debug, Z : Debug, Y : Debug, X : Debug, W : Debug, V : Debug, U : Debug, T : Debug> List<Any?>.fmtFromDCBAZYXWVUT(f: Formatter): Result {
+    val builder = DebugTuple(f, "")
+    val (D, C, B, A, Z, Y, X, W, V, U, T) = this
+    builder.field(D)
+    builder.field(C)
+    builder.field(B)
+    builder.field(A)
+    builder.field(Z)
+    builder.field(Y)
+    builder.field(X)
+    builder.field(W)
+    builder.field(V)
+    builder.field(U)
+    builder.field(T)
+    return builder.finish()
+}
+
+public fun <C : Debug, B : Debug, A : Debug, Z : Debug, Y : Debug, X : Debug, W : Debug, V : Debug, U : Debug, T : Debug> List<Any?>.fmtFromCBAZYXWVUT(f: Formatter): Result {
+    val builder = DebugTuple(f, "")
+    val (C, B, A, Z, Y, X, W, V, U, T) = this
+    builder.field(C)
+    builder.field(B)
+    builder.field(A)
+    builder.field(Z)
+    builder.field(Y)
+    builder.field(X)
+    builder.field(W)
+    builder.field(V)
+    builder.field(U)
+    builder.field(T)
+    return builder.finish()
+}
+
+public fun <B : Debug, A : Debug, Z : Debug, Y : Debug, X : Debug, W : Debug, V : Debug, U : Debug, T : Debug> List<Any?>.fmtFromBAZYXWVUT(f: Formatter): Result {
+    val builder = DebugTuple(f, "")
+    val (B, A, Z, Y, X, W, V, U, T) = this
+    builder.field(B)
+    builder.field(A)
+    builder.field(Z)
+    builder.field(Y)
+    builder.field(X)
+    builder.field(W)
+    builder.field(V)
+    builder.field(U)
+    builder.field(T)
+    return builder.finish()
+}
+
+public fun <A : Debug, Z : Debug, Y : Debug, X : Debug, W : Debug, V : Debug, U : Debug, T : Debug> List<Any?>.fmtFromAZYXWVUT(f: Formatter): Result {
+    val builder = DebugTuple(f, "")
+    val (A, Z, Y, X, W, V, U, T) = this
+    builder.field(A)
+    builder.field(Z)
+    builder.field(Y)
+    builder.field(X)
+    builder.field(W)
+    builder.field(V)
+    builder.field(U)
+    builder.field(T)
+    return builder.finish()
+}
+
+public fun <Z : Debug, Y : Debug, X : Debug, W : Debug, V : Debug, U : Debug, T : Debug> List<Any?>.fmtFromZYXWVUT(f: Formatter): Result {
+    val builder = DebugTuple(f, "")
+    val (Z, Y, X, W, V, U, T) = this
+    builder.field(Z)
+    builder.field(Y)
+    builder.field(X)
+    builder.field(W)
+    builder.field(V)
+    builder.field(U)
+    builder.field(T)
+    return builder.finish()
+}
+
+public fun <Y : Debug, X : Debug, W : Debug, V : Debug, U : Debug, T : Debug> List<Any?>.fmtFromYXWVUT(f: Formatter): Result {
+    val builder = DebugTuple(f, "")
+    val (Y, X, W, V, U, T) = this
+    builder.field(Y)
+    builder.field(X)
+    builder.field(W)
+    builder.field(V)
+    builder.field(U)
+    builder.field(T)
+    return builder.finish()
+}
+
+public fun <X : Debug, W : Debug, V : Debug, U : Debug, T : Debug> List<Any?>.fmtFromXWVUT(f: Formatter): Result {
+    val builder = DebugTuple(f, "")
+    val (X, W, V, U, T) = this
+    builder.field(X)
+    builder.field(W)
+    builder.field(V)
+    builder.field(U)
+    builder.field(T)
+    return builder.finish()
+}
+
+public fun <W : Debug, V : Debug, U : Debug, T : Debug> List<Any?>.fmtFromWVUT(f: Formatter): Result {
+    val builder = DebugTuple(f, "")
+    val (W, V, U, T) = this
+    builder.field(W)
+    builder.field(V)
+    builder.field(U)
+    builder.field(T)
+    return builder.finish()
+}
+
 public fun <V : Debug, U : Debug, T : Debug> Triple<V, U, T>.fmt(f: Formatter): Result {
     val builder = DebugTuple(f, "")
     val (V, U, T) = this
@@ -335,6 +442,8 @@ public fun <U : Debug, T : Debug> Pair<U, T>.fmt(f: Formatter): Result {
     builder.field(T)
     return builder.finish()
 }
+
+public fun <T : Debug> List<T>.fmtFromTSlice(f: Formatter): Result = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish()
 
 public fun Unit.fmt(f: Formatter): Result = f.append("()")
 

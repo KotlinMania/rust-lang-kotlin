@@ -4,7 +4,10 @@ package io.github.kotlinmania.rustlang.alloc.collections.vecdeque.drain
 import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.VecDeque
 import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.index.WrappedIndex
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
+import io.github.kotlinmania.rustlang.core.mem.needsDrop
+import io.github.kotlinmania.rustlang.core.mem.replace
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 
 public class DebugTuple(
@@ -37,20 +40,23 @@ public class DebugTuple(
  *
  * [drain]: VecDeque.drain
  */
-public open class Drain<T, A : Allocator>(
-    // We can't just use a VecDeque<T, A>, as that would make Drain invariant over T
-    // and we want it to be covariant instead
-    internal var deque: NonNull,
+public open class Drain<T, A : Allocator> internal constructor(
+    dequeCtorArg: NonNull,
     // drainStart is stored in deque.len
-    internal var drainLen: Int,
+    public var drainLen: Int,
     // index into the logical array, not the physical one (always lies in [0..deque.len))
-    internal var idx: Int,
+    public var idx: Int,
     // number of elements after the drained range
-    internal var tailLen: Int,
-    internal var remaining: Int,
+    public var tailLen: Int,
+    public var remaining: Int,
     // Needed to make Drain covariant over T
     public var marker: Unit,
 ) : Iterable<T> {
+    // We can't just use a VecDeque<T, A>, as that would make Drain invariant over T
+    // and we want it to be covariant instead
+    public var deque: NonNull = dequeCtorArg
+        internal set
+
     override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@Drain.next()) {
@@ -62,7 +68,7 @@ public open class Drain<T, A : Allocator>(
 
     // Only returns pointers to the slices, as that's all we need
     // to drop them. May only be called if `self.remaining != 0`.
-    internal open fun asSlices(): Pair<MutPtr, MutPtr> {
+    public open fun asSlices(): Pair<MutPtr, MutPtr> {
         // ignore-tidy-undocumented-unchecked
         return run {
             val deque = this.deque.asRef()
@@ -98,8 +104,8 @@ public open class Drain<T, A : Allocator>(
                     // SAFETY: We just checked that `self.remaining != 0`.
                     run {
                         val (front, back) = this.value.asSlices()
-                        ptr.dropInPlace(front)
-                        ptr.dropInPlace(back)
+                        dropInPlace(front)
+                        dropInPlace(back)
                     }
                 }
                 // ignore-tidy-undocumented-unchecked
@@ -209,10 +215,10 @@ public open class Drain<T, A : Allocator>(
             guard.first.remaining -= front.len()
             // SAFETY: This can't have been dropped before since
             // `idx` & `remaining` track what's been dropped.
-            ptr.dropInPlace(front)
+            dropInPlace(front)
             guard.first.remaining = 0
             // SAFETY: Ditto.
-            ptr.dropInPlace(back)
+            dropInPlace(back)
         }
     }
 
@@ -244,7 +250,23 @@ public open class Drain<T, A : Allocator>(
     }
 
     public companion object {
-        internal fun <T, A : Allocator> new(deque: VecDeque<T, A>, drainStart: Int, drainLen: Int): Drain<T, A> {
+        public operator fun <T, A : Allocator> invoke(
+            deque: NonNull,
+            drainLen: Int,
+            idx: Int,
+            tailLen: Int,
+            remaining: Int,
+            marker: Unit,
+        ): Drain<T, A> = Drain<T, A>(
+            dequeCtorArg = deque,
+            drainLen = drainLen,
+            idx = idx,
+            tailLen = tailLen,
+            remaining = remaining,
+            marker = marker,
+        )
+
+        public fun <T, A : Allocator> new(deque: VecDeque<T, A>, drainStart: Int, drainLen: Int): Drain<T, A> {
             val origLen = replace(deque.len, drainStart)
             val tailLen = origLen - drainStart - drainLen
             return Drain(deque = NonNull.from(deque), drainLen = drainLen, idx = drainStart, tailLen = tailLen, remaining = drainLen, marker = Unit)

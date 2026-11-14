@@ -3,8 +3,6 @@
 
 package io.github.kotlinmania.rustlang.corearch.loongarch64.lsx
 
-import io.github.kotlinmania.rustlang.core.fmt.Formatter
-import io.github.kotlinmania.rustlang.core.fmt.Result
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -12,7 +10,6 @@ import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.corearch.Mem
 import io.github.kotlinmania.rustlang.corearch.simd.Simd
 import io.github.kotlinmania.rustlang.corearch.simd.debugSimdFinish
 
@@ -94,13 +91,13 @@ public open class M128i(
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: Long): M128i = Simd.simdSplat(value)
+        public fun splat(value: Long): M128i = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Long>): M128i = Mem.transmute(simd)
+        public fun from(simd: Simd<Long>): M128i = transmute(simd)
     }
 }
 
-public fun fromSimdLong(simd: M128i): Simd<Long> = Mem.transmute(simd)
+public fun fromSimdLong(simd: M128i): Simd<Long> = transmute(simd)
 
 /**
  * 128-bit wide set of four `Float` values, LoongArch-specific
@@ -170,13 +167,13 @@ public open class M128(
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: Float): M128 = Simd.simdSplat(value)
+        public fun splat(value: Float): M128 = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Float>): M128 = Mem.transmute(simd)
+        public fun from(simd: Simd<Float>): M128 = transmute(simd)
     }
 }
 
-public fun fromSimdFloat(simd: M128): Simd<Float> = Mem.transmute(simd)
+public fun fromSimdFloat(simd: M128): Simd<Float> = transmute(simd)
 
 /**
  * 128-bit wide set of two `Double` values, LoongArch-specific
@@ -246,15 +243,15 @@ public open class M128d(
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: Double): M128d = Simd.simdSplat(value)
+        public fun splat(value: Double): M128d = run { val _simdArg0 = value; _simdArg0 }
 
-        public fun from(simd: Simd<Double>): M128d = Mem.transmute(simd)
+        public fun from(simd: Simd<Double>): M128d = transmute(simd)
     }
 }
 
-public fun fromSimdDouble(simd: M128d): Simd<Double> = Mem.transmute(simd)
+public fun fromSimdDouble(simd: M128d): Simd<Double> = transmute(simd)
 
-internal open class V16i8(
+public open class V16i8(
     public var value: ByteArray,
 ) {
     public var field0: ByteArray
@@ -286,7 +283,7 @@ internal open class V16i8(
     }
 }
 
-internal open class V8i16(
+public open class V8i16(
     public var value: ShortArray,
 ) {
     public var field0: ShortArray
@@ -318,7 +315,7 @@ internal open class V8i16(
     }
 }
 
-internal open class V4i32(
+public open class V4i32(
     public var value: IntArray,
 ) {
     public var field0: IntArray
@@ -350,7 +347,7 @@ internal open class V4i32(
     }
 }
 
-internal open class V2i64(
+public open class V2i64(
     public var value: LongArray,
 ) {
     public var field0: LongArray
@@ -382,7 +379,7 @@ internal open class V2i64(
     }
 }
 
-internal open class V16u8(
+public open class V16u8(
     public var value: UByteArray,
 ) {
     public var field0: UByteArray
@@ -414,7 +411,7 @@ internal open class V16u8(
     }
 }
 
-internal open class V8u16(
+public open class V8u16(
     public var value: UShortArray,
 ) {
     public var field0: UShortArray
@@ -446,7 +443,7 @@ internal open class V8u16(
     }
 }
 
-internal open class V4u32(
+public open class V4u32(
     public var value: UIntArray,
 ) {
     public var field0: UIntArray
@@ -478,7 +475,7 @@ internal open class V4u32(
     }
 }
 
-internal open class V2u64(
+public open class V2u64(
     public var value: ULongArray,
 ) {
     public var field0: ULongArray
@@ -510,7 +507,7 @@ internal open class V2u64(
     }
 }
 
-internal open class V4f32(
+public open class V4f32(
     public var value: FloatArray,
 ) {
     public var field0: FloatArray
@@ -542,7 +539,7 @@ internal open class V4f32(
     }
 }
 
-internal open class V2f64(
+public open class V2f64(
     public var value: DoubleArray,
 ) {
     public var field0: DoubleArray

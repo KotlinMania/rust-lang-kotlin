@@ -4,27 +4,13 @@ package io.github.kotlinmania.rustlang.std.os.windows.fs.dirs
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.std.c.FolderidDesktop
-import io.github.kotlinmania.rustlang.std.c.FolderidDocuments
-import io.github.kotlinmania.rustlang.std.c.FolderidDownloads
-import io.github.kotlinmania.rustlang.std.c.FolderidLocalAppData
-import io.github.kotlinmania.rustlang.std.c.FolderidMusic
-import io.github.kotlinmania.rustlang.std.c.FolderidPictures
-import io.github.kotlinmania.rustlang.std.c.FolderidRoamingAppData
-import io.github.kotlinmania.rustlang.std.c.FolderidVideos
+import io.github.kotlinmania.rustlang.std.env.varOs
 import io.github.kotlinmania.rustlang.std.fs.dirs.HomeDirs
 import io.github.kotlinmania.rustlang.std.fs.dirs.MediaDirs
 import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.path.PathBuf
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.coTaskMemFree
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.sHGetKnownFolderPath
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.E_FAIL
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.E_INVALIDARG
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.Guid
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.KF_FLAG_DONT_VERIFY
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.S_OK
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.lstrlenW
+import io.github.kotlinmania.rustlang.std.sys.c
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.os2path
 
 /**
@@ -329,8 +315,8 @@ public interface MediaDirsExt<T> {
 }
 
 public fun homeDirsExtAppdataEnvHomeDirs(): Result<HomeDirs, Error> {
-    val roamingAppData = when (val tryResult = env.varOs("APPDATA").map(PathBuf::from).filter({ p -> p.isAbsolute() }).okOr(constError(ErrorKind.InvalidData, "non-absolute %APPDATA%"))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-    val localAppData = when (val tryResult = env.varOs("LOCALAPPDATA").map(PathBuf::from).filter({ p -> p.isAbsolute() }).okOr(constError(ErrorKind.InvalidData, "non-absolute %LOCALAPPDATA%"))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    val roamingAppData = when (val tryResult = (varOs("APPDATA")?.let(PathBuf::from).filter({ p -> p.isAbsolute() })?.let { Result.Ok(it) } ?: Result.Err(constError(ErrorKind.InvalidData, "non-absolute %APPDATA%")))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    val localAppData = when (val tryResult = (varOs("LOCALAPPDATA")?.let(PathBuf::from).filter({ p -> p.isAbsolute() })?.let { Result.Ok(it) } ?: Result.Err(constError(ErrorKind.InvalidData, "non-absolute %LOCALAPPDATA%")))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
     // AppData/Local -- system-local, doesn't make sense to sync to another
     // AppData/Roaming -- data that makes sense to sync across machines
     val dirs = HomeDirs.empty()
@@ -342,8 +328,8 @@ public fun homeDirsExtAppdataEnvHomeDirs(): Result<HomeDirs, Error> {
 }
 
 public fun homeDirsExtKnownFoldersHomeDirs(): Result<HomeDirs, Error> {
-    val localAppData = when (val tryResult = getKnownFolderPath(FolderidLocalAppData)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-    val roamingAppData = when (val tryResult = getKnownFolderPath(FolderidRoamingAppData)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    val localAppData = when (val tryResult = getKnownFolderPath(c.FolderidLocalAppData)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    val roamingAppData = when (val tryResult = getKnownFolderPath(c.FolderidRoamingAppData)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
     // AppData/Local -- system-local, doesn't make sense to sync to another
     // AppData/Roaming -- data that makes sense to sync across machines
     val dirs = HomeDirs.empty()
@@ -355,12 +341,12 @@ public fun homeDirsExtKnownFoldersHomeDirs(): Result<HomeDirs, Error> {
 }
 
 public fun mediaDirsExtKnownFoldersMediaDirs(): Result<MediaDirs, Error> {
-    val desktop = when (val tryResult = getKnownFolderPath(FolderidDesktop)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-    val documents = when (val tryResult = getKnownFolderPath(FolderidDocuments)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-    val downloads = when (val tryResult = getKnownFolderPath(FolderidDownloads)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-    val music = when (val tryResult = getKnownFolderPath(FolderidMusic)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-    val pictures = when (val tryResult = getKnownFolderPath(FolderidPictures)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-    val videos = when (val tryResult = getKnownFolderPath(FolderidVideos)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    val desktop = when (val tryResult = getKnownFolderPath(c.FolderidDesktop)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    val documents = when (val tryResult = getKnownFolderPath(c.FolderidDocuments)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    val downloads = when (val tryResult = getKnownFolderPath(c.FolderidDownloads)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    val music = when (val tryResult = getKnownFolderPath(c.FolderidMusic)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    val pictures = when (val tryResult = getKnownFolderPath(c.FolderidPictures)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    val videos = when (val tryResult = getKnownFolderPath(c.FolderidVideos)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
     val dirs = MediaDirs.empty()
     dirs.desktop = desktop
     dirs.documents = documents
@@ -374,24 +360,24 @@ public fun mediaDirsExtKnownFoldersMediaDirs(): Result<MediaDirs, Error> {
 /**
  * Retrieve a known folder path from the Windows API.
  */
-public fun getKnownFolderPath(id: Guid): Result<PathBuf?, Error> {
+public fun getKnownFolderPath(id: c.Guid): Result<PathBuf?, Error> {
     // Get the known folder path. hToken = NULL requests the current user
     // scope, and we set KF_FLAG_DONT_VERIFY because it's a bit faster and
     // we don't guarantee that the directories at the paths exist.
     val pszPath = MutPtr(0L)
     // SAFETY: rfid/ppszPath are valid pointers, flags are appropriate, and
     // a NULL hToken is supported by SHGetKnownFolderPath.
-    val hr = sHGetKnownFolderPath(id, KF_FLAG_DONT_VERIFY.toUInt(), MutPtr(0L), pszPath)
+    val hr = c.SHGetKnownFolderPath(id, ((c.KF_FLAG_DONT_VERIFY as Any?) as Result<PathBuf?, Error>), MutPtr(0L), pszPath)
     val result =
         when (hr) {
-            S_OK -> {
+            c.sOk -> {
                 // SAFETY: pszPath was populated by a successful call to SHGetKnownFolderPath
                 // and is valid up to and including its nul terminator
-                val len = lstrlenW(pszPath)
+                val len = c.lstrlenW(pszPath)
                 // SAFETY: *pszPath is valid up to and including its nul terminator
                 Result.Ok(os2path(Slice.fromRawParts(pszPath, len)))
             }
-            E_FAIL -> {
+            c.eFail -> {
                 // This known folder id exists but does not have a path
                 if (false) {
                     error("should not call get_known_folder_path on a virtual folder")
@@ -399,18 +385,18 @@ public fun getKnownFolderPath(id: Guid): Result<PathBuf?, Error> {
                     Result.Err(constError(ErrorKind.InvalidInput, "virtual known folders do not have paths"))
                 }
             }
-            E_INVALIDARG -> {
+            c.eInvalidarg -> {
                 // This known folder id is not present on the system
                 Result.Ok(null)
             }
             else -> {
                 // Miscellaneous error
-                Result.Err(Error.fromRawOsError(hr))
+                Result.Err(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(hr))
             }
         }
     // SAFETY: The caller is responsible for freeing the path returned by
     // SHGetKnownFolderPath by calling CoTaskMemFree, whether it
     // succeeds or not.
-    coTaskMemFree(pszPath.cast())
+    c.CoTaskMemFree(pszPath.cast())
     return result
 }

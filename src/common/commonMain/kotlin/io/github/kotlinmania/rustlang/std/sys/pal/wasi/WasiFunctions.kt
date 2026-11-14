@@ -1,17 +1,17 @@
 package io.github.kotlinmania.rustlang.std.sys.pal.wasi
 
-import io.github.kotlinmania.libc.abort
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.std.wasip1.Errno
+import io.github.kotlinmania.rustlang.libc.abort
+import io.github.kotlinmania.rustlang.wasip1.Errno
 
 public fun abortInternal(): Nothing = abort()
 
-internal fun err2io(err: Errno): Error = Error.fromRawOsError(err.raw().into())
+public fun err2io(err: Errno): Error = Error.fromRawOsError(err.raw().into())
 
 public fun <T : IsMinusOne> cvt(t: T): Result<T, io.github.kotlinmania.rustlang.std.io.error.Error> =
     if (t.isMinusOne()) {
-        Result.Err(Error.lastOsError())
+        Result.Err(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
     } else {
         Result.Ok(t)
     }

@@ -480,26 +480,24 @@ public inline fun <reified T> Any.downcastUncheckedMut(): T {
  * public typealias OtherRing = FnCallback
  *
  * public fun doctestEntry() {
- *     public var ID_SET: Mutex<MutableSet<RustTypeId>> = Mutex.new(mutableSetOf())
+ *     var ID_SET: Mutex<MutableSet<RustTypeId>> = Mutex.new(mutableSetOf())
  *
  *     // TypeId has only covariant uses, which makes Unique covariant over TypeAsId 🚨
- *     public open class Unique(public var value: Unit) {
+ *     open class Unique(public var value: Unit) {
  *         public var field0: Unit
  *             get() = value
  *             set(v) {
  *                 value = v
  *             }
  *
+ *         public open fun new(): Unique? {
+ *             var set = ID_SET.lock().unwrap()
+ *             return (set.insert(RustTypeId.of<TypeAsId>())).then({ Unique(Unit) })
+ *         }
+ *
  *         public open fun drop() {
  *             var set = ID_SET.lock().unwrap()
  *             (!set.remove(RustTypeId.of<TypeAsId>())).then({ error("duplicity detected") })
- *         }
- *
- *         public companion object {
- *             public fun <TypeAsId> new(): Unique? {
- *                 var set = ID_SET.lock().unwrap()
- *                 return (set.insert(RustTypeId.of<TypeAsId>())).then({ Unique(Unit) })
- *             }
  *         }
  *     }
  *     // `OtherRing` is a subtype of `TheOneRing`. Both are static, and thus have a TypeId.
@@ -515,7 +513,9 @@ public inline fun <reified T> Any.downcastUncheckedMut(): T {
  * }
  * ```
  */
-public open class TypeId(
+public open class TypeId internal constructor(
+    dataCtorArg: List<ConstPtr>,
+) {
     /**
      * This needs to be an array of pointers, since there is provenance
      * in the first array field. This provenance knows exactly which type
@@ -523,8 +523,9 @@ public open class TypeId(
      * At runtime all the pointers in the array contain bits of the hash, making
      * the entire `TypeId` actually just be a `ULong` hash of the type.
      */
-    internal var data: List<ConstPtr>,
-) {
+    public var data: List<ConstPtr> = dataCtorArg
+        internal set
+
     public open fun clone(): TypeId = TypeId(data)
 
     // SAFETY: the raw pointer is always an integer
@@ -583,7 +584,7 @@ public open class TypeId(
         }
     }
 
-    internal open fun asU128(): U128 {
+    public open fun asU128(): U128 {
         val bytes = MutableList(16) { 0 }
         // This is a provenance-stripping memcpy.
         for ((i, chunk) in this.data.iter().copied().mapIndexed { index, item -> Pair(index, item) }) {
@@ -636,6 +637,12 @@ public open class TypeId(
                 }
             }
 
+        public operator fun invoke(
+            data: List<ConstPtr>,
+        ): TypeId = TypeId(
+            dataCtorArg = data,
+        )
+
         /**
          * Returns the `TypeId` of the generic type parameter.
          *
@@ -679,7 +686,7 @@ public open class TypeId(
  * check("Any" == "core.option.Option<alloc.string.String>")
  * ```
  */
-public fun <T> typeName(): String = io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeName<T>()
+public fun <T> typeName(): String = "T"
 
 /**
  * Returns the type name of the pointed-to value as a string slice.

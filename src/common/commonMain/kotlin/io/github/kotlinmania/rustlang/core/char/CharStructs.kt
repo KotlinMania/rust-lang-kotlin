@@ -3,9 +3,9 @@ package io.github.kotlinmania.rustlang.core.char
 import io.github.kotlinmania.rustlang.core.escape.AlwaysEscaped
 import io.github.kotlinmania.rustlang.core.escape.EscapeIterInner
 import io.github.kotlinmania.rustlang.core.escape.MaybeEscaped
-import io.github.kotlinmania.rustlang.core.iter.TrustedLen
-import io.github.kotlinmania.rustlang.core.iter.TrustedRandomAccess
-import io.github.kotlinmania.rustlang.core.iter.TrustedRandomAccessNoCoerce
+import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccess
+import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccessNoCoerce
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
@@ -520,7 +520,7 @@ public open class CaseMappingIter internal constructor(
  * The error type returned when a checked char conversion fails.
  */
 public open class TryFromCharError(
-    internal var value: Unit,
+    public var value: Unit,
 ) {
     public var field0: Unit
         get() = value

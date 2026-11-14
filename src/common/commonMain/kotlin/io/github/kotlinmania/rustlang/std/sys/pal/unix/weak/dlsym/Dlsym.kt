@@ -1,24 +1,31 @@
 // port-lint: source sys/pal/unix/weak/dlsym.rs
 package io.github.kotlinmania.rustlang.std.sys.pal.unix.weak.dlsym
 
-import io.github.kotlinmania.libc.dlsym
-import io.github.kotlinmania.libc.fuchsia.RTLD_DEFAULT
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
+import io.github.kotlinmania.rustlang.libc.dlsym
+import io.github.kotlinmania.rustlang.libc.unix.bsd.RTLD_DEFAULT
 
-internal open class DlsymWeak<F>(
+public open class DlsymWeak<F> internal constructor(
+    nameCtorArg: ConstPtr,
+    funcCtorArg: Atomic<MutPtr>,
+    public var marker: Unit,
+) {
     // Use a pointer instead of `CStr` to save space.
+
     /**
      * A pointer to the nul-terminated name of the symbol.
      */
-    public var name: ConstPtr,
-    public var func: Atomic<MutPtr>,
-    public var marker: Unit,
-) {
+    public var name: ConstPtr = nameCtorArg
+        internal set
+
+    public var func: Atomic<MutPtr> = funcCtorArg
+        internal set
+
     public open fun get(): F? {
         // The caller is presumably going to read through this value
         // (by calling the function we've dlsymed). This means we'd
@@ -81,6 +88,16 @@ internal open class DlsymWeak<F>(
     }
 
     public companion object {
+        public operator fun <F> invoke(
+            name: ConstPtr,
+            func: Atomic<MutPtr>,
+            marker: Unit,
+        ): DlsymWeak<F> = DlsymWeak<F>(
+            nameCtorArg = name,
+            funcCtorArg = func,
+            marker = marker,
+        )
+
         /**
          * # Safety
          *

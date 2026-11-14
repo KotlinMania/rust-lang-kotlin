@@ -223,7 +223,7 @@ public class DebugStruct(
  * // be waiting forever for it, causing a deadlock.
  * // As in the threads, a block could have been used instead of calling the
  * // `drop` function.
- * drop(data)
+ * (data).let { }
  * // Here the mutex guard is not assigned to a variable and so, even if the
  * // scope does not end after this line, the mutex is still released: there is
  * // no deadlock.
@@ -615,7 +615,7 @@ public open class Mutex<T>(
          * val mutex = Mutex.new(0)
          * ```
          */
-        public fun <T> new(t: T): Mutex<T> = Mutex(inner = io.github.kotlinmania.rustlang.std.sys.sync.mutex.futex.Mutex.new(), poison = Flag.new(), data = UnsafeCell.new(t))
+        public fun <T> new(t: T): Mutex<T> = Mutex(inner = io.github.kotlinmania.rustlang.std.sys.sync.mutex.new(), poison = Flag.new(), data = UnsafeCell.new(t))
 
         /**
          * Creates a new mutex in an unlocked state ready for use.
@@ -834,9 +834,9 @@ public open class MappedMutexGuard<T>(
 /**
  * For use in [`nonpoison.condvar`](condvar).
  */
-internal fun <T> guardLock(guard: MutexGuard<T>): io.github.kotlinmania.rustlang.std.sys.sync.mutex.futex.Mutex = guard.lock.inner
+public fun <T> guardLock(guard: MutexGuard<T>): io.github.kotlinmania.rustlang.std.sys.sync.mutex.futex.Mutex = guard.lock.inner
 
 /**
  * For use in [`nonpoison.condvar`](condvar).
  */
-internal fun <T> guardPoison(guard: MutexGuard<T>): Flag = guard.lock.poison
+public fun <T> guardPoison(guard: MutexGuard<T>): Flag = guard.lock.poison

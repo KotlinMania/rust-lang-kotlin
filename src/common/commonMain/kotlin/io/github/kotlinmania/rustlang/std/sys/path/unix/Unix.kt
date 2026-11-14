@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.std.sys.path.unix
 
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.std.env.currentDir
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.path.Path
@@ -17,7 +18,7 @@ public val HAS_PREFIXES: Boolean = false
 /**
  * Make a POSIX path absolute without changing its semantics.
  */
-internal fun absolute(path: Path): Result<PathBuf, Error> {
+public fun absolute(path: Path): Result<PathBuf, Error> {
     // This is mostly a wrapper around collecting `Path.components`, with
     // exceptions made where this conflicts with the POSIX specification.
     // See 4.16 Pathname Resolution, IEEE Std 1003.1-2024
@@ -39,7 +40,7 @@ internal fun absolute(path: Path): Result<PathBuf, Error> {
                 PathBuf.new()
             }
         } else {
-            when (val tryResult = env.currentDir()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            when (val tryResult = currentDir()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         }
     normalized.extend(components)
     // "Interfaces using pathname resolution may specify additional constraints
@@ -54,7 +55,7 @@ internal fun absolute(path: Path): Result<PathBuf, Error> {
     return Result.Ok(normalized)
 }
 
-internal fun isAbsolute(path: Path): Boolean =
+public fun isAbsolute(path: Path): Boolean =
     if (false) {
         path.hasRoot()
     } else {

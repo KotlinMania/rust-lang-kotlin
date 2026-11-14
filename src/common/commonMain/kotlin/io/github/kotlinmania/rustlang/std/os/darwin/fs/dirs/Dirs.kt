@@ -3,19 +3,20 @@
 
 package io.github.kotlinmania.rustlang.std.os.darwin.fs.dirs
 
-import io.github.kotlinmania.libc.fuchsia.PATH_MAX
-import io.github.kotlinmania.libc.sysdirGetNextSearchPathEnumeration
-import io.github.kotlinmania.libc.sysdirStartSearchPathEnumeration
-import io.github.kotlinmania.libc.sysdirsearchpathdirectoryt.*
-import io.github.kotlinmania.libc.sysdirsearchpathdomainmaskt.SYSDIR_DOMAIN_MASK_USER
-import io.github.kotlinmania.libc.unix.bsd.apple.SysdirSearchPathDirectoryT
-import io.github.kotlinmania.libc.unix.bsd.apple.SysdirSearchPathDomainMaskT
-import io.github.kotlinmania.libc.unix.bsd.apple.SysdirSearchPathEnumerationState
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.libc.sysdirGetNextSearchPathEnumeration
+import io.github.kotlinmania.rustlang.libc.sysdirStartSearchPathEnumeration
+import io.github.kotlinmania.rustlang.libc.sysdirsearchpathdirectoryt.*
+import io.github.kotlinmania.rustlang.libc.sysdirsearchpathdomainmaskt.SYSDIR_DOMAIN_MASK_USER
+import io.github.kotlinmania.rustlang.libc.unix.bsd.PATH_MAX
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SysdirSearchPathDirectoryT
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SysdirSearchPathDomainMaskT
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SysdirSearchPathEnumerationState
+import io.github.kotlinmania.rustlang.std.env.homeDir
 import io.github.kotlinmania.rustlang.std.fs.dirs.HomeDirs
 import io.github.kotlinmania.rustlang.std.fs.dirs.MediaDirs
 import io.github.kotlinmania.rustlang.std.io.constError
@@ -235,7 +236,7 @@ public interface MediaDirsExt<T> {
     }
 }
 
-public fun userHome(): Result<PathBuf, Error> = env.homeDir().filter({ p -> p.isAbsolute() }).okOr(constError(ErrorKind.InvalidData, "home path not absolute"))
+public fun userHome(): Result<PathBuf, Error> = (homeDir().filter({ p -> p.isAbsolute() })?.let { Result.Ok(it) } ?: Result.Err(constError(ErrorKind.InvalidData, "home path not absolute")))
 
 public fun homeDirsExtSysdirHomeDirs(): Result<HomeDirs, Error> {
     val dirs = HomeDirs.empty()

@@ -42,17 +42,13 @@ import io.github.kotlinmania.rustlang.core.unicode.CnPlanes03
 import io.github.kotlinmania.rustlang.core.unicode.DefaultIgnorableCodePoint
 import io.github.kotlinmania.rustlang.core.unicode.GraphemeExtend
 import io.github.kotlinmania.rustlang.core.unicode.Lowercase
+import io.github.kotlinmania.rustlang.core.unicode.Lt
 import io.github.kotlinmania.rustlang.core.unicode.UNICODE_VERSION
 import io.github.kotlinmania.rustlang.core.unicode.Uppercase
 import io.github.kotlinmania.rustlang.core.unicode.WhiteSpace
 import io.github.kotlinmania.rustlang.core.unicode.XidContinue
 import io.github.kotlinmania.rustlang.core.unicode.XidStart
-import io.github.kotlinmania.rustlang.core.unicode.lt
-import io.github.kotlinmania.rustlang.core.unicode.n
-import io.github.kotlinmania.rustlang.core.unicode.unicodedata.conversions.toCasefold
-import io.github.kotlinmania.rustlang.core.unicode.unicodedata.conversions.toLower
-import io.github.kotlinmania.rustlang.core.unicode.unicodedata.conversions.toTitle
-import io.github.kotlinmania.rustlang.core.unicode.unicodedata.conversions.toUpper
+import io.github.kotlinmania.rustlang.core.unicode.conversions
 
 // impl char {}
 
@@ -472,7 +468,7 @@ public fun Char.escapeUnicode(): EscapeUnicode = EscapeUnicode.new(this)
  * single quotes and double quotes. This allows escaping single quotes in
  * characters, and double quotes in strings.
  */
-internal fun Char.escapeDebugExt(args: EscapeDebugExtArgs): EscapeDebug =
+public fun Char.escapeDebugExt(args: EscapeDebugExtArgs): EscapeDebug =
     when {
         // Special escapes
         this == '"' && args.escapeDoubleQuote -> EscapeDebug.backslash(Char.QuotationMark)
@@ -775,7 +771,7 @@ public fun Char.isCased(): Boolean =
     when (this) {
         in 'a'..'z', in 'A'..'Z' -> { true }
         in '\u0000'..'\u00a9' -> false
-        else -> Lowercase(this) || Uppercase(this) || lt(this)
+        else -> Lowercase(this) || Uppercase(this) || Lt(this)
     }
 
 /**
@@ -808,7 +804,7 @@ public fun Char.case(): CharCase? =
         this in '\u0000'..'\u00a9' -> null
         Lowercase(this) -> CharCase.Lower
         Uppercase(this) -> CharCase.Upper
-        lt(this) -> CharCase.Title
+        Lt(this) -> CharCase.Title
         else -> null
     }
 
@@ -881,7 +877,7 @@ public fun Char.isLowercase(): Boolean =
 public fun Char.isTitlecase(): Boolean =
     when (this) {
         in '\u0000'..'\u01c4' -> false
-        else -> lt(this)
+        else -> Lt(this)
     }
 
 /**
@@ -961,7 +957,7 @@ public fun Char.isNumeric(): Boolean =
     when (this) {
         in '0'..'9' -> { true }
         in '\u0000'..'\u00b1' -> false
-        else -> n(this)
+        else -> N(this)
     }
 
 /**
@@ -989,7 +985,7 @@ public fun Char.isAlphanumeric(): Boolean =
     when (this) {
         in 'a'..'z', in 'A'..'Z', in '0'..'9' -> { true }
         in '\u0000'..'\u00a9' -> false
-        else -> Alphabetic(this) || n(this)
+        else -> Alphabetic(this) || N(this)
     }
 
 /**
@@ -1411,7 +1407,7 @@ public fun Char.isCaseIgnorable(): Boolean =
  *
  * [SpecialCasing.txt]: https://www.unicode.org/Public/UCD/latest/ucd/SpecialCasing.txt
  */
-public fun Char.toLowercase(): ToLowercase = ToLowercase(CaseMappingIter.new(toLower(this)))
+public fun Char.toLowercase(): ToLowercase = ToLowercase(CaseMappingIter.new(conversions.toLower(this)))
 
 /**
  * Returns an iterator that yields the titlecase mapping of this `char` as one or more
@@ -1594,7 +1590,7 @@ public fun Char.toLowercase(): ToLowercase = ToLowercase(CaseMappingIter.new(toL
  *
  * [toUppercase]: Self.toUppercase()
  */
-public fun Char.toTitlecase(): ToTitlecase = ToTitlecase(CaseMappingIter.new(toTitle(this)))
+public fun Char.toTitlecase(): ToTitlecase = ToTitlecase(CaseMappingIter.new(conversions.toTitle(this)))
 
 /**
  * Returns an iterator that yields the uppercase mapping of this `char` as one or more
@@ -1697,7 +1693,7 @@ public fun Char.toTitlecase(): ToTitlecase = ToTitlecase(CaseMappingIter.new(toT
  *
  * [toTitlecase]: Self.toTitlecase()
  */
-public fun Char.toUppercase(): ToUppercase = ToUppercase(CaseMappingIter.new(toUpper(this)))
+public fun Char.toUppercase(): ToUppercase = ToUppercase(CaseMappingIter.new(conversions.toUpper(this)))
 
 /**
  * Returns an iterator that yields the case folding of this `char` as one or more
@@ -1803,7 +1799,7 @@ public fun Char.toUppercase(): ToUppercase = ToUppercase(CaseMappingIter.new(toU
  *
  * [normalization]: https://www.unicode.org/faq/normalization.html
  */
-public fun Char.toCasefoldUnnormalized(): ToCasefold = ToCasefold(CaseMappingIter.new(toCasefold(this)))
+public fun Char.toCasefoldUnnormalized(): ToCasefold = ToCasefold(CaseMappingIter.new(conversions.toCasefold(this)))
 
 /**
  * Returns the code point value as a `UInt`.
@@ -2418,15 +2414,15 @@ public fun Char.isAsciiControl(): Boolean =
         else -> false
     }
 
-internal open class EscapeDebugExtArgs(
+public open class EscapeDebugExtArgs(
     /**
      * Escape single quotes?
      */
-    internal var escapeSingleQuote: Boolean,
+    public var escapeSingleQuote: Boolean,
     /**
      * Escape double quotes?
      */
-    internal var escapeDoubleQuote: Boolean,
+    public var escapeDoubleQuote: Boolean,
 ) {
     public companion object {
         public fun typeLayout(): TypeLayout<EscapeDebugExtArgs> =
@@ -2453,7 +2449,7 @@ internal open class EscapeDebugExtArgs(
                 }
             }
 
-        internal val ESCAPE_ALL: EscapeDebugExtArgs = EscapeDebugExtArgs(escapeSingleQuote = true, escapeDoubleQuote = true)
+        public val ESCAPE_ALL: EscapeDebugExtArgs = EscapeDebugExtArgs(escapeSingleQuote = true, escapeDoubleQuote = true)
     }
 }
 

@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.alloc.vec.specfromiternested
 
 import io.github.kotlinmania.rustlang.alloc.rawvec.RawVec
+import io.github.kotlinmania.rustlang.core.array.write
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 
 /**
@@ -9,7 +10,7 @@ import io.github.kotlinmania.rustlang.core.slice.asMutPtr
  * necessary to manually prioritize overlapping specializations
  * see [`SpecFromIter`](SpecFromIter) for details.
  */
-internal interface SpecFromIterNested<T, I, SelfType> {
+public interface SpecFromIterNested<T, I, SelfType> {
     public fun fromIter(iter: I): SelfType
 }
 
@@ -29,7 +30,7 @@ public fun <T, I> specFromIterNestedFromIterVecT(iterator: I): List<T> where I :
                 var vector = ArrayList<T>(initialCapacity)
                 // SAFETY: We requested capacity at least 1
                 run {
-                    ptr.write(vector.asMutPtr(), element)
+                    write(vector.asMutPtr(), element)
                     vector.setLen(1)
                 }
                 vector

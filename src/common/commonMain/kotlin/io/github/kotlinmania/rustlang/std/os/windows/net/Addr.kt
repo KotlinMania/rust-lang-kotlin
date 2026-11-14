@@ -12,6 +12,8 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
+import io.github.kotlinmania.rustlang.std.io.ErrorKind
+import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvtNz
@@ -20,12 +22,12 @@ import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.SockaddrU
 
 public fun sockaddrUn(path: Path): Result<Pair<SockaddrUn, Int>, Error> {
     // SAFETY: All zeros is a valid representation for `sockaddrUn`.
-    val addr: SockaddrUn?  = null
-    addr!!.sunFamily = AF_UNIX
+    val addr: SockaddrUn  = SockaddrUn()
+    addr.sunFamily = AF_UNIX
     // path to UTF-8 bytes
-    val bytes = when (val tryResult = path.toStr().okOr(io.constError(ErrorKind.InvalidInput, "path must be valid UTF-8"))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }.asBytes()
+    val bytes = when (val tryResult = path.toStr().okOr(constError(ErrorKind.InvalidInput, "path must be valid UTF-8"))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }.asBytes()
     if (bytes.size >= addr.sunPath.size) {
-        return Result.Err(io.constError(ErrorKind.InvalidInput, "path too long"))
+        return Result.Err(constError(ErrorKind.InvalidInput, "path too long"))
     }
     // SAFETY: `bytes` and `addr.sunPath` are not overlapping and
     // both point to valid memory.
@@ -39,8 +41,8 @@ public fun sockaddrUn(path: Path): Result<Pair<SockaddrUn, Int>, Error> {
 public val SUN_PATH_OFFSET: Int = 0
 
 public open class SocketAddr(
-    internal var addr: SockaddrUn,
-    internal var len: UInt,
+    public var addr: SockaddrUn,
+    public var len: UInt,
 ) {
     public open fun fmt(fmt: StringBuilder) {
         when (val matchVal = this.address()) {
@@ -123,9 +125,9 @@ public open class SocketAddr(
         }
 
     public companion object {
-        internal fun new(f: (MutPtr, MutPtr) -> Int): Result<SocketAddr, Error> {
+        public fun new(f: (MutPtr, MutPtr) -> Int): Result<SocketAddr, Error> {
             return run {
-                val localStorageL60C12 = AddressableLocal(null, ObjectSlotLayout<SockaddrUn>())
+                val localStorageL60C12 = AddressableLocal(SockaddrUn(), ObjectSlotLayout<SockaddrUn>())
                 val addr by localStorageL60C12
                 val localStorageL61C12 = AddressableLocal(sizeOf<SockaddrUn>(typeLayoutT = ObjectSlotLayout<SockaddrUn>()).toInt(), PrimitiveLayouts.I32)
                 val len by localStorageL61C12
@@ -134,11 +136,11 @@ public open class SocketAddr(
             }
         }
 
-        internal fun fromParts(addr: SockaddrUn, len: Int): Result<SocketAddr, Error> =
+        public fun fromParts(addr: SockaddrUn, len: Int): Result<SocketAddr, Error> =
             if (addr.sunFamily != AF_UNIX) {
-                Result.Err(io.constError(ErrorKind.InvalidInput, "invalid address family"))
+                Result.Err(constError(ErrorKind.InvalidInput, "invalid address family"))
             } else if (len < SUN_PATH_OFFSET || len > sizeOf<SockaddrUn>(typeLayoutT = ObjectSlotLayout<SockaddrUn>()).toInt()) {
-                Result.Err(io.constError(ErrorKind.InvalidInput, "invalid address length"))
+                Result.Err(constError(ErrorKind.InvalidInput, "invalid address length"))
             } else {
                 Result.Ok(SocketAddr(addr = addr, len = len.toUInt()))
             }

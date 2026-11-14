@@ -1,14 +1,14 @@
 // port-lint: source sys/pal/unix/conf.rs
 package io.github.kotlinmania.rustlang.std.sys.pal.unix.conf
 
-import io.github.kotlinmania.libc.fuchsia.SC_PAGESIZE
-import io.github.kotlinmania.libc.sysconf
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
-import io.github.kotlinmania.rustlang.std.ffi.CInt
+import io.github.kotlinmania.rustlang.libc.sysconf
+import io.github.kotlinmania.rustlang.libc.wasi.SC_PAGESIZE
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.std.io.error.Error
 
@@ -24,7 +24,7 @@ public fun pageSize(): Int = sysconf(SC_PAGESIZE).toInt()
  */
 public fun confstr(key: CInt, sizeHint: Int?): Result<OsString, Error> {
     val buf: List<UByte>  = ArrayList(0)
-    var bytesNeededIncludingNul = (sizeHint ?: io.github.kotlinmania.libc.confstr(key, MutPtr(0L), 0)).max(1)
+    var bytesNeededIncludingNul = (sizeHint ?: io.github.kotlinmania.rustlang.libc.confstr(key, MutPtr(0L), 0)).max(1)
     // If the value returned by `confstr` is greater than the len passed into
     // it, then the value was truncated, meaning we need to retry. Note that
     // while `confstr` results don't seem to change for a process, it's unclear
@@ -42,11 +42,11 @@ public fun confstr(key: CInt, sizeHint: Int?): Result<OsString, Error> {
         // hold the entire value: we break and return the data in `buf`.
         // - Otherwise, the number of bytes needed (including nul): we go
         // through the loop again.
-        bytesNeededIncludingNul = io.github.kotlinmania.libc.confstr(key, buf.asMutPtr(), buf.capacity())
+        bytesNeededIncludingNul = io.github.kotlinmania.rustlang.libc.confstr(key, buf.asMutPtr(), buf.capacity())
     }
     // `confstr` returns 0 in the case of an error.
     if (bytesNeededIncludingNul == 0) {
-        return Result.Err(Error.lastOsError())
+        return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
     }
     // Safety: `confstr(..., buf.asMutPtr(), buf.capacity())` returned a
     // non-zero value, meaning `bytesNeededIncludingNul` bytes were

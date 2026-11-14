@@ -6,7 +6,7 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 
 private object TermWinJniBridge {
     init {
-        System.loadLibrary("test_jni")
+        System.loadLibrary("kmcore_jni")
     }
 
     @JvmStatic

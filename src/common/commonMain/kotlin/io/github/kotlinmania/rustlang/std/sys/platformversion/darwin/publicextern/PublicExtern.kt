@@ -88,7 +88,7 @@ import io.github.kotlinmania.rustlang.std.sys.platformversion.darwin.packI32OsVe
  * combined into a single `UInt`, which should make comparisons faster, and should make the
  * `BASE_TARGET_PLATFORM` check a no-op.
  */
-internal fun isPlatformVersionAtLeast(platform: Int, major: Int, minor: Int, subminor: Int): Int {
+public fun isPlatformVersionAtLeast(platform: Int, major: Int, minor: Int, subminor: Int): Int {
     // Mac Catalyst is a technology that allows macOS to run in a different "mode" that closely
     // resembles iOS (and has iOS libraries like UIKit available).
     //
@@ -149,7 +149,7 @@ internal fun isPlatformVersionAtLeast(platform: Int, major: Int, minor: Int, sub
 /**
  * Old entry point for availability. Used when compiling with older Clang versions.
  */
-internal fun isOsversionAtLeast(major: Int, minor: Int, subminor: Int): Int {
+public fun isOsversionAtLeast(major: Int, minor: Int, subminor: Int): Int {
     val version = packI32OsVersion(major, minor, subminor)
     return (if (version <= currentVersion()) 1 else 0)
 }

@@ -1,26 +1,29 @@
 // port-lint: source sys/process/unix/pidfd.rs
 package io.github.kotlinmania.rustlang.std.sys.process.unix.pidfd
 
-import io.github.kotlinmania.libc.CInt
-import io.github.kotlinmania.libc.SysPidfdOpen
-import io.github.kotlinmania.libc.SysPidfdSendSignal
-import io.github.kotlinmania.libc.fuchsia.ECHILD
-import io.github.kotlinmania.libc.fuchsia.EINVAL
-import io.github.kotlinmania.libc.fuchsia.ENOTTY
-import io.github.kotlinmania.libc.fuchsia.SIGKILL
-import io.github.kotlinmania.libc.fuchsia.SiginfoT
-import io.github.kotlinmania.libc.fuchsia.WEXITED
-import io.github.kotlinmania.libc.fuchsia.WNOHANG
-import io.github.kotlinmania.libc.syscall
-import io.github.kotlinmania.libc.unix.linuxlike.P_PIDFD
-import io.github.kotlinmania.libc.unix.linuxlike.android.Ioctl
-import io.github.kotlinmania.libc.unix.linuxlike.linux.PIDFD_GET_INFO
-import io.github.kotlinmania.libc.unix.linuxlike.linux.PIDFD_INFO_EXIT
-import io.github.kotlinmania.libc.unix.linuxlike.linux.PIDFD_INFO_PID
-import io.github.kotlinmania.libc.unix.linuxlike.linux.PIDFD_SIGNAL_PROCESS_GROUP
-import io.github.kotlinmania.libc.unix.linuxlike.linux.PidfdInfo
+import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
+import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.libc.CInt
+import io.github.kotlinmania.rustlang.libc.SysPidfdOpen
+import io.github.kotlinmania.rustlang.libc.SysPidfdSendSignal
+import io.github.kotlinmania.rustlang.libc.new.glibc.sysdeps.unix.linux.bits.types.siginfot.syscall
+import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.pidfd.PIDFD_GET_INFO
+import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.pidfd.PIDFD_INFO_EXIT
+import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.pidfd.PIDFD_INFO_PID
+import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.pidfd.PIDFD_SIGNAL_PROCESS_GROUP
+import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.pidfd.PidfdInfo
+import io.github.kotlinmania.rustlang.libc.new.musl.signal.SiginfoT
+import io.github.kotlinmania.rustlang.libc.unix.bsd.WNOHANG
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.P_PIDFD
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.SIGKILL
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.WEXITED
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.Ioctl
+import io.github.kotlinmania.rustlang.libc.wasi.ECHILD
+import io.github.kotlinmania.rustlang.libc.wasi.EINVAL
+import io.github.kotlinmania.rustlang.libc.wasi.ENOTTY
 import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.os.fd.FromRawFd
 import io.github.kotlinmania.rustlang.std.os.fd.IntoRawFd
@@ -49,10 +52,11 @@ public open class PidFd(
     public open fun pid(): Result<UInt, Error> {
         // since kernel 6.13
         // https://lore.kernel.org/all/20241010155401.2268522-1-luca.boccassi@gmail.com/
-        val pidfdInfo: PidfdInfo?  = null
-        pidfdInfo!!.mask = PIDFD_INFO_PID.toULong()
+        val localStorageL31C8 = AddressableLocal(PidfdInfo(), ObjectSlotLayout<PidfdInfo>())
+        val pidfdInfo by localStorageL31C8
+        pidfdInfo.mask = PIDFD_INFO_PID.toULong()
         run {
-            val matchVal = cvt(Ioctl(this.value.asRawFd(), PIDFD_GET_INFO, pidfdInfo))
+            val matchVal = cvt(Ioctl(this.value.asRawFd(), PIDFD_GET_INFO, RustMutableReference(localStorageL31C8.asMutPtr(), localStorageL31C8.layout)))
             when {
                 matchVal is Result.Ok<*> -> {}
                 matchVal is Result.Err<*> && when (val matchVal1 = (matchVal as Result.Err<*>).error.rawOsError()) {
@@ -84,15 +88,17 @@ public open class PidFd(
     public open fun exitForReapedChild(): Result<ExitStatus, Error> {
         // since kernel 6.15
         // https://lore.kernel.org/linux-fsdevel/20250305-work-pidfs-killOnLastClose-v3-0-c8c3d8361705@kernel.org/T/
-        val pidfdInfo: PidfdInfo?  = null
-        pidfdInfo!!.mask = PIDFD_INFO_EXIT.toULong()
-        when (val tryResult = cvt(Ioctl(this.value.asRawFd(), PIDFD_GET_INFO, pidfdInfo))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        val localStorageL56C8 = AddressableLocal(PidfdInfo(), ObjectSlotLayout<PidfdInfo>())
+        val pidfdInfo by localStorageL56C8
+        pidfdInfo.mask = PIDFD_INFO_EXIT.toULong()
+        when (val tryResult = cvt(Ioctl(this.value.asRawFd(), PIDFD_GET_INFO, RustMutableReference(localStorageL56C8.asMutPtr(), localStorageL56C8.layout)))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         return Result.Ok(ExitStatus.new(pidfdInfo.exitCode))
     }
 
     public open fun waitid(options: CInt): Result<ExitStatus?, Error> {
-        val siginfo: SiginfoT?  = null
-        val r = cvtR({ io.github.kotlinmania.libc.waitid(P_PIDFD, this.value.asRawFd().toUInt(), siginfo, options) })
+        val localStorageL63C8 = AddressableLocal(SiginfoT(), ObjectSlotLayout<SiginfoT>())
+        val siginfo by localStorageL63C8
+        val r = cvtR({ io.github.kotlinmania.rustlang.libc.waitid(P_PIDFD, this.value.asRawFd().toUInt(), RustMutableReference(localStorageL63C8.asMutPtr(), localStorageL63C8.layout), options) })
         when {
             r is Result.Err<*> && (r as Result.Err<*>).error.rawOsError() == ECHILD -> {
                 val waitidErr = (r as Result.Err<*>).error

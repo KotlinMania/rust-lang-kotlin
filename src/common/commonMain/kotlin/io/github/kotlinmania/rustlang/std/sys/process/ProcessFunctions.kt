@@ -9,7 +9,7 @@ import io.github.kotlinmania.rustlang.std.sys.process.unix.unix.ExitStatus
 
 public fun output(cmd: Command): Result<Triple<ExitStatus, List<UByte>, List<UByte>>, Error> {
     var (process, pipes) = when (val tryResult = cmd.spawn(Stdio.MakePipe, false)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-    drop(pipes.stdin.also { pipes.stdin = null })
+    (pipes.stdin.also { pipes.stdin = null }).let { }
     var (stdout, stderr) = Pair(mutableListOf(), mutableListOf())
     run {
         val matchVal = Pair(pipes.stdout.also { pipes.stdout = null }, pipes.stderr.also { pipes.stderr = null })
@@ -39,6 +39,6 @@ public fun output(cmd: Command): Result<Triple<ExitStatus, List<UByte>, List<UBy
 
 public fun status(cmd: Command): Result<ExitStatus, Error> {
     var (process, pipes) = when (val tryResult = cmd.spawn(Stdio.Inherit, true)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-    drop(pipes.stdin.also { pipes.stdin = null })
+    (pipes.stdin.also { pipes.stdin = null }).let { }
     return process.wait()
 }

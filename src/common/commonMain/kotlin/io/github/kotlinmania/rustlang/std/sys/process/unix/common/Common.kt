@@ -1,20 +1,6 @@
 // port-lint: source sys/process/unix/common.rs
 package io.github.kotlinmania.rustlang.std.sys.process.unix.common
 
-import io.github.kotlinmania.libc.CInt
-import io.github.kotlinmania.libc.CUlong
-import io.github.kotlinmania.libc.Poll
-import io.github.kotlinmania.libc.fuchsia.EAGAIN
-import io.github.kotlinmania.libc.fuchsia.EINVAL
-import io.github.kotlinmania.libc.fuchsia.EWOULDBLOCK
-import io.github.kotlinmania.libc.fuchsia.GidT
-import io.github.kotlinmania.libc.fuchsia.POLLIN
-import io.github.kotlinmania.libc.fuchsia.PidT
-import io.github.kotlinmania.libc.fuchsia.Pollfd
-import io.github.kotlinmania.libc.fuchsia.SigsetT
-import io.github.kotlinmania.libc.fuchsia.UidT
-import io.github.kotlinmania.libc.hermit.STDERR_FILENO
-import io.github.kotlinmania.libc.hermit.STDOUT_FILENO
 import io.github.kotlinmania.rustlang.alloc.ffi.cstr.CString
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.intrinsics.kmWriteBytes
@@ -28,6 +14,20 @@ import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
+import io.github.kotlinmania.rustlang.libc.CInt
+import io.github.kotlinmania.rustlang.libc.CUlong
+import io.github.kotlinmania.rustlang.libc.Poll
+import io.github.kotlinmania.rustlang.libc.helenos.PidT
+import io.github.kotlinmania.rustlang.libc.unix.GidT
+import io.github.kotlinmania.rustlang.libc.unix.Pollfd
+import io.github.kotlinmania.rustlang.libc.unix.UidT
+import io.github.kotlinmania.rustlang.libc.wasi.EAGAIN
+import io.github.kotlinmania.rustlang.libc.wasi.EINVAL
+import io.github.kotlinmania.rustlang.libc.wasi.EWOULDBLOCK
+import io.github.kotlinmania.rustlang.libc.wasi.POLLIN
+import io.github.kotlinmania.rustlang.libc.wasi.STDERR_FILENO
+import io.github.kotlinmania.rustlang.libc.wasi.STDOUT_FILENO
+import io.github.kotlinmania.rustlang.libc.wasi.SigsetT
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.std.io.error.Error
@@ -658,7 +658,7 @@ public fun readOutput(out: ChildPipe, stdout: List<UByte>, err: ChildPipe, stder
     // reader will return Ok(0), in which case we'll see `Ok` ourselves. In
     // this case we flip the other fd back into blocking mode and read
     // whatever's leftover on that file descriptor.
-    fun read(fd: FileDesc, dst: List<UByte>): Result<Boolean, io.github.kotlinmania.rustlang.core.io.error.Error> =
+    fun read(fd: FileDesc, dst: List<UByte>): Result<Boolean, io.github.kotlinmania.rustlang.std.io.Error> =
         run {
             val matchVal = fd.readToEnd(dst)
             when (matchVal) { is Result.Ok<*> -> {
@@ -676,7 +676,7 @@ public fun readOutput(out: ChildPipe, stdout: List<UByte>, err: ChildPipe, stder
     // in the `select` loop below, and we wouldn't want one to block the other!
     when (val tryResult = out.setNonblocking(true)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
     when (val tryResult = err.setNonblocking(true)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-    val localStorageL651C4 = AddressableArrayLocal.fromList(null, ObjectSlotLayout<Pollfd>())
+    val localStorageL651C4 = AddressableArrayLocal.fromList(emptyList(), ObjectSlotLayout<Pollfd>())
     val fds by localStorageL651C4
     fds[0].fd = out.asRawFd()
     fds[0].events = POLLIN
@@ -696,6 +696,6 @@ public fun readOutput(out: ChildPipe, stdout: List<UByte>, err: ChildPipe, stder
     }
 }
 
-public fun getpid(): UInt = io.github.kotlinmania.libc.getpid()
+public fun getpid(): UInt = io.github.kotlinmania.rustlang.libc.getpid()
 
-public fun getppid(): UInt = io.github.kotlinmania.libc.getppid()
+public fun getppid(): UInt = io.github.kotlinmania.rustlang.libc.getppid()

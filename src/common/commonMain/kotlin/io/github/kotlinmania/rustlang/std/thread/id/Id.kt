@@ -68,7 +68,7 @@ public open class ThreadId internal constructor(
         )
 
         // Generate a new unique thread ID.
-        internal fun new(): ThreadId {
+        public fun new(): ThreadId {
             fun exhausted(): Nothing {
                 error("failed to generate unique thread ID: bitspace exhausted")
             }
@@ -88,6 +88,6 @@ public open class ThreadId internal constructor(
             }
         }
 
-        internal fun fromU64(v: ULong): ThreadId? = NonZero.new(v).map({ ThreadId(it) })
+        public fun fromU64(v: ULong): ThreadId? = NonZero.new(v).map({ ThreadId(it) })
     }
 }

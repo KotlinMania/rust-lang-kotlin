@@ -1,5 +1,6 @@
 package io.github.kotlinmania.rustlang.core.mem
 
+import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.intrinsics.discriminantValue
 import io.github.kotlinmania.rustlang.core.intrinsics.readViaCopy
 import io.github.kotlinmania.rustlang.core.intrinsics.transmuteUnchecked
@@ -8,8 +9,9 @@ import io.github.kotlinmania.rustlang.core.intrinsics.writeViaMove
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.panic.constAssert
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
+import io.github.kotlinmania.rustlang.core.ptr.read
+import io.github.kotlinmania.rustlang.core.ptr.readUnaligned
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
-import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 import io.github.kotlinmania.rustlang.core.ubchecks.assertUnsafePrecondition
 
 /**
@@ -624,7 +626,7 @@ public fun <T> needsDrop(): Boolean = true
  * Correct usage of this function: initializing an integer with zero.
  *
  * ```kotlin
- * val x: Int? = null
+ * val x: Int = 0
  * check(0 == x)
  * ```
  *
@@ -636,9 +638,9 @@ public fun <T> needsDrop(): Boolean = true
  * }
  *
  * public fun doctestEntry() {
- *     val x: Int? = null
+ *     val x: Int = 0
  *     // Undefined behavior!
- *     val y: FnCallback? = null
+ *     val y: FnCallback = FnCallback {}
  *     // And again!
  * }
  * ```

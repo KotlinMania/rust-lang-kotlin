@@ -1,7 +1,6 @@
 // port-lint: source vec/is_zero.rs
 package io.github.kotlinmania.rustlang.alloc.vec.iszero
 
-import io.github.kotlinmania.rustlang.alloc.collections.btree.node.B
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
@@ -10,7 +9,7 @@ import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.num.saturating.Saturating
 import io.github.kotlinmania.rustlang.core.num.wrapping.Wrapping
 
-internal interface IsZero {
+public interface IsZero {
     /**
      * Whether this value's representation is all zeros,
      * or can be represented with all zeroes.
@@ -84,6 +83,26 @@ public fun <T : IsZero> List<T>.isZeroFromTArraynFromTArrayn(n: Int): Boolean {
 public fun <A : IsZero, B : IsZero, C : IsZero, D : IsZero, E : IsZero, F : IsZero, G : IsZero, H : IsZero> List<Any?>.isZero(): Boolean {
     val (A, B, C, D, E, F, G, H) = this
     return A.isZero() && B.isZero() && C.isZero() && D.isZero() && E.isZero() && F.isZero() && G.isZero() && H.isZero()
+}
+
+public fun <B : IsZero, C : IsZero, D : IsZero, E : IsZero, F : IsZero, G : IsZero, H : IsZero> List<Any?>.isZeroFromBCDEFGH(): Boolean {
+    val (B, C, D, E, F, G, H) = this
+    return B.isZero() && C.isZero() && D.isZero() && E.isZero() && F.isZero() && G.isZero() && H.isZero()
+}
+
+public fun <C : IsZero, D : IsZero, E : IsZero, F : IsZero, G : IsZero, H : IsZero> List<Any?>.isZeroFromCDEFGH(): Boolean {
+    val (C, D, E, F, G, H) = this
+    return C.isZero() && D.isZero() && E.isZero() && F.isZero() && G.isZero() && H.isZero()
+}
+
+public fun <D : IsZero, E : IsZero, F : IsZero, G : IsZero, H : IsZero> List<Any?>.isZeroFromDEFGH(): Boolean {
+    val (D, E, F, G, H) = this
+    return D.isZero() && E.isZero() && F.isZero() && G.isZero() && H.isZero()
+}
+
+public fun <E : IsZero, F : IsZero, G : IsZero, H : IsZero> List<Any?>.isZeroFromEFGH(): Boolean {
+    val (E, F, G, H) = this
+    return E.isZero() && F.isZero() && G.isZero() && H.isZero()
 }
 
 public fun <F : IsZero, G : IsZero, H : IsZero> Triple<F, G, H>.isZero(): Boolean {

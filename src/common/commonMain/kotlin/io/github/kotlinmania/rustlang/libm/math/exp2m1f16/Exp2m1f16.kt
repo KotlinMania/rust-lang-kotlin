@@ -1,7 +1,6 @@
 // port-lint: source math/exp2m1f16.rs
 package io.github.kotlinmania.rustlang.libm.math.exp2m1f16
 
-import io.github.kotlinmania.f16.SIGN_MASK
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.libm.math.support.Float
 import io.github.kotlinmania.rustlang.libm.math.support.f32FromBits
@@ -16,40 +15,40 @@ public fun exp2m1f16(x: F16): F16 = crExp2m1f16(x)
 
 public fun crExp2m1f16(x: F16): F16 {
     val u = x.toBits()
-    val au = u and SIGN_MASK.inv()
+    val au = u and (F16.SIGN_MASK.inv()).toUShort()
     // |x| < 0x1p-5
-    if (au < 0x2800uL) {
+    if (au < 0x2800u.toUShort()) {
         // Exceptional cases.
-        if (au <= 0x21bcuL) {
-            if (u == 0x118cuL) {
+        if (au <= 0x21bcu.toUShort()) {
+            if (u == 0x118cu.toUShort()) {
                 return run {
                     val X: kotlin.Float = hf32("0x1.ec4002p-12")
                     X
                 }.narrow()
                 // x = 0x1.63p-11
             }
-            if (u == 0x21bcuL) {
+            if (u == 0x21bcu.toUShort()) {
                 return run {
                     val X: kotlin.Float = hf32("0x1.febffep-8")
                     X
                 }.narrow()
                 // x = 0x1.6fp-7
             }
-            if (u == 0x8da9uL) {
+            if (u == 0x8da9u.toUShort()) {
                 return run {
                     val X: kotlin.Float = hf32("-0x1.f62002p-13")
                     X
                 }.narrow()
                 // x = -0x1.6a4p-12
             }
-            if (u == 0x973fuL) {
+            if (u == 0x973fu.toUShort()) {
                 return run {
                     val X: kotlin.Float = hf32("-0x1.414002p-10")
                     X
                 }.narrow()
                 // x = -0x1.cfcp-10
             }
-            if (u == 0x8461uL) {
+            if (u == 0x8461u.toUShort()) {
                 return run {
                     val X: kotlin.Float = hf32("-0x1.847ffep-15")
                     X
@@ -70,12 +69,12 @@ public fun crExp2m1f16(x: F16): F16 {
                 X
             } * c, c)
         // log(2)*x+1/3*log(2)^2*x^2
-        return d.fma(0.5 * c, c).narrow()
+        return d.fma(F16.fromFloat(0.5f) * c, c).narrow()
     }
     // We decompose x into x1 + x2, and use 2^x = 2^x1 * 2^x2,
     // where binary32 approximations of 2^x1 and 2^x2 are tabulated.
-    val i1 = Int.from(u shr 5)
-    val i2 = Int.from(((u shr 10) shl 5) or (u and 0x1fuL))
+    val i1 = Int.from((u.toUInt() shr 5).toUShort())
+    val i2 = Int.from(((((u.toUInt() shr 10).toUShort()).toUInt() shl 5).toUShort()) or (u and 0x1fu.toUShort()))
     return T1[i1].fma(T2[i2], -1.0).narrow()
 }
 

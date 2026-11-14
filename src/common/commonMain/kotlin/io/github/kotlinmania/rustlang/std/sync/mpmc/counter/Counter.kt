@@ -9,6 +9,7 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
+import io.github.kotlinmania.rustlang.std.process.abort
 
 /**
  * Reference counter internals.
@@ -58,7 +59,7 @@ public open class Counter<C> internal constructor(
 /**
  * Wraps a channel into the reference counter.
  */
-internal fun <C> new(chan: C): Pair<Sender<C>, Receiver<C>> {
+public fun <C> new(chan: C): Pair<Sender<C>, Receiver<C>> {
     val counter = Box.intoRaw(Counter(senders = AtomicUsize.new(1), receivers = AtomicUsize.new(1), destroy = AtomicBool.new(false), chan = chan))
     val s = Sender(counter = counter)
     val r = Receiver(counter = counter)
@@ -68,9 +69,12 @@ internal fun <C> new(chan: C): Pair<Sender<C>, Receiver<C>> {
 /**
  * The sending side.
  */
-internal open class Sender<C>(
-    public var counter: MutPtr,
+public open class Sender<C> internal constructor(
+    counterCtorArg: MutPtr,
 ) {
+    public var counter: MutPtr = counterCtorArg
+        internal set
+
     /**
      * Returns the internal `Counter`.
      */
@@ -79,13 +83,13 @@ internal open class Sender<C>(
     /**
      * Acquires another sender reference.
      */
-    internal open fun acquire(): Sender<C> {
+    public open fun acquire(): Sender<C> {
         val count = this.counter().senders.fetchAdd(1, Ordering.Relaxed)
         // Cloning senders and calling `mem.forget` on the clones could potentially overflow the
         // counter. It's very difficult to recover sensibly from such degenerate scenarios so we
         // just abort when the count becomes very large.
         if (count > Int.MAX_VALUE) {
-            process.abort()
+            abort()
         }
         return Sender(counter = this.counter)
     }
@@ -95,11 +99,11 @@ internal open class Sender<C>(
      *
      * Function `disconnect` will be called if this is the last sender reference.
      */
-    internal open fun release(disconnect: (C) -> Boolean) {
+    public open fun release(disconnect: (C) -> Boolean) {
         if (this.counter().senders.fetchSub(1, Ordering.AcqRel) == 1) {
             disconnect(this.counter().chan)
             if (this.counter().destroy.swap(true, Ordering.AcqRel)) {
-                drop(Box.fromRaw(this.counter))
+                (Box.fromRaw(this.counter)).let { }
             }
         }
     }
@@ -128,15 +132,24 @@ internal open class Sender<C>(
                     (PrimitiveLayouts.mutPtrLayout(64)).writeBytes(buf, offset, value.counter)
                 }
             }
+
+        public operator fun <C> invoke(
+            counter: MutPtr,
+        ): Sender<C> = Sender<C>(
+            counterCtorArg = counter,
+        )
     }
 }
 
 /**
  * The receiving side.
  */
-internal open class Receiver<C>(
-    public var counter: MutPtr,
+public open class Receiver<C> internal constructor(
+    counterCtorArg: MutPtr,
 ) {
+    public var counter: MutPtr = counterCtorArg
+        internal set
+
     /**
      * Returns the internal `Counter`.
      */
@@ -145,13 +158,13 @@ internal open class Receiver<C>(
     /**
      * Acquires another receiver reference.
      */
-    internal open fun acquire(): Receiver<C> {
+    public open fun acquire(): Receiver<C> {
         val count = this.counter().receivers.fetchAdd(1, Ordering.Relaxed)
         // Cloning receivers and calling `mem.forget` on the clones could potentially overflow the
         // counter. It's very difficult to recover sensibly from such degenerate scenarios so we
         // just abort when the count becomes very large.
         if (count > Int.MAX_VALUE) {
-            process.abort()
+            abort()
         }
         return Receiver(counter = this.counter)
     }
@@ -161,11 +174,11 @@ internal open class Receiver<C>(
      *
      * Function `disconnect` will be called if this is the last receiver reference.
      */
-    internal open fun release(disconnect: (C) -> Boolean) {
+    public open fun release(disconnect: (C) -> Boolean) {
         if (this.counter().receivers.fetchSub(1, Ordering.AcqRel) == 1) {
             disconnect(this.counter().chan)
             if (this.counter().destroy.swap(true, Ordering.AcqRel)) {
-                drop(Box.fromRaw(this.counter))
+                (Box.fromRaw(this.counter)).let { }
             }
         }
     }
@@ -194,5 +207,11 @@ internal open class Receiver<C>(
                     (PrimitiveLayouts.mutPtrLayout(64)).writeBytes(buf, offset, value.counter)
                 }
             }
+
+        public operator fun <C> invoke(
+            counter: MutPtr,
+        ): Receiver<C> = Receiver<C>(
+            counterCtorArg = counter,
+        )
     }
 }

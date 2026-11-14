@@ -4,7 +4,7 @@ package io.github.kotlinmania.rustlang.corearch.loongarch32
 
 private object Loongarch32JniBridge {
     init {
-        System.loadLibrary("corearch_jni")
+        System.loadLibrary("kmcore_jni")
     }
 
     @JvmStatic

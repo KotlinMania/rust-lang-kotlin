@@ -5,110 +5,110 @@ package io.github.kotlinmania.rustlang.std.sys.cmath
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 
-// The host must provide the C companion wrapper exports in import module std.
-@kotlin.wasm.WasmImport("std", "stdSysCmathAcos")
+// The host must provide the C companion wrapper exports in import module kmcore.
+@kotlin.wasm.WasmImport("kmcore", "stdSysCmathAcos")
 private external fun wasiStdSysCmathAcos(n: Double): Double
 
 public actual fun acos(n: Double): Double =
     wasiStdSysCmathAcos(n).toDouble()
 
-@kotlin.wasm.WasmImport("std", "stdSysCmathAcosh")
+@kotlin.wasm.WasmImport("kmcore", "stdSysCmathAcosh")
 private external fun wasiStdSysCmathAcosh(n: Double): Double
 
 public actual fun acosh(n: Double): Double =
     wasiStdSysCmathAcosh(n).toDouble()
 
-@kotlin.wasm.WasmImport("std", "stdSysCmathAsin")
+@kotlin.wasm.WasmImport("kmcore", "stdSysCmathAsin")
 private external fun wasiStdSysCmathAsin(n: Double): Double
 
 public actual fun asin(n: Double): Double =
     wasiStdSysCmathAsin(n).toDouble()
 
-@kotlin.wasm.WasmImport("std", "stdSysCmathAsinh")
+@kotlin.wasm.WasmImport("kmcore", "stdSysCmathAsinh")
 private external fun wasiStdSysCmathAsinh(n: Double): Double
 
 public actual fun asinh(n: Double): Double =
     wasiStdSysCmathAsinh(n).toDouble()
 
-@kotlin.wasm.WasmImport("std", "stdSysCmathAtan")
+@kotlin.wasm.WasmImport("kmcore", "stdSysCmathAtan")
 private external fun wasiStdSysCmathAtan(n: Double): Double
 
 public actual fun atan(n: Double): Double =
     wasiStdSysCmathAtan(n).toDouble()
 
-@kotlin.wasm.WasmImport("std", "stdSysCmathAtan2")
+@kotlin.wasm.WasmImport("kmcore", "stdSysCmathAtan2")
 private external fun wasiStdSysCmathAtan2(a: Double, b: Double): Double
 
 public actual fun atan2(a: Double, b: Double): Double =
     wasiStdSysCmathAtan2(a, b).toDouble()
 
-@kotlin.wasm.WasmImport("std", "stdSysCmathCosh")
+@kotlin.wasm.WasmImport("kmcore", "stdSysCmathCosh")
 private external fun wasiStdSysCmathCosh(n: Double): Double
 
 public actual fun cosh(n: Double): Double =
     wasiStdSysCmathCosh(n).toDouble()
 
-@kotlin.wasm.WasmImport("std", "stdSysCmathExpm1")
+@kotlin.wasm.WasmImport("kmcore", "stdSysCmathExpm1")
 private external fun wasiStdSysCmathExpm1(n: Double): Double
 
 public actual fun expm1(n: Double): Double =
     wasiStdSysCmathExpm1(n).toDouble()
 
-@kotlin.wasm.WasmImport("std", "stdSysCmathExpm1f")
+@kotlin.wasm.WasmImport("kmcore", "stdSysCmathExpm1f")
 private external fun wasiStdSysCmathExpm1f(n: Float): Float
 
 public actual fun expm1f(n: Float): Float =
     wasiStdSysCmathExpm1f(n).toFloat()
 
-@kotlin.wasm.WasmImport("std", "stdSysCmathHypot")
+@kotlin.wasm.WasmImport("kmcore", "stdSysCmathHypot")
 private external fun wasiStdSysCmathHypot(x: Double, y: Double): Double
 
 public actual fun hypot(x: Double, y: Double): Double =
     wasiStdSysCmathHypot(x, y).toDouble()
 
-@kotlin.wasm.WasmImport("std", "stdSysCmathHypotf")
+@kotlin.wasm.WasmImport("kmcore", "stdSysCmathHypotf")
 private external fun wasiStdSysCmathHypotf(x: Float, y: Float): Float
 
 public actual fun hypotf(x: Float, y: Float): Float =
     wasiStdSysCmathHypotf(x, y).toFloat()
 
-@kotlin.wasm.WasmImport("std", "stdSysCmathLog1p")
+@kotlin.wasm.WasmImport("kmcore", "stdSysCmathLog1p")
 private external fun wasiStdSysCmathLog1p(n: Double): Double
 
 public actual fun log1p(n: Double): Double =
     wasiStdSysCmathLog1p(n).toDouble()
 
-@kotlin.wasm.WasmImport("std", "stdSysCmathLog1pf")
+@kotlin.wasm.WasmImport("kmcore", "stdSysCmathLog1pf")
 private external fun wasiStdSysCmathLog1pf(n: Float): Float
 
 public actual fun log1pf(n: Float): Float =
     wasiStdSysCmathLog1pf(n).toFloat()
 
-@kotlin.wasm.WasmImport("std", "stdSysCmathSinh")
+@kotlin.wasm.WasmImport("kmcore", "stdSysCmathSinh")
 private external fun wasiStdSysCmathSinh(n: Double): Double
 
 public actual fun sinh(n: Double): Double =
     wasiStdSysCmathSinh(n).toDouble()
 
-@kotlin.wasm.WasmImport("std", "stdSysCmathTan")
+@kotlin.wasm.WasmImport("kmcore", "stdSysCmathTan")
 private external fun wasiStdSysCmathTan(n: Double): Double
 
 public actual fun tan(n: Double): Double =
     wasiStdSysCmathTan(n).toDouble()
 
-@kotlin.wasm.WasmImport("std", "stdSysCmathTanh")
+@kotlin.wasm.WasmImport("kmcore", "stdSysCmathTanh")
 private external fun wasiStdSysCmathTanh(n: Double): Double
 
 public actual fun tanh(n: Double): Double =
     wasiStdSysCmathTanh(n).toDouble()
 
-@kotlin.wasm.WasmImport("std", "stdSysCmathTgamma")
+@kotlin.wasm.WasmImport("kmcore", "stdSysCmathTgamma")
 private external fun wasiStdSysCmathTgamma(n: Double): Double
 
 public actual fun tgamma(n: Double): Double =
     wasiStdSysCmathTgamma(n).toDouble()
 
-@kotlin.wasm.WasmImport("std", "stdSysCmathTgammaf")
+@kotlin.wasm.WasmImport("kmcore", "stdSysCmathTgammaf")
 private external fun wasiStdSysCmathTgammaf(n: Float): Float
 
 public actual fun tgammaf(n: Float): Float =
@@ -120,25 +120,25 @@ public actual fun lgammaR(n: Double, s: RustMutableReference<Int>): Double =
 public actual fun lgammafR(n: Float, s: RustMutableReference<Int>): Float =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for stdSysCmathLgammafR")
 
-@kotlin.wasm.WasmImport("std", "stdSysCmathErf")
+@kotlin.wasm.WasmImport("kmcore", "stdSysCmathErf")
 private external fun wasiStdSysCmathErf(n: Double): Double
 
 public actual fun erf(n: Double): Double =
     wasiStdSysCmathErf(n).toDouble()
 
-@kotlin.wasm.WasmImport("std", "stdSysCmathErff")
+@kotlin.wasm.WasmImport("kmcore", "stdSysCmathErff")
 private external fun wasiStdSysCmathErff(n: Float): Float
 
 public actual fun erff(n: Float): Float =
     wasiStdSysCmathErff(n).toFloat()
 
-@kotlin.wasm.WasmImport("std", "stdSysCmathErfc")
+@kotlin.wasm.WasmImport("kmcore", "stdSysCmathErfc")
 private external fun wasiStdSysCmathErfc(n: Double): Double
 
 public actual fun erfc(n: Double): Double =
     wasiStdSysCmathErfc(n).toDouble()
 
-@kotlin.wasm.WasmImport("std", "stdSysCmathErfcf")
+@kotlin.wasm.WasmImport("kmcore", "stdSysCmathErfcf")
 private external fun wasiStdSysCmathErfcf(n: Float): Float
 
 public actual fun erfcf(n: Float): Float =
@@ -198,61 +198,61 @@ public actual fun erff128(n: F128): F128 =
 public actual fun erfcf128(n: F128): F128 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for stdSysCmathErfcf128")
 
-@kotlin.wasm.WasmImport("std", "stdSysCmathAcosf")
+@kotlin.wasm.WasmImport("kmcore", "stdSysCmathAcosf")
 private external fun wasiStdSysCmathAcosf(n: Float): Float
 
 public actual fun acosf(n: Float): Float =
     wasiStdSysCmathAcosf(n).toFloat()
 
-@kotlin.wasm.WasmImport("std", "stdSysCmathAcoshf")
+@kotlin.wasm.WasmImport("kmcore", "stdSysCmathAcoshf")
 private external fun wasiStdSysCmathAcoshf(n: Float): Float
 
 public actual fun acoshf(n: Float): Float =
     wasiStdSysCmathAcoshf(n).toFloat()
 
-@kotlin.wasm.WasmImport("std", "stdSysCmathAsinf")
+@kotlin.wasm.WasmImport("kmcore", "stdSysCmathAsinf")
 private external fun wasiStdSysCmathAsinf(n: Float): Float
 
 public actual fun asinf(n: Float): Float =
     wasiStdSysCmathAsinf(n).toFloat()
 
-@kotlin.wasm.WasmImport("std", "stdSysCmathAsinhf")
+@kotlin.wasm.WasmImport("kmcore", "stdSysCmathAsinhf")
 private external fun wasiStdSysCmathAsinhf(n: Float): Float
 
 public actual fun asinhf(n: Float): Float =
     wasiStdSysCmathAsinhf(n).toFloat()
 
-@kotlin.wasm.WasmImport("std", "stdSysCmathAtan2f")
+@kotlin.wasm.WasmImport("kmcore", "stdSysCmathAtan2f")
 private external fun wasiStdSysCmathAtan2f(a: Float, b: Float): Float
 
 public actual fun atan2f(a: Float, b: Float): Float =
     wasiStdSysCmathAtan2f(a, b).toFloat()
 
-@kotlin.wasm.WasmImport("std", "stdSysCmathAtanf")
+@kotlin.wasm.WasmImport("kmcore", "stdSysCmathAtanf")
 private external fun wasiStdSysCmathAtanf(n: Float): Float
 
 public actual fun atanf(n: Float): Float =
     wasiStdSysCmathAtanf(n).toFloat()
 
-@kotlin.wasm.WasmImport("std", "stdSysCmathCoshf")
+@kotlin.wasm.WasmImport("kmcore", "stdSysCmathCoshf")
 private external fun wasiStdSysCmathCoshf(n: Float): Float
 
 public actual fun coshf(n: Float): Float =
     wasiStdSysCmathCoshf(n).toFloat()
 
-@kotlin.wasm.WasmImport("std", "stdSysCmathSinhf")
+@kotlin.wasm.WasmImport("kmcore", "stdSysCmathSinhf")
 private external fun wasiStdSysCmathSinhf(n: Float): Float
 
 public actual fun sinhf(n: Float): Float =
     wasiStdSysCmathSinhf(n).toFloat()
 
-@kotlin.wasm.WasmImport("std", "stdSysCmathTanf")
+@kotlin.wasm.WasmImport("kmcore", "stdSysCmathTanf")
 private external fun wasiStdSysCmathTanf(n: Float): Float
 
 public actual fun tanf(n: Float): Float =
     wasiStdSysCmathTanf(n).toFloat()
 
-@kotlin.wasm.WasmImport("std", "stdSysCmathTanhf")
+@kotlin.wasm.WasmImport("kmcore", "stdSysCmathTanhf")
 private external fun wasiStdSysCmathTanhf(n: Float): Float
 
 public actual fun tanhf(n: Float): Float =

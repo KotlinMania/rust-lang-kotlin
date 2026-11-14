@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.std.sys.personality.dwarf.eh
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
+import io.github.kotlinmania.rustlang.core.ptr.withExposedProvenance
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.sys.personality.dwarf.DwarfReader
 
@@ -277,7 +278,7 @@ public fun findEhAction(lsda: ConstPtr, context: EHContext): Result<EHAction, Un
                 // Can never have null landing pad for sjlj -- that would have
                 // been indicated by a -1 call site index.
                 // Note(strict provenance)
-                val lpad1 = ptr.withExposedProvenance((csLpad1 + 1uL).toInt())
+                val lpad1 = withExposedProvenance((csLpad1 + 1uL).toInt())
                 return Result.Ok(interpretCsAction(actionTable, csActionEntry1, lpad1))
             }
         }

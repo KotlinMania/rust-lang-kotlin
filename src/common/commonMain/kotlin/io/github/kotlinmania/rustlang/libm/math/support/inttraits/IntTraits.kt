@@ -11,28 +11,27 @@ import io.github.kotlinmania.rustlang.core.num.rustOverflowingAdd
 import io.github.kotlinmania.rustlang.core.num.rustOverflowingSub
 import io.github.kotlinmania.rustlang.core.num.rustWrappingMul
 import io.github.kotlinmania.rustlang.core.num.rustWrappingShr
-import io.github.kotlinmania.rustlang.core.ops.Add
-import io.github.kotlinmania.rustlang.core.ops.AddAssign
-import io.github.kotlinmania.rustlang.core.ops.BitAnd
-import io.github.kotlinmania.rustlang.core.ops.BitAndAssign
-import io.github.kotlinmania.rustlang.core.ops.BitOr
-import io.github.kotlinmania.rustlang.core.ops.BitOrAssign
-import io.github.kotlinmania.rustlang.core.ops.BitXor
-import io.github.kotlinmania.rustlang.core.ops.BitXorAssign
-import io.github.kotlinmania.rustlang.core.ops.Div
-import io.github.kotlinmania.rustlang.core.ops.DivAssign
-import io.github.kotlinmania.rustlang.core.ops.Mul
-import io.github.kotlinmania.rustlang.core.ops.MulAssign
-import io.github.kotlinmania.rustlang.core.ops.Not
-import io.github.kotlinmania.rustlang.core.ops.Rem
-import io.github.kotlinmania.rustlang.core.ops.RemAssign
-import io.github.kotlinmania.rustlang.core.ops.Shl
-import io.github.kotlinmania.rustlang.core.ops.ShlAssign
-import io.github.kotlinmania.rustlang.core.ops.Shr
-import io.github.kotlinmania.rustlang.core.ops.ShrAssign
-import io.github.kotlinmania.rustlang.core.ops.Sub
-import io.github.kotlinmania.rustlang.core.ops.SubAssign
-import io.github.kotlinmania.rustlang.libm.math.ktan.T
+import io.github.kotlinmania.rustlang.core.ops.arith.Add
+import io.github.kotlinmania.rustlang.core.ops.arith.AddAssign
+import io.github.kotlinmania.rustlang.core.ops.arith.Div
+import io.github.kotlinmania.rustlang.core.ops.arith.DivAssign
+import io.github.kotlinmania.rustlang.core.ops.arith.Mul
+import io.github.kotlinmania.rustlang.core.ops.arith.MulAssign
+import io.github.kotlinmania.rustlang.core.ops.arith.Rem
+import io.github.kotlinmania.rustlang.core.ops.arith.RemAssign
+import io.github.kotlinmania.rustlang.core.ops.arith.Sub
+import io.github.kotlinmania.rustlang.core.ops.arith.SubAssign
+import io.github.kotlinmania.rustlang.core.ops.bit.BitAnd
+import io.github.kotlinmania.rustlang.core.ops.bit.BitAndAssign
+import io.github.kotlinmania.rustlang.core.ops.bit.BitOr
+import io.github.kotlinmania.rustlang.core.ops.bit.BitOrAssign
+import io.github.kotlinmania.rustlang.core.ops.bit.BitXor
+import io.github.kotlinmania.rustlang.core.ops.bit.BitXorAssign
+import io.github.kotlinmania.rustlang.core.ops.bit.Not
+import io.github.kotlinmania.rustlang.core.ops.bit.Shl
+import io.github.kotlinmania.rustlang.core.ops.bit.ShlAssign
+import io.github.kotlinmania.rustlang.core.ops.bit.Shr
+import io.github.kotlinmania.rustlang.core.ops.bit.ShrAssign
 import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.hexfmt.DisplayHex
 
 // Some constants are only used with tests
@@ -40,7 +39,7 @@ import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.hexfmt.DisplayH
 /**
  * Minimal integer implementations needed on all integer types, including wide integers.
  */
-public interface MinInt<T, out OtherSign, out Unsigned> : BitOr<T, T>, Not<T>, Shl<UInt, T> {
+public interface MinInt<T, out OtherSign, out Unsigned> : BitOr<T>, Not<T>, Shl<UInt, T> {
     /**
      * If `Self` is a signed integer
      */
@@ -63,7 +62,7 @@ public interface MinInt<T, out OtherSign, out Unsigned> : BitOr<T, T>, Not<T>, S
 /**
  * Trait for some basic operations on integers
  */
-public interface Int<T> : DisplayHex, AddAssign<T>, SubAssign<T>, MulAssign<T>, DivAssign<T>, RemAssign<T>, BitAndAssign<T>, BitOrAssign<T>, BitXorAssign<T>, ShlAssign<Int<T>>, ShlAssign<UInt>, ShrAssign<UInt>, ShrAssign<Int<T>>, Add<T, T>, Sub<T, T>, Mul<T, T>, Div<T, T>, Rem<T, T>, Shl<Int<T>, T>, Shl<UInt, T>, Shr<Int<T>, T>, Shr<UInt, T>, BitXor<T, T>, BitAnd<T, T>, CastFrom<Int<T>, T>, CastFrom<UShort, T>, CastFrom<UInt, T>, CastFrom<UByte, T>, CastInto<Int<T>>, CastInto<UShort>, CastInto<UInt>, CastInto<UByte> {
+public interface Int<T> : DisplayHex, AddAssign, SubAssign, MulAssign, DivAssign, RemAssign, BitAndAssign, BitOrAssign, BitXorAssign, ShlAssign<Int<T>>, ShlAssign<UInt>, ShrAssign<UInt>, ShrAssign<Int<T>>, Add<T>, Sub<T>, Mul<T>, Div<T>, Rem<T>, Shl<Int<T>, T>, Shl<UInt, T>, Shr<Int<T>, T>, Shr<UInt, T>, BitXor<T>, BitAnd<T>, CastFrom<Int<T>, T>, CastFrom<UShort, T>, CastFrom<UInt, T>, CastFrom<UByte, T>, CastInto<Int<T>>, CastInto<UShort>, CastInto<UInt>, CastInto<UByte> {
     public fun signed(): OtherSign<Unsigned>
 
     public fun unsigned(): Unsigned
@@ -901,7 +900,7 @@ public fun I128.borrowingSub(other: I128, borrow: Boolean): Pair<I128, Boolean> 
  * Trait for integers twice the bit width of another integer. This is implemented for all
  * primitives except for `UByte`, because there is not a smaller primitive.
  */
-public interface DInt<T, H> : Add<T, T>, Sub<T, T>, Shl<UInt, T>, Shr<UInt, T> {
+public interface DInt<T, H> : Add<T>, Sub<T>, Shl<UInt, T>, Shr<UInt, T> {
     /**
      * Returns the low half of `self`
      */
@@ -1872,11 +1871,11 @@ public fun I128.castI128(): I128 {
 public fun I128.castLossyI128(): I128 = this
 
 public fun Byte.castF16(): F16 {
-    check((((this as Any?) as F16)).toByte() == this)
-    return ((this as Any?) as F16)
+    check((F16.fromByte(this)).toByte() == this)
+    return F16.fromByte(this)
 }
 
-public fun Byte.castLossyF16(): F16 = ((this as Any?) as F16)
+public fun Byte.castLossyF16(): F16 = F16.fromByte(this)
 
 public fun Byte.castFloat(): kotlin.Float {
     check((this.toFloat()).toByte() == this)
@@ -1893,18 +1892,18 @@ public fun Byte.castDouble(): Double {
 public fun Byte.castLossyDouble(): Double = this.toDouble()
 
 public fun Byte.castF128(): F128 {
-    check((((this as Any?) as F128)).toByte() == this)
-    return ((this as Any?) as F128)
+    check((F128.fromByte(this)).toByte() == this)
+    return F128.fromByte(this)
 }
 
-public fun Byte.castLossyF128(): F128 = ((this as Any?) as F128)
+public fun Byte.castLossyF128(): F128 = F128.fromByte(this)
 
 public fun Short.castF16(): F16 {
-    check((((this as Any?) as F16)).toShort() == this)
-    return ((this as Any?) as F16)
+    check((F16.fromShort(this)).toShort() == this)
+    return F16.fromShort(this)
 }
 
-public fun Short.castLossyF16(): F16 = ((this as Any?) as F16)
+public fun Short.castLossyF16(): F16 = F16.fromShort(this)
 
 public fun Short.castFloat(): kotlin.Float {
     check((this.toFloat()).toShort() == this)
@@ -1921,18 +1920,18 @@ public fun Short.castDouble(): Double {
 public fun Short.castLossyDouble(): Double = this.toDouble()
 
 public fun Short.castF128(): F128 {
-    check((((this as Any?) as F128)).toShort() == this)
-    return ((this as Any?) as F128)
+    check((F128.fromShort(this)).toShort() == this)
+    return F128.fromShort(this)
 }
 
-public fun Short.castLossyF128(): F128 = ((this as Any?) as F128)
+public fun Short.castLossyF128(): F128 = F128.fromShort(this)
 
 public fun Int.castF16(): F16 {
-    check((((this as Any?) as F16)).toInt() == this)
-    return ((this as Any?) as F16)
+    check((F16.fromInt(this)).toInt() == this)
+    return F16.fromInt(this)
 }
 
-public fun Int.castLossyF16(): F16 = ((this as Any?) as F16)
+public fun Int.castLossyF16(): F16 = F16.fromInt(this)
 
 public fun Int.castFloat(): kotlin.Float {
     check((this.toFloat()).toInt() == this)
@@ -1949,18 +1948,18 @@ public fun Int.castDouble(): Double {
 public fun Int.castLossyDouble(): Double = this.toDouble()
 
 public fun Int.castF128(): F128 {
-    check((((this as Any?) as F128)).toInt() == this)
-    return ((this as Any?) as F128)
+    check((F128.fromInt(this)).toInt() == this)
+    return F128.fromInt(this)
 }
 
-public fun Int.castLossyF128(): F128 = ((this as Any?) as F128)
+public fun Int.castLossyF128(): F128 = F128.fromInt(this)
 
 public fun Long.castF16(): F16 {
-    check((((this as Any?) as F16)).toLong() == this)
-    return ((this as Any?) as F16)
+    check((F16.fromLong(this)).toLong() == this)
+    return F16.fromLong(this)
 }
 
-public fun Long.castLossyF16(): F16 = ((this as Any?) as F16)
+public fun Long.castLossyF16(): F16 = F16.fromLong(this)
 
 public fun Long.castFloat(): kotlin.Float {
     check((this.toFloat()).toLong() == this)
@@ -1977,18 +1976,18 @@ public fun Long.castDouble(): Double {
 public fun Long.castLossyDouble(): Double = this.toDouble()
 
 public fun Long.castF128(): F128 {
-    check((((this as Any?) as F128)).toLong() == this)
-    return ((this as Any?) as F128)
+    check((F128.fromLong(this)).toLong() == this)
+    return F128.fromLong(this)
 }
 
-public fun Long.castLossyF128(): F128 = ((this as Any?) as F128)
+public fun Long.castLossyF128(): F128 = F128.fromLong(this)
 
 public fun I128.castF16(): F16 {
-    check(I128.fromLong((((this as Any?) as F16)).toLong()) == this)
-    return ((this as Any?) as F16)
+    check(I128.fromLong((F16.fromDouble(this.toDouble())).toLong()) == this)
+    return F16.fromDouble(this.toDouble())
 }
 
-public fun I128.castLossyF16(): F16 = ((this as Any?) as F16)
+public fun I128.castLossyF16(): F16 = F16.fromDouble(this.toDouble())
 
 public fun I128.castFloat(): kotlin.Float {
     check(I128.fromLong((this.toFloat()).toLong()) == this)
@@ -2005,11 +2004,11 @@ public fun I128.castDouble(): Double {
 public fun I128.castLossyDouble(): Double = this.toDouble()
 
 public fun I128.castF128(): F128 {
-    check(I128.fromLong((((this as Any?) as F128)).toLong()) == this)
-    return ((this as Any?) as F128)
+    check(I128.fromLong((F128.fromDouble(this.toDouble())).toLong()) == this)
+    return F128.fromDouble(this.toDouble())
 }
 
-public fun I128.castLossyF128(): F128 = ((this as Any?) as F128)
+public fun I128.castLossyF128(): F128 = F128.fromDouble(this.toDouble())
 
 public fun ULong.castDouble(): Double {
     check((this.toDouble()).toULong() == this)

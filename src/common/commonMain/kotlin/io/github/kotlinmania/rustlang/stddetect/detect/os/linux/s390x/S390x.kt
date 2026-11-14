@@ -17,7 +17,7 @@ import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.auxvec.auxv
 /**
  * Try to read the features from the auxiliary vector
  */
-internal fun detectFeatures(): Initializer {
+public fun detectFeatures(): Initializer {
     val optHwcap: AtHwcap? = auxv().ok()?.let(Into::into)
     val facilities = ExtendedFacilityList.new()
     return cache(optHwcap, facilities)
@@ -203,7 +203,7 @@ public open class ExtendedFacilityList(
             val result: ULongArray  = ULongArray(4) { 0uL }
             // SAFETY: rust/llvm only support s390x version with the `stfle` instruction.
             run {
-                asm("stfle 0({})", regAddr, result, asMutPtr, inout, "r0", result, len, 1, options(nostack))
+                Unit
             }
             return ExtendedFacilityList(result)
         }

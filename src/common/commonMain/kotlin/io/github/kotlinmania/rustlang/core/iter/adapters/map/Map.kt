@@ -1,16 +1,17 @@
 // port-lint: source iter/adapters/map.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.map
 
-import io.github.kotlinmania.rustlang.core.iter.InPlaceIterable
-import io.github.kotlinmania.rustlang.core.iter.TrustedFused
-import io.github.kotlinmania.rustlang.core.iter.TrustedLen
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
-import io.github.kotlinmania.rustlang.core.iter.adapters.TrustedRandomAccess
-import io.github.kotlinmania.rustlang.core.iter.adapters.TrustedRandomAccessNoCoerce
+import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccess
+import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccessNoCoerce
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.tryGetUnchecked
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.InPlaceIterable
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedFused
+import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
 
 public class DebugStruct(
@@ -94,7 +95,7 @@ public typealias Source<I> = I.Source
  */
 public open class Map<I, F>(
     // Used for `SplitWhitespace` and `SplitAsciiWhitespace` `asStr` methods
-    internal var iter: I,
+    public var iter: I,
     public var f: F,
 ) : TrustedFused, TrustedLen<Map<I, F>>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, SourceIter<Any?, Source>, InPlaceIterable, Iterable<B> {
     override fun iterator(): Iterator<B> = object : AbstractIterator<B>() {
@@ -108,7 +109,7 @@ public open class Map<I, F>(
 
     public open fun clone(): Map<I, F> = Map(iter, f)
 
-    internal open fun intoInner(): I = this.iter
+    public open fun intoInner(): I = this.iter
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "Map").field("iter", this.iter).finish()
 
@@ -167,7 +168,7 @@ public open class Map<I, F>(
                 }
             }
 
-        internal fun <I, F> new(iter: I, f: F): Map<I, F> = Map(iter = iter, f = f)
+        public fun <I, F> new(iter: I, f: F): Map<I, F> = Map(iter = iter, f = f)
 
         public val MAY_HAVE_SIDE_EFFECT: Boolean = true
 

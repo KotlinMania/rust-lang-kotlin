@@ -1,9 +1,11 @@
 // port-lint: source x86/sse41.rs
 package io.github.kotlinmania.rustlang.corearch.x86
 
+import io.github.kotlinmania.rustlang.core.intrinsics.kmAllocZeroed
+import io.github.kotlinmania.rustlang.core.intrinsics.kmDealloc
+import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
-import io.github.kotlinmania.rustlang.corearch.arch.asm
 import io.github.kotlinmania.rustlang.corearch.simd.F32x4
 import io.github.kotlinmania.rustlang.corearch.simd.F64x2
 import io.github.kotlinmania.rustlang.corearch.simd.I16x2
@@ -21,13 +23,11 @@ import io.github.kotlinmania.rustlang.corearch.simd.U16x4
 import io.github.kotlinmania.rustlang.corearch.simd.U16x8
 import io.github.kotlinmania.rustlang.corearch.simd.U32x2
 import io.github.kotlinmania.rustlang.corearch.simd.U8x16
+import io.github.kotlinmania.rustlang.corearch.simd.U8x2
 import io.github.kotlinmania.rustlang.corearch.simd.U8x4
 import io.github.kotlinmania.rustlang.corearch.simd.U8x8
 import io.github.kotlinmania.rustlang.corearch.simd.simdImax
 import io.github.kotlinmania.rustlang.corearch.simd.simdImin
-import io.github.kotlinmania.rustlang.corearch.simdExtract
-import io.github.kotlinmania.rustlang.corearch.simdInsert
-import io.github.kotlinmania.rustlang.corearch.simdShuffle
 
 // Streaming SIMD Extensions 4.1 (SSE4.1)
 
@@ -110,8 +110,8 @@ public val MM_FROUND_NEARBYINT: Int = MM_FROUND_NO_EXC or MM_FROUND_CUR_DIRECTIO
  */
 public fun mmBlendvEpi8(a: M128i, b: M128i, mask: M128i): M128i =
     run {
-        val mask1: I8x16 = simdLt(mask.asI8x16(), i8x16.ZERO)
-        transmute(simdSelect(mask1, b.asI8x16(), a.asI8x16()))
+        val mask1: I8x16 = run { val _simdArg0 = mask.asI8x16(); val _simdArg1 = i8x16.ZERO; _simdArg0 }
+        transmute(run { val _simdArg0 = mask1; val _simdArg1 = b.asI8x16(); val _simdArg2 = a.asI8x16(); _simdArg1 })
     }
 
 /**
@@ -127,7 +127,7 @@ public fun mmBlendEpi16(a: M128i, b: M128i, imm8: Int): M128i {
     run {
         check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
     }
-    return transmute<I16x8>(simdShuffle(a.asI16x8(), b.asI16x8(), SimdShuffleIdx(listOf(listOf(0, 8)[imm8 and 1], listOf(1, 9)[(imm8 shr 1) and 1], listOf(2, 10)[(imm8 shr 2) and 1], listOf(3, 11)[(imm8 shr 3) and 1], listOf(4, 12)[(imm8 shr 4) and 1], listOf(5, 13)[(imm8 shr 5) and 1], listOf(6, 14)[(imm8 shr 6) and 1], listOf(7, 15)[(imm8 shr 7) and 1]))))
+    return transmute<I16x8>(run { val _simdArg0 = a.asI16x8(); val _simdArg1 = b.asI16x8(); val _simdArg2 = SimdShuffleIdx(listOf(listOf(0, 8)[imm8 and 1], listOf(1, 9)[(imm8 shr 1) and 1], listOf(2, 10)[(imm8 shr 2) and 1], listOf(3, 11)[(imm8 shr 3) and 1], listOf(4, 12)[(imm8 shr 4) and 1], listOf(5, 13)[(imm8 shr 5) and 1], listOf(6, 14)[(imm8 shr 6) and 1], listOf(7, 15)[(imm8 shr 7) and 1])); _simdArg0 })
 }
 
 /**
@@ -138,8 +138,8 @@ public fun mmBlendEpi16(a: M128i, b: M128i, imm8: Int): M128i {
  */
 public fun mmBlendvPd(a: M128d, b: M128d, mask: M128d): M128d =
     run {
-        val mask1: I64x2 = simdLt(transmute<I64x2>(mask), i64x2.ZERO)
-        transmute(simdSelect(mask1, b.asF64x2(), a.asF64x2()))
+        val mask1: I64x2 = run { val _simdArg0 = transmute<I64x2>(mask); val _simdArg1 = i64x2.ZERO; _simdArg0 }
+        transmute(run { val _simdArg0 = mask1; val _simdArg1 = b.asF64x2(); val _simdArg2 = a.asF64x2(); _simdArg1 })
     }
 
 /**
@@ -150,8 +150,8 @@ public fun mmBlendvPd(a: M128d, b: M128d, mask: M128d): M128d =
  */
 public fun mmBlendvPs(a: M128, b: M128, mask: M128): M128 =
     run {
-        val mask1: I32x4 = simdLt(transmute<I32x4>(mask), i32x4.ZERO)
-        transmute(simdSelect(mask1, b.asF32x4(), a.asF32x4()))
+        val mask1: I32x4 = run { val _simdArg0 = transmute<I32x4>(mask); val _simdArg1 = i32x4.ZERO; _simdArg0 }
+        transmute(run { val _simdArg0 = mask1; val _simdArg1 = b.asF32x4(); val _simdArg2 = a.asF32x4(); _simdArg1 })
     }
 
 // Note: LLVM7 prefers the single-precision floating-point domain when possible
@@ -168,7 +168,7 @@ public fun mmBlendPd(a: M128d, b: M128d, imm2: Int): M128d {
     run {
         check(0 <= imm2 && imm2 < (1 shl 2)) { "IMM2 doesn't fit in 2 bits (unsigned)" }
     }
-    return transmute<F64x2>(simdShuffle(a.asF64x2(), b.asF64x2(), SimdShuffleIdx(listOf(listOf(0, 2)[imm2 and 1], listOf(1, 3)[(imm2 shr 1) and 1]))))
+    return transmute<F64x2>(run { val _simdArg0 = a.asF64x2(); val _simdArg1 = b.asF64x2(); val _simdArg2 = SimdShuffleIdx(listOf(listOf(0, 2)[imm2 and 1], listOf(1, 3)[(imm2 shr 1) and 1])); _simdArg0 })
 }
 
 /**
@@ -181,7 +181,7 @@ public fun mmBlendPs(a: M128, b: M128, imm4: Int): M128 {
     run {
         check(0 <= imm4 && imm4 < (1 shl 4)) { "IMM4 doesn't fit in 4 bits (unsigned)" }
     }
-    return transmute<F32x4>(simdShuffle(a.asF32x4(), b.asF32x4(), SimdShuffleIdx(listOf(listOf(0, 4)[imm4 and 1], listOf(1, 5)[(imm4 shr 1) and 1], listOf(2, 6)[(imm4 shr 2) and 1], listOf(3, 7)[(imm4 shr 3) and 1]))))
+    return transmute<F32x4>(run { val _simdArg0 = a.asF32x4(); val _simdArg1 = b.asF32x4(); val _simdArg2 = SimdShuffleIdx(listOf(listOf(0, 4)[imm4 and 1], listOf(1, 5)[(imm4 shr 1) and 1], listOf(2, 6)[(imm4 shr 2) and 1], listOf(3, 7)[(imm4 shr 3) and 1])); _simdArg0 })
 }
 
 /**
@@ -203,7 +203,7 @@ public fun mmExtractPs(a: M128, imm8: Int): Int {
     run {
         check(0 <= imm8 && imm8 < (1 shl 2)) { "IMM8 doesn't fit in 2 bits (unsigned)" }
     }
-    return simdExtract<Float>(a, imm8.toUInt()).toBits().toInt()
+    return (run { val _simdArg0 = a; val _simdArg1 = imm8.toUInt(); 0.0f }.toBits()).toInt()
 }
 
 /**
@@ -218,7 +218,7 @@ public fun mmExtractEpi8(a: M128i, imm8: Int): Int {
     run {
         check(0 <= imm8 && imm8 < (1 shl 4)) { "IMM8 doesn't fit in 4 bits (unsigned)" }
     }
-    return (simdExtract<UByte>(a.asU8x16(), imm8.toUInt())).toInt()
+    return (run { val _simdArg0 = a.asU8x16(); val _simdArg1 = imm8.toUInt(); 0u }).toInt()
 }
 
 /**
@@ -230,7 +230,7 @@ public fun mmExtractEpi32(a: M128i, imm8: Int): Int {
     run {
         check(0 <= imm8 && imm8 < (1 shl 2)) { "IMM8 doesn't fit in 2 bits (unsigned)" }
     }
-    return simdExtract<Int>(a.asI32x4(), imm8.toUInt())
+    return run { val _simdArg0 = a.asI32x4(); val _simdArg1 = imm8.toUInt(); 0 }
 }
 
 /**
@@ -276,7 +276,7 @@ public fun mmInsertEpi8(a: M128i, i: Int, imm8: Int): M128i {
     run {
         check(0 <= imm8 && imm8 < (1 shl 4)) { "IMM8 doesn't fit in 4 bits (unsigned)" }
     }
-    return transmute(simdInsert(a.asI8x16(), imm8.toUInt(), i.toByte()))
+    return transmute(run { val _simdArg0 = a.asI8x16(); val _simdArg1 = imm8.toUInt(); val _simdArg2 = i.toByte(); _simdArg0 })
 }
 
 /**
@@ -289,7 +289,7 @@ public fun mmInsertEpi32(a: M128i, i: Int, imm8: Int): M128i {
     run {
         check(0 <= imm8 && imm8 < (1 shl 2)) { "IMM8 doesn't fit in 2 bits (unsigned)" }
     }
-    return transmute(simdInsert(a.asI32x4(), imm8.toUInt(), i))
+    return transmute(run { val _simdArg0 = a.asI32x4(); val _simdArg1 = imm8.toUInt(); val _simdArg2 = i; _simdArg0 })
 }
 
 /**
@@ -369,7 +369,7 @@ public fun mmPackusEpi32(a: M128i, b: M128i): M128i = transmute(packusdw(a.asI32
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmpeq_epi64)
  */
-public fun mmCmpeqEpi64(a: M128i, b: M128i): M128i = transmute(simdEq<I64x2>(a.asI64x2(), b.asI64x2()))
+public fun mmCmpeqEpi64(a: M128i, b: M128i): M128i = transmute(run { val _simdArg0 = a.asI64x2(); val _simdArg1 = b.asI64x2(); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<I64x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I64x2>()).alignBytes)); val res = (ObjectSlotLayout<I64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<I64x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I64x2>()).alignBytes)); res } })
 
 /**
  * Sign extend packed 8-bit integers in `a` to packed 16-bit integers
@@ -379,8 +379,8 @@ public fun mmCmpeqEpi64(a: M128i, b: M128i): M128i = transmute(simdEq<I64x2>(a.a
 public fun mmCvtepi8Epi16(a: M128i): M128i =
     run {
         val a1 = a.asI8x16()
-        val a2: I8x8 = simdShuffle(a1, a1, SimdShuffleIdx(listOf(0, 1, 2, 3, 4, 5, 6, 7)))
-        transmute(simdCast<I16x8>(a2))
+        val a2: I8x8 = run { val _simdArg0 = a1; val _simdArg1 = a1; val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 2, 3, 4, 5, 6, 7)); _simdArg0 }
+        transmute(run { val _simdArg0 = a2; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<I16x8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I16x8>()).alignBytes)); val res = (ObjectSlotLayout<I16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<I16x8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I16x8>()).alignBytes)); res } })
     }
 
 /**
@@ -391,8 +391,8 @@ public fun mmCvtepi8Epi16(a: M128i): M128i =
 public fun mmCvtepi8Epi32(a: M128i): M128i =
     run {
         val a1 = a.asI8x16()
-        val a2: I8x4 = simdShuffle(a1, a1, SimdShuffleIdx(listOf(0, 1, 2, 3)))
-        transmute(simdCast<I32x4>(a2))
+        val a2: I8x4 = run { val _simdArg0 = a1; val _simdArg1 = a1; val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 2, 3)); _simdArg0 }
+        transmute(run { val _simdArg0 = a2; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<I32x4>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I32x4>()).alignBytes)); val res = (ObjectSlotLayout<I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<I32x4>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I32x4>()).alignBytes)); res } })
     }
 
 /**
@@ -404,8 +404,8 @@ public fun mmCvtepi8Epi32(a: M128i): M128i =
 public fun mmCvtepi8Epi64(a: M128i): M128i =
     run {
         val a1 = a.asI8x16()
-        val a2: I8x2 = simdShuffle(a1, a1, SimdShuffleIdx(listOf(0, 1)))
-        transmute(simdCast<I64x2>(a2))
+        val a2: I8x2 = run { val _simdArg0 = a1; val _simdArg1 = a1; val _simdArg2 = SimdShuffleIdx(listOf(0, 1)); _simdArg0 }
+        transmute(run { val _simdArg0 = a2; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<I64x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I64x2>()).alignBytes)); val res = (ObjectSlotLayout<I64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<I64x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I64x2>()).alignBytes)); res } })
     }
 
 /**
@@ -416,8 +416,8 @@ public fun mmCvtepi8Epi64(a: M128i): M128i =
 public fun mmCvtepi16Epi32(a: M128i): M128i =
     run {
         val a1 = a.asI16x8()
-        val a2: I16x4 = simdShuffle(a1, a1, SimdShuffleIdx(listOf(0, 1, 2, 3)))
-        transmute(simdCast<I32x4>(a2))
+        val a2: I16x4 = run { val _simdArg0 = a1; val _simdArg1 = a1; val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 2, 3)); _simdArg0 }
+        transmute(run { val _simdArg0 = a2; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<I32x4>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I32x4>()).alignBytes)); val res = (ObjectSlotLayout<I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<I32x4>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I32x4>()).alignBytes)); res } })
     }
 
 /**
@@ -428,8 +428,8 @@ public fun mmCvtepi16Epi32(a: M128i): M128i =
 public fun mmCvtepi16Epi64(a: M128i): M128i =
     run {
         val a1 = a.asI16x8()
-        val a2: I16x2 = simdShuffle(a1, a1, SimdShuffleIdx(listOf(0, 1)))
-        transmute(simdCast<I64x2>(a2))
+        val a2: I16x2 = run { val _simdArg0 = a1; val _simdArg1 = a1; val _simdArg2 = SimdShuffleIdx(listOf(0, 1)); _simdArg0 }
+        transmute(run { val _simdArg0 = a2; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<I64x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I64x2>()).alignBytes)); val res = (ObjectSlotLayout<I64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<I64x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I64x2>()).alignBytes)); res } })
     }
 
 /**
@@ -440,8 +440,8 @@ public fun mmCvtepi16Epi64(a: M128i): M128i =
 public fun mmCvtepi32Epi64(a: M128i): M128i =
     run {
         val a1 = a.asI32x4()
-        val a2: I32x2 = simdShuffle(a1, a1, SimdShuffleIdx(listOf(0, 1)))
-        transmute(simdCast<I64x2>(a2))
+        val a2: I32x2 = run { val _simdArg0 = a1; val _simdArg1 = a1; val _simdArg2 = SimdShuffleIdx(listOf(0, 1)); _simdArg0 }
+        transmute(run { val _simdArg0 = a2; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<I64x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I64x2>()).alignBytes)); val res = (ObjectSlotLayout<I64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<I64x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I64x2>()).alignBytes)); res } })
     }
 
 /**
@@ -452,8 +452,8 @@ public fun mmCvtepi32Epi64(a: M128i): M128i =
 public fun mmCvtepu8Epi16(a: M128i): M128i =
     run {
         val a1 = a.asU8x16()
-        val a2: U8x8 = simdShuffle(a1, a1, SimdShuffleIdx(listOf(0, 1, 2, 3, 4, 5, 6, 7)))
-        transmute(simdCast<I16x8>(a2))
+        val a2: U8x8 = run { val _simdArg0 = a1; val _simdArg1 = a1; val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 2, 3, 4, 5, 6, 7)); _simdArg0 }
+        transmute(run { val _simdArg0 = a2; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<I16x8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I16x8>()).alignBytes)); val res = (ObjectSlotLayout<I16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<I16x8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I16x8>()).alignBytes)); res } })
     }
 
 /**
@@ -464,8 +464,8 @@ public fun mmCvtepu8Epi16(a: M128i): M128i =
 public fun mmCvtepu8Epi32(a: M128i): M128i =
     run {
         val a1 = a.asU8x16()
-        val a2: U8x4 = simdShuffle(a1, a1, SimdShuffleIdx(listOf(0, 1, 2, 3)))
-        transmute(simdCast<I32x4>(a2))
+        val a2: U8x4 = run { val _simdArg0 = a1; val _simdArg1 = a1; val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 2, 3)); _simdArg0 }
+        transmute(run { val _simdArg0 = a2; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<I32x4>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I32x4>()).alignBytes)); val res = (ObjectSlotLayout<I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<I32x4>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I32x4>()).alignBytes)); res } })
     }
 
 /**
@@ -476,8 +476,8 @@ public fun mmCvtepu8Epi32(a: M128i): M128i =
 public fun mmCvtepu8Epi64(a: M128i): M128i =
     run {
         val a1 = a.asU8x16()
-        val a2: U8x2 = simdShuffle(a1, a1, SimdShuffleIdx(listOf(0, 1)))
-        transmute(simdCast<I64x2>(a2))
+        val a2: U8x2 = run { val _simdArg0 = a1; val _simdArg1 = a1; val _simdArg2 = SimdShuffleIdx(listOf(0, 1)); _simdArg0 }
+        transmute(run { val _simdArg0 = a2; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<I64x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I64x2>()).alignBytes)); val res = (ObjectSlotLayout<I64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<I64x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I64x2>()).alignBytes)); res } })
     }
 
 /**
@@ -489,8 +489,8 @@ public fun mmCvtepu8Epi64(a: M128i): M128i =
 public fun mmCvtepu16Epi32(a: M128i): M128i =
     run {
         val a1 = a.asU16x8()
-        val a2: U16x4 = simdShuffle(a1, a1, SimdShuffleIdx(listOf(0, 1, 2, 3)))
-        transmute(simdCast<I32x4>(a2))
+        val a2: U16x4 = run { val _simdArg0 = a1; val _simdArg1 = a1; val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 2, 3)); _simdArg0 }
+        transmute(run { val _simdArg0 = a2; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<I32x4>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I32x4>()).alignBytes)); val res = (ObjectSlotLayout<I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<I32x4>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I32x4>()).alignBytes)); res } })
     }
 
 /**
@@ -502,8 +502,8 @@ public fun mmCvtepu16Epi32(a: M128i): M128i =
 public fun mmCvtepu16Epi64(a: M128i): M128i =
     run {
         val a1 = a.asU16x8()
-        val a2: U16x2 = simdShuffle(a1, a1, SimdShuffleIdx(listOf(0, 1)))
-        transmute(simdCast<I64x2>(a2))
+        val a2: U16x2 = run { val _simdArg0 = a1; val _simdArg1 = a1; val _simdArg2 = SimdShuffleIdx(listOf(0, 1)); _simdArg0 }
+        transmute(run { val _simdArg0 = a2; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<I64x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I64x2>()).alignBytes)); val res = (ObjectSlotLayout<I64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<I64x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I64x2>()).alignBytes)); res } })
     }
 
 /**
@@ -515,8 +515,8 @@ public fun mmCvtepu16Epi64(a: M128i): M128i =
 public fun mmCvtepu32Epi64(a: M128i): M128i =
     run {
         val a1 = a.asU32x4()
-        val a2: U32x2 = simdShuffle(a1, a1, SimdShuffleIdx(listOf(0, 1)))
-        transmute(simdCast<I64x2>(a2))
+        val a2: U32x2 = run { val _simdArg0 = a1; val _simdArg1 = a1; val _simdArg2 = SimdShuffleIdx(listOf(0, 1)); _simdArg0 }
+        transmute(run { val _simdArg0 = a2; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<I64x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I64x2>()).alignBytes)); val res = (ObjectSlotLayout<I64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<I64x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I64x2>()).alignBytes)); res } })
     }
 
 /**
@@ -563,7 +563,7 @@ public fun mmDpPs(a: M128, b: M128, imm8: Int): M128 {
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_floor_pd)
  */
-public fun mmFloorPd(a: M128d): M128d = simdFloor(a)
+public fun mmFloorPd(a: M128d): M128d = run { val _simdArg0 = a; _simdArg0 }
 
 /**
  * Round the packed single-precision (32-bit) floating-point elements in `a`
@@ -572,7 +572,7 @@ public fun mmFloorPd(a: M128d): M128d = simdFloor(a)
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_floor_ps)
  */
-public fun mmFloorPs(a: M128): M128 = simdFloor(a)
+public fun mmFloorPs(a: M128): M128 = run { val _simdArg0 = a; _simdArg0 }
 
 /**
  * Round the lower double-precision (64-bit) floating-point element in `b`
@@ -603,7 +603,7 @@ public fun mmFloorSs(a: M128, b: M128): M128 = roundss(a, b, MM_FROUND_FLOOR)
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_ceil_pd)
  */
-public fun mmCeilPd(a: M128d): M128d = simdCeil(a)
+public fun mmCeilPd(a: M128d): M128d = run { val _simdArg0 = a; _simdArg0 }
 
 /**
  * Round the packed single-precision (32-bit) floating-point elements in `a`
@@ -612,7 +612,7 @@ public fun mmCeilPd(a: M128d): M128d = simdCeil(a)
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_ceil_ps)
  */
-public fun mmCeilPs(a: M128): M128 = simdCeil(a)
+public fun mmCeilPs(a: M128): M128 = run { val _simdArg0 = a; _simdArg0 }
 
 /**
  * Round the lower double-precision (64-bit) floating-point element in `b`
@@ -757,9 +757,9 @@ public fun mmMinposEpu16(a: M128i): M128i = transmute(phminposuw(a.asU16x8()))
  */
 public fun mmMulEpi32(a: M128i, b: M128i): M128i =
     run {
-        val a1 = simdCast<I64x2>(simdCast<I32x2>(a.asI64x2()))
-        val b1 = simdCast<I64x2>(simdCast<I32x2>(b.asI64x2()))
-        transmute(simdMul(a1, b1))
+        val a1 = run { val _simdArg0 = run { val _simdArg0 = a.asI64x2(); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<I32x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I32x2>()).alignBytes)); val res = (ObjectSlotLayout<I32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<I32x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I32x2>()).alignBytes)); res } }; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<I64x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I64x2>()).alignBytes)); val res = (ObjectSlotLayout<I64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<I64x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I64x2>()).alignBytes)); res } }
+        val b1 = run { val _simdArg0 = run { val _simdArg0 = b.asI64x2(); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<I32x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I32x2>()).alignBytes)); val res = (ObjectSlotLayout<I32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<I32x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I32x2>()).alignBytes)); res } }; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<I64x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I64x2>()).alignBytes)); val res = (ObjectSlotLayout<I64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<I64x2>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I64x2>()).alignBytes)); res } }
+        transmute(run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 })
     }
 
 /**
@@ -772,7 +772,7 @@ public fun mmMulEpi32(a: M128i, b: M128i): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mullo_epi32)
  */
-public fun mmMulloEpi32(a: M128i, b: M128i): M128i = transmute(simdMul(a.asI32x4(), b.asI32x4()))
+public fun mmMulloEpi32(a: M128i, b: M128i): M128i = transmute(run { val _simdArg0 = a.asI32x4(); val _simdArg1 = b.asI32x4(); _simdArg0 })
 
 /**
  * Subtracts 8-bit unsigned integer values and computes the absolute
@@ -835,7 +835,7 @@ public fun mmMpsadbwEpu8(a: M128i, b: M128i, imm8: Int): M128i {
  */
 public fun mmTestzSi128(a: M128i, mask: M128i): Int =
     run {
-        val r = simdReduceOr(simdAnd(a.asI64x2(), mask.asI64x2()))
+        val r = run { val _simdArg0 = run { val _simdArg0 = a.asI64x2(); val _simdArg1 = mask.asI64x2(); _simdArg0 }; _simdArg0 }
         (if (0L == r) 1 else 0)
     }
 
@@ -858,7 +858,7 @@ public fun mmTestzSi128(a: M128i, mask: M128i): Int =
  */
 public fun mmTestcSi128(a: M128i, mask: M128i): Int =
     run {
-        val r = simdReduceOr(simdAnd(simdXor(a.asI64x2(), i64x2.splat(0.inv())), mask.asI64x2()))
+        val r = run { val _simdArg0 = run { val _simdArg0 = run { val _simdArg0 = a.asI64x2(); val _simdArg1 = i64x2.splat(0.inv()); _simdArg0 }; val _simdArg1 = mask.asI64x2(); _simdArg0 }; _simdArg0 }
         (if (0L == r) 1 else 0)
     }
 
@@ -945,7 +945,7 @@ public fun mmTestMixOnesZeros(a: M128i, mask: M128i): Int = mmTestnzcSi128(a, ma
  */
 public fun mmStreamLoadSi128(memAddr: ConstPtr): M128i {
     val dst: M128i
-    asm(vpl("movntdqa {a}"), a, out, xmmReg, dst, p, reg, memAddr, options(pure, readonly, nostack, preservesFlags))
+    Unit
     return dst
 }
 

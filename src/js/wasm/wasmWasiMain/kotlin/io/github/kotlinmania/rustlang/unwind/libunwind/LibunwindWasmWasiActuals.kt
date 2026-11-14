@@ -2,12 +2,12 @@
 
 package io.github.kotlinmania.rustlang.unwind.libunwind
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.unwind.types.UnwindReasonCode
 import io.github.kotlinmania.rustlang.unwind.types.UnwindWord
 
-// The host must provide the C companion wrapper exports in import module unwind.
+// The host must provide the C companion wrapper exports in import module kmcore.
 public actual fun unwindResume(exception: MutPtr): Nothing =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for unwindLibunwindUnwindResume")
 

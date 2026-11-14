@@ -6,7 +6,11 @@ import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.copy
+import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
+import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.sort.shared.pivot.choosePivot
 import io.github.kotlinmania.rustlang.core.slice.sort.unstable.heapsort.heapsort
@@ -21,7 +25,7 @@ import io.github.kotlinmania.rustlang.core.slice.sort.unstable.heapsort.heapsort
  * `limit` is the number of allowed imbalanced partitions before switching to `heapsort`. If zero,
  * this function will immediately switch to heapsort.
  */
-internal fun <T> quicksort(v: MutableList<T>, ancestorPivot: T?, limit: UInt, isLess: (T, T) -> Boolean, smallSortThresholdTFn: () -> T, smallSortTFn: (MutableList<T>, (T, T) -> Boolean) -> Unit) {
+public fun <T> quicksort(v: MutableList<T>, ancestorPivot: T?, limit: UInt, isLess: (T, T) -> Boolean, smallSortThresholdTFn: () -> T, smallSortTFn: (MutableList<T>, (T, T) -> Boolean) -> Unit) {
     var v1 = v
     var ancestorPivot1 = ancestorPivot
     var limit1 = limit
@@ -82,7 +86,7 @@ internal fun <T> quicksort(v: MutableList<T>, ancestorPivot: T?, limit: UInt, is
  * interior mutability will be observable. Same is true if `isLess` panics or `v.len()`
  * exceeds `scratch.len()`.
  */
-internal fun <T> partition(v: MutableList<T>, pivot: Int, isLess: (T, T) -> Boolean, typeLayoutT: TypeLayout<T>): Int {
+public fun <T> partition(v: MutableList<T>, pivot: Int, isLess: (T, T) -> Boolean, typeLayoutT: TypeLayout<T>): Int {
     val len = v.size
     // Allows for panic-free code-gen by proving this property to the compiler.
     if (len == 0) {

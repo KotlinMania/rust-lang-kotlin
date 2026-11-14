@@ -12,18 +12,18 @@ import io.github.kotlinmania.rustlang.std.path.PathBuf
 /**
  * Returns path to database entry for `term`
  */
-internal fun getDbpathForTerm(term: String): PathBuf? {
+public fun getDbpathForTerm(term: String): PathBuf? {
     val dirsToSearch = mutableListOf()
     val firstChar = (term.rustStrChars().nextCodeOrNull()?.toChar() ?: return null)
     // Find search directory
-    when (val matchVal = varOs("TERMINFO")) {
+    when (val matchVal = Env.varOs("TERMINFO")) {
         null -> {}
         else -> {
             val dir = matchVal
             dirsToSearch.add(PathBuf.from(dir))
         }
     }
-    when (val matchVal2 = variable("TERMINFO_DIRS")) {
+    when (val matchVal2 = Env.variable("TERMINFO_DIRS")) {
         is Ok -> {
             val dirs = matchVal2.value
             for (i in dirs.split(':')) {
@@ -40,7 +40,7 @@ internal fun getDbpathForTerm(term: String): PathBuf? {
             // ~/.terminfo, ncurses will search /etc/terminfo, then
             // /lib/terminfo, and eventually /usr/share/terminfo.
             // On Haiku the database can be found at /boot/system/data/terminfo
-            when (val matchVal1 = homeDir()) {
+            when (val matchVal1 = Env.homeDir()) {
                 null -> {}
                 else -> {
                     val homedir = matchVal1

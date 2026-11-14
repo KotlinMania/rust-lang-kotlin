@@ -1,14 +1,13 @@
 // port-lint: source field.rs
 package io.github.kotlinmania.rustlang.core.field
 
+import io.github.kotlinmania.rustlang.core.any.typeName
+import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.intrinsics.fieldOffset
-import io.github.kotlinmania.rustlang.core.intrinsics.typeName
 import io.github.kotlinmania.rustlang.core.mem.typeinfo.Type
 import io.github.kotlinmania.rustlang.core.mem.typeinfo.TypeKind
 import io.github.kotlinmania.rustlang.core.mem.typeinfo.of
-import io.github.kotlinmania.rustlang.core.ptr.hash
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 
 // Field Reflection
 

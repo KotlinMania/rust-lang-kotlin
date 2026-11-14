@@ -5,7 +5,7 @@ package io.github.kotlinmania.rustlang.corearch.x86
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 
-// The host must provide the C companion wrapper exports in import module corearch.
+// The host must provide the C companion wrapper exports in import module kmcore.
 public actual fun rcpss(a: M128): M128 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86SseRcpss")
 
@@ -75,7 +75,7 @@ public actual fun cvtss2si(a: M128): Int =
 public actual fun cvttss2si(a: M128): Int =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86SseCvttss2si")
 
-@kotlin.wasm.WasmImport("corearch", "corearchX86SseSfence")
+@kotlin.wasm.WasmImport("kmcore", "corearchX86SseSfence")
 private external fun wasiCorearchX86SseSfence(): Unit
 
 public actual fun sfence(): Unit =

@@ -4,12 +4,13 @@
 package io.github.kotlinmania.rustlang.core.num.f16
 
 import io.github.kotlinmania.rustlang.core.F16
-import io.github.kotlinmania.rustlang.core.cmp.ClampBounds
-import io.github.kotlinmania.rustlang.core.f16.max
+import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.cmp.clamp.ClampBounds
 import io.github.kotlinmania.rustlang.core.intrinsics.copysignf16
 import io.github.kotlinmania.rustlang.core.intrinsics.fabs
 import io.github.kotlinmania.rustlang.core.intrinsics.faddAlgebraic
 import io.github.kotlinmania.rustlang.core.intrinsics.fdivAlgebraic
+import io.github.kotlinmania.rustlang.core.intrinsics.fma
 import io.github.kotlinmania.rustlang.core.intrinsics.fmulAlgebraic
 import io.github.kotlinmania.rustlang.core.intrinsics.fmuladd
 import io.github.kotlinmania.rustlang.core.intrinsics.fremAlgebraic
@@ -19,14 +20,13 @@ import io.github.kotlinmania.rustlang.core.intrinsics.maximumf16
 import io.github.kotlinmania.rustlang.core.intrinsics.minimumNumberNszF16
 import io.github.kotlinmania.rustlang.core.intrinsics.minimumf16
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.FpCategory
-import io.github.kotlinmania.rustlang.core.num.f32.INFINITY
-import io.github.kotlinmania.rustlang.core.num.f32.NEG_INFINITY
-import io.github.kotlinmania.rustlang.core.num.imp.libm.fma
+import io.github.kotlinmania.rustlang.core.num.imp.libm.cbrtf
 import io.github.kotlinmania.rustlang.core.panic.constAssert
-import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
-import io.github.kotlinmania.rustlang.libm.cbrtf
+import kotlin.math.abs
+import kotlin.math.truncate
 
 // Constants for the `f16` half-precision floating point type.
 //
@@ -44,151 +44,151 @@ import io.github.kotlinmania.rustlang.libm.cbrtf
 /**
  * Archimedes' constant (π)
  */
-public val PI: F16 = 3.14159265358979323846264338327950288
+public val PI: F16 = F16.fromFloat(3.14159265358979323846264338327950288f)
 
 /**
  * The full circle constant (τ)
  *
  * Equal to 2π.
  */
-public val TAU: F16 = 6.28318530717958647692528676655900577
+public val TAU: F16 = F16.fromFloat(6.28318530717958647692528676655900577f)
 
 /**
  * The golden ratio (φ)
  */
-public val GOLDEN_RATIO: F16 = 1.618033988749894848204586834365638118
+public val GOLDEN_RATIO: F16 = F16.fromFloat(1.618033988749894848204586834365638118f)
 
 /**
  * The Euler-Mascheroni constant (γ)
  */
-public val EULER_GAMMA: F16 = 0.577215664901532860606512090082402431
+public val EULER_GAMMA: F16 = F16.fromFloat(0.577215664901532860606512090082402431f)
 
 /**
  * π/2
  */
-public val FRAC_PI_2: F16 = 1.57079632679489661923132169163975144
+public val FRAC_PI_2: F16 = F16.fromFloat(1.57079632679489661923132169163975144f)
 
 /**
  * π/3
  */
-public val FRAC_PI_3: F16 = 1.04719755119659774615421446109316763
+public val FRAC_PI_3: F16 = F16.fromFloat(1.04719755119659774615421446109316763f)
 
 /**
  * π/4
  */
-public val FRAC_PI_4: F16 = 0.785398163397448309615660845819875721
+public val FRAC_PI_4: F16 = F16.fromFloat(0.785398163397448309615660845819875721f)
 
 /**
  * π/6
  */
-public val FRAC_PI_6: F16 = 0.52359877559829887307710723054658381
+public val FRAC_PI_6: F16 = F16.fromFloat(0.52359877559829887307710723054658381f)
 
 /**
  * π/8
  */
-public val FRAC_PI_8: F16 = 0.39269908169872415480783042290993786
+public val FRAC_PI_8: F16 = F16.fromFloat(0.39269908169872415480783042290993786f)
 
 /**
  * 1/π
  */
-public val FRAC_1_PI: F16 = 0.318309886183790671537767526745028724
+public val FRAC_1_PI: F16 = F16.fromFloat(0.318309886183790671537767526745028724f)
 
 // Also, @unstable(feature = "moreFloatConstants", issue = "146939")
 
 /**
  * 1/sqrt(π)
  */
-public val FRAC_1_SQRT_PI: F16 = 0.564189583547756286948079451560772586
+public val FRAC_1_SQRT_PI: F16 = F16.fromFloat(0.564189583547756286948079451560772586f)
 
 // Also, @unstable(feature = "moreFloatConstants", issue = "146939")
 
 /**
  * 1/sqrt(2π)
  */
-public val FRAC_1_SQRT_2PI: F16 = 0.398942280401432677939946059934381868
+public val FRAC_1_SQRT_2PI: F16 = F16.fromFloat(0.398942280401432677939946059934381868f)
 
 /**
  * 2/π
  */
-public val FRAC_2_PI: F16 = 0.636619772367581343075535053490057448
+public val FRAC_2_PI: F16 = F16.fromFloat(0.636619772367581343075535053490057448f)
 
 /**
  * 2/sqrt(π)
  */
-public val FRAC_2_SQRT_PI: F16 = 1.12837916709551257389615890312154517
+public val FRAC_2_SQRT_PI: F16 = F16.fromFloat(1.12837916709551257389615890312154517f)
 
 /**
  * sqrt(2)
  */
-public val SQRT_2: F16 = 1.41421356237309504880168872420969808
+public val SQRT_2: F16 = F16.fromFloat(1.41421356237309504880168872420969808f)
 
 /**
  * 1/sqrt(2)
  */
-public val FRAC_1_SQRT_2: F16 = 0.707106781186547524400844362104849039
+public val FRAC_1_SQRT_2: F16 = F16.fromFloat(0.707106781186547524400844362104849039f)
 
 // Also, @unstable(feature = "moreFloatConstants", issue = "146939")
 
 /**
  * sqrt(3)
  */
-public val SQRT_3: F16 = 1.732050807568877293527446341505872367
+public val SQRT_3: F16 = F16.fromFloat(1.732050807568877293527446341505872367f)
 
 // Also, @unstable(feature = "moreFloatConstants", issue = "146939")
 
 /**
  * 1/sqrt(3)
  */
-public val FRAC_1_SQRT_3: F16 = 0.577350269189625764509148780501957456
+public val FRAC_1_SQRT_3: F16 = F16.fromFloat(0.577350269189625764509148780501957456f)
 
 // Also, @unstable(feature = "f16", issue = "116909")
 
 /**
  * sqrt(5)
  */
-public val SQRT_5: F16 = 2.23606797749978969640917366873127623
+public val SQRT_5: F16 = F16.fromFloat(2.23606797749978969640917366873127623f)
 
 // Also, @unstable(feature = "f16", issue = "116909")
 
 /**
  * 1/sqrt(5)
  */
-public val FRAC_1_SQRT_5: F16 = 0.44721359549995793928183473374625524
+public val FRAC_1_SQRT_5: F16 = F16.fromFloat(0.44721359549995793928183473374625524f)
 
 /**
  * Euler's number (e)
  */
-public val E: F16 = 2.71828182845904523536028747135266250
+public val E: F16 = F16.fromFloat(2.71828182845904523536028747135266250f)
 
 /**
  * log<sub>2</sub>(10)
  */
-public val LOG2_10: F16 = 3.32192809488736234787031942948939018
+public val LOG2_10: F16 = F16.fromFloat(3.32192809488736234787031942948939018f)
 
 /**
  * log<sub>2</sub>(e)
  */
-public val LOG2_E: F16 = 1.44269504088896340735992468100189214
+public val LOG2_E: F16 = F16.fromFloat(1.44269504088896340735992468100189214f)
 
 /**
  * log<sub>10</sub>(2)
  */
-public val LOG10_2: F16 = 0.301029995663981195213738894724493027
+public val LOG10_2: F16 = F16.fromFloat(0.301029995663981195213738894724493027f)
 
 /**
  * log<sub>10</sub>(e)
  */
-public val LOG10_E: F16 = 0.434294481903251827651128918916605082
+public val LOG10_E: F16 = F16.fromFloat(0.434294481903251827651128918916605082f)
 
 /**
  * ln(2)
  */
-public val LN_2: F16 = 0.693147180559945309417232121458176568
+public val LN_2: F16 = F16.fromFloat(0.693147180559945309417232121458176568f)
 
 /**
  * ln(10)
  */
-public val LN_10: F16 = 2.30258509299404568401799145468436421
+public val LN_10: F16 = F16.fromFloat(2.30258509299404568401799145468436421f)
 
 // > if you intended to check if the operand is NaN, use `.isNan()` instead :)
 
@@ -196,10 +196,12 @@ public val LN_10: F16 = 2.30258509299404568401799145468436421
  * Returns `true` if this value is NaN.
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F16
+ *
  * @feature(f16)
  * public fun doctestEntry() {
- *     val nan = NAN
- *     val f = 7.0
+ *     val nan = F16.NAN
+ *     val f = F16.fromFloat(7.0f)
  *     check(nan.isNan())
  *     check(!f.isNan())
  * }
@@ -212,12 +214,14 @@ public fun F16.isNan(): Boolean = this != this
  * `false` otherwise.
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F16
+ *
  * @feature(f16)
  * public fun doctestEntry() {
- *     val f = 7.0
- *     val inf = INFINITY
- *     val negInf = NEG_INFINITY
- *     val nan = NAN
+ *     val f = F16.fromFloat(7.0f)
+ *     val inf = F16.INFINITY
+ *     val negInf = F16.NEG_INFINITY
+ *     val nan = F16.NAN
  *     check(!f.isInfinite())
  *     check(!nan.isInfinite())
  *     check(inf.isInfinite())
@@ -225,7 +229,7 @@ public fun F16.isNan(): Boolean = this != this
  * }
  * ```
  */
-public fun F16.isInfinite(): Boolean = (this == INFINITY) or (this == NEG_INFINITY)
+public fun F16.isInfinite(): Boolean = (this == F16.INFINITY) or (this == F16.NEG_INFINITY)
 
 /**
  * Returns `true` if this number is neither infinite nor NaN.
@@ -235,10 +239,10 @@ public fun F16.isInfinite(): Boolean = (this == INFINITY) or (this == NEG_INFINI
  *
  * @feature(f16)
  * public fun doctestEntry() {
- *     val f = 7.0
- *     val inf: F16 = INFINITY
- *     val negInf: F16 = NEG_INFINITY
- *     val nan: F16 = NAN
+ *     val f = F16.fromFloat(7.0f)
+ *     val inf: F16 = F16.INFINITY
+ *     val negInf: F16 = F16.NEG_INFINITY
+ *     val nan: F16 = F16.NAN
  *     check(f.isFinite())
  *     check(!nan.isFinite())
  *     check(!inf.isFinite())
@@ -249,25 +253,27 @@ public fun F16.isInfinite(): Boolean = (this == INFINITY) or (this == NEG_INFINI
 public fun F16.isFinite(): Boolean {
     // There's no need to handle NaN separately: if self is NaN,
     // the comparison is not true, exactly as desired.
-    return this.abs() < F16.INFINITY
+    return F16.fromFloat(abs(this.toFloat())) < F16.INFINITY
 }
 
 /**
  * Returns `true` if the number is [subnormal].
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F16
+ *
  * @feature(f16)
  * public fun doctestEntry() {
- *     val min = MIN_POSITIVE
+ *     val min = F16.MIN_POSITIVE
  *     // 6.1035e-5
- *     val max = MAX
- *     val lowerThanMin = 1.0e-7
- *     val zero = 0.0
+ *     val max = F16.MAX
+ *     val lowerThanMin = F16.fromFloat(1.0e-7f)
+ *     val zero = F16.fromFloat(0.0f)
  *     check(!min.isSubnormal())
  *     check(!max.isSubnormal())
  *     check(!zero.isSubnormal())
- *     check(!NAN.isSubnormal())
- *     check(!INFINITY.isSubnormal())
+ *     check(!F16.NAN.isSubnormal())
+ *     check(!F16.INFINITY.isSubnormal())
  *     // Values between `0` and `min` are Subnormal.
  *     check(lowerThanMin.isSubnormal())
  * }
@@ -284,18 +290,20 @@ public fun F16.isSubnormal(): Boolean =
  * Returns `true` if the number is neither zero, infinite, [subnormal], or NaN.
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F16
+ *
  * @feature(f16)
  * public fun doctestEntry() {
- *     val min = MIN_POSITIVE
+ *     val min = F16.MIN_POSITIVE
  *     // 6.1035e-5
- *     val max = MAX
- *     val lowerThanMin = 1.0e-7
- *     val zero = 0.0
+ *     val max = F16.MAX
+ *     val lowerThanMin = F16.fromFloat(1.0e-7f)
+ *     val zero = F16.fromFloat(0.0f)
  *     check(min.isNormal())
  *     check(max.isNormal())
  *     check(!zero.isNormal())
- *     check(!NAN.isNormal())
- *     check(!INFINITY.isNormal())
+ *     check(!F16.NAN.isNormal())
+ *     check(!F16.INFINITY.isNormal())
  *     // Values between `0` and `min` are Subnormal.
  *     check(!lowerThanMin.isNormal())
  * }
@@ -314,12 +322,13 @@ public fun F16.isNormal(): Boolean =
  * predicate instead.
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F16
  * import std.num.FpCategory
  *
  * @feature(f16)
  * public fun doctestEntry() {
- *     val num = 12.4
- *     val inf = INFINITY
+ *     val num = F16.fromFloat(12.4f)
+ *     val inf = F16.INFINITY
  *     check(num.classify() == FpCategory.Normal)
  *     check(inf.classify() == FpCategory.Infinite)
  * }
@@ -351,10 +360,12 @@ public fun F16.classify(): FpCategory {
  * if you need fully portable behavior (evaluates to `false` for all NaNs).
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F16
+ *
  * @feature(f16)
  * public fun doctestEntry() {
- *     val f = 7.0
- *     val g = -7.0
+ *     val f = F16.fromFloat(7.0f)
+ *     val g = -F16.fromFloat(7.0f)
  *     check(f.isSignPositive())
  *     check(!g.isSignPositive())
  * }
@@ -374,10 +385,12 @@ public fun F16.isSignPositive(): Boolean = !this.isSignNegative()
  * if you need fully portable behavior (evaluates to `false` for all NaNs).
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F16
+ *
  * @feature(f16)
  * public fun doctestEntry() {
- *     val f = 7.0
- *     val g = -7.0
+ *     val f = F16.fromFloat(7.0f)
+ *     val g = -F16.fromFloat(7.0f)
  *     check(!f.isSignNegative())
  *     check(g.isSignNegative())
  * }
@@ -405,13 +418,15 @@ public fun F16.isSignNegative(): Boolean {
  * is finite `x == x.nextUp().nextDown()` also holds.
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F16
+ *
  * @feature(f16)
  * public fun doctestEntry() {
  *     // f16.Epsilon is the difference between 1.0 and the next number up.
- *     check(1.0.nextUp() == 1.0 + EPSILON)
+ *     check(F16.fromFloat(1.0f).nextUp() == F16.fromFloat(1.0f) + F16.EPSILON)
  *     // But not for most numbers.
- *     check(0.1.nextUp() < 0.1 + EPSILON)
- *     check(4356.nextUp() == 4360.0)
+ *     check(F16.fromFloat(0.1f).nextUp() < F16.fromFloat(0.1f) + F16.EPSILON)
+ *     check(F16.fromFloat(4356.0f).nextUp() == 4360.0)
  * }
  * ```
  *
@@ -427,7 +442,7 @@ public fun F16.nextUp(): F16 {
     // denormals to zero. This is in general unsound and unsupported, but here
     // we do our best to still produce the correct result on such targets.
     val bits = this.toBits()
-    if (this.isNan() || bits == F16.INFINITY.toBits().toUShort()) {
+    if (this.isNaN() || bits == F16.INFINITY.toBits().toUShort()) {
         return this
     }
     val abs = bits and F16.SIGN_MASK.inv()
@@ -457,11 +472,13 @@ public fun F16.nextUp(): F16 {
  * is finite `x == x.nextDown().nextUp()` also holds.
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F16
+ *
  * @feature(f16)
  * public fun doctestEntry() {
- *     val x = 1.0
+ *     val x = F16.fromFloat(1.0f)
  *     // Clamp value into range [0, 1).
- *     val clamped = x.clamp(0.0, 1.0.nextDown())
+ *     val clamped = x.clamp(0.0, F16.fromFloat(1.0f).nextDown())
  *     check(clamped < 1.0)
  *     check(clamped.nextUp() == 1.0)
  * }
@@ -479,7 +496,7 @@ public fun F16.nextDown(): F16 {
     // denormals to zero. This is in general unsound and unsupported, but here
     // we do our best to still produce the correct result on such targets.
     val bits = this.toBits()
-    if (this.isNan() || bits == F16.NEG_INFINITY.toBits().toUShort()) {
+    if (this.isNaN() || bits == F16.NEG_INFINITY.toBits().toUShort()) {
         return this
     }
     val abs = bits and F16.SIGN_MASK.inv()
@@ -498,15 +515,17 @@ public fun F16.nextDown(): F16 {
  * Takes the reciprocal (inverse) of a number, `1 / x`.
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F16
+ *
  * @feature(f16)
  * public fun doctestEntry() {
- *     val x = 2.0
- *     val absDifference = (x.recip() - (1.0 / x)).abs()
- *     check(absDifference <= EPSILON)
+ *     val x = F16.fromFloat(2.0f)
+ *     val absDifference = (x.recip() - (F16.fromFloat(1.0f) / x)).abs()
+ *     check(absDifference <= F16.EPSILON)
  * }
  * ```
  */
-public fun F16.recip(): F16 = 1.0 / this
+public fun F16.recip(): F16 = F16.fromFloat(1.0f) / this
 
 /**
  * Converts radians to degrees.
@@ -519,9 +538,11 @@ public fun F16.recip(): F16 = 1.0 / this
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F16
+ *
  * @feature(f16)
  * public fun doctestEntry() {
- *     val angle = PI
+ *     val angle = F16.fromFloat(3.1415927f)
  *     val absDifference = (angle.toDegrees() - 180.0).abs()
  *     check(absDifference <= 0.5)
  * }
@@ -530,7 +551,7 @@ public fun F16.recip(): F16 = 1.0 / this
 public fun F16.toDegrees(): F16 {
     // Use a literal to avoid double rounding, consts.PI is already rounded,
     // and dividing would round again.
-    val PIS_IN_180: F16 = 57.2957795130823208767981548141051703
+    val PIS_IN_180: F16 = F16.fromFloat(57.2957795130823208767981548141051703f)
     return this * PIS_IN_180
 }
 
@@ -545,10 +566,12 @@ public fun F16.toDegrees(): F16 {
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F16
+ *
  * @feature(f16)
  * public fun doctestEntry() {
- *     val angle = 180.0
- *     val absDifference = (angle.toRadians() - PI).abs()
+ *     val angle = F16.fromFloat(180.0f)
+ *     val absDifference = (angle.toRadians() - F16.fromFloat(3.1415927f)).abs()
  *     check(absDifference <= 0.01)
  * }
  * ```
@@ -556,7 +579,7 @@ public fun F16.toDegrees(): F16 {
 public fun F16.toRadians(): F16 {
     // Use a literal to avoid double rounding, consts.PI is already rounded,
     // and dividing would round again.
-    val RADS_PER_DEG: F16 = 0.017453292519943295769236907684886
+    val RADS_PER_DEG: F16 = F16.fromFloat(0.017453292519943295769236907684886f)
     return this * RADS_PER_DEG
 }
 
@@ -574,12 +597,14 @@ public fun F16.toRadians(): F16 {
  * follows the IEEE 754-2008 semantics for `maxNum`.
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F16
+ *
  * @feature(f16)
  * public fun doctestEntry() {
- *     val x = 1.0
- *     val y = 2.0
+ *     val x = F16.fromFloat(1.0f)
+ *     val y = F16.fromFloat(2.0f)
  *     check(x.max(y) == y)
- *     check(x.max(NAN) == x)
+ *     check(x.max(F16.NAN) == x)
  * }
  * ```
  */
@@ -599,12 +624,14 @@ public fun F16.max(other: F16): F16 = maximumNumberNszF16(this, other)
  * follows the IEEE 754-2008 semantics for `minNum`.
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F16
+ *
  * @feature(f16)
  * public fun doctestEntry() {
- *     val x = 1.0
- *     val y = 2.0
+ *     val x = F16.fromFloat(1.0f)
+ *     val y = F16.fromFloat(2.0f)
  *     check(x.min(y) == x)
- *     check(x.min(NAN) == x)
+ *     check(x.min(F16.NAN) == x)
  * }
  * ```
  */
@@ -626,13 +653,15 @@ public fun F16.min(other: F16): F16 = minimumNumberNszF16(this, other)
  * This follows the IEEE 754-2019 semantics for `maximum`.
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F16
+ *
  * @feature(f16)
  * @feature(floatMinimumMaximum)
  * public fun doctestEntry() {
- *     val x = 1.0
- *     val y = 2.0
+ *     val x = F16.fromFloat(1.0f)
+ *     val y = F16.fromFloat(2.0f)
  *     check(x.maximum(y) == y)
- *     check(x.maximum(NAN).isNan())
+ *     check(x.maximum(F16.NAN).isNan())
  * }
  * ```
  */
@@ -654,13 +683,15 @@ public fun F16.maximum(other: F16): F16 = maximumf16(this, other)
  * This follows the IEEE 754-2019 semantics for `minimum`.
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F16
+ *
  * @feature(f16)
  * @feature(floatMinimumMaximum)
  * public fun doctestEntry() {
- *     val x = 1.0
- *     val y = 2.0
+ *     val x = F16.fromFloat(1.0f)
+ *     val y = F16.fromFloat(2.0f)
  *     check(x.minimum(y) == x)
- *     check(x.minimum(NAN).isNan())
+ *     check(x.minimum(F16.NAN).isNan())
  * }
  * ```
  */
@@ -675,23 +706,25 @@ public fun F16.minimum(other: F16): F16 = minimumf16(this, other)
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F16
+ *
  * @feature(f16)
  * public fun doctestEntry() {
- *     check(1.midpoint(4.0) == 2.5)
- *     check((-5.5).midpoint(8.0) == 1.25)
+ *     check(F16.fromFloat(1.0f).midpoint(4.0) == 2.5)
+ *     check((-F16.fromFloat(5.5f)).midpoint(8.0) == 1.25)
  * }
  * ```
  */
 public fun F16.midpoint(other: F16): F16 {
-    val HI: F16 = max * 0.5
+    val HI: F16 = F16.MAX * F16.fromFloat(0.5f)
     val (a, b) = Pair(this, other)
-    val absA = a.abs()
-    val absB = b.abs()
+    val absA = F16.fromFloat(abs(a.toFloat()))
+    val absB = F16.fromFloat(abs(b.toFloat()))
     return if (absA <= HI && absB <= HI) {
         // Overflow is impossible
-        (a + b) * 0.5
+        (a + b) * F16.fromFloat(0.5f)
     } else {
-        (a * 0.5) + (b * 0.5)
+        (a * F16.fromFloat(0.5f)) + (b * F16.fromFloat(0.5f))
     }
 }
 
@@ -700,12 +733,14 @@ public fun F16.midpoint(other: F16): F16 {
  * assuming that the value is finite and fits in that type.
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F16
+ *
  * @feature(f16)
  * public fun doctestEntry() {
- *     val value = 4.6
+ *     val value = F16.fromFloat(4.6f)
  *     val rounded = value.toIntUnchecked<UShort>()
  *     check(rounded == 4)
- *     val value1 = -128.9
+ *     val value1 = -F16.fromFloat(128.9f)
  *     val rounded1 = value1.toIntUnchecked<Byte>()
  *     check(rounded1 == Byte.MIN_VALUE)
  * }
@@ -732,9 +767,11 @@ public inline fun <reified Int> F16.toIntUnchecked(): Int {
  * produce an infinity.
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F16
+ *
  * @feature(floatConversions, f16)
  * public fun doctestEntry() {
- *     val x = 1.5
+ *     val x = F16.fromFloat(1.5f)
  *     check(x.cast() == 1.5f)
  * }
  * ```
@@ -748,10 +785,12 @@ public inline fun <reified Flt> F16.cast(): Flt = this.cast()
  * This is equivalent to `self as Int`.
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F16
+ *
  * @feature(floatConversions, f16)
  * public fun doctestEntry() {
- *     check(4.6.toIntSaturating<UByte>() == 4)
- *     check(NAN.toIntSaturating<UByte>() == 0)
+ *     check(F16.fromFloat(4.6f).toIntSaturating<UByte>() == 4)
+ *     check(F16.NAN.toIntSaturating<UByte>() == 0)
  * }
  * ```
  */
@@ -762,10 +801,12 @@ public inline fun <reified Int> F16.toIntSaturating(): Int = this.toIntSaturatin
  * `None` if the value is `NaN`, infinite, or does not fit in the target type.
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F16
+ *
  * @feature(floatConversions, f16)
  * public fun doctestEntry() {
- *     check(4.6.toIntChecked<UByte>() == 4)
- *     check(NAN.toIntChecked<UByte>() == null)
+ *     check(F16.fromFloat(4.6f).toIntChecked<UByte>() == 4)
+ *     check(F16.NAN.toIntChecked<UByte>() == null)
  * }
  * ```
  */
@@ -781,9 +822,11 @@ public inline fun <reified Int> F16.toIntChecked(): Int? = this.toIntChecked()
  * Panics if the value is `NaN`, infinite, or does not fit in the target type.
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F16
+ *
  * @feature(floatConversions, f16)
  * public fun doctestEntry() {
- *     check(4.6.toIntStrict<UByte>() == 4)
+ *     check(F16.fromFloat(4.6f).toIntStrict<UByte>() == 4)
  * }
  * ```
  */
@@ -801,11 +844,13 @@ public inline fun <reified Int> F16.toIntStrict(): Int = (this.toIntChecked<Int>
  * preserve the *numeric* value, and not the bitwise value.
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F16
+ *
  * @feature(f16)
  * public fun doctestEntry() {
- *     check((1).toBits() != 1.toUShort())
+ *     check((F16.fromFloat(1.0f)).toBits() != (F16.fromFloat(1.0f)).toUShort())
  *     // toBits() is not casting!
- *     check((12.5).toBits() == 0x4a40uL)
+ *     check((F16.fromFloat(12.5f)).toBits() == 0x4a40u.toUShort())
  * }
  * ```
  */
@@ -846,10 +891,12 @@ public fun F16.toBits(): UShort {
  * preserve the *numeric* value, and not the bitwise value.
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F16
+ *
  * @feature(f16)
  * public fun doctestEntry() {
- *     val v = fromBits(0x4a40)
- *     check(v == 12.5)
+ *     val v = F16.fromBits(0x4a40u.toUShort())
+ *     check(v == F16.fromFloat(12.5f))
  * }
  * ```
  */
@@ -871,9 +918,11 @@ public fun F16.Companion.fromBits(v: UShort): F16 {
  * ```kotlin
  * @file:OptIn(ExperimentalUnsignedTypes.cls)
  *
+ * import io.github.kotlinmania.rustlang.core.F16
+ *
  * @feature(f16)
  * public fun doctestEntry() {
- *     val bytes = 12.5.toBeBytes()
+ *     val bytes = (F16.fromFloat(12.5f)).toBeBytes()
  *     check(bytes == ubyteArrayOf(0x4au, 0x40u))
  * }
  * ```
@@ -892,9 +941,11 @@ public fun F16.toBeBytes(): UByteArray = run { val rawBits = this.toBits().toUIn
  * ```kotlin
  * @file:OptIn(ExperimentalUnsignedTypes.cls)
  *
+ * import io.github.kotlinmania.rustlang.core.F16
+ *
  * @feature(f16)
  * public fun doctestEntry() {
- *     val bytes = 12.5.toLeBytes()
+ *     val bytes = (F16.fromFloat(12.5f)).toLeBytes()
  *     check(bytes == ubyteArrayOf(0x40u, 0x4au))
  * }
  * ```
@@ -917,9 +968,11 @@ public fun F16.toLeBytes(): UByteArray = run { val rawBits = this.toBits().toUIn
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F16
+ *
  * @feature(f16)
  * public fun doctestEntry() {
- *     val bytes = 12.5.toNeBytes()
+ *     val bytes = (F16.fromFloat(12.5f)).toLeBytes()
  *     check(bytes == if (false) {
  *         listOf(0x4a, 0x40)
  *     } else {
@@ -946,7 +999,7 @@ public fun F16.toNeBytes(): UByteArray = run { val rawBits = this.toBits().toUIn
  * @feature(f16)
  * public fun doctestEntry() {
  *     val value = F16.fromBeBytes(ubyteArrayOf(0x4au, 0x40u))
- *     check(value == 12.5)
+ *     check(value == F16.fromFloat(12.5f))
  * }
  * ```
  */
@@ -968,7 +1021,7 @@ public fun F16.Companion.fromBeBytes(bytes: UByteArray): F16 = F16.fromBits(run 
  * @feature(f16)
  * public fun doctestEntry() {
  *     val value = F16.fromLeBytes(ubyteArrayOf(0x40u, 0x4au))
- *     check(value == 12.5)
+ *     check(value == F16.fromFloat(12.5f))
  * }
  * ```
  */
@@ -1001,7 +1054,7 @@ public fun F16.Companion.fromLeBytes(bytes: UByteArray): F16 = F16.fromBits(run 
  *     } else {
  *         ubyteArrayOf(0x40u, 0x4au)
  *     })
- *     check(value == 12.5)
+ *     check(value == F16.fromFloat(12.5f))
  * }
  * ```
  */
@@ -1045,13 +1098,13 @@ public fun F16.Companion.fromNeBytes(bytes: UByteArray): F16 = F16.fromBits(run 
  * @feature(f16)
  * public fun doctestEntry() {
  *     open class GoodBoy(public var name: String, public var weight: F16)
- *     var bois = mutableListOf(GoodBoy(name = "Pucci", weight = 0.1), GoodBoy(name = "Woofer", weight = 99.0), GoodBoy(name = "Yapper", weight = 10.0), GoodBoy(name = "Chonk", weight = INFINITY), GoodBoy(name = "Abs. Unit", weight = NAN), GoodBoy(name = "Floaty", weight = -5.0))
+ *     var bois = mutableListOf(GoodBoy(name = "Pucci", weight = F16.fromFloat(0.1f)), GoodBoy(name = "Woofer", weight = F16.fromFloat(99.0f)), GoodBoy(name = "Yapper", weight = F16.fromFloat(10.0f)), GoodBoy(name = "Chonk", weight = F16.INFINITY), GoodBoy(name = "Abs. Unit", weight = F16.NAN), GoodBoy(name = "Floaty", weight = -F16.fromFloat(5.0f)))
  *     bois.sortBy({ a, b -> a.weight.totalCmp(b.weight) })
  *     // `f16.NAN` could be positive or negative, which will affect the sort order.
- *     if (NAN.isSignNegative()) {
- *         (ArrayDeque((ArrayDeque(bois)).map({ b -> b.weight })).zip(listOf(NAN, -5.0, 0.1, 10.0, 99.0, INFINITY).iter())).forEach({ (a, b) -> check(a.toBits() == b.toBits()) })
+ *     if (F16.NAN.isSignNegative()) {
+ *         (ArrayDeque((ArrayDeque(bois)).map({ b -> b.weight })).zip(listOf(F16.NAN, -5.0, 0.1, 10.0, 99.0, F16.INFINITY))).forEach({ (a, b) -> check(a.toBits() == b.toBits()) })
  *     } else {
- *         (ArrayDeque((ArrayDeque(bois)).map({ b -> b.weight })).zip(listOf(-5.0, 0.1, 10.0, 99.0, INFINITY, NAN).iter())).forEach({ (a, b) -> check(a.toBits() == b.toBits()) })
+ *         (ArrayDeque((ArrayDeque(bois)).map({ b -> b.weight })).zip(listOf(-5.0, 0.1, 10.0, 99.0, F16.INFINITY, F16.NAN))).forEach({ (a, b) -> check(a.toBits() == b.toBits()) })
  *     }
  * }
  * ```
@@ -1103,22 +1156,24 @@ public fun F16.totalCmp(other: F16): Ordering {
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F16
+ *
  * @feature(f16)
  * public fun doctestEntry() {
- *     check((-3.0).clamp(-2.0, 1.0) == -2.0)
- *     check((0.0).clamp(-2.0, 1.0) == 0.0)
- *     check((2.0).clamp(-2.0, 1.0) == 1.0)
- *     check((NAN).clamp(-2.0, 1.0).isNan())
+ *     check((-F16.fromFloat(3.0f)).clamp(-2.0, 1.0) == -2.0)
+ *     check((F16.fromFloat(0.0f)).clamp(-2.0, 1.0) == 0.0)
+ *     check((F16.fromFloat(2.0f)).clamp(-2.0, 1.0) == 1.0)
+ *     check((F16.NAN).clamp(-2.0, 1.0).isNan())
  *     // These always returns zero, but the sign (which is ignored by `==`) is non-deterministic.
- *     check((0.0).clamp(-0.0, -0.0) == 0.0)
- *     check((1.0).clamp(-0.0, 0.0) == 0.0)
+ *     check((F16.fromFloat(0.0f)).clamp(-0.0, -0.0) == 0.0)
+ *     check((F16.fromFloat(1.0f)).clamp(-0.0, 0.0) == 0.0)
  *     // This is definitely a negative zero.
- *     check((-1.0).clamp(-0.0, 1.0).isSignNegative())
+ *     check((-F16.fromFloat(1.0f)).clamp(-0.0, 1.0).isSignNegative())
  * }
  * ```
  */
 public fun F16.clamp(min: F16, max: F16): F16 {
-    constAssert(min <= max, "min > max, or either was NaN", "min > max, or either was NaN. min = {min:?}, max = {max:?}", min, f16, max, f16)
+    constAssert(min <= max, "min > max, or either was NaN", "min > max, or either was NaN. min = {min:?}, max = {max:?}", min, max)
     if (this < min) {
         this = min
     }
@@ -1143,19 +1198,21 @@ public fun F16.clamp(min: F16, max: F16): F16 {
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F16
+ *
  * @feature(f16)
  * @feature(clampMagnitude)
  * public fun doctestEntry() {
- *     check(5.0.clampMagnitude(3.0) == 3.0)
- *     check((-5.0).clampMagnitude(3.0) == -3.0)
- *     check(2.0.clampMagnitude(3.0) == 2.0)
- *     check((-2.0).clampMagnitude(3.0) == -2.0)
+ *     check(F16.fromFloat(5.0f).clampMagnitude(3.0) == 3.0)
+ *     check((-F16.fromFloat(5.0f)).clampMagnitude(3.0) == -3.0)
+ *     check(F16.fromFloat(2.0f).clampMagnitude(3.0) == 2.0)
+ *     check((-F16.fromFloat(2.0f)).clampMagnitude(3.0) == -2.0)
  * }
  * ```
  */
 public fun F16.clampMagnitude(limit: F16): F16 {
-    check(limit >= 0.0) { "limit must be non-negative and not NaN" }
-    val limit1 = limit.abs()
+    check(limit >= F16.fromFloat(0.0f)) { "limit must be non-negative and not NaN" }
+    val limit1 = F16.fromFloat(abs(limit.toFloat()))
     // Canonicalises -0.0 to 0.0
     return this.clamp(-limit1, limit1)
 }
@@ -1179,13 +1236,15 @@ public fun F16.clampMagnitude(limit: F16): F16 {
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F16
+ *
  * @feature(f16, clampTo)
  * public fun doctestEntry() {
- *     check((-3.0).clampTo(-2.0..1.0) == -2.0)
- *     check(0.0.clampTo(-2.0..1.0) == 0.0)
- *     check(2.0.clampTo(0..1.0) == 1.0)
- *     check(5.0.clampTo(7.0 until Int.MAX_VALUE) == 7.0)
- *     check(NAN.clampTo(1.0..2.0).isNan())
+ *     check((-F16.fromFloat(3.0f)).clampTo(-2.0..1.0) == -2.0)
+ *     check(F16.fromFloat(0.0f).clampTo(-2.0..1.0) == 0.0)
+ *     check(F16.fromFloat(2.0f).clampTo(0..1.0) == 1.0)
+ *     check(F16.fromFloat(5.0f).clampTo(7.0 until Int.MAX_VALUE) == 7.0)
+ *     check(F16.NAN.clampTo(1.0..2.0).isNan())
  * }
  * ```
  */
@@ -1199,13 +1258,15 @@ public fun <R> F16.clampTo(range: R): F16 where R : ClampBounds<F16> = range.cla
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F16
+ *
  * @feature(f16)
  * public fun doctestEntry() {
- *     val x = 3.5
- *     val y = -3.5
+ *     val x = F16.fromFloat(3.5f)
+ *     val y = -F16.fromFloat(3.5f)
  *     check(x.abs() == x)
  *     check(y.abs() == -y)
- *     check(NAN.abs().isNan())
+ *     check(F16.NAN.abs().isNan())
  * }
  * ```
  */
@@ -1221,20 +1282,22 @@ public fun F16.abs(): F16 = fabs(this)
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F16
+ *
  * @feature(f16)
  * public fun doctestEntry() {
- *     val f = 3.5
+ *     val f = F16.fromFloat(3.5f)
  *     check(f.signum() == 1.0)
- *     check(NEG_INFINITY.signum() == -1.0)
- *     check(NAN.signum().isNan())
+ *     check(F16.NEG_INFINITY.signum() == -1.0)
+ *     check(F16.NAN.signum().isNan())
  * }
  * ```
  */
 public fun F16.signum(): F16 =
-    if (this.isNan()) {
+    if (this.isNaN()) {
         F16.NAN
     } else {
-        1.0.copysign(this)
+        F16.fromFloat(1.0f).copysign(this)
     }
 
 /**
@@ -1255,14 +1318,16 @@ public fun F16.signum(): F16 =
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F16
+ *
  * @feature(f16)
  * public fun doctestEntry() {
- *     val f = 3.5
- *     check(f.copysign(0.42) == 3.5)
- *     check(f.copysign(-0.42) == -3.5)
- *     check((-f).copysign(0.42) == 3.5)
- *     check((-f).copysign(-0.42) == -3.5)
- *     check(NAN.copysign(1.0).isNan())
+ *     val f = F16.fromFloat(3.5f)
+ *     check(f.copysign(0.42) == F16.fromFloat(3.5f))
+ *     check(f.copysign(-0.42) == -F16.fromFloat(3.5f))
+ *     check((-f).copysign(0.42) == F16.fromFloat(3.5f))
+ *     check((-f).copysign(-0.42) == -F16.fromFloat(3.5f))
+ *     check(F16.NAN.copysign(1.0).isNan())
  * }
  * ```
  */
@@ -1310,20 +1375,22 @@ public fun F16.algebraicRem(rhs: F16): F16 = fremAlgebraic(this, rhs)
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F16
+ *
  * @feature(f16)
  * @feature(floatNanTo)
  * public fun doctestEntry() {
- *     val n = NAN
- *     val x = 2.0
- *     val y = INFINITY
- *     check(n.nanTo(0.0) == 0.0)
- *     check(x.nanTo(0.0) == 2.0)
- *     check(y.nanTo(0.0) == INFINITY)
+ *     val n = F16.NAN
+ *     val x = F16.fromFloat(2.0f)
+ *     val y = F16.INFINITY
+ *     check(n.nanTo(F16.fromFloat(0.0f)) == F16.fromFloat(0.0f))
+ *     check(x.nanTo(F16.fromFloat(0.0f)) == F16.fromFloat(2.0f))
+ *     check(y.nanTo(F16.fromFloat(0.0f)) == F16.INFINITY)
  * }
  * ```
  */
 public fun F16.nanTo(replacement: F16): F16 =
-    if (this.isNan()) {
+    if (this.isNaN()) {
         replacement
     } else {
         this
@@ -1340,18 +1407,20 @@ public fun F16.nanTo(replacement: F16): F16 =
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F16
+ *
  * @feature(f16)
  * public fun doctestEntry() {
- *     val f = 3.7
- *     val g = 3.0
- *     val h = -3.7
+ *     val f = F16.fromFloat(3.7f)
+ *     val g = F16.fromFloat(3.0f)
+ *     val h = -F16.fromFloat(3.7f)
  *     check(f.floor() == 3.0)
  *     check(g.floor() == 3.0)
  *     check(h.floor() == -4.0)
  * }
  * ```
  */
-public fun F16.floor(): F16 = io.github.kotlinmania.rustlang.core.num.f32.math.floor(this)
+public fun F16.floor(): F16 = io.github.kotlinmania.rustlang.core.intrinsics.floor(this)
 
 /**
  * Returns the smallest integer greater than or equal to `self`.
@@ -1361,16 +1430,18 @@ public fun F16.floor(): F16 = io.github.kotlinmania.rustlang.core.num.f32.math.f
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F16
+ *
  * @feature(f16)
  * public fun doctestEntry() {
- *     val f = 3.01
- *     val g = 4.0
+ *     val f = F16.fromFloat(3.01f)
+ *     val g = F16.fromFloat(4.0f)
  *     check(f.ceil() == 4.0)
  *     check(g.ceil() == 4.0)
  * }
  * ```
  */
-public fun F16.ceil(): F16 = io.github.kotlinmania.rustlang.core.num.f32.math.ceil(this)
+public fun F16.ceil(): F16 = io.github.kotlinmania.rustlang.core.intrinsics.ceil(this)
 
 /**
  * Returns the nearest integer to `self`. If a value is half-way between two
@@ -1381,13 +1452,15 @@ public fun F16.ceil(): F16 = io.github.kotlinmania.rustlang.core.num.f32.math.ce
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F16
+ *
  * @feature(f16)
  * public fun doctestEntry() {
- *     val f = 3.3
- *     val g = -3.3
- *     val h = -3.7
- *     val i = 3.5
- *     val j = 4.5
+ *     val f = F16.fromFloat(3.3f)
+ *     val g = -F16.fromFloat(3.3f)
+ *     val h = -F16.fromFloat(3.7f)
+ *     val i = F16.fromFloat(3.5f)
+ *     val j = F16.fromFloat(4.5f)
  *     check(f.round() == 3.0)
  *     check(g.round() == -3.0)
  *     check(h.round() == -4.0)
@@ -1396,7 +1469,7 @@ public fun F16.ceil(): F16 = io.github.kotlinmania.rustlang.core.num.f32.math.ce
  * }
  * ```
  */
-public fun F16.round(): F16 = io.github.kotlinmania.rustlang.core.num.f32.math.round(this)
+public fun F16.round(): F16 = io.github.kotlinmania.rustlang.core.intrinsics.round(this)
 
 /**
  * Returns the nearest integer to a number. Rounds half-way cases to the number
@@ -1407,12 +1480,14 @@ public fun F16.round(): F16 = io.github.kotlinmania.rustlang.core.num.f32.math.r
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F16
+ *
  * @feature(f16)
  * public fun doctestEntry() {
- *     val f = 3.3
- *     val g = -3.3
- *     val h = 3.5
- *     val i = 4.5
+ *     val f = F16.fromFloat(3.3f)
+ *     val g = -F16.fromFloat(3.3f)
+ *     val h = F16.fromFloat(3.5f)
+ *     val i = F16.fromFloat(4.5f)
  *     check(f.roundTiesEven() == 3.0)
  *     check(g.roundTiesEven() == -3.0)
  *     check(h.roundTiesEven() == 4.0)
@@ -1420,7 +1495,7 @@ public fun F16.round(): F16 = io.github.kotlinmania.rustlang.core.num.f32.math.r
  * }
  * ```
  */
-public fun F16.roundTiesEven(): F16 = io.github.kotlinmania.rustlang.core.num.f32.math.roundTiesEven(this)
+public fun F16.roundTiesEven(): F16 = io.github.kotlinmania.rustlang.core.intrinsics.roundTiesEven(this)
 
 /**
  * Returns the integer part of `self`.
@@ -1431,18 +1506,20 @@ public fun F16.roundTiesEven(): F16 = io.github.kotlinmania.rustlang.core.num.f3
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F16
+ *
  * @feature(f16)
  * public fun doctestEntry() {
- *     val f = 3.7
- *     val g = 3.0
- *     val h = -3.7
+ *     val f = F16.fromFloat(3.7f)
+ *     val g = F16.fromFloat(3.0f)
+ *     val h = -F16.fromFloat(3.7f)
  *     check(f.trunc() == 3.0)
  *     check(g.trunc() == 3.0)
  *     check(h.trunc() == -3.0)
  * }
  * ```
  */
-public fun F16.trunc(): F16 = io.github.kotlinmania.rustlang.core.num.f32.math.trunc(this)
+public fun F16.trunc(): F16 = io.github.kotlinmania.rustlang.core.intrinsics.trunc(this)
 
 /**
  * Returns the fractional part of `self`.
@@ -1452,18 +1529,20 @@ public fun F16.trunc(): F16 = io.github.kotlinmania.rustlang.core.num.f32.math.t
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F16
+ *
  * @feature(f16)
  * public fun doctestEntry() {
- *     val x = 3.6
- *     val y = -3.6
+ *     val x = F16.fromFloat(3.6f)
+ *     val y = -F16.fromFloat(3.6f)
  *     val absDifferenceX = (x.fract() - 0.6).abs()
  *     val absDifferenceY = (y.fract() - (-0.6)).abs()
- *     check(absDifferenceX <= EPSILON)
- *     check(absDifferenceY <= EPSILON)
+ *     check(absDifferenceX <= F16.EPSILON)
+ *     check(absDifferenceY <= F16.EPSILON)
  * }
  * ```
  */
-public fun F16.fract(): F16 = this - this.trunc()
+public fun F16.fract(): F16 = this - F16.fromFloat(truncate(this.toFloat()))
 
 /**
  * Fused multiply-add. Computes `(self * a) + b` with only one rounding
@@ -1483,24 +1562,26 @@ public fun F16.fract(): F16 = this - this.trunc()
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F16
+ *
  * @feature(f16)
  * public fun doctestEntry() {
- *     val m = 10.0
- *     val x = 4.0
- *     val b = 60.0
+ *     val m = F16.fromFloat(10.0f)
+ *     val x = F16.fromFloat(4.0f)
+ *     val b = F16.fromFloat(60.0f)
  *     check(m.mulAdd(x, b) == 100.0)
- *     check(m * x + b == 100.0)
- *     val onePlusEps = 1.0 + EPSILON
- *     val oneMinusEps = 1.0 - EPSILON
- *     val minusOne = -1.0
+ *     check(m * x + b == F16.fromFloat(100.0f))
+ *     val onePlusEps = F16.fromFloat(1.0f) + F16.EPSILON
+ *     val oneMinusEps = F16.fromFloat(1.0f) - F16.EPSILON
+ *     val minusOne = -F16.fromFloat(1.0f)
  *     // The exact result (1 + eps) * (1 - eps) = 1 - eps * eps.
- *     check(onePlusEps.mulAdd(oneMinusEps, minusOne) == -EPSILON * EPSILON)
+ *     check(onePlusEps.mulAdd(oneMinusEps, minusOne) == -F16.EPSILON * F16.EPSILON)
  *     // Different rounding with the non-fused multiply and add.
- *     check(onePlusEps * oneMinusEps + minusOne == 0.0)
+ *     check(onePlusEps * oneMinusEps + minusOne == F16.fromFloat(0.0f))
  * }
  * ```
  */
-public fun F16.mulAdd(a: F16, b: F16): F16 = fma(this, a, b)
+public fun F16.mulAdd(a: F16, b: F16): F16 = F16.fromDouble(fma(this.toDouble(), a.toDouble(), b.toDouble()))
 
 /**
  * Computes `(self * a) + b` with nondeterministic rounding.
@@ -1518,6 +1599,8 @@ public fun F16.mulAdd(a: F16, b: F16): F16 = fma(this, a, b)
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F16
+ *
  * @feature(f16)
  * @feature(floatMulAddRelaxed)
  * public fun doctestEntry() {
@@ -1525,7 +1608,7 @@ public fun F16.mulAdd(a: F16, b: F16): F16 = fma(this, a, b)
  *     // result may be returned:
  *     // - -7.03e-6 is the fused result (one rounding)
  *     // - -7.6e-6 is the unfused result (two roundings)
- *     val r = 0.1.mulAddRelaxed(0.1, -0.01)
+ *     val r = F16.fromFloat(0.1f).mulAddRelaxed(F16.fromFloat(0.1f), -F16.fromFloat(0.01f))
  *     check(r == -7.03e-6 || r == -7.6e-6)
  * }
  * ```
@@ -1552,7 +1635,7 @@ public fun F16.mulAddRelaxed(a: F16, b: F16): F16 = fmuladd(this, a, b)
  *
  * @feature(f16)
  * public fun doctestEntry() {
- *     val a: F16 = 7.0
+ *     val a: F16 = F16.fromFloat(7.0f)
  *     val b = 4.0
  *     check(a.divEuclid(b) == 1.0)
  *     // 7.0 > 4.0 * 1.0
@@ -1566,12 +1649,12 @@ public fun F16.mulAddRelaxed(a: F16, b: F16): F16 = fmuladd(this, a, b)
  * ```
  */
 public fun F16.divEuclid(rhs: F16): F16 {
-    val q = (this / rhs).trunc()
-    if (this % rhs < 0.0) {
-        return if (rhs > 0.0) {
-            q - 1.0
+    val q = F16.fromFloat(truncate((this / rhs).toFloat()))
+    if (this % rhs < F16.fromFloat(0.0f)) {
+        return if (rhs > F16.fromFloat(0.0f)) {
+            q - F16.fromFloat(1.0f)
         } else {
-            q + 1.0
+            q + F16.fromFloat(1.0f)
         }
     }
     return q
@@ -1602,21 +1685,21 @@ public fun F16.divEuclid(rhs: F16): F16 {
  *
  * @feature(f16)
  * public fun doctestEntry() {
- *     val a: F16 = 7.0
+ *     val a: F16 = F16.fromFloat(7.0f)
  *     val b = 4.0
  *     check(a.remEuclid(b) == 3.0)
  *     check((-a).remEuclid(b) == 1.0)
  *     check(a.remEuclid(-b) == 3.0)
  *     check((-a).remEuclid(-b) == 1.0)
  *     // limitation due to round-off error
- *     check((-EPSILON).remEuclid(3.0) != 0.0)
+ *     check((-F16.EPSILON).remEuclid(F16.fromFloat(3.0f)) != 0.0)
  * }
  * ```
  */
 public fun F16.remEuclid(rhs: F16): F16 {
     val r = this % rhs
-    return if (r < 0.0) {
-        r + rhs.abs()
+    return if (r < F16.fromFloat(0.0f)) {
+        r + F16.fromFloat(abs(rhs.toFloat()))
     } else {
         r
     }
@@ -1642,17 +1725,19 @@ public fun F16.remEuclid(rhs: F16): F16 {
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F16
+ *
  * @feature(f16)
  * public fun doctestEntry() {
- *     val x = 2.0
+ *     val x = F16.fromFloat(2.0f)
  *     val absDifference = (x.powi(2) - (x * x)).abs()
  *     check(absDifference <= 0.1)
- *     check(powi(NAN, 0) == 1.0)
- *     check(powi(0.0, 0) == 1.0)
+ *     check(F16.powi(F16.NAN, 0) == 1.0)
+ *     check(F16.powi(0.0, 0) == 1.0)
  * }
  * ```
  */
-public fun F16.powi(n: Int): F16 = io.github.kotlinmania.rustlang.core.num.f32.math.powi(this, n)
+public fun F16.powi(n: Int): F16 = io.github.kotlinmania.rustlang.core.intrinsics.powi(this, n)
 
 /**
  * Returns the square root of a number.
@@ -1668,18 +1753,20 @@ public fun F16.powi(n: Int): F16 = io.github.kotlinmania.rustlang.core.num.f32.m
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F16
+ *
  * @feature(f16)
  * public fun doctestEntry() {
- *     val positive = 4.0
- *     val negative = -4.0
- *     val negativeZero = -0.0
+ *     val positive = F16.fromFloat(4.0f)
+ *     val negative = -F16.fromFloat(4.0f)
+ *     val negativeZero = -F16.fromFloat(0.0f)
  *     check(positive.sqrt() == 2.0)
  *     check(negative.sqrt().isNan())
  *     check(negativeZero.sqrt() == negativeZero)
  * }
  * ```
  */
-public fun F16.sqrt(): F16 = io.github.kotlinmania.rustlang.core.num.f32.math.sqrt(this)
+public fun F16.sqrt(): F16 = io.github.kotlinmania.rustlang.core.intrinsics.sqrt(this)
 
 /**
  * Returns the cube root of a number.
@@ -1695,13 +1782,15 @@ public fun F16.sqrt(): F16 = io.github.kotlinmania.rustlang.core.num.f32.math.sq
  * # Examples
  *
  * ```kotlin
+ * import io.github.kotlinmania.rustlang.core.F16
+ *
  * @feature(f16)
  * public fun doctestEntry() {
- *     val x = 8.0
+ *     val x = F16.fromFloat(8.0f)
  *     // x^(1/3) - 2 == 0
  *     val absDifference = (x.cbrt() - 2.0).abs()
- *     check(absDifference <= EPSILON)
+ *     check(absDifference <= F16.EPSILON)
  * }
  * ```
  */
-public fun F16.cbrt(): F16 = ((cbrtf(this.toFloat()) as Any?) as F16)
+public fun F16.cbrt(): F16 = F16.fromDouble(cbrtf(this.toFloat()).toDouble())

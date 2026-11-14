@@ -1,37 +1,9 @@
 // port-lint: source sys/pal/unix/stack_overflow/handler_signal.rs
 package io.github.kotlinmania.rustlang.std.sys.pal.unix.stackoverflow.handlersignal
 
-import io.github.kotlinmania.libc.CInt
-import io.github.kotlinmania.libc.CVoid
-import io.github.kotlinmania.libc.fuchsia.MAP_ANON
-import io.github.kotlinmania.libc.fuchsia.MAP_FAILED
-import io.github.kotlinmania.libc.fuchsia.MAP_FIXED
-import io.github.kotlinmania.libc.fuchsia.MAP_PRIVATE
-import io.github.kotlinmania.libc.fuchsia.MAP_STACK
-import io.github.kotlinmania.libc.fuchsia.PROT_NONE
-import io.github.kotlinmania.libc.fuchsia.PROT_READ
-import io.github.kotlinmania.libc.fuchsia.PROT_WRITE
-import io.github.kotlinmania.libc.fuchsia.SA_ONSTACK
-import io.github.kotlinmania.libc.fuchsia.SA_SIGINFO
-import io.github.kotlinmania.libc.fuchsia.SIGBUS
-import io.github.kotlinmania.libc.fuchsia.SIGSEGV
-import io.github.kotlinmania.libc.fuchsia.SIG_DFL
-import io.github.kotlinmania.libc.fuchsia.SS_DISABLE
-import io.github.kotlinmania.libc.fuchsia.Sigaction
-import io.github.kotlinmania.libc.fuchsia.SighandlerT
-import io.github.kotlinmania.libc.fuchsia.SiginfoT
-import io.github.kotlinmania.libc.fuchsia.StackT
-import io.github.kotlinmania.libc.fuchsia.aarch64.SIGSTKSZ
-import io.github.kotlinmania.libc.getauxval
-import io.github.kotlinmania.libc.mprotect
-import io.github.kotlinmania.libc.munmap
-import io.github.kotlinmania.libc.pthreadGetStackaddrNp
-import io.github.kotlinmania.libc.pthreadGetStacksizeNp
-import io.github.kotlinmania.libc.pthreadSelf
-import io.github.kotlinmania.libc.sigaltstack
-import io.github.kotlinmania.libc.unix.linuxlike.AT_MINSIGSTKSZ
 import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -41,6 +13,36 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
+import io.github.kotlinmania.rustlang.libc.CInt
+import io.github.kotlinmania.rustlang.libc.CVoid
+import io.github.kotlinmania.rustlang.libc.getauxval
+import io.github.kotlinmania.rustlang.libc.mprotect
+import io.github.kotlinmania.rustlang.libc.munmap
+import io.github.kotlinmania.rustlang.libc.new.musl.signal.SiginfoT
+import io.github.kotlinmania.rustlang.libc.pthreadGetStackaddrNp
+import io.github.kotlinmania.rustlang.libc.pthreadGetStacksizeNp
+import io.github.kotlinmania.rustlang.libc.pthreadSelf
+import io.github.kotlinmania.rustlang.libc.sigaltstack
+import io.github.kotlinmania.rustlang.libc.unix.SIG_DFL
+import io.github.kotlinmania.rustlang.libc.unix.SighandlerT
+import io.github.kotlinmania.rustlang.libc.unix.bsd.SA_ONSTACK
+import io.github.kotlinmania.rustlang.libc.unix.bsd.SA_SIGINFO
+import io.github.kotlinmania.rustlang.libc.unix.bsd.SIGBUS
+import io.github.kotlinmania.rustlang.libc.unix.bsd.SS_DISABLE
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.MAP_ANON
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SIGSTKSZ
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.Sigaction
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.StackT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.AT_MINSIGSTKSZ
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.MAP_FAILED
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.MAP_FIXED
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.MAP_PRIVATE
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.PROT_NONE
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.PROT_READ
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.PROT_WRITE
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.MAP_STACK
+import io.github.kotlinmania.rustlang.libc.windows.SIGSEGV
+import io.github.kotlinmania.rustlang.std.io.Error
 import io.github.kotlinmania.rustlang.std.process.abort
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.conf.pageSize
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.stackoverflow.Handler
@@ -48,7 +50,7 @@ import io.github.kotlinmania.rustlang.std.sys.pal.unix.stackoverflow.threadinfo.
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.stackoverflow.threadinfo.setCurrentInfo
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.stackoverflow.threadinfo.withCurrentInfo
 import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
-import io.github.kotlinmania.libc.mmap as mmap64
+import io.github.kotlinmania.rustlang.libc.mmap as mmap64
 
 public fun interface FnCallback {
     public operator fun invoke(arg0: Int, arg1: MutPtr, arg2: MutPtr)
@@ -132,8 +134,8 @@ public fun signalHandler(signum: CInt, info: MutPtr, data: MutPtr) {
     }
     // Unregister ourselves by reverting back to the default behavior.
     // SAFETY: assuming all platforms define struct sigaction as "zero-initializable"
-    val action: Sigaction?  = null
-    action!!.saSigaction = SIG_DFL
+    val action: Sigaction  = MaybeUninit.zeroed(ObjectSlotLayout<Sigaction>()).assumeInit()
+    action.saSigaction = SIG_DFL
     // SAFETY: pray this is a well-behaved POSIX implementation of fn sigaction
     Sigaction(signum, action, MutPtr(0L))
     // See comment above for why this function returns.
@@ -169,7 +171,7 @@ public fun init() {
         return
     }
     // SAFETY: C structures are always zero-initializable.
-    val action: Sigaction?  = null
+    val action: Sigaction  = MaybeUninit.zeroed(ObjectSlotLayout<Sigaction>()).assumeInit()
     for (signal in listOf(SIGSEGV, SIGBUS)) {
         // SAFETY: just fetches the current signal handler into action
         Sigaction(signal, MutPtr(0L), action)
@@ -177,7 +179,7 @@ public fun init() {
         // which might conflict with certain libraries that rely on a
         // specific signal behaviour. To prevent problems, we only
         // override the handler if it has not been set yet.
-        if (action!!.saSigaction == SIG_DFL) {
+        if (action.saSigaction == SIG_DFL) {
             if (!NEED_ALTSTACK.load(Ordering.Relaxed)) {
                 // haven't set up our sigaltstack yet
                 NEED_ALTSTACK.store(true, Ordering.Release)
@@ -243,7 +245,7 @@ public fun makeHandler(mainThread: Boolean): Handler {
     // our own.
     //
     // SAFETY: C structures are always zero-initializable.
-    val stack = null
+    val stack = Handler()
     // SAFETY: `stack` is valid for writing a `stackT`.
     sigaltstack(ConstPtr(0L), stack)
     // Configure alternate signal stack, if one is not already set.

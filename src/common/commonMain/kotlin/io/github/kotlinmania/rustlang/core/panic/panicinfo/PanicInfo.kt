@@ -107,7 +107,7 @@ public open class PanicInfo(
     }
 
     public companion object {
-        internal fun new(message: Arguments, location: Location, canUnwind: Boolean, forceNoBacktrace: Boolean): PanicInfo = PanicInfo(location = location, message = message, canUnwind = canUnwind, forceNoBacktrace = forceNoBacktrace)
+        public fun new(message: Arguments, location: Location, canUnwind: Boolean, forceNoBacktrace: Boolean): PanicInfo = PanicInfo(location = location, message = message, canUnwind = canUnwind, forceNoBacktrace = forceNoBacktrace)
     }
 }
 

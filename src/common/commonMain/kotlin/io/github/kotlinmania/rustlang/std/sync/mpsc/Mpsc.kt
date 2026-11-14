@@ -100,7 +100,7 @@ import io.github.kotlinmania.rustlang.std.time.Instant
 // // The call to recv() will return an error because the channel has already
 // // hung up (or been deallocated)
 // val (tx, rx) = channel<Int>()
-// drop(tx)
+// (tx).let { }
 // check(rx.recv().isErr())
 // ```
 //
@@ -135,7 +135,7 @@ import io.github.kotlinmania.rustlang.std.time.Instant
 // // Drop the last sender to stop `rx` waiting for message.
 // // The program will not complete if we comment this out.
 // // **All** `tx` needs to be dropped for `rx` to have `Err`.
-// drop(tx)
+// (tx).let { }
 // // Unbounded receiver waiting for all senders to complete.
 // while (true) {
 //     val matchVal = rx.recv()
@@ -223,7 +223,7 @@ public class DebugTuple(
  * ```
  */
 public open class Receiver<T>(
-    public var inner: Receiver<T>,
+    public var inner: io.github.kotlinmania.rustlang.std.sync.mpmc.Receiver<T>,
 ) : Iterable<T> {
     override fun iterator(): Iterator<T> = this.intoIter().iterator()
 
@@ -305,7 +305,7 @@ public open class Receiver<T>(
      *     send.send(1u.toUByte()).unwrap()
      *     send.send(2).unwrap()
      *     send.send(3).unwrap()
-     *     drop(send)
+     *     (send).let { }
      * })
      * // wait for the thread to join so we ensure the sender is dropped
      * handle.join().unwrap()
@@ -498,7 +498,7 @@ public open class Receiver<T>(
      * public fun doctestEntry() {
      *     val (tx, rx) = channel<Int>()
      *     check(!rx.isDisconnected())
-     *     drop(tx)
+     *     (tx).let { }
      *     check(rx.isDisconnected())
      * }
      * ```
@@ -731,7 +731,7 @@ public open class IntoIter<T>(
  * ```
  */
 public open class Sender<T>(
-    public var inner: Sender<T>,
+    public var inner: io.github.kotlinmania.rustlang.std.sync.mpmc.Sender<T>,
 ) : Share {
     // The send port can be sent from place to place, so long as it
     // is not used to send non-sendable things.
@@ -766,7 +766,7 @@ public open class Sender<T>(
      * // This send is always successful
      * tx.send(1).unwrap()
      * // This send will fail because the receiver is gone
-     * drop(rx)
+     * (rx).let { }
      * check(tx.send(1).unwrapErr().first == 1)
      * ```
      */
@@ -788,7 +788,7 @@ public open class Sender<T>(
      * public fun doctestEntry() {
      *     val (tx, rx) = channel<Int>()
      *     check(!tx.isDisconnected())
-     *     drop(rx)
+     *     (rx).let { }
      *     check(tx.isDisconnected())
      * }
      * ```
@@ -901,7 +901,7 @@ public open class Sender<T>(
  * ```
  */
 public open class SyncSender<T>(
-    public var inner: Sender<T>,
+    public var inner: io.github.kotlinmania.rustlang.std.sync.mpmc.Sender<T>,
 ) : Share {
     // ///////////////////////////////////////////////////////////////////////////
     // SyncSender
@@ -1359,7 +1359,7 @@ public sealed class TrySendError<T> {
  * ```
  */
 public fun <T> channel(): Pair<Sender<T>, Receiver<T>> {
-    val (tx, rx) = channel()
+    val (tx, rx) = io.github.kotlinmania.rustlang.std.sync.mpmc.channel()
     return Pair(Sender(inner = tx), Receiver(inner = rx))
 }
 
@@ -1406,6 +1406,6 @@ public fun <T> channel(): Pair<Sender<T>, Receiver<T>> {
  * ```
  */
 public fun <T> syncChannel(bound: Int): Pair<SyncSender<T>, Receiver<T>> {
-    val (tx, rx) = syncChannel(bound)
+    val (tx, rx) = io.github.kotlinmania.rustlang.std.sync.mpmc.syncChannel(bound)
     return Pair(SyncSender(inner = tx), Receiver(inner = rx))
 }

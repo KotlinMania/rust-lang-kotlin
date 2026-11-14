@@ -1,6 +1,5 @@
 package io.github.kotlinmania.rustlang.alloc.vec
 
-import io.github.kotlinmania.ops.DerefPure
 import io.github.kotlinmania.rustlang.alloc.alloc.Global
 import io.github.kotlinmania.rustlang.alloc.collections.TryReserveError
 import io.github.kotlinmania.rustlang.alloc.rawvec.RawVec
@@ -19,7 +18,7 @@ import io.github.kotlinmania.rustlang.alloc.vec.sveretain.chunkedRetain
 import io.github.kotlinmania.rustlang.alloc.wtf8.cloneInto
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
-import io.github.kotlinmania.rustlang.core.iter.adapters.zip.index
+import io.github.kotlinmania.rustlang.core.hint.unlikely
 import io.github.kotlinmania.rustlang.core.marker.Freeze
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
@@ -27,20 +26,28 @@ import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignOf
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
+import io.github.kotlinmania.rustlang.core.ops.deref.DerefPure
+import io.github.kotlinmania.rustlang.core.ops.range.Range
 import io.github.kotlinmania.rustlang.core.ops.range.RangeBounds
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.hash
+import io.github.kotlinmania.rustlang.core.ptr.copy
+import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
+import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
+import io.github.kotlinmania.rustlang.core.ptr.write
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
+import io.github.kotlinmania.rustlang.core.slice.iter.Iter
+import io.github.kotlinmania.rustlang.core.slice.raw.fromRawParts
 import io.github.kotlinmania.rustlang.core.slice.rawMutSliceList
 import io.github.kotlinmania.rustlang.core.slice.rawSliceList
-import io.github.kotlinmania.ubchecks.assertUnsafePrecondition
+import io.github.kotlinmania.rustlang.core.ubchecks.assertUnsafePrecondition
 
 /**
  * A contiguous growable array type, written as `List<T>`, short for 'vector'.
@@ -456,7 +463,7 @@ public open class Vec<T, A : Allocator> internal constructor(
      *     public open fun clone(): ZeroSized = ZeroSized()
      * }
      * fun main() {
-     *     check(sizeOf<ZeroSized>(typeLayoutT = ZeroSized.typeLayout()) == 0)
+     *     check(mem.sizeOf<ZeroSized>(typeLayoutT = ZeroSized.typeLayout()) == 0)
      *     val v = mutableListOf(ZeroSized(), 0)
      *     check(v.capacity() == Int.MAX_VALUE)
      * }
@@ -1023,8 +1030,8 @@ public open class Vec<T, A : Allocator> internal constructor(
      * var v = mutableListOf(0, 1, 2)
      * val ptr = v.asMutPtr()
      * val capacity = v.capacity()
-     * val slicePtr: MutPtr = sliceFromRawPartsMut(ptr.cast(), capacity)
-     * drop(Holder.fromRaw(slicePtr))
+     * val slicePtr: MutPtr = ptr.sliceFromRawPartsMut(ptr.cast(), capacity)
+     * (Holder.fromRaw(slicePtr)).let { }
      * ```
      *
      * [asMutPtr]: Vec.asMutPtr
@@ -2054,7 +2061,7 @@ public open class Vec<T, A : Allocator> internal constructor(
         // the hole, and the vector length is restored to the new length.
         //
         val len = this.len()
-        val structVal = range(range, 0 until len)
+        val structVal = Range(range, 0 until len)
         val start = structVal.start
         val end = structVal.end
         // ignore-tidy-undocumented-unchecked
@@ -2213,7 +2220,7 @@ public open class Vec<T, A : Allocator> internal constructor(
     public open fun resizeWith(newLen: Int, f: () -> T) {
         val len = this.len()
         if (newLen > len) {
-            this.extendTrusted(iter.repeatWith(f).take(newLen - len))
+            this.extendTrusted(Iter.repeatWith(f).take(newLen - len))
         } else {
             this.truncate(newLen)
         }
@@ -2581,7 +2588,7 @@ public open class Vec<T, A : Allocator> internal constructor(
      * ```
      */
     public open fun <R> extendFromWithin(src: R) where R : RangeBounds<Int> {
-        val range = range(src, 0 until this.len())
+        val range = Range(src, 0 until this.len())
         this.reserve(range.len())
         // SAFETY:
         // - `slice.range` guarantees that the given range is valid for indexing self
@@ -2637,7 +2644,7 @@ public open class Vec<T, A : Allocator> internal constructor(
         // SAFETY:
         // - caller guarantees that src is a valid index
         val toClone = thisRef.getUnchecked(src)
-        iter.zip(toClone, spare).map({ (src1, dst) -> dst.write(src1.clone()) }).forEach({ len += 1 })
+        Iter.zip(toClone, spare).map({ (src1, dst) -> dst.write(src1.clone()) }).forEach({ len += 1 })
     }
 
     public open fun specExtendFromWithinExtendFromWithinSpec(src: IntRange) {
@@ -3663,7 +3670,7 @@ public fun <T> Vec<T>.constMakeGlobal(): List<T> where T : Freeze {
     }
 }
 
-internal fun <A : Allocator> Vec<UByte, A>.tryExtendFromSliceOfBytes(other: List<UByte>): Result<Unit, TryReserveError> {
+public fun <A : Allocator> Vec<UByte, A>.tryExtendFromSliceOfBytes(other: List<UByte>): Result<Unit, TryReserveError> {
     // ignore-tidy-undocumented-unchecked
     return this.tryAppendElements(other)
 }

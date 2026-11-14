@@ -24,9 +24,9 @@ private object AllocJniBridge {
             }
         val libFileName =
             when (hostPlatform) {
-                "windows" -> "alloc_jni.dll"
-                "macos" -> "liballoc_jni.dylib"
-                else -> "liballoc_jni.so"
+                "windows" -> "kmcore_jni.dll"
+                "macos" -> "libkmcore_jni.dylib"
+                else -> "libkmcore_jni.so"
             }
         val pathSep = System.getProperty("path.separator", ":")
         val libPathProp = System.getProperty("java.library.path", "")
@@ -42,7 +42,7 @@ private object AllocJniBridge {
         val stream = AllocJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
-            val extracted = java.nio.file.Files.createTempFile("alloc_jni-", suffix).toFile()
+            val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
             extracted.deleteOnExit()
             stream.use { input ->
                 extracted.outputStream().use { output ->
@@ -52,7 +52,7 @@ private object AllocJniBridge {
             System.load(extracted.absolutePath)
             return
         }
-        System.loadLibrary("alloc_jni")
+        System.loadLibrary("kmcore_jni")
     }
 
     @JvmStatic

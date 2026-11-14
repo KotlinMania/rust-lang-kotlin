@@ -2,6 +2,8 @@
 package io.github.kotlinmania.rustlang.core.ffi.cstr
 
 import io.github.kotlinmania.rustlang.core.bytestr.ByteStr
+import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.convert.AsRef
 import io.github.kotlinmania.rustlang.core.ffi.primitives.cchardefinition.CChar
 import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
@@ -19,7 +21,6 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.memchr.memchr
 import io.github.kotlinmania.rustlang.core.slice.rawSliceList
-import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 
 // [CStr] and its related types.
 
@@ -363,7 +364,7 @@ public open class CStr internal constructor(
         }
     }
 
-    public open fun indexRangeFromInt(index: RangeFrom<Int>): CStr = this.index(RangeFrom.from(index))
+    public open fun index(index: io.github.kotlinmania.rustlang.core.range.RangeFrom<Int>): CStr = this.index(RangeFrom.from(index))
 
     public override fun asRef(): CStr = this
 

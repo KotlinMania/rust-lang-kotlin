@@ -1,18 +1,7 @@
 // port-lint: source os/unix/net/datagram.rs
 package io.github.kotlinmania.rustlang.std.os.unix.net
 
-import io.github.kotlinmania.libc.bind
-import io.github.kotlinmania.libc.connect
-import io.github.kotlinmania.libc.fuchsia.AF_UNIX
-import io.github.kotlinmania.libc.fuchsia.MSG_PEEK
-import io.github.kotlinmania.libc.fuchsia.SOCK_DGRAM
-import io.github.kotlinmania.libc.fuchsia.SO_RCVTIMEO
-import io.github.kotlinmania.libc.fuchsia.SO_SNDTIMEO
-import io.github.kotlinmania.libc.getpeername
-import io.github.kotlinmania.libc.getsockname
-import io.github.kotlinmania.libc.recvfrom
-import io.github.kotlinmania.libc.sendto
-import io.github.kotlinmania.rustlang.core.ffi.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
@@ -20,6 +9,17 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.time.Duration
+import io.github.kotlinmania.rustlang.libc.bind
+import io.github.kotlinmania.rustlang.libc.connect
+import io.github.kotlinmania.rustlang.libc.getpeername
+import io.github.kotlinmania.rustlang.libc.getsockname
+import io.github.kotlinmania.rustlang.libc.recvfrom
+import io.github.kotlinmania.rustlang.libc.sendto
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SOCK_DGRAM
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SO_RCVTIMEO
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SO_SNDTIMEO
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.AF_UNIX
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.MSG_PEEK
 import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.net.Shutdown
 import io.github.kotlinmania.rustlang.std.os.fd.AsFd
@@ -142,7 +142,7 @@ public open class UnixDatagram(
     public open fun connect(path: Path): Result<Unit, Error> {
         run {
             val (addr, len) = when (val tryResult = SockaddrUn(path)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-            when (val tryResult = cvt(io.github.kotlinmania.libc.connect(this.asRawFd(), constPtrFromRustCast((addrOf(addr))), len))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            when (val tryResult = cvt(io.github.kotlinmania.rustlang.libc.connect(this.asRawFd(), constPtrFromRustCast((addrOf(addr))), len))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         }
         return Result.Ok(Unit)
     }
@@ -682,7 +682,7 @@ public open class UnixDatagram(
      * }
      * ```kotlin
      */
-    public open fun takeError(): Result<io.github.kotlinmania.rustlang.core.io.error.Error?, Error> = this.value.takeError()
+    public open fun takeError(): Result<io.github.kotlinmania.rustlang.std.io.Error?, Error> = this.value.takeError()
 
     /**
      * Shut down the read, write, or both halves of this connection.
@@ -786,7 +786,7 @@ public open class UnixDatagram(
             return run {
                 val socket = when (val tryResult = UnixDatagram.unbound()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
                 val (addr, len) = when (val tryResult = SockaddrUn(path)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-                when (val tryResult = cvt(io.github.kotlinmania.libc.bind(socket.asRawFd(), constPtrFromRustCast((addrOf(addr))), ((len as Any?) as Result<UnixDatagram, Error>)))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                when (val tryResult = cvt(io.github.kotlinmania.rustlang.libc.bind(socket.asRawFd(), constPtrFromRustCast((addrOf(addr))), ((len as Any?) as Result<UnixDatagram, Error>)))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
                 Result.Ok(socket)
             }
         }

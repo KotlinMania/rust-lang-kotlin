@@ -434,7 +434,7 @@ public open class Condvar(
          * val condvar = Condvar.new()
          * ```
          */
-        public fun new(): Condvar = Condvar(inner = io.github.kotlinmania.rustlang.std.sys.sync.condvar.futex.Condvar.new())
+        public fun new(): Condvar = Condvar(inner = io.github.kotlinmania.rustlang.std.sys.sync.condvar.new())
 
         /**
          * Creates a `Condvar` which is ready to be waited on and notified.

@@ -1,16 +1,17 @@
 // port-lint: source sys/paths/wasi.rs
 package io.github.kotlinmania.rustlang.std.sys.paths.wasi
 
-import io.github.kotlinmania.libc.fuchsia.ERANGE
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
+import io.github.kotlinmania.rustlang.libc.wasi.ERANGE
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.os.unix.ffi.fromVec
+import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.path.PathBuf
 import io.github.kotlinmania.rustlang.std.sys.helpers.smallcstring.runPathWithCstr
 
@@ -19,13 +20,13 @@ public fun getcwd(): Result<PathBuf, Error> {
     while (true) {
         run {
             val ptr = (buf.asMutPtr()).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
-            if (!io.github.kotlinmania.libc.getcwd(ptr, buf.capacity()).isNull()) {
+            if (!io.github.kotlinmania.rustlang.libc.getcwd(ptr, buf.capacity()).isNull()) {
                 val len = CStr.fromPtr((buf.asPtr()).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }).toBytes().len()
                 buf.setLen(len)
                 buf.shrinkToFit()
                 return Result.Ok(PathBuf.from(OsString.fromVec(buf)))
             } else {
-                val error = Error.lastOsError()
+                val error = io.github.kotlinmania.rustlang.std.io.Error.lastOsError()
                 if (error.rawOsError() != ERANGE) {
                     return Result.Err(error)
                 }
@@ -40,10 +41,10 @@ public fun getcwd(): Result<PathBuf, Error> {
 }
 
 public fun chdir(p: Path): Result<Unit, Error> {
-    val result = when (val tryResult = runPathWithCstr(p, { p1 -> Result.Ok(io.github.kotlinmania.libc.chdir(p1.asPtr())) })) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    val result = when (val tryResult = runPathWithCstr(p, { p1 -> Result.Ok(io.github.kotlinmania.rustlang.libc.chdir(p1.asPtr())) })) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
     return when (result == (0)) {
         true -> Result.Ok(Unit)
-        false -> Result.Err(Error.lastOsError())
+        false -> Result.Err(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
     }
 }
 

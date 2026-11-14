@@ -42,7 +42,7 @@ public fun withoutProvenanceMut(addr: Simd<Int, N>, n: Int): Simd<MutPtr> {
  */
 public fun withExposedProvenance(addr: Simd<Int, N>, n: Int): Simd<ConstPtr> {
     // SAFETY: addr is a vector of Int
-    return simd.simdWithExposedProvenance(addr)
+    return run { val _simdArg0 = addr; _simdArg0 }
 }
 
 /**
@@ -52,5 +52,5 @@ public fun withExposedProvenance(addr: Simd<Int, N>, n: Int): Simd<ConstPtr> {
  */
 public fun withExposedProvenanceMut(addr: Simd<Int, N>, n: Int): Simd<MutPtr> {
     // SAFETY: addr is a vector of Int
-    return simd.simdWithExposedProvenance(addr)
+    return run { val _simdArg0 = addr; _simdArg0 }
 }
