@@ -1,0 +1,330 @@
+// port-lint: source sys/fs/unsupported.rs
+package io.github.kotlinmania.rustlang.std.sys.fs.unsupported
+
+import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
+import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
+import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
+import io.github.kotlinmania.rustlang.core.io.seek.SeekFrom
+import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
+import io.github.kotlinmania.rustlang.std.fmt
+import io.github.kotlinmania.rustlang.std.fs.TryLockError
+import io.github.kotlinmania.rustlang.std.path.Path
+import io.github.kotlinmania.rustlang.std.path.PathBuf
+import io.github.kotlinmania.rustlang.std.sys.fs.common.Dir
+import io.github.kotlinmania.rustlang.std.sys.pal.hermit.unsupported
+import io.github.kotlinmania.rustlang.std.sys.time.sgx.SystemTime
+
+public open class File(
+    public var value: Nothing,
+) {
+    public var field0: Nothing
+        get() = value
+        set(v) {
+            value = v
+        }
+
+    // Dummy Drops so that `needsDrop<std.fs.File>()` etc. is true independent of platform,
+    // avoiding a portability hazard.
+    // The types not listed here are pure data and don’t implement Drop even when real.
+    public open fun drop() {
+        this.value
+    }
+
+    public open fun fileAttr(): Result<FileAttr> = this.value
+
+    public open fun fsync(): Result<Unit> = this.value
+
+    public open fun datasync(): Result<Unit> = this.value
+
+    public open fun lock(): Result<Unit> = this.value
+
+    public open fun lockShared(): Result<Unit> = this.value
+
+    public open fun tryLock(): Result<Unit, TryLockError> = this.value
+
+    public open fun tryLockShared(): Result<Unit, TryLockError> = this.value
+
+    public open fun unlock(): Result<Unit> = this.value
+
+    public open fun truncate(size: ULong): Result<Unit> = this.value
+
+    public open fun read(buf: MutableList<UByte>): Result<Int> = this.value
+
+    public open fun readVectored(bufs: MutableList<IoSliceMut>): Result<Int> = this.value
+
+    public open fun isReadVectored(): Boolean = this.value
+
+    public open fun readBuf(cursor: BorrowedCursor<UByte>): Result<Unit> = this.value
+
+    public open fun write(buf: List<UByte>): Result<Int> = this.value
+
+    public open fun writeVectored(bufs: List<IoSlice>): Result<Int> = this.value
+
+    public open fun isWriteVectored(): Boolean = this.value
+
+    public open fun flush(): Result<Unit> = this.value
+
+    public open fun seek(pos: SeekFrom): Result<ULong> = this.value
+
+    public open fun size(): Result<ULong>? = this.value
+
+    public open fun tell(): Result<ULong> = this.value
+
+    public open fun duplicate(): Result<File> = this.value
+
+    public open fun setPermissions(perm: FilePermissions): Result<Unit> = this.value
+
+    public open fun setTimes(times: FileTimes): Result<Unit> = this.value
+
+    public open fun fmt(f: StringBuilder) {
+        this.value
+    }
+
+    public companion object {
+        public fun open(path: Path, opts: OpenOptions): Result<File> = unsupported()
+    }
+}
+
+public open class FileAttr(
+    public var value: Nothing,
+) {
+    public var field0: Nothing
+        get() = value
+        set(v) {
+            value = v
+        }
+
+    public open fun size(): ULong = this.value
+
+    public open fun perm(): FilePermissions = this.value
+
+    public open fun fileType(): FileType = this.value
+
+    public open fun modified(): Result<SystemTime> = this.value
+
+    public open fun accessed(): Result<SystemTime> = this.value
+
+    public open fun created(): Result<SystemTime> = this.value
+
+    public open fun clone(): FileAttr = this.value
+}
+
+public open class ReadDir(
+    public var value: Nothing,
+) : Iterable<Result<DirEntry>> {
+    public var field0: Nothing
+        get() = value
+        set(v) {
+            value = v
+        }
+
+    override fun iterator(): kotlin.collections.Iterator<Result<DirEntry>> = object : AbstractIterator<Result<DirEntry>>() {
+        override fun computeNext() {
+            when (val v = this@ReadDir.next()) {
+                null -> done()
+                else -> setNext(v)
+            }
+        }
+    }
+
+    public open fun drop() {
+        this.value
+    }
+
+    public open fun dir(): Result<Dir> = this.value
+
+    public open fun fmt(f: StringBuilder) {
+        this.value
+    }
+
+    public open fun next(): Result<DirEntry>? = this.value
+}
+
+public open class DirEntry(
+    public var value: Nothing,
+) {
+    public var field0: Nothing
+        get() = value
+        set(v) {
+            value = v
+        }
+
+    public open fun drop() {
+        this.value
+    }
+
+    public open fun path(): PathBuf = this.value
+
+    public open fun fileName(): OsString = this.value
+
+    public open fun metadata(): Result<FileAttr> = this.value
+
+    public open fun fileType(): Result<FileType> = this.value
+}
+
+public open class OpenOptions {
+    public open fun read(read: Boolean) {}
+
+    public open fun write(write: Boolean) {}
+
+    public open fun append(append: Boolean) {}
+
+    public open fun truncate(truncate: Boolean) {}
+
+    public open fun create(create: Boolean) {}
+
+    public open fun createNew(createNew: Boolean) {}
+
+    public companion object {
+        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<OpenOptions> =
+            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<OpenOptions> {
+                override val alignBytes: Long = 1L
+                override val sizeBytes: Long = 0L
+                override fun readNative(addr: Long): OpenOptions =
+                    OpenOptions()
+                override fun writeNative(addr: Long, value: OpenOptions) {
+                }
+                override fun readBytes(buf: ByteArray, offset: Int): OpenOptions =
+                    OpenOptions()
+                override fun writeBytes(buf: ByteArray, offset: Int, value: OpenOptions) {
+                }
+            }
+
+        public fun new(): OpenOptions = OpenOptions()
+    }
+}
+
+public open class FileTimes {
+    public open fun setAccessed(t: SystemTime) {}
+
+    public open fun setModified(t: SystemTime) {}
+
+    public companion object {
+        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<FileTimes> =
+            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<FileTimes> {
+                override val alignBytes: Long = 1L
+                override val sizeBytes: Long = 0L
+                override fun readNative(addr: Long): FileTimes =
+                    FileTimes()
+                override fun writeNative(addr: Long, value: FileTimes) {
+                }
+                override fun readBytes(buf: ByteArray, offset: Int): FileTimes =
+                    FileTimes()
+                override fun writeBytes(buf: ByteArray, offset: Int, value: FileTimes) {
+                }
+            }
+    }
+}
+
+public open class FilePermissions(
+    public var value: Nothing,
+) {
+    public var field0: Nothing
+        get() = value
+        set(v) {
+            value = v
+        }
+
+    public open fun readonly(): Boolean = this.value
+
+    public open fun setReadonly(readonly: Boolean) {
+        this.value
+    }
+
+    public open fun clone(): FilePermissions = this.value
+
+    public open fun eq(other: FilePermissions): Boolean = this.value
+
+    public open fun fmt(f: StringBuilder) {
+        this.value
+    }
+}
+
+public open class FileType(
+    public var value: Nothing,
+) {
+    public var field0: Nothing
+        get() = value
+        set(v) {
+            value = v
+        }
+
+    public open fun isDir(): Boolean = this.value
+
+    public open fun isFile(): Boolean = this.value
+
+    public open fun isSymlink(): Boolean = this.value
+
+    public open fun clone(): FileType = this.value
+
+    public open fun eq(other: FileType): Boolean = this.value
+
+    public override fun hashCode(): Int {
+        this.value
+        return 0
+    }
+
+    public open fun fmt(f: StringBuilder) {
+        this.value
+    }
+}
+
+public open class DirBuilder {
+    public open fun mkdir(p: Path): Result<Unit> = unsupported()
+
+    public companion object {
+        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<DirBuilder> =
+            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<DirBuilder> {
+                override val alignBytes: Long = 1L
+                override val sizeBytes: Long = 0L
+                override fun readNative(addr: Long): DirBuilder =
+                    DirBuilder()
+                override fun writeNative(addr: Long, value: DirBuilder) {
+                }
+                override fun readBytes(buf: ByteArray, offset: Int): DirBuilder =
+                    DirBuilder()
+                override fun writeBytes(buf: ByteArray, offset: Int, value: DirBuilder) {
+                }
+            }
+
+        public fun new(): DirBuilder = DirBuilder()
+    }
+}
+
+public fun readdir(p: Path): Result<ReadDir> = unsupported()
+
+public fun unlink(p: Path): Result<Unit> = unsupported()
+
+public fun rename(old: Path, new: Path): Result<Unit> = unsupported()
+
+public fun renameNoreplace(old: Path, new: Path): Result<Unit> = unsupported()
+
+public fun setPerm(p: Path, perm: FilePermissions): Result<Unit> = when (perm.value) {}
+
+public fun setPermNofollow(p: Path, perm: FilePermissions): Result<Unit> = when (perm.value) {}
+
+public fun setTimes(p: Path, times: FileTimes): Result<Unit> = unsupported()
+
+public fun setTimesNofollow(p: Path, times: FileTimes): Result<Unit> = unsupported()
+
+public fun rmdir(p: Path): Result<Unit> = unsupported()
+
+public fun removeDirAll(path: Path): Result<Unit> = unsupported()
+
+public fun exists(path: Path): Result<Boolean> = unsupported()
+
+public fun readlink(p: Path): Result<PathBuf> = unsupported()
+
+public fun symlink(original: Path, link: Path): Result<Unit> = unsupported()
+
+public fun link(src: Path, dst: Path): Result<Unit> = unsupported()
+
+public fun stat(p: Path): Result<FileAttr> = unsupported()
+
+public fun lstat(p: Path): Result<FileAttr> = unsupported()
+
+public fun canonicalize(p: Path): Result<PathBuf> = unsupported()
+
+public fun copy(from: Path, to: Path): Result<ULong> = unsupported()

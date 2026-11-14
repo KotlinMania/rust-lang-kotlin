@@ -1,0 +1,5 @@
+package = io.github.kotlinmania.rustlang.std.sys.args.wali.imp.cinterop
+headers = sys_args_wali_imp_wali_wrapper.h
+headerFilter = sys_args_wali_imp_wali_wrapper.h
+compilerOpts = -Isrc/native/interop/cinterop
+staticLibraries = sys_args_wali_imp_wali_wrapper.a

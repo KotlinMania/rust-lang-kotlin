@@ -1,0 +1,5 @@
+package = io.github.kotlinmania.rustlang.panicunwind.cinterop
+headers = panicunwind_wrapper.h
+headerFilter = panicunwind_wrapper.h
+compilerOpts = -Isrc/native/interop/cinterop
+staticLibraries = panicunwind_wrapper.a

@@ -1,0 +1,5 @@
+package = io.github.kotlinmania.rustlang.panicunwind.seh.cinterop
+headers = seh_wrapper.h
+headerFilter = seh_wrapper.h
+compilerOpts = -Isrc/native/interop/cinterop
+staticLibraries = seh_wrapper.a

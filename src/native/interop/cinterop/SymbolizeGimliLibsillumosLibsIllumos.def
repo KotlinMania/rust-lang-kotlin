@@ -1,0 +1,5 @@
+package = io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.libsillumos.cinterop
+headers = symbolize_gimli_libsillumos_libs_illumos_wrapper.h
+headerFilter = symbolize_gimli_libsillumos_libs_illumos_wrapper.h
+compilerOpts = -Isrc/native/interop/cinterop
+staticLibraries = symbolize_gimli_libsillumos_libs_illumos_wrapper.a

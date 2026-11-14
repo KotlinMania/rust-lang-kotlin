@@ -1,0 +1,6 @@
+@file:OptIn(kotlin.ExperimentalUnsignedTypes::class, kotlin.js.ExperimentalWasmJsInterop::class)
+
+package io.github.kotlinmania.rustlang.corearch.x86
+
+public actual fun pclmulqdq(a: M128i, roundKey: M128i, imm8: UByte): M128i =
+    throw UnsupportedOperationException("Native FFI addon is not available")

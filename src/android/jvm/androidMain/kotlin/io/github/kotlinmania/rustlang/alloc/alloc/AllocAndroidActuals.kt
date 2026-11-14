@@ -1,0 +1,17 @@
+@file:OptIn(kotlin.ExperimentalUnsignedTypes::class)
+
+package io.github.kotlinmania.rustlang.alloc.alloc
+
+private object AllocJniBridge {
+    init {
+        System.loadLibrary("alloc_jni")
+    }
+
+    @JvmStatic
+    external fun allocRustAllocErrorHandler(size: Long, align: Long)
+}
+
+public actual fun rustAllocErrorHandler(size: ULong, align: ULong): Nothing {
+    AllocJniBridge.allocRustAllocErrorHandler(size.toLong(), align.toLong())
+    error("Unreachable noreturn C function rustAllocErrorHandler")
+}

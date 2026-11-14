@@ -1,0 +1,5 @@
+package = io.github.kotlinmania.rustlang.corearch.x86.cinterop
+headers = x86_avxneconvert_wrapper.h
+headerFilter = x86_avxneconvert_wrapper.h
+compilerOpts = -Isrc/native/interop/cinterop
+staticLibraries = x86_avxneconvert_wrapper.a

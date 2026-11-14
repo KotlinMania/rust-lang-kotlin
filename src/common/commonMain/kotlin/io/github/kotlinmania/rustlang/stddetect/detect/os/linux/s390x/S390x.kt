@@ -1,0 +1,262 @@
+// port-lint: source detect/os/linux/s390x.rs
+@file:OptIn(ExperimentalUnsignedTypes::class)
+
+package io.github.kotlinmania.rustlang.stddetect.detect.os.linux.s390x
+
+import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
+import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.stddetect.detect.Feature
+import io.github.kotlinmania.rustlang.stddetect.detect.bit.test
+import io.github.kotlinmania.rustlang.stddetect.detect.cache.Cache
+import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.auxvec.AuxVec
+import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.auxvec.auxv
+
+// Run-time feature detection for s390x on Linux.
+
+/**
+ * Try to read the features from the auxiliary vector
+ */
+internal fun detectFeatures(): Initializer {
+    val optHwcap: AtHwcap? = auxv().ok()?.let(Into::into)
+    val facilities = ExtendedFacilityList.new()
+    return cache(optHwcap, facilities)
+}
+
+public open class AtHwcap(
+    public var esan3: Boolean,
+    public var zarch: Boolean,
+    public var stfle: Boolean,
+    public var msa: Boolean,
+    public var ldisp: Boolean,
+    public var eimm: Boolean,
+    public var dfp: Boolean,
+    public var hpage: Boolean,
+    public var etf3eh: Boolean,
+    public var highGprs: Boolean,
+    public var te: Boolean,
+    public var vxrs: Boolean,
+    public var vxrsBcd: Boolean,
+    public var vxrsExt: Boolean,
+    public var gs: Boolean,
+    public var vxrsExt2: Boolean,
+    public var vxrsPde: Boolean,
+    public var sort: Boolean,
+    public var dflt: Boolean,
+    public var vxrsPde2: Boolean,
+    public var nnpa: Boolean,
+    public var pciMio: Boolean,
+    public var sie: Boolean,
+) {
+    public companion object {
+        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<AtHwcap> =
+            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<AtHwcap> {
+                override val alignBytes: Long = 1L
+                override val sizeBytes: Long = 23L
+                override fun readNative(addr: Long): AtHwcap =
+                    AtHwcap(
+                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr),
+                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 1L),
+                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 2L),
+                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 3L),
+                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 4L),
+                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 5L),
+                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 6L),
+                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 7L),
+                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 8L),
+                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 9L),
+                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 10L),
+                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 11L),
+                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 12L),
+                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 13L),
+                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 14L),
+                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 15L),
+                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 16L),
+                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 17L),
+                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 18L),
+                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 19L),
+                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 20L),
+                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 21L),
+                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 22L),
+                    )
+                override fun writeNative(addr: Long, value: AtHwcap) {
+                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr, value.esan3)
+                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 1L, value.zarch)
+                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 2L, value.stfle)
+                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 3L, value.msa)
+                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 4L, value.ldisp)
+                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 5L, value.eimm)
+                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 6L, value.dfp)
+                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 7L, value.hpage)
+                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 8L, value.etf3eh)
+                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 9L, value.highGprs)
+                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 10L, value.te)
+                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 11L, value.vxrs)
+                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 12L, value.vxrsBcd)
+                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 13L, value.vxrsExt)
+                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 14L, value.gs)
+                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 15L, value.vxrsExt2)
+                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 16L, value.vxrsPde)
+                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 17L, value.sort)
+                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 18L, value.dflt)
+                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 19L, value.vxrsPde2)
+                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 20L, value.nnpa)
+                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 21L, value.pciMio)
+                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 22L, value.sie)
+                }
+                override fun readBytes(buf: ByteArray, offset: Int): AtHwcap =
+                    AtHwcap(
+                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset),
+                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 1),
+                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 2),
+                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 3),
+                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 4),
+                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 5),
+                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 6),
+                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 7),
+                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 8),
+                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 9),
+                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 10),
+                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 11),
+                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 12),
+                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 13),
+                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 14),
+                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 15),
+                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 16),
+                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 17),
+                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 18),
+                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 19),
+                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 20),
+                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 21),
+                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 22),
+                    )
+                override fun writeBytes(buf: ByteArray, offset: Int, value: AtHwcap) {
+                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset, value.esan3)
+                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 1, value.zarch)
+                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 2, value.stfle)
+                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 3, value.msa)
+                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 4, value.ldisp)
+                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 5, value.eimm)
+                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 6, value.dfp)
+                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 7, value.hpage)
+                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 8, value.etf3eh)
+                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 9, value.highGprs)
+                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 10, value.te)
+                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 11, value.vxrs)
+                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 12, value.vxrsBcd)
+                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 13, value.vxrsExt)
+                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 14, value.gs)
+                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 15, value.vxrsExt2)
+                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 16, value.vxrsPde)
+                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 17, value.sort)
+                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 18, value.dflt)
+                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 19, value.vxrsPde2)
+                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 20, value.nnpa)
+                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 21, value.pciMio)
+                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 22, value.sie)
+                }
+            }
+
+        /**
+         * Reads AtHwcap from the auxiliary vector.
+         */
+        public fun from(auxv: AuxVec): AtHwcap = AtHwcap(esan3 = test(auxv.hwcap, 0u), zarch = test(auxv.hwcap, 1u), stfle = test(auxv.hwcap, 2u), msa = test(auxv.hwcap, 3u), ldisp = test(auxv.hwcap, 4u), eimm = test(auxv.hwcap, 5u), dfp = test(auxv.hwcap, 6u), hpage = test(auxv.hwcap, 7u), etf3eh = test(auxv.hwcap, 8u), highGprs = test(auxv.hwcap, 9u), te = test(auxv.hwcap, 10u), vxrs = test(auxv.hwcap, 11u), vxrsBcd = test(auxv.hwcap, 12u), vxrsExt = test(auxv.hwcap, 13u), gs = test(auxv.hwcap, 14u), vxrsExt2 = test(auxv.hwcap, 15u), vxrsPde = test(auxv.hwcap, 16u), sort = test(auxv.hwcap, 17u), dflt = test(auxv.hwcap, 18u), vxrsPde2 = test(auxv.hwcap, 19u), nnpa = test(auxv.hwcap, 20u), pciMio = test(auxv.hwcap, 21u), sie = test(auxv.hwcap, 22u))
+    }
+}
+
+public open class ExtendedFacilityList(
+    public var value: ULongArray,
+) {
+    public var field0: ULongArray
+        get() = value
+        set(v) {
+            value = v
+        }
+
+    public open fun getBit(n: Int): Boolean {
+        // NOTE: bits are numbered from the left.
+        return this.value[n / 64] and (1uL shl (63 - (n % 64))) != 0uL
+    }
+
+    public companion object {
+        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<ExtendedFacilityList> =
+            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<ExtendedFacilityList> {
+                override val alignBytes: Long = 8L
+                override val sizeBytes: Long = 32L
+                override fun readNative(addr: Long): ExtendedFacilityList =
+                    ExtendedFacilityList(
+                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uLongArray(4)).readNative(addr),
+                    )
+                override fun writeNative(addr: Long, value: ExtendedFacilityList) {
+                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uLongArray(4)).writeNative(addr, value.value)
+                }
+                override fun readBytes(buf: ByteArray, offset: Int): ExtendedFacilityList =
+                    ExtendedFacilityList(
+                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uLongArray(4)).readBytes(buf, offset),
+                    )
+                override fun writeBytes(buf: ByteArray, offset: Int, value: ExtendedFacilityList) {
+                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uLongArray(4)).writeBytes(buf, offset, value.value)
+                }
+            }
+
+        public fun new(): ExtendedFacilityList {
+            val result: ULongArray  = ULongArray(4) { 0uL }
+            // SAFETY: rust/llvm only support s390x version with the `stfle` instruction.
+            run {
+                asm("stfle 0({})", regAddr, result, asMutPtr, inout, "r0", result, len, 1, options(nostack))
+            }
+            return ExtendedFacilityList(result)
+        }
+    }
+}
+
+/**
+ * Initializes the cache from the feature bits.
+ *
+ * These values are part of the platform-specific [asm/elf.h][kernel], and are a selection of the
+ * fields found in the [Facility Indications].
+ *
+ * [Facility Indications]: https://www.ibm.com/support/pages/sites/default/files/2021-05/SA22-7871-10.pdf#page=63
+ * [kernel]: https://github.com/torvalds/linux/blob/b62cef9a5c673f1b8083159f5dc03c1c5daced2f/arch/s390/include/asm/elf.h#L129
+ */
+public fun cache(hwcap: AtHwcap?, facilities: ExtendedFacilityList): Initializer {
+    val value = Cache.Initializer.default()
+    run {
+        var enableIfSet =
+            { bitIndex, f ->
+                if (facilities.getBit(bitIndex)) {
+                    value.set(f.toUInt())
+                }
+            }
+        // We use HWCAP for `vector` because it requires both hardware and kernel support.
+        if (hwcap.vxrs == true) {
+            // vector and related
+            enableIfSet(129, Feature::vector)
+            enableIfSet(135, Feature::vectorEnhancements1)
+            enableIfSet(148, Feature::vectorEnhancements2)
+            enableIfSet(198, Feature::vectorEnhancements3)
+            enableIfSet(134, Feature::vectorPackedDecimal)
+            enableIfSet(152, Feature::vectorPackedDecimalEnhancement)
+            enableIfSet(192, Feature::vectorPackedDecimalEnhancement2)
+            enableIfSet(199, Feature::vectorPackedDecimalEnhancement3)
+            enableIfSet(165, Feature::nnpAssist)
+        }
+        // others
+        enableIfSet(76, Feature::messageSecurityAssistExtension3)
+        enableIfSet(77, Feature::messageSecurityAssistExtension4)
+        enableIfSet(57, Feature::messageSecurityAssistExtension5)
+        enableIfSet(146, Feature::messageSecurityAssistExtension8)
+        enableIfSet(155, Feature::messageSecurityAssistExtension9)
+        enableIfSet(86, Feature::messageSecurityAssistExtension12)
+        enableIfSet(58, Feature::miscellaneousExtensions2)
+        enableIfSet(61, Feature::miscellaneousExtensions3)
+        enableIfSet(84, Feature::miscellaneousExtensions4)
+        enableIfSet(45, Feature::highWord)
+        enableIfSet(73, Feature::transactionalExecution)
+        enableIfSet(133, Feature::guardedStorage)
+        enableIfSet(150, Feature::enhancedSort)
+        enableIfSet(151, Feature::deflateConversion)
+        enableIfSet(201, Feature::concurrentFunctions)
+    }
+    return value
+}

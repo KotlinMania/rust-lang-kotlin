@@ -1,0 +1,5 @@
+package = io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.libsaix.cinterop
+headers = symbolize_gimli_libsaix_libs_aix_wrapper.h
+headerFilter = symbolize_gimli_libsaix_libs_aix_wrapper.h
+compilerOpts = -Isrc/native/interop/cinterop
+staticLibraries = symbolize_gimli_libsaix_libs_aix_wrapper.a

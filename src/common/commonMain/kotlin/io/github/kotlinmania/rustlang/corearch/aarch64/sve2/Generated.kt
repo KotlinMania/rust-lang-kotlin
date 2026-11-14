@@ -1,0 +1,15441 @@
+// port-lint: source aarch64/sve2/generated.rs
+package io.github.kotlinmania.rustlang.corearch.aarch64.sve2
+
+import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
+import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
+import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.corearch.Intrinsics
+import io.github.kotlinmania.rustlang.corearch.aarch64.sve.svdupNF32
+import io.github.kotlinmania.rustlang.corearch.aarch64.sve.svdupNS16
+import io.github.kotlinmania.rustlang.corearch.aarch64.sve.svdupNS32
+import io.github.kotlinmania.rustlang.corearch.aarch64.sve.svdupNS64
+import io.github.kotlinmania.rustlang.corearch.aarch64.sve.svdupNS8
+import io.github.kotlinmania.rustlang.corearch.aarch64.sve.svdupNU16
+import io.github.kotlinmania.rustlang.corearch.aarch64.sve.svdupNU32
+import io.github.kotlinmania.rustlang.corearch.aarch64.sve.svdupNU64
+import io.github.kotlinmania.rustlang.corearch.aarch64.sve.svdupNU8
+import io.github.kotlinmania.rustlang.corearch.aarch64.sve.svget2F32
+import io.github.kotlinmania.rustlang.corearch.aarch64.sve.svget2F64
+import io.github.kotlinmania.rustlang.corearch.aarch64.sve.svget2S16
+import io.github.kotlinmania.rustlang.corearch.aarch64.sve.svget2S32
+import io.github.kotlinmania.rustlang.corearch.aarch64.sve.svget2S64
+import io.github.kotlinmania.rustlang.corearch.aarch64.sve.svget2S8
+import io.github.kotlinmania.rustlang.corearch.aarch64.sve.svselS16
+import io.github.kotlinmania.rustlang.corearch.aarch64.sve.svselS32
+import io.github.kotlinmania.rustlang.corearch.aarch64.sve.svselS64
+import io.github.kotlinmania.rustlang.corearch.aarch64.sve.svselS8
+import io.github.kotlinmania.rustlang.corearch.aarch64.sve.svselU16
+import io.github.kotlinmania.rustlang.corearch.aarch64.sve.svselU32
+import io.github.kotlinmania.rustlang.corearch.aarch64.sve.svselU64
+import io.github.kotlinmania.rustlang.corearch.aarch64.sve.svselU8
+import io.github.kotlinmania.rustlang.corearch.simd.Simd
+
+/**
+ * Absolute difference and accumulate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaba[_s8])
+ */
+public fun svabaS8(op1: Svint8T, op2: Svint8T, op3: Svint8T): Svint8T {
+    fun svabaS8(op11: Svint8T, op21: Svint8T, op31: Svint8T): Svint8T = null as Svint8T
+    return svabaS8(op1, op2, op3)
+}
+
+/**
+ * Absolute difference and accumulate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaba[_n_s8])
+ */
+public fun svabaNS8(op1: Svint8T, op2: Svint8T, op3: Byte): Svint8T = svabaS8(op1, op2, svdupNS8(op3))
+
+/**
+ * Absolute difference and accumulate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaba[_s16])
+ */
+public fun svabaS16(op1: Svint16T, op2: Svint16T, op3: Svint16T): Svint16T {
+    fun svabaS16(op11: Svint16T, op21: Svint16T, op31: Svint16T): Svint16T = null as Svint16T
+    return svabaS16(op1, op2, op3)
+}
+
+/**
+ * Absolute difference and accumulate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaba[_n_s16])
+ */
+public fun svabaNS16(op1: Svint16T, op2: Svint16T, op3: Short): Svint16T = svabaS16(op1, op2, svdupNS16(op3))
+
+/**
+ * Absolute difference and accumulate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaba[_s32])
+ */
+public fun svabaS32(op1: Svint32T, op2: Svint32T, op3: Svint32T): Svint32T {
+    fun svabaS32(op11: Svint32T, op21: Svint32T, op31: Svint32T): Svint32T = null as Svint32T
+    return svabaS32(op1, op2, op3)
+}
+
+/**
+ * Absolute difference and accumulate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaba[_n_s32])
+ */
+public fun svabaNS32(op1: Svint32T, op2: Svint32T, op3: Int): Svint32T = svabaS32(op1, op2, svdupNS32(op3))
+
+/**
+ * Absolute difference and accumulate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaba[_s64])
+ */
+public fun svabaS64(op1: Svint64T, op2: Svint64T, op3: Svint64T): Svint64T {
+    fun svabaS64(op11: Svint64T, op21: Svint64T, op31: Svint64T): Svint64T = null as Svint64T
+    return svabaS64(op1, op2, op3)
+}
+
+/**
+ * Absolute difference and accumulate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaba[_n_s64])
+ */
+public fun svabaNS64(op1: Svint64T, op2: Svint64T, op3: Long): Svint64T = svabaS64(op1, op2, svdupNS64(op3))
+
+/**
+ * Absolute difference and accumulate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaba[_u8])
+ */
+public fun svabaU8(op1: Svuint8T, op2: Svuint8T, op3: Svuint8T): Svuint8T {
+    fun svabaU8(op11: Svint8T, op21: Svint8T, op31: Svint8T): Svint8T = null as Svint8T
+    return svabaU8(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
+}
+
+/**
+ * Absolute difference and accumulate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaba[_n_u8])
+ */
+public fun svabaNU8(op1: Svuint8T, op2: Svuint8T, op3: UByte): Svuint8T = svabaU8(op1, op2, svdupNU8(op3))
+
+/**
+ * Absolute difference and accumulate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaba[_u16])
+ */
+public fun svabaU16(op1: Svuint16T, op2: Svuint16T, op3: Svuint16T): Svuint16T {
+    fun svabaU16(op11: Svint16T, op21: Svint16T, op31: Svint16T): Svint16T = null as Svint16T
+    return svabaU16(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
+}
+
+/**
+ * Absolute difference and accumulate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaba[_n_u16])
+ */
+public fun svabaNU16(op1: Svuint16T, op2: Svuint16T, op3: UShort): Svuint16T = svabaU16(op1, op2, svdupNU16(op3))
+
+/**
+ * Absolute difference and accumulate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaba[_u32])
+ */
+public fun svabaU32(op1: Svuint32T, op2: Svuint32T, op3: Svuint32T): Svuint32T {
+    fun svabaU32(op11: Svint32T, op21: Svint32T, op31: Svint32T): Svint32T = null as Svint32T
+    return svabaU32(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
+}
+
+/**
+ * Absolute difference and accumulate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaba[_n_u32])
+ */
+public fun svabaNU32(op1: Svuint32T, op2: Svuint32T, op3: UInt): Svuint32T = svabaU32(op1, op2, svdupNU32(op3))
+
+/**
+ * Absolute difference and accumulate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaba[_u64])
+ */
+public fun svabaU64(op1: Svuint64T, op2: Svuint64T, op3: Svuint64T): Svuint64T {
+    fun svabaU64(op11: Svint64T, op21: Svint64T, op31: Svint64T): Svint64T = null as Svint64T
+    return svabaU64(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
+}
+
+/**
+ * Absolute difference and accumulate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaba[_n_u64])
+ */
+public fun svabaNU64(op1: Svuint64T, op2: Svuint64T, op3: ULong): Svuint64T = svabaU64(op1, op2, svdupNU64(op3))
+
+/**
+ * Absolute difference long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabalb[_s16])
+ */
+public fun svabalbS16(op1: Svint16T, op2: Svint8T, op3: Svint8T): Svint16T {
+    fun svabalbS16(op11: Svint16T, op21: Svint8T, op31: Svint8T): Svint16T = null as Svint16T
+    return svabalbS16(op1, op2, op3)
+}
+
+/**
+ * Absolute difference long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabalb[_n_s16])
+ */
+public fun svabalbNS16(op1: Svint16T, op2: Svint8T, op3: Byte): Svint16T = svabalbS16(op1, op2, svdupNS8(op3))
+
+/**
+ * Absolute difference long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabalb[_s32])
+ */
+public fun svabalbS32(op1: Svint32T, op2: Svint16T, op3: Svint16T): Svint32T {
+    fun svabalbS32(op11: Svint32T, op21: Svint16T, op31: Svint16T): Svint32T = null as Svint32T
+    return svabalbS32(op1, op2, op3)
+}
+
+/**
+ * Absolute difference long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabalb[_n_s32])
+ */
+public fun svabalbNS32(op1: Svint32T, op2: Svint16T, op3: Short): Svint32T = svabalbS32(op1, op2, svdupNS16(op3))
+
+/**
+ * Absolute difference long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabalb[_s64])
+ */
+public fun svabalbS64(op1: Svint64T, op2: Svint32T, op3: Svint32T): Svint64T {
+    fun svabalbS64(op11: Svint64T, op21: Svint32T, op31: Svint32T): Svint64T = null as Svint64T
+    return svabalbS64(op1, op2, op3)
+}
+
+/**
+ * Absolute difference long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabalb[_n_s64])
+ */
+public fun svabalbNS64(op1: Svint64T, op2: Svint32T, op3: Int): Svint64T = svabalbS64(op1, op2, svdupNS32(op3))
+
+/**
+ * Absolute difference long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabalb[_u16])
+ */
+public fun svabalbU16(op1: Svuint16T, op2: Svuint8T, op3: Svuint8T): Svuint16T {
+    fun svabalbU16(op11: Svint16T, op21: Svint8T, op31: Svint8T): Svint16T = null as Svint16T
+    return svabalbU16(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
+}
+
+/**
+ * Absolute difference long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabalb[_n_u16])
+ */
+public fun svabalbNU16(op1: Svuint16T, op2: Svuint8T, op3: UByte): Svuint16T = svabalbU16(op1, op2, svdupNU8(op3))
+
+/**
+ * Absolute difference long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabalb[_u32])
+ */
+public fun svabalbU32(op1: Svuint32T, op2: Svuint16T, op3: Svuint16T): Svuint32T {
+    fun svabalbU32(op11: Svint32T, op21: Svint16T, op31: Svint16T): Svint32T = null as Svint32T
+    return svabalbU32(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
+}
+
+/**
+ * Absolute difference long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabalb[_n_u32])
+ */
+public fun svabalbNU32(op1: Svuint32T, op2: Svuint16T, op3: UShort): Svuint32T = svabalbU32(op1, op2, svdupNU16(op3))
+
+/**
+ * Absolute difference long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabalb[_u64])
+ */
+public fun svabalbU64(op1: Svuint64T, op2: Svuint32T, op3: Svuint32T): Svuint64T {
+    fun svabalbU64(op11: Svint64T, op21: Svint32T, op31: Svint32T): Svint64T = null as Svint64T
+    return svabalbU64(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
+}
+
+/**
+ * Absolute difference long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabalb[_n_u64])
+ */
+public fun svabalbNU64(op1: Svuint64T, op2: Svuint32T, op3: UInt): Svuint64T = svabalbU64(op1, op2, svdupNU32(op3))
+
+/**
+ * Absolute difference long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabalt[_s16])
+ */
+public fun svabaltS16(op1: Svint16T, op2: Svint8T, op3: Svint8T): Svint16T {
+    fun svabaltS16(op11: Svint16T, op21: Svint8T, op31: Svint8T): Svint16T = null as Svint16T
+    return svabaltS16(op1, op2, op3)
+}
+
+/**
+ * Absolute difference long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabalt[_n_s16])
+ */
+public fun svabaltNS16(op1: Svint16T, op2: Svint8T, op3: Byte): Svint16T = svabaltS16(op1, op2, svdupNS8(op3))
+
+/**
+ * Absolute difference long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabalt[_s32])
+ */
+public fun svabaltS32(op1: Svint32T, op2: Svint16T, op3: Svint16T): Svint32T {
+    fun svabaltS32(op11: Svint32T, op21: Svint16T, op31: Svint16T): Svint32T = null as Svint32T
+    return svabaltS32(op1, op2, op3)
+}
+
+/**
+ * Absolute difference long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabalt[_n_s32])
+ */
+public fun svabaltNS32(op1: Svint32T, op2: Svint16T, op3: Short): Svint32T = svabaltS32(op1, op2, svdupNS16(op3))
+
+/**
+ * Absolute difference long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabalt[_s64])
+ */
+public fun svabaltS64(op1: Svint64T, op2: Svint32T, op3: Svint32T): Svint64T {
+    fun svabaltS64(op11: Svint64T, op21: Svint32T, op31: Svint32T): Svint64T = null as Svint64T
+    return svabaltS64(op1, op2, op3)
+}
+
+/**
+ * Absolute difference long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabalt[_n_s64])
+ */
+public fun svabaltNS64(op1: Svint64T, op2: Svint32T, op3: Int): Svint64T = svabaltS64(op1, op2, svdupNS32(op3))
+
+/**
+ * Absolute difference long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabalt[_u16])
+ */
+public fun svabaltU16(op1: Svuint16T, op2: Svuint8T, op3: Svuint8T): Svuint16T {
+    fun svabaltU16(op11: Svint16T, op21: Svint8T, op31: Svint8T): Svint16T = null as Svint16T
+    return svabaltU16(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
+}
+
+/**
+ * Absolute difference long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabalt[_n_u16])
+ */
+public fun svabaltNU16(op1: Svuint16T, op2: Svuint8T, op3: UByte): Svuint16T = svabaltU16(op1, op2, svdupNU8(op3))
+
+/**
+ * Absolute difference long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabalt[_u32])
+ */
+public fun svabaltU32(op1: Svuint32T, op2: Svuint16T, op3: Svuint16T): Svuint32T {
+    fun svabaltU32(op11: Svint32T, op21: Svint16T, op31: Svint16T): Svint32T = null as Svint32T
+    return svabaltU32(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
+}
+
+/**
+ * Absolute difference long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabalt[_n_u32])
+ */
+public fun svabaltNU32(op1: Svuint32T, op2: Svuint16T, op3: UShort): Svuint32T = svabaltU32(op1, op2, svdupNU16(op3))
+
+/**
+ * Absolute difference long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabalt[_u64])
+ */
+public fun svabaltU64(op1: Svuint64T, op2: Svuint32T, op3: Svuint32T): Svuint64T {
+    fun svabaltU64(op11: Svint64T, op21: Svint32T, op31: Svint32T): Svint64T = null as Svint64T
+    return svabaltU64(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
+}
+
+/**
+ * Absolute difference long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabalt[_n_u64])
+ */
+public fun svabaltNU64(op1: Svuint64T, op2: Svuint32T, op3: UInt): Svuint64T = svabaltU64(op1, op2, svdupNU32(op3))
+
+/**
+ * Absolute difference long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabdlb[_s16])
+ */
+public fun svabdlbS16(op1: Svint8T, op2: Svint8T): Svint16T {
+    fun svabdlbS16(op11: Svint8T, op21: Svint8T): Svint16T = null as Svint16T
+    return svabdlbS16(op1, op2)
+}
+
+/**
+ * Absolute difference long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabdlb[_n_s16])
+ */
+public fun svabdlbNS16(op1: Svint8T, op2: Byte): Svint16T = svabdlbS16(op1, svdupNS8(op2))
+
+/**
+ * Absolute difference long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabdlb[_s32])
+ */
+public fun svabdlbS32(op1: Svint16T, op2: Svint16T): Svint32T {
+    fun svabdlbS32(op11: Svint16T, op21: Svint16T): Svint32T = null as Svint32T
+    return svabdlbS32(op1, op2)
+}
+
+/**
+ * Absolute difference long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabdlb[_n_s32])
+ */
+public fun svabdlbNS32(op1: Svint16T, op2: Short): Svint32T = svabdlbS32(op1, svdupNS16(op2))
+
+/**
+ * Absolute difference long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabdlb[_s64])
+ */
+public fun svabdlbS64(op1: Svint32T, op2: Svint32T): Svint64T {
+    fun svabdlbS64(op11: Svint32T, op21: Svint32T): Svint64T = null as Svint64T
+    return svabdlbS64(op1, op2)
+}
+
+/**
+ * Absolute difference long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabdlb[_n_s64])
+ */
+public fun svabdlbNS64(op1: Svint32T, op2: Int): Svint64T = svabdlbS64(op1, svdupNS32(op2))
+
+/**
+ * Absolute difference long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabdlb[_u16])
+ */
+public fun svabdlbU16(op1: Svuint8T, op2: Svuint8T): Svuint16T {
+    fun svabdlbU16(op11: Svint8T, op21: Svint8T): Svint16T = null as Svint16T
+    return svabdlbU16(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Absolute difference long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabdlb[_n_u16])
+ */
+public fun svabdlbNU16(op1: Svuint8T, op2: UByte): Svuint16T = svabdlbU16(op1, svdupNU8(op2))
+
+/**
+ * Absolute difference long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabdlb[_u32])
+ */
+public fun svabdlbU32(op1: Svuint16T, op2: Svuint16T): Svuint32T {
+    fun svabdlbU32(op11: Svint16T, op21: Svint16T): Svint32T = null as Svint32T
+    return svabdlbU32(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Absolute difference long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabdlb[_n_u32])
+ */
+public fun svabdlbNU32(op1: Svuint16T, op2: UShort): Svuint32T = svabdlbU32(op1, svdupNU16(op2))
+
+/**
+ * Absolute difference long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabdlb[_u64])
+ */
+public fun svabdlbU64(op1: Svuint32T, op2: Svuint32T): Svuint64T {
+    fun svabdlbU64(op11: Svint32T, op21: Svint32T): Svint64T = null as Svint64T
+    return svabdlbU64(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Absolute difference long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabdlb[_n_u64])
+ */
+public fun svabdlbNU64(op1: Svuint32T, op2: UInt): Svuint64T = svabdlbU64(op1, svdupNU32(op2))
+
+/**
+ * Absolute difference long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabdlt[_s16])
+ */
+public fun svabdltS16(op1: Svint8T, op2: Svint8T): Svint16T {
+    fun svabdltS16(op11: Svint8T, op21: Svint8T): Svint16T = null as Svint16T
+    return svabdltS16(op1, op2)
+}
+
+/**
+ * Absolute difference long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabdlt[_n_s16])
+ */
+public fun svabdltNS16(op1: Svint8T, op2: Byte): Svint16T = svabdltS16(op1, svdupNS8(op2))
+
+/**
+ * Absolute difference long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabdlt[_s32])
+ */
+public fun svabdltS32(op1: Svint16T, op2: Svint16T): Svint32T {
+    fun svabdltS32(op11: Svint16T, op21: Svint16T): Svint32T = null as Svint32T
+    return svabdltS32(op1, op2)
+}
+
+/**
+ * Absolute difference long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabdlt[_n_s32])
+ */
+public fun svabdltNS32(op1: Svint16T, op2: Short): Svint32T = svabdltS32(op1, svdupNS16(op2))
+
+/**
+ * Absolute difference long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabdlt[_s64])
+ */
+public fun svabdltS64(op1: Svint32T, op2: Svint32T): Svint64T {
+    fun svabdltS64(op11: Svint32T, op21: Svint32T): Svint64T = null as Svint64T
+    return svabdltS64(op1, op2)
+}
+
+/**
+ * Absolute difference long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabdlt[_n_s64])
+ */
+public fun svabdltNS64(op1: Svint32T, op2: Int): Svint64T = svabdltS64(op1, svdupNS32(op2))
+
+/**
+ * Absolute difference long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabdlt[_u16])
+ */
+public fun svabdltU16(op1: Svuint8T, op2: Svuint8T): Svuint16T {
+    fun svabdltU16(op11: Svint8T, op21: Svint8T): Svint16T = null as Svint16T
+    return svabdltU16(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Absolute difference long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabdlt[_n_u16])
+ */
+public fun svabdltNU16(op1: Svuint8T, op2: UByte): Svuint16T = svabdltU16(op1, svdupNU8(op2))
+
+/**
+ * Absolute difference long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabdlt[_u32])
+ */
+public fun svabdltU32(op1: Svuint16T, op2: Svuint16T): Svuint32T {
+    fun svabdltU32(op11: Svint16T, op21: Svint16T): Svint32T = null as Svint32T
+    return svabdltU32(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Absolute difference long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabdlt[_n_u32])
+ */
+public fun svabdltNU32(op1: Svuint16T, op2: UShort): Svuint32T = svabdltU32(op1, svdupNU16(op2))
+
+/**
+ * Absolute difference long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabdlt[_u64])
+ */
+public fun svabdltU64(op1: Svuint32T, op2: Svuint32T): Svuint64T {
+    fun svabdltU64(op11: Svint32T, op21: Svint32T): Svint64T = null as Svint64T
+    return svabdltU64(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Absolute difference long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabdlt[_n_u64])
+ */
+public fun svabdltNU64(op1: Svuint32T, op2: UInt): Svuint64T = svabdltU64(op1, svdupNU32(op2))
+
+/**
+ * Add and accumulate long pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svadalp[_s16]_m)
+ */
+public fun svadalpS16M(pg: SvboolT, op1: Svint16T, op2: Svint8T): Svint16T {
+    fun svadalpS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint8T): Svint16T = null as Svint16T
+    return svadalpS16M(pg.sveInto(), op1, op2)
+}
+
+/**
+ * Add and accumulate long pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svadalp[_s16]_x)
+ */
+public fun svadalpS16X(pg: SvboolT, op1: Svint16T, op2: Svint8T): Svint16T = svadalpS16M(pg, op1, op2)
+
+/**
+ * Add and accumulate long pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svadalp[_s16]_z)
+ */
+public fun svadalpS16Z(pg: SvboolT, op1: Svint16T, op2: Svint8T): Svint16T = svadalpS16M(pg, svselS16(pg, op1, svdupNS16(0)), op2)
+
+/**
+ * Add and accumulate long pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svadalp[_s32]_m)
+ */
+public fun svadalpS32M(pg: SvboolT, op1: Svint32T, op2: Svint16T): Svint32T {
+    fun svadalpS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint16T): Svint32T = null as Svint32T
+    return svadalpS32M(pg.sveInto(), op1, op2)
+}
+
+/**
+ * Add and accumulate long pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svadalp[_s32]_x)
+ */
+public fun svadalpS32X(pg: SvboolT, op1: Svint32T, op2: Svint16T): Svint32T = svadalpS32M(pg, op1, op2)
+
+/**
+ * Add and accumulate long pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svadalp[_s32]_z)
+ */
+public fun svadalpS32Z(pg: SvboolT, op1: Svint32T, op2: Svint16T): Svint32T = svadalpS32M(pg, svselS32(pg, op1, svdupNS32(0)), op2)
+
+/**
+ * Add and accumulate long pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svadalp[_s64]_m)
+ */
+public fun svadalpS64M(pg: SvboolT, op1: Svint64T, op2: Svint32T): Svint64T {
+    fun svadalpS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint32T): Svint64T = null as Svint64T
+    return svadalpS64M(pg.sveInto(), op1, op2)
+}
+
+/**
+ * Add and accumulate long pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svadalp[_s64]_x)
+ */
+public fun svadalpS64X(pg: SvboolT, op1: Svint64T, op2: Svint32T): Svint64T = svadalpS64M(pg, op1, op2)
+
+/**
+ * Add and accumulate long pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svadalp[_s64]_z)
+ */
+public fun svadalpS64Z(pg: SvboolT, op1: Svint64T, op2: Svint32T): Svint64T = svadalpS64M(pg, svselS64(pg, op1, svdupNS64(0L)), op2)
+
+/**
+ * Add and accumulate long pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svadalp[_u16]_m)
+ */
+public fun svadalpU16M(pg: SvboolT, op1: Svuint16T, op2: Svuint8T): Svuint16T {
+    fun svadalpU16M(pg1: Svbool8T, op11: Svint16T, op21: Svint8T): Svint16T = null as Svint16T
+    return svadalpU16M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Add and accumulate long pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svadalp[_u16]_x)
+ */
+public fun svadalpU16X(pg: SvboolT, op1: Svuint16T, op2: Svuint8T): Svuint16T = svadalpU16M(pg, op1, op2)
+
+/**
+ * Add and accumulate long pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svadalp[_u16]_z)
+ */
+public fun svadalpU16Z(pg: SvboolT, op1: Svuint16T, op2: Svuint8T): Svuint16T = svadalpU16M(pg, svselU16(pg, op1, svdupNU16(0u)), op2)
+
+/**
+ * Add and accumulate long pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svadalp[_u32]_m)
+ */
+public fun svadalpU32M(pg: SvboolT, op1: Svuint32T, op2: Svuint16T): Svuint32T {
+    fun svadalpU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint16T): Svint32T = null as Svint32T
+    return svadalpU32M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Add and accumulate long pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svadalp[_u32]_x)
+ */
+public fun svadalpU32X(pg: SvboolT, op1: Svuint32T, op2: Svuint16T): Svuint32T = svadalpU32M(pg, op1, op2)
+
+/**
+ * Add and accumulate long pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svadalp[_u32]_z)
+ */
+public fun svadalpU32Z(pg: SvboolT, op1: Svuint32T, op2: Svuint16T): Svuint32T = svadalpU32M(pg, svselU32(pg, op1, svdupNU32(0u)), op2)
+
+/**
+ * Add and accumulate long pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svadalp[_u64]_m)
+ */
+public fun svadalpU64M(pg: SvboolT, op1: Svuint64T, op2: Svuint32T): Svuint64T {
+    fun svadalpU64M(pg1: Svbool2T, op11: Svint64T, op21: Svint32T): Svint64T = null as Svint64T
+    return svadalpU64M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Add and accumulate long pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svadalp[_u64]_x)
+ */
+public fun svadalpU64X(pg: SvboolT, op1: Svuint64T, op2: Svuint32T): Svuint64T = svadalpU64M(pg, op1, op2)
+
+/**
+ * Add and accumulate long pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svadalp[_u64]_z)
+ */
+public fun svadalpU64Z(pg: SvboolT, op1: Svuint64T, op2: Svuint32T): Svuint64T = svadalpU64M(pg, svselU64(pg, op1, svdupNU64(0uL)), op2)
+
+/**
+ * Add with carry long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svadclb[_u32])
+ */
+public fun svadclbU32(op1: Svuint32T, op2: Svuint32T, op3: Svuint32T): Svuint32T {
+    fun svadclbU32(op11: Svint32T, op21: Svint32T, op31: Svint32T): Svint32T = null as Svint32T
+    return svadclbU32(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
+}
+
+/**
+ * Add with carry long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svadclb[_n_u32])
+ */
+public fun svadclbNU32(op1: Svuint32T, op2: Svuint32T, op3: UInt): Svuint32T = svadclbU32(op1, op2, svdupNU32(op3))
+
+/**
+ * Add with carry long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svadclb[_u64])
+ */
+public fun svadclbU64(op1: Svuint64T, op2: Svuint64T, op3: Svuint64T): Svuint64T {
+    fun svadclbU64(op11: Svint64T, op21: Svint64T, op31: Svint64T): Svint64T = null as Svint64T
+    return svadclbU64(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
+}
+
+/**
+ * Add with carry long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svadclb[_n_u64])
+ */
+public fun svadclbNU64(op1: Svuint64T, op2: Svuint64T, op3: ULong): Svuint64T = svadclbU64(op1, op2, svdupNU64(op3))
+
+/**
+ * Add with carry long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svadclt[_u32])
+ */
+public fun svadcltU32(op1: Svuint32T, op2: Svuint32T, op3: Svuint32T): Svuint32T {
+    fun svadcltU32(op11: Svint32T, op21: Svint32T, op31: Svint32T): Svint32T = null as Svint32T
+    return svadcltU32(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
+}
+
+/**
+ * Add with carry long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svadclt[_n_u32])
+ */
+public fun svadcltNU32(op1: Svuint32T, op2: Svuint32T, op3: UInt): Svuint32T = svadcltU32(op1, op2, svdupNU32(op3))
+
+/**
+ * Add with carry long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svadclt[_u64])
+ */
+public fun svadcltU64(op1: Svuint64T, op2: Svuint64T, op3: Svuint64T): Svuint64T {
+    fun svadcltU64(op11: Svint64T, op21: Svint64T, op31: Svint64T): Svint64T = null as Svint64T
+    return svadcltU64(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
+}
+
+/**
+ * Add with carry long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svadclt[_n_u64])
+ */
+public fun svadcltNU64(op1: Svuint64T, op2: Svuint64T, op3: ULong): Svuint64T = svadcltU64(op1, op2, svdupNU64(op3))
+
+/**
+ * Add narrow high part (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddhnb[_s16])
+ */
+public fun svaddhnbS16(op1: Svint16T, op2: Svint16T): Svint8T {
+    fun svaddhnbS16(op11: Svint16T, op21: Svint16T): Svint8T = null as Svint8T
+    return svaddhnbS16(op1, op2)
+}
+
+/**
+ * Add narrow high part (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddhnb[_n_s16])
+ */
+public fun svaddhnbNS16(op1: Svint16T, op2: Short): Svint8T = svaddhnbS16(op1, svdupNS16(op2))
+
+/**
+ * Add narrow high part (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddhnb[_s32])
+ */
+public fun svaddhnbS32(op1: Svint32T, op2: Svint32T): Svint16T {
+    fun svaddhnbS32(op11: Svint32T, op21: Svint32T): Svint16T = null as Svint16T
+    return svaddhnbS32(op1, op2)
+}
+
+/**
+ * Add narrow high part (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddhnb[_n_s32])
+ */
+public fun svaddhnbNS32(op1: Svint32T, op2: Int): Svint16T = svaddhnbS32(op1, svdupNS32(op2))
+
+/**
+ * Add narrow high part (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddhnb[_s64])
+ */
+public fun svaddhnbS64(op1: Svint64T, op2: Svint64T): Svint32T {
+    fun svaddhnbS64(op11: Svint64T, op21: Svint64T): Svint32T = null as Svint32T
+    return svaddhnbS64(op1, op2)
+}
+
+/**
+ * Add narrow high part (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddhnb[_n_s64])
+ */
+public fun svaddhnbNS64(op1: Svint64T, op2: Long): Svint32T = svaddhnbS64(op1, svdupNS64(op2))
+
+/**
+ * Add narrow high part (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddhnb[_u16])
+ */
+public fun svaddhnbU16(op1: Svuint16T, op2: Svuint16T): Svuint8T = svaddhnbS16(op1.asSigned(), op2.asSigned()).asUnsigned()
+
+/**
+ * Add narrow high part (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddhnb[_n_u16])
+ */
+public fun svaddhnbNU16(op1: Svuint16T, op2: UShort): Svuint8T = svaddhnbU16(op1, svdupNU16(op2))
+
+/**
+ * Add narrow high part (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddhnb[_u32])
+ */
+public fun svaddhnbU32(op1: Svuint32T, op2: Svuint32T): Svuint16T = svaddhnbS32(op1.asSigned(), op2.asSigned()).asUnsigned()
+
+/**
+ * Add narrow high part (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddhnb[_n_u32])
+ */
+public fun svaddhnbNU32(op1: Svuint32T, op2: UInt): Svuint16T = svaddhnbU32(op1, svdupNU32(op2))
+
+/**
+ * Add narrow high part (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddhnb[_u64])
+ */
+public fun svaddhnbU64(op1: Svuint64T, op2: Svuint64T): Svuint32T = svaddhnbS64(op1.asSigned(), op2.asSigned()).asUnsigned()
+
+/**
+ * Add narrow high part (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddhnb[_n_u64])
+ */
+public fun svaddhnbNU64(op1: Svuint64T, op2: ULong): Svuint32T = svaddhnbU64(op1, svdupNU64(op2))
+
+/**
+ * Add narrow high part (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddhnt[_s16])
+ */
+public fun svaddhntS16(even: Svint8T, op1: Svint16T, op2: Svint16T): Svint8T {
+    fun svaddhntS16(even1: Svint8T, op11: Svint16T, op21: Svint16T): Svint8T = null as Svint8T
+    return svaddhntS16(even, op1, op2)
+}
+
+/**
+ * Add narrow high part (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddhnt[_n_s16])
+ */
+public fun svaddhntNS16(even: Svint8T, op1: Svint16T, op2: Short): Svint8T = svaddhntS16(even, op1, svdupNS16(op2))
+
+/**
+ * Add narrow high part (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddhnt[_s32])
+ */
+public fun svaddhntS32(even: Svint16T, op1: Svint32T, op2: Svint32T): Svint16T {
+    fun svaddhntS32(even1: Svint16T, op11: Svint32T, op21: Svint32T): Svint16T = null as Svint16T
+    return svaddhntS32(even, op1, op2)
+}
+
+/**
+ * Add narrow high part (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddhnt[_n_s32])
+ */
+public fun svaddhntNS32(even: Svint16T, op1: Svint32T, op2: Int): Svint16T = svaddhntS32(even, op1, svdupNS32(op2))
+
+/**
+ * Add narrow high part (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddhnt[_s64])
+ */
+public fun svaddhntS64(even: Svint32T, op1: Svint64T, op2: Svint64T): Svint32T {
+    fun svaddhntS64(even1: Svint32T, op11: Svint64T, op21: Svint64T): Svint32T = null as Svint32T
+    return svaddhntS64(even, op1, op2)
+}
+
+/**
+ * Add narrow high part (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddhnt[_n_s64])
+ */
+public fun svaddhntNS64(even: Svint32T, op1: Svint64T, op2: Long): Svint32T = svaddhntS64(even, op1, svdupNS64(op2))
+
+/**
+ * Add narrow high part (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddhnt[_u16])
+ */
+public fun svaddhntU16(even: Svuint8T, op1: Svuint16T, op2: Svuint16T): Svuint8T = svaddhntS16(even.asSigned(), op1.asSigned(), op2.asSigned()).asUnsigned()
+
+/**
+ * Add narrow high part (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddhnt[_n_u16])
+ */
+public fun svaddhntNU16(even: Svuint8T, op1: Svuint16T, op2: UShort): Svuint8T = svaddhntU16(even, op1, svdupNU16(op2))
+
+/**
+ * Add narrow high part (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddhnt[_u32])
+ */
+public fun svaddhntU32(even: Svuint16T, op1: Svuint32T, op2: Svuint32T): Svuint16T = svaddhntS32(even.asSigned(), op1.asSigned(), op2.asSigned()).asUnsigned()
+
+/**
+ * Add narrow high part (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddhnt[_n_u32])
+ */
+public fun svaddhntNU32(even: Svuint16T, op1: Svuint32T, op2: UInt): Svuint16T = svaddhntU32(even, op1, svdupNU32(op2))
+
+/**
+ * Add narrow high part (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddhnt[_u64])
+ */
+public fun svaddhntU64(even: Svuint32T, op1: Svuint64T, op2: Svuint64T): Svuint32T = svaddhntS64(even.asSigned(), op1.asSigned(), op2.asSigned()).asUnsigned()
+
+/**
+ * Add narrow high part (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddhnt[_n_u64])
+ */
+public fun svaddhntNU64(even: Svuint32T, op1: Svuint64T, op2: ULong): Svuint32T = svaddhntU64(even, op1, svdupNU64(op2))
+
+/**
+ * Add long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddlb[_s16])
+ */
+public fun svaddlbS16(op1: Svint8T, op2: Svint8T): Svint16T {
+    fun svaddlbS16(op11: Svint8T, op21: Svint8T): Svint16T = null as Svint16T
+    return svaddlbS16(op1, op2)
+}
+
+/**
+ * Add long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddlb[_n_s16])
+ */
+public fun svaddlbNS16(op1: Svint8T, op2: Byte): Svint16T = svaddlbS16(op1, svdupNS8(op2))
+
+/**
+ * Add long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddlb[_s32])
+ */
+public fun svaddlbS32(op1: Svint16T, op2: Svint16T): Svint32T {
+    fun svaddlbS32(op11: Svint16T, op21: Svint16T): Svint32T = null as Svint32T
+    return svaddlbS32(op1, op2)
+}
+
+/**
+ * Add long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddlb[_n_s32])
+ */
+public fun svaddlbNS32(op1: Svint16T, op2: Short): Svint32T = svaddlbS32(op1, svdupNS16(op2))
+
+/**
+ * Add long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddlb[_s64])
+ */
+public fun svaddlbS64(op1: Svint32T, op2: Svint32T): Svint64T {
+    fun svaddlbS64(op11: Svint32T, op21: Svint32T): Svint64T = null as Svint64T
+    return svaddlbS64(op1, op2)
+}
+
+/**
+ * Add long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddlb[_n_s64])
+ */
+public fun svaddlbNS64(op1: Svint32T, op2: Int): Svint64T = svaddlbS64(op1, svdupNS32(op2))
+
+/**
+ * Add long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddlb[_u16])
+ */
+public fun svaddlbU16(op1: Svuint8T, op2: Svuint8T): Svuint16T {
+    fun svaddlbU16(op11: Svint8T, op21: Svint8T): Svint16T = null as Svint16T
+    return svaddlbU16(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Add long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddlb[_n_u16])
+ */
+public fun svaddlbNU16(op1: Svuint8T, op2: UByte): Svuint16T = svaddlbU16(op1, svdupNU8(op2))
+
+/**
+ * Add long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddlb[_u32])
+ */
+public fun svaddlbU32(op1: Svuint16T, op2: Svuint16T): Svuint32T {
+    fun svaddlbU32(op11: Svint16T, op21: Svint16T): Svint32T = null as Svint32T
+    return svaddlbU32(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Add long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddlb[_n_u32])
+ */
+public fun svaddlbNU32(op1: Svuint16T, op2: UShort): Svuint32T = svaddlbU32(op1, svdupNU16(op2))
+
+/**
+ * Add long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddlb[_u64])
+ */
+public fun svaddlbU64(op1: Svuint32T, op2: Svuint32T): Svuint64T {
+    fun svaddlbU64(op11: Svint32T, op21: Svint32T): Svint64T = null as Svint64T
+    return svaddlbU64(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Add long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddlb[_n_u64])
+ */
+public fun svaddlbNU64(op1: Svuint32T, op2: UInt): Svuint64T = svaddlbU64(op1, svdupNU32(op2))
+
+/**
+ * Add long (bottom + top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddlbt[_s16])
+ */
+public fun svaddlbtS16(op1: Svint8T, op2: Svint8T): Svint16T {
+    fun svaddlbtS16(op11: Svint8T, op21: Svint8T): Svint16T = null as Svint16T
+    return svaddlbtS16(op1, op2)
+}
+
+/**
+ * Add long (bottom + top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddlbt[_n_s16])
+ */
+public fun svaddlbtNS16(op1: Svint8T, op2: Byte): Svint16T = svaddlbtS16(op1, svdupNS8(op2))
+
+/**
+ * Add long (bottom + top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddlbt[_s32])
+ */
+public fun svaddlbtS32(op1: Svint16T, op2: Svint16T): Svint32T {
+    fun svaddlbtS32(op11: Svint16T, op21: Svint16T): Svint32T = null as Svint32T
+    return svaddlbtS32(op1, op2)
+}
+
+/**
+ * Add long (bottom + top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddlbt[_n_s32])
+ */
+public fun svaddlbtNS32(op1: Svint16T, op2: Short): Svint32T = svaddlbtS32(op1, svdupNS16(op2))
+
+/**
+ * Add long (bottom + top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddlbt[_s64])
+ */
+public fun svaddlbtS64(op1: Svint32T, op2: Svint32T): Svint64T {
+    fun svaddlbtS64(op11: Svint32T, op21: Svint32T): Svint64T = null as Svint64T
+    return svaddlbtS64(op1, op2)
+}
+
+/**
+ * Add long (bottom + top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddlbt[_n_s64])
+ */
+public fun svaddlbtNS64(op1: Svint32T, op2: Int): Svint64T = svaddlbtS64(op1, svdupNS32(op2))
+
+/**
+ * Add long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddlt[_s16])
+ */
+public fun svaddltS16(op1: Svint8T, op2: Svint8T): Svint16T {
+    fun svaddltS16(op11: Svint8T, op21: Svint8T): Svint16T = null as Svint16T
+    return svaddltS16(op1, op2)
+}
+
+/**
+ * Add long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddlt[_n_s16])
+ */
+public fun svaddltNS16(op1: Svint8T, op2: Byte): Svint16T = svaddltS16(op1, svdupNS8(op2))
+
+/**
+ * Add long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddlt[_s32])
+ */
+public fun svaddltS32(op1: Svint16T, op2: Svint16T): Svint32T {
+    fun svaddltS32(op11: Svint16T, op21: Svint16T): Svint32T = null as Svint32T
+    return svaddltS32(op1, op2)
+}
+
+/**
+ * Add long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddlt[_n_s32])
+ */
+public fun svaddltNS32(op1: Svint16T, op2: Short): Svint32T = svaddltS32(op1, svdupNS16(op2))
+
+/**
+ * Add long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddlt[_s64])
+ */
+public fun svaddltS64(op1: Svint32T, op2: Svint32T): Svint64T {
+    fun svaddltS64(op11: Svint32T, op21: Svint32T): Svint64T = null as Svint64T
+    return svaddltS64(op1, op2)
+}
+
+/**
+ * Add long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddlt[_n_s64])
+ */
+public fun svaddltNS64(op1: Svint32T, op2: Int): Svint64T = svaddltS64(op1, svdupNS32(op2))
+
+/**
+ * Add long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddlt[_u16])
+ */
+public fun svaddltU16(op1: Svuint8T, op2: Svuint8T): Svuint16T {
+    fun svaddltU16(op11: Svint8T, op21: Svint8T): Svint16T = null as Svint16T
+    return svaddltU16(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Add long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddlt[_n_u16])
+ */
+public fun svaddltNU16(op1: Svuint8T, op2: UByte): Svuint16T = svaddltU16(op1, svdupNU8(op2))
+
+/**
+ * Add long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddlt[_u32])
+ */
+public fun svaddltU32(op1: Svuint16T, op2: Svuint16T): Svuint32T {
+    fun svaddltU32(op11: Svint16T, op21: Svint16T): Svint32T = null as Svint32T
+    return svaddltU32(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Add long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddlt[_n_u32])
+ */
+public fun svaddltNU32(op1: Svuint16T, op2: UShort): Svuint32T = svaddltU32(op1, svdupNU16(op2))
+
+/**
+ * Add long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddlt[_u64])
+ */
+public fun svaddltU64(op1: Svuint32T, op2: Svuint32T): Svuint64T {
+    fun svaddltU64(op11: Svint32T, op21: Svint32T): Svint64T = null as Svint64T
+    return svaddltU64(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Add long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddlt[_n_u64])
+ */
+public fun svaddltNU64(op1: Svuint32T, op2: UInt): Svuint64T = svaddltU64(op1, svdupNU32(op2))
+
+/**
+ * Add pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddp[_f32]_m)
+ */
+public fun svaddpF32M(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T): Svfloat32T {
+    fun svaddpF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = null as Svfloat32T
+    return svaddpF32M(pg.sveInto(), op1, op2)
+}
+
+/**
+ * Add pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddp[_f32]_x)
+ */
+public fun svaddpF32X(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T): Svfloat32T = svaddpF32M(pg, op1, op2)
+
+/**
+ * Add pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddp[_f64]_m)
+ */
+public fun svaddpF64M(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T): Svfloat64T {
+    fun svaddpF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = null as Svfloat64T
+    return svaddpF64M(pg.sveInto(), op1, op2)
+}
+
+/**
+ * Add pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddp[_f64]_x)
+ */
+public fun svaddpF64X(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T): Svfloat64T = svaddpF64M(pg, op1, op2)
+
+/**
+ * Add pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddp[_s8]_m)
+ */
+public fun svaddpS8M(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T {
+    fun svaddpS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    return svaddpS8M(pg, op1, op2)
+}
+
+/**
+ * Add pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddp[_s8]_x)
+ */
+public fun svaddpS8X(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T = svaddpS8M(pg, op1, op2)
+
+/**
+ * Add pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddp[_s16]_m)
+ */
+public fun svaddpS16M(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T {
+    fun svaddpS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    return svaddpS16M(pg.sveInto(), op1, op2)
+}
+
+/**
+ * Add pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddp[_s16]_x)
+ */
+public fun svaddpS16X(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T = svaddpS16M(pg, op1, op2)
+
+/**
+ * Add pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddp[_s32]_m)
+ */
+public fun svaddpS32M(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T {
+    fun svaddpS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    return svaddpS32M(pg.sveInto(), op1, op2)
+}
+
+/**
+ * Add pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddp[_s32]_x)
+ */
+public fun svaddpS32X(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T = svaddpS32M(pg, op1, op2)
+
+/**
+ * Add pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddp[_s64]_m)
+ */
+public fun svaddpS64M(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T {
+    fun svaddpS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    return svaddpS64M(pg.sveInto(), op1, op2)
+}
+
+/**
+ * Add pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddp[_s64]_x)
+ */
+public fun svaddpS64X(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T = svaddpS64M(pg, op1, op2)
+
+/**
+ * Add pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddp[_u8]_m)
+ */
+public fun svaddpU8M(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T = svaddpS8M(pg, op1.asSigned(), op2.asSigned()).asUnsigned()
+
+/**
+ * Add pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddp[_u8]_x)
+ */
+public fun svaddpU8X(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T = svaddpU8M(pg, op1, op2)
+
+/**
+ * Add pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddp[_u16]_m)
+ */
+public fun svaddpU16M(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T = svaddpS16M(pg, op1.asSigned(), op2.asSigned()).asUnsigned()
+
+/**
+ * Add pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddp[_u16]_x)
+ */
+public fun svaddpU16X(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T = svaddpU16M(pg, op1, op2)
+
+/**
+ * Add pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddp[_u32]_m)
+ */
+public fun svaddpU32M(pg: SvboolT, op1: Svuint32T, op2: Svuint32T): Svuint32T = svaddpS32M(pg, op1.asSigned(), op2.asSigned()).asUnsigned()
+
+/**
+ * Add pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddp[_u32]_x)
+ */
+public fun svaddpU32X(pg: SvboolT, op1: Svuint32T, op2: Svuint32T): Svuint32T = svaddpU32M(pg, op1, op2)
+
+/**
+ * Add pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddp[_u64]_m)
+ */
+public fun svaddpU64M(pg: SvboolT, op1: Svuint64T, op2: Svuint64T): Svuint64T = svaddpS64M(pg, op1.asSigned(), op2.asSigned()).asUnsigned()
+
+/**
+ * Add pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddp[_u64]_x)
+ */
+public fun svaddpU64X(pg: SvboolT, op1: Svuint64T, op2: Svuint64T): Svuint64T = svaddpU64M(pg, op1, op2)
+
+/**
+ * Add wide (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddwb[_s16])
+ */
+public fun svaddwbS16(op1: Svint16T, op2: Svint8T): Svint16T {
+    fun svaddwbS16(op11: Svint16T, op21: Svint8T): Svint16T = null as Svint16T
+    return svaddwbS16(op1, op2)
+}
+
+/**
+ * Add wide (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddwb[_n_s16])
+ */
+public fun svaddwbNS16(op1: Svint16T, op2: Byte): Svint16T = svaddwbS16(op1, svdupNS8(op2))
+
+/**
+ * Add wide (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddwb[_s32])
+ */
+public fun svaddwbS32(op1: Svint32T, op2: Svint16T): Svint32T {
+    fun svaddwbS32(op11: Svint32T, op21: Svint16T): Svint32T = null as Svint32T
+    return svaddwbS32(op1, op2)
+}
+
+/**
+ * Add wide (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddwb[_n_s32])
+ */
+public fun svaddwbNS32(op1: Svint32T, op2: Short): Svint32T = svaddwbS32(op1, svdupNS16(op2))
+
+/**
+ * Add wide (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddwb[_s64])
+ */
+public fun svaddwbS64(op1: Svint64T, op2: Svint32T): Svint64T {
+    fun svaddwbS64(op11: Svint64T, op21: Svint32T): Svint64T = null as Svint64T
+    return svaddwbS64(op1, op2)
+}
+
+/**
+ * Add wide (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddwb[_n_s64])
+ */
+public fun svaddwbNS64(op1: Svint64T, op2: Int): Svint64T = svaddwbS64(op1, svdupNS32(op2))
+
+/**
+ * Add wide (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddwb[_u16])
+ */
+public fun svaddwbU16(op1: Svuint16T, op2: Svuint8T): Svuint16T {
+    fun svaddwbU16(op11: Svint16T, op21: Svint8T): Svint16T = null as Svint16T
+    return svaddwbU16(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Add wide (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddwb[_n_u16])
+ */
+public fun svaddwbNU16(op1: Svuint16T, op2: UByte): Svuint16T = svaddwbU16(op1, svdupNU8(op2))
+
+/**
+ * Add wide (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddwb[_u32])
+ */
+public fun svaddwbU32(op1: Svuint32T, op2: Svuint16T): Svuint32T {
+    fun svaddwbU32(op11: Svint32T, op21: Svint16T): Svint32T = null as Svint32T
+    return svaddwbU32(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Add wide (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddwb[_n_u32])
+ */
+public fun svaddwbNU32(op1: Svuint32T, op2: UShort): Svuint32T = svaddwbU32(op1, svdupNU16(op2))
+
+/**
+ * Add wide (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddwb[_u64])
+ */
+public fun svaddwbU64(op1: Svuint64T, op2: Svuint32T): Svuint64T {
+    fun svaddwbU64(op11: Svint64T, op21: Svint32T): Svint64T = null as Svint64T
+    return svaddwbU64(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Add wide (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddwb[_n_u64])
+ */
+public fun svaddwbNU64(op1: Svuint64T, op2: UInt): Svuint64T = svaddwbU64(op1, svdupNU32(op2))
+
+/**
+ * Add wide (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddwt[_s16])
+ */
+public fun svaddwtS16(op1: Svint16T, op2: Svint8T): Svint16T {
+    fun svaddwtS16(op11: Svint16T, op21: Svint8T): Svint16T = null as Svint16T
+    return svaddwtS16(op1, op2)
+}
+
+/**
+ * Add wide (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddwt[_n_s16])
+ */
+public fun svaddwtNS16(op1: Svint16T, op2: Byte): Svint16T = svaddwtS16(op1, svdupNS8(op2))
+
+/**
+ * Add wide (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddwt[_s32])
+ */
+public fun svaddwtS32(op1: Svint32T, op2: Svint16T): Svint32T {
+    fun svaddwtS32(op11: Svint32T, op21: Svint16T): Svint32T = null as Svint32T
+    return svaddwtS32(op1, op2)
+}
+
+/**
+ * Add wide (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddwt[_n_s32])
+ */
+public fun svaddwtNS32(op1: Svint32T, op2: Short): Svint32T = svaddwtS32(op1, svdupNS16(op2))
+
+/**
+ * Add wide (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddwt[_s64])
+ */
+public fun svaddwtS64(op1: Svint64T, op2: Svint32T): Svint64T {
+    fun svaddwtS64(op11: Svint64T, op21: Svint32T): Svint64T = null as Svint64T
+    return svaddwtS64(op1, op2)
+}
+
+/**
+ * Add wide (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddwt[_n_s64])
+ */
+public fun svaddwtNS64(op1: Svint64T, op2: Int): Svint64T = svaddwtS64(op1, svdupNS32(op2))
+
+/**
+ * Add wide (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddwt[_u16])
+ */
+public fun svaddwtU16(op1: Svuint16T, op2: Svuint8T): Svuint16T {
+    fun svaddwtU16(op11: Svint16T, op21: Svint8T): Svint16T = null as Svint16T
+    return svaddwtU16(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Add wide (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddwt[_n_u16])
+ */
+public fun svaddwtNU16(op1: Svuint16T, op2: UByte): Svuint16T = svaddwtU16(op1, svdupNU8(op2))
+
+/**
+ * Add wide (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddwt[_u32])
+ */
+public fun svaddwtU32(op1: Svuint32T, op2: Svuint16T): Svuint32T {
+    fun svaddwtU32(op11: Svint32T, op21: Svint16T): Svint32T = null as Svint32T
+    return svaddwtU32(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Add wide (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddwt[_n_u32])
+ */
+public fun svaddwtNU32(op1: Svuint32T, op2: UShort): Svuint32T = svaddwtU32(op1, svdupNU16(op2))
+
+/**
+ * Add wide (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddwt[_u64])
+ */
+public fun svaddwtU64(op1: Svuint64T, op2: Svuint32T): Svuint64T {
+    fun svaddwtU64(op11: Svint64T, op21: Svint32T): Svint64T = null as Svint64T
+    return svaddwtU64(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Add wide (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddwt[_n_u64])
+ */
+public fun svaddwtNU64(op1: Svuint64T, op2: UInt): Svuint64T = svaddwtU64(op1, svdupNU32(op2))
+
+/**
+ * AES single round decryption
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaesd[_u8])
+ */
+public fun svaesdU8(op1: Svuint8T, op2: Svuint8T): Svuint8T {
+    fun svaesdU8(op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    return svaesdU8(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * AES single round encryption
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaese[_u8])
+ */
+public fun svaeseU8(op1: Svuint8T, op2: Svuint8T): Svuint8T {
+    fun svaeseU8(op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    return svaeseU8(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * AES inverse mix columns
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaesimc[_u8])
+ */
+public fun svaesimcU8(op: Svuint8T): Svuint8T {
+    fun svaesimcU8(op1: Svint8T): Svint8T = null as Svint8T
+    return svaesimcU8(op.asSigned()).asUnsigned()
+}
+
+/**
+ * AES mix columns
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaesmc[_u8])
+ */
+public fun svaesmcU8(op: Svuint8T): Svuint8T {
+    fun svaesmcU8(op1: Svint8T): Svint8T = null as Svint8T
+    return svaesmcU8(op.asSigned()).asUnsigned()
+}
+
+/**
+ * Bitwise clear and exclusive OR
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbcax[_s8])
+ */
+public fun svbcaxS8(op1: Svint8T, op2: Svint8T, op3: Svint8T): Svint8T {
+    fun svbcaxS8(op11: Svint8T, op21: Svint8T, op31: Svint8T): Svint8T = null as Svint8T
+    return svbcaxS8(op1, op2, op3)
+}
+
+/**
+ * Bitwise clear and exclusive OR
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbcax[_n_s8])
+ */
+public fun svbcaxNS8(op1: Svint8T, op2: Svint8T, op3: Byte): Svint8T = svbcaxS8(op1, op2, svdupNS8(op3))
+
+/**
+ * Bitwise clear and exclusive OR
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbcax[_s16])
+ */
+public fun svbcaxS16(op1: Svint16T, op2: Svint16T, op3: Svint16T): Svint16T {
+    fun svbcaxS16(op11: Svint16T, op21: Svint16T, op31: Svint16T): Svint16T = null as Svint16T
+    return svbcaxS16(op1, op2, op3)
+}
+
+/**
+ * Bitwise clear and exclusive OR
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbcax[_n_s16])
+ */
+public fun svbcaxNS16(op1: Svint16T, op2: Svint16T, op3: Short): Svint16T = svbcaxS16(op1, op2, svdupNS16(op3))
+
+/**
+ * Bitwise clear and exclusive OR
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbcax[_s32])
+ */
+public fun svbcaxS32(op1: Svint32T, op2: Svint32T, op3: Svint32T): Svint32T {
+    fun svbcaxS32(op11: Svint32T, op21: Svint32T, op31: Svint32T): Svint32T = null as Svint32T
+    return svbcaxS32(op1, op2, op3)
+}
+
+/**
+ * Bitwise clear and exclusive OR
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbcax[_n_s32])
+ */
+public fun svbcaxNS32(op1: Svint32T, op2: Svint32T, op3: Int): Svint32T = svbcaxS32(op1, op2, svdupNS32(op3))
+
+/**
+ * Bitwise clear and exclusive OR
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbcax[_s64])
+ */
+public fun svbcaxS64(op1: Svint64T, op2: Svint64T, op3: Svint64T): Svint64T {
+    fun svbcaxS64(op11: Svint64T, op21: Svint64T, op31: Svint64T): Svint64T = null as Svint64T
+    return svbcaxS64(op1, op2, op3)
+}
+
+/**
+ * Bitwise clear and exclusive OR
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbcax[_n_s64])
+ */
+public fun svbcaxNS64(op1: Svint64T, op2: Svint64T, op3: Long): Svint64T = svbcaxS64(op1, op2, svdupNS64(op3))
+
+/**
+ * Bitwise clear and exclusive OR
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbcax[_u8])
+ */
+public fun svbcaxU8(op1: Svuint8T, op2: Svuint8T, op3: Svuint8T): Svuint8T = svbcaxS8(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
+
+/**
+ * Bitwise clear and exclusive OR
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbcax[_n_u8])
+ */
+public fun svbcaxNU8(op1: Svuint8T, op2: Svuint8T, op3: UByte): Svuint8T = svbcaxU8(op1, op2, svdupNU8(op3))
+
+/**
+ * Bitwise clear and exclusive OR
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbcax[_u16])
+ */
+public fun svbcaxU16(op1: Svuint16T, op2: Svuint16T, op3: Svuint16T): Svuint16T = svbcaxS16(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
+
+/**
+ * Bitwise clear and exclusive OR
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbcax[_n_u16])
+ */
+public fun svbcaxNU16(op1: Svuint16T, op2: Svuint16T, op3: UShort): Svuint16T = svbcaxU16(op1, op2, svdupNU16(op3))
+
+/**
+ * Bitwise clear and exclusive OR
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbcax[_u32])
+ */
+public fun svbcaxU32(op1: Svuint32T, op2: Svuint32T, op3: Svuint32T): Svuint32T = svbcaxS32(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
+
+/**
+ * Bitwise clear and exclusive OR
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbcax[_n_u32])
+ */
+public fun svbcaxNU32(op1: Svuint32T, op2: Svuint32T, op3: UInt): Svuint32T = svbcaxU32(op1, op2, svdupNU32(op3))
+
+/**
+ * Bitwise clear and exclusive OR
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbcax[_u64])
+ */
+public fun svbcaxU64(op1: Svuint64T, op2: Svuint64T, op3: Svuint64T): Svuint64T = svbcaxS64(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
+
+/**
+ * Bitwise clear and exclusive OR
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbcax[_n_u64])
+ */
+public fun svbcaxNU64(op1: Svuint64T, op2: Svuint64T, op3: ULong): Svuint64T = svbcaxU64(op1, op2, svdupNU64(op3))
+
+/**
+ * Scatter lower bits into positions selected by bitmask
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbdep[_u8])
+ */
+public fun svbdepU8(op1: Svuint8T, op2: Svuint8T): Svuint8T {
+    fun svbdepU8(op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    return svbdepU8(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Scatter lower bits into positions selected by bitmask
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbdep[_n_u8])
+ */
+public fun svbdepNU8(op1: Svuint8T, op2: UByte): Svuint8T = svbdepU8(op1, svdupNU8(op2))
+
+/**
+ * Scatter lower bits into positions selected by bitmask
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbdep[_u16])
+ */
+public fun svbdepU16(op1: Svuint16T, op2: Svuint16T): Svuint16T {
+    fun svbdepU16(op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    return svbdepU16(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Scatter lower bits into positions selected by bitmask
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbdep[_n_u16])
+ */
+public fun svbdepNU16(op1: Svuint16T, op2: UShort): Svuint16T = svbdepU16(op1, svdupNU16(op2))
+
+/**
+ * Scatter lower bits into positions selected by bitmask
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbdep[_u32])
+ */
+public fun svbdepU32(op1: Svuint32T, op2: Svuint32T): Svuint32T {
+    fun svbdepU32(op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    return svbdepU32(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Scatter lower bits into positions selected by bitmask
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbdep[_n_u32])
+ */
+public fun svbdepNU32(op1: Svuint32T, op2: UInt): Svuint32T = svbdepU32(op1, svdupNU32(op2))
+
+/**
+ * Scatter lower bits into positions selected by bitmask
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbdep[_u64])
+ */
+public fun svbdepU64(op1: Svuint64T, op2: Svuint64T): Svuint64T {
+    fun svbdepU64(op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    return svbdepU64(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Scatter lower bits into positions selected by bitmask
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbdep[_n_u64])
+ */
+public fun svbdepNU64(op1: Svuint64T, op2: ULong): Svuint64T = svbdepU64(op1, svdupNU64(op2))
+
+/**
+ * Gather lower bits from positions selected by bitmask
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbext[_u8])
+ */
+public fun svbextU8(op1: Svuint8T, op2: Svuint8T): Svuint8T {
+    fun svbextU8(op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    return svbextU8(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Gather lower bits from positions selected by bitmask
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbext[_n_u8])
+ */
+public fun svbextNU8(op1: Svuint8T, op2: UByte): Svuint8T = svbextU8(op1, svdupNU8(op2))
+
+/**
+ * Gather lower bits from positions selected by bitmask
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbext[_u16])
+ */
+public fun svbextU16(op1: Svuint16T, op2: Svuint16T): Svuint16T {
+    fun svbextU16(op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    return svbextU16(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Gather lower bits from positions selected by bitmask
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbext[_n_u16])
+ */
+public fun svbextNU16(op1: Svuint16T, op2: UShort): Svuint16T = svbextU16(op1, svdupNU16(op2))
+
+/**
+ * Gather lower bits from positions selected by bitmask
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbext[_u32])
+ */
+public fun svbextU32(op1: Svuint32T, op2: Svuint32T): Svuint32T {
+    fun svbextU32(op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    return svbextU32(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Gather lower bits from positions selected by bitmask
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbext[_n_u32])
+ */
+public fun svbextNU32(op1: Svuint32T, op2: UInt): Svuint32T = svbextU32(op1, svdupNU32(op2))
+
+/**
+ * Gather lower bits from positions selected by bitmask
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbext[_u64])
+ */
+public fun svbextU64(op1: Svuint64T, op2: Svuint64T): Svuint64T {
+    fun svbextU64(op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    return svbextU64(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Gather lower bits from positions selected by bitmask
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbext[_n_u64])
+ */
+public fun svbextNU64(op1: Svuint64T, op2: ULong): Svuint64T = svbextU64(op1, svdupNU64(op2))
+
+/**
+ * Group bits to right or left as selected by bitmask
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbgrp[_u8])
+ */
+public fun svbgrpU8(op1: Svuint8T, op2: Svuint8T): Svuint8T {
+    fun svbgrpU8(op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    return svbgrpU8(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Group bits to right or left as selected by bitmask
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbgrp[_n_u8])
+ */
+public fun svbgrpNU8(op1: Svuint8T, op2: UByte): Svuint8T = svbgrpU8(op1, svdupNU8(op2))
+
+/**
+ * Group bits to right or left as selected by bitmask
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbgrp[_u16])
+ */
+public fun svbgrpU16(op1: Svuint16T, op2: Svuint16T): Svuint16T {
+    fun svbgrpU16(op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    return svbgrpU16(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Group bits to right or left as selected by bitmask
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbgrp[_n_u16])
+ */
+public fun svbgrpNU16(op1: Svuint16T, op2: UShort): Svuint16T = svbgrpU16(op1, svdupNU16(op2))
+
+/**
+ * Group bits to right or left as selected by bitmask
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbgrp[_u32])
+ */
+public fun svbgrpU32(op1: Svuint32T, op2: Svuint32T): Svuint32T {
+    fun svbgrpU32(op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    return svbgrpU32(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Group bits to right or left as selected by bitmask
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbgrp[_n_u32])
+ */
+public fun svbgrpNU32(op1: Svuint32T, op2: UInt): Svuint32T = svbgrpU32(op1, svdupNU32(op2))
+
+/**
+ * Group bits to right or left as selected by bitmask
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbgrp[_u64])
+ */
+public fun svbgrpU64(op1: Svuint64T, op2: Svuint64T): Svuint64T {
+    fun svbgrpU64(op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    return svbgrpU64(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Group bits to right or left as selected by bitmask
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbgrp[_n_u64])
+ */
+public fun svbgrpNU64(op1: Svuint64T, op2: ULong): Svuint64T = svbgrpU64(op1, svdupNU64(op2))
+
+/**
+ * Bitwise select with first input inverted
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl1n[_s8])
+ */
+public fun svbsl1nS8(op1: Svint8T, op2: Svint8T, op3: Svint8T): Svint8T {
+    fun svbsl1nS8(op11: Svint8T, op21: Svint8T, op31: Svint8T): Svint8T = null as Svint8T
+    return svbsl1nS8(op1, op2, op3)
+}
+
+/**
+ * Bitwise select with first input inverted
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl1n[_n_s8])
+ */
+public fun svbsl1nNS8(op1: Svint8T, op2: Svint8T, op3: Byte): Svint8T = svbsl1nS8(op1, op2, svdupNS8(op3))
+
+/**
+ * Bitwise select with first input inverted
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl1n[_s16])
+ */
+public fun svbsl1nS16(op1: Svint16T, op2: Svint16T, op3: Svint16T): Svint16T {
+    fun svbsl1nS16(op11: Svint16T, op21: Svint16T, op31: Svint16T): Svint16T = null as Svint16T
+    return svbsl1nS16(op1, op2, op3)
+}
+
+/**
+ * Bitwise select with first input inverted
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl1n[_n_s16])
+ */
+public fun svbsl1nNS16(op1: Svint16T, op2: Svint16T, op3: Short): Svint16T = svbsl1nS16(op1, op2, svdupNS16(op3))
+
+/**
+ * Bitwise select with first input inverted
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl1n[_s32])
+ */
+public fun svbsl1nS32(op1: Svint32T, op2: Svint32T, op3: Svint32T): Svint32T {
+    fun svbsl1nS32(op11: Svint32T, op21: Svint32T, op31: Svint32T): Svint32T = null as Svint32T
+    return svbsl1nS32(op1, op2, op3)
+}
+
+/**
+ * Bitwise select with first input inverted
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl1n[_n_s32])
+ */
+public fun svbsl1nNS32(op1: Svint32T, op2: Svint32T, op3: Int): Svint32T = svbsl1nS32(op1, op2, svdupNS32(op3))
+
+/**
+ * Bitwise select with first input inverted
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl1n[_s64])
+ */
+public fun svbsl1nS64(op1: Svint64T, op2: Svint64T, op3: Svint64T): Svint64T {
+    fun svbsl1nS64(op11: Svint64T, op21: Svint64T, op31: Svint64T): Svint64T = null as Svint64T
+    return svbsl1nS64(op1, op2, op3)
+}
+
+/**
+ * Bitwise select with first input inverted
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl1n[_n_s64])
+ */
+public fun svbsl1nNS64(op1: Svint64T, op2: Svint64T, op3: Long): Svint64T = svbsl1nS64(op1, op2, svdupNS64(op3))
+
+/**
+ * Bitwise select with first input inverted
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl1n[_u8])
+ */
+public fun svbsl1nU8(op1: Svuint8T, op2: Svuint8T, op3: Svuint8T): Svuint8T = svbsl1nS8(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
+
+/**
+ * Bitwise select with first input inverted
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl1n[_n_u8])
+ */
+public fun svbsl1nNU8(op1: Svuint8T, op2: Svuint8T, op3: UByte): Svuint8T = svbsl1nU8(op1, op2, svdupNU8(op3))
+
+/**
+ * Bitwise select with first input inverted
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl1n[_u16])
+ */
+public fun svbsl1nU16(op1: Svuint16T, op2: Svuint16T, op3: Svuint16T): Svuint16T = svbsl1nS16(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
+
+/**
+ * Bitwise select with first input inverted
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl1n[_n_u16])
+ */
+public fun svbsl1nNU16(op1: Svuint16T, op2: Svuint16T, op3: UShort): Svuint16T = svbsl1nU16(op1, op2, svdupNU16(op3))
+
+/**
+ * Bitwise select with first input inverted
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl1n[_u32])
+ */
+public fun svbsl1nU32(op1: Svuint32T, op2: Svuint32T, op3: Svuint32T): Svuint32T = svbsl1nS32(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
+
+/**
+ * Bitwise select with first input inverted
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl1n[_n_u32])
+ */
+public fun svbsl1nNU32(op1: Svuint32T, op2: Svuint32T, op3: UInt): Svuint32T = svbsl1nU32(op1, op2, svdupNU32(op3))
+
+/**
+ * Bitwise select with first input inverted
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl1n[_u64])
+ */
+public fun svbsl1nU64(op1: Svuint64T, op2: Svuint64T, op3: Svuint64T): Svuint64T = svbsl1nS64(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
+
+/**
+ * Bitwise select with first input inverted
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl1n[_n_u64])
+ */
+public fun svbsl1nNU64(op1: Svuint64T, op2: Svuint64T, op3: ULong): Svuint64T = svbsl1nU64(op1, op2, svdupNU64(op3))
+
+/**
+ * Bitwise select with second input inverted
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl2n[_s8])
+ */
+public fun svbsl2nS8(op1: Svint8T, op2: Svint8T, op3: Svint8T): Svint8T {
+    fun svbsl2nS8(op11: Svint8T, op21: Svint8T, op31: Svint8T): Svint8T = null as Svint8T
+    return svbsl2nS8(op1, op2, op3)
+}
+
+/**
+ * Bitwise select with second input inverted
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl2n[_n_s8])
+ */
+public fun svbsl2nNS8(op1: Svint8T, op2: Svint8T, op3: Byte): Svint8T = svbsl2nS8(op1, op2, svdupNS8(op3))
+
+/**
+ * Bitwise select with second input inverted
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl2n[_s16])
+ */
+public fun svbsl2nS16(op1: Svint16T, op2: Svint16T, op3: Svint16T): Svint16T {
+    fun svbsl2nS16(op11: Svint16T, op21: Svint16T, op31: Svint16T): Svint16T = null as Svint16T
+    return svbsl2nS16(op1, op2, op3)
+}
+
+/**
+ * Bitwise select with second input inverted
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl2n[_n_s16])
+ */
+public fun svbsl2nNS16(op1: Svint16T, op2: Svint16T, op3: Short): Svint16T = svbsl2nS16(op1, op2, svdupNS16(op3))
+
+/**
+ * Bitwise select with second input inverted
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl2n[_s32])
+ */
+public fun svbsl2nS32(op1: Svint32T, op2: Svint32T, op3: Svint32T): Svint32T {
+    fun svbsl2nS32(op11: Svint32T, op21: Svint32T, op31: Svint32T): Svint32T = null as Svint32T
+    return svbsl2nS32(op1, op2, op3)
+}
+
+/**
+ * Bitwise select with second input inverted
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl2n[_n_s32])
+ */
+public fun svbsl2nNS32(op1: Svint32T, op2: Svint32T, op3: Int): Svint32T = svbsl2nS32(op1, op2, svdupNS32(op3))
+
+/**
+ * Bitwise select with second input inverted
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl2n[_s64])
+ */
+public fun svbsl2nS64(op1: Svint64T, op2: Svint64T, op3: Svint64T): Svint64T {
+    fun svbsl2nS64(op11: Svint64T, op21: Svint64T, op31: Svint64T): Svint64T = null as Svint64T
+    return svbsl2nS64(op1, op2, op3)
+}
+
+/**
+ * Bitwise select with second input inverted
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl2n[_n_s64])
+ */
+public fun svbsl2nNS64(op1: Svint64T, op2: Svint64T, op3: Long): Svint64T = svbsl2nS64(op1, op2, svdupNS64(op3))
+
+/**
+ * Bitwise select with second input inverted
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl2n[_u8])
+ */
+public fun svbsl2nU8(op1: Svuint8T, op2: Svuint8T, op3: Svuint8T): Svuint8T = svbsl2nS8(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
+
+/**
+ * Bitwise select with second input inverted
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl2n[_n_u8])
+ */
+public fun svbsl2nNU8(op1: Svuint8T, op2: Svuint8T, op3: UByte): Svuint8T = svbsl2nU8(op1, op2, svdupNU8(op3))
+
+/**
+ * Bitwise select with second input inverted
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl2n[_u16])
+ */
+public fun svbsl2nU16(op1: Svuint16T, op2: Svuint16T, op3: Svuint16T): Svuint16T = svbsl2nS16(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
+
+/**
+ * Bitwise select with second input inverted
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl2n[_n_u16])
+ */
+public fun svbsl2nNU16(op1: Svuint16T, op2: Svuint16T, op3: UShort): Svuint16T = svbsl2nU16(op1, op2, svdupNU16(op3))
+
+/**
+ * Bitwise select with second input inverted
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl2n[_u32])
+ */
+public fun svbsl2nU32(op1: Svuint32T, op2: Svuint32T, op3: Svuint32T): Svuint32T = svbsl2nS32(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
+
+/**
+ * Bitwise select with second input inverted
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl2n[_n_u32])
+ */
+public fun svbsl2nNU32(op1: Svuint32T, op2: Svuint32T, op3: UInt): Svuint32T = svbsl2nU32(op1, op2, svdupNU32(op3))
+
+/**
+ * Bitwise select with second input inverted
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl2n[_u64])
+ */
+public fun svbsl2nU64(op1: Svuint64T, op2: Svuint64T, op3: Svuint64T): Svuint64T = svbsl2nS64(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
+
+/**
+ * Bitwise select with second input inverted
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl2n[_n_u64])
+ */
+public fun svbsl2nNU64(op1: Svuint64T, op2: Svuint64T, op3: ULong): Svuint64T = svbsl2nU64(op1, op2, svdupNU64(op3))
+
+/**
+ * Bitwise select
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl[_s8])
+ */
+public fun svbslS8(op1: Svint8T, op2: Svint8T, op3: Svint8T): Svint8T {
+    fun svbslS8(op11: Svint8T, op21: Svint8T, op31: Svint8T): Svint8T = null as Svint8T
+    return svbslS8(op1, op2, op3)
+}
+
+/**
+ * Bitwise select
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl[_n_s8])
+ */
+public fun svbslNS8(op1: Svint8T, op2: Svint8T, op3: Byte): Svint8T = svbslS8(op1, op2, svdupNS8(op3))
+
+/**
+ * Bitwise select
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl[_s16])
+ */
+public fun svbslS16(op1: Svint16T, op2: Svint16T, op3: Svint16T): Svint16T {
+    fun svbslS16(op11: Svint16T, op21: Svint16T, op31: Svint16T): Svint16T = null as Svint16T
+    return svbslS16(op1, op2, op3)
+}
+
+/**
+ * Bitwise select
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl[_n_s16])
+ */
+public fun svbslNS16(op1: Svint16T, op2: Svint16T, op3: Short): Svint16T = svbslS16(op1, op2, svdupNS16(op3))
+
+/**
+ * Bitwise select
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl[_s32])
+ */
+public fun svbslS32(op1: Svint32T, op2: Svint32T, op3: Svint32T): Svint32T {
+    fun svbslS32(op11: Svint32T, op21: Svint32T, op31: Svint32T): Svint32T = null as Svint32T
+    return svbslS32(op1, op2, op3)
+}
+
+/**
+ * Bitwise select
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl[_n_s32])
+ */
+public fun svbslNS32(op1: Svint32T, op2: Svint32T, op3: Int): Svint32T = svbslS32(op1, op2, svdupNS32(op3))
+
+/**
+ * Bitwise select
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl[_s64])
+ */
+public fun svbslS64(op1: Svint64T, op2: Svint64T, op3: Svint64T): Svint64T {
+    fun svbslS64(op11: Svint64T, op21: Svint64T, op31: Svint64T): Svint64T = null as Svint64T
+    return svbslS64(op1, op2, op3)
+}
+
+/**
+ * Bitwise select
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl[_n_s64])
+ */
+public fun svbslNS64(op1: Svint64T, op2: Svint64T, op3: Long): Svint64T = svbslS64(op1, op2, svdupNS64(op3))
+
+/**
+ * Bitwise select
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl[_u8])
+ */
+public fun svbslU8(op1: Svuint8T, op2: Svuint8T, op3: Svuint8T): Svuint8T = svbslS8(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
+
+/**
+ * Bitwise select
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl[_n_u8])
+ */
+public fun svbslNU8(op1: Svuint8T, op2: Svuint8T, op3: UByte): Svuint8T = svbslU8(op1, op2, svdupNU8(op3))
+
+/**
+ * Bitwise select
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl[_u16])
+ */
+public fun svbslU16(op1: Svuint16T, op2: Svuint16T, op3: Svuint16T): Svuint16T = svbslS16(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
+
+/**
+ * Bitwise select
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl[_n_u16])
+ */
+public fun svbslNU16(op1: Svuint16T, op2: Svuint16T, op3: UShort): Svuint16T = svbslU16(op1, op2, svdupNU16(op3))
+
+/**
+ * Bitwise select
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl[_u32])
+ */
+public fun svbslU32(op1: Svuint32T, op2: Svuint32T, op3: Svuint32T): Svuint32T = svbslS32(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
+
+/**
+ * Bitwise select
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl[_n_u32])
+ */
+public fun svbslNU32(op1: Svuint32T, op2: Svuint32T, op3: UInt): Svuint32T = svbslU32(op1, op2, svdupNU32(op3))
+
+/**
+ * Bitwise select
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl[_u64])
+ */
+public fun svbslU64(op1: Svuint64T, op2: Svuint64T, op3: Svuint64T): Svuint64T = svbslS64(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
+
+/**
+ * Bitwise select
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl[_n_u64])
+ */
+public fun svbslNU64(op1: Svuint64T, op2: Svuint64T, op3: ULong): Svuint64T = svbslU64(op1, op2, svdupNU64(op3))
+
+/**
+ * Complex add with rotate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcadd[_s8])
+ */
+public fun svcaddS8(op1: Svint8T, op2: Svint8T, immRotation: Int): Svint8T {
+    fun svcaddS8(op11: Svint8T, op21: Svint8T, immRotation: Int): Svint8T = null as Svint8T
+    run {
+        check(immRotation == 90 || immRotation == 270)
+    }
+    return svcaddS8(op1, op2, immRotation)
+}
+
+/**
+ * Complex add with rotate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcadd[_s16])
+ */
+public fun svcaddS16(op1: Svint16T, op2: Svint16T, immRotation: Int): Svint16T {
+    fun svcaddS16(op11: Svint16T, op21: Svint16T, immRotation: Int): Svint16T = null as Svint16T
+    run {
+        check(immRotation == 90 || immRotation == 270)
+    }
+    return svcaddS16(op1, op2, immRotation)
+}
+
+/**
+ * Complex add with rotate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcadd[_s32])
+ */
+public fun svcaddS32(op1: Svint32T, op2: Svint32T, immRotation: Int): Svint32T {
+    fun svcaddS32(op11: Svint32T, op21: Svint32T, immRotation: Int): Svint32T = null as Svint32T
+    run {
+        check(immRotation == 90 || immRotation == 270)
+    }
+    return svcaddS32(op1, op2, immRotation)
+}
+
+/**
+ * Complex add with rotate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcadd[_s64])
+ */
+public fun svcaddS64(op1: Svint64T, op2: Svint64T, immRotation: Int): Svint64T {
+    fun svcaddS64(op11: Svint64T, op21: Svint64T, immRotation: Int): Svint64T = null as Svint64T
+    run {
+        check(immRotation == 90 || immRotation == 270)
+    }
+    return svcaddS64(op1, op2, immRotation)
+}
+
+/**
+ * Complex add with rotate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcadd[_u8])
+ */
+public fun svcaddU8(op1: Svuint8T, op2: Svuint8T, immRotation: Int): Svuint8T {
+    run {
+        check(immRotation == 90 || immRotation == 270)
+    }
+    return svcaddS8(op1.asSigned(), op2.asSigned(), immRotation).asUnsigned()
+}
+
+/**
+ * Complex add with rotate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcadd[_u16])
+ */
+public fun svcaddU16(op1: Svuint16T, op2: Svuint16T, immRotation: Int): Svuint16T {
+    run {
+        check(immRotation == 90 || immRotation == 270)
+    }
+    return svcaddS16(op1.asSigned(), op2.asSigned(), immRotation).asUnsigned()
+}
+
+/**
+ * Complex add with rotate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcadd[_u32])
+ */
+public fun svcaddU32(op1: Svuint32T, op2: Svuint32T, immRotation: Int): Svuint32T {
+    run {
+        check(immRotation == 90 || immRotation == 270)
+    }
+    return svcaddS32(op1.asSigned(), op2.asSigned(), immRotation).asUnsigned()
+}
+
+/**
+ * Complex add with rotate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcadd[_u64])
+ */
+public fun svcaddU64(op1: Svuint64T, op2: Svuint64T, immRotation: Int): Svuint64T {
+    run {
+        check(immRotation == 90 || immRotation == 270)
+    }
+    return svcaddS64(op1.asSigned(), op2.asSigned(), immRotation).asUnsigned()
+}
+
+/**
+ * Complex dot product
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcdotLane[_s32])
+ */
+public fun svcdotLaneS32(op1: Svint32T, op2: Svint8T, op3: Svint8T, immIndex: Int, immRotation: Int): Svint32T {
+    fun svcdotLaneS32(op11: Svint32T, op21: Svint8T, op31: Svint8T, immIndex: Int, immRotation: Int): Svint32T = null as Svint32T
+    run {
+        check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
+    }
+    run {
+        check(immRotation == 0 || immRotation == 90 || immRotation == 180 || immRotation == 270)
+    }
+    return svcdotLaneS32(op1, op2, op3, immIndex, immRotation)
+}
+
+/**
+ * Complex dot product
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcdotLane[_s64])
+ */
+public fun svcdotLaneS64(op1: Svint64T, op2: Svint16T, op3: Svint16T, immIndex: Int, immRotation: Int): Svint64T {
+    fun svcdotLaneS64(op11: Svint64T, op21: Svint16T, op31: Svint16T, immIndex: Int, immRotation: Int): Svint64T = null as Svint64T
+    run {
+        check(0 <= immIndex && immIndex <= 1) { "IMM_INDEX is not in range 0-1" }
+    }
+    run {
+        check(immRotation == 0 || immRotation == 90 || immRotation == 180 || immRotation == 270)
+    }
+    return svcdotLaneS64(op1, op2, op3, immIndex, immRotation)
+}
+
+/**
+ * Complex dot product
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcdot[_s32])
+ */
+public fun svcdotS32(op1: Svint32T, op2: Svint8T, op3: Svint8T, immRotation: Int): Svint32T {
+    fun svcdotS32(op11: Svint32T, op21: Svint8T, op31: Svint8T, immRotation: Int): Svint32T = null as Svint32T
+    run {
+        check(immRotation == 0 || immRotation == 90 || immRotation == 180 || immRotation == 270)
+    }
+    return svcdotS32(op1, op2, op3, immRotation)
+}
+
+/**
+ * Complex dot product
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcdot[_s64])
+ */
+public fun svcdotS64(op1: Svint64T, op2: Svint16T, op3: Svint16T, immRotation: Int): Svint64T {
+    fun svcdotS64(op11: Svint64T, op21: Svint16T, op31: Svint16T, immRotation: Int): Svint64T = null as Svint64T
+    run {
+        check(immRotation == 0 || immRotation == 90 || immRotation == 180 || immRotation == 270)
+    }
+    return svcdotS64(op1, op2, op3, immRotation)
+}
+
+/**
+ * Complex multiply-add with rotate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmlaLane[_s16])
+ */
+public fun svcmlaLaneS16(op1: Svint16T, op2: Svint16T, op3: Svint16T, immIndex: Int, immRotation: Int): Svint16T {
+    fun svcmlaLaneS16(op11: Svint16T, op21: Svint16T, op31: Svint16T, immIndex: Int, immRotation: Int): Svint16T = null as Svint16T
+    run {
+        check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
+    }
+    run {
+        check(immRotation == 0 || immRotation == 90 || immRotation == 180 || immRotation == 270)
+    }
+    return svcmlaLaneS16(op1, op2, op3, immIndex, immRotation)
+}
+
+/**
+ * Complex multiply-add with rotate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmlaLane[_s32])
+ */
+public fun svcmlaLaneS32(op1: Svint32T, op2: Svint32T, op3: Svint32T, immIndex: Int, immRotation: Int): Svint32T {
+    fun svcmlaLaneS32(op11: Svint32T, op21: Svint32T, op31: Svint32T, immIndex: Int, immRotation: Int): Svint32T = null as Svint32T
+    run {
+        check(0 <= immIndex && immIndex <= 1) { "IMM_INDEX is not in range 0-1" }
+    }
+    run {
+        check(immRotation == 0 || immRotation == 90 || immRotation == 180 || immRotation == 270)
+    }
+    return svcmlaLaneS32(op1, op2, op3, immIndex, immRotation)
+}
+
+/**
+ * Complex multiply-add with rotate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmlaLane[_u16])
+ */
+public fun svcmlaLaneU16(op1: Svuint16T, op2: Svuint16T, op3: Svuint16T, immIndex: Int, immRotation: Int): Svuint16T {
+    run {
+        check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
+    }
+    run {
+        check(immRotation == 0 || immRotation == 90 || immRotation == 180 || immRotation == 270)
+    }
+    return svcmlaLaneS16(op1.asSigned(), op2.asSigned(), op3.asSigned(), immIndex, immRotation).asUnsigned()
+}
+
+/**
+ * Complex multiply-add with rotate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmlaLane[_u32])
+ */
+public fun svcmlaLaneU32(op1: Svuint32T, op2: Svuint32T, op3: Svuint32T, immIndex: Int, immRotation: Int): Svuint32T {
+    run {
+        check(0 <= immIndex && immIndex <= 1) { "IMM_INDEX is not in range 0-1" }
+    }
+    run {
+        check(immRotation == 0 || immRotation == 90 || immRotation == 180 || immRotation == 270)
+    }
+    return svcmlaLaneS32(op1.asSigned(), op2.asSigned(), op3.asSigned(), immIndex, immRotation).asUnsigned()
+}
+
+/**
+ * Complex multiply-add with rotate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmla[_s8])
+ */
+public fun svcmlaS8(op1: Svint8T, op2: Svint8T, op3: Svint8T, immRotation: Int): Svint8T {
+    fun svcmlaS8(op11: Svint8T, op21: Svint8T, op31: Svint8T, immRotation: Int): Svint8T = null as Svint8T
+    run {
+        check(immRotation == 0 || immRotation == 90 || immRotation == 180 || immRotation == 270)
+    }
+    return svcmlaS8(op1, op2, op3, immRotation)
+}
+
+/**
+ * Complex multiply-add with rotate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmla[_s16])
+ */
+public fun svcmlaS16(op1: Svint16T, op2: Svint16T, op3: Svint16T, immRotation: Int): Svint16T {
+    fun svcmlaS16(op11: Svint16T, op21: Svint16T, op31: Svint16T, immRotation: Int): Svint16T = null as Svint16T
+    run {
+        check(immRotation == 0 || immRotation == 90 || immRotation == 180 || immRotation == 270)
+    }
+    return svcmlaS16(op1, op2, op3, immRotation)
+}
+
+/**
+ * Complex multiply-add with rotate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmla[_s32])
+ */
+public fun svcmlaS32(op1: Svint32T, op2: Svint32T, op3: Svint32T, immRotation: Int): Svint32T {
+    fun svcmlaS32(op11: Svint32T, op21: Svint32T, op31: Svint32T, immRotation: Int): Svint32T = null as Svint32T
+    run {
+        check(immRotation == 0 || immRotation == 90 || immRotation == 180 || immRotation == 270)
+    }
+    return svcmlaS32(op1, op2, op3, immRotation)
+}
+
+/**
+ * Complex multiply-add with rotate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmla[_s64])
+ */
+public fun svcmlaS64(op1: Svint64T, op2: Svint64T, op3: Svint64T, immRotation: Int): Svint64T {
+    fun svcmlaS64(op11: Svint64T, op21: Svint64T, op31: Svint64T, immRotation: Int): Svint64T = null as Svint64T
+    run {
+        check(immRotation == 0 || immRotation == 90 || immRotation == 180 || immRotation == 270)
+    }
+    return svcmlaS64(op1, op2, op3, immRotation)
+}
+
+/**
+ * Complex multiply-add with rotate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmla[_u8])
+ */
+public fun svcmlaU8(op1: Svuint8T, op2: Svuint8T, op3: Svuint8T, immRotation: Int): Svuint8T {
+    run {
+        check(immRotation == 0 || immRotation == 90 || immRotation == 180 || immRotation == 270)
+    }
+    return svcmlaS8(op1.asSigned(), op2.asSigned(), op3.asSigned(), immRotation).asUnsigned()
+}
+
+/**
+ * Complex multiply-add with rotate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmla[_u16])
+ */
+public fun svcmlaU16(op1: Svuint16T, op2: Svuint16T, op3: Svuint16T, immRotation: Int): Svuint16T {
+    run {
+        check(immRotation == 0 || immRotation == 90 || immRotation == 180 || immRotation == 270)
+    }
+    return svcmlaS16(op1.asSigned(), op2.asSigned(), op3.asSigned(), immRotation).asUnsigned()
+}
+
+/**
+ * Complex multiply-add with rotate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmla[_u32])
+ */
+public fun svcmlaU32(op1: Svuint32T, op2: Svuint32T, op3: Svuint32T, immRotation: Int): Svuint32T {
+    run {
+        check(immRotation == 0 || immRotation == 90 || immRotation == 180 || immRotation == 270)
+    }
+    return svcmlaS32(op1.asSigned(), op2.asSigned(), op3.asSigned(), immRotation).asUnsigned()
+}
+
+/**
+ * Complex multiply-add with rotate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmla[_u64])
+ */
+public fun svcmlaU64(op1: Svuint64T, op2: Svuint64T, op3: Svuint64T, immRotation: Int): Svuint64T {
+    run {
+        check(immRotation == 0 || immRotation == 90 || immRotation == 180 || immRotation == 270)
+    }
+    return svcmlaS64(op1.asSigned(), op2.asSigned(), op3.asSigned(), immRotation).asUnsigned()
+}
+
+/**
+ * Up convert long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcvtltF64[_f32]_m)
+ */
+public fun svcvtltF64F32M(inactive: Svfloat64T, pg: SvboolT, op: Svfloat32T): Svfloat64T {
+    fun svcvtltF64F32M(inactive1: Svfloat64T, pg1: Svbool2T, op1: Svfloat32T): Svfloat64T = null as Svfloat64T
+    return svcvtltF64F32M(inactive, pg.sveInto(), op)
+}
+
+/**
+ * Up convert long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcvtltF64[_f32]_x)
+ */
+public fun svcvtltF64F32X(pg: SvboolT, op: Svfloat32T): Svfloat64T = svcvtltF64F32M(transmuteWithLayouts(op, ObjectSlotLayout<Svfloat32T>(), ObjectSlotLayout<Svfloat64T>()), pg, op)
+
+/**
+ * Down convert and narrow (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcvtntF32[_f64]_m)
+ */
+public fun svcvtntF32F64M(even: Svfloat32T, pg: SvboolT, op: Svfloat64T): Svfloat32T {
+    fun svcvtntF32F64M(even1: Svfloat32T, pg1: Svbool2T, op1: Svfloat64T): Svfloat32T = null as Svfloat32T
+    return svcvtntF32F64M(even, pg.sveInto(), op)
+}
+
+/**
+ * Down convert and narrow (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcvtntF32[_f64]_x)
+ */
+public fun svcvtntF32F64X(even: Svfloat32T, pg: SvboolT, op: Svfloat64T): Svfloat32T = svcvtntF32F64M(even, pg, op)
+
+/**
+ * Down convert, rounding to odd
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcvtxF32[_f64]_m)
+ */
+public fun svcvtxF32F64M(inactive: Svfloat32T, pg: SvboolT, op: Svfloat64T): Svfloat32T {
+    fun svcvtxF32F64M(inactive1: Svfloat32T, pg1: Svbool2T, op1: Svfloat64T): Svfloat32T = null as Svfloat32T
+    return svcvtxF32F64M(inactive, pg.sveInto(), op)
+}
+
+/**
+ * Down convert, rounding to odd
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcvtxF32[_f64]_x)
+ */
+public fun svcvtxF32F64X(pg: SvboolT, op: Svfloat64T): Svfloat32T = svcvtxF32F64M(transmuteUnchecked(op), pg, op)
+
+/**
+ * Down convert, rounding to odd
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcvtxF32[_f64]_z)
+ */
+public fun svcvtxF32F64Z(pg: SvboolT, op: Svfloat64T): Svfloat32T = svcvtxF32F64M(svdupNF32(0.0f), pg, op)
+
+/**
+ * Down convert, rounding to odd (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcvtxntF32[_f64]_m)
+ */
+public fun svcvtxntF32F64M(even: Svfloat32T, pg: SvboolT, op: Svfloat64T): Svfloat32T {
+    fun svcvtxntF32F64M(even1: Svfloat32T, pg1: Svbool2T, op1: Svfloat64T): Svfloat32T = null as Svfloat32T
+    return svcvtxntF32F64M(even, pg.sveInto(), op)
+}
+
+/**
+ * Down convert, rounding to odd (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcvtxntF32[_f64]_x)
+ */
+public fun svcvtxntF32F64X(even: Svfloat32T, pg: SvboolT, op: Svfloat64T): Svfloat32T = svcvtxntF32F64M(even, pg, op)
+
+/**
+ * Bitwise exclusive OR of three vectors
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveor3[_s8])
+ */
+public fun sveor3S8(op1: Svint8T, op2: Svint8T, op3: Svint8T): Svint8T {
+    fun sveor3S8(op11: Svint8T, op21: Svint8T, op31: Svint8T): Svint8T = null as Svint8T
+    return sveor3S8(op1, op2, op3)
+}
+
+/**
+ * Bitwise exclusive OR of three vectors
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveor3[_n_s8])
+ */
+public fun sveor3NS8(op1: Svint8T, op2: Svint8T, op3: Byte): Svint8T = sveor3S8(op1, op2, svdupNS8(op3))
+
+/**
+ * Bitwise exclusive OR of three vectors
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveor3[_s16])
+ */
+public fun sveor3S16(op1: Svint16T, op2: Svint16T, op3: Svint16T): Svint16T {
+    fun sveor3S16(op11: Svint16T, op21: Svint16T, op31: Svint16T): Svint16T = null as Svint16T
+    return sveor3S16(op1, op2, op3)
+}
+
+/**
+ * Bitwise exclusive OR of three vectors
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveor3[_n_s16])
+ */
+public fun sveor3NS16(op1: Svint16T, op2: Svint16T, op3: Short): Svint16T = sveor3S16(op1, op2, svdupNS16(op3))
+
+/**
+ * Bitwise exclusive OR of three vectors
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveor3[_s32])
+ */
+public fun sveor3S32(op1: Svint32T, op2: Svint32T, op3: Svint32T): Svint32T {
+    fun sveor3S32(op11: Svint32T, op21: Svint32T, op31: Svint32T): Svint32T = null as Svint32T
+    return sveor3S32(op1, op2, op3)
+}
+
+/**
+ * Bitwise exclusive OR of three vectors
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveor3[_n_s32])
+ */
+public fun sveor3NS32(op1: Svint32T, op2: Svint32T, op3: Int): Svint32T = sveor3S32(op1, op2, svdupNS32(op3))
+
+/**
+ * Bitwise exclusive OR of three vectors
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveor3[_s64])
+ */
+public fun sveor3S64(op1: Svint64T, op2: Svint64T, op3: Svint64T): Svint64T {
+    fun sveor3S64(op11: Svint64T, op21: Svint64T, op31: Svint64T): Svint64T = null as Svint64T
+    return sveor3S64(op1, op2, op3)
+}
+
+/**
+ * Bitwise exclusive OR of three vectors
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveor3[_n_s64])
+ */
+public fun sveor3NS64(op1: Svint64T, op2: Svint64T, op3: Long): Svint64T = sveor3S64(op1, op2, svdupNS64(op3))
+
+/**
+ * Bitwise exclusive OR of three vectors
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveor3[_u8])
+ */
+public fun sveor3U8(op1: Svuint8T, op2: Svuint8T, op3: Svuint8T): Svuint8T = sveor3S8(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
+
+/**
+ * Bitwise exclusive OR of three vectors
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveor3[_n_u8])
+ */
+public fun sveor3NU8(op1: Svuint8T, op2: Svuint8T, op3: UByte): Svuint8T = sveor3U8(op1, op2, svdupNU8(op3))
+
+/**
+ * Bitwise exclusive OR of three vectors
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveor3[_u16])
+ */
+public fun sveor3U16(op1: Svuint16T, op2: Svuint16T, op3: Svuint16T): Svuint16T = sveor3S16(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
+
+/**
+ * Bitwise exclusive OR of three vectors
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveor3[_n_u16])
+ */
+public fun sveor3NU16(op1: Svuint16T, op2: Svuint16T, op3: UShort): Svuint16T = sveor3U16(op1, op2, svdupNU16(op3))
+
+/**
+ * Bitwise exclusive OR of three vectors
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveor3[_u32])
+ */
+public fun sveor3U32(op1: Svuint32T, op2: Svuint32T, op3: Svuint32T): Svuint32T = sveor3S32(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
+
+/**
+ * Bitwise exclusive OR of three vectors
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveor3[_n_u32])
+ */
+public fun sveor3NU32(op1: Svuint32T, op2: Svuint32T, op3: UInt): Svuint32T = sveor3U32(op1, op2, svdupNU32(op3))
+
+/**
+ * Bitwise exclusive OR of three vectors
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveor3[_u64])
+ */
+public fun sveor3U64(op1: Svuint64T, op2: Svuint64T, op3: Svuint64T): Svuint64T = sveor3S64(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
+
+/**
+ * Bitwise exclusive OR of three vectors
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveor3[_n_u64])
+ */
+public fun sveor3NU64(op1: Svuint64T, op2: Svuint64T, op3: ULong): Svuint64T = sveor3U64(op1, op2, svdupNU64(op3))
+
+/**
+ * Interleaving exclusive OR (bottom, top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveorbt[_s8])
+ */
+public fun sveorbtS8(odd: Svint8T, op1: Svint8T, op2: Svint8T): Svint8T {
+    fun sveorbtS8(odd1: Svint8T, op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    return sveorbtS8(odd, op1, op2)
+}
+
+/**
+ * Interleaving exclusive OR (bottom, top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveorbt[_n_s8])
+ */
+public fun sveorbtNS8(odd: Svint8T, op1: Svint8T, op2: Byte): Svint8T = sveorbtS8(odd, op1, svdupNS8(op2))
+
+/**
+ * Interleaving exclusive OR (bottom, top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveorbt[_s16])
+ */
+public fun sveorbtS16(odd: Svint16T, op1: Svint16T, op2: Svint16T): Svint16T {
+    fun sveorbtS16(odd1: Svint16T, op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    return sveorbtS16(odd, op1, op2)
+}
+
+/**
+ * Interleaving exclusive OR (bottom, top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveorbt[_n_s16])
+ */
+public fun sveorbtNS16(odd: Svint16T, op1: Svint16T, op2: Short): Svint16T = sveorbtS16(odd, op1, svdupNS16(op2))
+
+/**
+ * Interleaving exclusive OR (bottom, top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveorbt[_s32])
+ */
+public fun sveorbtS32(odd: Svint32T, op1: Svint32T, op2: Svint32T): Svint32T {
+    fun sveorbtS32(odd1: Svint32T, op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    return sveorbtS32(odd, op1, op2)
+}
+
+/**
+ * Interleaving exclusive OR (bottom, top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveorbt[_n_s32])
+ */
+public fun sveorbtNS32(odd: Svint32T, op1: Svint32T, op2: Int): Svint32T = sveorbtS32(odd, op1, svdupNS32(op2))
+
+/**
+ * Interleaving exclusive OR (bottom, top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveorbt[_s64])
+ */
+public fun sveorbtS64(odd: Svint64T, op1: Svint64T, op2: Svint64T): Svint64T {
+    fun sveorbtS64(odd1: Svint64T, op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    return sveorbtS64(odd, op1, op2)
+}
+
+/**
+ * Interleaving exclusive OR (bottom, top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveorbt[_n_s64])
+ */
+public fun sveorbtNS64(odd: Svint64T, op1: Svint64T, op2: Long): Svint64T = sveorbtS64(odd, op1, svdupNS64(op2))
+
+/**
+ * Interleaving exclusive OR (bottom, top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveorbt[_u8])
+ */
+public fun sveorbtU8(odd: Svuint8T, op1: Svuint8T, op2: Svuint8T): Svuint8T = sveorbtS8(odd.asSigned(), op1.asSigned(), op2.asSigned()).asUnsigned()
+
+/**
+ * Interleaving exclusive OR (bottom, top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveorbt[_n_u8])
+ */
+public fun sveorbtNU8(odd: Svuint8T, op1: Svuint8T, op2: UByte): Svuint8T = sveorbtU8(odd, op1, svdupNU8(op2))
+
+/**
+ * Interleaving exclusive OR (bottom, top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveorbt[_u16])
+ */
+public fun sveorbtU16(odd: Svuint16T, op1: Svuint16T, op2: Svuint16T): Svuint16T = sveorbtS16(odd.asSigned(), op1.asSigned(), op2.asSigned()).asUnsigned()
+
+/**
+ * Interleaving exclusive OR (bottom, top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveorbt[_n_u16])
+ */
+public fun sveorbtNU16(odd: Svuint16T, op1: Svuint16T, op2: UShort): Svuint16T = sveorbtU16(odd, op1, svdupNU16(op2))
+
+/**
+ * Interleaving exclusive OR (bottom, top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveorbt[_u32])
+ */
+public fun sveorbtU32(odd: Svuint32T, op1: Svuint32T, op2: Svuint32T): Svuint32T = sveorbtS32(odd.asSigned(), op1.asSigned(), op2.asSigned()).asUnsigned()
+
+/**
+ * Interleaving exclusive OR (bottom, top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveorbt[_n_u32])
+ */
+public fun sveorbtNU32(odd: Svuint32T, op1: Svuint32T, op2: UInt): Svuint32T = sveorbtU32(odd, op1, svdupNU32(op2))
+
+/**
+ * Interleaving exclusive OR (bottom, top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveorbt[_u64])
+ */
+public fun sveorbtU64(odd: Svuint64T, op1: Svuint64T, op2: Svuint64T): Svuint64T = sveorbtS64(odd.asSigned(), op1.asSigned(), op2.asSigned()).asUnsigned()
+
+/**
+ * Interleaving exclusive OR (bottom, top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveorbt[_n_u64])
+ */
+public fun sveorbtNU64(odd: Svuint64T, op1: Svuint64T, op2: ULong): Svuint64T = sveorbtU64(odd, op1, svdupNU64(op2))
+
+/**
+ * Interleaving exclusive OR (top, bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveortb[_s8])
+ */
+public fun sveortbS8(even: Svint8T, op1: Svint8T, op2: Svint8T): Svint8T {
+    fun sveortbS8(even1: Svint8T, op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    return sveortbS8(even, op1, op2)
+}
+
+/**
+ * Interleaving exclusive OR (top, bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveortb[_n_s8])
+ */
+public fun sveortbNS8(even: Svint8T, op1: Svint8T, op2: Byte): Svint8T = sveortbS8(even, op1, svdupNS8(op2))
+
+/**
+ * Interleaving exclusive OR (top, bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveortb[_s16])
+ */
+public fun sveortbS16(even: Svint16T, op1: Svint16T, op2: Svint16T): Svint16T {
+    fun sveortbS16(even1: Svint16T, op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    return sveortbS16(even, op1, op2)
+}
+
+/**
+ * Interleaving exclusive OR (top, bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveortb[_n_s16])
+ */
+public fun sveortbNS16(even: Svint16T, op1: Svint16T, op2: Short): Svint16T = sveortbS16(even, op1, svdupNS16(op2))
+
+/**
+ * Interleaving exclusive OR (top, bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveortb[_s32])
+ */
+public fun sveortbS32(even: Svint32T, op1: Svint32T, op2: Svint32T): Svint32T {
+    fun sveortbS32(even1: Svint32T, op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    return sveortbS32(even, op1, op2)
+}
+
+/**
+ * Interleaving exclusive OR (top, bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveortb[_n_s32])
+ */
+public fun sveortbNS32(even: Svint32T, op1: Svint32T, op2: Int): Svint32T = sveortbS32(even, op1, svdupNS32(op2))
+
+/**
+ * Interleaving exclusive OR (top, bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveortb[_s64])
+ */
+public fun sveortbS64(even: Svint64T, op1: Svint64T, op2: Svint64T): Svint64T {
+    fun sveortbS64(even1: Svint64T, op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    return sveortbS64(even, op1, op2)
+}
+
+/**
+ * Interleaving exclusive OR (top, bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveortb[_n_s64])
+ */
+public fun sveortbNS64(even: Svint64T, op1: Svint64T, op2: Long): Svint64T = sveortbS64(even, op1, svdupNS64(op2))
+
+/**
+ * Interleaving exclusive OR (top, bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveortb[_u8])
+ */
+public fun sveortbU8(even: Svuint8T, op1: Svuint8T, op2: Svuint8T): Svuint8T = sveortbS8(even.asSigned(), op1.asSigned(), op2.asSigned()).asUnsigned()
+
+/**
+ * Interleaving exclusive OR (top, bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveortb[_n_u8])
+ */
+public fun sveortbNU8(even: Svuint8T, op1: Svuint8T, op2: UByte): Svuint8T = sveortbU8(even, op1, svdupNU8(op2))
+
+/**
+ * Interleaving exclusive OR (top, bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveortb[_u16])
+ */
+public fun sveortbU16(even: Svuint16T, op1: Svuint16T, op2: Svuint16T): Svuint16T = sveortbS16(even.asSigned(), op1.asSigned(), op2.asSigned()).asUnsigned()
+
+/**
+ * Interleaving exclusive OR (top, bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveortb[_n_u16])
+ */
+public fun sveortbNU16(even: Svuint16T, op1: Svuint16T, op2: UShort): Svuint16T = sveortbU16(even, op1, svdupNU16(op2))
+
+/**
+ * Interleaving exclusive OR (top, bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveortb[_u32])
+ */
+public fun sveortbU32(even: Svuint32T, op1: Svuint32T, op2: Svuint32T): Svuint32T = sveortbS32(even.asSigned(), op1.asSigned(), op2.asSigned()).asUnsigned()
+
+/**
+ * Interleaving exclusive OR (top, bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveortb[_n_u32])
+ */
+public fun sveortbNU32(even: Svuint32T, op1: Svuint32T, op2: UInt): Svuint32T = sveortbU32(even, op1, svdupNU32(op2))
+
+/**
+ * Interleaving exclusive OR (top, bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveortb[_u64])
+ */
+public fun sveortbU64(even: Svuint64T, op1: Svuint64T, op2: Svuint64T): Svuint64T = sveortbS64(even.asSigned(), op1.asSigned(), op2.asSigned()).asUnsigned()
+
+/**
+ * Interleaving exclusive OR (top, bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveortb[_n_u64])
+ */
+public fun sveortbNU64(even: Svuint64T, op1: Svuint64T, op2: ULong): Svuint64T = sveortbU64(even, op1, svdupNU64(op2))
+
+/**
+ * Halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhadd[_s8]_m)
+ */
+public fun svhaddS8M(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T {
+    fun svhaddS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    return svhaddS8M(pg, op1, op2)
+}
+
+/**
+ * Halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhadd[_n_s8]_m)
+ */
+public fun svhaddNS8M(pg: SvboolT, op1: Svint8T, op2: Byte): Svint8T = svhaddS8M(pg, op1, svdupNS8(op2))
+
+/**
+ * Halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhadd[_s8]_x)
+ */
+public fun svhaddS8X(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T = svhaddS8M(pg, op1, op2)
+
+/**
+ * Halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhadd[_n_s8]_x)
+ */
+public fun svhaddNS8X(pg: SvboolT, op1: Svint8T, op2: Byte): Svint8T = svhaddS8X(pg, op1, svdupNS8(op2))
+
+/**
+ * Halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhadd[_s8]_z)
+ */
+public fun svhaddS8Z(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T = svhaddS8M(pg, svselS8(pg, op1, svdupNS8(0)), op2)
+
+/**
+ * Halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhadd[_n_s8]_z)
+ */
+public fun svhaddNS8Z(pg: SvboolT, op1: Svint8T, op2: Byte): Svint8T = svhaddS8Z(pg, op1, svdupNS8(op2))
+
+/**
+ * Halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhadd[_s16]_m)
+ */
+public fun svhaddS16M(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T {
+    fun svhaddS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    return svhaddS16M(pg.sveInto(), op1, op2)
+}
+
+/**
+ * Halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhadd[_n_s16]_m)
+ */
+public fun svhaddNS16M(pg: SvboolT, op1: Svint16T, op2: Short): Svint16T = svhaddS16M(pg, op1, svdupNS16(op2))
+
+/**
+ * Halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhadd[_s16]_x)
+ */
+public fun svhaddS16X(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T = svhaddS16M(pg, op1, op2)
+
+/**
+ * Halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhadd[_n_s16]_x)
+ */
+public fun svhaddNS16X(pg: SvboolT, op1: Svint16T, op2: Short): Svint16T = svhaddS16X(pg, op1, svdupNS16(op2))
+
+/**
+ * Halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhadd[_s16]_z)
+ */
+public fun svhaddS16Z(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T = svhaddS16M(pg, svselS16(pg, op1, svdupNS16(0)), op2)
+
+/**
+ * Halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhadd[_n_s16]_z)
+ */
+public fun svhaddNS16Z(pg: SvboolT, op1: Svint16T, op2: Short): Svint16T = svhaddS16Z(pg, op1, svdupNS16(op2))
+
+/**
+ * Halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhadd[_s32]_m)
+ */
+public fun svhaddS32M(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T {
+    fun svhaddS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    return svhaddS32M(pg.sveInto(), op1, op2)
+}
+
+/**
+ * Halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhadd[_n_s32]_m)
+ */
+public fun svhaddNS32M(pg: SvboolT, op1: Svint32T, op2: Int): Svint32T = svhaddS32M(pg, op1, svdupNS32(op2))
+
+/**
+ * Halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhadd[_s32]_x)
+ */
+public fun svhaddS32X(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T = svhaddS32M(pg, op1, op2)
+
+/**
+ * Halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhadd[_n_s32]_x)
+ */
+public fun svhaddNS32X(pg: SvboolT, op1: Svint32T, op2: Int): Svint32T = svhaddS32X(pg, op1, svdupNS32(op2))
+
+/**
+ * Halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhadd[_s32]_z)
+ */
+public fun svhaddS32Z(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T = svhaddS32M(pg, svselS32(pg, op1, svdupNS32(0)), op2)
+
+/**
+ * Halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhadd[_n_s32]_z)
+ */
+public fun svhaddNS32Z(pg: SvboolT, op1: Svint32T, op2: Int): Svint32T = svhaddS32Z(pg, op1, svdupNS32(op2))
+
+/**
+ * Halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhadd[_s64]_m)
+ */
+public fun svhaddS64M(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T {
+    fun svhaddS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    return svhaddS64M(pg.sveInto(), op1, op2)
+}
+
+/**
+ * Halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhadd[_n_s64]_m)
+ */
+public fun svhaddNS64M(pg: SvboolT, op1: Svint64T, op2: Long): Svint64T = svhaddS64M(pg, op1, svdupNS64(op2))
+
+/**
+ * Halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhadd[_s64]_x)
+ */
+public fun svhaddS64X(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T = svhaddS64M(pg, op1, op2)
+
+/**
+ * Halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhadd[_n_s64]_x)
+ */
+public fun svhaddNS64X(pg: SvboolT, op1: Svint64T, op2: Long): Svint64T = svhaddS64X(pg, op1, svdupNS64(op2))
+
+/**
+ * Halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhadd[_s64]_z)
+ */
+public fun svhaddS64Z(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T = svhaddS64M(pg, svselS64(pg, op1, svdupNS64(0L)), op2)
+
+/**
+ * Halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhadd[_n_s64]_z)
+ */
+public fun svhaddNS64Z(pg: SvboolT, op1: Svint64T, op2: Long): Svint64T = svhaddS64Z(pg, op1, svdupNS64(op2))
+
+/**
+ * Halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhadd[_u8]_m)
+ */
+public fun svhaddU8M(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T {
+    fun svhaddU8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    return svhaddU8M(pg, op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhadd[_n_u8]_m)
+ */
+public fun svhaddNU8M(pg: SvboolT, op1: Svuint8T, op2: UByte): Svuint8T = svhaddU8M(pg, op1, svdupNU8(op2))
+
+/**
+ * Halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhadd[_u8]_x)
+ */
+public fun svhaddU8X(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T = svhaddU8M(pg, op1, op2)
+
+/**
+ * Halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhadd[_n_u8]_x)
+ */
+public fun svhaddNU8X(pg: SvboolT, op1: Svuint8T, op2: UByte): Svuint8T = svhaddU8X(pg, op1, svdupNU8(op2))
+
+/**
+ * Halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhadd[_u8]_z)
+ */
+public fun svhaddU8Z(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T = svhaddU8M(pg, svselU8(pg, op1, svdupNU8(0u)), op2)
+
+/**
+ * Halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhadd[_n_u8]_z)
+ */
+public fun svhaddNU8Z(pg: SvboolT, op1: Svuint8T, op2: UByte): Svuint8T = svhaddU8Z(pg, op1, svdupNU8(op2))
+
+/**
+ * Halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhadd[_u16]_m)
+ */
+public fun svhaddU16M(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T {
+    fun svhaddU16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    return svhaddU16M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhadd[_n_u16]_m)
+ */
+public fun svhaddNU16M(pg: SvboolT, op1: Svuint16T, op2: UShort): Svuint16T = svhaddU16M(pg, op1, svdupNU16(op2))
+
+/**
+ * Halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhadd[_u16]_x)
+ */
+public fun svhaddU16X(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T = svhaddU16M(pg, op1, op2)
+
+/**
+ * Halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhadd[_n_u16]_x)
+ */
+public fun svhaddNU16X(pg: SvboolT, op1: Svuint16T, op2: UShort): Svuint16T = svhaddU16X(pg, op1, svdupNU16(op2))
+
+/**
+ * Halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhadd[_u16]_z)
+ */
+public fun svhaddU16Z(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T = svhaddU16M(pg, svselU16(pg, op1, svdupNU16(0u)), op2)
+
+/**
+ * Halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhadd[_n_u16]_z)
+ */
+public fun svhaddNU16Z(pg: SvboolT, op1: Svuint16T, op2: UShort): Svuint16T = svhaddU16Z(pg, op1, svdupNU16(op2))
+
+/**
+ * Halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhadd[_u32]_m)
+ */
+public fun svhaddU32M(pg: SvboolT, op1: Svuint32T, op2: Svuint32T): Svuint32T {
+    fun svhaddU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    return svhaddU32M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhadd[_n_u32]_m)
+ */
+public fun svhaddNU32M(pg: SvboolT, op1: Svuint32T, op2: UInt): Svuint32T = svhaddU32M(pg, op1, svdupNU32(op2))
+
+/**
+ * Halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhadd[_u32]_x)
+ */
+public fun svhaddU32X(pg: SvboolT, op1: Svuint32T, op2: Svuint32T): Svuint32T = svhaddU32M(pg, op1, op2)
+
+/**
+ * Halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhadd[_n_u32]_x)
+ */
+public fun svhaddNU32X(pg: SvboolT, op1: Svuint32T, op2: UInt): Svuint32T = svhaddU32X(pg, op1, svdupNU32(op2))
+
+/**
+ * Halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhadd[_u32]_z)
+ */
+public fun svhaddU32Z(pg: SvboolT, op1: Svuint32T, op2: Svuint32T): Svuint32T = svhaddU32M(pg, svselU32(pg, op1, svdupNU32(0u)), op2)
+
+/**
+ * Halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhadd[_n_u32]_z)
+ */
+public fun svhaddNU32Z(pg: SvboolT, op1: Svuint32T, op2: UInt): Svuint32T = svhaddU32Z(pg, op1, svdupNU32(op2))
+
+/**
+ * Halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhadd[_u64]_m)
+ */
+public fun svhaddU64M(pg: SvboolT, op1: Svuint64T, op2: Svuint64T): Svuint64T {
+    fun svhaddU64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    return svhaddU64M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhadd[_n_u64]_m)
+ */
+public fun svhaddNU64M(pg: SvboolT, op1: Svuint64T, op2: ULong): Svuint64T = svhaddU64M(pg, op1, svdupNU64(op2))
+
+/**
+ * Halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhadd[_u64]_x)
+ */
+public fun svhaddU64X(pg: SvboolT, op1: Svuint64T, op2: Svuint64T): Svuint64T = svhaddU64M(pg, op1, op2)
+
+/**
+ * Halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhadd[_n_u64]_x)
+ */
+public fun svhaddNU64X(pg: SvboolT, op1: Svuint64T, op2: ULong): Svuint64T = svhaddU64X(pg, op1, svdupNU64(op2))
+
+/**
+ * Halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhadd[_u64]_z)
+ */
+public fun svhaddU64Z(pg: SvboolT, op1: Svuint64T, op2: Svuint64T): Svuint64T = svhaddU64M(pg, svselU64(pg, op1, svdupNU64(0uL)), op2)
+
+/**
+ * Halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhadd[_n_u64]_z)
+ */
+public fun svhaddNU64Z(pg: SvboolT, op1: Svuint64T, op2: ULong): Svuint64T = svhaddU64Z(pg, op1, svdupNU64(op2))
+
+/**
+ * Count matching elements
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhistcnt[_s32]_z)
+ */
+public fun svhistcntS32Z(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svuint32T {
+    fun svhistcntS32Z(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    return svhistcntS32Z(pg.sveInto(), op1, op2).asUnsigned()
+}
+
+/**
+ * Count matching elements
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhistcnt[_s64]_z)
+ */
+public fun svhistcntS64Z(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svuint64T {
+    fun svhistcntS64Z(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    return svhistcntS64Z(pg.sveInto(), op1, op2).asUnsigned()
+}
+
+/**
+ * Count matching elements
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhistcnt[_u32]_z)
+ */
+public fun svhistcntU32Z(pg: SvboolT, op1: Svuint32T, op2: Svuint32T): Svuint32T = svhistcntS32Z(pg, op1.asSigned(), op2.asSigned())
+
+/**
+ * Count matching elements
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhistcnt[_u64]_z)
+ */
+public fun svhistcntU64Z(pg: SvboolT, op1: Svuint64T, op2: Svuint64T): Svuint64T = svhistcntS64Z(pg, op1.asSigned(), op2.asSigned())
+
+/**
+ * Count matching elements in 128-bit segments
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhistseg[_s8])
+ */
+public fun svhistsegS8(op1: Svint8T, op2: Svint8T): Svuint8T {
+    fun svhistsegS8(op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    return svhistsegS8(op1, op2).asUnsigned()
+}
+
+/**
+ * Count matching elements in 128-bit segments
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhistseg[_u8])
+ */
+public fun svhistsegU8(op1: Svuint8T, op2: Svuint8T): Svuint8T = svhistsegS8(op1.asSigned(), op2.asSigned())
+
+/**
+ * Halving subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsub[_s8]_m)
+ */
+public fun svhsubS8M(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T {
+    fun svhsubS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    return svhsubS8M(pg, op1, op2)
+}
+
+/**
+ * Halving subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsub[_n_s8]_m)
+ */
+public fun svhsubNS8M(pg: SvboolT, op1: Svint8T, op2: Byte): Svint8T = svhsubS8M(pg, op1, svdupNS8(op2))
+
+/**
+ * Halving subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsub[_s8]_x)
+ */
+public fun svhsubS8X(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T = svhsubS8M(pg, op1, op2)
+
+/**
+ * Halving subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsub[_n_s8]_x)
+ */
+public fun svhsubNS8X(pg: SvboolT, op1: Svint8T, op2: Byte): Svint8T = svhsubS8X(pg, op1, svdupNS8(op2))
+
+/**
+ * Halving subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsub[_s8]_z)
+ */
+public fun svhsubS8Z(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T = svhsubS8M(pg, svselS8(pg, op1, svdupNS8(0)), op2)
+
+/**
+ * Halving subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsub[_n_s8]_z)
+ */
+public fun svhsubNS8Z(pg: SvboolT, op1: Svint8T, op2: Byte): Svint8T = svhsubS8Z(pg, op1, svdupNS8(op2))
+
+/**
+ * Halving subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsub[_s16]_m)
+ */
+public fun svhsubS16M(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T {
+    fun svhsubS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    return svhsubS16M(pg.sveInto(), op1, op2)
+}
+
+/**
+ * Halving subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsub[_n_s16]_m)
+ */
+public fun svhsubNS16M(pg: SvboolT, op1: Svint16T, op2: Short): Svint16T = svhsubS16M(pg, op1, svdupNS16(op2))
+
+/**
+ * Halving subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsub[_s16]_x)
+ */
+public fun svhsubS16X(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T = svhsubS16M(pg, op1, op2)
+
+/**
+ * Halving subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsub[_n_s16]_x)
+ */
+public fun svhsubNS16X(pg: SvboolT, op1: Svint16T, op2: Short): Svint16T = svhsubS16X(pg, op1, svdupNS16(op2))
+
+/**
+ * Halving subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsub[_s16]_z)
+ */
+public fun svhsubS16Z(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T = svhsubS16M(pg, svselS16(pg, op1, svdupNS16(0)), op2)
+
+/**
+ * Halving subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsub[_n_s16]_z)
+ */
+public fun svhsubNS16Z(pg: SvboolT, op1: Svint16T, op2: Short): Svint16T = svhsubS16Z(pg, op1, svdupNS16(op2))
+
+/**
+ * Halving subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsub[_s32]_m)
+ */
+public fun svhsubS32M(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T {
+    fun svhsubS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    return svhsubS32M(pg.sveInto(), op1, op2)
+}
+
+/**
+ * Halving subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsub[_n_s32]_m)
+ */
+public fun svhsubNS32M(pg: SvboolT, op1: Svint32T, op2: Int): Svint32T = svhsubS32M(pg, op1, svdupNS32(op2))
+
+/**
+ * Halving subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsub[_s32]_x)
+ */
+public fun svhsubS32X(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T = svhsubS32M(pg, op1, op2)
+
+/**
+ * Halving subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsub[_n_s32]_x)
+ */
+public fun svhsubNS32X(pg: SvboolT, op1: Svint32T, op2: Int): Svint32T = svhsubS32X(pg, op1, svdupNS32(op2))
+
+/**
+ * Halving subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsub[_s32]_z)
+ */
+public fun svhsubS32Z(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T = svhsubS32M(pg, svselS32(pg, op1, svdupNS32(0)), op2)
+
+/**
+ * Halving subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsub[_n_s32]_z)
+ */
+public fun svhsubNS32Z(pg: SvboolT, op1: Svint32T, op2: Int): Svint32T = svhsubS32Z(pg, op1, svdupNS32(op2))
+
+/**
+ * Halving subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsub[_s64]_m)
+ */
+public fun svhsubS64M(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T {
+    fun svhsubS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    return svhsubS64M(pg.sveInto(), op1, op2)
+}
+
+/**
+ * Halving subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsub[_n_s64]_m)
+ */
+public fun svhsubNS64M(pg: SvboolT, op1: Svint64T, op2: Long): Svint64T = svhsubS64M(pg, op1, svdupNS64(op2))
+
+/**
+ * Halving subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsub[_s64]_x)
+ */
+public fun svhsubS64X(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T = svhsubS64M(pg, op1, op2)
+
+/**
+ * Halving subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsub[_n_s64]_x)
+ */
+public fun svhsubNS64X(pg: SvboolT, op1: Svint64T, op2: Long): Svint64T = svhsubS64X(pg, op1, svdupNS64(op2))
+
+/**
+ * Halving subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsub[_s64]_z)
+ */
+public fun svhsubS64Z(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T = svhsubS64M(pg, svselS64(pg, op1, svdupNS64(0L)), op2)
+
+/**
+ * Halving subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsub[_n_s64]_z)
+ */
+public fun svhsubNS64Z(pg: SvboolT, op1: Svint64T, op2: Long): Svint64T = svhsubS64Z(pg, op1, svdupNS64(op2))
+
+/**
+ * Halving subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsub[_u8]_m)
+ */
+public fun svhsubU8M(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T {
+    fun svhsubU8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    return svhsubU8M(pg, op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Halving subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsub[_n_u8]_m)
+ */
+public fun svhsubNU8M(pg: SvboolT, op1: Svuint8T, op2: UByte): Svuint8T = svhsubU8M(pg, op1, svdupNU8(op2))
+
+/**
+ * Halving subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsub[_u8]_x)
+ */
+public fun svhsubU8X(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T = svhsubU8M(pg, op1, op2)
+
+/**
+ * Halving subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsub[_n_u8]_x)
+ */
+public fun svhsubNU8X(pg: SvboolT, op1: Svuint8T, op2: UByte): Svuint8T = svhsubU8X(pg, op1, svdupNU8(op2))
+
+/**
+ * Halving subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsub[_u8]_z)
+ */
+public fun svhsubU8Z(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T = svhsubU8M(pg, svselU8(pg, op1, svdupNU8(0u)), op2)
+
+/**
+ * Halving subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsub[_n_u8]_z)
+ */
+public fun svhsubNU8Z(pg: SvboolT, op1: Svuint8T, op2: UByte): Svuint8T = svhsubU8Z(pg, op1, svdupNU8(op2))
+
+/**
+ * Halving subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsub[_u16]_m)
+ */
+public fun svhsubU16M(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T {
+    fun svhsubU16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    return svhsubU16M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Halving subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsub[_n_u16]_m)
+ */
+public fun svhsubNU16M(pg: SvboolT, op1: Svuint16T, op2: UShort): Svuint16T = svhsubU16M(pg, op1, svdupNU16(op2))
+
+/**
+ * Halving subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsub[_u16]_x)
+ */
+public fun svhsubU16X(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T = svhsubU16M(pg, op1, op2)
+
+/**
+ * Halving subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsub[_n_u16]_x)
+ */
+public fun svhsubNU16X(pg: SvboolT, op1: Svuint16T, op2: UShort): Svuint16T = svhsubU16X(pg, op1, svdupNU16(op2))
+
+/**
+ * Halving subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsub[_u16]_z)
+ */
+public fun svhsubU16Z(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T = svhsubU16M(pg, svselU16(pg, op1, svdupNU16(0u)), op2)
+
+/**
+ * Halving subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsub[_n_u16]_z)
+ */
+public fun svhsubNU16Z(pg: SvboolT, op1: Svuint16T, op2: UShort): Svuint16T = svhsubU16Z(pg, op1, svdupNU16(op2))
+
+/**
+ * Halving subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsub[_u32]_m)
+ */
+public fun svhsubU32M(pg: SvboolT, op1: Svuint32T, op2: Svuint32T): Svuint32T {
+    fun svhsubU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    return svhsubU32M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Halving subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsub[_n_u32]_m)
+ */
+public fun svhsubNU32M(pg: SvboolT, op1: Svuint32T, op2: UInt): Svuint32T = svhsubU32M(pg, op1, svdupNU32(op2))
+
+/**
+ * Halving subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsub[_u32]_x)
+ */
+public fun svhsubU32X(pg: SvboolT, op1: Svuint32T, op2: Svuint32T): Svuint32T = svhsubU32M(pg, op1, op2)
+
+/**
+ * Halving subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsub[_n_u32]_x)
+ */
+public fun svhsubNU32X(pg: SvboolT, op1: Svuint32T, op2: UInt): Svuint32T = svhsubU32X(pg, op1, svdupNU32(op2))
+
+/**
+ * Halving subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsub[_u32]_z)
+ */
+public fun svhsubU32Z(pg: SvboolT, op1: Svuint32T, op2: Svuint32T): Svuint32T = svhsubU32M(pg, svselU32(pg, op1, svdupNU32(0u)), op2)
+
+/**
+ * Halving subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsub[_n_u32]_z)
+ */
+public fun svhsubNU32Z(pg: SvboolT, op1: Svuint32T, op2: UInt): Svuint32T = svhsubU32Z(pg, op1, svdupNU32(op2))
+
+/**
+ * Halving subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsub[_u64]_m)
+ */
+public fun svhsubU64M(pg: SvboolT, op1: Svuint64T, op2: Svuint64T): Svuint64T {
+    fun svhsubU64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    return svhsubU64M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Halving subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsub[_n_u64]_m)
+ */
+public fun svhsubNU64M(pg: SvboolT, op1: Svuint64T, op2: ULong): Svuint64T = svhsubU64M(pg, op1, svdupNU64(op2))
+
+/**
+ * Halving subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsub[_u64]_x)
+ */
+public fun svhsubU64X(pg: SvboolT, op1: Svuint64T, op2: Svuint64T): Svuint64T = svhsubU64M(pg, op1, op2)
+
+/**
+ * Halving subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsub[_n_u64]_x)
+ */
+public fun svhsubNU64X(pg: SvboolT, op1: Svuint64T, op2: ULong): Svuint64T = svhsubU64X(pg, op1, svdupNU64(op2))
+
+/**
+ * Halving subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsub[_u64]_z)
+ */
+public fun svhsubU64Z(pg: SvboolT, op1: Svuint64T, op2: Svuint64T): Svuint64T = svhsubU64M(pg, svselU64(pg, op1, svdupNU64(0uL)), op2)
+
+/**
+ * Halving subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsub[_n_u64]_z)
+ */
+public fun svhsubNU64Z(pg: SvboolT, op1: Svuint64T, op2: ULong): Svuint64T = svhsubU64Z(pg, op1, svdupNU64(op2))
+
+/**
+ * Halving subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsubr[_s8]_m)
+ */
+public fun svhsubrS8M(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T {
+    fun svhsubrS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    return svhsubrS8M(pg, op1, op2)
+}
+
+/**
+ * Halving subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsubr[_n_s8]_m)
+ */
+public fun svhsubrNS8M(pg: SvboolT, op1: Svint8T, op2: Byte): Svint8T = svhsubrS8M(pg, op1, svdupNS8(op2))
+
+/**
+ * Halving subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsubr[_s8]_x)
+ */
+public fun svhsubrS8X(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T = svhsubrS8M(pg, op1, op2)
+
+/**
+ * Halving subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsubr[_n_s8]_x)
+ */
+public fun svhsubrNS8X(pg: SvboolT, op1: Svint8T, op2: Byte): Svint8T = svhsubrS8X(pg, op1, svdupNS8(op2))
+
+/**
+ * Halving subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsubr[_s8]_z)
+ */
+public fun svhsubrS8Z(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T = svhsubrS8M(pg, svselS8(pg, op1, svdupNS8(0)), op2)
+
+/**
+ * Halving subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsubr[_n_s8]_z)
+ */
+public fun svhsubrNS8Z(pg: SvboolT, op1: Svint8T, op2: Byte): Svint8T = svhsubrS8Z(pg, op1, svdupNS8(op2))
+
+/**
+ * Halving subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsubr[_s16]_m)
+ */
+public fun svhsubrS16M(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T {
+    fun svhsubrS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    return svhsubrS16M(pg.sveInto(), op1, op2)
+}
+
+/**
+ * Halving subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsubr[_n_s16]_m)
+ */
+public fun svhsubrNS16M(pg: SvboolT, op1: Svint16T, op2: Short): Svint16T = svhsubrS16M(pg, op1, svdupNS16(op2))
+
+/**
+ * Halving subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsubr[_s16]_x)
+ */
+public fun svhsubrS16X(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T = svhsubrS16M(pg, op1, op2)
+
+/**
+ * Halving subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsubr[_n_s16]_x)
+ */
+public fun svhsubrNS16X(pg: SvboolT, op1: Svint16T, op2: Short): Svint16T = svhsubrS16X(pg, op1, svdupNS16(op2))
+
+/**
+ * Halving subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsubr[_s16]_z)
+ */
+public fun svhsubrS16Z(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T = svhsubrS16M(pg, svselS16(pg, op1, svdupNS16(0)), op2)
+
+/**
+ * Halving subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsubr[_n_s16]_z)
+ */
+public fun svhsubrNS16Z(pg: SvboolT, op1: Svint16T, op2: Short): Svint16T = svhsubrS16Z(pg, op1, svdupNS16(op2))
+
+/**
+ * Halving subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsubr[_s32]_m)
+ */
+public fun svhsubrS32M(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T {
+    fun svhsubrS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    return svhsubrS32M(pg.sveInto(), op1, op2)
+}
+
+/**
+ * Halving subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsubr[_n_s32]_m)
+ */
+public fun svhsubrNS32M(pg: SvboolT, op1: Svint32T, op2: Int): Svint32T = svhsubrS32M(pg, op1, svdupNS32(op2))
+
+/**
+ * Halving subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsubr[_s32]_x)
+ */
+public fun svhsubrS32X(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T = svhsubrS32M(pg, op1, op2)
+
+/**
+ * Halving subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsubr[_n_s32]_x)
+ */
+public fun svhsubrNS32X(pg: SvboolT, op1: Svint32T, op2: Int): Svint32T = svhsubrS32X(pg, op1, svdupNS32(op2))
+
+/**
+ * Halving subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsubr[_s32]_z)
+ */
+public fun svhsubrS32Z(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T = svhsubrS32M(pg, svselS32(pg, op1, svdupNS32(0)), op2)
+
+/**
+ * Halving subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsubr[_n_s32]_z)
+ */
+public fun svhsubrNS32Z(pg: SvboolT, op1: Svint32T, op2: Int): Svint32T = svhsubrS32Z(pg, op1, svdupNS32(op2))
+
+/**
+ * Halving subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsubr[_s64]_m)
+ */
+public fun svhsubrS64M(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T {
+    fun svhsubrS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    return svhsubrS64M(pg.sveInto(), op1, op2)
+}
+
+/**
+ * Halving subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsubr[_n_s64]_m)
+ */
+public fun svhsubrNS64M(pg: SvboolT, op1: Svint64T, op2: Long): Svint64T = svhsubrS64M(pg, op1, svdupNS64(op2))
+
+/**
+ * Halving subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsubr[_s64]_x)
+ */
+public fun svhsubrS64X(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T = svhsubrS64M(pg, op1, op2)
+
+/**
+ * Halving subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsubr[_n_s64]_x)
+ */
+public fun svhsubrNS64X(pg: SvboolT, op1: Svint64T, op2: Long): Svint64T = svhsubrS64X(pg, op1, svdupNS64(op2))
+
+/**
+ * Halving subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsubr[_s64]_z)
+ */
+public fun svhsubrS64Z(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T = svhsubrS64M(pg, svselS64(pg, op1, svdupNS64(0L)), op2)
+
+/**
+ * Halving subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsubr[_n_s64]_z)
+ */
+public fun svhsubrNS64Z(pg: SvboolT, op1: Svint64T, op2: Long): Svint64T = svhsubrS64Z(pg, op1, svdupNS64(op2))
+
+/**
+ * Halving subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsubr[_u8]_m)
+ */
+public fun svhsubrU8M(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T {
+    fun svhsubrU8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    return svhsubrU8M(pg, op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Halving subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsubr[_n_u8]_m)
+ */
+public fun svhsubrNU8M(pg: SvboolT, op1: Svuint8T, op2: UByte): Svuint8T = svhsubrU8M(pg, op1, svdupNU8(op2))
+
+/**
+ * Halving subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsubr[_u8]_x)
+ */
+public fun svhsubrU8X(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T = svhsubrU8M(pg, op1, op2)
+
+/**
+ * Halving subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsubr[_n_u8]_x)
+ */
+public fun svhsubrNU8X(pg: SvboolT, op1: Svuint8T, op2: UByte): Svuint8T = svhsubrU8X(pg, op1, svdupNU8(op2))
+
+/**
+ * Halving subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsubr[_u8]_z)
+ */
+public fun svhsubrU8Z(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T = svhsubrU8M(pg, svselU8(pg, op1, svdupNU8(0u)), op2)
+
+/**
+ * Halving subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsubr[_n_u8]_z)
+ */
+public fun svhsubrNU8Z(pg: SvboolT, op1: Svuint8T, op2: UByte): Svuint8T = svhsubrU8Z(pg, op1, svdupNU8(op2))
+
+/**
+ * Halving subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsubr[_u16]_m)
+ */
+public fun svhsubrU16M(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T {
+    fun svhsubrU16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    return svhsubrU16M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Halving subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsubr[_n_u16]_m)
+ */
+public fun svhsubrNU16M(pg: SvboolT, op1: Svuint16T, op2: UShort): Svuint16T = svhsubrU16M(pg, op1, svdupNU16(op2))
+
+/**
+ * Halving subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsubr[_u16]_x)
+ */
+public fun svhsubrU16X(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T = svhsubrU16M(pg, op1, op2)
+
+/**
+ * Halving subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsubr[_n_u16]_x)
+ */
+public fun svhsubrNU16X(pg: SvboolT, op1: Svuint16T, op2: UShort): Svuint16T = svhsubrU16X(pg, op1, svdupNU16(op2))
+
+/**
+ * Halving subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsubr[_u16]_z)
+ */
+public fun svhsubrU16Z(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T = svhsubrU16M(pg, svselU16(pg, op1, svdupNU16(0u)), op2)
+
+/**
+ * Halving subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsubr[_n_u16]_z)
+ */
+public fun svhsubrNU16Z(pg: SvboolT, op1: Svuint16T, op2: UShort): Svuint16T = svhsubrU16Z(pg, op1, svdupNU16(op2))
+
+/**
+ * Halving subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsubr[_u32]_m)
+ */
+public fun svhsubrU32M(pg: SvboolT, op1: Svuint32T, op2: Svuint32T): Svuint32T {
+    fun svhsubrU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    return svhsubrU32M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Halving subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsubr[_n_u32]_m)
+ */
+public fun svhsubrNU32M(pg: SvboolT, op1: Svuint32T, op2: UInt): Svuint32T = svhsubrU32M(pg, op1, svdupNU32(op2))
+
+/**
+ * Halving subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsubr[_u32]_x)
+ */
+public fun svhsubrU32X(pg: SvboolT, op1: Svuint32T, op2: Svuint32T): Svuint32T = svhsubrU32M(pg, op1, op2)
+
+/**
+ * Halving subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsubr[_n_u32]_x)
+ */
+public fun svhsubrNU32X(pg: SvboolT, op1: Svuint32T, op2: UInt): Svuint32T = svhsubrU32X(pg, op1, svdupNU32(op2))
+
+/**
+ * Halving subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsubr[_u32]_z)
+ */
+public fun svhsubrU32Z(pg: SvboolT, op1: Svuint32T, op2: Svuint32T): Svuint32T = svhsubrU32M(pg, svselU32(pg, op1, svdupNU32(0u)), op2)
+
+/**
+ * Halving subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsubr[_n_u32]_z)
+ */
+public fun svhsubrNU32Z(pg: SvboolT, op1: Svuint32T, op2: UInt): Svuint32T = svhsubrU32Z(pg, op1, svdupNU32(op2))
+
+/**
+ * Halving subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsubr[_u64]_m)
+ */
+public fun svhsubrU64M(pg: SvboolT, op1: Svuint64T, op2: Svuint64T): Svuint64T {
+    fun svhsubrU64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    return svhsubrU64M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Halving subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsubr[_n_u64]_m)
+ */
+public fun svhsubrNU64M(pg: SvboolT, op1: Svuint64T, op2: ULong): Svuint64T = svhsubrU64M(pg, op1, svdupNU64(op2))
+
+/**
+ * Halving subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsubr[_u64]_x)
+ */
+public fun svhsubrU64X(pg: SvboolT, op1: Svuint64T, op2: Svuint64T): Svuint64T = svhsubrU64M(pg, op1, op2)
+
+/**
+ * Halving subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsubr[_n_u64]_x)
+ */
+public fun svhsubrNU64X(pg: SvboolT, op1: Svuint64T, op2: ULong): Svuint64T = svhsubrU64X(pg, op1, svdupNU64(op2))
+
+/**
+ * Halving subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsubr[_u64]_z)
+ */
+public fun svhsubrU64Z(pg: SvboolT, op1: Svuint64T, op2: Svuint64T): Svuint64T = svhsubrU64M(pg, svselU64(pg, op1, svdupNU64(0uL)), op2)
+
+/**
+ * Halving subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsubr[_n_u64]_z)
+ */
+public fun svhsubrNU64Z(pg: SvboolT, op1: Svuint64T, op2: ULong): Svuint64T = svhsubrU64Z(pg, op1, svdupNU64(op2))
+
+/**
+ * Unextended load, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1_gather_[s64]index[_f64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1GatherS64indexF64(pg: SvboolT, base: ConstPtr, indices: Svint64T): Svfloat64T {
+    fun svldnt1GatherS64indexF64(pg1: Svbool2T, base1: ConstPtr, indices1: Svint64T): Svfloat64T = null as Svfloat64T
+    return svldnt1GatherS64indexF64(pg.sveInto(), base, indices)
+}
+
+/**
+ * Unextended load, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1_gather_[s64]index[_s64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1GatherS64indexS64(pg: SvboolT, base: ConstPtr, indices: Svint64T): Svint64T {
+    fun svldnt1GatherS64indexS64(pg1: Svbool2T, base1: ConstPtr, indices1: Svint64T): Svint64T = null as Svint64T
+    return svldnt1GatherS64indexS64(pg.sveInto(), base, indices)
+}
+
+/**
+ * Unextended load, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1_gather_[s64]index[_u64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1GatherS64indexU64(pg: SvboolT, base: ConstPtr, indices: Svint64T): Svuint64T = svldnt1GatherS64indexS64(pg, base.asSigned(), indices).asUnsigned()
+
+/**
+ * Unextended load, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1_gather_[u64]index[_f64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1GatherU64indexF64(pg: SvboolT, base: ConstPtr, indices: Svuint64T): Svfloat64T = svldnt1GatherS64indexF64(pg, base, indices.asSigned())
+
+/**
+ * Unextended load, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1_gather_[u64]index[_s64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1GatherU64indexS64(pg: SvboolT, base: ConstPtr, indices: Svuint64T): Svint64T = svldnt1GatherS64indexS64(pg, base, indices.asSigned())
+
+/**
+ * Unextended load, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1_gather_[u64]index[_u64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1GatherU64indexU64(pg: SvboolT, base: ConstPtr, indices: Svuint64T): Svuint64T = svldnt1GatherS64indexS64(pg, base.asSigned(), indices.asSigned()).asUnsigned()
+
+/**
+ * Unextended load, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1_gather_[s64]offset[_f64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1GatherS64offsetF64(pg: SvboolT, base: ConstPtr, offsets: Svint64T): Svfloat64T {
+    fun svldnt1GatherS64offsetF64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Svfloat64T = null as Svfloat64T
+    return svldnt1GatherS64offsetF64(pg.sveInto(), base, offsets)
+}
+
+/**
+ * Unextended load, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1_gather_[s64]offset[_s64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1GatherS64offsetS64(pg: SvboolT, base: ConstPtr, offsets: Svint64T): Svint64T {
+    fun svldnt1GatherS64offsetS64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Svint64T = null as Svint64T
+    return svldnt1GatherS64offsetS64(pg.sveInto(), base, offsets)
+}
+
+/**
+ * Unextended load, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1_gather_[s64]offset[_u64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1GatherS64offsetU64(pg: SvboolT, base: ConstPtr, offsets: Svint64T): Svuint64T = svldnt1GatherS64offsetS64(pg, base.asSigned(), offsets).asUnsigned()
+
+/**
+ * Unextended load, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1_gather_[u32]offset[_f32])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1GatherU32offsetF32(pg: SvboolT, base: ConstPtr, offsets: Svuint32T): Svfloat32T {
+    fun svldnt1GatherU32offsetF32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Svfloat32T = null as Svfloat32T
+    return svldnt1GatherU32offsetF32(pg.sveInto(), base, offsets.asSigned())
+}
+
+/**
+ * Unextended load, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1_gather_[u32]offset[_s32])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1GatherU32offsetS32(pg: SvboolT, base: ConstPtr, offsets: Svuint32T): Svint32T {
+    fun svldnt1GatherU32offsetS32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Svint32T = null as Svint32T
+    return svldnt1GatherU32offsetS32(pg.sveInto(), base, offsets.asSigned())
+}
+
+/**
+ * Unextended load, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1_gather_[u32]offset[_u32])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1GatherU32offsetU32(pg: SvboolT, base: ConstPtr, offsets: Svuint32T): Svuint32T = svldnt1GatherU32offsetS32(pg, base.asSigned(), offsets).asUnsigned()
+
+/**
+ * Unextended load, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1_gather_[u64]offset[_f64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1GatherU64offsetF64(pg: SvboolT, base: ConstPtr, offsets: Svuint64T): Svfloat64T = svldnt1GatherS64offsetF64(pg, base, offsets.asSigned())
+
+/**
+ * Unextended load, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1_gather_[u64]offset[_s64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1GatherU64offsetS64(pg: SvboolT, base: ConstPtr, offsets: Svuint64T): Svint64T = svldnt1GatherS64offsetS64(pg, base, offsets.asSigned())
+
+/**
+ * Unextended load, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1_gather_[u64]offset[_u64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1GatherU64offsetU64(pg: SvboolT, base: ConstPtr, offsets: Svuint64T): Svuint64T = svldnt1GatherS64offsetS64(pg, base.asSigned(), offsets.asSigned()).asUnsigned()
+
+/**
+ * Unextended load, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1Gather[_u32base]_f32)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1GatherU32baseF32(pg: SvboolT, bases: Svuint32T): Svfloat32T = svldnt1GatherU32baseOffsetF32(pg, bases, 0L)
+
+/**
+ * Unextended load, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1Gather[_u32base]_s32)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1GatherU32baseS32(pg: SvboolT, bases: Svuint32T): Svint32T = svldnt1GatherU32baseOffsetS32(pg, bases, 0L)
+
+/**
+ * Unextended load, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1Gather[_u32base]_u32)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1GatherU32baseU32(pg: SvboolT, bases: Svuint32T): Svuint32T = svldnt1GatherU32baseOffsetU32(pg, bases, 0L)
+
+/**
+ * Unextended load, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1Gather[_u64base]_f64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1GatherU64baseF64(pg: SvboolT, bases: Svuint64T): Svfloat64T = svldnt1GatherU64baseOffsetF64(pg, bases, 0L)
+
+/**
+ * Unextended load, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1Gather[_u64base]_s64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1GatherU64baseS64(pg: SvboolT, bases: Svuint64T): Svint64T = svldnt1GatherU64baseOffsetS64(pg, bases, 0L)
+
+/**
+ * Unextended load, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1Gather[_u64base]_u64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1GatherU64baseU64(pg: SvboolT, bases: Svuint64T): Svuint64T = svldnt1GatherU64baseOffsetU64(pg, bases, 0L)
+
+/**
+ * Unextended load, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1Gather[_u32base]_index_f32)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1GatherU32baseIndexF32(pg: SvboolT, bases: Svuint32T, index: Long): Svfloat32T = svldnt1GatherU32baseOffsetF32(pg, bases, index.uncheckedShl(2))
+
+/**
+ * Unextended load, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1Gather[_u32base]_index_s32)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1GatherU32baseIndexS32(pg: SvboolT, bases: Svuint32T, index: Long): Svint32T = svldnt1GatherU32baseOffsetS32(pg, bases, index.uncheckedShl(2))
+
+/**
+ * Unextended load, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1Gather[_u32base]_index_u32)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1GatherU32baseIndexU32(pg: SvboolT, bases: Svuint32T, index: Long): Svuint32T = svldnt1GatherU32baseOffsetU32(pg, bases, index.uncheckedShl(2))
+
+/**
+ * Unextended load, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1Gather[_u64base]_index_f64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1GatherU64baseIndexF64(pg: SvboolT, bases: Svuint64T, index: Long): Svfloat64T = svldnt1GatherU64baseOffsetF64(pg, bases, index.uncheckedShl(3))
+
+/**
+ * Unextended load, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1Gather[_u64base]_index_s64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1GatherU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: Long): Svint64T = svldnt1GatherU64baseOffsetS64(pg, bases, index.uncheckedShl(3))
+
+/**
+ * Unextended load, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1Gather[_u64base]_index_u64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1GatherU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: Long): Svuint64T = svldnt1GatherU64baseOffsetU64(pg, bases, index.uncheckedShl(3))
+
+/**
+ * Unextended load, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1Gather[_u32base]_offset_f32)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1GatherU32baseOffsetF32(pg: SvboolT, bases: Svuint32T, offset: Long): Svfloat32T {
+    fun svldnt1GatherU32baseOffsetF32(pg1: Svbool4T, bases1: Svint32T, offset1: Long): Svfloat32T = null as Svfloat32T
+    return svldnt1GatherU32baseOffsetF32(pg.sveInto(), bases.asSigned(), offset)
+}
+
+/**
+ * Unextended load, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1Gather[_u32base]_offset_s32)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1GatherU32baseOffsetS32(pg: SvboolT, bases: Svuint32T, offset: Long): Svint32T {
+    fun svldnt1GatherU32baseOffsetS32(pg1: Svbool4T, bases1: Svint32T, offset1: Long): Svint32T = null as Svint32T
+    return svldnt1GatherU32baseOffsetS32(pg.sveInto(), bases.asSigned(), offset)
+}
+
+/**
+ * Unextended load, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1Gather[_u32base]_offset_u32)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1GatherU32baseOffsetU32(pg: SvboolT, bases: Svuint32T, offset: Long): Svuint32T = svldnt1GatherU32baseOffsetS32(pg, bases, offset).asUnsigned()
+
+/**
+ * Unextended load, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1Gather[_u64base]_offset_f64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1GatherU64baseOffsetF64(pg: SvboolT, bases: Svuint64T, offset: Long): Svfloat64T {
+    fun svldnt1GatherU64baseOffsetF64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Svfloat64T = null as Svfloat64T
+    return svldnt1GatherU64baseOffsetF64(pg.sveInto(), bases.asSigned(), offset)
+}
+
+/**
+ * Unextended load, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1Gather[_u64base]_offset_s64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1GatherU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset: Long): Svint64T {
+    fun svldnt1GatherU64baseOffsetS64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Svint64T = null as Svint64T
+    return svldnt1GatherU64baseOffsetS64(pg.sveInto(), bases.asSigned(), offset)
+}
+
+/**
+ * Unextended load, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1Gather[_u64base]_offset_u64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1GatherU64baseOffsetU64(pg: SvboolT, bases: Svuint64T, offset: Long): Svuint64T = svldnt1GatherU64baseOffsetS64(pg, bases, offset).asUnsigned()
+
+/**
+ * Load 8-bit data and sign-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1sb_gather_[s64]offsetS64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1sbGatherS64offsetS64(pg: SvboolT, base: ConstPtr, offsets: Svint64T): Svint64T {
+    fun svldnt1sbGatherS64offsetS64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Nxv2i8 = null as Nxv2i8
+    return Simd.simdCast(svldnt1sbGatherS64offsetS64(pg.sveInto(), base, offsets))
+}
+
+/**
+ * Load 16-bit data and sign-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1sh_gather_[s64]offsetS64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1shGatherS64offsetS64(pg: SvboolT, base: ConstPtr, offsets: Svint64T): Svint64T {
+    fun svldnt1shGatherS64offsetS64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Nxv2i16 = null as Nxv2i16
+    return Simd.simdCast(svldnt1shGatherS64offsetS64(pg.sveInto(), base, offsets))
+}
+
+/**
+ * Load 32-bit data and sign-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1sw_gather_[s64]offsetS64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1swGatherS64offsetS64(pg: SvboolT, base: ConstPtr, offsets: Svint64T): Svint64T {
+    fun svldnt1swGatherS64offsetS64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Nxv2i32 = null as Nxv2i32
+    return Simd.simdCast(svldnt1swGatherS64offsetS64(pg.sveInto(), base, offsets))
+}
+
+/**
+ * Load 8-bit data and sign-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1sb_gather_[s64]offsetU64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1sbGatherS64offsetU64(pg: SvboolT, base: ConstPtr, offsets: Svint64T): Svuint64T = svldnt1sbGatherS64offsetS64(pg, base, offsets).asUnsigned()
+
+/**
+ * Load 16-bit data and sign-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1sh_gather_[s64]offsetU64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1shGatherS64offsetU64(pg: SvboolT, base: ConstPtr, offsets: Svint64T): Svuint64T = svldnt1shGatherS64offsetS64(pg, base, offsets).asUnsigned()
+
+/**
+ * Load 32-bit data and sign-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1sw_gather_[s64]offsetU64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1swGatherS64offsetU64(pg: SvboolT, base: ConstPtr, offsets: Svint64T): Svuint64T = svldnt1swGatherS64offsetS64(pg, base, offsets).asUnsigned()
+
+/**
+ * Load 8-bit data and sign-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1sb_gather_[u32]offsetS32)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1sbGatherU32offsetS32(pg: SvboolT, base: ConstPtr, offsets: Svuint32T): Svint32T {
+    fun svldnt1sbGatherU32offsetS32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i8 = null as Nxv4i8
+    return Simd.simdCast(svldnt1sbGatherU32offsetS32(pg.sveInto(), base, offsets.asSigned()))
+}
+
+/**
+ * Load 16-bit data and sign-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1sh_gather_[u32]offsetS32)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1shGatherU32offsetS32(pg: SvboolT, base: ConstPtr, offsets: Svuint32T): Svint32T {
+    fun svldnt1shGatherU32offsetS32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i16 = null as Nxv4i16
+    return Simd.simdCast(svldnt1shGatherU32offsetS32(pg.sveInto(), base, offsets.asSigned()))
+}
+
+/**
+ * Load 8-bit data and sign-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1sb_gather_[u32]offsetU32)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1sbGatherU32offsetU32(pg: SvboolT, base: ConstPtr, offsets: Svuint32T): Svuint32T = svldnt1sbGatherU32offsetS32(pg, base, offsets).asUnsigned()
+
+/**
+ * Load 16-bit data and sign-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1sh_gather_[u32]offsetU32)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1shGatherU32offsetU32(pg: SvboolT, base: ConstPtr, offsets: Svuint32T): Svuint32T = svldnt1shGatherU32offsetS32(pg, base, offsets).asUnsigned()
+
+/**
+ * Load 8-bit data and sign-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1sb_gather_[u64]offsetS64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1sbGatherU64offsetS64(pg: SvboolT, base: ConstPtr, offsets: Svuint64T): Svint64T = svldnt1sbGatherS64offsetS64(pg, base, offsets.asSigned())
+
+/**
+ * Load 16-bit data and sign-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1sh_gather_[u64]offsetS64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1shGatherU64offsetS64(pg: SvboolT, base: ConstPtr, offsets: Svuint64T): Svint64T = svldnt1shGatherS64offsetS64(pg, base, offsets.asSigned())
+
+/**
+ * Load 32-bit data and sign-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1sw_gather_[u64]offsetS64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1swGatherU64offsetS64(pg: SvboolT, base: ConstPtr, offsets: Svuint64T): Svint64T = svldnt1swGatherS64offsetS64(pg, base, offsets.asSigned())
+
+/**
+ * Load 8-bit data and sign-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1sb_gather_[u64]offsetU64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1sbGatherU64offsetU64(pg: SvboolT, base: ConstPtr, offsets: Svuint64T): Svuint64T = svldnt1sbGatherS64offsetS64(pg, base, offsets.asSigned()).asUnsigned()
+
+/**
+ * Load 16-bit data and sign-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1sh_gather_[u64]offsetU64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1shGatherU64offsetU64(pg: SvboolT, base: ConstPtr, offsets: Svuint64T): Svuint64T = svldnt1shGatherS64offsetS64(pg, base, offsets.asSigned()).asUnsigned()
+
+/**
+ * Load 32-bit data and sign-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1sw_gather_[u64]offsetU64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1swGatherU64offsetU64(pg: SvboolT, base: ConstPtr, offsets: Svuint64T): Svuint64T = svldnt1swGatherS64offsetS64(pg, base, offsets.asSigned()).asUnsigned()
+
+/**
+ * Load 8-bit data and sign-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1sbGather[_u32base]_offset_s32)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1sbGatherU32baseOffsetS32(pg: SvboolT, bases: Svuint32T, offset: Long): Svint32T {
+    fun svldnt1sbGatherU32baseOffsetS32(pg1: Svbool4T, bases1: Svint32T, offset1: Long): Nxv4i8 = null as Nxv4i8
+    return Simd.simdCast(svldnt1sbGatherU32baseOffsetS32(pg.sveInto(), bases.asSigned(), offset))
+}
+
+/**
+ * Load 16-bit data and sign-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1shGather[_u32base]_offset_s32)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1shGatherU32baseOffsetS32(pg: SvboolT, bases: Svuint32T, offset: Long): Svint32T {
+    fun svldnt1shGatherU32baseOffsetS32(pg1: Svbool4T, bases1: Svint32T, offset1: Long): Nxv4i16 = null as Nxv4i16
+    return Simd.simdCast(svldnt1shGatherU32baseOffsetS32(pg.sveInto(), bases.asSigned(), offset))
+}
+
+/**
+ * Load 8-bit data and sign-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1sbGather[_u32base]_offset_u32)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1sbGatherU32baseOffsetU32(pg: SvboolT, bases: Svuint32T, offset: Long): Svuint32T = svldnt1sbGatherU32baseOffsetS32(pg, bases, offset).asUnsigned()
+
+/**
+ * Load 16-bit data and sign-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1shGather[_u32base]_offset_u32)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1shGatherU32baseOffsetU32(pg: SvboolT, bases: Svuint32T, offset: Long): Svuint32T = svldnt1shGatherU32baseOffsetS32(pg, bases, offset).asUnsigned()
+
+/**
+ * Load 8-bit data and sign-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1sbGather[_u64base]_offset_s64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1sbGatherU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset: Long): Svint64T {
+    fun svldnt1sbGatherU64baseOffsetS64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Nxv2i8 = null as Nxv2i8
+    return Simd.simdCast(svldnt1sbGatherU64baseOffsetS64(pg.sveInto(), bases.asSigned(), offset))
+}
+
+/**
+ * Load 16-bit data and sign-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1shGather[_u64base]_offset_s64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1shGatherU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset: Long): Svint64T {
+    fun svldnt1shGatherU64baseOffsetS64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Nxv2i16 = null as Nxv2i16
+    return Simd.simdCast(svldnt1shGatherU64baseOffsetS64(pg.sveInto(), bases.asSigned(), offset))
+}
+
+/**
+ * Load 32-bit data and sign-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1swGather[_u64base]_offset_s64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1swGatherU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset: Long): Svint64T {
+    fun svldnt1swGatherU64baseOffsetS64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Nxv2i32 = null as Nxv2i32
+    return Simd.simdCast(svldnt1swGatherU64baseOffsetS64(pg.sveInto(), bases.asSigned(), offset))
+}
+
+/**
+ * Load 8-bit data and sign-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1sbGather[_u64base]_offset_u64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1sbGatherU64baseOffsetU64(pg: SvboolT, bases: Svuint64T, offset: Long): Svuint64T = svldnt1sbGatherU64baseOffsetS64(pg, bases, offset).asUnsigned()
+
+/**
+ * Load 16-bit data and sign-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1shGather[_u64base]_offset_u64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1shGatherU64baseOffsetU64(pg: SvboolT, bases: Svuint64T, offset: Long): Svuint64T = svldnt1shGatherU64baseOffsetS64(pg, bases, offset).asUnsigned()
+
+/**
+ * Load 32-bit data and sign-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1swGather[_u64base]_offset_u64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1swGatherU64baseOffsetU64(pg: SvboolT, bases: Svuint64T, offset: Long): Svuint64T = svldnt1swGatherU64baseOffsetS64(pg, bases, offset).asUnsigned()
+
+/**
+ * Load 8-bit data and sign-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1sbGather[_u32base]_s32)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1sbGatherU32baseS32(pg: SvboolT, bases: Svuint32T): Svint32T = svldnt1sbGatherU32baseOffsetS32(pg, bases, 0L)
+
+/**
+ * Load 16-bit data and sign-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1shGather[_u32base]_s32)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1shGatherU32baseS32(pg: SvboolT, bases: Svuint32T): Svint32T = svldnt1shGatherU32baseOffsetS32(pg, bases, 0L)
+
+/**
+ * Load 8-bit data and sign-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1sbGather[_u32base]_u32)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1sbGatherU32baseU32(pg: SvboolT, bases: Svuint32T): Svuint32T = svldnt1sbGatherU32baseOffsetU32(pg, bases, 0L)
+
+/**
+ * Load 16-bit data and sign-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1shGather[_u32base]_u32)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1shGatherU32baseU32(pg: SvboolT, bases: Svuint32T): Svuint32T = svldnt1shGatherU32baseOffsetU32(pg, bases, 0L)
+
+/**
+ * Load 8-bit data and sign-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1sbGather[_u64base]_s64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1sbGatherU64baseS64(pg: SvboolT, bases: Svuint64T): Svint64T = svldnt1sbGatherU64baseOffsetS64(pg, bases, 0L)
+
+/**
+ * Load 16-bit data and sign-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1shGather[_u64base]_s64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1shGatherU64baseS64(pg: SvboolT, bases: Svuint64T): Svint64T = svldnt1shGatherU64baseOffsetS64(pg, bases, 0L)
+
+/**
+ * Load 32-bit data and sign-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1swGather[_u64base]_s64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1swGatherU64baseS64(pg: SvboolT, bases: Svuint64T): Svint64T = svldnt1swGatherU64baseOffsetS64(pg, bases, 0L)
+
+/**
+ * Load 8-bit data and sign-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1sbGather[_u64base]_u64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1sbGatherU64baseU64(pg: SvboolT, bases: Svuint64T): Svuint64T = svldnt1sbGatherU64baseOffsetU64(pg, bases, 0L)
+
+/**
+ * Load 16-bit data and sign-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1shGather[_u64base]_u64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1shGatherU64baseU64(pg: SvboolT, bases: Svuint64T): Svuint64T = svldnt1shGatherU64baseOffsetU64(pg, bases, 0L)
+
+/**
+ * Load 32-bit data and sign-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1swGather[_u64base]_u64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1swGatherU64baseU64(pg: SvboolT, bases: Svuint64T): Svuint64T = svldnt1swGatherU64baseOffsetU64(pg, bases, 0L)
+
+/**
+ * Load 16-bit data and sign-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1sh_gather_[s64]indexS64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1shGatherS64indexS64(pg: SvboolT, base: ConstPtr, indices: Svint64T): Svint64T {
+    fun svldnt1shGatherS64indexS64(pg1: Svbool2T, base1: ConstPtr, indices1: Svint64T): Nxv2i16 = null as Nxv2i16
+    return Simd.simdCast(svldnt1shGatherS64indexS64(pg.sveInto(), base, indices))
+}
+
+/**
+ * Load 32-bit data and sign-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1sw_gather_[s64]indexS64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1swGatherS64indexS64(pg: SvboolT, base: ConstPtr, indices: Svint64T): Svint64T {
+    fun svldnt1swGatherS64indexS64(pg1: Svbool2T, base1: ConstPtr, indices1: Svint64T): Nxv2i32 = null as Nxv2i32
+    return Simd.simdCast(svldnt1swGatherS64indexS64(pg.sveInto(), base, indices))
+}
+
+/**
+ * Load 16-bit data and sign-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1sh_gather_[s64]indexU64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1shGatherS64indexU64(pg: SvboolT, base: ConstPtr, indices: Svint64T): Svuint64T = svldnt1shGatherS64indexS64(pg, base, indices).asUnsigned()
+
+/**
+ * Load 32-bit data and sign-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1sw_gather_[s64]indexU64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1swGatherS64indexU64(pg: SvboolT, base: ConstPtr, indices: Svint64T): Svuint64T = svldnt1swGatherS64indexS64(pg, base, indices).asUnsigned()
+
+/**
+ * Load 16-bit data and sign-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1sh_gather_[u64]indexS64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1shGatherU64indexS64(pg: SvboolT, base: ConstPtr, indices: Svuint64T): Svint64T = svldnt1shGatherS64indexS64(pg, base, indices.asSigned())
+
+/**
+ * Load 32-bit data and sign-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1sw_gather_[u64]indexS64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1swGatherU64indexS64(pg: SvboolT, base: ConstPtr, indices: Svuint64T): Svint64T = svldnt1swGatherS64indexS64(pg, base, indices.asSigned())
+
+/**
+ * Load 16-bit data and sign-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1sh_gather_[u64]indexU64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1shGatherU64indexU64(pg: SvboolT, base: ConstPtr, indices: Svuint64T): Svuint64T = svldnt1shGatherS64indexS64(pg, base, indices.asSigned()).asUnsigned()
+
+/**
+ * Load 32-bit data and sign-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1sw_gather_[u64]indexU64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1swGatherU64indexU64(pg: SvboolT, base: ConstPtr, indices: Svuint64T): Svuint64T = svldnt1swGatherS64indexS64(pg, base, indices.asSigned()).asUnsigned()
+
+/**
+ * Load 16-bit data and sign-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1shGather[_u32base]_index_s32)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1shGatherU32baseIndexS32(pg: SvboolT, bases: Svuint32T, index: Long): Svint32T = svldnt1shGatherU32baseOffsetS32(pg, bases, index.uncheckedShl(1))
+
+/**
+ * Load 16-bit data and sign-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1shGather[_u32base]_index_u32)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1shGatherU32baseIndexU32(pg: SvboolT, bases: Svuint32T, index: Long): Svuint32T = svldnt1shGatherU32baseOffsetU32(pg, bases, index.uncheckedShl(1))
+
+/**
+ * Load 16-bit data and sign-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1shGather[_u64base]_index_s64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1shGatherU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: Long): Svint64T = svldnt1shGatherU64baseOffsetS64(pg, bases, index.uncheckedShl(1))
+
+/**
+ * Load 32-bit data and sign-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1swGather[_u64base]_index_s64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1swGatherU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: Long): Svint64T = svldnt1swGatherU64baseOffsetS64(pg, bases, index.uncheckedShl(2))
+
+/**
+ * Load 16-bit data and sign-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1shGather[_u64base]_index_u64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1shGatherU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: Long): Svuint64T = svldnt1shGatherU64baseOffsetU64(pg, bases, index.uncheckedShl(1))
+
+/**
+ * Load 32-bit data and sign-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1swGather[_u64base]_index_u64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1swGatherU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: Long): Svuint64T = svldnt1swGatherU64baseOffsetU64(pg, bases, index.uncheckedShl(2))
+
+/**
+ * Load 8-bit data and zero-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1ub_gather_[s64]offsetS64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1ubGatherS64offsetS64(pg: SvboolT, base: ConstPtr, offsets: Svint64T): Svint64T = svldnt1ubGatherS64offsetU64(pg, base, offsets).asSigned()
+
+/**
+ * Load 16-bit data and zero-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1uh_gather_[s64]offsetS64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1uhGatherS64offsetS64(pg: SvboolT, base: ConstPtr, offsets: Svint64T): Svint64T = svldnt1uhGatherS64offsetU64(pg, base, offsets).asSigned()
+
+/**
+ * Load 32-bit data and zero-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1uw_gather_[s64]offsetS64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1uwGatherS64offsetS64(pg: SvboolT, base: ConstPtr, offsets: Svint64T): Svint64T = svldnt1uwGatherS64offsetU64(pg, base, offsets).asSigned()
+
+/**
+ * Load 8-bit data and zero-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1ub_gather_[s64]offsetU64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1ubGatherS64offsetU64(pg: SvboolT, base: ConstPtr, offsets: Svint64T): Svuint64T {
+    fun svldnt1ubGatherS64offsetU64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Nxv2i8 = null as Nxv2i8
+    return Simd.simdCast<Nxv2u8>(svldnt1ubGatherS64offsetU64(pg.sveInto(), base.asSigned(), offsets).asUnsigned())
+}
+
+/**
+ * Load 16-bit data and zero-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1uh_gather_[s64]offsetU64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1uhGatherS64offsetU64(pg: SvboolT, base: ConstPtr, offsets: Svint64T): Svuint64T {
+    fun svldnt1uhGatherS64offsetU64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Nxv2i16 = null as Nxv2i16
+    return Simd.simdCast<Nxv2u16>(svldnt1uhGatherS64offsetU64(pg.sveInto(), base.asSigned(), offsets).asUnsigned())
+}
+
+/**
+ * Load 32-bit data and zero-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1uw_gather_[s64]offsetU64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1uwGatherS64offsetU64(pg: SvboolT, base: ConstPtr, offsets: Svint64T): Svuint64T {
+    fun svldnt1uwGatherS64offsetU64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Nxv2i32 = null as Nxv2i32
+    return Simd.simdCast<Nxv2u32>(svldnt1uwGatherS64offsetU64(pg.sveInto(), base.asSigned(), offsets).asUnsigned())
+}
+
+/**
+ * Load 8-bit data and zero-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1ub_gather_[u32]offsetS32)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1ubGatherU32offsetS32(pg: SvboolT, base: ConstPtr, offsets: Svuint32T): Svint32T = svldnt1ubGatherU32offsetU32(pg, base, offsets).asSigned()
+
+/**
+ * Load 16-bit data and zero-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1uh_gather_[u32]offsetS32)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1uhGatherU32offsetS32(pg: SvboolT, base: ConstPtr, offsets: Svuint32T): Svint32T = svldnt1uhGatherU32offsetU32(pg, base, offsets).asSigned()
+
+/**
+ * Load 8-bit data and zero-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1ub_gather_[u32]offsetU32)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1ubGatherU32offsetU32(pg: SvboolT, base: ConstPtr, offsets: Svuint32T): Svuint32T {
+    fun svldnt1ubGatherU32offsetU32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i8 = null as Nxv4i8
+    return Simd.simdCast<Nxv4u8>(svldnt1ubGatherU32offsetU32(pg.sveInto(), base.asSigned(), offsets.asSigned()).asUnsigned())
+}
+
+/**
+ * Load 16-bit data and zero-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1uh_gather_[u32]offsetU32)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1uhGatherU32offsetU32(pg: SvboolT, base: ConstPtr, offsets: Svuint32T): Svuint32T {
+    fun svldnt1uhGatherU32offsetU32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i16 = null as Nxv4i16
+    return Simd.simdCast<Nxv4u16>(svldnt1uhGatherU32offsetU32(pg.sveInto(), base.asSigned(), offsets.asSigned()).asUnsigned())
+}
+
+/**
+ * Load 8-bit data and zero-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1ub_gather_[u64]offsetS64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1ubGatherU64offsetS64(pg: SvboolT, base: ConstPtr, offsets: Svuint64T): Svint64T = svldnt1ubGatherS64offsetU64(pg, base, offsets.asSigned()).asSigned()
+
+/**
+ * Load 16-bit data and zero-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1uh_gather_[u64]offsetS64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1uhGatherU64offsetS64(pg: SvboolT, base: ConstPtr, offsets: Svuint64T): Svint64T = svldnt1uhGatherS64offsetU64(pg, base, offsets.asSigned()).asSigned()
+
+/**
+ * Load 32-bit data and zero-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1uw_gather_[u64]offsetS64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1uwGatherU64offsetS64(pg: SvboolT, base: ConstPtr, offsets: Svuint64T): Svint64T = svldnt1uwGatherS64offsetU64(pg, base, offsets.asSigned()).asSigned()
+
+/**
+ * Load 8-bit data and zero-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1ub_gather_[u64]offsetU64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1ubGatherU64offsetU64(pg: SvboolT, base: ConstPtr, offsets: Svuint64T): Svuint64T = svldnt1ubGatherS64offsetU64(pg, base, offsets.asSigned())
+
+/**
+ * Load 16-bit data and zero-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1uh_gather_[u64]offsetU64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1uhGatherU64offsetU64(pg: SvboolT, base: ConstPtr, offsets: Svuint64T): Svuint64T = svldnt1uhGatherS64offsetU64(pg, base, offsets.asSigned())
+
+/**
+ * Load 32-bit data and zero-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1uw_gather_[u64]offsetU64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1uwGatherU64offsetU64(pg: SvboolT, base: ConstPtr, offsets: Svuint64T): Svuint64T = svldnt1uwGatherS64offsetU64(pg, base, offsets.asSigned())
+
+/**
+ * Load 8-bit data and zero-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1ubGather[_u32base]_offset_s32)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1ubGatherU32baseOffsetS32(pg: SvboolT, bases: Svuint32T, offset: Long): Svint32T = svldnt1ubGatherU32baseOffsetU32(pg, bases, offset).asSigned()
+
+/**
+ * Load 16-bit data and zero-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1uhGather[_u32base]_offset_s32)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1uhGatherU32baseOffsetS32(pg: SvboolT, bases: Svuint32T, offset: Long): Svint32T = svldnt1uhGatherU32baseOffsetU32(pg, bases, offset).asSigned()
+
+/**
+ * Load 8-bit data and zero-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1ubGather[_u32base]_offset_u32)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1ubGatherU32baseOffsetU32(pg: SvboolT, bases: Svuint32T, offset: Long): Svuint32T {
+    fun svldnt1ubGatherU32baseOffsetU32(pg1: Svbool4T, bases1: Svint32T, offset1: Long): Nxv4i8 = null as Nxv4i8
+    return Simd.simdCast<Nxv4u8>(svldnt1ubGatherU32baseOffsetU32(pg.sveInto(), bases.asSigned(), offset).asUnsigned())
+}
+
+/**
+ * Load 16-bit data and zero-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1uhGather[_u32base]_offset_u32)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1uhGatherU32baseOffsetU32(pg: SvboolT, bases: Svuint32T, offset: Long): Svuint32T {
+    fun svldnt1uhGatherU32baseOffsetU32(pg1: Svbool4T, bases1: Svint32T, offset1: Long): Nxv4i16 = null as Nxv4i16
+    return Simd.simdCast<Nxv4u16>(svldnt1uhGatherU32baseOffsetU32(pg.sveInto(), bases.asSigned(), offset).asUnsigned())
+}
+
+/**
+ * Load 8-bit data and zero-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1ubGather[_u64base]_offset_s64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1ubGatherU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset: Long): Svint64T = svldnt1ubGatherU64baseOffsetU64(pg, bases, offset).asSigned()
+
+/**
+ * Load 16-bit data and zero-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1uhGather[_u64base]_offset_s64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1uhGatherU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset: Long): Svint64T = svldnt1uhGatherU64baseOffsetU64(pg, bases, offset).asSigned()
+
+/**
+ * Load 32-bit data and zero-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1uwGather[_u64base]_offset_s64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1uwGatherU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset: Long): Svint64T = svldnt1uwGatherU64baseOffsetU64(pg, bases, offset).asSigned()
+
+/**
+ * Load 8-bit data and zero-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1ubGather[_u64base]_offset_u64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1ubGatherU64baseOffsetU64(pg: SvboolT, bases: Svuint64T, offset: Long): Svuint64T {
+    fun svldnt1ubGatherU64baseOffsetU64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Nxv2i8 = null as Nxv2i8
+    return Simd.simdCast<Nxv2u8>(svldnt1ubGatherU64baseOffsetU64(pg.sveInto(), bases.asSigned(), offset).asUnsigned())
+}
+
+/**
+ * Load 16-bit data and zero-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1uhGather[_u64base]_offset_u64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1uhGatherU64baseOffsetU64(pg: SvboolT, bases: Svuint64T, offset: Long): Svuint64T {
+    fun svldnt1uhGatherU64baseOffsetU64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Nxv2i16 = null as Nxv2i16
+    return Simd.simdCast<Nxv2u16>(svldnt1uhGatherU64baseOffsetU64(pg.sveInto(), bases.asSigned(), offset).asUnsigned())
+}
+
+/**
+ * Load 32-bit data and zero-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1uwGather[_u64base]_offset_u64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1uwGatherU64baseOffsetU64(pg: SvboolT, bases: Svuint64T, offset: Long): Svuint64T {
+    fun svldnt1uwGatherU64baseOffsetU64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Nxv2i32 = null as Nxv2i32
+    return Simd.simdCast<Nxv2u32>(svldnt1uwGatherU64baseOffsetU64(pg.sveInto(), bases.asSigned(), offset).asUnsigned())
+}
+
+/**
+ * Load 8-bit data and zero-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1ubGather[_u32base]_s32)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1ubGatherU32baseS32(pg: SvboolT, bases: Svuint32T): Svint32T = svldnt1ubGatherU32baseOffsetS32(pg, bases, 0L)
+
+/**
+ * Load 16-bit data and zero-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1uhGather[_u32base]_s32)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1uhGatherU32baseS32(pg: SvboolT, bases: Svuint32T): Svint32T = svldnt1uhGatherU32baseOffsetS32(pg, bases, 0L)
+
+/**
+ * Load 8-bit data and zero-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1ubGather[_u32base]_u32)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1ubGatherU32baseU32(pg: SvboolT, bases: Svuint32T): Svuint32T = svldnt1ubGatherU32baseOffsetU32(pg, bases, 0L)
+
+/**
+ * Load 16-bit data and zero-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1uhGather[_u32base]_u32)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1uhGatherU32baseU32(pg: SvboolT, bases: Svuint32T): Svuint32T = svldnt1uhGatherU32baseOffsetU32(pg, bases, 0L)
+
+/**
+ * Load 8-bit data and zero-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1ubGather[_u64base]_s64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1ubGatherU64baseS64(pg: SvboolT, bases: Svuint64T): Svint64T = svldnt1ubGatherU64baseOffsetS64(pg, bases, 0L)
+
+/**
+ * Load 16-bit data and zero-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1uhGather[_u64base]_s64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1uhGatherU64baseS64(pg: SvboolT, bases: Svuint64T): Svint64T = svldnt1uhGatherU64baseOffsetS64(pg, bases, 0L)
+
+/**
+ * Load 32-bit data and zero-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1uwGather[_u64base]_s64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1uwGatherU64baseS64(pg: SvboolT, bases: Svuint64T): Svint64T = svldnt1uwGatherU64baseOffsetS64(pg, bases, 0L)
+
+/**
+ * Load 8-bit data and zero-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1ubGather[_u64base]_u64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1ubGatherU64baseU64(pg: SvboolT, bases: Svuint64T): Svuint64T = svldnt1ubGatherU64baseOffsetU64(pg, bases, 0L)
+
+/**
+ * Load 16-bit data and zero-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1uhGather[_u64base]_u64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1uhGatherU64baseU64(pg: SvboolT, bases: Svuint64T): Svuint64T = svldnt1uhGatherU64baseOffsetU64(pg, bases, 0L)
+
+/**
+ * Load 32-bit data and zero-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1uwGather[_u64base]_u64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1uwGatherU64baseU64(pg: SvboolT, bases: Svuint64T): Svuint64T = svldnt1uwGatherU64baseOffsetU64(pg, bases, 0L)
+
+/**
+ * Load 16-bit data and zero-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1uh_gather_[s64]indexS64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1uhGatherS64indexS64(pg: SvboolT, base: ConstPtr, indices: Svint64T): Svint64T = svldnt1uhGatherS64indexU64(pg, base, indices).asSigned()
+
+/**
+ * Load 32-bit data and zero-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1uw_gather_[s64]indexS64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1uwGatherS64indexS64(pg: SvboolT, base: ConstPtr, indices: Svint64T): Svint64T = svldnt1uwGatherS64indexU64(pg, base, indices).asSigned()
+
+/**
+ * Load 16-bit data and zero-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1uh_gather_[s64]indexU64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1uhGatherS64indexU64(pg: SvboolT, base: ConstPtr, indices: Svint64T): Svuint64T {
+    fun svldnt1uhGatherS64indexU64(pg1: Svbool2T, base1: ConstPtr, indices1: Svint64T): Nxv2i16 = null as Nxv2i16
+    return Simd.simdCast<Nxv2u16>(svldnt1uhGatherS64indexU64(pg.sveInto(), base.asSigned(), indices).asUnsigned())
+}
+
+/**
+ * Load 32-bit data and zero-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1uw_gather_[s64]indexU64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1uwGatherS64indexU64(pg: SvboolT, base: ConstPtr, indices: Svint64T): Svuint64T {
+    fun svldnt1uwGatherS64indexU64(pg1: Svbool2T, base1: ConstPtr, indices1: Svint64T): Nxv2i32 = null as Nxv2i32
+    return Simd.simdCast<Nxv2u32>(svldnt1uwGatherS64indexU64(pg.sveInto(), base.asSigned(), indices).asUnsigned())
+}
+
+/**
+ * Load 16-bit data and zero-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1uh_gather_[u64]indexS64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1uhGatherU64indexS64(pg: SvboolT, base: ConstPtr, indices: Svuint64T): Svint64T = svldnt1uhGatherS64indexU64(pg, base, indices.asSigned()).asSigned()
+
+/**
+ * Load 32-bit data and zero-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1uw_gather_[u64]indexS64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1uwGatherU64indexS64(pg: SvboolT, base: ConstPtr, indices: Svuint64T): Svint64T = svldnt1uwGatherS64indexU64(pg, base, indices.asSigned()).asSigned()
+
+/**
+ * Load 16-bit data and zero-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1uh_gather_[u64]indexU64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1uhGatherU64indexU64(pg: SvboolT, base: ConstPtr, indices: Svuint64T): Svuint64T = svldnt1uhGatherS64indexU64(pg, base, indices.asSigned())
+
+/**
+ * Load 32-bit data and zero-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1uw_gather_[u64]indexU64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1uwGatherU64indexU64(pg: SvboolT, base: ConstPtr, indices: Svuint64T): Svuint64T = svldnt1uwGatherS64indexU64(pg, base, indices.asSigned())
+
+/**
+ * Load 16-bit data and zero-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1uhGather[_u32base]_index_s32)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1uhGatherU32baseIndexS32(pg: SvboolT, bases: Svuint32T, index: Long): Svint32T = svldnt1uhGatherU32baseOffsetS32(pg, bases, index.uncheckedShl(1))
+
+/**
+ * Load 16-bit data and zero-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1uhGather[_u32base]_index_u32)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1uhGatherU32baseIndexU32(pg: SvboolT, bases: Svuint32T, index: Long): Svuint32T = svldnt1uhGatherU32baseOffsetU32(pg, bases, index.uncheckedShl(1))
+
+/**
+ * Load 16-bit data and zero-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1uhGather[_u64base]_index_s64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1uhGatherU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: Long): Svint64T = svldnt1uhGatherU64baseOffsetS64(pg, bases, index.uncheckedShl(1))
+
+/**
+ * Load 32-bit data and zero-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1uwGather[_u64base]_index_s64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1uwGatherU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: Long): Svint64T = svldnt1uwGatherU64baseOffsetS64(pg, bases, index.uncheckedShl(2))
+
+/**
+ * Load 16-bit data and zero-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1uhGather[_u64base]_index_u64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1uhGatherU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: Long): Svuint64T = svldnt1uhGatherU64baseOffsetU64(pg, bases, index.uncheckedShl(1))
+
+/**
+ * Load 32-bit data and zero-extend, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svldnt1uwGather[_u64base]_index_u64)
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svldnt1uwGatherU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: Long): Svuint64T = svldnt1uwGatherU64baseOffsetU64(pg, bases, index.uncheckedShl(2))
+
+/**
+ * Base 2 logarithm as integer
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svlogb[_f32]_m)
+ */
+public fun svlogbF32M(inactive: Svint32T, pg: SvboolT, op: Svfloat32T): Svint32T {
+    fun svlogbF32M(inactive1: Svint32T, pg1: Svbool4T, op1: Svfloat32T): Svint32T = null as Svint32T
+    return svlogbF32M(inactive, pg.sveInto(), op)
+}
+
+/**
+ * Base 2 logarithm as integer
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svlogb[_f32]_x)
+ */
+public fun svlogbF32X(pg: SvboolT, op: Svfloat32T): Svint32T = svlogbF32M(transmuteUnchecked(op), pg, op)
+
+/**
+ * Base 2 logarithm as integer
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svlogb[_f32]_z)
+ */
+public fun svlogbF32Z(pg: SvboolT, op: Svfloat32T): Svint32T = svlogbF32M(svdupNS32(0), pg, op)
+
+/**
+ * Base 2 logarithm as integer
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svlogb[_f64]_m)
+ */
+public fun svlogbF64M(inactive: Svint64T, pg: SvboolT, op: Svfloat64T): Svint64T {
+    fun svlogbF64M(inactive1: Svint64T, pg1: Svbool2T, op1: Svfloat64T): Svint64T = null as Svint64T
+    return svlogbF64M(inactive, pg.sveInto(), op)
+}
+
+/**
+ * Base 2 logarithm as integer
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svlogb[_f64]_x)
+ */
+public fun svlogbF64X(pg: SvboolT, op: Svfloat64T): Svint64T = svlogbF64M(transmuteUnchecked(op), pg, op)
+
+/**
+ * Base 2 logarithm as integer
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svlogb[_f64]_z)
+ */
+public fun svlogbF64Z(pg: SvboolT, op: Svfloat64T): Svint64T = svlogbF64M(svdupNS64(0L), pg, op)
+
+/**
+ * Detect any matching elements
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmatch[_s8])
+ */
+public fun svmatchS8(pg: SvboolT, op1: Svint8T, op2: Svint8T): SvboolT {
+    fun svmatchS8(pg1: SvboolT, op11: Svint8T, op21: Svint8T): SvboolT = null as SvboolT
+    return svmatchS8(pg, op1, op2)
+}
+
+/**
+ * Detect any matching elements
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmatch[_s16])
+ */
+public fun svmatchS16(pg: SvboolT, op1: Svint16T, op2: Svint16T): SvboolT {
+    fun svmatchS16(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svbool8T = null as Svbool8T
+    return svmatchS16(pg.sveInto(), op1, op2).sveInto()
+}
+
+/**
+ * Detect any matching elements
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmatch[_u8])
+ */
+public fun svmatchU8(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): SvboolT = svmatchS8(pg, op1.asSigned(), op2.asSigned())
+
+/**
+ * Detect any matching elements
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmatch[_u16])
+ */
+public fun svmatchU16(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): SvboolT = svmatchS16(pg, op1.asSigned(), op2.asSigned())
+
+/**
+ * Maximum number pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmaxnmp[_f32]_m)
+ */
+public fun svmaxnmpF32M(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T): Svfloat32T {
+    fun svmaxnmpF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = null as Svfloat32T
+    return svmaxnmpF32M(pg.sveInto(), op1, op2)
+}
+
+/**
+ * Maximum number pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmaxnmp[_f32]_x)
+ */
+public fun svmaxnmpF32X(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T): Svfloat32T = svmaxnmpF32M(pg, op1, op2)
+
+/**
+ * Maximum number pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmaxnmp[_f64]_m)
+ */
+public fun svmaxnmpF64M(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T): Svfloat64T {
+    fun svmaxnmpF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = null as Svfloat64T
+    return svmaxnmpF64M(pg.sveInto(), op1, op2)
+}
+
+/**
+ * Maximum number pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmaxnmp[_f64]_x)
+ */
+public fun svmaxnmpF64X(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T): Svfloat64T = svmaxnmpF64M(pg, op1, op2)
+
+/**
+ * Maximum pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmaxp[_f32]_m)
+ */
+public fun svmaxpF32M(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T): Svfloat32T {
+    fun svmaxpF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = null as Svfloat32T
+    return svmaxpF32M(pg.sveInto(), op1, op2)
+}
+
+/**
+ * Maximum pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmaxp[_f32]_x)
+ */
+public fun svmaxpF32X(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T): Svfloat32T = svmaxpF32M(pg, op1, op2)
+
+/**
+ * Maximum pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmaxp[_f64]_m)
+ */
+public fun svmaxpF64M(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T): Svfloat64T {
+    fun svmaxpF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = null as Svfloat64T
+    return svmaxpF64M(pg.sveInto(), op1, op2)
+}
+
+/**
+ * Maximum pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmaxp[_f64]_x)
+ */
+public fun svmaxpF64X(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T): Svfloat64T = svmaxpF64M(pg, op1, op2)
+
+/**
+ * Maximum pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmaxp[_s8]_m)
+ */
+public fun svmaxpS8M(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T {
+    fun svmaxpS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    return svmaxpS8M(pg, op1, op2)
+}
+
+/**
+ * Maximum pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmaxp[_s8]_x)
+ */
+public fun svmaxpS8X(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T = svmaxpS8M(pg, op1, op2)
+
+/**
+ * Maximum pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmaxp[_s16]_m)
+ */
+public fun svmaxpS16M(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T {
+    fun svmaxpS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    return svmaxpS16M(pg.sveInto(), op1, op2)
+}
+
+/**
+ * Maximum pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmaxp[_s16]_x)
+ */
+public fun svmaxpS16X(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T = svmaxpS16M(pg, op1, op2)
+
+/**
+ * Maximum pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmaxp[_s32]_m)
+ */
+public fun svmaxpS32M(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T {
+    fun svmaxpS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    return svmaxpS32M(pg.sveInto(), op1, op2)
+}
+
+/**
+ * Maximum pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmaxp[_s32]_x)
+ */
+public fun svmaxpS32X(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T = svmaxpS32M(pg, op1, op2)
+
+/**
+ * Maximum pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmaxp[_s64]_m)
+ */
+public fun svmaxpS64M(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T {
+    fun svmaxpS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    return svmaxpS64M(pg.sveInto(), op1, op2)
+}
+
+/**
+ * Maximum pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmaxp[_s64]_x)
+ */
+public fun svmaxpS64X(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T = svmaxpS64M(pg, op1, op2)
+
+/**
+ * Maximum pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmaxp[_u8]_m)
+ */
+public fun svmaxpU8M(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T {
+    fun svmaxpU8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    return svmaxpU8M(pg, op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Maximum pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmaxp[_u8]_x)
+ */
+public fun svmaxpU8X(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T = svmaxpU8M(pg, op1, op2)
+
+/**
+ * Maximum pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmaxp[_u16]_m)
+ */
+public fun svmaxpU16M(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T {
+    fun svmaxpU16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    return svmaxpU16M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Maximum pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmaxp[_u16]_x)
+ */
+public fun svmaxpU16X(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T = svmaxpU16M(pg, op1, op2)
+
+/**
+ * Maximum pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmaxp[_u32]_m)
+ */
+public fun svmaxpU32M(pg: SvboolT, op1: Svuint32T, op2: Svuint32T): Svuint32T {
+    fun svmaxpU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    return svmaxpU32M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Maximum pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmaxp[_u32]_x)
+ */
+public fun svmaxpU32X(pg: SvboolT, op1: Svuint32T, op2: Svuint32T): Svuint32T = svmaxpU32M(pg, op1, op2)
+
+/**
+ * Maximum pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmaxp[_u64]_m)
+ */
+public fun svmaxpU64M(pg: SvboolT, op1: Svuint64T, op2: Svuint64T): Svuint64T {
+    fun svmaxpU64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    return svmaxpU64M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Maximum pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmaxp[_u64]_x)
+ */
+public fun svmaxpU64X(pg: SvboolT, op1: Svuint64T, op2: Svuint64T): Svuint64T = svmaxpU64M(pg, op1, op2)
+
+/**
+ * Minimum number pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svminnmp[_f32]_m)
+ */
+public fun svminnmpF32M(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T): Svfloat32T {
+    fun svminnmpF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = null as Svfloat32T
+    return svminnmpF32M(pg.sveInto(), op1, op2)
+}
+
+/**
+ * Minimum number pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svminnmp[_f32]_x)
+ */
+public fun svminnmpF32X(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T): Svfloat32T = svminnmpF32M(pg, op1, op2)
+
+/**
+ * Minimum number pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svminnmp[_f64]_m)
+ */
+public fun svminnmpF64M(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T): Svfloat64T {
+    fun svminnmpF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = null as Svfloat64T
+    return svminnmpF64M(pg.sveInto(), op1, op2)
+}
+
+/**
+ * Minimum number pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svminnmp[_f64]_x)
+ */
+public fun svminnmpF64X(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T): Svfloat64T = svminnmpF64M(pg, op1, op2)
+
+/**
+ * Minimum pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svminp[_f32]_m)
+ */
+public fun svminpF32M(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T): Svfloat32T {
+    fun svminpF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = null as Svfloat32T
+    return svminpF32M(pg.sveInto(), op1, op2)
+}
+
+/**
+ * Minimum pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svminp[_f32]_x)
+ */
+public fun svminpF32X(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T): Svfloat32T = svminpF32M(pg, op1, op2)
+
+/**
+ * Minimum pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svminp[_f64]_m)
+ */
+public fun svminpF64M(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T): Svfloat64T {
+    fun svminpF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = null as Svfloat64T
+    return svminpF64M(pg.sveInto(), op1, op2)
+}
+
+/**
+ * Minimum pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svminp[_f64]_x)
+ */
+public fun svminpF64X(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T): Svfloat64T = svminpF64M(pg, op1, op2)
+
+/**
+ * Minimum pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svminp[_s8]_m)
+ */
+public fun svminpS8M(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T {
+    fun svminpS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    return svminpS8M(pg, op1, op2)
+}
+
+/**
+ * Minimum pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svminp[_s8]_x)
+ */
+public fun svminpS8X(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T = svminpS8M(pg, op1, op2)
+
+/**
+ * Minimum pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svminp[_s16]_m)
+ */
+public fun svminpS16M(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T {
+    fun svminpS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    return svminpS16M(pg.sveInto(), op1, op2)
+}
+
+/**
+ * Minimum pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svminp[_s16]_x)
+ */
+public fun svminpS16X(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T = svminpS16M(pg, op1, op2)
+
+/**
+ * Minimum pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svminp[_s32]_m)
+ */
+public fun svminpS32M(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T {
+    fun svminpS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    return svminpS32M(pg.sveInto(), op1, op2)
+}
+
+/**
+ * Minimum pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svminp[_s32]_x)
+ */
+public fun svminpS32X(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T = svminpS32M(pg, op1, op2)
+
+/**
+ * Minimum pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svminp[_s64]_m)
+ */
+public fun svminpS64M(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T {
+    fun svminpS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    return svminpS64M(pg.sveInto(), op1, op2)
+}
+
+/**
+ * Minimum pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svminp[_s64]_x)
+ */
+public fun svminpS64X(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T = svminpS64M(pg, op1, op2)
+
+/**
+ * Minimum pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svminp[_u8]_m)
+ */
+public fun svminpU8M(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T {
+    fun svminpU8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    return svminpU8M(pg, op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Minimum pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svminp[_u8]_x)
+ */
+public fun svminpU8X(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T = svminpU8M(pg, op1, op2)
+
+/**
+ * Minimum pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svminp[_u16]_m)
+ */
+public fun svminpU16M(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T {
+    fun svminpU16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    return svminpU16M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Minimum pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svminp[_u16]_x)
+ */
+public fun svminpU16X(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T = svminpU16M(pg, op1, op2)
+
+/**
+ * Minimum pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svminp[_u32]_m)
+ */
+public fun svminpU32M(pg: SvboolT, op1: Svuint32T, op2: Svuint32T): Svuint32T {
+    fun svminpU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    return svminpU32M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Minimum pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svminp[_u32]_x)
+ */
+public fun svminpU32X(pg: SvboolT, op1: Svuint32T, op2: Svuint32T): Svuint32T = svminpU32M(pg, op1, op2)
+
+/**
+ * Minimum pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svminp[_u64]_m)
+ */
+public fun svminpU64M(pg: SvboolT, op1: Svuint64T, op2: Svuint64T): Svuint64T {
+    fun svminpU64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    return svminpU64M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Minimum pairwise
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svminp[_u64]_x)
+ */
+public fun svminpU64X(pg: SvboolT, op1: Svuint64T, op2: Svuint64T): Svuint64T = svminpU64M(pg, op1, op2)
+
+/**
+ * Multiply-add, addend first
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlaLane[_s16])
+ */
+public fun svmlaLaneS16(op1: Svint16T, op2: Svint16T, op3: Svint16T, immIndex: Int): Svint16T {
+    fun svmlaLaneS16(op11: Svint16T, op21: Svint16T, op31: Svint16T, immIndex1: Int): Svint16T = null as Svint16T
+    run {
+        check(0 <= immIndex && immIndex <= 7) { "IMM_INDEX is not in range 0-7" }
+    }
+    return svmlaLaneS16(op1, op2, op3, immIndex)
+}
+
+/**
+ * Multiply-add, addend first
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlaLane[_s32])
+ */
+public fun svmlaLaneS32(op1: Svint32T, op2: Svint32T, op3: Svint32T, immIndex: Int): Svint32T {
+    fun svmlaLaneS32(op11: Svint32T, op21: Svint32T, op31: Svint32T, immIndex1: Int): Svint32T = null as Svint32T
+    run {
+        check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
+    }
+    return svmlaLaneS32(op1, op2, op3, immIndex)
+}
+
+/**
+ * Multiply-add, addend first
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlaLane[_s64])
+ */
+public fun svmlaLaneS64(op1: Svint64T, op2: Svint64T, op3: Svint64T, immIndex: Int): Svint64T {
+    fun svmlaLaneS64(op11: Svint64T, op21: Svint64T, op31: Svint64T, immIndex1: Int): Svint64T = null as Svint64T
+    run {
+        check(0 <= immIndex && immIndex <= 1) { "IMM_INDEX is not in range 0-1" }
+    }
+    return svmlaLaneS64(op1, op2, op3, immIndex)
+}
+
+/**
+ * Multiply-add, addend first
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlaLane[_u16])
+ */
+public fun svmlaLaneU16(op1: Svuint16T, op2: Svuint16T, op3: Svuint16T, immIndex: Int): Svuint16T {
+    run {
+        check(0 <= immIndex && immIndex <= 7) { "IMM_INDEX is not in range 0-7" }
+    }
+    return svmlaLaneS16(op1.asSigned(), op2.asSigned(), op3.asSigned(), immIndex).asUnsigned()
+}
+
+/**
+ * Multiply-add, addend first
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlaLane[_u32])
+ */
+public fun svmlaLaneU32(op1: Svuint32T, op2: Svuint32T, op3: Svuint32T, immIndex: Int): Svuint32T {
+    run {
+        check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
+    }
+    return svmlaLaneS32(op1.asSigned(), op2.asSigned(), op3.asSigned(), immIndex).asUnsigned()
+}
+
+/**
+ * Multiply-add, addend first
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlaLane[_u64])
+ */
+public fun svmlaLaneU64(op1: Svuint64T, op2: Svuint64T, op3: Svuint64T, immIndex: Int): Svuint64T {
+    run {
+        check(0 <= immIndex && immIndex <= 1) { "IMM_INDEX is not in range 0-1" }
+    }
+    return svmlaLaneS64(op1.asSigned(), op2.asSigned(), op3.asSigned(), immIndex).asUnsigned()
+}
+
+/**
+ * Multiply-add long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlalbLane[_s32])
+ */
+public fun svmlalbLaneS32(op1: Svint32T, op2: Svint16T, op3: Svint16T, immIndex: Int): Svint32T {
+    fun svmlalbLaneS32(op11: Svint32T, op21: Svint16T, op31: Svint16T, immIndex1: Int): Svint32T = null as Svint32T
+    run {
+        check(0 <= immIndex && immIndex <= 7) { "IMM_INDEX is not in range 0-7" }
+    }
+    return svmlalbLaneS32(op1, op2, op3, immIndex)
+}
+
+/**
+ * Multiply-add long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlalbLane[_s64])
+ */
+public fun svmlalbLaneS64(op1: Svint64T, op2: Svint32T, op3: Svint32T, immIndex: Int): Svint64T {
+    fun svmlalbLaneS64(op11: Svint64T, op21: Svint32T, op31: Svint32T, immIndex1: Int): Svint64T = null as Svint64T
+    run {
+        check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
+    }
+    return svmlalbLaneS64(op1, op2, op3, immIndex)
+}
+
+/**
+ * Multiply-add long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlalbLane[_u32])
+ */
+public fun svmlalbLaneU32(op1: Svuint32T, op2: Svuint16T, op3: Svuint16T, immIndex: Int): Svuint32T {
+    fun svmlalbLaneU32(op11: Svint32T, op21: Svint16T, op31: Svint16T, immIndex1: Int): Svint32T = null as Svint32T
+    run {
+        check(0 <= immIndex && immIndex <= 7) { "IMM_INDEX is not in range 0-7" }
+    }
+    return svmlalbLaneU32(op1.asSigned(), op2.asSigned(), op3.asSigned(), immIndex).asUnsigned()
+}
+
+/**
+ * Multiply-add long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlalbLane[_u64])
+ */
+public fun svmlalbLaneU64(op1: Svuint64T, op2: Svuint32T, op3: Svuint32T, immIndex: Int): Svuint64T {
+    fun svmlalbLaneU64(op11: Svint64T, op21: Svint32T, op31: Svint32T, immIndex1: Int): Svint64T = null as Svint64T
+    run {
+        check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
+    }
+    return svmlalbLaneU64(op1.asSigned(), op2.asSigned(), op3.asSigned(), immIndex).asUnsigned()
+}
+
+/**
+ * Multiply-add long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlalb[_s16])
+ */
+public fun svmlalbS16(op1: Svint16T, op2: Svint8T, op3: Svint8T): Svint16T {
+    fun svmlalbS16(op11: Svint16T, op21: Svint8T, op31: Svint8T): Svint16T = null as Svint16T
+    return svmlalbS16(op1, op2, op3)
+}
+
+/**
+ * Multiply-add long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlalb[_n_s16])
+ */
+public fun svmlalbNS16(op1: Svint16T, op2: Svint8T, op3: Byte): Svint16T = svmlalbS16(op1, op2, svdupNS8(op3))
+
+/**
+ * Multiply-add long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlalb[_s32])
+ */
+public fun svmlalbS32(op1: Svint32T, op2: Svint16T, op3: Svint16T): Svint32T {
+    fun svmlalbS32(op11: Svint32T, op21: Svint16T, op31: Svint16T): Svint32T = null as Svint32T
+    return svmlalbS32(op1, op2, op3)
+}
+
+/**
+ * Multiply-add long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlalb[_n_s32])
+ */
+public fun svmlalbNS32(op1: Svint32T, op2: Svint16T, op3: Short): Svint32T = svmlalbS32(op1, op2, svdupNS16(op3))
+
+/**
+ * Multiply-add long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlalb[_s64])
+ */
+public fun svmlalbS64(op1: Svint64T, op2: Svint32T, op3: Svint32T): Svint64T {
+    fun svmlalbS64(op11: Svint64T, op21: Svint32T, op31: Svint32T): Svint64T = null as Svint64T
+    return svmlalbS64(op1, op2, op3)
+}
+
+/**
+ * Multiply-add long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlalb[_n_s64])
+ */
+public fun svmlalbNS64(op1: Svint64T, op2: Svint32T, op3: Int): Svint64T = svmlalbS64(op1, op2, svdupNS32(op3))
+
+/**
+ * Multiply-add long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlalb[_u16])
+ */
+public fun svmlalbU16(op1: Svuint16T, op2: Svuint8T, op3: Svuint8T): Svuint16T {
+    fun svmlalbU16(op11: Svint16T, op21: Svint8T, op31: Svint8T): Svint16T = null as Svint16T
+    return svmlalbU16(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
+}
+
+/**
+ * Multiply-add long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlalb[_n_u16])
+ */
+public fun svmlalbNU16(op1: Svuint16T, op2: Svuint8T, op3: UByte): Svuint16T = svmlalbU16(op1, op2, svdupNU8(op3))
+
+/**
+ * Multiply-add long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlalb[_u32])
+ */
+public fun svmlalbU32(op1: Svuint32T, op2: Svuint16T, op3: Svuint16T): Svuint32T {
+    fun svmlalbU32(op11: Svint32T, op21: Svint16T, op31: Svint16T): Svint32T = null as Svint32T
+    return svmlalbU32(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
+}
+
+/**
+ * Multiply-add long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlalb[_n_u32])
+ */
+public fun svmlalbNU32(op1: Svuint32T, op2: Svuint16T, op3: UShort): Svuint32T = svmlalbU32(op1, op2, svdupNU16(op3))
+
+/**
+ * Multiply-add long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlalb[_u64])
+ */
+public fun svmlalbU64(op1: Svuint64T, op2: Svuint32T, op3: Svuint32T): Svuint64T {
+    fun svmlalbU64(op11: Svint64T, op21: Svint32T, op31: Svint32T): Svint64T = null as Svint64T
+    return svmlalbU64(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
+}
+
+/**
+ * Multiply-add long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlalb[_n_u64])
+ */
+public fun svmlalbNU64(op1: Svuint64T, op2: Svuint32T, op3: UInt): Svuint64T = svmlalbU64(op1, op2, svdupNU32(op3))
+
+/**
+ * Multiply-add long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlaltLane[_s32])
+ */
+public fun svmlaltLaneS32(op1: Svint32T, op2: Svint16T, op3: Svint16T, immIndex: Int): Svint32T {
+    fun svmlaltLaneS32(op11: Svint32T, op21: Svint16T, op31: Svint16T, immIndex1: Int): Svint32T = null as Svint32T
+    run {
+        check(0 <= immIndex && immIndex <= 7) { "IMM_INDEX is not in range 0-7" }
+    }
+    return svmlaltLaneS32(op1, op2, op3, immIndex)
+}
+
+/**
+ * Multiply-add long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlaltLane[_s64])
+ */
+public fun svmlaltLaneS64(op1: Svint64T, op2: Svint32T, op3: Svint32T, immIndex: Int): Svint64T {
+    fun svmlaltLaneS64(op11: Svint64T, op21: Svint32T, op31: Svint32T, immIndex1: Int): Svint64T = null as Svint64T
+    run {
+        check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
+    }
+    return svmlaltLaneS64(op1, op2, op3, immIndex)
+}
+
+/**
+ * Multiply-add long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlaltLane[_u32])
+ */
+public fun svmlaltLaneU32(op1: Svuint32T, op2: Svuint16T, op3: Svuint16T, immIndex: Int): Svuint32T {
+    fun svmlaltLaneU32(op11: Svint32T, op21: Svint16T, op31: Svint16T, immIndex1: Int): Svint32T = null as Svint32T
+    run {
+        check(0 <= immIndex && immIndex <= 7) { "IMM_INDEX is not in range 0-7" }
+    }
+    return svmlaltLaneU32(op1.asSigned(), op2.asSigned(), op3.asSigned(), immIndex).asUnsigned()
+}
+
+/**
+ * Multiply-add long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlaltLane[_u64])
+ */
+public fun svmlaltLaneU64(op1: Svuint64T, op2: Svuint32T, op3: Svuint32T, immIndex: Int): Svuint64T {
+    fun svmlaltLaneU64(op11: Svint64T, op21: Svint32T, op31: Svint32T, immIndex1: Int): Svint64T = null as Svint64T
+    run {
+        check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
+    }
+    return svmlaltLaneU64(op1.asSigned(), op2.asSigned(), op3.asSigned(), immIndex).asUnsigned()
+}
+
+/**
+ * Multiply-add long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlalt[_s16])
+ */
+public fun svmlaltS16(op1: Svint16T, op2: Svint8T, op3: Svint8T): Svint16T {
+    fun svmlaltS16(op11: Svint16T, op21: Svint8T, op31: Svint8T): Svint16T = null as Svint16T
+    return svmlaltS16(op1, op2, op3)
+}
+
+/**
+ * Multiply-add long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlalt[_n_s16])
+ */
+public fun svmlaltNS16(op1: Svint16T, op2: Svint8T, op3: Byte): Svint16T = svmlaltS16(op1, op2, svdupNS8(op3))
+
+/**
+ * Multiply-add long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlalt[_s32])
+ */
+public fun svmlaltS32(op1: Svint32T, op2: Svint16T, op3: Svint16T): Svint32T {
+    fun svmlaltS32(op11: Svint32T, op21: Svint16T, op31: Svint16T): Svint32T = null as Svint32T
+    return svmlaltS32(op1, op2, op3)
+}
+
+/**
+ * Multiply-add long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlalt[_n_s32])
+ */
+public fun svmlaltNS32(op1: Svint32T, op2: Svint16T, op3: Short): Svint32T = svmlaltS32(op1, op2, svdupNS16(op3))
+
+/**
+ * Multiply-add long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlalt[_s64])
+ */
+public fun svmlaltS64(op1: Svint64T, op2: Svint32T, op3: Svint32T): Svint64T {
+    fun svmlaltS64(op11: Svint64T, op21: Svint32T, op31: Svint32T): Svint64T = null as Svint64T
+    return svmlaltS64(op1, op2, op3)
+}
+
+/**
+ * Multiply-add long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlalt[_n_s64])
+ */
+public fun svmlaltNS64(op1: Svint64T, op2: Svint32T, op3: Int): Svint64T = svmlaltS64(op1, op2, svdupNS32(op3))
+
+/**
+ * Multiply-add long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlalt[_u16])
+ */
+public fun svmlaltU16(op1: Svuint16T, op2: Svuint8T, op3: Svuint8T): Svuint16T {
+    fun svmlaltU16(op11: Svint16T, op21: Svint8T, op31: Svint8T): Svint16T = null as Svint16T
+    return svmlaltU16(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
+}
+
+/**
+ * Multiply-add long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlalt[_n_u16])
+ */
+public fun svmlaltNU16(op1: Svuint16T, op2: Svuint8T, op3: UByte): Svuint16T = svmlaltU16(op1, op2, svdupNU8(op3))
+
+/**
+ * Multiply-add long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlalt[_u32])
+ */
+public fun svmlaltU32(op1: Svuint32T, op2: Svuint16T, op3: Svuint16T): Svuint32T {
+    fun svmlaltU32(op11: Svint32T, op21: Svint16T, op31: Svint16T): Svint32T = null as Svint32T
+    return svmlaltU32(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
+}
+
+/**
+ * Multiply-add long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlalt[_n_u32])
+ */
+public fun svmlaltNU32(op1: Svuint32T, op2: Svuint16T, op3: UShort): Svuint32T = svmlaltU32(op1, op2, svdupNU16(op3))
+
+/**
+ * Multiply-add long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlalt[_u64])
+ */
+public fun svmlaltU64(op1: Svuint64T, op2: Svuint32T, op3: Svuint32T): Svuint64T {
+    fun svmlaltU64(op11: Svint64T, op21: Svint32T, op31: Svint32T): Svint64T = null as Svint64T
+    return svmlaltU64(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
+}
+
+/**
+ * Multiply-add long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlalt[_n_u64])
+ */
+public fun svmlaltNU64(op1: Svuint64T, op2: Svuint32T, op3: UInt): Svuint64T = svmlaltU64(op1, op2, svdupNU32(op3))
+
+/**
+ * Multiply-subtract, minuend first
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlsLane[_s16])
+ */
+public fun svmlsLaneS16(op1: Svint16T, op2: Svint16T, op3: Svint16T, immIndex: Int): Svint16T {
+    fun svmlsLaneS16(op11: Svint16T, op21: Svint16T, op31: Svint16T, immIndex1: Int): Svint16T = null as Svint16T
+    run {
+        check(0 <= immIndex && immIndex <= 7) { "IMM_INDEX is not in range 0-7" }
+    }
+    return svmlsLaneS16(op1, op2, op3, immIndex)
+}
+
+/**
+ * Multiply-subtract, minuend first
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlsLane[_s32])
+ */
+public fun svmlsLaneS32(op1: Svint32T, op2: Svint32T, op3: Svint32T, immIndex: Int): Svint32T {
+    fun svmlsLaneS32(op11: Svint32T, op21: Svint32T, op31: Svint32T, immIndex1: Int): Svint32T = null as Svint32T
+    run {
+        check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
+    }
+    return svmlsLaneS32(op1, op2, op3, immIndex)
+}
+
+/**
+ * Multiply-subtract, minuend first
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlsLane[_s64])
+ */
+public fun svmlsLaneS64(op1: Svint64T, op2: Svint64T, op3: Svint64T, immIndex: Int): Svint64T {
+    fun svmlsLaneS64(op11: Svint64T, op21: Svint64T, op31: Svint64T, immIndex1: Int): Svint64T = null as Svint64T
+    run {
+        check(0 <= immIndex && immIndex <= 1) { "IMM_INDEX is not in range 0-1" }
+    }
+    return svmlsLaneS64(op1, op2, op3, immIndex)
+}
+
+/**
+ * Multiply-subtract, minuend first
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlsLane[_u16])
+ */
+public fun svmlsLaneU16(op1: Svuint16T, op2: Svuint16T, op3: Svuint16T, immIndex: Int): Svuint16T {
+    run {
+        check(0 <= immIndex && immIndex <= 7) { "IMM_INDEX is not in range 0-7" }
+    }
+    return svmlsLaneS16(op1.asSigned(), op2.asSigned(), op3.asSigned(), immIndex).asUnsigned()
+}
+
+/**
+ * Multiply-subtract, minuend first
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlsLane[_u32])
+ */
+public fun svmlsLaneU32(op1: Svuint32T, op2: Svuint32T, op3: Svuint32T, immIndex: Int): Svuint32T {
+    run {
+        check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
+    }
+    return svmlsLaneS32(op1.asSigned(), op2.asSigned(), op3.asSigned(), immIndex).asUnsigned()
+}
+
+/**
+ * Multiply-subtract, minuend first
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlsLane[_u64])
+ */
+public fun svmlsLaneU64(op1: Svuint64T, op2: Svuint64T, op3: Svuint64T, immIndex: Int): Svuint64T {
+    run {
+        check(0 <= immIndex && immIndex <= 1) { "IMM_INDEX is not in range 0-1" }
+    }
+    return svmlsLaneS64(op1.asSigned(), op2.asSigned(), op3.asSigned(), immIndex).asUnsigned()
+}
+
+/**
+ * Multiply-subtract long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlslbLane[_s32])
+ */
+public fun svmlslbLaneS32(op1: Svint32T, op2: Svint16T, op3: Svint16T, immIndex: Int): Svint32T {
+    fun svmlslbLaneS32(op11: Svint32T, op21: Svint16T, op31: Svint16T, immIndex1: Int): Svint32T = null as Svint32T
+    run {
+        check(0 <= immIndex && immIndex <= 7) { "IMM_INDEX is not in range 0-7" }
+    }
+    return svmlslbLaneS32(op1, op2, op3, immIndex)
+}
+
+/**
+ * Multiply-subtract long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlslbLane[_s64])
+ */
+public fun svmlslbLaneS64(op1: Svint64T, op2: Svint32T, op3: Svint32T, immIndex: Int): Svint64T {
+    fun svmlslbLaneS64(op11: Svint64T, op21: Svint32T, op31: Svint32T, immIndex1: Int): Svint64T = null as Svint64T
+    run {
+        check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
+    }
+    return svmlslbLaneS64(op1, op2, op3, immIndex)
+}
+
+/**
+ * Multiply-subtract long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlslbLane[_u32])
+ */
+public fun svmlslbLaneU32(op1: Svuint32T, op2: Svuint16T, op3: Svuint16T, immIndex: Int): Svuint32T {
+    fun svmlslbLaneU32(op11: Svint32T, op21: Svint16T, op31: Svint16T, immIndex1: Int): Svint32T = null as Svint32T
+    run {
+        check(0 <= immIndex && immIndex <= 7) { "IMM_INDEX is not in range 0-7" }
+    }
+    return svmlslbLaneU32(op1.asSigned(), op2.asSigned(), op3.asSigned(), immIndex).asUnsigned()
+}
+
+/**
+ * Multiply-subtract long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlslbLane[_u64])
+ */
+public fun svmlslbLaneU64(op1: Svuint64T, op2: Svuint32T, op3: Svuint32T, immIndex: Int): Svuint64T {
+    fun svmlslbLaneU64(op11: Svint64T, op21: Svint32T, op31: Svint32T, immIndex1: Int): Svint64T = null as Svint64T
+    run {
+        check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
+    }
+    return svmlslbLaneU64(op1.asSigned(), op2.asSigned(), op3.asSigned(), immIndex).asUnsigned()
+}
+
+/**
+ * Multiply-subtract long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlslb[_s16])
+ */
+public fun svmlslbS16(op1: Svint16T, op2: Svint8T, op3: Svint8T): Svint16T {
+    fun svmlslbS16(op11: Svint16T, op21: Svint8T, op31: Svint8T): Svint16T = null as Svint16T
+    return svmlslbS16(op1, op2, op3)
+}
+
+/**
+ * Multiply-subtract long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlslb[_n_s16])
+ */
+public fun svmlslbNS16(op1: Svint16T, op2: Svint8T, op3: Byte): Svint16T = svmlslbS16(op1, op2, svdupNS8(op3))
+
+/**
+ * Multiply-subtract long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlslb[_s32])
+ */
+public fun svmlslbS32(op1: Svint32T, op2: Svint16T, op3: Svint16T): Svint32T {
+    fun svmlslbS32(op11: Svint32T, op21: Svint16T, op31: Svint16T): Svint32T = null as Svint32T
+    return svmlslbS32(op1, op2, op3)
+}
+
+/**
+ * Multiply-subtract long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlslb[_n_s32])
+ */
+public fun svmlslbNS32(op1: Svint32T, op2: Svint16T, op3: Short): Svint32T = svmlslbS32(op1, op2, svdupNS16(op3))
+
+/**
+ * Multiply-subtract long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlslb[_s64])
+ */
+public fun svmlslbS64(op1: Svint64T, op2: Svint32T, op3: Svint32T): Svint64T {
+    fun svmlslbS64(op11: Svint64T, op21: Svint32T, op31: Svint32T): Svint64T = null as Svint64T
+    return svmlslbS64(op1, op2, op3)
+}
+
+/**
+ * Multiply-subtract long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlslb[_n_s64])
+ */
+public fun svmlslbNS64(op1: Svint64T, op2: Svint32T, op3: Int): Svint64T = svmlslbS64(op1, op2, svdupNS32(op3))
+
+/**
+ * Multiply-subtract long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlslb[_u16])
+ */
+public fun svmlslbU16(op1: Svuint16T, op2: Svuint8T, op3: Svuint8T): Svuint16T {
+    fun svmlslbU16(op11: Svint16T, op21: Svint8T, op31: Svint8T): Svint16T = null as Svint16T
+    return svmlslbU16(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
+}
+
+/**
+ * Multiply-subtract long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlslb[_n_u16])
+ */
+public fun svmlslbNU16(op1: Svuint16T, op2: Svuint8T, op3: UByte): Svuint16T = svmlslbU16(op1, op2, svdupNU8(op3))
+
+/**
+ * Multiply-subtract long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlslb[_u32])
+ */
+public fun svmlslbU32(op1: Svuint32T, op2: Svuint16T, op3: Svuint16T): Svuint32T {
+    fun svmlslbU32(op11: Svint32T, op21: Svint16T, op31: Svint16T): Svint32T = null as Svint32T
+    return svmlslbU32(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
+}
+
+/**
+ * Multiply-subtract long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlslb[_n_u32])
+ */
+public fun svmlslbNU32(op1: Svuint32T, op2: Svuint16T, op3: UShort): Svuint32T = svmlslbU32(op1, op2, svdupNU16(op3))
+
+/**
+ * Multiply-subtract long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlslb[_u64])
+ */
+public fun svmlslbU64(op1: Svuint64T, op2: Svuint32T, op3: Svuint32T): Svuint64T {
+    fun svmlslbU64(op11: Svint64T, op21: Svint32T, op31: Svint32T): Svint64T = null as Svint64T
+    return svmlslbU64(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
+}
+
+/**
+ * Multiply-subtract long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlslb[_n_u64])
+ */
+public fun svmlslbNU64(op1: Svuint64T, op2: Svuint32T, op3: UInt): Svuint64T = svmlslbU64(op1, op2, svdupNU32(op3))
+
+/**
+ * Multiply-subtract long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlsltLane[_s32])
+ */
+public fun svmlsltLaneS32(op1: Svint32T, op2: Svint16T, op3: Svint16T, immIndex: Int): Svint32T {
+    fun svmlsltLaneS32(op11: Svint32T, op21: Svint16T, op31: Svint16T, immIndex1: Int): Svint32T = null as Svint32T
+    run {
+        check(0 <= immIndex && immIndex <= 7) { "IMM_INDEX is not in range 0-7" }
+    }
+    return svmlsltLaneS32(op1, op2, op3, immIndex)
+}
+
+/**
+ * Multiply-subtract long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlsltLane[_s64])
+ */
+public fun svmlsltLaneS64(op1: Svint64T, op2: Svint32T, op3: Svint32T, immIndex: Int): Svint64T {
+    fun svmlsltLaneS64(op11: Svint64T, op21: Svint32T, op31: Svint32T, immIndex1: Int): Svint64T = null as Svint64T
+    run {
+        check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
+    }
+    return svmlsltLaneS64(op1, op2, op3, immIndex)
+}
+
+/**
+ * Multiply-subtract long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlsltLane[_u32])
+ */
+public fun svmlsltLaneU32(op1: Svuint32T, op2: Svuint16T, op3: Svuint16T, immIndex: Int): Svuint32T {
+    fun svmlsltLaneU32(op11: Svint32T, op21: Svint16T, op31: Svint16T, immIndex1: Int): Svint32T = null as Svint32T
+    run {
+        check(0 <= immIndex && immIndex <= 7) { "IMM_INDEX is not in range 0-7" }
+    }
+    return svmlsltLaneU32(op1.asSigned(), op2.asSigned(), op3.asSigned(), immIndex).asUnsigned()
+}
+
+/**
+ * Multiply-subtract long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlsltLane[_u64])
+ */
+public fun svmlsltLaneU64(op1: Svuint64T, op2: Svuint32T, op3: Svuint32T, immIndex: Int): Svuint64T {
+    fun svmlsltLaneU64(op11: Svint64T, op21: Svint32T, op31: Svint32T, immIndex1: Int): Svint64T = null as Svint64T
+    run {
+        check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
+    }
+    return svmlsltLaneU64(op1.asSigned(), op2.asSigned(), op3.asSigned(), immIndex).asUnsigned()
+}
+
+/**
+ * Multiply-subtract long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlslt[_s16])
+ */
+public fun svmlsltS16(op1: Svint16T, op2: Svint8T, op3: Svint8T): Svint16T {
+    fun svmlsltS16(op11: Svint16T, op21: Svint8T, op31: Svint8T): Svint16T = null as Svint16T
+    return svmlsltS16(op1, op2, op3)
+}
+
+/**
+ * Multiply-subtract long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlslt[_n_s16])
+ */
+public fun svmlsltNS16(op1: Svint16T, op2: Svint8T, op3: Byte): Svint16T = svmlsltS16(op1, op2, svdupNS8(op3))
+
+/**
+ * Multiply-subtract long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlslt[_s32])
+ */
+public fun svmlsltS32(op1: Svint32T, op2: Svint16T, op3: Svint16T): Svint32T {
+    fun svmlsltS32(op11: Svint32T, op21: Svint16T, op31: Svint16T): Svint32T = null as Svint32T
+    return svmlsltS32(op1, op2, op3)
+}
+
+/**
+ * Multiply-subtract long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlslt[_n_s32])
+ */
+public fun svmlsltNS32(op1: Svint32T, op2: Svint16T, op3: Short): Svint32T = svmlsltS32(op1, op2, svdupNS16(op3))
+
+/**
+ * Multiply-subtract long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlslt[_s64])
+ */
+public fun svmlsltS64(op1: Svint64T, op2: Svint32T, op3: Svint32T): Svint64T {
+    fun svmlsltS64(op11: Svint64T, op21: Svint32T, op31: Svint32T): Svint64T = null as Svint64T
+    return svmlsltS64(op1, op2, op3)
+}
+
+/**
+ * Multiply-subtract long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlslt[_n_s64])
+ */
+public fun svmlsltNS64(op1: Svint64T, op2: Svint32T, op3: Int): Svint64T = svmlsltS64(op1, op2, svdupNS32(op3))
+
+/**
+ * Multiply-subtract long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlslt[_u16])
+ */
+public fun svmlsltU16(op1: Svuint16T, op2: Svuint8T, op3: Svuint8T): Svuint16T {
+    fun svmlsltU16(op11: Svint16T, op21: Svint8T, op31: Svint8T): Svint16T = null as Svint16T
+    return svmlsltU16(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
+}
+
+/**
+ * Multiply-subtract long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlslt[_n_u16])
+ */
+public fun svmlsltNU16(op1: Svuint16T, op2: Svuint8T, op3: UByte): Svuint16T = svmlsltU16(op1, op2, svdupNU8(op3))
+
+/**
+ * Multiply-subtract long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlslt[_u32])
+ */
+public fun svmlsltU32(op1: Svuint32T, op2: Svuint16T, op3: Svuint16T): Svuint32T {
+    fun svmlsltU32(op11: Svint32T, op21: Svint16T, op31: Svint16T): Svint32T = null as Svint32T
+    return svmlsltU32(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
+}
+
+/**
+ * Multiply-subtract long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlslt[_n_u32])
+ */
+public fun svmlsltNU32(op1: Svuint32T, op2: Svuint16T, op3: UShort): Svuint32T = svmlsltU32(op1, op2, svdupNU16(op3))
+
+/**
+ * Multiply-subtract long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlslt[_u64])
+ */
+public fun svmlsltU64(op1: Svuint64T, op2: Svuint32T, op3: Svuint32T): Svuint64T {
+    fun svmlsltU64(op11: Svint64T, op21: Svint32T, op31: Svint32T): Svint64T = null as Svint64T
+    return svmlsltU64(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
+}
+
+/**
+ * Multiply-subtract long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlslt[_n_u64])
+ */
+public fun svmlsltNU64(op1: Svuint64T, op2: Svuint32T, op3: UInt): Svuint64T = svmlsltU64(op1, op2, svdupNU32(op3))
+
+/**
+ * Move long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmovlb[_s16])
+ */
+public fun svmovlbS16(op: Svint8T): Svint16T = svshllbNS16(op, 0)
+
+/**
+ * Move long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmovlb[_s32])
+ */
+public fun svmovlbS32(op: Svint16T): Svint32T = svshllbNS32(op, 0)
+
+/**
+ * Move long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmovlb[_s64])
+ */
+public fun svmovlbS64(op: Svint32T): Svint64T = svshllbNS64(op, 0)
+
+/**
+ * Move long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmovlb[_u16])
+ */
+public fun svmovlbU16(op: Svuint8T): Svuint16T = svshllbNU16(op, 0)
+
+/**
+ * Move long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmovlb[_u32])
+ */
+public fun svmovlbU32(op: Svuint16T): Svuint32T = svshllbNU32(op, 0)
+
+/**
+ * Move long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmovlb[_u64])
+ */
+public fun svmovlbU64(op: Svuint32T): Svuint64T = svshllbNU64(op, 0)
+
+/**
+ * Move long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmovlt[_s16])
+ */
+public fun svmovltS16(op: Svint8T): Svint16T = svshlltNS16(op, 0)
+
+/**
+ * Move long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmovlt[_s32])
+ */
+public fun svmovltS32(op: Svint16T): Svint32T = svshlltNS32(op, 0)
+
+/**
+ * Move long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmovlt[_s64])
+ */
+public fun svmovltS64(op: Svint32T): Svint64T = svshlltNS64(op, 0)
+
+/**
+ * Move long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmovlt[_u16])
+ */
+public fun svmovltU16(op: Svuint8T): Svuint16T = svshlltNU16(op, 0)
+
+/**
+ * Move long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmovlt[_u32])
+ */
+public fun svmovltU32(op: Svuint16T): Svuint32T = svshlltNU32(op, 0)
+
+/**
+ * Move long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmovlt[_u64])
+ */
+public fun svmovltU64(op: Svuint32T): Svuint64T = svshlltNU64(op, 0)
+
+/**
+ * Multiply
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmulLane[_f32])
+ */
+public fun svmulLaneF32(op1: Svfloat32T, op2: Svfloat32T, immIndex: Int): Svfloat32T {
+    fun svmulLaneF32(op11: Svfloat32T, op21: Svfloat32T, immIndex: Int): Svfloat32T = null as Svfloat32T
+    run {
+        check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
+    }
+    return svmulLaneF32(op1, op2, immIndex)
+}
+
+/**
+ * Multiply
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmulLane[_f64])
+ */
+public fun svmulLaneF64(op1: Svfloat64T, op2: Svfloat64T, immIndex: Int): Svfloat64T {
+    fun svmulLaneF64(op11: Svfloat64T, op21: Svfloat64T, immIndex: Int): Svfloat64T = null as Svfloat64T
+    run {
+        check(0 <= immIndex && immIndex <= 1) { "IMM_INDEX is not in range 0-1" }
+    }
+    return svmulLaneF64(op1, op2, immIndex)
+}
+
+/**
+ * Multiply
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmulLane[_s16])
+ */
+public fun svmulLaneS16(op1: Svint16T, op2: Svint16T, immIndex: Int): Svint16T {
+    fun svmulLaneS16(op11: Svint16T, op21: Svint16T, immIndex: Int): Svint16T = null as Svint16T
+    run {
+        check(0 <= immIndex && immIndex <= 7) { "IMM_INDEX is not in range 0-7" }
+    }
+    return svmulLaneS16(op1, op2, immIndex)
+}
+
+/**
+ * Multiply
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmulLane[_s32])
+ */
+public fun svmulLaneS32(op1: Svint32T, op2: Svint32T, immIndex: Int): Svint32T {
+    fun svmulLaneS32(op11: Svint32T, op21: Svint32T, immIndex: Int): Svint32T = null as Svint32T
+    run {
+        check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
+    }
+    return svmulLaneS32(op1, op2, immIndex)
+}
+
+/**
+ * Multiply
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmulLane[_s64])
+ */
+public fun svmulLaneS64(op1: Svint64T, op2: Svint64T, immIndex: Int): Svint64T {
+    fun svmulLaneS64(op11: Svint64T, op21: Svint64T, immIndex: Int): Svint64T = null as Svint64T
+    run {
+        check(0 <= immIndex && immIndex <= 1) { "IMM_INDEX is not in range 0-1" }
+    }
+    return svmulLaneS64(op1, op2, immIndex)
+}
+
+/**
+ * Multiply
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmulLane[_u16])
+ */
+public fun svmulLaneU16(op1: Svuint16T, op2: Svuint16T, immIndex: Int): Svuint16T {
+    run {
+        check(0 <= immIndex && immIndex <= 7) { "IMM_INDEX is not in range 0-7" }
+    }
+    return svmulLaneS16(op1.asSigned(), op2.asSigned(), immIndex).asUnsigned()
+}
+
+/**
+ * Multiply
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmulLane[_u32])
+ */
+public fun svmulLaneU32(op1: Svuint32T, op2: Svuint32T, immIndex: Int): Svuint32T {
+    run {
+        check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
+    }
+    return svmulLaneS32(op1.asSigned(), op2.asSigned(), immIndex).asUnsigned()
+}
+
+/**
+ * Multiply
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmulLane[_u64])
+ */
+public fun svmulLaneU64(op1: Svuint64T, op2: Svuint64T, immIndex: Int): Svuint64T {
+    run {
+        check(0 <= immIndex && immIndex <= 1) { "IMM_INDEX is not in range 0-1" }
+    }
+    return svmulLaneS64(op1.asSigned(), op2.asSigned(), immIndex).asUnsigned()
+}
+
+/**
+ * Multiply long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmullbLane[_s32])
+ */
+public fun svmullbLaneS32(op1: Svint16T, op2: Svint16T, immIndex: Int): Svint32T {
+    fun svmullbLaneS32(op11: Svint16T, op21: Svint16T, immIndex: Int): Svint32T = null as Svint32T
+    run {
+        check(0 <= immIndex && immIndex <= 7) { "IMM_INDEX is not in range 0-7" }
+    }
+    return svmullbLaneS32(op1, op2, immIndex)
+}
+
+/**
+ * Multiply long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmullbLane[_s64])
+ */
+public fun svmullbLaneS64(op1: Svint32T, op2: Svint32T, immIndex: Int): Svint64T {
+    fun svmullbLaneS64(op11: Svint32T, op21: Svint32T, immIndex: Int): Svint64T = null as Svint64T
+    run {
+        check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
+    }
+    return svmullbLaneS64(op1, op2, immIndex)
+}
+
+/**
+ * Multiply long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmullbLane[_u32])
+ */
+public fun svmullbLaneU32(op1: Svuint16T, op2: Svuint16T, immIndex: Int): Svuint32T {
+    fun svmullbLaneU32(op11: Svint16T, op21: Svint16T, immIndex: Int): Svint32T = null as Svint32T
+    run {
+        check(0 <= immIndex && immIndex <= 7) { "IMM_INDEX is not in range 0-7" }
+    }
+    return svmullbLaneU32(op1.asSigned(), op2.asSigned(), immIndex).asUnsigned()
+}
+
+/**
+ * Multiply long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmullbLane[_u64])
+ */
+public fun svmullbLaneU64(op1: Svuint32T, op2: Svuint32T, immIndex: Int): Svuint64T {
+    fun svmullbLaneU64(op11: Svint32T, op21: Svint32T, immIndex: Int): Svint64T = null as Svint64T
+    run {
+        check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
+    }
+    return svmullbLaneU64(op1.asSigned(), op2.asSigned(), immIndex).asUnsigned()
+}
+
+/**
+ * Multiply long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmullb[_s16])
+ */
+public fun svmullbS16(op1: Svint8T, op2: Svint8T): Svint16T {
+    fun svmullbS16(op11: Svint8T, op21: Svint8T): Svint16T = null as Svint16T
+    return svmullbS16(op1, op2)
+}
+
+/**
+ * Multiply long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmullb[_n_s16])
+ */
+public fun svmullbNS16(op1: Svint8T, op2: Byte): Svint16T = svmullbS16(op1, svdupNS8(op2))
+
+/**
+ * Multiply long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmullb[_s32])
+ */
+public fun svmullbS32(op1: Svint16T, op2: Svint16T): Svint32T {
+    fun svmullbS32(op11: Svint16T, op21: Svint16T): Svint32T = null as Svint32T
+    return svmullbS32(op1, op2)
+}
+
+/**
+ * Multiply long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmullb[_n_s32])
+ */
+public fun svmullbNS32(op1: Svint16T, op2: Short): Svint32T = svmullbS32(op1, svdupNS16(op2))
+
+/**
+ * Multiply long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmullb[_s64])
+ */
+public fun svmullbS64(op1: Svint32T, op2: Svint32T): Svint64T {
+    fun svmullbS64(op11: Svint32T, op21: Svint32T): Svint64T = null as Svint64T
+    return svmullbS64(op1, op2)
+}
+
+/**
+ * Multiply long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmullb[_n_s64])
+ */
+public fun svmullbNS64(op1: Svint32T, op2: Int): Svint64T = svmullbS64(op1, svdupNS32(op2))
+
+/**
+ * Multiply long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmullb[_u16])
+ */
+public fun svmullbU16(op1: Svuint8T, op2: Svuint8T): Svuint16T {
+    fun svmullbU16(op11: Svint8T, op21: Svint8T): Svint16T = null as Svint16T
+    return svmullbU16(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Multiply long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmullb[_n_u16])
+ */
+public fun svmullbNU16(op1: Svuint8T, op2: UByte): Svuint16T = svmullbU16(op1, svdupNU8(op2))
+
+/**
+ * Multiply long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmullb[_u32])
+ */
+public fun svmullbU32(op1: Svuint16T, op2: Svuint16T): Svuint32T {
+    fun svmullbU32(op11: Svint16T, op21: Svint16T): Svint32T = null as Svint32T
+    return svmullbU32(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Multiply long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmullb[_n_u32])
+ */
+public fun svmullbNU32(op1: Svuint16T, op2: UShort): Svuint32T = svmullbU32(op1, svdupNU16(op2))
+
+/**
+ * Multiply long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmullb[_u64])
+ */
+public fun svmullbU64(op1: Svuint32T, op2: Svuint32T): Svuint64T {
+    fun svmullbU64(op11: Svint32T, op21: Svint32T): Svint64T = null as Svint64T
+    return svmullbU64(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Multiply long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmullb[_n_u64])
+ */
+public fun svmullbNU64(op1: Svuint32T, op2: UInt): Svuint64T = svmullbU64(op1, svdupNU32(op2))
+
+/**
+ * Multiply long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmulltLane[_s32])
+ */
+public fun svmulltLaneS32(op1: Svint16T, op2: Svint16T, immIndex: Int): Svint32T {
+    fun svmulltLaneS32(op11: Svint16T, op21: Svint16T, immIndex: Int): Svint32T = null as Svint32T
+    run {
+        check(0 <= immIndex && immIndex <= 7) { "IMM_INDEX is not in range 0-7" }
+    }
+    return svmulltLaneS32(op1, op2, immIndex)
+}
+
+/**
+ * Multiply long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmulltLane[_s64])
+ */
+public fun svmulltLaneS64(op1: Svint32T, op2: Svint32T, immIndex: Int): Svint64T {
+    fun svmulltLaneS64(op11: Svint32T, op21: Svint32T, immIndex: Int): Svint64T = null as Svint64T
+    run {
+        check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
+    }
+    return svmulltLaneS64(op1, op2, immIndex)
+}
+
+/**
+ * Multiply long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmulltLane[_u32])
+ */
+public fun svmulltLaneU32(op1: Svuint16T, op2: Svuint16T, immIndex: Int): Svuint32T {
+    fun svmulltLaneU32(op11: Svint16T, op21: Svint16T, immIndex: Int): Svint32T = null as Svint32T
+    run {
+        check(0 <= immIndex && immIndex <= 7) { "IMM_INDEX is not in range 0-7" }
+    }
+    return svmulltLaneU32(op1.asSigned(), op2.asSigned(), immIndex).asUnsigned()
+}
+
+/**
+ * Multiply long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmulltLane[_u64])
+ */
+public fun svmulltLaneU64(op1: Svuint32T, op2: Svuint32T, immIndex: Int): Svuint64T {
+    fun svmulltLaneU64(op11: Svint32T, op21: Svint32T, immIndex: Int): Svint64T = null as Svint64T
+    run {
+        check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
+    }
+    return svmulltLaneU64(op1.asSigned(), op2.asSigned(), immIndex).asUnsigned()
+}
+
+/**
+ * Multiply long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmullt[_s16])
+ */
+public fun svmulltS16(op1: Svint8T, op2: Svint8T): Svint16T {
+    fun svmulltS16(op11: Svint8T, op21: Svint8T): Svint16T = null as Svint16T
+    return svmulltS16(op1, op2)
+}
+
+/**
+ * Multiply long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmullt[_n_s16])
+ */
+public fun svmulltNS16(op1: Svint8T, op2: Byte): Svint16T = svmulltS16(op1, svdupNS8(op2))
+
+/**
+ * Multiply long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmullt[_s32])
+ */
+public fun svmulltS32(op1: Svint16T, op2: Svint16T): Svint32T {
+    fun svmulltS32(op11: Svint16T, op21: Svint16T): Svint32T = null as Svint32T
+    return svmulltS32(op1, op2)
+}
+
+/**
+ * Multiply long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmullt[_n_s32])
+ */
+public fun svmulltNS32(op1: Svint16T, op2: Short): Svint32T = svmulltS32(op1, svdupNS16(op2))
+
+/**
+ * Multiply long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmullt[_s64])
+ */
+public fun svmulltS64(op1: Svint32T, op2: Svint32T): Svint64T {
+    fun svmulltS64(op11: Svint32T, op21: Svint32T): Svint64T = null as Svint64T
+    return svmulltS64(op1, op2)
+}
+
+/**
+ * Multiply long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmullt[_n_s64])
+ */
+public fun svmulltNS64(op1: Svint32T, op2: Int): Svint64T = svmulltS64(op1, svdupNS32(op2))
+
+/**
+ * Multiply long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmullt[_u16])
+ */
+public fun svmulltU16(op1: Svuint8T, op2: Svuint8T): Svuint16T {
+    fun svmulltU16(op11: Svint8T, op21: Svint8T): Svint16T = null as Svint16T
+    return svmulltU16(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Multiply long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmullt[_n_u16])
+ */
+public fun svmulltNU16(op1: Svuint8T, op2: UByte): Svuint16T = svmulltU16(op1, svdupNU8(op2))
+
+/**
+ * Multiply long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmullt[_u32])
+ */
+public fun svmulltU32(op1: Svuint16T, op2: Svuint16T): Svuint32T {
+    fun svmulltU32(op11: Svint16T, op21: Svint16T): Svint32T = null as Svint32T
+    return svmulltU32(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Multiply long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmullt[_n_u32])
+ */
+public fun svmulltNU32(op1: Svuint16T, op2: UShort): Svuint32T = svmulltU32(op1, svdupNU16(op2))
+
+/**
+ * Multiply long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmullt[_u64])
+ */
+public fun svmulltU64(op1: Svuint32T, op2: Svuint32T): Svuint64T {
+    fun svmulltU64(op11: Svint32T, op21: Svint32T): Svint64T = null as Svint64T
+    return svmulltU64(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Multiply long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmullt[_n_u64])
+ */
+public fun svmulltNU64(op1: Svuint32T, op2: UInt): Svuint64T = svmulltU64(op1, svdupNU32(op2))
+
+/**
+ * Bitwise select
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svnbsl[_s8])
+ */
+public fun svnbslS8(op1: Svint8T, op2: Svint8T, op3: Svint8T): Svint8T {
+    fun svnbslS8(op11: Svint8T, op21: Svint8T, op31: Svint8T): Svint8T = null as Svint8T
+    return svnbslS8(op1, op2, op3)
+}
+
+/**
+ * Bitwise select
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svnbsl[_n_s8])
+ */
+public fun svnbslNS8(op1: Svint8T, op2: Svint8T, op3: Byte): Svint8T = svnbslS8(op1, op2, svdupNS8(op3))
+
+/**
+ * Bitwise select
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svnbsl[_s16])
+ */
+public fun svnbslS16(op1: Svint16T, op2: Svint16T, op3: Svint16T): Svint16T {
+    fun svnbslS16(op11: Svint16T, op21: Svint16T, op31: Svint16T): Svint16T = null as Svint16T
+    return svnbslS16(op1, op2, op3)
+}
+
+/**
+ * Bitwise select
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svnbsl[_n_s16])
+ */
+public fun svnbslNS16(op1: Svint16T, op2: Svint16T, op3: Short): Svint16T = svnbslS16(op1, op2, svdupNS16(op3))
+
+/**
+ * Bitwise select
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svnbsl[_s32])
+ */
+public fun svnbslS32(op1: Svint32T, op2: Svint32T, op3: Svint32T): Svint32T {
+    fun svnbslS32(op11: Svint32T, op21: Svint32T, op31: Svint32T): Svint32T = null as Svint32T
+    return svnbslS32(op1, op2, op3)
+}
+
+/**
+ * Bitwise select
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svnbsl[_n_s32])
+ */
+public fun svnbslNS32(op1: Svint32T, op2: Svint32T, op3: Int): Svint32T = svnbslS32(op1, op2, svdupNS32(op3))
+
+/**
+ * Bitwise select
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svnbsl[_s64])
+ */
+public fun svnbslS64(op1: Svint64T, op2: Svint64T, op3: Svint64T): Svint64T {
+    fun svnbslS64(op11: Svint64T, op21: Svint64T, op31: Svint64T): Svint64T = null as Svint64T
+    return svnbslS64(op1, op2, op3)
+}
+
+/**
+ * Bitwise select
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svnbsl[_n_s64])
+ */
+public fun svnbslNS64(op1: Svint64T, op2: Svint64T, op3: Long): Svint64T = svnbslS64(op1, op2, svdupNS64(op3))
+
+/**
+ * Bitwise select
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svnbsl[_u8])
+ */
+public fun svnbslU8(op1: Svuint8T, op2: Svuint8T, op3: Svuint8T): Svuint8T = svnbslS8(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
+
+/**
+ * Bitwise select
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svnbsl[_n_u8])
+ */
+public fun svnbslNU8(op1: Svuint8T, op2: Svuint8T, op3: UByte): Svuint8T = svnbslU8(op1, op2, svdupNU8(op3))
+
+/**
+ * Bitwise select
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svnbsl[_u16])
+ */
+public fun svnbslU16(op1: Svuint16T, op2: Svuint16T, op3: Svuint16T): Svuint16T = svnbslS16(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
+
+/**
+ * Bitwise select
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svnbsl[_n_u16])
+ */
+public fun svnbslNU16(op1: Svuint16T, op2: Svuint16T, op3: UShort): Svuint16T = svnbslU16(op1, op2, svdupNU16(op3))
+
+/**
+ * Bitwise select
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svnbsl[_u32])
+ */
+public fun svnbslU32(op1: Svuint32T, op2: Svuint32T, op3: Svuint32T): Svuint32T = svnbslS32(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
+
+/**
+ * Bitwise select
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svnbsl[_n_u32])
+ */
+public fun svnbslNU32(op1: Svuint32T, op2: Svuint32T, op3: UInt): Svuint32T = svnbslU32(op1, op2, svdupNU32(op3))
+
+/**
+ * Bitwise select
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svnbsl[_u64])
+ */
+public fun svnbslU64(op1: Svuint64T, op2: Svuint64T, op3: Svuint64T): Svuint64T = svnbslS64(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
+
+/**
+ * Bitwise select
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svnbsl[_n_u64])
+ */
+public fun svnbslNU64(op1: Svuint64T, op2: Svuint64T, op3: ULong): Svuint64T = svnbslU64(op1, op2, svdupNU64(op3))
+
+/**
+ * Detect no matching elements
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svnmatch[_s8])
+ */
+public fun svnmatchS8(pg: SvboolT, op1: Svint8T, op2: Svint8T): SvboolT {
+    fun svnmatchS8(pg1: SvboolT, op11: Svint8T, op21: Svint8T): SvboolT = null as SvboolT
+    return svnmatchS8(pg, op1, op2)
+}
+
+/**
+ * Detect no matching elements
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svnmatch[_s16])
+ */
+public fun svnmatchS16(pg: SvboolT, op1: Svint16T, op2: Svint16T): SvboolT {
+    fun svnmatchS16(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svbool8T = null as Svbool8T
+    return svnmatchS16(pg.sveInto(), op1, op2).sveInto()
+}
+
+/**
+ * Detect no matching elements
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svnmatch[_u8])
+ */
+public fun svnmatchU8(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): SvboolT = svnmatchS8(pg, op1.asSigned(), op2.asSigned())
+
+/**
+ * Detect no matching elements
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svnmatch[_u16])
+ */
+public fun svnmatchU16(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): SvboolT = svnmatchS16(pg, op1.asSigned(), op2.asSigned())
+
+/**
+ * Polynomial multiply
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svpmul[_u8])
+ */
+public fun svpmulU8(op1: Svuint8T, op2: Svuint8T): Svuint8T {
+    fun svpmulU8(op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    return svpmulU8(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Polynomial multiply
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svpmul[_n_u8])
+ */
+public fun svpmulNU8(op1: Svuint8T, op2: UByte): Svuint8T = svpmulU8(op1, svdupNU8(op2))
+
+/**
+ * Polynomial multiply long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svpmullbPair[_u8])
+ */
+public fun svpmullbPairU8(op1: Svuint8T, op2: Svuint8T): Svuint8T {
+    fun svpmullbPairU8(op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    return svpmullbPairU8(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Polynomial multiply long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svpmullbPair[_n_u8])
+ */
+public fun svpmullbPairNU8(op1: Svuint8T, op2: UByte): Svuint8T = svpmullbPairU8(op1, svdupNU8(op2))
+
+/**
+ * Polynomial multiply long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svpmullbPair[_u32])
+ */
+public fun svpmullbPairU32(op1: Svuint32T, op2: Svuint32T): Svuint32T {
+    fun svpmullbPairU32(op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    return svpmullbPairU32(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Polynomial multiply long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svpmullbPair[_n_u32])
+ */
+public fun svpmullbPairNU32(op1: Svuint32T, op2: UInt): Svuint32T = svpmullbPairU32(op1, svdupNU32(op2))
+
+/**
+ * Polynomial multiply long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svpmullbPair[_u64])
+ */
+public fun svpmullbPairU64(op1: Svuint64T, op2: Svuint64T): Svuint64T {
+    fun svpmullbPairU64(op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    return svpmullbPairU64(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Polynomial multiply long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svpmullbPair[_n_u64])
+ */
+public fun svpmullbPairNU64(op1: Svuint64T, op2: ULong): Svuint64T = svpmullbPairU64(op1, svdupNU64(op2))
+
+/**
+ * Polynomial multiply long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svpmullb[_u16])
+ */
+public fun svpmullbU16(op1: Svuint8T, op2: Svuint8T): Svuint16T = Intrinsics.transmuteUnchecked(svpmullbPairU8(op1, op2))
+
+/**
+ * Polynomial multiply long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svpmullb[_n_u16])
+ */
+public fun svpmullbNU16(op1: Svuint8T, op2: UByte): Svuint16T = svpmullbU16(op1, svdupNU8(op2))
+
+/**
+ * Polynomial multiply long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svpmullb[_u64])
+ */
+public fun svpmullbU64(op1: Svuint32T, op2: Svuint32T): Svuint64T = Intrinsics.transmuteUnchecked(svpmullbPairU32(op1, op2))
+
+/**
+ * Polynomial multiply long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svpmullb[_n_u64])
+ */
+public fun svpmullbNU64(op1: Svuint32T, op2: UInt): Svuint64T = svpmullbU64(op1, svdupNU32(op2))
+
+/**
+ * Polynomial multiply long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svpmulltPair[_u8])
+ */
+public fun svpmulltPairU8(op1: Svuint8T, op2: Svuint8T): Svuint8T {
+    fun svpmulltPairU8(op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    return svpmulltPairU8(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Polynomial multiply long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svpmulltPair[_n_u8])
+ */
+public fun svpmulltPairNU8(op1: Svuint8T, op2: UByte): Svuint8T = svpmulltPairU8(op1, svdupNU8(op2))
+
+/**
+ * Polynomial multiply long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svpmulltPair[_u32])
+ */
+public fun svpmulltPairU32(op1: Svuint32T, op2: Svuint32T): Svuint32T {
+    fun svpmulltPairU32(op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    return svpmulltPairU32(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Polynomial multiply long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svpmulltPair[_n_u32])
+ */
+public fun svpmulltPairNU32(op1: Svuint32T, op2: UInt): Svuint32T = svpmulltPairU32(op1, svdupNU32(op2))
+
+/**
+ * Polynomial multiply long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svpmulltPair[_u64])
+ */
+public fun svpmulltPairU64(op1: Svuint64T, op2: Svuint64T): Svuint64T {
+    fun svpmulltPairU64(op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    return svpmulltPairU64(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Polynomial multiply long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svpmulltPair[_n_u64])
+ */
+public fun svpmulltPairNU64(op1: Svuint64T, op2: ULong): Svuint64T = svpmulltPairU64(op1, svdupNU64(op2))
+
+/**
+ * Polynomial multiply long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svpmullt[_u16])
+ */
+public fun svpmulltU16(op1: Svuint8T, op2: Svuint8T): Svuint16T = Intrinsics.transmuteUnchecked(svpmulltPairU8(op1, op2))
+
+/**
+ * Polynomial multiply long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svpmullt[_n_u16])
+ */
+public fun svpmulltNU16(op1: Svuint8T, op2: UByte): Svuint16T = svpmulltU16(op1, svdupNU8(op2))
+
+/**
+ * Polynomial multiply long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svpmullt[_u64])
+ */
+public fun svpmulltU64(op1: Svuint32T, op2: Svuint32T): Svuint64T = Intrinsics.transmuteUnchecked(svpmulltPairU32(op1, op2))
+
+/**
+ * Polynomial multiply long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svpmullt[_n_u64])
+ */
+public fun svpmulltNU64(op1: Svuint32T, op2: UInt): Svuint64T = svpmulltU64(op1, svdupNU32(op2))
+
+/**
+ * Saturating absolute value
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqabs[_s8]_m)
+ */
+public fun svqabsS8M(inactive: Svint8T, pg: SvboolT, op: Svint8T): Svint8T {
+    fun svqabsS8M(inactive1: Svint8T, pg1: SvboolT, op1: Svint8T): Svint8T = null as Svint8T
+    return svqabsS8M(inactive, pg, op)
+}
+
+/**
+ * Saturating absolute value
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqabs[_s8]_x)
+ */
+public fun svqabsS8X(pg: SvboolT, op: Svint8T): Svint8T = svqabsS8M(op, pg, op)
+
+/**
+ * Saturating absolute value
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqabs[_s8]_z)
+ */
+public fun svqabsS8Z(pg: SvboolT, op: Svint8T): Svint8T = svqabsS8M(svdupNS8(0), pg, op)
+
+/**
+ * Saturating absolute value
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqabs[_s16]_m)
+ */
+public fun svqabsS16M(inactive: Svint16T, pg: SvboolT, op: Svint16T): Svint16T {
+    fun svqabsS16M(inactive1: Svint16T, pg1: Svbool8T, op1: Svint16T): Svint16T = null as Svint16T
+    return svqabsS16M(inactive, pg.sveInto(), op)
+}
+
+/**
+ * Saturating absolute value
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqabs[_s16]_x)
+ */
+public fun svqabsS16X(pg: SvboolT, op: Svint16T): Svint16T = svqabsS16M(op, pg, op)
+
+/**
+ * Saturating absolute value
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqabs[_s16]_z)
+ */
+public fun svqabsS16Z(pg: SvboolT, op: Svint16T): Svint16T = svqabsS16M(svdupNS16(0), pg, op)
+
+/**
+ * Saturating absolute value
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqabs[_s32]_m)
+ */
+public fun svqabsS32M(inactive: Svint32T, pg: SvboolT, op: Svint32T): Svint32T {
+    fun svqabsS32M(inactive1: Svint32T, pg1: Svbool4T, op1: Svint32T): Svint32T = null as Svint32T
+    return svqabsS32M(inactive, pg.sveInto(), op)
+}
+
+/**
+ * Saturating absolute value
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqabs[_s32]_x)
+ */
+public fun svqabsS32X(pg: SvboolT, op: Svint32T): Svint32T = svqabsS32M(op, pg, op)
+
+/**
+ * Saturating absolute value
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqabs[_s32]_z)
+ */
+public fun svqabsS32Z(pg: SvboolT, op: Svint32T): Svint32T = svqabsS32M(svdupNS32(0), pg, op)
+
+/**
+ * Saturating absolute value
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqabs[_s64]_m)
+ */
+public fun svqabsS64M(inactive: Svint64T, pg: SvboolT, op: Svint64T): Svint64T {
+    fun svqabsS64M(inactive1: Svint64T, pg1: Svbool2T, op1: Svint64T): Svint64T = null as Svint64T
+    return svqabsS64M(inactive, pg.sveInto(), op)
+}
+
+/**
+ * Saturating absolute value
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqabs[_s64]_x)
+ */
+public fun svqabsS64X(pg: SvboolT, op: Svint64T): Svint64T = svqabsS64M(op, pg, op)
+
+/**
+ * Saturating absolute value
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqabs[_s64]_z)
+ */
+public fun svqabsS64Z(pg: SvboolT, op: Svint64T): Svint64T = svqabsS64M(svdupNS64(0L), pg, op)
+
+/**
+ * Saturating add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_s8]_m)
+ */
+public fun svqaddS8M(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T {
+    fun svqaddS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    return svqaddS8M(pg, op1, op2)
+}
+
+/**
+ * Saturating add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_n_s8]_m)
+ */
+public fun svqaddNS8M(pg: SvboolT, op1: Svint8T, op2: Byte): Svint8T = svqaddS8M(pg, op1, svdupNS8(op2))
+
+/**
+ * Saturating add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_s8]_x)
+ */
+public fun svqaddS8X(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T = svqaddS8M(pg, op1, op2)
+
+/**
+ * Saturating add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_n_s8]_x)
+ */
+public fun svqaddNS8X(pg: SvboolT, op1: Svint8T, op2: Byte): Svint8T = svqaddS8X(pg, op1, svdupNS8(op2))
+
+/**
+ * Saturating add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_s8]_z)
+ */
+public fun svqaddS8Z(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T = svqaddS8M(pg, svselS8(pg, op1, svdupNS8(0)), op2)
+
+/**
+ * Saturating add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_n_s8]_z)
+ */
+public fun svqaddNS8Z(pg: SvboolT, op1: Svint8T, op2: Byte): Svint8T = svqaddS8Z(pg, op1, svdupNS8(op2))
+
+/**
+ * Saturating add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_s16]_m)
+ */
+public fun svqaddS16M(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T {
+    fun svqaddS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    return svqaddS16M(pg.sveInto(), op1, op2)
+}
+
+/**
+ * Saturating add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_n_s16]_m)
+ */
+public fun svqaddNS16M(pg: SvboolT, op1: Svint16T, op2: Short): Svint16T = svqaddS16M(pg, op1, svdupNS16(op2))
+
+/**
+ * Saturating add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_s16]_x)
+ */
+public fun svqaddS16X(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T = svqaddS16M(pg, op1, op2)
+
+/**
+ * Saturating add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_n_s16]_x)
+ */
+public fun svqaddNS16X(pg: SvboolT, op1: Svint16T, op2: Short): Svint16T = svqaddS16X(pg, op1, svdupNS16(op2))
+
+/**
+ * Saturating add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_s16]_z)
+ */
+public fun svqaddS16Z(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T = svqaddS16M(pg, svselS16(pg, op1, svdupNS16(0)), op2)
+
+/**
+ * Saturating add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_n_s16]_z)
+ */
+public fun svqaddNS16Z(pg: SvboolT, op1: Svint16T, op2: Short): Svint16T = svqaddS16Z(pg, op1, svdupNS16(op2))
+
+/**
+ * Saturating add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_s32]_m)
+ */
+public fun svqaddS32M(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T {
+    fun svqaddS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    return svqaddS32M(pg.sveInto(), op1, op2)
+}
+
+/**
+ * Saturating add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_n_s32]_m)
+ */
+public fun svqaddNS32M(pg: SvboolT, op1: Svint32T, op2: Int): Svint32T = svqaddS32M(pg, op1, svdupNS32(op2))
+
+/**
+ * Saturating add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_s32]_x)
+ */
+public fun svqaddS32X(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T = svqaddS32M(pg, op1, op2)
+
+/**
+ * Saturating add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_n_s32]_x)
+ */
+public fun svqaddNS32X(pg: SvboolT, op1: Svint32T, op2: Int): Svint32T = svqaddS32X(pg, op1, svdupNS32(op2))
+
+/**
+ * Saturating add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_s32]_z)
+ */
+public fun svqaddS32Z(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T = svqaddS32M(pg, svselS32(pg, op1, svdupNS32(0)), op2)
+
+/**
+ * Saturating add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_n_s32]_z)
+ */
+public fun svqaddNS32Z(pg: SvboolT, op1: Svint32T, op2: Int): Svint32T = svqaddS32Z(pg, op1, svdupNS32(op2))
+
+/**
+ * Saturating add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_s64]_m)
+ */
+public fun svqaddS64M(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T {
+    fun svqaddS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    return svqaddS64M(pg.sveInto(), op1, op2)
+}
+
+/**
+ * Saturating add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_n_s64]_m)
+ */
+public fun svqaddNS64M(pg: SvboolT, op1: Svint64T, op2: Long): Svint64T = svqaddS64M(pg, op1, svdupNS64(op2))
+
+/**
+ * Saturating add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_s64]_x)
+ */
+public fun svqaddS64X(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T = svqaddS64M(pg, op1, op2)
+
+/**
+ * Saturating add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_n_s64]_x)
+ */
+public fun svqaddNS64X(pg: SvboolT, op1: Svint64T, op2: Long): Svint64T = svqaddS64X(pg, op1, svdupNS64(op2))
+
+/**
+ * Saturating add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_s64]_z)
+ */
+public fun svqaddS64Z(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T = svqaddS64M(pg, svselS64(pg, op1, svdupNS64(0L)), op2)
+
+/**
+ * Saturating add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_n_s64]_z)
+ */
+public fun svqaddNS64Z(pg: SvboolT, op1: Svint64T, op2: Long): Svint64T = svqaddS64Z(pg, op1, svdupNS64(op2))
+
+/**
+ * Saturating add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_u8]_m)
+ */
+public fun svqaddU8M(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T {
+    fun svqaddU8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    return svqaddU8M(pg, op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Saturating add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_n_u8]_m)
+ */
+public fun svqaddNU8M(pg: SvboolT, op1: Svuint8T, op2: UByte): Svuint8T = svqaddU8M(pg, op1, svdupNU8(op2))
+
+/**
+ * Saturating add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_u8]_x)
+ */
+public fun svqaddU8X(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T = svqaddU8M(pg, op1, op2)
+
+/**
+ * Saturating add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_n_u8]_x)
+ */
+public fun svqaddNU8X(pg: SvboolT, op1: Svuint8T, op2: UByte): Svuint8T = svqaddU8X(pg, op1, svdupNU8(op2))
+
+/**
+ * Saturating add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_u8]_z)
+ */
+public fun svqaddU8Z(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T = svqaddU8M(pg, svselU8(pg, op1, svdupNU8(0u)), op2)
+
+/**
+ * Saturating add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_n_u8]_z)
+ */
+public fun svqaddNU8Z(pg: SvboolT, op1: Svuint8T, op2: UByte): Svuint8T = svqaddU8Z(pg, op1, svdupNU8(op2))
+
+/**
+ * Saturating add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_u16]_m)
+ */
+public fun svqaddU16M(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T {
+    fun svqaddU16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    return svqaddU16M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Saturating add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_n_u16]_m)
+ */
+public fun svqaddNU16M(pg: SvboolT, op1: Svuint16T, op2: UShort): Svuint16T = svqaddU16M(pg, op1, svdupNU16(op2))
+
+/**
+ * Saturating add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_u16]_x)
+ */
+public fun svqaddU16X(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T = svqaddU16M(pg, op1, op2)
+
+/**
+ * Saturating add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_n_u16]_x)
+ */
+public fun svqaddNU16X(pg: SvboolT, op1: Svuint16T, op2: UShort): Svuint16T = svqaddU16X(pg, op1, svdupNU16(op2))
+
+/**
+ * Saturating add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_u16]_z)
+ */
+public fun svqaddU16Z(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T = svqaddU16M(pg, svselU16(pg, op1, svdupNU16(0u)), op2)
+
+/**
+ * Saturating add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_n_u16]_z)
+ */
+public fun svqaddNU16Z(pg: SvboolT, op1: Svuint16T, op2: UShort): Svuint16T = svqaddU16Z(pg, op1, svdupNU16(op2))
+
+/**
+ * Saturating add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_u32]_m)
+ */
+public fun svqaddU32M(pg: SvboolT, op1: Svuint32T, op2: Svuint32T): Svuint32T {
+    fun svqaddU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    return svqaddU32M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Saturating add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_n_u32]_m)
+ */
+public fun svqaddNU32M(pg: SvboolT, op1: Svuint32T, op2: UInt): Svuint32T = svqaddU32M(pg, op1, svdupNU32(op2))
+
+/**
+ * Saturating add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_u32]_x)
+ */
+public fun svqaddU32X(pg: SvboolT, op1: Svuint32T, op2: Svuint32T): Svuint32T = svqaddU32M(pg, op1, op2)
+
+/**
+ * Saturating add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_n_u32]_x)
+ */
+public fun svqaddNU32X(pg: SvboolT, op1: Svuint32T, op2: UInt): Svuint32T = svqaddU32X(pg, op1, svdupNU32(op2))
+
+/**
+ * Saturating add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_u32]_z)
+ */
+public fun svqaddU32Z(pg: SvboolT, op1: Svuint32T, op2: Svuint32T): Svuint32T = svqaddU32M(pg, svselU32(pg, op1, svdupNU32(0u)), op2)
+
+/**
+ * Saturating add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_n_u32]_z)
+ */
+public fun svqaddNU32Z(pg: SvboolT, op1: Svuint32T, op2: UInt): Svuint32T = svqaddU32Z(pg, op1, svdupNU32(op2))
+
+/**
+ * Saturating add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_u64]_m)
+ */
+public fun svqaddU64M(pg: SvboolT, op1: Svuint64T, op2: Svuint64T): Svuint64T {
+    fun svqaddU64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    return svqaddU64M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Saturating add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_n_u64]_m)
+ */
+public fun svqaddNU64M(pg: SvboolT, op1: Svuint64T, op2: ULong): Svuint64T = svqaddU64M(pg, op1, svdupNU64(op2))
+
+/**
+ * Saturating add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_u64]_x)
+ */
+public fun svqaddU64X(pg: SvboolT, op1: Svuint64T, op2: Svuint64T): Svuint64T = svqaddU64M(pg, op1, op2)
+
+/**
+ * Saturating add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_n_u64]_x)
+ */
+public fun svqaddNU64X(pg: SvboolT, op1: Svuint64T, op2: ULong): Svuint64T = svqaddU64X(pg, op1, svdupNU64(op2))
+
+/**
+ * Saturating add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_u64]_z)
+ */
+public fun svqaddU64Z(pg: SvboolT, op1: Svuint64T, op2: Svuint64T): Svuint64T = svqaddU64M(pg, svselU64(pg, op1, svdupNU64(0uL)), op2)
+
+/**
+ * Saturating add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_n_u64]_z)
+ */
+public fun svqaddNU64Z(pg: SvboolT, op1: Svuint64T, op2: ULong): Svuint64T = svqaddU64Z(pg, op1, svdupNU64(op2))
+
+/**
+ * Saturating complex add with rotate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqcadd[_s8])
+ */
+public fun svqcaddS8(op1: Svint8T, op2: Svint8T, immRotation: Int): Svint8T {
+    fun svqcaddS8(op11: Svint8T, op21: Svint8T, immRotation: Int): Svint8T = null as Svint8T
+    run {
+        check(immRotation == 90 || immRotation == 270)
+    }
+    return svqcaddS8(op1, op2, immRotation)
+}
+
+/**
+ * Saturating complex add with rotate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqcadd[_s16])
+ */
+public fun svqcaddS16(op1: Svint16T, op2: Svint16T, immRotation: Int): Svint16T {
+    fun svqcaddS16(op11: Svint16T, op21: Svint16T, immRotation: Int): Svint16T = null as Svint16T
+    run {
+        check(immRotation == 90 || immRotation == 270)
+    }
+    return svqcaddS16(op1, op2, immRotation)
+}
+
+/**
+ * Saturating complex add with rotate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqcadd[_s32])
+ */
+public fun svqcaddS32(op1: Svint32T, op2: Svint32T, immRotation: Int): Svint32T {
+    fun svqcaddS32(op11: Svint32T, op21: Svint32T, immRotation: Int): Svint32T = null as Svint32T
+    run {
+        check(immRotation == 90 || immRotation == 270)
+    }
+    return svqcaddS32(op1, op2, immRotation)
+}
+
+/**
+ * Saturating complex add with rotate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqcadd[_s64])
+ */
+public fun svqcaddS64(op1: Svint64T, op2: Svint64T, immRotation: Int): Svint64T {
+    fun svqcaddS64(op11: Svint64T, op21: Svint64T, immRotation: Int): Svint64T = null as Svint64T
+    run {
+        check(immRotation == 90 || immRotation == 270)
+    }
+    return svqcaddS64(op1, op2, immRotation)
+}
+
+/**
+ * Saturating doubling multiply-add long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlalbLane[_s32])
+ */
+public fun svqdmlalbLaneS32(op1: Svint32T, op2: Svint16T, op3: Svint16T, immIndex: Int): Svint32T {
+    fun svqdmlalbLaneS32(op11: Svint32T, op21: Svint16T, op31: Svint16T, immIndex1: Int): Svint32T = null as Svint32T
+    run {
+        check(0 <= immIndex && immIndex <= 7) { "IMM_INDEX is not in range 0-7" }
+    }
+    return svqdmlalbLaneS32(op1, op2, op3, immIndex)
+}
+
+/**
+ * Saturating doubling multiply-add long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlalbLane[_s64])
+ */
+public fun svqdmlalbLaneS64(op1: Svint64T, op2: Svint32T, op3: Svint32T, immIndex: Int): Svint64T {
+    fun svqdmlalbLaneS64(op11: Svint64T, op21: Svint32T, op31: Svint32T, immIndex1: Int): Svint64T = null as Svint64T
+    run {
+        check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
+    }
+    return svqdmlalbLaneS64(op1, op2, op3, immIndex)
+}
+
+/**
+ * Saturating doubling multiply-add long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlalb[_s16])
+ */
+public fun svqdmlalbS16(op1: Svint16T, op2: Svint8T, op3: Svint8T): Svint16T {
+    fun svqdmlalbS16(op11: Svint16T, op21: Svint8T, op31: Svint8T): Svint16T = null as Svint16T
+    return svqdmlalbS16(op1, op2, op3)
+}
+
+/**
+ * Saturating doubling multiply-add long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlalb[_n_s16])
+ */
+public fun svqdmlalbNS16(op1: Svint16T, op2: Svint8T, op3: Byte): Svint16T = svqdmlalbS16(op1, op2, svdupNS8(op3))
+
+/**
+ * Saturating doubling multiply-add long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlalb[_s32])
+ */
+public fun svqdmlalbS32(op1: Svint32T, op2: Svint16T, op3: Svint16T): Svint32T {
+    fun svqdmlalbS32(op11: Svint32T, op21: Svint16T, op31: Svint16T): Svint32T = null as Svint32T
+    return svqdmlalbS32(op1, op2, op3)
+}
+
+/**
+ * Saturating doubling multiply-add long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlalb[_n_s32])
+ */
+public fun svqdmlalbNS32(op1: Svint32T, op2: Svint16T, op3: Short): Svint32T = svqdmlalbS32(op1, op2, svdupNS16(op3))
+
+/**
+ * Saturating doubling multiply-add long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlalb[_s64])
+ */
+public fun svqdmlalbS64(op1: Svint64T, op2: Svint32T, op3: Svint32T): Svint64T {
+    fun svqdmlalbS64(op11: Svint64T, op21: Svint32T, op31: Svint32T): Svint64T = null as Svint64T
+    return svqdmlalbS64(op1, op2, op3)
+}
+
+/**
+ * Saturating doubling multiply-add long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlalb[_n_s64])
+ */
+public fun svqdmlalbNS64(op1: Svint64T, op2: Svint32T, op3: Int): Svint64T = svqdmlalbS64(op1, op2, svdupNS32(op3))
+
+/**
+ * Saturating doubling multiply-add long (bottom × top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlalbt[_s16])
+ */
+public fun svqdmlalbtS16(op1: Svint16T, op2: Svint8T, op3: Svint8T): Svint16T {
+    fun svqdmlalbtS16(op11: Svint16T, op21: Svint8T, op31: Svint8T): Svint16T = null as Svint16T
+    return svqdmlalbtS16(op1, op2, op3)
+}
+
+/**
+ * Saturating doubling multiply-add long (bottom × top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlalbt[_n_s16])
+ */
+public fun svqdmlalbtNS16(op1: Svint16T, op2: Svint8T, op3: Byte): Svint16T = svqdmlalbtS16(op1, op2, svdupNS8(op3))
+
+/**
+ * Saturating doubling multiply-add long (bottom × top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlalbt[_s32])
+ */
+public fun svqdmlalbtS32(op1: Svint32T, op2: Svint16T, op3: Svint16T): Svint32T {
+    fun svqdmlalbtS32(op11: Svint32T, op21: Svint16T, op31: Svint16T): Svint32T = null as Svint32T
+    return svqdmlalbtS32(op1, op2, op3)
+}
+
+/**
+ * Saturating doubling multiply-add long (bottom × top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlalbt[_n_s32])
+ */
+public fun svqdmlalbtNS32(op1: Svint32T, op2: Svint16T, op3: Short): Svint32T = svqdmlalbtS32(op1, op2, svdupNS16(op3))
+
+/**
+ * Saturating doubling multiply-add long (bottom × top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlalbt[_s64])
+ */
+public fun svqdmlalbtS64(op1: Svint64T, op2: Svint32T, op3: Svint32T): Svint64T {
+    fun svqdmlalbtS64(op11: Svint64T, op21: Svint32T, op31: Svint32T): Svint64T = null as Svint64T
+    return svqdmlalbtS64(op1, op2, op3)
+}
+
+/**
+ * Saturating doubling multiply-add long (bottom × top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlalbt[_n_s64])
+ */
+public fun svqdmlalbtNS64(op1: Svint64T, op2: Svint32T, op3: Int): Svint64T = svqdmlalbtS64(op1, op2, svdupNS32(op3))
+
+/**
+ * Saturating doubling multiply-add long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlaltLane[_s32])
+ */
+public fun svqdmlaltLaneS32(op1: Svint32T, op2: Svint16T, op3: Svint16T, immIndex: Int): Svint32T {
+    fun svqdmlaltLaneS32(op11: Svint32T, op21: Svint16T, op31: Svint16T, immIndex1: Int): Svint32T = null as Svint32T
+    run {
+        check(0 <= immIndex && immIndex <= 7) { "IMM_INDEX is not in range 0-7" }
+    }
+    return svqdmlaltLaneS32(op1, op2, op3, immIndex)
+}
+
+/**
+ * Saturating doubling multiply-add long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlaltLane[_s64])
+ */
+public fun svqdmlaltLaneS64(op1: Svint64T, op2: Svint32T, op3: Svint32T, immIndex: Int): Svint64T {
+    fun svqdmlaltLaneS64(op11: Svint64T, op21: Svint32T, op31: Svint32T, immIndex1: Int): Svint64T = null as Svint64T
+    run {
+        check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
+    }
+    return svqdmlaltLaneS64(op1, op2, op3, immIndex)
+}
+
+/**
+ * Saturating doubling multiply-add long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlalt[_s16])
+ */
+public fun svqdmlaltS16(op1: Svint16T, op2: Svint8T, op3: Svint8T): Svint16T {
+    fun svqdmlaltS16(op11: Svint16T, op21: Svint8T, op31: Svint8T): Svint16T = null as Svint16T
+    return svqdmlaltS16(op1, op2, op3)
+}
+
+/**
+ * Saturating doubling multiply-add long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlalt[_n_s16])
+ */
+public fun svqdmlaltNS16(op1: Svint16T, op2: Svint8T, op3: Byte): Svint16T = svqdmlaltS16(op1, op2, svdupNS8(op3))
+
+/**
+ * Saturating doubling multiply-add long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlalt[_s32])
+ */
+public fun svqdmlaltS32(op1: Svint32T, op2: Svint16T, op3: Svint16T): Svint32T {
+    fun svqdmlaltS32(op11: Svint32T, op21: Svint16T, op31: Svint16T): Svint32T = null as Svint32T
+    return svqdmlaltS32(op1, op2, op3)
+}
+
+/**
+ * Saturating doubling multiply-add long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlalt[_n_s32])
+ */
+public fun svqdmlaltNS32(op1: Svint32T, op2: Svint16T, op3: Short): Svint32T = svqdmlaltS32(op1, op2, svdupNS16(op3))
+
+/**
+ * Saturating doubling multiply-add long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlalt[_s64])
+ */
+public fun svqdmlaltS64(op1: Svint64T, op2: Svint32T, op3: Svint32T): Svint64T {
+    fun svqdmlaltS64(op11: Svint64T, op21: Svint32T, op31: Svint32T): Svint64T = null as Svint64T
+    return svqdmlaltS64(op1, op2, op3)
+}
+
+/**
+ * Saturating doubling multiply-add long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlalt[_n_s64])
+ */
+public fun svqdmlaltNS64(op1: Svint64T, op2: Svint32T, op3: Int): Svint64T = svqdmlaltS64(op1, op2, svdupNS32(op3))
+
+/**
+ * Saturating doubling multiply-subtract long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlslbLane[_s32])
+ */
+public fun svqdmlslbLaneS32(op1: Svint32T, op2: Svint16T, op3: Svint16T, immIndex: Int): Svint32T {
+    fun svqdmlslbLaneS32(op11: Svint32T, op21: Svint16T, op31: Svint16T, immIndex1: Int): Svint32T = null as Svint32T
+    run {
+        check(0 <= immIndex && immIndex <= 7) { "IMM_INDEX is not in range 0-7" }
+    }
+    return svqdmlslbLaneS32(op1, op2, op3, immIndex)
+}
+
+/**
+ * Saturating doubling multiply-subtract long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlslbLane[_s64])
+ */
+public fun svqdmlslbLaneS64(op1: Svint64T, op2: Svint32T, op3: Svint32T, immIndex: Int): Svint64T {
+    fun svqdmlslbLaneS64(op11: Svint64T, op21: Svint32T, op31: Svint32T, immIndex1: Int): Svint64T = null as Svint64T
+    run {
+        check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
+    }
+    return svqdmlslbLaneS64(op1, op2, op3, immIndex)
+}
+
+/**
+ * Saturating doubling multiply-subtract long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlslb[_s16])
+ */
+public fun svqdmlslbS16(op1: Svint16T, op2: Svint8T, op3: Svint8T): Svint16T {
+    fun svqdmlslbS16(op11: Svint16T, op21: Svint8T, op31: Svint8T): Svint16T = null as Svint16T
+    return svqdmlslbS16(op1, op2, op3)
+}
+
+/**
+ * Saturating doubling multiply-subtract long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlslb[_n_s16])
+ */
+public fun svqdmlslbNS16(op1: Svint16T, op2: Svint8T, op3: Byte): Svint16T = svqdmlslbS16(op1, op2, svdupNS8(op3))
+
+/**
+ * Saturating doubling multiply-subtract long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlslb[_s32])
+ */
+public fun svqdmlslbS32(op1: Svint32T, op2: Svint16T, op3: Svint16T): Svint32T {
+    fun svqdmlslbS32(op11: Svint32T, op21: Svint16T, op31: Svint16T): Svint32T = null as Svint32T
+    return svqdmlslbS32(op1, op2, op3)
+}
+
+/**
+ * Saturating doubling multiply-subtract long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlslb[_n_s32])
+ */
+public fun svqdmlslbNS32(op1: Svint32T, op2: Svint16T, op3: Short): Svint32T = svqdmlslbS32(op1, op2, svdupNS16(op3))
+
+/**
+ * Saturating doubling multiply-subtract long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlslb[_s64])
+ */
+public fun svqdmlslbS64(op1: Svint64T, op2: Svint32T, op3: Svint32T): Svint64T {
+    fun svqdmlslbS64(op11: Svint64T, op21: Svint32T, op31: Svint32T): Svint64T = null as Svint64T
+    return svqdmlslbS64(op1, op2, op3)
+}
+
+/**
+ * Saturating doubling multiply-subtract long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlslb[_n_s64])
+ */
+public fun svqdmlslbNS64(op1: Svint64T, op2: Svint32T, op3: Int): Svint64T = svqdmlslbS64(op1, op2, svdupNS32(op3))
+
+/**
+ * Saturating doubling multiply-subtract long (bottom × top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlslbt[_s16])
+ */
+public fun svqdmlslbtS16(op1: Svint16T, op2: Svint8T, op3: Svint8T): Svint16T {
+    fun svqdmlslbtS16(op11: Svint16T, op21: Svint8T, op31: Svint8T): Svint16T = null as Svint16T
+    return svqdmlslbtS16(op1, op2, op3)
+}
+
+/**
+ * Saturating doubling multiply-subtract long (bottom × top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlslbt[_n_s16])
+ */
+public fun svqdmlslbtNS16(op1: Svint16T, op2: Svint8T, op3: Byte): Svint16T = svqdmlslbtS16(op1, op2, svdupNS8(op3))
+
+/**
+ * Saturating doubling multiply-subtract long (bottom × top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlslbt[_s32])
+ */
+public fun svqdmlslbtS32(op1: Svint32T, op2: Svint16T, op3: Svint16T): Svint32T {
+    fun svqdmlslbtS32(op11: Svint32T, op21: Svint16T, op31: Svint16T): Svint32T = null as Svint32T
+    return svqdmlslbtS32(op1, op2, op3)
+}
+
+/**
+ * Saturating doubling multiply-subtract long (bottom × top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlslbt[_n_s32])
+ */
+public fun svqdmlslbtNS32(op1: Svint32T, op2: Svint16T, op3: Short): Svint32T = svqdmlslbtS32(op1, op2, svdupNS16(op3))
+
+/**
+ * Saturating doubling multiply-subtract long (bottom × top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlslbt[_s64])
+ */
+public fun svqdmlslbtS64(op1: Svint64T, op2: Svint32T, op3: Svint32T): Svint64T {
+    fun svqdmlslbtS64(op11: Svint64T, op21: Svint32T, op31: Svint32T): Svint64T = null as Svint64T
+    return svqdmlslbtS64(op1, op2, op3)
+}
+
+/**
+ * Saturating doubling multiply-subtract long (bottom × top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlslbt[_n_s64])
+ */
+public fun svqdmlslbtNS64(op1: Svint64T, op2: Svint32T, op3: Int): Svint64T = svqdmlslbtS64(op1, op2, svdupNS32(op3))
+
+/**
+ * Saturating doubling multiply-subtract long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlsltLane[_s32])
+ */
+public fun svqdmlsltLaneS32(op1: Svint32T, op2: Svint16T, op3: Svint16T, immIndex: Int): Svint32T {
+    fun svqdmlsltLaneS32(op11: Svint32T, op21: Svint16T, op31: Svint16T, immIndex1: Int): Svint32T = null as Svint32T
+    run {
+        check(0 <= immIndex && immIndex <= 7) { "IMM_INDEX is not in range 0-7" }
+    }
+    return svqdmlsltLaneS32(op1, op2, op3, immIndex)
+}
+
+/**
+ * Saturating doubling multiply-subtract long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlsltLane[_s64])
+ */
+public fun svqdmlsltLaneS64(op1: Svint64T, op2: Svint32T, op3: Svint32T, immIndex: Int): Svint64T {
+    fun svqdmlsltLaneS64(op11: Svint64T, op21: Svint32T, op31: Svint32T, immIndex1: Int): Svint64T = null as Svint64T
+    run {
+        check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
+    }
+    return svqdmlsltLaneS64(op1, op2, op3, immIndex)
+}
+
+/**
+ * Saturating doubling multiply-subtract long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlslt[_s16])
+ */
+public fun svqdmlsltS16(op1: Svint16T, op2: Svint8T, op3: Svint8T): Svint16T {
+    fun svqdmlsltS16(op11: Svint16T, op21: Svint8T, op31: Svint8T): Svint16T = null as Svint16T
+    return svqdmlsltS16(op1, op2, op3)
+}
+
+/**
+ * Saturating doubling multiply-subtract long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlslt[_n_s16])
+ */
+public fun svqdmlsltNS16(op1: Svint16T, op2: Svint8T, op3: Byte): Svint16T = svqdmlsltS16(op1, op2, svdupNS8(op3))
+
+/**
+ * Saturating doubling multiply-subtract long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlslt[_s32])
+ */
+public fun svqdmlsltS32(op1: Svint32T, op2: Svint16T, op3: Svint16T): Svint32T {
+    fun svqdmlsltS32(op11: Svint32T, op21: Svint16T, op31: Svint16T): Svint32T = null as Svint32T
+    return svqdmlsltS32(op1, op2, op3)
+}
+
+/**
+ * Saturating doubling multiply-subtract long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlslt[_n_s32])
+ */
+public fun svqdmlsltNS32(op1: Svint32T, op2: Svint16T, op3: Short): Svint32T = svqdmlsltS32(op1, op2, svdupNS16(op3))
+
+/**
+ * Saturating doubling multiply-subtract long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlslt[_s64])
+ */
+public fun svqdmlsltS64(op1: Svint64T, op2: Svint32T, op3: Svint32T): Svint64T {
+    fun svqdmlsltS64(op11: Svint64T, op21: Svint32T, op31: Svint32T): Svint64T = null as Svint64T
+    return svqdmlsltS64(op1, op2, op3)
+}
+
+/**
+ * Saturating doubling multiply-subtract long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlslt[_n_s64])
+ */
+public fun svqdmlsltNS64(op1: Svint64T, op2: Svint32T, op3: Int): Svint64T = svqdmlsltS64(op1, op2, svdupNS32(op3))
+
+/**
+ * Saturating doubling multiply high
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmulhLane[_s16])
+ */
+public fun svqdmulhLaneS16(op1: Svint16T, op2: Svint16T, immIndex: Int): Svint16T {
+    fun svqdmulhLaneS16(op11: Svint16T, op21: Svint16T, immIndex: Int): Svint16T = null as Svint16T
+    run {
+        check(0 <= immIndex && immIndex <= 7) { "IMM_INDEX is not in range 0-7" }
+    }
+    return svqdmulhLaneS16(op1, op2, immIndex)
+}
+
+/**
+ * Saturating doubling multiply high
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmulhLane[_s32])
+ */
+public fun svqdmulhLaneS32(op1: Svint32T, op2: Svint32T, immIndex: Int): Svint32T {
+    fun svqdmulhLaneS32(op11: Svint32T, op21: Svint32T, immIndex: Int): Svint32T = null as Svint32T
+    run {
+        check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
+    }
+    return svqdmulhLaneS32(op1, op2, immIndex)
+}
+
+/**
+ * Saturating doubling multiply high
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmulhLane[_s64])
+ */
+public fun svqdmulhLaneS64(op1: Svint64T, op2: Svint64T, immIndex: Int): Svint64T {
+    fun svqdmulhLaneS64(op11: Svint64T, op21: Svint64T, immIndex: Int): Svint64T = null as Svint64T
+    run {
+        check(0 <= immIndex && immIndex <= 1) { "IMM_INDEX is not in range 0-1" }
+    }
+    return svqdmulhLaneS64(op1, op2, immIndex)
+}
+
+/**
+ * Saturating doubling multiply high
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmulh[_s8])
+ */
+public fun svqdmulhS8(op1: Svint8T, op2: Svint8T): Svint8T {
+    fun svqdmulhS8(op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    return svqdmulhS8(op1, op2)
+}
+
+/**
+ * Saturating doubling multiply high
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmulh[_n_s8])
+ */
+public fun svqdmulhNS8(op1: Svint8T, op2: Byte): Svint8T = svqdmulhS8(op1, svdupNS8(op2))
+
+/**
+ * Saturating doubling multiply high
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmulh[_s16])
+ */
+public fun svqdmulhS16(op1: Svint16T, op2: Svint16T): Svint16T {
+    fun svqdmulhS16(op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    return svqdmulhS16(op1, op2)
+}
+
+/**
+ * Saturating doubling multiply high
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmulh[_n_s16])
+ */
+public fun svqdmulhNS16(op1: Svint16T, op2: Short): Svint16T = svqdmulhS16(op1, svdupNS16(op2))
+
+/**
+ * Saturating doubling multiply high
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmulh[_s32])
+ */
+public fun svqdmulhS32(op1: Svint32T, op2: Svint32T): Svint32T {
+    fun svqdmulhS32(op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    return svqdmulhS32(op1, op2)
+}
+
+/**
+ * Saturating doubling multiply high
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmulh[_n_s32])
+ */
+public fun svqdmulhNS32(op1: Svint32T, op2: Int): Svint32T = svqdmulhS32(op1, svdupNS32(op2))
+
+/**
+ * Saturating doubling multiply high
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmulh[_s64])
+ */
+public fun svqdmulhS64(op1: Svint64T, op2: Svint64T): Svint64T {
+    fun svqdmulhS64(op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    return svqdmulhS64(op1, op2)
+}
+
+/**
+ * Saturating doubling multiply high
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmulh[_n_s64])
+ */
+public fun svqdmulhNS64(op1: Svint64T, op2: Long): Svint64T = svqdmulhS64(op1, svdupNS64(op2))
+
+/**
+ * Saturating doubling multiply long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmullbLane[_s32])
+ */
+public fun svqdmullbLaneS32(op1: Svint16T, op2: Svint16T, immIndex: Int): Svint32T {
+    fun svqdmullbLaneS32(op11: Svint16T, op21: Svint16T, immIndex: Int): Svint32T = null as Svint32T
+    run {
+        check(0 <= immIndex && immIndex <= 7) { "IMM_INDEX is not in range 0-7" }
+    }
+    return svqdmullbLaneS32(op1, op2, immIndex)
+}
+
+/**
+ * Saturating doubling multiply long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmullbLane[_s64])
+ */
+public fun svqdmullbLaneS64(op1: Svint32T, op2: Svint32T, immIndex: Int): Svint64T {
+    fun svqdmullbLaneS64(op11: Svint32T, op21: Svint32T, immIndex: Int): Svint64T = null as Svint64T
+    run {
+        check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
+    }
+    return svqdmullbLaneS64(op1, op2, immIndex)
+}
+
+/**
+ * Saturating doubling multiply long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmullb[_s16])
+ */
+public fun svqdmullbS16(op1: Svint8T, op2: Svint8T): Svint16T {
+    fun svqdmullbS16(op11: Svint8T, op21: Svint8T): Svint16T = null as Svint16T
+    return svqdmullbS16(op1, op2)
+}
+
+/**
+ * Saturating doubling multiply long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmullb[_n_s16])
+ */
+public fun svqdmullbNS16(op1: Svint8T, op2: Byte): Svint16T = svqdmullbS16(op1, svdupNS8(op2))
+
+/**
+ * Saturating doubling multiply long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmullb[_s32])
+ */
+public fun svqdmullbS32(op1: Svint16T, op2: Svint16T): Svint32T {
+    fun svqdmullbS32(op11: Svint16T, op21: Svint16T): Svint32T = null as Svint32T
+    return svqdmullbS32(op1, op2)
+}
+
+/**
+ * Saturating doubling multiply long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmullb[_n_s32])
+ */
+public fun svqdmullbNS32(op1: Svint16T, op2: Short): Svint32T = svqdmullbS32(op1, svdupNS16(op2))
+
+/**
+ * Saturating doubling multiply long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmullb[_s64])
+ */
+public fun svqdmullbS64(op1: Svint32T, op2: Svint32T): Svint64T {
+    fun svqdmullbS64(op11: Svint32T, op21: Svint32T): Svint64T = null as Svint64T
+    return svqdmullbS64(op1, op2)
+}
+
+/**
+ * Saturating doubling multiply long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmullb[_n_s64])
+ */
+public fun svqdmullbNS64(op1: Svint32T, op2: Int): Svint64T = svqdmullbS64(op1, svdupNS32(op2))
+
+/**
+ * Saturating doubling multiply long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmulltLane[_s32])
+ */
+public fun svqdmulltLaneS32(op1: Svint16T, op2: Svint16T, immIndex: Int): Svint32T {
+    fun svqdmulltLaneS32(op11: Svint16T, op21: Svint16T, immIndex: Int): Svint32T = null as Svint32T
+    run {
+        check(0 <= immIndex && immIndex <= 7) { "IMM_INDEX is not in range 0-7" }
+    }
+    return svqdmulltLaneS32(op1, op2, immIndex)
+}
+
+/**
+ * Saturating doubling multiply long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmulltLane[_s64])
+ */
+public fun svqdmulltLaneS64(op1: Svint32T, op2: Svint32T, immIndex: Int): Svint64T {
+    fun svqdmulltLaneS64(op11: Svint32T, op21: Svint32T, immIndex: Int): Svint64T = null as Svint64T
+    run {
+        check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
+    }
+    return svqdmulltLaneS64(op1, op2, immIndex)
+}
+
+/**
+ * Saturating doubling multiply long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmullt[_s16])
+ */
+public fun svqdmulltS16(op1: Svint8T, op2: Svint8T): Svint16T {
+    fun svqdmulltS16(op11: Svint8T, op21: Svint8T): Svint16T = null as Svint16T
+    return svqdmulltS16(op1, op2)
+}
+
+/**
+ * Saturating doubling multiply long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmullt[_n_s16])
+ */
+public fun svqdmulltNS16(op1: Svint8T, op2: Byte): Svint16T = svqdmulltS16(op1, svdupNS8(op2))
+
+/**
+ * Saturating doubling multiply long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmullt[_s32])
+ */
+public fun svqdmulltS32(op1: Svint16T, op2: Svint16T): Svint32T {
+    fun svqdmulltS32(op11: Svint16T, op21: Svint16T): Svint32T = null as Svint32T
+    return svqdmulltS32(op1, op2)
+}
+
+/**
+ * Saturating doubling multiply long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmullt[_n_s32])
+ */
+public fun svqdmulltNS32(op1: Svint16T, op2: Short): Svint32T = svqdmulltS32(op1, svdupNS16(op2))
+
+/**
+ * Saturating doubling multiply long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmullt[_s64])
+ */
+public fun svqdmulltS64(op1: Svint32T, op2: Svint32T): Svint64T {
+    fun svqdmulltS64(op11: Svint32T, op21: Svint32T): Svint64T = null as Svint64T
+    return svqdmulltS64(op1, op2)
+}
+
+/**
+ * Saturating doubling multiply long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmullt[_n_s64])
+ */
+public fun svqdmulltNS64(op1: Svint32T, op2: Int): Svint64T = svqdmulltS64(op1, svdupNS32(op2))
+
+/**
+ * Saturating negate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqneg[_s8]_m)
+ */
+public fun svqnegS8M(inactive: Svint8T, pg: SvboolT, op: Svint8T): Svint8T {
+    fun svqnegS8M(inactive1: Svint8T, pg1: SvboolT, op1: Svint8T): Svint8T = null as Svint8T
+    return svqnegS8M(inactive, pg, op)
+}
+
+/**
+ * Saturating negate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqneg[_s8]_x)
+ */
+public fun svqnegS8X(pg: SvboolT, op: Svint8T): Svint8T = svqnegS8M(op, pg, op)
+
+/**
+ * Saturating negate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqneg[_s8]_z)
+ */
+public fun svqnegS8Z(pg: SvboolT, op: Svint8T): Svint8T = svqnegS8M(svdupNS8(0), pg, op)
+
+/**
+ * Saturating negate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqneg[_s16]_m)
+ */
+public fun svqnegS16M(inactive: Svint16T, pg: SvboolT, op: Svint16T): Svint16T {
+    fun svqnegS16M(inactive1: Svint16T, pg1: Svbool8T, op1: Svint16T): Svint16T = null as Svint16T
+    return svqnegS16M(inactive, pg.sveInto(), op)
+}
+
+/**
+ * Saturating negate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqneg[_s16]_x)
+ */
+public fun svqnegS16X(pg: SvboolT, op: Svint16T): Svint16T = svqnegS16M(op, pg, op)
+
+/**
+ * Saturating negate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqneg[_s16]_z)
+ */
+public fun svqnegS16Z(pg: SvboolT, op: Svint16T): Svint16T = svqnegS16M(svdupNS16(0), pg, op)
+
+/**
+ * Saturating negate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqneg[_s32]_m)
+ */
+public fun svqnegS32M(inactive: Svint32T, pg: SvboolT, op: Svint32T): Svint32T {
+    fun svqnegS32M(inactive1: Svint32T, pg1: Svbool4T, op1: Svint32T): Svint32T = null as Svint32T
+    return svqnegS32M(inactive, pg.sveInto(), op)
+}
+
+/**
+ * Saturating negate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqneg[_s32]_x)
+ */
+public fun svqnegS32X(pg: SvboolT, op: Svint32T): Svint32T = svqnegS32M(op, pg, op)
+
+/**
+ * Saturating negate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqneg[_s32]_z)
+ */
+public fun svqnegS32Z(pg: SvboolT, op: Svint32T): Svint32T = svqnegS32M(svdupNS32(0), pg, op)
+
+/**
+ * Saturating negate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqneg[_s64]_m)
+ */
+public fun svqnegS64M(inactive: Svint64T, pg: SvboolT, op: Svint64T): Svint64T {
+    fun svqnegS64M(inactive1: Svint64T, pg1: Svbool2T, op1: Svint64T): Svint64T = null as Svint64T
+    return svqnegS64M(inactive, pg.sveInto(), op)
+}
+
+/**
+ * Saturating negate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqneg[_s64]_x)
+ */
+public fun svqnegS64X(pg: SvboolT, op: Svint64T): Svint64T = svqnegS64M(op, pg, op)
+
+/**
+ * Saturating negate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqneg[_s64]_z)
+ */
+public fun svqnegS64Z(pg: SvboolT, op: Svint64T): Svint64T = svqnegS64M(svdupNS64(0L), pg, op)
+
+/**
+ * Saturating rounding doubling complex multiply-add high with rotate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdcmlahLane[_s16])
+ */
+public fun svqrdcmlahLaneS16(op1: Svint16T, op2: Svint16T, op3: Svint16T, immIndex: Int, immRotation: Int): Svint16T {
+    fun svqrdcmlahLaneS16(op11: Svint16T, op21: Svint16T, op31: Svint16T, immIndex: Int, immRotation: Int): Svint16T = null as Svint16T
+    run {
+        check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
+    }
+    run {
+        check(immRotation == 0 || immRotation == 90 || immRotation == 180 || immRotation == 270)
+    }
+    return svqrdcmlahLaneS16(op1, op2, op3, immIndex, immRotation)
+}
+
+/**
+ * Saturating rounding doubling complex multiply-add high with rotate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdcmlahLane[_s32])
+ */
+public fun svqrdcmlahLaneS32(op1: Svint32T, op2: Svint32T, op3: Svint32T, immIndex: Int, immRotation: Int): Svint32T {
+    fun svqrdcmlahLaneS32(op11: Svint32T, op21: Svint32T, op31: Svint32T, immIndex: Int, immRotation: Int): Svint32T = null as Svint32T
+    run {
+        check(0 <= immIndex && immIndex <= 1) { "IMM_INDEX is not in range 0-1" }
+    }
+    run {
+        check(immRotation == 0 || immRotation == 90 || immRotation == 180 || immRotation == 270)
+    }
+    return svqrdcmlahLaneS32(op1, op2, op3, immIndex, immRotation)
+}
+
+/**
+ * Saturating rounding doubling complex multiply-add high with rotate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdcmlah[_s8])
+ */
+public fun svqrdcmlahS8(op1: Svint8T, op2: Svint8T, op3: Svint8T, immRotation: Int): Svint8T {
+    fun svqrdcmlahS8(op11: Svint8T, op21: Svint8T, op31: Svint8T, immRotation: Int): Svint8T = null as Svint8T
+    run {
+        check(immRotation == 0 || immRotation == 90 || immRotation == 180 || immRotation == 270)
+    }
+    return svqrdcmlahS8(op1, op2, op3, immRotation)
+}
+
+/**
+ * Saturating rounding doubling complex multiply-add high with rotate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdcmlah[_s16])
+ */
+public fun svqrdcmlahS16(op1: Svint16T, op2: Svint16T, op3: Svint16T, immRotation: Int): Svint16T {
+    fun svqrdcmlahS16(op11: Svint16T, op21: Svint16T, op31: Svint16T, immRotation: Int): Svint16T = null as Svint16T
+    run {
+        check(immRotation == 0 || immRotation == 90 || immRotation == 180 || immRotation == 270)
+    }
+    return svqrdcmlahS16(op1, op2, op3, immRotation)
+}
+
+/**
+ * Saturating rounding doubling complex multiply-add high with rotate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdcmlah[_s32])
+ */
+public fun svqrdcmlahS32(op1: Svint32T, op2: Svint32T, op3: Svint32T, immRotation: Int): Svint32T {
+    fun svqrdcmlahS32(op11: Svint32T, op21: Svint32T, op31: Svint32T, immRotation: Int): Svint32T = null as Svint32T
+    run {
+        check(immRotation == 0 || immRotation == 90 || immRotation == 180 || immRotation == 270)
+    }
+    return svqrdcmlahS32(op1, op2, op3, immRotation)
+}
+
+/**
+ * Saturating rounding doubling complex multiply-add high with rotate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdcmlah[_s64])
+ */
+public fun svqrdcmlahS64(op1: Svint64T, op2: Svint64T, op3: Svint64T, immRotation: Int): Svint64T {
+    fun svqrdcmlahS64(op11: Svint64T, op21: Svint64T, op31: Svint64T, immRotation: Int): Svint64T = null as Svint64T
+    run {
+        check(immRotation == 0 || immRotation == 90 || immRotation == 180 || immRotation == 270)
+    }
+    return svqrdcmlahS64(op1, op2, op3, immRotation)
+}
+
+/**
+ * Saturating rounding doubling multiply-add high
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdmlahLane[_s16])
+ */
+public fun svqrdmlahLaneS16(op1: Svint16T, op2: Svint16T, op3: Svint16T, immIndex: Int): Svint16T {
+    fun svqrdmlahLaneS16(op11: Svint16T, op21: Svint16T, op31: Svint16T, immIndex1: Int): Svint16T = null as Svint16T
+    run {
+        check(0 <= immIndex && immIndex <= 7) { "IMM_INDEX is not in range 0-7" }
+    }
+    return svqrdmlahLaneS16(op1, op2, op3, immIndex)
+}
+
+/**
+ * Saturating rounding doubling multiply-add high
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdmlahLane[_s32])
+ */
+public fun svqrdmlahLaneS32(op1: Svint32T, op2: Svint32T, op3: Svint32T, immIndex: Int): Svint32T {
+    fun svqrdmlahLaneS32(op11: Svint32T, op21: Svint32T, op31: Svint32T, immIndex1: Int): Svint32T = null as Svint32T
+    run {
+        check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
+    }
+    return svqrdmlahLaneS32(op1, op2, op3, immIndex)
+}
+
+/**
+ * Saturating rounding doubling multiply-add high
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdmlahLane[_s64])
+ */
+public fun svqrdmlahLaneS64(op1: Svint64T, op2: Svint64T, op3: Svint64T, immIndex: Int): Svint64T {
+    fun svqrdmlahLaneS64(op11: Svint64T, op21: Svint64T, op31: Svint64T, immIndex1: Int): Svint64T = null as Svint64T
+    run {
+        check(0 <= immIndex && immIndex <= 1) { "IMM_INDEX is not in range 0-1" }
+    }
+    return svqrdmlahLaneS64(op1, op2, op3, immIndex)
+}
+
+/**
+ * Saturating rounding doubling multiply-add high
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdmlah[_s8])
+ */
+public fun svqrdmlahS8(op1: Svint8T, op2: Svint8T, op3: Svint8T): Svint8T {
+    fun svqrdmlahS8(op11: Svint8T, op21: Svint8T, op31: Svint8T): Svint8T = null as Svint8T
+    return svqrdmlahS8(op1, op2, op3)
+}
+
+/**
+ * Saturating rounding doubling multiply-add high
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdmlah[_n_s8])
+ */
+public fun svqrdmlahNS8(op1: Svint8T, op2: Svint8T, op3: Byte): Svint8T = svqrdmlahS8(op1, op2, svdupNS8(op3))
+
+/**
+ * Saturating rounding doubling multiply-add high
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdmlah[_s16])
+ */
+public fun svqrdmlahS16(op1: Svint16T, op2: Svint16T, op3: Svint16T): Svint16T {
+    fun svqrdmlahS16(op11: Svint16T, op21: Svint16T, op31: Svint16T): Svint16T = null as Svint16T
+    return svqrdmlahS16(op1, op2, op3)
+}
+
+/**
+ * Saturating rounding doubling multiply-add high
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdmlah[_n_s16])
+ */
+public fun svqrdmlahNS16(op1: Svint16T, op2: Svint16T, op3: Short): Svint16T = svqrdmlahS16(op1, op2, svdupNS16(op3))
+
+/**
+ * Saturating rounding doubling multiply-add high
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdmlah[_s32])
+ */
+public fun svqrdmlahS32(op1: Svint32T, op2: Svint32T, op3: Svint32T): Svint32T {
+    fun svqrdmlahS32(op11: Svint32T, op21: Svint32T, op31: Svint32T): Svint32T = null as Svint32T
+    return svqrdmlahS32(op1, op2, op3)
+}
+
+/**
+ * Saturating rounding doubling multiply-add high
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdmlah[_n_s32])
+ */
+public fun svqrdmlahNS32(op1: Svint32T, op2: Svint32T, op3: Int): Svint32T = svqrdmlahS32(op1, op2, svdupNS32(op3))
+
+/**
+ * Saturating rounding doubling multiply-add high
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdmlah[_s64])
+ */
+public fun svqrdmlahS64(op1: Svint64T, op2: Svint64T, op3: Svint64T): Svint64T {
+    fun svqrdmlahS64(op11: Svint64T, op21: Svint64T, op31: Svint64T): Svint64T = null as Svint64T
+    return svqrdmlahS64(op1, op2, op3)
+}
+
+/**
+ * Saturating rounding doubling multiply-add high
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdmlah[_n_s64])
+ */
+public fun svqrdmlahNS64(op1: Svint64T, op2: Svint64T, op3: Long): Svint64T = svqrdmlahS64(op1, op2, svdupNS64(op3))
+
+/**
+ * Saturating rounding doubling multiply-subtract high
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdmlshLane[_s16])
+ */
+public fun svqrdmlshLaneS16(op1: Svint16T, op2: Svint16T, op3: Svint16T, immIndex: Int): Svint16T {
+    fun svqrdmlshLaneS16(op11: Svint16T, op21: Svint16T, op31: Svint16T, immIndex1: Int): Svint16T = null as Svint16T
+    run {
+        check(0 <= immIndex && immIndex <= 7) { "IMM_INDEX is not in range 0-7" }
+    }
+    return svqrdmlshLaneS16(op1, op2, op3, immIndex)
+}
+
+/**
+ * Saturating rounding doubling multiply-subtract high
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdmlshLane[_s32])
+ */
+public fun svqrdmlshLaneS32(op1: Svint32T, op2: Svint32T, op3: Svint32T, immIndex: Int): Svint32T {
+    fun svqrdmlshLaneS32(op11: Svint32T, op21: Svint32T, op31: Svint32T, immIndex1: Int): Svint32T = null as Svint32T
+    run {
+        check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
+    }
+    return svqrdmlshLaneS32(op1, op2, op3, immIndex)
+}
+
+/**
+ * Saturating rounding doubling multiply-subtract high
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdmlshLane[_s64])
+ */
+public fun svqrdmlshLaneS64(op1: Svint64T, op2: Svint64T, op3: Svint64T, immIndex: Int): Svint64T {
+    fun svqrdmlshLaneS64(op11: Svint64T, op21: Svint64T, op31: Svint64T, immIndex1: Int): Svint64T = null as Svint64T
+    run {
+        check(0 <= immIndex && immIndex <= 1) { "IMM_INDEX is not in range 0-1" }
+    }
+    return svqrdmlshLaneS64(op1, op2, op3, immIndex)
+}
+
+/**
+ * Saturating rounding doubling multiply-subtract high
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdmlsh[_s8])
+ */
+public fun svqrdmlshS8(op1: Svint8T, op2: Svint8T, op3: Svint8T): Svint8T {
+    fun svqrdmlshS8(op11: Svint8T, op21: Svint8T, op31: Svint8T): Svint8T = null as Svint8T
+    return svqrdmlshS8(op1, op2, op3)
+}
+
+/**
+ * Saturating rounding doubling multiply-subtract high
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdmlsh[_n_s8])
+ */
+public fun svqrdmlshNS8(op1: Svint8T, op2: Svint8T, op3: Byte): Svint8T = svqrdmlshS8(op1, op2, svdupNS8(op3))
+
+/**
+ * Saturating rounding doubling multiply-subtract high
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdmlsh[_s16])
+ */
+public fun svqrdmlshS16(op1: Svint16T, op2: Svint16T, op3: Svint16T): Svint16T {
+    fun svqrdmlshS16(op11: Svint16T, op21: Svint16T, op31: Svint16T): Svint16T = null as Svint16T
+    return svqrdmlshS16(op1, op2, op3)
+}
+
+/**
+ * Saturating rounding doubling multiply-subtract high
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdmlsh[_n_s16])
+ */
+public fun svqrdmlshNS16(op1: Svint16T, op2: Svint16T, op3: Short): Svint16T = svqrdmlshS16(op1, op2, svdupNS16(op3))
+
+/**
+ * Saturating rounding doubling multiply-subtract high
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdmlsh[_s32])
+ */
+public fun svqrdmlshS32(op1: Svint32T, op2: Svint32T, op3: Svint32T): Svint32T {
+    fun svqrdmlshS32(op11: Svint32T, op21: Svint32T, op31: Svint32T): Svint32T = null as Svint32T
+    return svqrdmlshS32(op1, op2, op3)
+}
+
+/**
+ * Saturating rounding doubling multiply-subtract high
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdmlsh[_n_s32])
+ */
+public fun svqrdmlshNS32(op1: Svint32T, op2: Svint32T, op3: Int): Svint32T = svqrdmlshS32(op1, op2, svdupNS32(op3))
+
+/**
+ * Saturating rounding doubling multiply-subtract high
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdmlsh[_s64])
+ */
+public fun svqrdmlshS64(op1: Svint64T, op2: Svint64T, op3: Svint64T): Svint64T {
+    fun svqrdmlshS64(op11: Svint64T, op21: Svint64T, op31: Svint64T): Svint64T = null as Svint64T
+    return svqrdmlshS64(op1, op2, op3)
+}
+
+/**
+ * Saturating rounding doubling multiply-subtract high
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdmlsh[_n_s64])
+ */
+public fun svqrdmlshNS64(op1: Svint64T, op2: Svint64T, op3: Long): Svint64T = svqrdmlshS64(op1, op2, svdupNS64(op3))
+
+/**
+ * Saturating rounding doubling multiply high
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdmulhLane[_s16])
+ */
+public fun svqrdmulhLaneS16(op1: Svint16T, op2: Svint16T, immIndex: Int): Svint16T {
+    fun svqrdmulhLaneS16(op11: Svint16T, op21: Svint16T, immIndex: Int): Svint16T = null as Svint16T
+    run {
+        check(0 <= immIndex && immIndex <= 7) { "IMM_INDEX is not in range 0-7" }
+    }
+    return svqrdmulhLaneS16(op1, op2, immIndex)
+}
+
+/**
+ * Saturating rounding doubling multiply high
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdmulhLane[_s32])
+ */
+public fun svqrdmulhLaneS32(op1: Svint32T, op2: Svint32T, immIndex: Int): Svint32T {
+    fun svqrdmulhLaneS32(op11: Svint32T, op21: Svint32T, immIndex: Int): Svint32T = null as Svint32T
+    run {
+        check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
+    }
+    return svqrdmulhLaneS32(op1, op2, immIndex)
+}
+
+/**
+ * Saturating rounding doubling multiply high
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdmulhLane[_s64])
+ */
+public fun svqrdmulhLaneS64(op1: Svint64T, op2: Svint64T, immIndex: Int): Svint64T {
+    fun svqrdmulhLaneS64(op11: Svint64T, op21: Svint64T, immIndex: Int): Svint64T = null as Svint64T
+    run {
+        check(0 <= immIndex && immIndex <= 1) { "IMM_INDEX is not in range 0-1" }
+    }
+    return svqrdmulhLaneS64(op1, op2, immIndex)
+}
+
+/**
+ * Saturating rounding doubling multiply high
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdmulh[_s8])
+ */
+public fun svqrdmulhS8(op1: Svint8T, op2: Svint8T): Svint8T {
+    fun svqrdmulhS8(op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    return svqrdmulhS8(op1, op2)
+}
+
+/**
+ * Saturating rounding doubling multiply high
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdmulh[_n_s8])
+ */
+public fun svqrdmulhNS8(op1: Svint8T, op2: Byte): Svint8T = svqrdmulhS8(op1, svdupNS8(op2))
+
+/**
+ * Saturating rounding doubling multiply high
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdmulh[_s16])
+ */
+public fun svqrdmulhS16(op1: Svint16T, op2: Svint16T): Svint16T {
+    fun svqrdmulhS16(op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    return svqrdmulhS16(op1, op2)
+}
+
+/**
+ * Saturating rounding doubling multiply high
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdmulh[_n_s16])
+ */
+public fun svqrdmulhNS16(op1: Svint16T, op2: Short): Svint16T = svqrdmulhS16(op1, svdupNS16(op2))
+
+/**
+ * Saturating rounding doubling multiply high
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdmulh[_s32])
+ */
+public fun svqrdmulhS32(op1: Svint32T, op2: Svint32T): Svint32T {
+    fun svqrdmulhS32(op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    return svqrdmulhS32(op1, op2)
+}
+
+/**
+ * Saturating rounding doubling multiply high
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdmulh[_n_s32])
+ */
+public fun svqrdmulhNS32(op1: Svint32T, op2: Int): Svint32T = svqrdmulhS32(op1, svdupNS32(op2))
+
+/**
+ * Saturating rounding doubling multiply high
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdmulh[_s64])
+ */
+public fun svqrdmulhS64(op1: Svint64T, op2: Svint64T): Svint64T {
+    fun svqrdmulhS64(op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    return svqrdmulhS64(op1, op2)
+}
+
+/**
+ * Saturating rounding doubling multiply high
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdmulh[_n_s64])
+ */
+public fun svqrdmulhNS64(op1: Svint64T, op2: Long): Svint64T = svqrdmulhS64(op1, svdupNS64(op2))
+
+/**
+ * Saturating rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshl[_s8]_m)
+ */
+public fun svqrshlS8M(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T {
+    fun svqrshlS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    return svqrshlS8M(pg, op1, op2)
+}
+
+/**
+ * Saturating rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshl[_n_s8]_m)
+ */
+public fun svqrshlNS8M(pg: SvboolT, op1: Svint8T, op2: Byte): Svint8T = svqrshlS8M(pg, op1, svdupNS8(op2))
+
+/**
+ * Saturating rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshl[_s8]_x)
+ */
+public fun svqrshlS8X(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T = svqrshlS8M(pg, op1, op2)
+
+/**
+ * Saturating rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshl[_n_s8]_x)
+ */
+public fun svqrshlNS8X(pg: SvboolT, op1: Svint8T, op2: Byte): Svint8T = svqrshlS8X(pg, op1, svdupNS8(op2))
+
+/**
+ * Saturating rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshl[_s8]_z)
+ */
+public fun svqrshlS8Z(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T = svqrshlS8M(pg, svselS8(pg, op1, svdupNS8(0)), op2)
+
+/**
+ * Saturating rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshl[_n_s8]_z)
+ */
+public fun svqrshlNS8Z(pg: SvboolT, op1: Svint8T, op2: Byte): Svint8T = svqrshlS8Z(pg, op1, svdupNS8(op2))
+
+/**
+ * Saturating rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshl[_s16]_m)
+ */
+public fun svqrshlS16M(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T {
+    fun svqrshlS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    return svqrshlS16M(pg.sveInto(), op1, op2)
+}
+
+/**
+ * Saturating rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshl[_n_s16]_m)
+ */
+public fun svqrshlNS16M(pg: SvboolT, op1: Svint16T, op2: Short): Svint16T = svqrshlS16M(pg, op1, svdupNS16(op2))
+
+/**
+ * Saturating rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshl[_s16]_x)
+ */
+public fun svqrshlS16X(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T = svqrshlS16M(pg, op1, op2)
+
+/**
+ * Saturating rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshl[_n_s16]_x)
+ */
+public fun svqrshlNS16X(pg: SvboolT, op1: Svint16T, op2: Short): Svint16T = svqrshlS16X(pg, op1, svdupNS16(op2))
+
+/**
+ * Saturating rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshl[_s16]_z)
+ */
+public fun svqrshlS16Z(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T = svqrshlS16M(pg, svselS16(pg, op1, svdupNS16(0)), op2)
+
+/**
+ * Saturating rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshl[_n_s16]_z)
+ */
+public fun svqrshlNS16Z(pg: SvboolT, op1: Svint16T, op2: Short): Svint16T = svqrshlS16Z(pg, op1, svdupNS16(op2))
+
+/**
+ * Saturating rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshl[_s32]_m)
+ */
+public fun svqrshlS32M(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T {
+    fun svqrshlS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    return svqrshlS32M(pg.sveInto(), op1, op2)
+}
+
+/**
+ * Saturating rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshl[_n_s32]_m)
+ */
+public fun svqrshlNS32M(pg: SvboolT, op1: Svint32T, op2: Int): Svint32T = svqrshlS32M(pg, op1, svdupNS32(op2))
+
+/**
+ * Saturating rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshl[_s32]_x)
+ */
+public fun svqrshlS32X(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T = svqrshlS32M(pg, op1, op2)
+
+/**
+ * Saturating rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshl[_n_s32]_x)
+ */
+public fun svqrshlNS32X(pg: SvboolT, op1: Svint32T, op2: Int): Svint32T = svqrshlS32X(pg, op1, svdupNS32(op2))
+
+/**
+ * Saturating rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshl[_s32]_z)
+ */
+public fun svqrshlS32Z(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T = svqrshlS32M(pg, svselS32(pg, op1, svdupNS32(0)), op2)
+
+/**
+ * Saturating rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshl[_n_s32]_z)
+ */
+public fun svqrshlNS32Z(pg: SvboolT, op1: Svint32T, op2: Int): Svint32T = svqrshlS32Z(pg, op1, svdupNS32(op2))
+
+/**
+ * Saturating rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshl[_s64]_m)
+ */
+public fun svqrshlS64M(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T {
+    fun svqrshlS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    return svqrshlS64M(pg.sveInto(), op1, op2)
+}
+
+/**
+ * Saturating rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshl[_n_s64]_m)
+ */
+public fun svqrshlNS64M(pg: SvboolT, op1: Svint64T, op2: Long): Svint64T = svqrshlS64M(pg, op1, svdupNS64(op2))
+
+/**
+ * Saturating rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshl[_s64]_x)
+ */
+public fun svqrshlS64X(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T = svqrshlS64M(pg, op1, op2)
+
+/**
+ * Saturating rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshl[_n_s64]_x)
+ */
+public fun svqrshlNS64X(pg: SvboolT, op1: Svint64T, op2: Long): Svint64T = svqrshlS64X(pg, op1, svdupNS64(op2))
+
+/**
+ * Saturating rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshl[_s64]_z)
+ */
+public fun svqrshlS64Z(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T = svqrshlS64M(pg, svselS64(pg, op1, svdupNS64(0L)), op2)
+
+/**
+ * Saturating rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshl[_n_s64]_z)
+ */
+public fun svqrshlNS64Z(pg: SvboolT, op1: Svint64T, op2: Long): Svint64T = svqrshlS64Z(pg, op1, svdupNS64(op2))
+
+/**
+ * Saturating rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshl[_u8]_m)
+ */
+public fun svqrshlU8M(pg: SvboolT, op1: Svuint8T, op2: Svint8T): Svuint8T {
+    fun svqrshlU8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    return svqrshlU8M(pg, op1.asSigned(), op2).asUnsigned()
+}
+
+/**
+ * Saturating rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshl[_n_u8]_m)
+ */
+public fun svqrshlNU8M(pg: SvboolT, op1: Svuint8T, op2: Byte): Svuint8T = svqrshlU8M(pg, op1, svdupNS8(op2))
+
+/**
+ * Saturating rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshl[_u8]_x)
+ */
+public fun svqrshlU8X(pg: SvboolT, op1: Svuint8T, op2: Svint8T): Svuint8T = svqrshlU8M(pg, op1, op2)
+
+/**
+ * Saturating rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshl[_n_u8]_x)
+ */
+public fun svqrshlNU8X(pg: SvboolT, op1: Svuint8T, op2: Byte): Svuint8T = svqrshlU8X(pg, op1, svdupNS8(op2))
+
+/**
+ * Saturating rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshl[_u8]_z)
+ */
+public fun svqrshlU8Z(pg: SvboolT, op1: Svuint8T, op2: Svint8T): Svuint8T = svqrshlU8M(pg, svselU8(pg, op1, svdupNU8(0u)), op2)
+
+/**
+ * Saturating rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshl[_n_u8]_z)
+ */
+public fun svqrshlNU8Z(pg: SvboolT, op1: Svuint8T, op2: Byte): Svuint8T = svqrshlU8Z(pg, op1, svdupNS8(op2))
+
+/**
+ * Saturating rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshl[_u16]_m)
+ */
+public fun svqrshlU16M(pg: SvboolT, op1: Svuint16T, op2: Svint16T): Svuint16T {
+    fun svqrshlU16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    return svqrshlU16M(pg.sveInto(), op1.asSigned(), op2).asUnsigned()
+}
+
+/**
+ * Saturating rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshl[_n_u16]_m)
+ */
+public fun svqrshlNU16M(pg: SvboolT, op1: Svuint16T, op2: Short): Svuint16T = svqrshlU16M(pg, op1, svdupNS16(op2))
+
+/**
+ * Saturating rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshl[_u16]_x)
+ */
+public fun svqrshlU16X(pg: SvboolT, op1: Svuint16T, op2: Svint16T): Svuint16T = svqrshlU16M(pg, op1, op2)
+
+/**
+ * Saturating rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshl[_n_u16]_x)
+ */
+public fun svqrshlNU16X(pg: SvboolT, op1: Svuint16T, op2: Short): Svuint16T = svqrshlU16X(pg, op1, svdupNS16(op2))
+
+/**
+ * Saturating rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshl[_u16]_z)
+ */
+public fun svqrshlU16Z(pg: SvboolT, op1: Svuint16T, op2: Svint16T): Svuint16T = svqrshlU16M(pg, svselU16(pg, op1, svdupNU16(0u)), op2)
+
+/**
+ * Saturating rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshl[_n_u16]_z)
+ */
+public fun svqrshlNU16Z(pg: SvboolT, op1: Svuint16T, op2: Short): Svuint16T = svqrshlU16Z(pg, op1, svdupNS16(op2))
+
+/**
+ * Saturating rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshl[_u32]_m)
+ */
+public fun svqrshlU32M(pg: SvboolT, op1: Svuint32T, op2: Svint32T): Svuint32T {
+    fun svqrshlU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    return svqrshlU32M(pg.sveInto(), op1.asSigned(), op2).asUnsigned()
+}
+
+/**
+ * Saturating rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshl[_n_u32]_m)
+ */
+public fun svqrshlNU32M(pg: SvboolT, op1: Svuint32T, op2: Int): Svuint32T = svqrshlU32M(pg, op1, svdupNS32(op2))
+
+/**
+ * Saturating rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshl[_u32]_x)
+ */
+public fun svqrshlU32X(pg: SvboolT, op1: Svuint32T, op2: Svint32T): Svuint32T = svqrshlU32M(pg, op1, op2)
+
+/**
+ * Saturating rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshl[_n_u32]_x)
+ */
+public fun svqrshlNU32X(pg: SvboolT, op1: Svuint32T, op2: Int): Svuint32T = svqrshlU32X(pg, op1, svdupNS32(op2))
+
+/**
+ * Saturating rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshl[_u32]_z)
+ */
+public fun svqrshlU32Z(pg: SvboolT, op1: Svuint32T, op2: Svint32T): Svuint32T = svqrshlU32M(pg, svselU32(pg, op1, svdupNU32(0u)), op2)
+
+/**
+ * Saturating rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshl[_n_u32]_z)
+ */
+public fun svqrshlNU32Z(pg: SvboolT, op1: Svuint32T, op2: Int): Svuint32T = svqrshlU32Z(pg, op1, svdupNS32(op2))
+
+/**
+ * Saturating rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshl[_u64]_m)
+ */
+public fun svqrshlU64M(pg: SvboolT, op1: Svuint64T, op2: Svint64T): Svuint64T {
+    fun svqrshlU64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    return svqrshlU64M(pg.sveInto(), op1.asSigned(), op2).asUnsigned()
+}
+
+/**
+ * Saturating rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshl[_n_u64]_m)
+ */
+public fun svqrshlNU64M(pg: SvboolT, op1: Svuint64T, op2: Long): Svuint64T = svqrshlU64M(pg, op1, svdupNS64(op2))
+
+/**
+ * Saturating rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshl[_u64]_x)
+ */
+public fun svqrshlU64X(pg: SvboolT, op1: Svuint64T, op2: Svint64T): Svuint64T = svqrshlU64M(pg, op1, op2)
+
+/**
+ * Saturating rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshl[_n_u64]_x)
+ */
+public fun svqrshlNU64X(pg: SvboolT, op1: Svuint64T, op2: Long): Svuint64T = svqrshlU64X(pg, op1, svdupNS64(op2))
+
+/**
+ * Saturating rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshl[_u64]_z)
+ */
+public fun svqrshlU64Z(pg: SvboolT, op1: Svuint64T, op2: Svint64T): Svuint64T = svqrshlU64M(pg, svselU64(pg, op1, svdupNU64(0uL)), op2)
+
+/**
+ * Saturating rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshl[_n_u64]_z)
+ */
+public fun svqrshlNU64Z(pg: SvboolT, op1: Svuint64T, op2: Long): Svuint64T = svqrshlU64Z(pg, op1, svdupNS64(op2))
+
+/**
+ * Saturating rounding shift right narrow (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshrnb[_n_s16])
+ */
+public fun svqrshrnbNS16(op1: Svint16T, imm2: Int): Svint8T {
+    fun svqrshrnbNS16(op11: Svint16T, imm2: Int): Svint8T = null as Svint8T
+    run {
+        check(1 <= imm2 && imm2 <= 8) { "IMM2 is not in range 1-8" }
+    }
+    return svqrshrnbNS16(op1, imm2)
+}
+
+/**
+ * Saturating rounding shift right narrow (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshrnb[_n_s32])
+ */
+public fun svqrshrnbNS32(op1: Svint32T, imm2: Int): Svint16T {
+    fun svqrshrnbNS32(op11: Svint32T, imm2: Int): Svint16T = null as Svint16T
+    run {
+        check(1 <= imm2 && imm2 <= 16) { "IMM2 is not in range 1-16" }
+    }
+    return svqrshrnbNS32(op1, imm2)
+}
+
+/**
+ * Saturating rounding shift right narrow (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshrnb[_n_s64])
+ */
+public fun svqrshrnbNS64(op1: Svint64T, imm2: Int): Svint32T {
+    fun svqrshrnbNS64(op11: Svint64T, imm2: Int): Svint32T = null as Svint32T
+    run {
+        check(1 <= imm2 && imm2 <= 32) { "IMM2 is not in range 1-32" }
+    }
+    return svqrshrnbNS64(op1, imm2)
+}
+
+/**
+ * Saturating rounding shift right narrow (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshrnb[_n_u16])
+ */
+public fun svqrshrnbNU16(op1: Svuint16T, imm2: Int): Svuint8T {
+    fun svqrshrnbNU16(op11: Svint16T, imm2: Int): Svint8T = null as Svint8T
+    run {
+        check(1 <= imm2 && imm2 <= 8) { "IMM2 is not in range 1-8" }
+    }
+    return svqrshrnbNU16(op1.asSigned(), imm2).asUnsigned()
+}
+
+/**
+ * Saturating rounding shift right narrow (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshrnb[_n_u32])
+ */
+public fun svqrshrnbNU32(op1: Svuint32T, imm2: Int): Svuint16T {
+    fun svqrshrnbNU32(op11: Svint32T, imm2: Int): Svint16T = null as Svint16T
+    run {
+        check(1 <= imm2 && imm2 <= 16) { "IMM2 is not in range 1-16" }
+    }
+    return svqrshrnbNU32(op1.asSigned(), imm2).asUnsigned()
+}
+
+/**
+ * Saturating rounding shift right narrow (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshrnb[_n_u64])
+ */
+public fun svqrshrnbNU64(op1: Svuint64T, imm2: Int): Svuint32T {
+    fun svqrshrnbNU64(op11: Svint64T, imm2: Int): Svint32T = null as Svint32T
+    run {
+        check(1 <= imm2 && imm2 <= 32) { "IMM2 is not in range 1-32" }
+    }
+    return svqrshrnbNU64(op1.asSigned(), imm2).asUnsigned()
+}
+
+/**
+ * Saturating rounding shift right narrow (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshrnt[_n_s16])
+ */
+public fun svqrshrntNS16(even: Svint8T, op1: Svint16T, imm2: Int): Svint8T {
+    fun svqrshrntNS16(even1: Svint8T, op11: Svint16T, imm2: Int): Svint8T = null as Svint8T
+    run {
+        check(1 <= imm2 && imm2 <= 8) { "IMM2 is not in range 1-8" }
+    }
+    return svqrshrntNS16(even, op1, imm2)
+}
+
+/**
+ * Saturating rounding shift right narrow (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshrnt[_n_s32])
+ */
+public fun svqrshrntNS32(even: Svint16T, op1: Svint32T, imm2: Int): Svint16T {
+    fun svqrshrntNS32(even1: Svint16T, op11: Svint32T, imm2: Int): Svint16T = null as Svint16T
+    run {
+        check(1 <= imm2 && imm2 <= 16) { "IMM2 is not in range 1-16" }
+    }
+    return svqrshrntNS32(even, op1, imm2)
+}
+
+/**
+ * Saturating rounding shift right narrow (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshrnt[_n_s64])
+ */
+public fun svqrshrntNS64(even: Svint32T, op1: Svint64T, imm2: Int): Svint32T {
+    fun svqrshrntNS64(even1: Svint32T, op11: Svint64T, imm2: Int): Svint32T = null as Svint32T
+    run {
+        check(1 <= imm2 && imm2 <= 32) { "IMM2 is not in range 1-32" }
+    }
+    return svqrshrntNS64(even, op1, imm2)
+}
+
+/**
+ * Saturating rounding shift right narrow (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshrnt[_n_u16])
+ */
+public fun svqrshrntNU16(even: Svuint8T, op1: Svuint16T, imm2: Int): Svuint8T {
+    fun svqrshrntNU16(even1: Svint8T, op11: Svint16T, imm2: Int): Svint8T = null as Svint8T
+    run {
+        check(1 <= imm2 && imm2 <= 8) { "IMM2 is not in range 1-8" }
+    }
+    return svqrshrntNU16(even.asSigned(), op1.asSigned(), imm2).asUnsigned()
+}
+
+/**
+ * Saturating rounding shift right narrow (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshrnt[_n_u32])
+ */
+public fun svqrshrntNU32(even: Svuint16T, op1: Svuint32T, imm2: Int): Svuint16T {
+    fun svqrshrntNU32(even1: Svint16T, op11: Svint32T, imm2: Int): Svint16T = null as Svint16T
+    run {
+        check(1 <= imm2 && imm2 <= 16) { "IMM2 is not in range 1-16" }
+    }
+    return svqrshrntNU32(even.asSigned(), op1.asSigned(), imm2).asUnsigned()
+}
+
+/**
+ * Saturating rounding shift right narrow (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshrnt[_n_u64])
+ */
+public fun svqrshrntNU64(even: Svuint32T, op1: Svuint64T, imm2: Int): Svuint32T {
+    fun svqrshrntNU64(even1: Svint32T, op11: Svint64T, imm2: Int): Svint32T = null as Svint32T
+    run {
+        check(1 <= imm2 && imm2 <= 32) { "IMM2 is not in range 1-32" }
+    }
+    return svqrshrntNU64(even.asSigned(), op1.asSigned(), imm2).asUnsigned()
+}
+
+/**
+ * Saturating rounding shift right unsigned narrow (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshrunb[_n_s16])
+ */
+public fun svqrshrunbNS16(op1: Svint16T, imm2: Int): Svuint8T {
+    fun svqrshrunbNS16(op11: Svint16T, imm2: Int): Svint8T = null as Svint8T
+    run {
+        check(1 <= imm2 && imm2 <= 8) { "IMM2 is not in range 1-8" }
+    }
+    return svqrshrunbNS16(op1, imm2).asUnsigned()
+}
+
+/**
+ * Saturating rounding shift right unsigned narrow (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshrunb[_n_s32])
+ */
+public fun svqrshrunbNS32(op1: Svint32T, imm2: Int): Svuint16T {
+    fun svqrshrunbNS32(op11: Svint32T, imm2: Int): Svint16T = null as Svint16T
+    run {
+        check(1 <= imm2 && imm2 <= 16) { "IMM2 is not in range 1-16" }
+    }
+    return svqrshrunbNS32(op1, imm2).asUnsigned()
+}
+
+/**
+ * Saturating rounding shift right unsigned narrow (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshrunb[_n_s64])
+ */
+public fun svqrshrunbNS64(op1: Svint64T, imm2: Int): Svuint32T {
+    fun svqrshrunbNS64(op11: Svint64T, imm2: Int): Svint32T = null as Svint32T
+    run {
+        check(1 <= imm2 && imm2 <= 32) { "IMM2 is not in range 1-32" }
+    }
+    return svqrshrunbNS64(op1, imm2).asUnsigned()
+}
+
+/**
+ * Saturating rounding shift right unsigned narrow (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshrunt[_n_s16])
+ */
+public fun svqrshruntNS16(even: Svuint8T, op1: Svint16T, imm2: Int): Svuint8T {
+    fun svqrshruntNS16(even1: Svint8T, op11: Svint16T, imm2: Int): Svint8T = null as Svint8T
+    run {
+        check(1 <= imm2 && imm2 <= 8) { "IMM2 is not in range 1-8" }
+    }
+    return svqrshruntNS16(even.asSigned(), op1, imm2).asUnsigned()
+}
+
+/**
+ * Saturating rounding shift right unsigned narrow (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshrunt[_n_s32])
+ */
+public fun svqrshruntNS32(even: Svuint16T, op1: Svint32T, imm2: Int): Svuint16T {
+    fun svqrshruntNS32(even1: Svint16T, op11: Svint32T, imm2: Int): Svint16T = null as Svint16T
+    run {
+        check(1 <= imm2 && imm2 <= 16) { "IMM2 is not in range 1-16" }
+    }
+    return svqrshruntNS32(even.asSigned(), op1, imm2).asUnsigned()
+}
+
+/**
+ * Saturating rounding shift right unsigned narrow (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshrunt[_n_s64])
+ */
+public fun svqrshruntNS64(even: Svuint32T, op1: Svint64T, imm2: Int): Svuint32T {
+    fun svqrshruntNS64(even1: Svint32T, op11: Svint64T, imm2: Int): Svint32T = null as Svint32T
+    run {
+        check(1 <= imm2 && imm2 <= 32) { "IMM2 is not in range 1-32" }
+    }
+    return svqrshruntNS64(even.asSigned(), op1, imm2).asUnsigned()
+}
+
+/**
+ * Saturating shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshl[_s8]_m)
+ */
+public fun svqshlS8M(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T {
+    fun svqshlS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    return svqshlS8M(pg, op1, op2)
+}
+
+/**
+ * Saturating shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshl[_n_s8]_m)
+ */
+public fun svqshlNS8M(pg: SvboolT, op1: Svint8T, op2: Byte): Svint8T = svqshlS8M(pg, op1, svdupNS8(op2))
+
+/**
+ * Saturating shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshl[_s8]_x)
+ */
+public fun svqshlS8X(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T = svqshlS8M(pg, op1, op2)
+
+/**
+ * Saturating shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshl[_n_s8]_x)
+ */
+public fun svqshlNS8X(pg: SvboolT, op1: Svint8T, op2: Byte): Svint8T = svqshlS8X(pg, op1, svdupNS8(op2))
+
+/**
+ * Saturating shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshl[_s8]_z)
+ */
+public fun svqshlS8Z(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T = svqshlS8M(pg, svselS8(pg, op1, svdupNS8(0)), op2)
+
+/**
+ * Saturating shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshl[_n_s8]_z)
+ */
+public fun svqshlNS8Z(pg: SvboolT, op1: Svint8T, op2: Byte): Svint8T = svqshlS8Z(pg, op1, svdupNS8(op2))
+
+/**
+ * Saturating shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshl[_s16]_m)
+ */
+public fun svqshlS16M(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T {
+    fun svqshlS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    return svqshlS16M(pg.sveInto(), op1, op2)
+}
+
+/**
+ * Saturating shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshl[_n_s16]_m)
+ */
+public fun svqshlNS16M(pg: SvboolT, op1: Svint16T, op2: Short): Svint16T = svqshlS16M(pg, op1, svdupNS16(op2))
+
+/**
+ * Saturating shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshl[_s16]_x)
+ */
+public fun svqshlS16X(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T = svqshlS16M(pg, op1, op2)
+
+/**
+ * Saturating shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshl[_n_s16]_x)
+ */
+public fun svqshlNS16X(pg: SvboolT, op1: Svint16T, op2: Short): Svint16T = svqshlS16X(pg, op1, svdupNS16(op2))
+
+/**
+ * Saturating shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshl[_s16]_z)
+ */
+public fun svqshlS16Z(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T = svqshlS16M(pg, svselS16(pg, op1, svdupNS16(0)), op2)
+
+/**
+ * Saturating shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshl[_n_s16]_z)
+ */
+public fun svqshlNS16Z(pg: SvboolT, op1: Svint16T, op2: Short): Svint16T = svqshlS16Z(pg, op1, svdupNS16(op2))
+
+/**
+ * Saturating shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshl[_s32]_m)
+ */
+public fun svqshlS32M(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T {
+    fun svqshlS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    return svqshlS32M(pg.sveInto(), op1, op2)
+}
+
+/**
+ * Saturating shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshl[_n_s32]_m)
+ */
+public fun svqshlNS32M(pg: SvboolT, op1: Svint32T, op2: Int): Svint32T = svqshlS32M(pg, op1, svdupNS32(op2))
+
+/**
+ * Saturating shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshl[_s32]_x)
+ */
+public fun svqshlS32X(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T = svqshlS32M(pg, op1, op2)
+
+/**
+ * Saturating shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshl[_n_s32]_x)
+ */
+public fun svqshlNS32X(pg: SvboolT, op1: Svint32T, op2: Int): Svint32T = svqshlS32X(pg, op1, svdupNS32(op2))
+
+/**
+ * Saturating shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshl[_s32]_z)
+ */
+public fun svqshlS32Z(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T = svqshlS32M(pg, svselS32(pg, op1, svdupNS32(0)), op2)
+
+/**
+ * Saturating shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshl[_n_s32]_z)
+ */
+public fun svqshlNS32Z(pg: SvboolT, op1: Svint32T, op2: Int): Svint32T = svqshlS32Z(pg, op1, svdupNS32(op2))
+
+/**
+ * Saturating shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshl[_s64]_m)
+ */
+public fun svqshlS64M(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T {
+    fun svqshlS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    return svqshlS64M(pg.sveInto(), op1, op2)
+}
+
+/**
+ * Saturating shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshl[_n_s64]_m)
+ */
+public fun svqshlNS64M(pg: SvboolT, op1: Svint64T, op2: Long): Svint64T = svqshlS64M(pg, op1, svdupNS64(op2))
+
+/**
+ * Saturating shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshl[_s64]_x)
+ */
+public fun svqshlS64X(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T = svqshlS64M(pg, op1, op2)
+
+/**
+ * Saturating shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshl[_n_s64]_x)
+ */
+public fun svqshlNS64X(pg: SvboolT, op1: Svint64T, op2: Long): Svint64T = svqshlS64X(pg, op1, svdupNS64(op2))
+
+/**
+ * Saturating shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshl[_s64]_z)
+ */
+public fun svqshlS64Z(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T = svqshlS64M(pg, svselS64(pg, op1, svdupNS64(0L)), op2)
+
+/**
+ * Saturating shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshl[_n_s64]_z)
+ */
+public fun svqshlNS64Z(pg: SvboolT, op1: Svint64T, op2: Long): Svint64T = svqshlS64Z(pg, op1, svdupNS64(op2))
+
+/**
+ * Saturating shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshl[_u8]_m)
+ */
+public fun svqshlU8M(pg: SvboolT, op1: Svuint8T, op2: Svint8T): Svuint8T {
+    fun svqshlU8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    return svqshlU8M(pg, op1.asSigned(), op2).asUnsigned()
+}
+
+/**
+ * Saturating shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshl[_n_u8]_m)
+ */
+public fun svqshlNU8M(pg: SvboolT, op1: Svuint8T, op2: Byte): Svuint8T = svqshlU8M(pg, op1, svdupNS8(op2))
+
+/**
+ * Saturating shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshl[_u8]_x)
+ */
+public fun svqshlU8X(pg: SvboolT, op1: Svuint8T, op2: Svint8T): Svuint8T = svqshlU8M(pg, op1, op2)
+
+/**
+ * Saturating shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshl[_n_u8]_x)
+ */
+public fun svqshlNU8X(pg: SvboolT, op1: Svuint8T, op2: Byte): Svuint8T = svqshlU8X(pg, op1, svdupNS8(op2))
+
+/**
+ * Saturating shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshl[_u8]_z)
+ */
+public fun svqshlU8Z(pg: SvboolT, op1: Svuint8T, op2: Svint8T): Svuint8T = svqshlU8M(pg, svselU8(pg, op1, svdupNU8(0u)), op2)
+
+/**
+ * Saturating shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshl[_n_u8]_z)
+ */
+public fun svqshlNU8Z(pg: SvboolT, op1: Svuint8T, op2: Byte): Svuint8T = svqshlU8Z(pg, op1, svdupNS8(op2))
+
+/**
+ * Saturating shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshl[_u16]_m)
+ */
+public fun svqshlU16M(pg: SvboolT, op1: Svuint16T, op2: Svint16T): Svuint16T {
+    fun svqshlU16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    return svqshlU16M(pg.sveInto(), op1.asSigned(), op2).asUnsigned()
+}
+
+/**
+ * Saturating shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshl[_n_u16]_m)
+ */
+public fun svqshlNU16M(pg: SvboolT, op1: Svuint16T, op2: Short): Svuint16T = svqshlU16M(pg, op1, svdupNS16(op2))
+
+/**
+ * Saturating shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshl[_u16]_x)
+ */
+public fun svqshlU16X(pg: SvboolT, op1: Svuint16T, op2: Svint16T): Svuint16T = svqshlU16M(pg, op1, op2)
+
+/**
+ * Saturating shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshl[_n_u16]_x)
+ */
+public fun svqshlNU16X(pg: SvboolT, op1: Svuint16T, op2: Short): Svuint16T = svqshlU16X(pg, op1, svdupNS16(op2))
+
+/**
+ * Saturating shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshl[_u16]_z)
+ */
+public fun svqshlU16Z(pg: SvboolT, op1: Svuint16T, op2: Svint16T): Svuint16T = svqshlU16M(pg, svselU16(pg, op1, svdupNU16(0u)), op2)
+
+/**
+ * Saturating shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshl[_n_u16]_z)
+ */
+public fun svqshlNU16Z(pg: SvboolT, op1: Svuint16T, op2: Short): Svuint16T = svqshlU16Z(pg, op1, svdupNS16(op2))
+
+/**
+ * Saturating shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshl[_u32]_m)
+ */
+public fun svqshlU32M(pg: SvboolT, op1: Svuint32T, op2: Svint32T): Svuint32T {
+    fun svqshlU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    return svqshlU32M(pg.sveInto(), op1.asSigned(), op2).asUnsigned()
+}
+
+/**
+ * Saturating shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshl[_n_u32]_m)
+ */
+public fun svqshlNU32M(pg: SvboolT, op1: Svuint32T, op2: Int): Svuint32T = svqshlU32M(pg, op1, svdupNS32(op2))
+
+/**
+ * Saturating shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshl[_u32]_x)
+ */
+public fun svqshlU32X(pg: SvboolT, op1: Svuint32T, op2: Svint32T): Svuint32T = svqshlU32M(pg, op1, op2)
+
+/**
+ * Saturating shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshl[_n_u32]_x)
+ */
+public fun svqshlNU32X(pg: SvboolT, op1: Svuint32T, op2: Int): Svuint32T = svqshlU32X(pg, op1, svdupNS32(op2))
+
+/**
+ * Saturating shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshl[_u32]_z)
+ */
+public fun svqshlU32Z(pg: SvboolT, op1: Svuint32T, op2: Svint32T): Svuint32T = svqshlU32M(pg, svselU32(pg, op1, svdupNU32(0u)), op2)
+
+/**
+ * Saturating shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshl[_n_u32]_z)
+ */
+public fun svqshlNU32Z(pg: SvboolT, op1: Svuint32T, op2: Int): Svuint32T = svqshlU32Z(pg, op1, svdupNS32(op2))
+
+/**
+ * Saturating shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshl[_u64]_m)
+ */
+public fun svqshlU64M(pg: SvboolT, op1: Svuint64T, op2: Svint64T): Svuint64T {
+    fun svqshlU64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    return svqshlU64M(pg.sveInto(), op1.asSigned(), op2).asUnsigned()
+}
+
+/**
+ * Saturating shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshl[_n_u64]_m)
+ */
+public fun svqshlNU64M(pg: SvboolT, op1: Svuint64T, op2: Long): Svuint64T = svqshlU64M(pg, op1, svdupNS64(op2))
+
+/**
+ * Saturating shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshl[_u64]_x)
+ */
+public fun svqshlU64X(pg: SvboolT, op1: Svuint64T, op2: Svint64T): Svuint64T = svqshlU64M(pg, op1, op2)
+
+/**
+ * Saturating shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshl[_n_u64]_x)
+ */
+public fun svqshlNU64X(pg: SvboolT, op1: Svuint64T, op2: Long): Svuint64T = svqshlU64X(pg, op1, svdupNS64(op2))
+
+/**
+ * Saturating shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshl[_u64]_z)
+ */
+public fun svqshlU64Z(pg: SvboolT, op1: Svuint64T, op2: Svint64T): Svuint64T = svqshlU64M(pg, svselU64(pg, op1, svdupNU64(0uL)), op2)
+
+/**
+ * Saturating shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshl[_n_u64]_z)
+ */
+public fun svqshlNU64Z(pg: SvboolT, op1: Svuint64T, op2: Long): Svuint64T = svqshlU64Z(pg, op1, svdupNS64(op2))
+
+/**
+ * Saturating shift left unsigned
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshlu[_n_s8]_m)
+ */
+public fun svqshluNS8M(pg: SvboolT, op1: Svint8T, imm2: Int): Svuint8T {
+    fun svqshluNS8M(pg1: SvboolT, op11: Svint8T, imm2: Int): Svint8T = null as Svint8T
+    run {
+        check(0 <= imm2 && imm2 <= 7) { "IMM2 is not in range 0-7" }
+    }
+    return svqshluNS8M(pg, op1, imm2).asUnsigned()
+}
+
+/**
+ * Saturating shift left unsigned
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshlu[_n_s8]_x)
+ */
+public fun svqshluNS8X(pg: SvboolT, op1: Svint8T, imm2: Int): Svuint8T = svqshluNS8M(pg, op1, imm2)
+
+/**
+ * Saturating shift left unsigned
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshlu[_n_s8]_z)
+ */
+public fun svqshluNS8Z(pg: SvboolT, op1: Svint8T, imm2: Int): Svuint8T = svqshluNS8M(pg, svselS8(pg, op1, svdupNS8(0)), imm2)
+
+/**
+ * Saturating shift left unsigned
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshlu[_n_s16]_m)
+ */
+public fun svqshluNS16M(pg: SvboolT, op1: Svint16T, imm2: Int): Svuint16T {
+    fun svqshluNS16M(pg1: Svbool8T, op11: Svint16T, imm2: Int): Svint16T = null as Svint16T
+    run {
+        check(0 <= imm2 && imm2 <= 15) { "IMM2 is not in range 0-15" }
+    }
+    return svqshluNS16M(pg.sveInto(), op1, imm2).asUnsigned()
+}
+
+/**
+ * Saturating shift left unsigned
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshlu[_n_s16]_x)
+ */
+public fun svqshluNS16X(pg: SvboolT, op1: Svint16T, imm2: Int): Svuint16T = svqshluNS16M(pg, op1, imm2)
+
+/**
+ * Saturating shift left unsigned
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshlu[_n_s16]_z)
+ */
+public fun svqshluNS16Z(pg: SvboolT, op1: Svint16T, imm2: Int): Svuint16T = svqshluNS16M(pg, svselS16(pg, op1, svdupNS16(0)), imm2)
+
+/**
+ * Saturating shift left unsigned
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshlu[_n_s32]_m)
+ */
+public fun svqshluNS32M(pg: SvboolT, op1: Svint32T, imm2: Int): Svuint32T {
+    fun svqshluNS32M(pg1: Svbool4T, op11: Svint32T, imm2: Int): Svint32T = null as Svint32T
+    run {
+        check(0 <= imm2 && imm2 <= 31) { "IMM2 is not in range 0-31" }
+    }
+    return svqshluNS32M(pg.sveInto(), op1, imm2).asUnsigned()
+}
+
+/**
+ * Saturating shift left unsigned
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshlu[_n_s32]_x)
+ */
+public fun svqshluNS32X(pg: SvboolT, op1: Svint32T, imm2: Int): Svuint32T = svqshluNS32M(pg, op1, imm2)
+
+/**
+ * Saturating shift left unsigned
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshlu[_n_s32]_z)
+ */
+public fun svqshluNS32Z(pg: SvboolT, op1: Svint32T, imm2: Int): Svuint32T = svqshluNS32M(pg, svselS32(pg, op1, svdupNS32(0)), imm2)
+
+/**
+ * Saturating shift left unsigned
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshlu[_n_s64]_m)
+ */
+public fun svqshluNS64M(pg: SvboolT, op1: Svint64T, imm2: Int): Svuint64T {
+    fun svqshluNS64M(pg1: Svbool2T, op11: Svint64T, imm2: Int): Svint64T = null as Svint64T
+    run {
+        check(0 <= imm2 && imm2 <= 63) { "IMM2 is not in range 0-63" }
+    }
+    return svqshluNS64M(pg.sveInto(), op1, imm2).asUnsigned()
+}
+
+/**
+ * Saturating shift left unsigned
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshlu[_n_s64]_x)
+ */
+public fun svqshluNS64X(pg: SvboolT, op1: Svint64T, imm2: Int): Svuint64T = svqshluNS64M(pg, op1, imm2)
+
+/**
+ * Saturating shift left unsigned
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshlu[_n_s64]_z)
+ */
+public fun svqshluNS64Z(pg: SvboolT, op1: Svint64T, imm2: Int): Svuint64T = svqshluNS64M(pg, svselS64(pg, op1, svdupNS64(0L)), imm2)
+
+/**
+ * Saturating shift right narrow (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshrnb[_n_s16])
+ */
+public fun svqshrnbNS16(op1: Svint16T, imm2: Int): Svint8T {
+    fun svqshrnbNS16(op11: Svint16T, imm2: Int): Svint8T = null as Svint8T
+    run {
+        check(1 <= imm2 && imm2 <= 8) { "IMM2 is not in range 1-8" }
+    }
+    return svqshrnbNS16(op1, imm2)
+}
+
+/**
+ * Saturating shift right narrow (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshrnb[_n_s32])
+ */
+public fun svqshrnbNS32(op1: Svint32T, imm2: Int): Svint16T {
+    fun svqshrnbNS32(op11: Svint32T, imm2: Int): Svint16T = null as Svint16T
+    run {
+        check(1 <= imm2 && imm2 <= 16) { "IMM2 is not in range 1-16" }
+    }
+    return svqshrnbNS32(op1, imm2)
+}
+
+/**
+ * Saturating shift right narrow (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshrnb[_n_s64])
+ */
+public fun svqshrnbNS64(op1: Svint64T, imm2: Int): Svint32T {
+    fun svqshrnbNS64(op11: Svint64T, imm2: Int): Svint32T = null as Svint32T
+    run {
+        check(1 <= imm2 && imm2 <= 32) { "IMM2 is not in range 1-32" }
+    }
+    return svqshrnbNS64(op1, imm2)
+}
+
+/**
+ * Saturating shift right narrow (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshrnb[_n_u16])
+ */
+public fun svqshrnbNU16(op1: Svuint16T, imm2: Int): Svuint8T {
+    fun svqshrnbNU16(op11: Svint16T, imm2: Int): Svint8T = null as Svint8T
+    run {
+        check(1 <= imm2 && imm2 <= 8) { "IMM2 is not in range 1-8" }
+    }
+    return svqshrnbNU16(op1.asSigned(), imm2).asUnsigned()
+}
+
+/**
+ * Saturating shift right narrow (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshrnb[_n_u32])
+ */
+public fun svqshrnbNU32(op1: Svuint32T, imm2: Int): Svuint16T {
+    fun svqshrnbNU32(op11: Svint32T, imm2: Int): Svint16T = null as Svint16T
+    run {
+        check(1 <= imm2 && imm2 <= 16) { "IMM2 is not in range 1-16" }
+    }
+    return svqshrnbNU32(op1.asSigned(), imm2).asUnsigned()
+}
+
+/**
+ * Saturating shift right narrow (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshrnb[_n_u64])
+ */
+public fun svqshrnbNU64(op1: Svuint64T, imm2: Int): Svuint32T {
+    fun svqshrnbNU64(op11: Svint64T, imm2: Int): Svint32T = null as Svint32T
+    run {
+        check(1 <= imm2 && imm2 <= 32) { "IMM2 is not in range 1-32" }
+    }
+    return svqshrnbNU64(op1.asSigned(), imm2).asUnsigned()
+}
+
+/**
+ * Saturating shift right narrow (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshrnt[_n_s16])
+ */
+public fun svqshrntNS16(even: Svint8T, op1: Svint16T, imm2: Int): Svint8T {
+    fun svqshrntNS16(even1: Svint8T, op11: Svint16T, imm2: Int): Svint8T = null as Svint8T
+    run {
+        check(1 <= imm2 && imm2 <= 8) { "IMM2 is not in range 1-8" }
+    }
+    return svqshrntNS16(even, op1, imm2)
+}
+
+/**
+ * Saturating shift right narrow (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshrnt[_n_s32])
+ */
+public fun svqshrntNS32(even: Svint16T, op1: Svint32T, imm2: Int): Svint16T {
+    fun svqshrntNS32(even1: Svint16T, op11: Svint32T, imm2: Int): Svint16T = null as Svint16T
+    run {
+        check(1 <= imm2 && imm2 <= 16) { "IMM2 is not in range 1-16" }
+    }
+    return svqshrntNS32(even, op1, imm2)
+}
+
+/**
+ * Saturating shift right narrow (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshrnt[_n_s64])
+ */
+public fun svqshrntNS64(even: Svint32T, op1: Svint64T, imm2: Int): Svint32T {
+    fun svqshrntNS64(even1: Svint32T, op11: Svint64T, imm2: Int): Svint32T = null as Svint32T
+    run {
+        check(1 <= imm2 && imm2 <= 32) { "IMM2 is not in range 1-32" }
+    }
+    return svqshrntNS64(even, op1, imm2)
+}
+
+/**
+ * Saturating shift right narrow (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshrnt[_n_u16])
+ */
+public fun svqshrntNU16(even: Svuint8T, op1: Svuint16T, imm2: Int): Svuint8T {
+    fun svqshrntNU16(even1: Svint8T, op11: Svint16T, imm2: Int): Svint8T = null as Svint8T
+    run {
+        check(1 <= imm2 && imm2 <= 8) { "IMM2 is not in range 1-8" }
+    }
+    return svqshrntNU16(even.asSigned(), op1.asSigned(), imm2).asUnsigned()
+}
+
+/**
+ * Saturating shift right narrow (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshrnt[_n_u32])
+ */
+public fun svqshrntNU32(even: Svuint16T, op1: Svuint32T, imm2: Int): Svuint16T {
+    fun svqshrntNU32(even1: Svint16T, op11: Svint32T, imm2: Int): Svint16T = null as Svint16T
+    run {
+        check(1 <= imm2 && imm2 <= 16) { "IMM2 is not in range 1-16" }
+    }
+    return svqshrntNU32(even.asSigned(), op1.asSigned(), imm2).asUnsigned()
+}
+
+/**
+ * Saturating shift right narrow (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshrnt[_n_u64])
+ */
+public fun svqshrntNU64(even: Svuint32T, op1: Svuint64T, imm2: Int): Svuint32T {
+    fun svqshrntNU64(even1: Svint32T, op11: Svint64T, imm2: Int): Svint32T = null as Svint32T
+    run {
+        check(1 <= imm2 && imm2 <= 32) { "IMM2 is not in range 1-32" }
+    }
+    return svqshrntNU64(even.asSigned(), op1.asSigned(), imm2).asUnsigned()
+}
+
+/**
+ * Saturating shift right unsigned narrow (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshrunb[_n_s16])
+ */
+public fun svqshrunbNS16(op1: Svint16T, imm2: Int): Svuint8T {
+    fun svqshrunbNS16(op11: Svint16T, imm2: Int): Svint8T = null as Svint8T
+    run {
+        check(1 <= imm2 && imm2 <= 8) { "IMM2 is not in range 1-8" }
+    }
+    return svqshrunbNS16(op1, imm2).asUnsigned()
+}
+
+/**
+ * Saturating shift right unsigned narrow (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshrunb[_n_s32])
+ */
+public fun svqshrunbNS32(op1: Svint32T, imm2: Int): Svuint16T {
+    fun svqshrunbNS32(op11: Svint32T, imm2: Int): Svint16T = null as Svint16T
+    run {
+        check(1 <= imm2 && imm2 <= 16) { "IMM2 is not in range 1-16" }
+    }
+    return svqshrunbNS32(op1, imm2).asUnsigned()
+}
+
+/**
+ * Saturating shift right unsigned narrow (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshrunb[_n_s64])
+ */
+public fun svqshrunbNS64(op1: Svint64T, imm2: Int): Svuint32T {
+    fun svqshrunbNS64(op11: Svint64T, imm2: Int): Svint32T = null as Svint32T
+    run {
+        check(1 <= imm2 && imm2 <= 32) { "IMM2 is not in range 1-32" }
+    }
+    return svqshrunbNS64(op1, imm2).asUnsigned()
+}
+
+/**
+ * Saturating shift right unsigned narrow (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshrunt[_n_s16])
+ */
+public fun svqshruntNS16(even: Svuint8T, op1: Svint16T, imm2: Int): Svuint8T {
+    fun svqshruntNS16(even1: Svint8T, op11: Svint16T, imm2: Int): Svint8T = null as Svint8T
+    run {
+        check(1 <= imm2 && imm2 <= 8) { "IMM2 is not in range 1-8" }
+    }
+    return svqshruntNS16(even.asSigned(), op1, imm2).asUnsigned()
+}
+
+/**
+ * Saturating shift right unsigned narrow (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshrunt[_n_s32])
+ */
+public fun svqshruntNS32(even: Svuint16T, op1: Svint32T, imm2: Int): Svuint16T {
+    fun svqshruntNS32(even1: Svint16T, op11: Svint32T, imm2: Int): Svint16T = null as Svint16T
+    run {
+        check(1 <= imm2 && imm2 <= 16) { "IMM2 is not in range 1-16" }
+    }
+    return svqshruntNS32(even.asSigned(), op1, imm2).asUnsigned()
+}
+
+/**
+ * Saturating shift right unsigned narrow (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshrunt[_n_s64])
+ */
+public fun svqshruntNS64(even: Svuint32T, op1: Svint64T, imm2: Int): Svuint32T {
+    fun svqshruntNS64(even1: Svint32T, op11: Svint64T, imm2: Int): Svint32T = null as Svint32T
+    run {
+        check(1 <= imm2 && imm2 <= 32) { "IMM2 is not in range 1-32" }
+    }
+    return svqshruntNS64(even.asSigned(), op1, imm2).asUnsigned()
+}
+
+/**
+ * Saturating subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_s8]_m)
+ */
+public fun svqsubS8M(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T {
+    fun svqsubS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    return svqsubS8M(pg, op1, op2)
+}
+
+/**
+ * Saturating subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_n_s8]_m)
+ */
+public fun svqsubNS8M(pg: SvboolT, op1: Svint8T, op2: Byte): Svint8T = svqsubS8M(pg, op1, svdupNS8(op2))
+
+/**
+ * Saturating subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_s8]_x)
+ */
+public fun svqsubS8X(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T = svqsubS8M(pg, op1, op2)
+
+/**
+ * Saturating subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_n_s8]_x)
+ */
+public fun svqsubNS8X(pg: SvboolT, op1: Svint8T, op2: Byte): Svint8T = svqsubS8X(pg, op1, svdupNS8(op2))
+
+/**
+ * Saturating subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_s8]_z)
+ */
+public fun svqsubS8Z(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T = svqsubS8M(pg, svselS8(pg, op1, svdupNS8(0)), op2)
+
+/**
+ * Saturating subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_n_s8]_z)
+ */
+public fun svqsubNS8Z(pg: SvboolT, op1: Svint8T, op2: Byte): Svint8T = svqsubS8Z(pg, op1, svdupNS8(op2))
+
+/**
+ * Saturating subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_s16]_m)
+ */
+public fun svqsubS16M(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T {
+    fun svqsubS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    return svqsubS16M(pg.sveInto(), op1, op2)
+}
+
+/**
+ * Saturating subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_n_s16]_m)
+ */
+public fun svqsubNS16M(pg: SvboolT, op1: Svint16T, op2: Short): Svint16T = svqsubS16M(pg, op1, svdupNS16(op2))
+
+/**
+ * Saturating subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_s16]_x)
+ */
+public fun svqsubS16X(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T = svqsubS16M(pg, op1, op2)
+
+/**
+ * Saturating subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_n_s16]_x)
+ */
+public fun svqsubNS16X(pg: SvboolT, op1: Svint16T, op2: Short): Svint16T = svqsubS16X(pg, op1, svdupNS16(op2))
+
+/**
+ * Saturating subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_s16]_z)
+ */
+public fun svqsubS16Z(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T = svqsubS16M(pg, svselS16(pg, op1, svdupNS16(0)), op2)
+
+/**
+ * Saturating subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_n_s16]_z)
+ */
+public fun svqsubNS16Z(pg: SvboolT, op1: Svint16T, op2: Short): Svint16T = svqsubS16Z(pg, op1, svdupNS16(op2))
+
+/**
+ * Saturating subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_s32]_m)
+ */
+public fun svqsubS32M(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T {
+    fun svqsubS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    return svqsubS32M(pg.sveInto(), op1, op2)
+}
+
+/**
+ * Saturating subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_n_s32]_m)
+ */
+public fun svqsubNS32M(pg: SvboolT, op1: Svint32T, op2: Int): Svint32T = svqsubS32M(pg, op1, svdupNS32(op2))
+
+/**
+ * Saturating subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_s32]_x)
+ */
+public fun svqsubS32X(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T = svqsubS32M(pg, op1, op2)
+
+/**
+ * Saturating subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_n_s32]_x)
+ */
+public fun svqsubNS32X(pg: SvboolT, op1: Svint32T, op2: Int): Svint32T = svqsubS32X(pg, op1, svdupNS32(op2))
+
+/**
+ * Saturating subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_s32]_z)
+ */
+public fun svqsubS32Z(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T = svqsubS32M(pg, svselS32(pg, op1, svdupNS32(0)), op2)
+
+/**
+ * Saturating subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_n_s32]_z)
+ */
+public fun svqsubNS32Z(pg: SvboolT, op1: Svint32T, op2: Int): Svint32T = svqsubS32Z(pg, op1, svdupNS32(op2))
+
+/**
+ * Saturating subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_s64]_m)
+ */
+public fun svqsubS64M(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T {
+    fun svqsubS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    return svqsubS64M(pg.sveInto(), op1, op2)
+}
+
+/**
+ * Saturating subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_n_s64]_m)
+ */
+public fun svqsubNS64M(pg: SvboolT, op1: Svint64T, op2: Long): Svint64T = svqsubS64M(pg, op1, svdupNS64(op2))
+
+/**
+ * Saturating subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_s64]_x)
+ */
+public fun svqsubS64X(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T = svqsubS64M(pg, op1, op2)
+
+/**
+ * Saturating subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_n_s64]_x)
+ */
+public fun svqsubNS64X(pg: SvboolT, op1: Svint64T, op2: Long): Svint64T = svqsubS64X(pg, op1, svdupNS64(op2))
+
+/**
+ * Saturating subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_s64]_z)
+ */
+public fun svqsubS64Z(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T = svqsubS64M(pg, svselS64(pg, op1, svdupNS64(0L)), op2)
+
+/**
+ * Saturating subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_n_s64]_z)
+ */
+public fun svqsubNS64Z(pg: SvboolT, op1: Svint64T, op2: Long): Svint64T = svqsubS64Z(pg, op1, svdupNS64(op2))
+
+/**
+ * Saturating subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_u8]_m)
+ */
+public fun svqsubU8M(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T {
+    fun svqsubU8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    return svqsubU8M(pg, op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Saturating subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_n_u8]_m)
+ */
+public fun svqsubNU8M(pg: SvboolT, op1: Svuint8T, op2: UByte): Svuint8T = svqsubU8M(pg, op1, svdupNU8(op2))
+
+/**
+ * Saturating subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_u8]_x)
+ */
+public fun svqsubU8X(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T = svqsubU8M(pg, op1, op2)
+
+/**
+ * Saturating subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_n_u8]_x)
+ */
+public fun svqsubNU8X(pg: SvboolT, op1: Svuint8T, op2: UByte): Svuint8T = svqsubU8X(pg, op1, svdupNU8(op2))
+
+/**
+ * Saturating subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_u8]_z)
+ */
+public fun svqsubU8Z(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T = svqsubU8M(pg, svselU8(pg, op1, svdupNU8(0u)), op2)
+
+/**
+ * Saturating subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_n_u8]_z)
+ */
+public fun svqsubNU8Z(pg: SvboolT, op1: Svuint8T, op2: UByte): Svuint8T = svqsubU8Z(pg, op1, svdupNU8(op2))
+
+/**
+ * Saturating subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_u16]_m)
+ */
+public fun svqsubU16M(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T {
+    fun svqsubU16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    return svqsubU16M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Saturating subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_n_u16]_m)
+ */
+public fun svqsubNU16M(pg: SvboolT, op1: Svuint16T, op2: UShort): Svuint16T = svqsubU16M(pg, op1, svdupNU16(op2))
+
+/**
+ * Saturating subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_u16]_x)
+ */
+public fun svqsubU16X(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T = svqsubU16M(pg, op1, op2)
+
+/**
+ * Saturating subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_n_u16]_x)
+ */
+public fun svqsubNU16X(pg: SvboolT, op1: Svuint16T, op2: UShort): Svuint16T = svqsubU16X(pg, op1, svdupNU16(op2))
+
+/**
+ * Saturating subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_u16]_z)
+ */
+public fun svqsubU16Z(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T = svqsubU16M(pg, svselU16(pg, op1, svdupNU16(0u)), op2)
+
+/**
+ * Saturating subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_n_u16]_z)
+ */
+public fun svqsubNU16Z(pg: SvboolT, op1: Svuint16T, op2: UShort): Svuint16T = svqsubU16Z(pg, op1, svdupNU16(op2))
+
+/**
+ * Saturating subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_u32]_m)
+ */
+public fun svqsubU32M(pg: SvboolT, op1: Svuint32T, op2: Svuint32T): Svuint32T {
+    fun svqsubU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    return svqsubU32M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Saturating subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_n_u32]_m)
+ */
+public fun svqsubNU32M(pg: SvboolT, op1: Svuint32T, op2: UInt): Svuint32T = svqsubU32M(pg, op1, svdupNU32(op2))
+
+/**
+ * Saturating subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_u32]_x)
+ */
+public fun svqsubU32X(pg: SvboolT, op1: Svuint32T, op2: Svuint32T): Svuint32T = svqsubU32M(pg, op1, op2)
+
+/**
+ * Saturating subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_n_u32]_x)
+ */
+public fun svqsubNU32X(pg: SvboolT, op1: Svuint32T, op2: UInt): Svuint32T = svqsubU32X(pg, op1, svdupNU32(op2))
+
+/**
+ * Saturating subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_u32]_z)
+ */
+public fun svqsubU32Z(pg: SvboolT, op1: Svuint32T, op2: Svuint32T): Svuint32T = svqsubU32M(pg, svselU32(pg, op1, svdupNU32(0u)), op2)
+
+/**
+ * Saturating subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_n_u32]_z)
+ */
+public fun svqsubNU32Z(pg: SvboolT, op1: Svuint32T, op2: UInt): Svuint32T = svqsubU32Z(pg, op1, svdupNU32(op2))
+
+/**
+ * Saturating subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_u64]_m)
+ */
+public fun svqsubU64M(pg: SvboolT, op1: Svuint64T, op2: Svuint64T): Svuint64T {
+    fun svqsubU64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    return svqsubU64M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Saturating subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_n_u64]_m)
+ */
+public fun svqsubNU64M(pg: SvboolT, op1: Svuint64T, op2: ULong): Svuint64T = svqsubU64M(pg, op1, svdupNU64(op2))
+
+/**
+ * Saturating subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_u64]_x)
+ */
+public fun svqsubU64X(pg: SvboolT, op1: Svuint64T, op2: Svuint64T): Svuint64T = svqsubU64M(pg, op1, op2)
+
+/**
+ * Saturating subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_n_u64]_x)
+ */
+public fun svqsubNU64X(pg: SvboolT, op1: Svuint64T, op2: ULong): Svuint64T = svqsubU64X(pg, op1, svdupNU64(op2))
+
+/**
+ * Saturating subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_u64]_z)
+ */
+public fun svqsubU64Z(pg: SvboolT, op1: Svuint64T, op2: Svuint64T): Svuint64T = svqsubU64M(pg, svselU64(pg, op1, svdupNU64(0uL)), op2)
+
+/**
+ * Saturating subtract
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_n_u64]_z)
+ */
+public fun svqsubNU64Z(pg: SvboolT, op1: Svuint64T, op2: ULong): Svuint64T = svqsubU64Z(pg, op1, svdupNU64(op2))
+
+/**
+ * Saturating subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsubr[_s8]_m)
+ */
+public fun svqsubrS8M(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T {
+    fun svqsubrS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    return svqsubrS8M(pg, op1, op2)
+}
+
+/**
+ * Saturating subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsubr[_n_s8]_m)
+ */
+public fun svqsubrNS8M(pg: SvboolT, op1: Svint8T, op2: Byte): Svint8T = svqsubrS8M(pg, op1, svdupNS8(op2))
+
+/**
+ * Saturating subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsubr[_s8]_x)
+ */
+public fun svqsubrS8X(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T = svqsubrS8M(pg, op1, op2)
+
+/**
+ * Saturating subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsubr[_n_s8]_x)
+ */
+public fun svqsubrNS8X(pg: SvboolT, op1: Svint8T, op2: Byte): Svint8T = svqsubrS8X(pg, op1, svdupNS8(op2))
+
+/**
+ * Saturating subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsubr[_s8]_z)
+ */
+public fun svqsubrS8Z(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T = svqsubrS8M(pg, svselS8(pg, op1, svdupNS8(0)), op2)
+
+/**
+ * Saturating subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsubr[_n_s8]_z)
+ */
+public fun svqsubrNS8Z(pg: SvboolT, op1: Svint8T, op2: Byte): Svint8T = svqsubrS8Z(pg, op1, svdupNS8(op2))
+
+/**
+ * Saturating subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsubr[_s16]_m)
+ */
+public fun svqsubrS16M(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T {
+    fun svqsubrS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    return svqsubrS16M(pg.sveInto(), op1, op2)
+}
+
+/**
+ * Saturating subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsubr[_n_s16]_m)
+ */
+public fun svqsubrNS16M(pg: SvboolT, op1: Svint16T, op2: Short): Svint16T = svqsubrS16M(pg, op1, svdupNS16(op2))
+
+/**
+ * Saturating subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsubr[_s16]_x)
+ */
+public fun svqsubrS16X(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T = svqsubrS16M(pg, op1, op2)
+
+/**
+ * Saturating subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsubr[_n_s16]_x)
+ */
+public fun svqsubrNS16X(pg: SvboolT, op1: Svint16T, op2: Short): Svint16T = svqsubrS16X(pg, op1, svdupNS16(op2))
+
+/**
+ * Saturating subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsubr[_s16]_z)
+ */
+public fun svqsubrS16Z(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T = svqsubrS16M(pg, svselS16(pg, op1, svdupNS16(0)), op2)
+
+/**
+ * Saturating subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsubr[_n_s16]_z)
+ */
+public fun svqsubrNS16Z(pg: SvboolT, op1: Svint16T, op2: Short): Svint16T = svqsubrS16Z(pg, op1, svdupNS16(op2))
+
+/**
+ * Saturating subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsubr[_s32]_m)
+ */
+public fun svqsubrS32M(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T {
+    fun svqsubrS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    return svqsubrS32M(pg.sveInto(), op1, op2)
+}
+
+/**
+ * Saturating subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsubr[_n_s32]_m)
+ */
+public fun svqsubrNS32M(pg: SvboolT, op1: Svint32T, op2: Int): Svint32T = svqsubrS32M(pg, op1, svdupNS32(op2))
+
+/**
+ * Saturating subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsubr[_s32]_x)
+ */
+public fun svqsubrS32X(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T = svqsubrS32M(pg, op1, op2)
+
+/**
+ * Saturating subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsubr[_n_s32]_x)
+ */
+public fun svqsubrNS32X(pg: SvboolT, op1: Svint32T, op2: Int): Svint32T = svqsubrS32X(pg, op1, svdupNS32(op2))
+
+/**
+ * Saturating subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsubr[_s32]_z)
+ */
+public fun svqsubrS32Z(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T = svqsubrS32M(pg, svselS32(pg, op1, svdupNS32(0)), op2)
+
+/**
+ * Saturating subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsubr[_n_s32]_z)
+ */
+public fun svqsubrNS32Z(pg: SvboolT, op1: Svint32T, op2: Int): Svint32T = svqsubrS32Z(pg, op1, svdupNS32(op2))
+
+/**
+ * Saturating subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsubr[_s64]_m)
+ */
+public fun svqsubrS64M(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T {
+    fun svqsubrS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    return svqsubrS64M(pg.sveInto(), op1, op2)
+}
+
+/**
+ * Saturating subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsubr[_n_s64]_m)
+ */
+public fun svqsubrNS64M(pg: SvboolT, op1: Svint64T, op2: Long): Svint64T = svqsubrS64M(pg, op1, svdupNS64(op2))
+
+/**
+ * Saturating subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsubr[_s64]_x)
+ */
+public fun svqsubrS64X(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T = svqsubrS64M(pg, op1, op2)
+
+/**
+ * Saturating subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsubr[_n_s64]_x)
+ */
+public fun svqsubrNS64X(pg: SvboolT, op1: Svint64T, op2: Long): Svint64T = svqsubrS64X(pg, op1, svdupNS64(op2))
+
+/**
+ * Saturating subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsubr[_s64]_z)
+ */
+public fun svqsubrS64Z(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T = svqsubrS64M(pg, svselS64(pg, op1, svdupNS64(0L)), op2)
+
+/**
+ * Saturating subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsubr[_n_s64]_z)
+ */
+public fun svqsubrNS64Z(pg: SvboolT, op1: Svint64T, op2: Long): Svint64T = svqsubrS64Z(pg, op1, svdupNS64(op2))
+
+/**
+ * Saturating subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsubr[_u8]_m)
+ */
+public fun svqsubrU8M(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T {
+    fun svqsubrU8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    return svqsubrU8M(pg, op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Saturating subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsubr[_n_u8]_m)
+ */
+public fun svqsubrNU8M(pg: SvboolT, op1: Svuint8T, op2: UByte): Svuint8T = svqsubrU8M(pg, op1, svdupNU8(op2))
+
+/**
+ * Saturating subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsubr[_u8]_x)
+ */
+public fun svqsubrU8X(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T = svqsubrU8M(pg, op1, op2)
+
+/**
+ * Saturating subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsubr[_n_u8]_x)
+ */
+public fun svqsubrNU8X(pg: SvboolT, op1: Svuint8T, op2: UByte): Svuint8T = svqsubrU8X(pg, op1, svdupNU8(op2))
+
+/**
+ * Saturating subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsubr[_u8]_z)
+ */
+public fun svqsubrU8Z(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T = svqsubrU8M(pg, svselU8(pg, op1, svdupNU8(0u)), op2)
+
+/**
+ * Saturating subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsubr[_n_u8]_z)
+ */
+public fun svqsubrNU8Z(pg: SvboolT, op1: Svuint8T, op2: UByte): Svuint8T = svqsubrU8Z(pg, op1, svdupNU8(op2))
+
+/**
+ * Saturating subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsubr[_u16]_m)
+ */
+public fun svqsubrU16M(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T {
+    fun svqsubrU16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    return svqsubrU16M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Saturating subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsubr[_n_u16]_m)
+ */
+public fun svqsubrNU16M(pg: SvboolT, op1: Svuint16T, op2: UShort): Svuint16T = svqsubrU16M(pg, op1, svdupNU16(op2))
+
+/**
+ * Saturating subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsubr[_u16]_x)
+ */
+public fun svqsubrU16X(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T = svqsubrU16M(pg, op1, op2)
+
+/**
+ * Saturating subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsubr[_n_u16]_x)
+ */
+public fun svqsubrNU16X(pg: SvboolT, op1: Svuint16T, op2: UShort): Svuint16T = svqsubrU16X(pg, op1, svdupNU16(op2))
+
+/**
+ * Saturating subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsubr[_u16]_z)
+ */
+public fun svqsubrU16Z(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T = svqsubrU16M(pg, svselU16(pg, op1, svdupNU16(0u)), op2)
+
+/**
+ * Saturating subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsubr[_n_u16]_z)
+ */
+public fun svqsubrNU16Z(pg: SvboolT, op1: Svuint16T, op2: UShort): Svuint16T = svqsubrU16Z(pg, op1, svdupNU16(op2))
+
+/**
+ * Saturating subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsubr[_u32]_m)
+ */
+public fun svqsubrU32M(pg: SvboolT, op1: Svuint32T, op2: Svuint32T): Svuint32T {
+    fun svqsubrU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    return svqsubrU32M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Saturating subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsubr[_n_u32]_m)
+ */
+public fun svqsubrNU32M(pg: SvboolT, op1: Svuint32T, op2: UInt): Svuint32T = svqsubrU32M(pg, op1, svdupNU32(op2))
+
+/**
+ * Saturating subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsubr[_u32]_x)
+ */
+public fun svqsubrU32X(pg: SvboolT, op1: Svuint32T, op2: Svuint32T): Svuint32T = svqsubrU32M(pg, op1, op2)
+
+/**
+ * Saturating subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsubr[_n_u32]_x)
+ */
+public fun svqsubrNU32X(pg: SvboolT, op1: Svuint32T, op2: UInt): Svuint32T = svqsubrU32X(pg, op1, svdupNU32(op2))
+
+/**
+ * Saturating subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsubr[_u32]_z)
+ */
+public fun svqsubrU32Z(pg: SvboolT, op1: Svuint32T, op2: Svuint32T): Svuint32T = svqsubrU32M(pg, svselU32(pg, op1, svdupNU32(0u)), op2)
+
+/**
+ * Saturating subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsubr[_n_u32]_z)
+ */
+public fun svqsubrNU32Z(pg: SvboolT, op1: Svuint32T, op2: UInt): Svuint32T = svqsubrU32Z(pg, op1, svdupNU32(op2))
+
+/**
+ * Saturating subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsubr[_u64]_m)
+ */
+public fun svqsubrU64M(pg: SvboolT, op1: Svuint64T, op2: Svuint64T): Svuint64T {
+    fun svqsubrU64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    return svqsubrU64M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Saturating subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsubr[_n_u64]_m)
+ */
+public fun svqsubrNU64M(pg: SvboolT, op1: Svuint64T, op2: ULong): Svuint64T = svqsubrU64M(pg, op1, svdupNU64(op2))
+
+/**
+ * Saturating subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsubr[_u64]_x)
+ */
+public fun svqsubrU64X(pg: SvboolT, op1: Svuint64T, op2: Svuint64T): Svuint64T = svqsubrU64M(pg, op1, op2)
+
+/**
+ * Saturating subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsubr[_n_u64]_x)
+ */
+public fun svqsubrNU64X(pg: SvboolT, op1: Svuint64T, op2: ULong): Svuint64T = svqsubrU64X(pg, op1, svdupNU64(op2))
+
+/**
+ * Saturating subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsubr[_u64]_z)
+ */
+public fun svqsubrU64Z(pg: SvboolT, op1: Svuint64T, op2: Svuint64T): Svuint64T = svqsubrU64M(pg, svselU64(pg, op1, svdupNU64(0uL)), op2)
+
+/**
+ * Saturating subtract reversed
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsubr[_n_u64]_z)
+ */
+public fun svqsubrNU64Z(pg: SvboolT, op1: Svuint64T, op2: ULong): Svuint64T = svqsubrU64Z(pg, op1, svdupNU64(op2))
+
+/**
+ * Saturating extract narrow (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqxtnb[_s16])
+ */
+public fun svqxtnbS16(op: Svint16T): Svint8T {
+    fun svqxtnbS16(op1: Svint16T): Svint8T = null as Svint8T
+    return svqxtnbS16(op)
+}
+
+/**
+ * Saturating extract narrow (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqxtnb[_s32])
+ */
+public fun svqxtnbS32(op: Svint32T): Svint16T {
+    fun svqxtnbS32(op1: Svint32T): Svint16T = null as Svint16T
+    return svqxtnbS32(op)
+}
+
+/**
+ * Saturating extract narrow (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqxtnb[_s64])
+ */
+public fun svqxtnbS64(op: Svint64T): Svint32T {
+    fun svqxtnbS64(op1: Svint64T): Svint32T = null as Svint32T
+    return svqxtnbS64(op)
+}
+
+/**
+ * Saturating extract narrow (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqxtnb[_u16])
+ */
+public fun svqxtnbU16(op: Svuint16T): Svuint8T {
+    fun svqxtnbU16(op1: Svint16T): Svint8T = null as Svint8T
+    return svqxtnbU16(op.asSigned()).asUnsigned()
+}
+
+/**
+ * Saturating extract narrow (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqxtnb[_u32])
+ */
+public fun svqxtnbU32(op: Svuint32T): Svuint16T {
+    fun svqxtnbU32(op1: Svint32T): Svint16T = null as Svint16T
+    return svqxtnbU32(op.asSigned()).asUnsigned()
+}
+
+/**
+ * Saturating extract narrow (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqxtnb[_u64])
+ */
+public fun svqxtnbU64(op: Svuint64T): Svuint32T {
+    fun svqxtnbU64(op1: Svint64T): Svint32T = null as Svint32T
+    return svqxtnbU64(op.asSigned()).asUnsigned()
+}
+
+/**
+ * Saturating extract narrow (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqxtnt[_s16])
+ */
+public fun svqxtntS16(even: Svint8T, op: Svint16T): Svint8T {
+    fun svqxtntS16(even1: Svint8T, op1: Svint16T): Svint8T = null as Svint8T
+    return svqxtntS16(even, op)
+}
+
+/**
+ * Saturating extract narrow (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqxtnt[_s32])
+ */
+public fun svqxtntS32(even: Svint16T, op: Svint32T): Svint16T {
+    fun svqxtntS32(even1: Svint16T, op1: Svint32T): Svint16T = null as Svint16T
+    return svqxtntS32(even, op)
+}
+
+/**
+ * Saturating extract narrow (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqxtnt[_s64])
+ */
+public fun svqxtntS64(even: Svint32T, op: Svint64T): Svint32T {
+    fun svqxtntS64(even1: Svint32T, op1: Svint64T): Svint32T = null as Svint32T
+    return svqxtntS64(even, op)
+}
+
+/**
+ * Saturating extract narrow (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqxtnt[_u16])
+ */
+public fun svqxtntU16(even: Svuint8T, op: Svuint16T): Svuint8T {
+    fun svqxtntU16(even1: Svint8T, op1: Svint16T): Svint8T = null as Svint8T
+    return svqxtntU16(even.asSigned(), op.asSigned()).asUnsigned()
+}
+
+/**
+ * Saturating extract narrow (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqxtnt[_u32])
+ */
+public fun svqxtntU32(even: Svuint16T, op: Svuint32T): Svuint16T {
+    fun svqxtntU32(even1: Svint16T, op1: Svint32T): Svint16T = null as Svint16T
+    return svqxtntU32(even.asSigned(), op.asSigned()).asUnsigned()
+}
+
+/**
+ * Saturating extract narrow (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqxtnt[_u64])
+ */
+public fun svqxtntU64(even: Svuint32T, op: Svuint64T): Svuint32T {
+    fun svqxtntU64(even1: Svint32T, op1: Svint64T): Svint32T = null as Svint32T
+    return svqxtntU64(even.asSigned(), op.asSigned()).asUnsigned()
+}
+
+/**
+ * Saturating extract unsigned narrow (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqxtunb[_s16])
+ */
+public fun svqxtunbS16(op: Svint16T): Svuint8T {
+    fun svqxtunbS16(op1: Svint16T): Svint8T = null as Svint8T
+    return svqxtunbS16(op).asUnsigned()
+}
+
+/**
+ * Saturating extract unsigned narrow (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqxtunb[_s32])
+ */
+public fun svqxtunbS32(op: Svint32T): Svuint16T {
+    fun svqxtunbS32(op1: Svint32T): Svint16T = null as Svint16T
+    return svqxtunbS32(op).asUnsigned()
+}
+
+/**
+ * Saturating extract unsigned narrow (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqxtunb[_s64])
+ */
+public fun svqxtunbS64(op: Svint64T): Svuint32T {
+    fun svqxtunbS64(op1: Svint64T): Svint32T = null as Svint32T
+    return svqxtunbS64(op).asUnsigned()
+}
+
+/**
+ * Saturating extract unsigned narrow (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqxtunt[_s16])
+ */
+public fun svqxtuntS16(even: Svuint8T, op: Svint16T): Svuint8T {
+    fun svqxtuntS16(even1: Svint8T, op1: Svint16T): Svint8T = null as Svint8T
+    return svqxtuntS16(even.asSigned(), op).asUnsigned()
+}
+
+/**
+ * Saturating extract unsigned narrow (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqxtunt[_s32])
+ */
+public fun svqxtuntS32(even: Svuint16T, op: Svint32T): Svuint16T {
+    fun svqxtuntS32(even1: Svint16T, op1: Svint32T): Svint16T = null as Svint16T
+    return svqxtuntS32(even.asSigned(), op).asUnsigned()
+}
+
+/**
+ * Saturating extract unsigned narrow (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqxtunt[_s64])
+ */
+public fun svqxtuntS64(even: Svuint32T, op: Svint64T): Svuint32T {
+    fun svqxtuntS64(even1: Svint32T, op1: Svint64T): Svint32T = null as Svint32T
+    return svqxtuntS64(even.asSigned(), op).asUnsigned()
+}
+
+/**
+ * Rounding add narrow high part (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svraddhnb[_s16])
+ */
+public fun svraddhnbS16(op1: Svint16T, op2: Svint16T): Svint8T {
+    fun svraddhnbS16(op11: Svint16T, op21: Svint16T): Svint8T = null as Svint8T
+    return svraddhnbS16(op1, op2)
+}
+
+/**
+ * Rounding add narrow high part (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svraddhnb[_n_s16])
+ */
+public fun svraddhnbNS16(op1: Svint16T, op2: Short): Svint8T = svraddhnbS16(op1, svdupNS16(op2))
+
+/**
+ * Rounding add narrow high part (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svraddhnb[_s32])
+ */
+public fun svraddhnbS32(op1: Svint32T, op2: Svint32T): Svint16T {
+    fun svraddhnbS32(op11: Svint32T, op21: Svint32T): Svint16T = null as Svint16T
+    return svraddhnbS32(op1, op2)
+}
+
+/**
+ * Rounding add narrow high part (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svraddhnb[_n_s32])
+ */
+public fun svraddhnbNS32(op1: Svint32T, op2: Int): Svint16T = svraddhnbS32(op1, svdupNS32(op2))
+
+/**
+ * Rounding add narrow high part (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svraddhnb[_s64])
+ */
+public fun svraddhnbS64(op1: Svint64T, op2: Svint64T): Svint32T {
+    fun svraddhnbS64(op11: Svint64T, op21: Svint64T): Svint32T = null as Svint32T
+    return svraddhnbS64(op1, op2)
+}
+
+/**
+ * Rounding add narrow high part (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svraddhnb[_n_s64])
+ */
+public fun svraddhnbNS64(op1: Svint64T, op2: Long): Svint32T = svraddhnbS64(op1, svdupNS64(op2))
+
+/**
+ * Rounding add narrow high part (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svraddhnb[_u16])
+ */
+public fun svraddhnbU16(op1: Svuint16T, op2: Svuint16T): Svuint8T = svraddhnbS16(op1.asSigned(), op2.asSigned()).asUnsigned()
+
+/**
+ * Rounding add narrow high part (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svraddhnb[_n_u16])
+ */
+public fun svraddhnbNU16(op1: Svuint16T, op2: UShort): Svuint8T = svraddhnbU16(op1, svdupNU16(op2))
+
+/**
+ * Rounding add narrow high part (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svraddhnb[_u32])
+ */
+public fun svraddhnbU32(op1: Svuint32T, op2: Svuint32T): Svuint16T = svraddhnbS32(op1.asSigned(), op2.asSigned()).asUnsigned()
+
+/**
+ * Rounding add narrow high part (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svraddhnb[_n_u32])
+ */
+public fun svraddhnbNU32(op1: Svuint32T, op2: UInt): Svuint16T = svraddhnbU32(op1, svdupNU32(op2))
+
+/**
+ * Rounding add narrow high part (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svraddhnb[_u64])
+ */
+public fun svraddhnbU64(op1: Svuint64T, op2: Svuint64T): Svuint32T = svraddhnbS64(op1.asSigned(), op2.asSigned()).asUnsigned()
+
+/**
+ * Rounding add narrow high part (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svraddhnb[_n_u64])
+ */
+public fun svraddhnbNU64(op1: Svuint64T, op2: ULong): Svuint32T = svraddhnbU64(op1, svdupNU64(op2))
+
+/**
+ * Rounding add narrow high part (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svraddhnt[_s16])
+ */
+public fun svraddhntS16(even: Svint8T, op1: Svint16T, op2: Svint16T): Svint8T {
+    fun svraddhntS16(even1: Svint8T, op11: Svint16T, op21: Svint16T): Svint8T = null as Svint8T
+    return svraddhntS16(even, op1, op2)
+}
+
+/**
+ * Rounding add narrow high part (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svraddhnt[_n_s16])
+ */
+public fun svraddhntNS16(even: Svint8T, op1: Svint16T, op2: Short): Svint8T = svraddhntS16(even, op1, svdupNS16(op2))
+
+/**
+ * Rounding add narrow high part (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svraddhnt[_s32])
+ */
+public fun svraddhntS32(even: Svint16T, op1: Svint32T, op2: Svint32T): Svint16T {
+    fun svraddhntS32(even1: Svint16T, op11: Svint32T, op21: Svint32T): Svint16T = null as Svint16T
+    return svraddhntS32(even, op1, op2)
+}
+
+/**
+ * Rounding add narrow high part (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svraddhnt[_n_s32])
+ */
+public fun svraddhntNS32(even: Svint16T, op1: Svint32T, op2: Int): Svint16T = svraddhntS32(even, op1, svdupNS32(op2))
+
+/**
+ * Rounding add narrow high part (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svraddhnt[_s64])
+ */
+public fun svraddhntS64(even: Svint32T, op1: Svint64T, op2: Svint64T): Svint32T {
+    fun svraddhntS64(even1: Svint32T, op11: Svint64T, op21: Svint64T): Svint32T = null as Svint32T
+    return svraddhntS64(even, op1, op2)
+}
+
+/**
+ * Rounding add narrow high part (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svraddhnt[_n_s64])
+ */
+public fun svraddhntNS64(even: Svint32T, op1: Svint64T, op2: Long): Svint32T = svraddhntS64(even, op1, svdupNS64(op2))
+
+/**
+ * Rounding add narrow high part (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svraddhnt[_u16])
+ */
+public fun svraddhntU16(even: Svuint8T, op1: Svuint16T, op2: Svuint16T): Svuint8T = svraddhntS16(even.asSigned(), op1.asSigned(), op2.asSigned()).asUnsigned()
+
+/**
+ * Rounding add narrow high part (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svraddhnt[_n_u16])
+ */
+public fun svraddhntNU16(even: Svuint8T, op1: Svuint16T, op2: UShort): Svuint8T = svraddhntU16(even, op1, svdupNU16(op2))
+
+/**
+ * Rounding add narrow high part (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svraddhnt[_u32])
+ */
+public fun svraddhntU32(even: Svuint16T, op1: Svuint32T, op2: Svuint32T): Svuint16T = svraddhntS32(even.asSigned(), op1.asSigned(), op2.asSigned()).asUnsigned()
+
+/**
+ * Rounding add narrow high part (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svraddhnt[_n_u32])
+ */
+public fun svraddhntNU32(even: Svuint16T, op1: Svuint32T, op2: UInt): Svuint16T = svraddhntU32(even, op1, svdupNU32(op2))
+
+/**
+ * Rounding add narrow high part (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svraddhnt[_u64])
+ */
+public fun svraddhntU64(even: Svuint32T, op1: Svuint64T, op2: Svuint64T): Svuint32T = svraddhntS64(even.asSigned(), op1.asSigned(), op2.asSigned()).asUnsigned()
+
+/**
+ * Rounding add narrow high part (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svraddhnt[_n_u64])
+ */
+public fun svraddhntNU64(even: Svuint32T, op1: Svuint64T, op2: ULong): Svuint32T = svraddhntU64(even, op1, svdupNU64(op2))
+
+/**
+ * Bitwise rotate left by 1 and exclusive OR
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrax1[_s64])
+ */
+public fun svrax1S64(op1: Svint64T, op2: Svint64T): Svint64T {
+    fun svrax1S64(op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    return svrax1S64(op1, op2)
+}
+
+/**
+ * Bitwise rotate left by 1 and exclusive OR
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrax1[_u64])
+ */
+public fun svrax1U64(op1: Svuint64T, op2: Svuint64T): Svuint64T = svrax1S64(op1.asSigned(), op2.asSigned()).asUnsigned()
+
+/**
+ * Reciprocal estimate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrecpe[_u32]_m)
+ */
+public fun svrecpeU32M(inactive: Svuint32T, pg: SvboolT, op: Svuint32T): Svuint32T {
+    fun svrecpeU32M(inactive1: Svint32T, pg1: Svbool4T, op1: Svint32T): Svint32T = null as Svint32T
+    return svrecpeU32M(inactive.asSigned(), pg.sveInto(), op.asSigned()).asUnsigned()
+}
+
+/**
+ * Reciprocal estimate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrecpe[_u32]_x)
+ */
+public fun svrecpeU32X(pg: SvboolT, op: Svuint32T): Svuint32T = svrecpeU32M(op, pg, op)
+
+/**
+ * Reciprocal estimate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrecpe[_u32]_z)
+ */
+public fun svrecpeU32Z(pg: SvboolT, op: Svuint32T): Svuint32T = svrecpeU32M(svdupNU32(0u), pg, op)
+
+/**
+ * Rounding halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrhadd[_s8]_m)
+ */
+public fun svrhaddS8M(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T {
+    fun svrhaddS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    return svrhaddS8M(pg, op1, op2)
+}
+
+/**
+ * Rounding halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrhadd[_n_s8]_m)
+ */
+public fun svrhaddNS8M(pg: SvboolT, op1: Svint8T, op2: Byte): Svint8T = svrhaddS8M(pg, op1, svdupNS8(op2))
+
+/**
+ * Rounding halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrhadd[_s8]_x)
+ */
+public fun svrhaddS8X(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T = svrhaddS8M(pg, op1, op2)
+
+/**
+ * Rounding halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrhadd[_n_s8]_x)
+ */
+public fun svrhaddNS8X(pg: SvboolT, op1: Svint8T, op2: Byte): Svint8T = svrhaddS8X(pg, op1, svdupNS8(op2))
+
+/**
+ * Rounding halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrhadd[_s8]_z)
+ */
+public fun svrhaddS8Z(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T = svrhaddS8M(pg, svselS8(pg, op1, svdupNS8(0)), op2)
+
+/**
+ * Rounding halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrhadd[_n_s8]_z)
+ */
+public fun svrhaddNS8Z(pg: SvboolT, op1: Svint8T, op2: Byte): Svint8T = svrhaddS8Z(pg, op1, svdupNS8(op2))
+
+/**
+ * Rounding halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrhadd[_s16]_m)
+ */
+public fun svrhaddS16M(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T {
+    fun svrhaddS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    return svrhaddS16M(pg.sveInto(), op1, op2)
+}
+
+/**
+ * Rounding halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrhadd[_n_s16]_m)
+ */
+public fun svrhaddNS16M(pg: SvboolT, op1: Svint16T, op2: Short): Svint16T = svrhaddS16M(pg, op1, svdupNS16(op2))
+
+/**
+ * Rounding halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrhadd[_s16]_x)
+ */
+public fun svrhaddS16X(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T = svrhaddS16M(pg, op1, op2)
+
+/**
+ * Rounding halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrhadd[_n_s16]_x)
+ */
+public fun svrhaddNS16X(pg: SvboolT, op1: Svint16T, op2: Short): Svint16T = svrhaddS16X(pg, op1, svdupNS16(op2))
+
+/**
+ * Rounding halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrhadd[_s16]_z)
+ */
+public fun svrhaddS16Z(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T = svrhaddS16M(pg, svselS16(pg, op1, svdupNS16(0)), op2)
+
+/**
+ * Rounding halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrhadd[_n_s16]_z)
+ */
+public fun svrhaddNS16Z(pg: SvboolT, op1: Svint16T, op2: Short): Svint16T = svrhaddS16Z(pg, op1, svdupNS16(op2))
+
+/**
+ * Rounding halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrhadd[_s32]_m)
+ */
+public fun svrhaddS32M(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T {
+    fun svrhaddS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    return svrhaddS32M(pg.sveInto(), op1, op2)
+}
+
+/**
+ * Rounding halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrhadd[_n_s32]_m)
+ */
+public fun svrhaddNS32M(pg: SvboolT, op1: Svint32T, op2: Int): Svint32T = svrhaddS32M(pg, op1, svdupNS32(op2))
+
+/**
+ * Rounding halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrhadd[_s32]_x)
+ */
+public fun svrhaddS32X(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T = svrhaddS32M(pg, op1, op2)
+
+/**
+ * Rounding halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrhadd[_n_s32]_x)
+ */
+public fun svrhaddNS32X(pg: SvboolT, op1: Svint32T, op2: Int): Svint32T = svrhaddS32X(pg, op1, svdupNS32(op2))
+
+/**
+ * Rounding halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrhadd[_s32]_z)
+ */
+public fun svrhaddS32Z(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T = svrhaddS32M(pg, svselS32(pg, op1, svdupNS32(0)), op2)
+
+/**
+ * Rounding halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrhadd[_n_s32]_z)
+ */
+public fun svrhaddNS32Z(pg: SvboolT, op1: Svint32T, op2: Int): Svint32T = svrhaddS32Z(pg, op1, svdupNS32(op2))
+
+/**
+ * Rounding halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrhadd[_s64]_m)
+ */
+public fun svrhaddS64M(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T {
+    fun svrhaddS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    return svrhaddS64M(pg.sveInto(), op1, op2)
+}
+
+/**
+ * Rounding halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrhadd[_n_s64]_m)
+ */
+public fun svrhaddNS64M(pg: SvboolT, op1: Svint64T, op2: Long): Svint64T = svrhaddS64M(pg, op1, svdupNS64(op2))
+
+/**
+ * Rounding halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrhadd[_s64]_x)
+ */
+public fun svrhaddS64X(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T = svrhaddS64M(pg, op1, op2)
+
+/**
+ * Rounding halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrhadd[_n_s64]_x)
+ */
+public fun svrhaddNS64X(pg: SvboolT, op1: Svint64T, op2: Long): Svint64T = svrhaddS64X(pg, op1, svdupNS64(op2))
+
+/**
+ * Rounding halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrhadd[_s64]_z)
+ */
+public fun svrhaddS64Z(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T = svrhaddS64M(pg, svselS64(pg, op1, svdupNS64(0L)), op2)
+
+/**
+ * Rounding halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrhadd[_n_s64]_z)
+ */
+public fun svrhaddNS64Z(pg: SvboolT, op1: Svint64T, op2: Long): Svint64T = svrhaddS64Z(pg, op1, svdupNS64(op2))
+
+/**
+ * Rounding halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrhadd[_u8]_m)
+ */
+public fun svrhaddU8M(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T {
+    fun svrhaddU8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    return svrhaddU8M(pg, op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Rounding halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrhadd[_n_u8]_m)
+ */
+public fun svrhaddNU8M(pg: SvboolT, op1: Svuint8T, op2: UByte): Svuint8T = svrhaddU8M(pg, op1, svdupNU8(op2))
+
+/**
+ * Rounding halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrhadd[_u8]_x)
+ */
+public fun svrhaddU8X(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T = svrhaddU8M(pg, op1, op2)
+
+/**
+ * Rounding halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrhadd[_n_u8]_x)
+ */
+public fun svrhaddNU8X(pg: SvboolT, op1: Svuint8T, op2: UByte): Svuint8T = svrhaddU8X(pg, op1, svdupNU8(op2))
+
+/**
+ * Rounding halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrhadd[_u8]_z)
+ */
+public fun svrhaddU8Z(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T = svrhaddU8M(pg, svselU8(pg, op1, svdupNU8(0u)), op2)
+
+/**
+ * Rounding halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrhadd[_n_u8]_z)
+ */
+public fun svrhaddNU8Z(pg: SvboolT, op1: Svuint8T, op2: UByte): Svuint8T = svrhaddU8Z(pg, op1, svdupNU8(op2))
+
+/**
+ * Rounding halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrhadd[_u16]_m)
+ */
+public fun svrhaddU16M(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T {
+    fun svrhaddU16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    return svrhaddU16M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Rounding halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrhadd[_n_u16]_m)
+ */
+public fun svrhaddNU16M(pg: SvboolT, op1: Svuint16T, op2: UShort): Svuint16T = svrhaddU16M(pg, op1, svdupNU16(op2))
+
+/**
+ * Rounding halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrhadd[_u16]_x)
+ */
+public fun svrhaddU16X(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T = svrhaddU16M(pg, op1, op2)
+
+/**
+ * Rounding halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrhadd[_n_u16]_x)
+ */
+public fun svrhaddNU16X(pg: SvboolT, op1: Svuint16T, op2: UShort): Svuint16T = svrhaddU16X(pg, op1, svdupNU16(op2))
+
+/**
+ * Rounding halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrhadd[_u16]_z)
+ */
+public fun svrhaddU16Z(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T = svrhaddU16M(pg, svselU16(pg, op1, svdupNU16(0u)), op2)
+
+/**
+ * Rounding halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrhadd[_n_u16]_z)
+ */
+public fun svrhaddNU16Z(pg: SvboolT, op1: Svuint16T, op2: UShort): Svuint16T = svrhaddU16Z(pg, op1, svdupNU16(op2))
+
+/**
+ * Rounding halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrhadd[_u32]_m)
+ */
+public fun svrhaddU32M(pg: SvboolT, op1: Svuint32T, op2: Svuint32T): Svuint32T {
+    fun svrhaddU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    return svrhaddU32M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Rounding halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrhadd[_n_u32]_m)
+ */
+public fun svrhaddNU32M(pg: SvboolT, op1: Svuint32T, op2: UInt): Svuint32T = svrhaddU32M(pg, op1, svdupNU32(op2))
+
+/**
+ * Rounding halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrhadd[_u32]_x)
+ */
+public fun svrhaddU32X(pg: SvboolT, op1: Svuint32T, op2: Svuint32T): Svuint32T = svrhaddU32M(pg, op1, op2)
+
+/**
+ * Rounding halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrhadd[_n_u32]_x)
+ */
+public fun svrhaddNU32X(pg: SvboolT, op1: Svuint32T, op2: UInt): Svuint32T = svrhaddU32X(pg, op1, svdupNU32(op2))
+
+/**
+ * Rounding halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrhadd[_u32]_z)
+ */
+public fun svrhaddU32Z(pg: SvboolT, op1: Svuint32T, op2: Svuint32T): Svuint32T = svrhaddU32M(pg, svselU32(pg, op1, svdupNU32(0u)), op2)
+
+/**
+ * Rounding halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrhadd[_n_u32]_z)
+ */
+public fun svrhaddNU32Z(pg: SvboolT, op1: Svuint32T, op2: UInt): Svuint32T = svrhaddU32Z(pg, op1, svdupNU32(op2))
+
+/**
+ * Rounding halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrhadd[_u64]_m)
+ */
+public fun svrhaddU64M(pg: SvboolT, op1: Svuint64T, op2: Svuint64T): Svuint64T {
+    fun svrhaddU64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    return svrhaddU64M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Rounding halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrhadd[_n_u64]_m)
+ */
+public fun svrhaddNU64M(pg: SvboolT, op1: Svuint64T, op2: ULong): Svuint64T = svrhaddU64M(pg, op1, svdupNU64(op2))
+
+/**
+ * Rounding halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrhadd[_u64]_x)
+ */
+public fun svrhaddU64X(pg: SvboolT, op1: Svuint64T, op2: Svuint64T): Svuint64T = svrhaddU64M(pg, op1, op2)
+
+/**
+ * Rounding halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrhadd[_n_u64]_x)
+ */
+public fun svrhaddNU64X(pg: SvboolT, op1: Svuint64T, op2: ULong): Svuint64T = svrhaddU64X(pg, op1, svdupNU64(op2))
+
+/**
+ * Rounding halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrhadd[_u64]_z)
+ */
+public fun svrhaddU64Z(pg: SvboolT, op1: Svuint64T, op2: Svuint64T): Svuint64T = svrhaddU64M(pg, svselU64(pg, op1, svdupNU64(0uL)), op2)
+
+/**
+ * Rounding halving add
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrhadd[_n_u64]_z)
+ */
+public fun svrhaddNU64Z(pg: SvboolT, op1: Svuint64T, op2: ULong): Svuint64T = svrhaddU64Z(pg, op1, svdupNU64(op2))
+
+/**
+ * Rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshl[_s8]_m)
+ */
+public fun svrshlS8M(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T {
+    fun svrshlS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    return svrshlS8M(pg, op1, op2)
+}
+
+/**
+ * Rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshl[_n_s8]_m)
+ */
+public fun svrshlNS8M(pg: SvboolT, op1: Svint8T, op2: Byte): Svint8T = svrshlS8M(pg, op1, svdupNS8(op2))
+
+/**
+ * Rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshl[_s8]_x)
+ */
+public fun svrshlS8X(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T = svrshlS8M(pg, op1, op2)
+
+/**
+ * Rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshl[_n_s8]_x)
+ */
+public fun svrshlNS8X(pg: SvboolT, op1: Svint8T, op2: Byte): Svint8T = svrshlS8X(pg, op1, svdupNS8(op2))
+
+/**
+ * Rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshl[_s8]_z)
+ */
+public fun svrshlS8Z(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T = svrshlS8M(pg, svselS8(pg, op1, svdupNS8(0)), op2)
+
+/**
+ * Rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshl[_n_s8]_z)
+ */
+public fun svrshlNS8Z(pg: SvboolT, op1: Svint8T, op2: Byte): Svint8T = svrshlS8Z(pg, op1, svdupNS8(op2))
+
+/**
+ * Rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshl[_s16]_m)
+ */
+public fun svrshlS16M(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T {
+    fun svrshlS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    return svrshlS16M(pg.sveInto(), op1, op2)
+}
+
+/**
+ * Rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshl[_n_s16]_m)
+ */
+public fun svrshlNS16M(pg: SvboolT, op1: Svint16T, op2: Short): Svint16T = svrshlS16M(pg, op1, svdupNS16(op2))
+
+/**
+ * Rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshl[_s16]_x)
+ */
+public fun svrshlS16X(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T = svrshlS16M(pg, op1, op2)
+
+/**
+ * Rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshl[_n_s16]_x)
+ */
+public fun svrshlNS16X(pg: SvboolT, op1: Svint16T, op2: Short): Svint16T = svrshlS16X(pg, op1, svdupNS16(op2))
+
+/**
+ * Rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshl[_s16]_z)
+ */
+public fun svrshlS16Z(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T = svrshlS16M(pg, svselS16(pg, op1, svdupNS16(0)), op2)
+
+/**
+ * Rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshl[_n_s16]_z)
+ */
+public fun svrshlNS16Z(pg: SvboolT, op1: Svint16T, op2: Short): Svint16T = svrshlS16Z(pg, op1, svdupNS16(op2))
+
+/**
+ * Rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshl[_s32]_m)
+ */
+public fun svrshlS32M(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T {
+    fun svrshlS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    return svrshlS32M(pg.sveInto(), op1, op2)
+}
+
+/**
+ * Rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshl[_n_s32]_m)
+ */
+public fun svrshlNS32M(pg: SvboolT, op1: Svint32T, op2: Int): Svint32T = svrshlS32M(pg, op1, svdupNS32(op2))
+
+/**
+ * Rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshl[_s32]_x)
+ */
+public fun svrshlS32X(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T = svrshlS32M(pg, op1, op2)
+
+/**
+ * Rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshl[_n_s32]_x)
+ */
+public fun svrshlNS32X(pg: SvboolT, op1: Svint32T, op2: Int): Svint32T = svrshlS32X(pg, op1, svdupNS32(op2))
+
+/**
+ * Rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshl[_s32]_z)
+ */
+public fun svrshlS32Z(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T = svrshlS32M(pg, svselS32(pg, op1, svdupNS32(0)), op2)
+
+/**
+ * Rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshl[_n_s32]_z)
+ */
+public fun svrshlNS32Z(pg: SvboolT, op1: Svint32T, op2: Int): Svint32T = svrshlS32Z(pg, op1, svdupNS32(op2))
+
+/**
+ * Rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshl[_s64]_m)
+ */
+public fun svrshlS64M(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T {
+    fun svrshlS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    return svrshlS64M(pg.sveInto(), op1, op2)
+}
+
+/**
+ * Rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshl[_n_s64]_m)
+ */
+public fun svrshlNS64M(pg: SvboolT, op1: Svint64T, op2: Long): Svint64T = svrshlS64M(pg, op1, svdupNS64(op2))
+
+/**
+ * Rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshl[_s64]_x)
+ */
+public fun svrshlS64X(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T = svrshlS64M(pg, op1, op2)
+
+/**
+ * Rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshl[_n_s64]_x)
+ */
+public fun svrshlNS64X(pg: SvboolT, op1: Svint64T, op2: Long): Svint64T = svrshlS64X(pg, op1, svdupNS64(op2))
+
+/**
+ * Rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshl[_s64]_z)
+ */
+public fun svrshlS64Z(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T = svrshlS64M(pg, svselS64(pg, op1, svdupNS64(0L)), op2)
+
+/**
+ * Rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshl[_n_s64]_z)
+ */
+public fun svrshlNS64Z(pg: SvboolT, op1: Svint64T, op2: Long): Svint64T = svrshlS64Z(pg, op1, svdupNS64(op2))
+
+/**
+ * Rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshl[_u8]_m)
+ */
+public fun svrshlU8M(pg: SvboolT, op1: Svuint8T, op2: Svint8T): Svuint8T {
+    fun svrshlU8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    return svrshlU8M(pg, op1.asSigned(), op2).asUnsigned()
+}
+
+/**
+ * Rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshl[_n_u8]_m)
+ */
+public fun svrshlNU8M(pg: SvboolT, op1: Svuint8T, op2: Byte): Svuint8T = svrshlU8M(pg, op1, svdupNS8(op2))
+
+/**
+ * Rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshl[_u8]_x)
+ */
+public fun svrshlU8X(pg: SvboolT, op1: Svuint8T, op2: Svint8T): Svuint8T = svrshlU8M(pg, op1, op2)
+
+/**
+ * Rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshl[_n_u8]_x)
+ */
+public fun svrshlNU8X(pg: SvboolT, op1: Svuint8T, op2: Byte): Svuint8T = svrshlU8X(pg, op1, svdupNS8(op2))
+
+/**
+ * Rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshl[_u8]_z)
+ */
+public fun svrshlU8Z(pg: SvboolT, op1: Svuint8T, op2: Svint8T): Svuint8T = svrshlU8M(pg, svselU8(pg, op1, svdupNU8(0u)), op2)
+
+/**
+ * Rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshl[_n_u8]_z)
+ */
+public fun svrshlNU8Z(pg: SvboolT, op1: Svuint8T, op2: Byte): Svuint8T = svrshlU8Z(pg, op1, svdupNS8(op2))
+
+/**
+ * Rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshl[_u16]_m)
+ */
+public fun svrshlU16M(pg: SvboolT, op1: Svuint16T, op2: Svint16T): Svuint16T {
+    fun svrshlU16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    return svrshlU16M(pg.sveInto(), op1.asSigned(), op2).asUnsigned()
+}
+
+/**
+ * Rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshl[_n_u16]_m)
+ */
+public fun svrshlNU16M(pg: SvboolT, op1: Svuint16T, op2: Short): Svuint16T = svrshlU16M(pg, op1, svdupNS16(op2))
+
+/**
+ * Rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshl[_u16]_x)
+ */
+public fun svrshlU16X(pg: SvboolT, op1: Svuint16T, op2: Svint16T): Svuint16T = svrshlU16M(pg, op1, op2)
+
+/**
+ * Rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshl[_n_u16]_x)
+ */
+public fun svrshlNU16X(pg: SvboolT, op1: Svuint16T, op2: Short): Svuint16T = svrshlU16X(pg, op1, svdupNS16(op2))
+
+/**
+ * Rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshl[_u16]_z)
+ */
+public fun svrshlU16Z(pg: SvboolT, op1: Svuint16T, op2: Svint16T): Svuint16T = svrshlU16M(pg, svselU16(pg, op1, svdupNU16(0u)), op2)
+
+/**
+ * Rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshl[_n_u16]_z)
+ */
+public fun svrshlNU16Z(pg: SvboolT, op1: Svuint16T, op2: Short): Svuint16T = svrshlU16Z(pg, op1, svdupNS16(op2))
+
+/**
+ * Rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshl[_u32]_m)
+ */
+public fun svrshlU32M(pg: SvboolT, op1: Svuint32T, op2: Svint32T): Svuint32T {
+    fun svrshlU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    return svrshlU32M(pg.sveInto(), op1.asSigned(), op2).asUnsigned()
+}
+
+/**
+ * Rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshl[_n_u32]_m)
+ */
+public fun svrshlNU32M(pg: SvboolT, op1: Svuint32T, op2: Int): Svuint32T = svrshlU32M(pg, op1, svdupNS32(op2))
+
+/**
+ * Rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshl[_u32]_x)
+ */
+public fun svrshlU32X(pg: SvboolT, op1: Svuint32T, op2: Svint32T): Svuint32T = svrshlU32M(pg, op1, op2)
+
+/**
+ * Rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshl[_n_u32]_x)
+ */
+public fun svrshlNU32X(pg: SvboolT, op1: Svuint32T, op2: Int): Svuint32T = svrshlU32X(pg, op1, svdupNS32(op2))
+
+/**
+ * Rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshl[_u32]_z)
+ */
+public fun svrshlU32Z(pg: SvboolT, op1: Svuint32T, op2: Svint32T): Svuint32T = svrshlU32M(pg, svselU32(pg, op1, svdupNU32(0u)), op2)
+
+/**
+ * Rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshl[_n_u32]_z)
+ */
+public fun svrshlNU32Z(pg: SvboolT, op1: Svuint32T, op2: Int): Svuint32T = svrshlU32Z(pg, op1, svdupNS32(op2))
+
+/**
+ * Rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshl[_u64]_m)
+ */
+public fun svrshlU64M(pg: SvboolT, op1: Svuint64T, op2: Svint64T): Svuint64T {
+    fun svrshlU64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    return svrshlU64M(pg.sveInto(), op1.asSigned(), op2).asUnsigned()
+}
+
+/**
+ * Rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshl[_n_u64]_m)
+ */
+public fun svrshlNU64M(pg: SvboolT, op1: Svuint64T, op2: Long): Svuint64T = svrshlU64M(pg, op1, svdupNS64(op2))
+
+/**
+ * Rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshl[_u64]_x)
+ */
+public fun svrshlU64X(pg: SvboolT, op1: Svuint64T, op2: Svint64T): Svuint64T = svrshlU64M(pg, op1, op2)
+
+/**
+ * Rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshl[_n_u64]_x)
+ */
+public fun svrshlNU64X(pg: SvboolT, op1: Svuint64T, op2: Long): Svuint64T = svrshlU64X(pg, op1, svdupNS64(op2))
+
+/**
+ * Rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshl[_u64]_z)
+ */
+public fun svrshlU64Z(pg: SvboolT, op1: Svuint64T, op2: Svint64T): Svuint64T = svrshlU64M(pg, svselU64(pg, op1, svdupNU64(0uL)), op2)
+
+/**
+ * Rounding shift left
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshl[_n_u64]_z)
+ */
+public fun svrshlNU64Z(pg: SvboolT, op1: Svuint64T, op2: Long): Svuint64T = svrshlU64Z(pg, op1, svdupNS64(op2))
+
+/**
+ * Rounding shift right
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshr[_n_s8]_m)
+ */
+public fun svrshrNS8M(pg: SvboolT, op1: Svint8T, imm2: Int): Svint8T {
+    fun svrshrNS8M(pg1: SvboolT, op11: Svint8T, imm2: Int): Svint8T = null as Svint8T
+    run {
+        check(1 <= imm2 && imm2 <= 8) { "IMM2 is not in range 1-8" }
+    }
+    return svrshrNS8M(pg, op1, imm2)
+}
+
+/**
+ * Rounding shift right
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshr[_n_s8]_x)
+ */
+public fun svrshrNS8X(pg: SvboolT, op1: Svint8T, imm2: Int): Svint8T = svrshrNS8M(pg, op1, imm2)
+
+/**
+ * Rounding shift right
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshr[_n_s8]_z)
+ */
+public fun svrshrNS8Z(pg: SvboolT, op1: Svint8T, imm2: Int): Svint8T = svrshrNS8M(pg, svselS8(pg, op1, svdupNS8(0)), imm2)
+
+/**
+ * Rounding shift right
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshr[_n_s16]_m)
+ */
+public fun svrshrNS16M(pg: SvboolT, op1: Svint16T, imm2: Int): Svint16T {
+    fun svrshrNS16M(pg1: Svbool8T, op11: Svint16T, imm2: Int): Svint16T = null as Svint16T
+    run {
+        check(1 <= imm2 && imm2 <= 16) { "IMM2 is not in range 1-16" }
+    }
+    return svrshrNS16M(pg.sveInto(), op1, imm2)
+}
+
+/**
+ * Rounding shift right
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshr[_n_s16]_x)
+ */
+public fun svrshrNS16X(pg: SvboolT, op1: Svint16T, imm2: Int): Svint16T = svrshrNS16M(pg, op1, imm2)
+
+/**
+ * Rounding shift right
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshr[_n_s16]_z)
+ */
+public fun svrshrNS16Z(pg: SvboolT, op1: Svint16T, imm2: Int): Svint16T = svrshrNS16M(pg, svselS16(pg, op1, svdupNS16(0)), imm2)
+
+/**
+ * Rounding shift right
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshr[_n_s32]_m)
+ */
+public fun svrshrNS32M(pg: SvboolT, op1: Svint32T, imm2: Int): Svint32T {
+    fun svrshrNS32M(pg1: Svbool4T, op11: Svint32T, imm2: Int): Svint32T = null as Svint32T
+    run {
+        check(1 <= imm2 && imm2 <= 32) { "IMM2 is not in range 1-32" }
+    }
+    return svrshrNS32M(pg.sveInto(), op1, imm2)
+}
+
+/**
+ * Rounding shift right
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshr[_n_s32]_x)
+ */
+public fun svrshrNS32X(pg: SvboolT, op1: Svint32T, imm2: Int): Svint32T = svrshrNS32M(pg, op1, imm2)
+
+/**
+ * Rounding shift right
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshr[_n_s32]_z)
+ */
+public fun svrshrNS32Z(pg: SvboolT, op1: Svint32T, imm2: Int): Svint32T = svrshrNS32M(pg, svselS32(pg, op1, svdupNS32(0)), imm2)
+
+/**
+ * Rounding shift right
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshr[_n_s64]_m)
+ */
+public fun svrshrNS64M(pg: SvboolT, op1: Svint64T, imm2: Int): Svint64T {
+    fun svrshrNS64M(pg1: Svbool2T, op11: Svint64T, imm2: Int): Svint64T = null as Svint64T
+    run {
+        check(1 <= imm2 && imm2 <= 64) { "IMM2 is not in range 1-64" }
+    }
+    return svrshrNS64M(pg.sveInto(), op1, imm2)
+}
+
+/**
+ * Rounding shift right
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshr[_n_s64]_x)
+ */
+public fun svrshrNS64X(pg: SvboolT, op1: Svint64T, imm2: Int): Svint64T = svrshrNS64M(pg, op1, imm2)
+
+/**
+ * Rounding shift right
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshr[_n_s64]_z)
+ */
+public fun svrshrNS64Z(pg: SvboolT, op1: Svint64T, imm2: Int): Svint64T = svrshrNS64M(pg, svselS64(pg, op1, svdupNS64(0L)), imm2)
+
+/**
+ * Rounding shift right
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshr[_n_u8]_m)
+ */
+public fun svrshrNU8M(pg: SvboolT, op1: Svuint8T, imm2: Int): Svuint8T {
+    fun svrshrNU8M(pg1: SvboolT, op11: Svint8T, imm2: Int): Svint8T = null as Svint8T
+    run {
+        check(1 <= imm2 && imm2 <= 8) { "IMM2 is not in range 1-8" }
+    }
+    return svrshrNU8M(pg, op1.asSigned(), imm2).asUnsigned()
+}
+
+/**
+ * Rounding shift right
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshr[_n_u8]_x)
+ */
+public fun svrshrNU8X(pg: SvboolT, op1: Svuint8T, imm2: Int): Svuint8T = svrshrNU8M(pg, op1, imm2)
+
+/**
+ * Rounding shift right
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshr[_n_u8]_z)
+ */
+public fun svrshrNU8Z(pg: SvboolT, op1: Svuint8T, imm2: Int): Svuint8T = svrshrNU8M(pg, svselU8(pg, op1, svdupNU8(0u)), imm2)
+
+/**
+ * Rounding shift right
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshr[_n_u16]_m)
+ */
+public fun svrshrNU16M(pg: SvboolT, op1: Svuint16T, imm2: Int): Svuint16T {
+    fun svrshrNU16M(pg1: Svbool8T, op11: Svint16T, imm2: Int): Svint16T = null as Svint16T
+    run {
+        check(1 <= imm2 && imm2 <= 16) { "IMM2 is not in range 1-16" }
+    }
+    return svrshrNU16M(pg.sveInto(), op1.asSigned(), imm2).asUnsigned()
+}
+
+/**
+ * Rounding shift right
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshr[_n_u16]_x)
+ */
+public fun svrshrNU16X(pg: SvboolT, op1: Svuint16T, imm2: Int): Svuint16T = svrshrNU16M(pg, op1, imm2)
+
+/**
+ * Rounding shift right
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshr[_n_u16]_z)
+ */
+public fun svrshrNU16Z(pg: SvboolT, op1: Svuint16T, imm2: Int): Svuint16T = svrshrNU16M(pg, svselU16(pg, op1, svdupNU16(0u)), imm2)
+
+/**
+ * Rounding shift right
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshr[_n_u32]_m)
+ */
+public fun svrshrNU32M(pg: SvboolT, op1: Svuint32T, imm2: Int): Svuint32T {
+    fun svrshrNU32M(pg1: Svbool4T, op11: Svint32T, imm2: Int): Svint32T = null as Svint32T
+    run {
+        check(1 <= imm2 && imm2 <= 32) { "IMM2 is not in range 1-32" }
+    }
+    return svrshrNU32M(pg.sveInto(), op1.asSigned(), imm2).asUnsigned()
+}
+
+/**
+ * Rounding shift right
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshr[_n_u32]_x)
+ */
+public fun svrshrNU32X(pg: SvboolT, op1: Svuint32T, imm2: Int): Svuint32T = svrshrNU32M(pg, op1, imm2)
+
+/**
+ * Rounding shift right
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshr[_n_u32]_z)
+ */
+public fun svrshrNU32Z(pg: SvboolT, op1: Svuint32T, imm2: Int): Svuint32T = svrshrNU32M(pg, svselU32(pg, op1, svdupNU32(0u)), imm2)
+
+/**
+ * Rounding shift right
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshr[_n_u64]_m)
+ */
+public fun svrshrNU64M(pg: SvboolT, op1: Svuint64T, imm2: Int): Svuint64T {
+    fun svrshrNU64M(pg1: Svbool2T, op11: Svint64T, imm2: Int): Svint64T = null as Svint64T
+    run {
+        check(1 <= imm2 && imm2 <= 64) { "IMM2 is not in range 1-64" }
+    }
+    return svrshrNU64M(pg.sveInto(), op1.asSigned(), imm2).asUnsigned()
+}
+
+/**
+ * Rounding shift right
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshr[_n_u64]_x)
+ */
+public fun svrshrNU64X(pg: SvboolT, op1: Svuint64T, imm2: Int): Svuint64T = svrshrNU64M(pg, op1, imm2)
+
+/**
+ * Rounding shift right
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshr[_n_u64]_z)
+ */
+public fun svrshrNU64Z(pg: SvboolT, op1: Svuint64T, imm2: Int): Svuint64T = svrshrNU64M(pg, svselU64(pg, op1, svdupNU64(0uL)), imm2)
+
+/**
+ * Rounding shift right narrow (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshrnb[_n_s16])
+ */
+public fun svrshrnbNS16(op1: Svint16T, imm2: Int): Svint8T {
+    fun svrshrnbNS16(op11: Svint16T, imm2: Int): Svint8T = null as Svint8T
+    run {
+        check(1 <= imm2 && imm2 <= 8) { "IMM2 is not in range 1-8" }
+    }
+    return svrshrnbNS16(op1, imm2)
+}
+
+/**
+ * Rounding shift right narrow (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshrnb[_n_s32])
+ */
+public fun svrshrnbNS32(op1: Svint32T, imm2: Int): Svint16T {
+    fun svrshrnbNS32(op11: Svint32T, imm2: Int): Svint16T = null as Svint16T
+    run {
+        check(1 <= imm2 && imm2 <= 16) { "IMM2 is not in range 1-16" }
+    }
+    return svrshrnbNS32(op1, imm2)
+}
+
+/**
+ * Rounding shift right narrow (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshrnb[_n_s64])
+ */
+public fun svrshrnbNS64(op1: Svint64T, imm2: Int): Svint32T {
+    fun svrshrnbNS64(op11: Svint64T, imm2: Int): Svint32T = null as Svint32T
+    run {
+        check(1 <= imm2 && imm2 <= 32) { "IMM2 is not in range 1-32" }
+    }
+    return svrshrnbNS64(op1, imm2)
+}
+
+/**
+ * Rounding shift right narrow (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshrnb[_n_u16])
+ */
+public fun svrshrnbNU16(op1: Svuint16T, imm2: Int): Svuint8T {
+    run {
+        check(1 <= imm2 && imm2 <= 8) { "IMM2 is not in range 1-8" }
+    }
+    return svrshrnbNS16(op1.asSigned(), imm2).asUnsigned()
+}
+
+/**
+ * Rounding shift right narrow (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshrnb[_n_u32])
+ */
+public fun svrshrnbNU32(op1: Svuint32T, imm2: Int): Svuint16T {
+    run {
+        check(1 <= imm2 && imm2 <= 16) { "IMM2 is not in range 1-16" }
+    }
+    return svrshrnbNS32(op1.asSigned(), imm2).asUnsigned()
+}
+
+/**
+ * Rounding shift right narrow (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshrnb[_n_u64])
+ */
+public fun svrshrnbNU64(op1: Svuint64T, imm2: Int): Svuint32T {
+    run {
+        check(1 <= imm2 && imm2 <= 32) { "IMM2 is not in range 1-32" }
+    }
+    return svrshrnbNS64(op1.asSigned(), imm2).asUnsigned()
+}
+
+/**
+ * Rounding shift right narrow (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshrnt[_n_s16])
+ */
+public fun svrshrntNS16(even: Svint8T, op1: Svint16T, imm2: Int): Svint8T {
+    fun svrshrntNS16(even1: Svint8T, op11: Svint16T, imm2: Int): Svint8T = null as Svint8T
+    run {
+        check(1 <= imm2 && imm2 <= 8) { "IMM2 is not in range 1-8" }
+    }
+    return svrshrntNS16(even, op1, imm2)
+}
+
+/**
+ * Rounding shift right narrow (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshrnt[_n_s32])
+ */
+public fun svrshrntNS32(even: Svint16T, op1: Svint32T, imm2: Int): Svint16T {
+    fun svrshrntNS32(even1: Svint16T, op11: Svint32T, imm2: Int): Svint16T = null as Svint16T
+    run {
+        check(1 <= imm2 && imm2 <= 16) { "IMM2 is not in range 1-16" }
+    }
+    return svrshrntNS32(even, op1, imm2)
+}
+
+/**
+ * Rounding shift right narrow (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshrnt[_n_s64])
+ */
+public fun svrshrntNS64(even: Svint32T, op1: Svint64T, imm2: Int): Svint32T {
+    fun svrshrntNS64(even1: Svint32T, op11: Svint64T, imm2: Int): Svint32T = null as Svint32T
+    run {
+        check(1 <= imm2 && imm2 <= 32) { "IMM2 is not in range 1-32" }
+    }
+    return svrshrntNS64(even, op1, imm2)
+}
+
+/**
+ * Rounding shift right narrow (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshrnt[_n_u16])
+ */
+public fun svrshrntNU16(even: Svuint8T, op1: Svuint16T, imm2: Int): Svuint8T {
+    run {
+        check(1 <= imm2 && imm2 <= 8) { "IMM2 is not in range 1-8" }
+    }
+    return svrshrntNS16(even.asSigned(), op1.asSigned(), imm2).asUnsigned()
+}
+
+/**
+ * Rounding shift right narrow (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshrnt[_n_u32])
+ */
+public fun svrshrntNU32(even: Svuint16T, op1: Svuint32T, imm2: Int): Svuint16T {
+    run {
+        check(1 <= imm2 && imm2 <= 16) { "IMM2 is not in range 1-16" }
+    }
+    return svrshrntNS32(even.asSigned(), op1.asSigned(), imm2).asUnsigned()
+}
+
+/**
+ * Rounding shift right narrow (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshrnt[_n_u64])
+ */
+public fun svrshrntNU64(even: Svuint32T, op1: Svuint64T, imm2: Int): Svuint32T {
+    run {
+        check(1 <= imm2 && imm2 <= 32) { "IMM2 is not in range 1-32" }
+    }
+    return svrshrntNS64(even.asSigned(), op1.asSigned(), imm2).asUnsigned()
+}
+
+/**
+ * Reciprocal square root estimate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrsqrte[_u32]_m)
+ */
+public fun svrsqrteU32M(inactive: Svuint32T, pg: SvboolT, op: Svuint32T): Svuint32T {
+    fun svrsqrteU32M(inactive1: Svint32T, pg1: Svbool4T, op1: Svint32T): Svint32T = null as Svint32T
+    return svrsqrteU32M(inactive.asSigned(), pg.sveInto(), op.asSigned()).asUnsigned()
+}
+
+/**
+ * Reciprocal square root estimate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrsqrte[_u32]_x)
+ */
+public fun svrsqrteU32X(pg: SvboolT, op: Svuint32T): Svuint32T = svrsqrteU32M(op, pg, op)
+
+/**
+ * Reciprocal square root estimate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrsqrte[_u32]_z)
+ */
+public fun svrsqrteU32Z(pg: SvboolT, op: Svuint32T): Svuint32T = svrsqrteU32M(svdupNU32(0u), pg, op)
+
+/**
+ * Rounding shift right and accumulate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrsra[_n_s8])
+ */
+public fun svrsraNS8(op1: Svint8T, op2: Svint8T, imm3: Int): Svint8T {
+    fun svrsraNS8(op11: Svint8T, op21: Svint8T, imm3: Int): Svint8T = null as Svint8T
+    run {
+        check(1 <= imm3 && imm3 <= 8) { "IMM3 is not in range 1-8" }
+    }
+    return svrsraNS8(op1, op2, imm3)
+}
+
+/**
+ * Rounding shift right and accumulate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrsra[_n_s16])
+ */
+public fun svrsraNS16(op1: Svint16T, op2: Svint16T, imm3: Int): Svint16T {
+    fun svrsraNS16(op11: Svint16T, op21: Svint16T, imm3: Int): Svint16T = null as Svint16T
+    run {
+        check(1 <= imm3 && imm3 <= 16) { "IMM3 is not in range 1-16" }
+    }
+    return svrsraNS16(op1, op2, imm3)
+}
+
+/**
+ * Rounding shift right and accumulate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrsra[_n_s32])
+ */
+public fun svrsraNS32(op1: Svint32T, op2: Svint32T, imm3: Int): Svint32T {
+    fun svrsraNS32(op11: Svint32T, op21: Svint32T, imm3: Int): Svint32T = null as Svint32T
+    run {
+        check(1 <= imm3 && imm3 <= 32) { "IMM3 is not in range 1-32" }
+    }
+    return svrsraNS32(op1, op2, imm3)
+}
+
+/**
+ * Rounding shift right and accumulate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrsra[_n_s64])
+ */
+public fun svrsraNS64(op1: Svint64T, op2: Svint64T, imm3: Int): Svint64T {
+    fun svrsraNS64(op11: Svint64T, op21: Svint64T, imm3: Int): Svint64T = null as Svint64T
+    run {
+        check(1 <= imm3 && imm3 <= 64) { "IMM3 is not in range 1-64" }
+    }
+    return svrsraNS64(op1, op2, imm3)
+}
+
+/**
+ * Rounding shift right and accumulate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrsra[_n_u8])
+ */
+public fun svrsraNU8(op1: Svuint8T, op2: Svuint8T, imm3: Int): Svuint8T {
+    fun svrsraNU8(op11: Svint8T, op21: Svint8T, imm3: Int): Svint8T = null as Svint8T
+    run {
+        check(1 <= imm3 && imm3 <= 8) { "IMM3 is not in range 1-8" }
+    }
+    return svrsraNU8(op1.asSigned(), op2.asSigned(), imm3).asUnsigned()
+}
+
+/**
+ * Rounding shift right and accumulate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrsra[_n_u16])
+ */
+public fun svrsraNU16(op1: Svuint16T, op2: Svuint16T, imm3: Int): Svuint16T {
+    fun svrsraNU16(op11: Svint16T, op21: Svint16T, imm3: Int): Svint16T = null as Svint16T
+    run {
+        check(1 <= imm3 && imm3 <= 16) { "IMM3 is not in range 1-16" }
+    }
+    return svrsraNU16(op1.asSigned(), op2.asSigned(), imm3).asUnsigned()
+}
+
+/**
+ * Rounding shift right and accumulate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrsra[_n_u32])
+ */
+public fun svrsraNU32(op1: Svuint32T, op2: Svuint32T, imm3: Int): Svuint32T {
+    fun svrsraNU32(op11: Svint32T, op21: Svint32T, imm3: Int): Svint32T = null as Svint32T
+    run {
+        check(1 <= imm3 && imm3 <= 32) { "IMM3 is not in range 1-32" }
+    }
+    return svrsraNU32(op1.asSigned(), op2.asSigned(), imm3).asUnsigned()
+}
+
+/**
+ * Rounding shift right and accumulate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrsra[_n_u64])
+ */
+public fun svrsraNU64(op1: Svuint64T, op2: Svuint64T, imm3: Int): Svuint64T {
+    fun svrsraNU64(op11: Svint64T, op21: Svint64T, imm3: Int): Svint64T = null as Svint64T
+    run {
+        check(1 <= imm3 && imm3 <= 64) { "IMM3 is not in range 1-64" }
+    }
+    return svrsraNU64(op1.asSigned(), op2.asSigned(), imm3).asUnsigned()
+}
+
+/**
+ * Rounding subtract narrow high part (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrsubhnb[_s16])
+ */
+public fun svrsubhnbS16(op1: Svint16T, op2: Svint16T): Svint8T {
+    fun svrsubhnbS16(op11: Svint16T, op21: Svint16T): Svint8T = null as Svint8T
+    return svrsubhnbS16(op1, op2)
+}
+
+/**
+ * Rounding subtract narrow high part (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrsubhnb[_n_s16])
+ */
+public fun svrsubhnbNS16(op1: Svint16T, op2: Short): Svint8T = svrsubhnbS16(op1, svdupNS16(op2))
+
+/**
+ * Rounding subtract narrow high part (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrsubhnb[_s32])
+ */
+public fun svrsubhnbS32(op1: Svint32T, op2: Svint32T): Svint16T {
+    fun svrsubhnbS32(op11: Svint32T, op21: Svint32T): Svint16T = null as Svint16T
+    return svrsubhnbS32(op1, op2)
+}
+
+/**
+ * Rounding subtract narrow high part (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrsubhnb[_n_s32])
+ */
+public fun svrsubhnbNS32(op1: Svint32T, op2: Int): Svint16T = svrsubhnbS32(op1, svdupNS32(op2))
+
+/**
+ * Rounding subtract narrow high part (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrsubhnb[_s64])
+ */
+public fun svrsubhnbS64(op1: Svint64T, op2: Svint64T): Svint32T {
+    fun svrsubhnbS64(op11: Svint64T, op21: Svint64T): Svint32T = null as Svint32T
+    return svrsubhnbS64(op1, op2)
+}
+
+/**
+ * Rounding subtract narrow high part (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrsubhnb[_n_s64])
+ */
+public fun svrsubhnbNS64(op1: Svint64T, op2: Long): Svint32T = svrsubhnbS64(op1, svdupNS64(op2))
+
+/**
+ * Rounding subtract narrow high part (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrsubhnb[_u16])
+ */
+public fun svrsubhnbU16(op1: Svuint16T, op2: Svuint16T): Svuint8T = svrsubhnbS16(op1.asSigned(), op2.asSigned()).asUnsigned()
+
+/**
+ * Rounding subtract narrow high part (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrsubhnb[_n_u16])
+ */
+public fun svrsubhnbNU16(op1: Svuint16T, op2: UShort): Svuint8T = svrsubhnbU16(op1, svdupNU16(op2))
+
+/**
+ * Rounding subtract narrow high part (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrsubhnb[_u32])
+ */
+public fun svrsubhnbU32(op1: Svuint32T, op2: Svuint32T): Svuint16T = svrsubhnbS32(op1.asSigned(), op2.asSigned()).asUnsigned()
+
+/**
+ * Rounding subtract narrow high part (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrsubhnb[_n_u32])
+ */
+public fun svrsubhnbNU32(op1: Svuint32T, op2: UInt): Svuint16T = svrsubhnbU32(op1, svdupNU32(op2))
+
+/**
+ * Rounding subtract narrow high part (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrsubhnb[_u64])
+ */
+public fun svrsubhnbU64(op1: Svuint64T, op2: Svuint64T): Svuint32T = svrsubhnbS64(op1.asSigned(), op2.asSigned()).asUnsigned()
+
+/**
+ * Rounding subtract narrow high part (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrsubhnb[_n_u64])
+ */
+public fun svrsubhnbNU64(op1: Svuint64T, op2: ULong): Svuint32T = svrsubhnbU64(op1, svdupNU64(op2))
+
+/**
+ * Rounding subtract narrow high part (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrsubhnt[_s16])
+ */
+public fun svrsubhntS16(even: Svint8T, op1: Svint16T, op2: Svint16T): Svint8T {
+    fun svrsubhntS16(even1: Svint8T, op11: Svint16T, op21: Svint16T): Svint8T = null as Svint8T
+    return svrsubhntS16(even, op1, op2)
+}
+
+/**
+ * Rounding subtract narrow high part (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrsubhnt[_n_s16])
+ */
+public fun svrsubhntNS16(even: Svint8T, op1: Svint16T, op2: Short): Svint8T = svrsubhntS16(even, op1, svdupNS16(op2))
+
+/**
+ * Rounding subtract narrow high part (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrsubhnt[_s32])
+ */
+public fun svrsubhntS32(even: Svint16T, op1: Svint32T, op2: Svint32T): Svint16T {
+    fun svrsubhntS32(even1: Svint16T, op11: Svint32T, op21: Svint32T): Svint16T = null as Svint16T
+    return svrsubhntS32(even, op1, op2)
+}
+
+/**
+ * Rounding subtract narrow high part (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrsubhnt[_n_s32])
+ */
+public fun svrsubhntNS32(even: Svint16T, op1: Svint32T, op2: Int): Svint16T = svrsubhntS32(even, op1, svdupNS32(op2))
+
+/**
+ * Rounding subtract narrow high part (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrsubhnt[_s64])
+ */
+public fun svrsubhntS64(even: Svint32T, op1: Svint64T, op2: Svint64T): Svint32T {
+    fun svrsubhntS64(even1: Svint32T, op11: Svint64T, op21: Svint64T): Svint32T = null as Svint32T
+    return svrsubhntS64(even, op1, op2)
+}
+
+/**
+ * Rounding subtract narrow high part (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrsubhnt[_n_s64])
+ */
+public fun svrsubhntNS64(even: Svint32T, op1: Svint64T, op2: Long): Svint32T = svrsubhntS64(even, op1, svdupNS64(op2))
+
+/**
+ * Rounding subtract narrow high part (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrsubhnt[_u16])
+ */
+public fun svrsubhntU16(even: Svuint8T, op1: Svuint16T, op2: Svuint16T): Svuint8T = svrsubhntS16(even.asSigned(), op1.asSigned(), op2.asSigned()).asUnsigned()
+
+/**
+ * Rounding subtract narrow high part (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrsubhnt[_n_u16])
+ */
+public fun svrsubhntNU16(even: Svuint8T, op1: Svuint16T, op2: UShort): Svuint8T = svrsubhntU16(even, op1, svdupNU16(op2))
+
+/**
+ * Rounding subtract narrow high part (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrsubhnt[_u32])
+ */
+public fun svrsubhntU32(even: Svuint16T, op1: Svuint32T, op2: Svuint32T): Svuint16T = svrsubhntS32(even.asSigned(), op1.asSigned(), op2.asSigned()).asUnsigned()
+
+/**
+ * Rounding subtract narrow high part (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrsubhnt[_n_u32])
+ */
+public fun svrsubhntNU32(even: Svuint16T, op1: Svuint32T, op2: UInt): Svuint16T = svrsubhntU32(even, op1, svdupNU32(op2))
+
+/**
+ * Rounding subtract narrow high part (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrsubhnt[_u64])
+ */
+public fun svrsubhntU64(even: Svuint32T, op1: Svuint64T, op2: Svuint64T): Svuint32T = svrsubhntS64(even.asSigned(), op1.asSigned(), op2.asSigned()).asUnsigned()
+
+/**
+ * Rounding subtract narrow high part (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrsubhnt[_n_u64])
+ */
+public fun svrsubhntNU64(even: Svuint32T, op1: Svuint64T, op2: ULong): Svuint32T = svrsubhntU64(even, op1, svdupNU64(op2))
+
+/**
+ * Subtract with borrow long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsbclb[_u32])
+ */
+public fun svsbclbU32(op1: Svuint32T, op2: Svuint32T, op3: Svuint32T): Svuint32T {
+    fun svsbclbU32(op11: Svint32T, op21: Svint32T, op31: Svint32T): Svint32T = null as Svint32T
+    return svsbclbU32(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
+}
+
+/**
+ * Subtract with borrow long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsbclb[_n_u32])
+ */
+public fun svsbclbNU32(op1: Svuint32T, op2: Svuint32T, op3: UInt): Svuint32T = svsbclbU32(op1, op2, svdupNU32(op3))
+
+/**
+ * Subtract with borrow long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsbclb[_u64])
+ */
+public fun svsbclbU64(op1: Svuint64T, op2: Svuint64T, op3: Svuint64T): Svuint64T {
+    fun svsbclbU64(op11: Svint64T, op21: Svint64T, op31: Svint64T): Svint64T = null as Svint64T
+    return svsbclbU64(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
+}
+
+/**
+ * Subtract with borrow long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsbclb[_n_u64])
+ */
+public fun svsbclbNU64(op1: Svuint64T, op2: Svuint64T, op3: ULong): Svuint64T = svsbclbU64(op1, op2, svdupNU64(op3))
+
+/**
+ * Subtract with borrow long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsbclt[_u32])
+ */
+public fun svsbcltU32(op1: Svuint32T, op2: Svuint32T, op3: Svuint32T): Svuint32T {
+    fun svsbcltU32(op11: Svint32T, op21: Svint32T, op31: Svint32T): Svint32T = null as Svint32T
+    return svsbcltU32(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
+}
+
+/**
+ * Subtract with borrow long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsbclt[_n_u32])
+ */
+public fun svsbcltNU32(op1: Svuint32T, op2: Svuint32T, op3: UInt): Svuint32T = svsbcltU32(op1, op2, svdupNU32(op3))
+
+/**
+ * Subtract with borrow long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsbclt[_u64])
+ */
+public fun svsbcltU64(op1: Svuint64T, op2: Svuint64T, op3: Svuint64T): Svuint64T {
+    fun svsbcltU64(op11: Svint64T, op21: Svint64T, op31: Svint64T): Svint64T = null as Svint64T
+    return svsbcltU64(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
+}
+
+/**
+ * Subtract with borrow long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsbclt[_n_u64])
+ */
+public fun svsbcltNU64(op1: Svuint64T, op2: Svuint64T, op3: ULong): Svuint64T = svsbcltU64(op1, op2, svdupNU64(op3))
+
+/**
+ * Shift left long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svshllb[_n_s16])
+ */
+public fun svshllbNS16(op1: Svint8T, imm2: Int): Svint16T {
+    fun svshllbNS16(op11: Svint8T, imm2: Int): Svint16T = null as Svint16T
+    run {
+        check(0 <= imm2 && imm2 <= 7) { "IMM2 is not in range 0-7" }
+    }
+    return svshllbNS16(op1, imm2)
+}
+
+/**
+ * Shift left long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svshllb[_n_s32])
+ */
+public fun svshllbNS32(op1: Svint16T, imm2: Int): Svint32T {
+    fun svshllbNS32(op11: Svint16T, imm2: Int): Svint32T = null as Svint32T
+    run {
+        check(0 <= imm2 && imm2 <= 15) { "IMM2 is not in range 0-15" }
+    }
+    return svshllbNS32(op1, imm2)
+}
+
+/**
+ * Shift left long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svshllb[_n_s64])
+ */
+public fun svshllbNS64(op1: Svint32T, imm2: Int): Svint64T {
+    fun svshllbNS64(op11: Svint32T, imm2: Int): Svint64T = null as Svint64T
+    run {
+        check(0 <= imm2 && imm2 <= 31) { "IMM2 is not in range 0-31" }
+    }
+    return svshllbNS64(op1, imm2)
+}
+
+/**
+ * Shift left long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svshllb[_n_u16])
+ */
+public fun svshllbNU16(op1: Svuint8T, imm2: Int): Svuint16T {
+    fun svshllbNU16(op11: Svint8T, imm2: Int): Svint16T = null as Svint16T
+    run {
+        check(0 <= imm2 && imm2 <= 7) { "IMM2 is not in range 0-7" }
+    }
+    return svshllbNU16(op1.asSigned(), imm2).asUnsigned()
+}
+
+/**
+ * Shift left long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svshllb[_n_u32])
+ */
+public fun svshllbNU32(op1: Svuint16T, imm2: Int): Svuint32T {
+    fun svshllbNU32(op11: Svint16T, imm2: Int): Svint32T = null as Svint32T
+    run {
+        check(0 <= imm2 && imm2 <= 15) { "IMM2 is not in range 0-15" }
+    }
+    return svshllbNU32(op1.asSigned(), imm2).asUnsigned()
+}
+
+/**
+ * Shift left long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svshllb[_n_u64])
+ */
+public fun svshllbNU64(op1: Svuint32T, imm2: Int): Svuint64T {
+    fun svshllbNU64(op11: Svint32T, imm2: Int): Svint64T = null as Svint64T
+    run {
+        check(0 <= imm2 && imm2 <= 31) { "IMM2 is not in range 0-31" }
+    }
+    return svshllbNU64(op1.asSigned(), imm2).asUnsigned()
+}
+
+/**
+ * Shift left long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svshllt[_n_s16])
+ */
+public fun svshlltNS16(op1: Svint8T, imm2: Int): Svint16T {
+    fun svshlltNS16(op11: Svint8T, imm2: Int): Svint16T = null as Svint16T
+    run {
+        check(0 <= imm2 && imm2 <= 7) { "IMM2 is not in range 0-7" }
+    }
+    return svshlltNS16(op1, imm2)
+}
+
+/**
+ * Shift left long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svshllt[_n_s32])
+ */
+public fun svshlltNS32(op1: Svint16T, imm2: Int): Svint32T {
+    fun svshlltNS32(op11: Svint16T, imm2: Int): Svint32T = null as Svint32T
+    run {
+        check(0 <= imm2 && imm2 <= 15) { "IMM2 is not in range 0-15" }
+    }
+    return svshlltNS32(op1, imm2)
+}
+
+/**
+ * Shift left long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svshllt[_n_s64])
+ */
+public fun svshlltNS64(op1: Svint32T, imm2: Int): Svint64T {
+    fun svshlltNS64(op11: Svint32T, imm2: Int): Svint64T = null as Svint64T
+    run {
+        check(0 <= imm2 && imm2 <= 31) { "IMM2 is not in range 0-31" }
+    }
+    return svshlltNS64(op1, imm2)
+}
+
+/**
+ * Shift left long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svshllt[_n_u16])
+ */
+public fun svshlltNU16(op1: Svuint8T, imm2: Int): Svuint16T {
+    fun svshlltNU16(op11: Svint8T, imm2: Int): Svint16T = null as Svint16T
+    run {
+        check(0 <= imm2 && imm2 <= 7) { "IMM2 is not in range 0-7" }
+    }
+    return svshlltNU16(op1.asSigned(), imm2).asUnsigned()
+}
+
+/**
+ * Shift left long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svshllt[_n_u32])
+ */
+public fun svshlltNU32(op1: Svuint16T, imm2: Int): Svuint32T {
+    fun svshlltNU32(op11: Svint16T, imm2: Int): Svint32T = null as Svint32T
+    run {
+        check(0 <= imm2 && imm2 <= 15) { "IMM2 is not in range 0-15" }
+    }
+    return svshlltNU32(op1.asSigned(), imm2).asUnsigned()
+}
+
+/**
+ * Shift left long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svshllt[_n_u64])
+ */
+public fun svshlltNU64(op1: Svuint32T, imm2: Int): Svuint64T {
+    fun svshlltNU64(op11: Svint32T, imm2: Int): Svint64T = null as Svint64T
+    run {
+        check(0 <= imm2 && imm2 <= 31) { "IMM2 is not in range 0-31" }
+    }
+    return svshlltNU64(op1.asSigned(), imm2).asUnsigned()
+}
+
+/**
+ * Shift right narrow (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svshrnb[_n_s16])
+ */
+public fun svshrnbNS16(op1: Svint16T, imm2: Int): Svint8T {
+    fun svshrnbNS16(op11: Svint16T, imm2: Int): Svint8T = null as Svint8T
+    run {
+        check(1 <= imm2 && imm2 <= 8) { "IMM2 is not in range 1-8" }
+    }
+    return svshrnbNS16(op1, imm2)
+}
+
+/**
+ * Shift right narrow (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svshrnb[_n_s32])
+ */
+public fun svshrnbNS32(op1: Svint32T, imm2: Int): Svint16T {
+    fun svshrnbNS32(op11: Svint32T, imm2: Int): Svint16T = null as Svint16T
+    run {
+        check(1 <= imm2 && imm2 <= 16) { "IMM2 is not in range 1-16" }
+    }
+    return svshrnbNS32(op1, imm2)
+}
+
+/**
+ * Shift right narrow (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svshrnb[_n_s64])
+ */
+public fun svshrnbNS64(op1: Svint64T, imm2: Int): Svint32T {
+    fun svshrnbNS64(op11: Svint64T, imm2: Int): Svint32T = null as Svint32T
+    run {
+        check(1 <= imm2 && imm2 <= 32) { "IMM2 is not in range 1-32" }
+    }
+    return svshrnbNS64(op1, imm2)
+}
+
+/**
+ * Shift right narrow (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svshrnb[_n_u16])
+ */
+public fun svshrnbNU16(op1: Svuint16T, imm2: Int): Svuint8T {
+    run {
+        check(1 <= imm2 && imm2 <= 8) { "IMM2 is not in range 1-8" }
+    }
+    return svshrnbNS16(op1.asSigned(), imm2).asUnsigned()
+}
+
+/**
+ * Shift right narrow (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svshrnb[_n_u32])
+ */
+public fun svshrnbNU32(op1: Svuint32T, imm2: Int): Svuint16T {
+    run {
+        check(1 <= imm2 && imm2 <= 16) { "IMM2 is not in range 1-16" }
+    }
+    return svshrnbNS32(op1.asSigned(), imm2).asUnsigned()
+}
+
+/**
+ * Shift right narrow (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svshrnb[_n_u64])
+ */
+public fun svshrnbNU64(op1: Svuint64T, imm2: Int): Svuint32T {
+    run {
+        check(1 <= imm2 && imm2 <= 32) { "IMM2 is not in range 1-32" }
+    }
+    return svshrnbNS64(op1.asSigned(), imm2).asUnsigned()
+}
+
+/**
+ * Shift right narrow (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svshrnt[_n_s16])
+ */
+public fun svshrntNS16(even: Svint8T, op1: Svint16T, imm2: Int): Svint8T {
+    fun svshrntNS16(even1: Svint8T, op11: Svint16T, imm2: Int): Svint8T = null as Svint8T
+    run {
+        check(1 <= imm2 && imm2 <= 8) { "IMM2 is not in range 1-8" }
+    }
+    return svshrntNS16(even, op1, imm2)
+}
+
+/**
+ * Shift right narrow (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svshrnt[_n_s32])
+ */
+public fun svshrntNS32(even: Svint16T, op1: Svint32T, imm2: Int): Svint16T {
+    fun svshrntNS32(even1: Svint16T, op11: Svint32T, imm2: Int): Svint16T = null as Svint16T
+    run {
+        check(1 <= imm2 && imm2 <= 16) { "IMM2 is not in range 1-16" }
+    }
+    return svshrntNS32(even, op1, imm2)
+}
+
+/**
+ * Shift right narrow (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svshrnt[_n_s64])
+ */
+public fun svshrntNS64(even: Svint32T, op1: Svint64T, imm2: Int): Svint32T {
+    fun svshrntNS64(even1: Svint32T, op11: Svint64T, imm2: Int): Svint32T = null as Svint32T
+    run {
+        check(1 <= imm2 && imm2 <= 32) { "IMM2 is not in range 1-32" }
+    }
+    return svshrntNS64(even, op1, imm2)
+}
+
+/**
+ * Shift right narrow (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svshrnt[_n_u16])
+ */
+public fun svshrntNU16(even: Svuint8T, op1: Svuint16T, imm2: Int): Svuint8T {
+    run {
+        check(1 <= imm2 && imm2 <= 8) { "IMM2 is not in range 1-8" }
+    }
+    return svshrntNS16(even.asSigned(), op1.asSigned(), imm2).asUnsigned()
+}
+
+/**
+ * Shift right narrow (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svshrnt[_n_u32])
+ */
+public fun svshrntNU32(even: Svuint16T, op1: Svuint32T, imm2: Int): Svuint16T {
+    run {
+        check(1 <= imm2 && imm2 <= 16) { "IMM2 is not in range 1-16" }
+    }
+    return svshrntNS32(even.asSigned(), op1.asSigned(), imm2).asUnsigned()
+}
+
+/**
+ * Shift right narrow (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svshrnt[_n_u64])
+ */
+public fun svshrntNU64(even: Svuint32T, op1: Svuint64T, imm2: Int): Svuint32T {
+    run {
+        check(1 <= imm2 && imm2 <= 32) { "IMM2 is not in range 1-32" }
+    }
+    return svshrntNS64(even.asSigned(), op1.asSigned(), imm2).asUnsigned()
+}
+
+/**
+ * Shift left and insert
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsli[_n_s8])
+ */
+public fun svsliNS8(op1: Svint8T, op2: Svint8T, imm3: Int): Svint8T {
+    fun svsliNS8(op11: Svint8T, op21: Svint8T, imm3: Int): Svint8T = null as Svint8T
+    run {
+        check(0 <= imm3 && imm3 <= 7) { "IMM3 is not in range 0-7" }
+    }
+    return svsliNS8(op1, op2, imm3)
+}
+
+/**
+ * Shift left and insert
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsli[_n_s16])
+ */
+public fun svsliNS16(op1: Svint16T, op2: Svint16T, imm3: Int): Svint16T {
+    fun svsliNS16(op11: Svint16T, op21: Svint16T, imm3: Int): Svint16T = null as Svint16T
+    run {
+        check(0 <= imm3 && imm3 <= 15) { "IMM3 is not in range 0-15" }
+    }
+    return svsliNS16(op1, op2, imm3)
+}
+
+/**
+ * Shift left and insert
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsli[_n_s32])
+ */
+public fun svsliNS32(op1: Svint32T, op2: Svint32T, imm3: Int): Svint32T {
+    fun svsliNS32(op11: Svint32T, op21: Svint32T, imm3: Int): Svint32T = null as Svint32T
+    run {
+        check(0 <= imm3 && imm3 <= 31) { "IMM3 is not in range 0-31" }
+    }
+    return svsliNS32(op1, op2, imm3)
+}
+
+/**
+ * Shift left and insert
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsli[_n_s64])
+ */
+public fun svsliNS64(op1: Svint64T, op2: Svint64T, imm3: Int): Svint64T {
+    fun svsliNS64(op11: Svint64T, op21: Svint64T, imm3: Int): Svint64T = null as Svint64T
+    run {
+        check(0 <= imm3 && imm3 <= 63) { "IMM3 is not in range 0-63" }
+    }
+    return svsliNS64(op1, op2, imm3)
+}
+
+/**
+ * Shift left and insert
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsli[_n_u8])
+ */
+public fun svsliNU8(op1: Svuint8T, op2: Svuint8T, imm3: Int): Svuint8T {
+    run {
+        check(0 <= imm3 && imm3 <= 7) { "IMM3 is not in range 0-7" }
+    }
+    return svsliNS8(op1.asSigned(), op2.asSigned(), imm3).asUnsigned()
+}
+
+/**
+ * Shift left and insert
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsli[_n_u16])
+ */
+public fun svsliNU16(op1: Svuint16T, op2: Svuint16T, imm3: Int): Svuint16T {
+    run {
+        check(0 <= imm3 && imm3 <= 15) { "IMM3 is not in range 0-15" }
+    }
+    return svsliNS16(op1.asSigned(), op2.asSigned(), imm3).asUnsigned()
+}
+
+/**
+ * Shift left and insert
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsli[_n_u32])
+ */
+public fun svsliNU32(op1: Svuint32T, op2: Svuint32T, imm3: Int): Svuint32T {
+    run {
+        check(0 <= imm3 && imm3 <= 31) { "IMM3 is not in range 0-31" }
+    }
+    return svsliNS32(op1.asSigned(), op2.asSigned(), imm3).asUnsigned()
+}
+
+/**
+ * Shift left and insert
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsli[_n_u64])
+ */
+public fun svsliNU64(op1: Svuint64T, op2: Svuint64T, imm3: Int): Svuint64T {
+    run {
+        check(0 <= imm3 && imm3 <= 63) { "IMM3 is not in range 0-63" }
+    }
+    return svsliNS64(op1.asSigned(), op2.asSigned(), imm3).asUnsigned()
+}
+
+/**
+ * SM4 encryption and decryption
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsm4e[_u32])
+ */
+public fun svsm4eU32(op1: Svuint32T, op2: Svuint32T): Svuint32T {
+    fun svsm4eU32(op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    return svsm4eU32(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * SM4 key updates
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsm4ekey[_u32])
+ */
+public fun svsm4ekeyU32(op1: Svuint32T, op2: Svuint32T): Svuint32T {
+    fun svsm4ekeyU32(op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    return svsm4ekeyU32(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Saturating add with signed addend
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsqadd[_u8]_m)
+ */
+public fun svsqaddU8M(pg: SvboolT, op1: Svuint8T, op2: Svint8T): Svuint8T {
+    fun svsqaddU8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    return svsqaddU8M(pg, op1.asSigned(), op2).asUnsigned()
+}
+
+/**
+ * Saturating add with signed addend
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsqadd[_n_u8]_m)
+ */
+public fun svsqaddNU8M(pg: SvboolT, op1: Svuint8T, op2: Byte): Svuint8T = svsqaddU8M(pg, op1, svdupNS8(op2))
+
+/**
+ * Saturating add with signed addend
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsqadd[_u8]_x)
+ */
+public fun svsqaddU8X(pg: SvboolT, op1: Svuint8T, op2: Svint8T): Svuint8T = svsqaddU8M(pg, op1, op2)
+
+/**
+ * Saturating add with signed addend
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsqadd[_n_u8]_x)
+ */
+public fun svsqaddNU8X(pg: SvboolT, op1: Svuint8T, op2: Byte): Svuint8T = svsqaddU8X(pg, op1, svdupNS8(op2))
+
+/**
+ * Saturating add with signed addend
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsqadd[_u8]_z)
+ */
+public fun svsqaddU8Z(pg: SvboolT, op1: Svuint8T, op2: Svint8T): Svuint8T = svsqaddU8M(pg, svselU8(pg, op1, svdupNU8(0u)), op2)
+
+/**
+ * Saturating add with signed addend
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsqadd[_n_u8]_z)
+ */
+public fun svsqaddNU8Z(pg: SvboolT, op1: Svuint8T, op2: Byte): Svuint8T = svsqaddU8Z(pg, op1, svdupNS8(op2))
+
+/**
+ * Saturating add with signed addend
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsqadd[_u16]_m)
+ */
+public fun svsqaddU16M(pg: SvboolT, op1: Svuint16T, op2: Svint16T): Svuint16T {
+    fun svsqaddU16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    return svsqaddU16M(pg.sveInto(), op1.asSigned(), op2).asUnsigned()
+}
+
+/**
+ * Saturating add with signed addend
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsqadd[_n_u16]_m)
+ */
+public fun svsqaddNU16M(pg: SvboolT, op1: Svuint16T, op2: Short): Svuint16T = svsqaddU16M(pg, op1, svdupNS16(op2))
+
+/**
+ * Saturating add with signed addend
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsqadd[_u16]_x)
+ */
+public fun svsqaddU16X(pg: SvboolT, op1: Svuint16T, op2: Svint16T): Svuint16T = svsqaddU16M(pg, op1, op2)
+
+/**
+ * Saturating add with signed addend
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsqadd[_n_u16]_x)
+ */
+public fun svsqaddNU16X(pg: SvboolT, op1: Svuint16T, op2: Short): Svuint16T = svsqaddU16X(pg, op1, svdupNS16(op2))
+
+/**
+ * Saturating add with signed addend
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsqadd[_u16]_z)
+ */
+public fun svsqaddU16Z(pg: SvboolT, op1: Svuint16T, op2: Svint16T): Svuint16T = svsqaddU16M(pg, svselU16(pg, op1, svdupNU16(0u)), op2)
+
+/**
+ * Saturating add with signed addend
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsqadd[_n_u16]_z)
+ */
+public fun svsqaddNU16Z(pg: SvboolT, op1: Svuint16T, op2: Short): Svuint16T = svsqaddU16Z(pg, op1, svdupNS16(op2))
+
+/**
+ * Saturating add with signed addend
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsqadd[_u32]_m)
+ */
+public fun svsqaddU32M(pg: SvboolT, op1: Svuint32T, op2: Svint32T): Svuint32T {
+    fun svsqaddU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    return svsqaddU32M(pg.sveInto(), op1.asSigned(), op2).asUnsigned()
+}
+
+/**
+ * Saturating add with signed addend
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsqadd[_n_u32]_m)
+ */
+public fun svsqaddNU32M(pg: SvboolT, op1: Svuint32T, op2: Int): Svuint32T = svsqaddU32M(pg, op1, svdupNS32(op2))
+
+/**
+ * Saturating add with signed addend
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsqadd[_u32]_x)
+ */
+public fun svsqaddU32X(pg: SvboolT, op1: Svuint32T, op2: Svint32T): Svuint32T = svsqaddU32M(pg, op1, op2)
+
+/**
+ * Saturating add with signed addend
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsqadd[_n_u32]_x)
+ */
+public fun svsqaddNU32X(pg: SvboolT, op1: Svuint32T, op2: Int): Svuint32T = svsqaddU32X(pg, op1, svdupNS32(op2))
+
+/**
+ * Saturating add with signed addend
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsqadd[_u32]_z)
+ */
+public fun svsqaddU32Z(pg: SvboolT, op1: Svuint32T, op2: Svint32T): Svuint32T = svsqaddU32M(pg, svselU32(pg, op1, svdupNU32(0u)), op2)
+
+/**
+ * Saturating add with signed addend
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsqadd[_n_u32]_z)
+ */
+public fun svsqaddNU32Z(pg: SvboolT, op1: Svuint32T, op2: Int): Svuint32T = svsqaddU32Z(pg, op1, svdupNS32(op2))
+
+/**
+ * Saturating add with signed addend
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsqadd[_u64]_m)
+ */
+public fun svsqaddU64M(pg: SvboolT, op1: Svuint64T, op2: Svint64T): Svuint64T {
+    fun svsqaddU64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    return svsqaddU64M(pg.sveInto(), op1.asSigned(), op2).asUnsigned()
+}
+
+/**
+ * Saturating add with signed addend
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsqadd[_n_u64]_m)
+ */
+public fun svsqaddNU64M(pg: SvboolT, op1: Svuint64T, op2: Long): Svuint64T = svsqaddU64M(pg, op1, svdupNS64(op2))
+
+/**
+ * Saturating add with signed addend
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsqadd[_u64]_x)
+ */
+public fun svsqaddU64X(pg: SvboolT, op1: Svuint64T, op2: Svint64T): Svuint64T = svsqaddU64M(pg, op1, op2)
+
+/**
+ * Saturating add with signed addend
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsqadd[_n_u64]_x)
+ */
+public fun svsqaddNU64X(pg: SvboolT, op1: Svuint64T, op2: Long): Svuint64T = svsqaddU64X(pg, op1, svdupNS64(op2))
+
+/**
+ * Saturating add with signed addend
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsqadd[_u64]_z)
+ */
+public fun svsqaddU64Z(pg: SvboolT, op1: Svuint64T, op2: Svint64T): Svuint64T = svsqaddU64M(pg, svselU64(pg, op1, svdupNU64(0uL)), op2)
+
+/**
+ * Saturating add with signed addend
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsqadd[_n_u64]_z)
+ */
+public fun svsqaddNU64Z(pg: SvboolT, op1: Svuint64T, op2: Long): Svuint64T = svsqaddU64Z(pg, op1, svdupNS64(op2))
+
+/**
+ * Shift right and accumulate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsra[_n_s8])
+ */
+public fun svsraNS8(op1: Svint8T, op2: Svint8T, imm3: Int): Svint8T {
+    fun svsraNS8(op11: Svint8T, op21: Svint8T, imm3: Int): Svint8T = null as Svint8T
+    run {
+        check(1 <= imm3 && imm3 <= 8) { "IMM3 is not in range 1-8" }
+    }
+    return svsraNS8(op1, op2, imm3)
+}
+
+/**
+ * Shift right and accumulate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsra[_n_s16])
+ */
+public fun svsraNS16(op1: Svint16T, op2: Svint16T, imm3: Int): Svint16T {
+    fun svsraNS16(op11: Svint16T, op21: Svint16T, imm3: Int): Svint16T = null as Svint16T
+    run {
+        check(1 <= imm3 && imm3 <= 16) { "IMM3 is not in range 1-16" }
+    }
+    return svsraNS16(op1, op2, imm3)
+}
+
+/**
+ * Shift right and accumulate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsra[_n_s32])
+ */
+public fun svsraNS32(op1: Svint32T, op2: Svint32T, imm3: Int): Svint32T {
+    fun svsraNS32(op11: Svint32T, op21: Svint32T, imm3: Int): Svint32T = null as Svint32T
+    run {
+        check(1 <= imm3 && imm3 <= 32) { "IMM3 is not in range 1-32" }
+    }
+    return svsraNS32(op1, op2, imm3)
+}
+
+/**
+ * Shift right and accumulate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsra[_n_s64])
+ */
+public fun svsraNS64(op1: Svint64T, op2: Svint64T, imm3: Int): Svint64T {
+    fun svsraNS64(op11: Svint64T, op21: Svint64T, imm3: Int): Svint64T = null as Svint64T
+    run {
+        check(1 <= imm3 && imm3 <= 64) { "IMM3 is not in range 1-64" }
+    }
+    return svsraNS64(op1, op2, imm3)
+}
+
+/**
+ * Shift right and accumulate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsra[_n_u8])
+ */
+public fun svsraNU8(op1: Svuint8T, op2: Svuint8T, imm3: Int): Svuint8T {
+    fun svsraNU8(op11: Svint8T, op21: Svint8T, imm3: Int): Svint8T = null as Svint8T
+    run {
+        check(1 <= imm3 && imm3 <= 8) { "IMM3 is not in range 1-8" }
+    }
+    return svsraNU8(op1.asSigned(), op2.asSigned(), imm3).asUnsigned()
+}
+
+/**
+ * Shift right and accumulate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsra[_n_u16])
+ */
+public fun svsraNU16(op1: Svuint16T, op2: Svuint16T, imm3: Int): Svuint16T {
+    fun svsraNU16(op11: Svint16T, op21: Svint16T, imm3: Int): Svint16T = null as Svint16T
+    run {
+        check(1 <= imm3 && imm3 <= 16) { "IMM3 is not in range 1-16" }
+    }
+    return svsraNU16(op1.asSigned(), op2.asSigned(), imm3).asUnsigned()
+}
+
+/**
+ * Shift right and accumulate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsra[_n_u32])
+ */
+public fun svsraNU32(op1: Svuint32T, op2: Svuint32T, imm3: Int): Svuint32T {
+    fun svsraNU32(op11: Svint32T, op21: Svint32T, imm3: Int): Svint32T = null as Svint32T
+    run {
+        check(1 <= imm3 && imm3 <= 32) { "IMM3 is not in range 1-32" }
+    }
+    return svsraNU32(op1.asSigned(), op2.asSigned(), imm3).asUnsigned()
+}
+
+/**
+ * Shift right and accumulate
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsra[_n_u64])
+ */
+public fun svsraNU64(op1: Svuint64T, op2: Svuint64T, imm3: Int): Svuint64T {
+    fun svsraNU64(op11: Svint64T, op21: Svint64T, imm3: Int): Svint64T = null as Svint64T
+    run {
+        check(1 <= imm3 && imm3 <= 64) { "IMM3 is not in range 1-64" }
+    }
+    return svsraNU64(op1.asSigned(), op2.asSigned(), imm3).asUnsigned()
+}
+
+/**
+ * Shift right and insert
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsri[_n_s8])
+ */
+public fun svsriNS8(op1: Svint8T, op2: Svint8T, imm3: Int): Svint8T {
+    fun svsriNS8(op11: Svint8T, op21: Svint8T, imm3: Int): Svint8T = null as Svint8T
+    run {
+        check(1 <= imm3 && imm3 <= 8) { "IMM3 is not in range 1-8" }
+    }
+    return svsriNS8(op1, op2, imm3)
+}
+
+/**
+ * Shift right and insert
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsri[_n_s16])
+ */
+public fun svsriNS16(op1: Svint16T, op2: Svint16T, imm3: Int): Svint16T {
+    fun svsriNS16(op11: Svint16T, op21: Svint16T, imm3: Int): Svint16T = null as Svint16T
+    run {
+        check(1 <= imm3 && imm3 <= 16) { "IMM3 is not in range 1-16" }
+    }
+    return svsriNS16(op1, op2, imm3)
+}
+
+/**
+ * Shift right and insert
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsri[_n_s32])
+ */
+public fun svsriNS32(op1: Svint32T, op2: Svint32T, imm3: Int): Svint32T {
+    fun svsriNS32(op11: Svint32T, op21: Svint32T, imm3: Int): Svint32T = null as Svint32T
+    run {
+        check(1 <= imm3 && imm3 <= 32) { "IMM3 is not in range 1-32" }
+    }
+    return svsriNS32(op1, op2, imm3)
+}
+
+/**
+ * Shift right and insert
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsri[_n_s64])
+ */
+public fun svsriNS64(op1: Svint64T, op2: Svint64T, imm3: Int): Svint64T {
+    fun svsriNS64(op11: Svint64T, op21: Svint64T, imm3: Int): Svint64T = null as Svint64T
+    run {
+        check(1 <= imm3 && imm3 <= 64) { "IMM3 is not in range 1-64" }
+    }
+    return svsriNS64(op1, op2, imm3)
+}
+
+/**
+ * Shift right and insert
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsri[_n_u8])
+ */
+public fun svsriNU8(op1: Svuint8T, op2: Svuint8T, imm3: Int): Svuint8T {
+    run {
+        check(1 <= imm3 && imm3 <= 8) { "IMM3 is not in range 1-8" }
+    }
+    return svsriNS8(op1.asSigned(), op2.asSigned(), imm3).asUnsigned()
+}
+
+/**
+ * Shift right and insert
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsri[_n_u16])
+ */
+public fun svsriNU16(op1: Svuint16T, op2: Svuint16T, imm3: Int): Svuint16T {
+    run {
+        check(1 <= imm3 && imm3 <= 16) { "IMM3 is not in range 1-16" }
+    }
+    return svsriNS16(op1.asSigned(), op2.asSigned(), imm3).asUnsigned()
+}
+
+/**
+ * Shift right and insert
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsri[_n_u32])
+ */
+public fun svsriNU32(op1: Svuint32T, op2: Svuint32T, imm3: Int): Svuint32T {
+    run {
+        check(1 <= imm3 && imm3 <= 32) { "IMM3 is not in range 1-32" }
+    }
+    return svsriNS32(op1.asSigned(), op2.asSigned(), imm3).asUnsigned()
+}
+
+/**
+ * Shift right and insert
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsri[_n_u64])
+ */
+public fun svsriNU64(op1: Svuint64T, op2: Svuint64T, imm3: Int): Svuint64T {
+    run {
+        check(1 <= imm3 && imm3 <= 64) { "IMM3 is not in range 1-64" }
+    }
+    return svsriNS64(op1.asSigned(), op2.asSigned(), imm3).asUnsigned()
+}
+
+/**
+ * Non-truncating store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1_scatter_[s64]index[_f64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1ScatterS64indexF64(pg: SvboolT, base: MutPtr, indices: Svint64T, data: Svfloat64T) {
+    fun svstnt1ScatterS64indexF64(data1: Svfloat64T, pg1: Svbool2T, base1: MutPtr, indices1: Svint64T) {}
+    svstnt1ScatterS64indexF64(data, pg.sveInto(), base, indices)
+}
+
+/**
+ * Non-truncating store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1_scatter_[s64]index[_s64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1ScatterS64indexS64(pg: SvboolT, base: MutPtr, indices: Svint64T, data: Svint64T) {
+    fun svstnt1ScatterS64indexS64(data1: Svint64T, pg1: Svbool2T, base1: MutPtr, indices1: Svint64T) {}
+    svstnt1ScatterS64indexS64(data, pg.sveInto(), base, indices)
+}
+
+/**
+ * Non-truncating store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1_scatter_[s64]index[_u64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1ScatterS64indexU64(pg: SvboolT, base: MutPtr, indices: Svint64T, data: Svuint64T) {
+    svstnt1ScatterS64indexS64(pg, base.asSigned(), indices, data.asSigned())
+}
+
+/**
+ * Non-truncating store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1_scatter_[u64]index[_f64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1ScatterU64indexF64(pg: SvboolT, base: MutPtr, indices: Svuint64T, data: Svfloat64T) {
+    svstnt1ScatterS64indexF64(pg, base, indices.asSigned(), data)
+}
+
+/**
+ * Non-truncating store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1_scatter_[u64]index[_s64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1ScatterU64indexS64(pg: SvboolT, base: MutPtr, indices: Svuint64T, data: Svint64T) {
+    svstnt1ScatterS64indexS64(pg, base, indices.asSigned(), data)
+}
+
+/**
+ * Non-truncating store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1_scatter_[u64]index[_u64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1ScatterU64indexU64(pg: SvboolT, base: MutPtr, indices: Svuint64T, data: Svuint64T) {
+    svstnt1ScatterS64indexS64(pg, base.asSigned(), indices.asSigned(), data.asSigned())
+}
+
+/**
+ * Non-truncating store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1_scatter_[s64]offset[_f64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1ScatterS64offsetF64(pg: SvboolT, base: MutPtr, offsets: Svint64T, data: Svfloat64T) {
+    fun svstnt1ScatterS64offsetF64(data1: Svfloat64T, pg1: Svbool2T, base1: MutPtr, offsets1: Svint64T) {}
+    svstnt1ScatterS64offsetF64(data, pg.sveInto(), base, offsets)
+}
+
+/**
+ * Non-truncating store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1_scatter_[s64]offset[_s64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1ScatterS64offsetS64(pg: SvboolT, base: MutPtr, offsets: Svint64T, data: Svint64T) {
+    fun svstnt1ScatterS64offsetS64(data1: Svint64T, pg1: Svbool2T, base1: MutPtr, offsets1: Svint64T) {}
+    svstnt1ScatterS64offsetS64(data, pg.sveInto(), base, offsets)
+}
+
+/**
+ * Non-truncating store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1_scatter_[s64]offset[_u64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1ScatterS64offsetU64(pg: SvboolT, base: MutPtr, offsets: Svint64T, data: Svuint64T) {
+    svstnt1ScatterS64offsetS64(pg, base.asSigned(), offsets, data.asSigned())
+}
+
+/**
+ * Non-truncating store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1_scatter_[u32]offset[_f32])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1ScatterU32offsetF32(pg: SvboolT, base: MutPtr, offsets: Svuint32T, data: Svfloat32T) {
+    fun svstnt1ScatterU32offsetF32(data1: Svfloat32T, pg1: Svbool4T, base1: MutPtr, offsets1: Svint32T) {}
+    svstnt1ScatterU32offsetF32(data, pg.sveInto(), base, offsets.asSigned())
+}
+
+/**
+ * Non-truncating store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1_scatter_[u32]offset[_s32])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1ScatterU32offsetS32(pg: SvboolT, base: MutPtr, offsets: Svuint32T, data: Svint32T) {
+    fun svstnt1ScatterU32offsetS32(data1: Svint32T, pg1: Svbool4T, base1: MutPtr, offsets1: Svint32T) {}
+    svstnt1ScatterU32offsetS32(data, pg.sveInto(), base, offsets.asSigned())
+}
+
+/**
+ * Non-truncating store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1_scatter_[u32]offset[_u32])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1ScatterU32offsetU32(pg: SvboolT, base: MutPtr, offsets: Svuint32T, data: Svuint32T) {
+    svstnt1ScatterU32offsetS32(pg, base.asSigned(), offsets, data.asSigned())
+}
+
+/**
+ * Non-truncating store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1_scatter_[u64]offset[_f64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1ScatterU64offsetF64(pg: SvboolT, base: MutPtr, offsets: Svuint64T, data: Svfloat64T) {
+    svstnt1ScatterS64offsetF64(pg, base, offsets.asSigned(), data)
+}
+
+/**
+ * Non-truncating store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1_scatter_[u64]offset[_s64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1ScatterU64offsetS64(pg: SvboolT, base: MutPtr, offsets: Svuint64T, data: Svint64T) {
+    svstnt1ScatterS64offsetS64(pg, base, offsets.asSigned(), data)
+}
+
+/**
+ * Non-truncating store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1_scatter_[u64]offset[_u64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1ScatterU64offsetU64(pg: SvboolT, base: MutPtr, offsets: Svuint64T, data: Svuint64T) {
+    svstnt1ScatterS64offsetS64(pg, base.asSigned(), offsets.asSigned(), data.asSigned())
+}
+
+/**
+ * Non-truncating store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1Scatter[_u32base_f32])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1ScatterU32baseF32(pg: SvboolT, bases: Svuint32T, data: Svfloat32T) {
+    svstnt1ScatterU32baseOffsetF32(pg, bases, 0L, data)
+}
+
+/**
+ * Non-truncating store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1Scatter[_u32base_s32])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1ScatterU32baseS32(pg: SvboolT, bases: Svuint32T, data: Svint32T) {
+    svstnt1ScatterU32baseOffsetS32(pg, bases, 0L, data)
+}
+
+/**
+ * Non-truncating store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1Scatter[_u32base_u32])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1ScatterU32baseU32(pg: SvboolT, bases: Svuint32T, data: Svuint32T) {
+    svstnt1ScatterU32baseOffsetU32(pg, bases, 0L, data)
+}
+
+/**
+ * Non-truncating store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1Scatter[_u64base_f64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1ScatterU64baseF64(pg: SvboolT, bases: Svuint64T, data: Svfloat64T) {
+    svstnt1ScatterU64baseOffsetF64(pg, bases, 0L, data)
+}
+
+/**
+ * Non-truncating store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1Scatter[_u64base_s64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1ScatterU64baseS64(pg: SvboolT, bases: Svuint64T, data: Svint64T) {
+    svstnt1ScatterU64baseOffsetS64(pg, bases, 0L, data)
+}
+
+/**
+ * Non-truncating store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1Scatter[_u64base_u64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1ScatterU64baseU64(pg: SvboolT, bases: Svuint64T, data: Svuint64T) {
+    svstnt1ScatterU64baseOffsetU64(pg, bases, 0L, data)
+}
+
+/**
+ * Non-truncating store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1Scatter[_u32base]_index[_f32])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1ScatterU32baseIndexF32(pg: SvboolT, bases: Svuint32T, index: Long, data: Svfloat32T) {
+    svstnt1ScatterU32baseOffsetF32(pg, bases, index.uncheckedShl(2), data)
+}
+
+/**
+ * Non-truncating store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1Scatter[_u32base]_index[_s32])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1ScatterU32baseIndexS32(pg: SvboolT, bases: Svuint32T, index: Long, data: Svint32T) {
+    svstnt1ScatterU32baseOffsetS32(pg, bases, index.uncheckedShl(2), data)
+}
+
+/**
+ * Non-truncating store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1Scatter[_u32base]_index[_u32])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1ScatterU32baseIndexU32(pg: SvboolT, bases: Svuint32T, index: Long, data: Svuint32T) {
+    svstnt1ScatterU32baseOffsetU32(pg, bases, index.uncheckedShl(2), data)
+}
+
+/**
+ * Non-truncating store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1Scatter[_u64base]_index[_f64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1ScatterU64baseIndexF64(pg: SvboolT, bases: Svuint64T, index: Long, data: Svfloat64T) {
+    svstnt1ScatterU64baseOffsetF64(pg, bases, index.uncheckedShl(3), data)
+}
+
+/**
+ * Non-truncating store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1Scatter[_u64base]_index[_s64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1ScatterU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: Long, data: Svint64T) {
+    svstnt1ScatterU64baseOffsetS64(pg, bases, index.uncheckedShl(3), data)
+}
+
+/**
+ * Non-truncating store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1Scatter[_u64base]_index[_u64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1ScatterU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: Long, data: Svuint64T) {
+    svstnt1ScatterU64baseOffsetU64(pg, bases, index.uncheckedShl(3), data)
+}
+
+/**
+ * Non-truncating store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1Scatter[_u32base]_offset[_f32])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1ScatterU32baseOffsetF32(pg: SvboolT, bases: Svuint32T, offset: Long, data: Svfloat32T) {
+    fun svstnt1ScatterU32baseOffsetF32(data1: Svfloat32T, pg1: Svbool4T, bases1: Svint32T, offset1: Long) {}
+    svstnt1ScatterU32baseOffsetF32(data, pg.sveInto(), bases.asSigned(), offset)
+}
+
+/**
+ * Non-truncating store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1Scatter[_u32base]_offset[_s32])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1ScatterU32baseOffsetS32(pg: SvboolT, bases: Svuint32T, offset: Long, data: Svint32T) {
+    fun svstnt1ScatterU32baseOffsetS32(data1: Svint32T, pg1: Svbool4T, bases1: Svint32T, offset1: Long) {}
+    svstnt1ScatterU32baseOffsetS32(data, pg.sveInto(), bases.asSigned(), offset)
+}
+
+/**
+ * Non-truncating store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1Scatter[_u32base]_offset[_u32])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1ScatterU32baseOffsetU32(pg: SvboolT, bases: Svuint32T, offset: Long, data: Svuint32T) {
+    svstnt1ScatterU32baseOffsetS32(pg, bases, offset, data.asSigned())
+}
+
+/**
+ * Non-truncating store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1Scatter[_u64base]_offset[_f64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1ScatterU64baseOffsetF64(pg: SvboolT, bases: Svuint64T, offset: Long, data: Svfloat64T) {
+    fun svstnt1ScatterU64baseOffsetF64(data1: Svfloat64T, pg1: Svbool2T, bases1: Svint64T, offset1: Long) {}
+    svstnt1ScatterU64baseOffsetF64(data, pg.sveInto(), bases.asSigned(), offset)
+}
+
+/**
+ * Non-truncating store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1Scatter[_u64base]_offset[_s64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1ScatterU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset: Long, data: Svint64T) {
+    fun svstnt1ScatterU64baseOffsetS64(data1: Svint64T, pg1: Svbool2T, bases1: Svint64T, offset1: Long) {}
+    svstnt1ScatterU64baseOffsetS64(data, pg.sveInto(), bases.asSigned(), offset)
+}
+
+/**
+ * Non-truncating store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1Scatter[_u64base]_offset[_u64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1ScatterU64baseOffsetU64(pg: SvboolT, bases: Svuint64T, offset: Long, data: Svuint64T) {
+    svstnt1ScatterU64baseOffsetS64(pg, bases, offset, data.asSigned())
+}
+
+/**
+ * Truncate to 8 bits and store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1b_scatter_[s64]offset[_s64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1bScatterS64offsetS64(pg: SvboolT, base: MutPtr, offsets: Svint64T, data: Svint64T) {
+    fun svstnt1bScatterS64offsetS64(data1: Nxv2i8, pg1: Svbool2T, base1: MutPtr, offsets1: Svint64T) {}
+    svstnt1bScatterS64offsetS64(Simd.simdCast(data), pg.sveInto(), base, offsets)
+}
+
+/**
+ * Truncate to 16 bits and store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1h_scatter_[s64]offset[_s64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1hScatterS64offsetS64(pg: SvboolT, base: MutPtr, offsets: Svint64T, data: Svint64T) {
+    fun svstnt1hScatterS64offsetS64(data1: Nxv2i16, pg1: Svbool2T, base1: MutPtr, offsets1: Svint64T) {}
+    svstnt1hScatterS64offsetS64(Simd.simdCast(data), pg.sveInto(), base, offsets)
+}
+
+/**
+ * Truncate to 32 bits and store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1w_scatter_[s64]offset[_s64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1wScatterS64offsetS64(pg: SvboolT, base: MutPtr, offsets: Svint64T, data: Svint64T) {
+    fun svstnt1wScatterS64offsetS64(data1: Nxv2i32, pg1: Svbool2T, base1: MutPtr, offsets1: Svint64T) {}
+    svstnt1wScatterS64offsetS64(Simd.simdCast(data), pg.sveInto(), base, offsets)
+}
+
+/**
+ * Truncate to 8 bits and store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1b_scatter_[s64]offset[_u64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1bScatterS64offsetU64(pg: SvboolT, base: MutPtr, offsets: Svint64T, data: Svuint64T) {
+    svstnt1bScatterS64offsetS64(pg, base.asSigned(), offsets, data.asSigned())
+}
+
+/**
+ * Truncate to 16 bits and store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1h_scatter_[s64]offset[_u64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1hScatterS64offsetU64(pg: SvboolT, base: MutPtr, offsets: Svint64T, data: Svuint64T) {
+    svstnt1hScatterS64offsetS64(pg, base.asSigned(), offsets, data.asSigned())
+}
+
+/**
+ * Truncate to 32 bits and store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1w_scatter_[s64]offset[_u64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1wScatterS64offsetU64(pg: SvboolT, base: MutPtr, offsets: Svint64T, data: Svuint64T) {
+    svstnt1wScatterS64offsetS64(pg, base.asSigned(), offsets, data.asSigned())
+}
+
+/**
+ * Truncate to 8 bits and store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1b_scatter_[u32]offset[_s32])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1bScatterU32offsetS32(pg: SvboolT, base: MutPtr, offsets: Svuint32T, data: Svint32T) {
+    fun svstnt1bScatterU32offsetS32(data1: Nxv4i8, pg1: Svbool4T, base1: MutPtr, offsets1: Svint32T) {}
+    svstnt1bScatterU32offsetS32(Simd.simdCast(data), pg.sveInto(), base, offsets.asSigned())
+}
+
+/**
+ * Truncate to 16 bits and store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1h_scatter_[u32]offset[_s32])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1hScatterU32offsetS32(pg: SvboolT, base: MutPtr, offsets: Svuint32T, data: Svint32T) {
+    fun svstnt1hScatterU32offsetS32(data1: Nxv4i16, pg1: Svbool4T, base1: MutPtr, offsets1: Svint32T) {}
+    svstnt1hScatterU32offsetS32(Simd.simdCast(data), pg.sveInto(), base, offsets.asSigned())
+}
+
+/**
+ * Truncate to 8 bits and store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1b_scatter_[u32]offset[_u32])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1bScatterU32offsetU32(pg: SvboolT, base: MutPtr, offsets: Svuint32T, data: Svuint32T) {
+    svstnt1bScatterU32offsetS32(pg, base.asSigned(), offsets, data.asSigned())
+}
+
+/**
+ * Truncate to 16 bits and store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1h_scatter_[u32]offset[_u32])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1hScatterU32offsetU32(pg: SvboolT, base: MutPtr, offsets: Svuint32T, data: Svuint32T) {
+    svstnt1hScatterU32offsetS32(pg, base.asSigned(), offsets, data.asSigned())
+}
+
+/**
+ * Truncate to 8 bits and store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1b_scatter_[u64]offset[_s64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1bScatterU64offsetS64(pg: SvboolT, base: MutPtr, offsets: Svuint64T, data: Svint64T) {
+    svstnt1bScatterS64offsetS64(pg, base, offsets.asSigned(), data)
+}
+
+/**
+ * Truncate to 16 bits and store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1h_scatter_[u64]offset[_s64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1hScatterU64offsetS64(pg: SvboolT, base: MutPtr, offsets: Svuint64T, data: Svint64T) {
+    svstnt1hScatterS64offsetS64(pg, base, offsets.asSigned(), data)
+}
+
+/**
+ * Truncate to 32 bits and store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1w_scatter_[u64]offset[_s64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1wScatterU64offsetS64(pg: SvboolT, base: MutPtr, offsets: Svuint64T, data: Svint64T) {
+    svstnt1wScatterS64offsetS64(pg, base, offsets.asSigned(), data)
+}
+
+/**
+ * Truncate to 8 bits and store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1b_scatter_[u64]offset[_u64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1bScatterU64offsetU64(pg: SvboolT, base: MutPtr, offsets: Svuint64T, data: Svuint64T) {
+    svstnt1bScatterS64offsetS64(pg, base.asSigned(), offsets.asSigned(), data.asSigned())
+}
+
+/**
+ * Truncate to 16 bits and store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1h_scatter_[u64]offset[_u64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1hScatterU64offsetU64(pg: SvboolT, base: MutPtr, offsets: Svuint64T, data: Svuint64T) {
+    svstnt1hScatterS64offsetS64(pg, base.asSigned(), offsets.asSigned(), data.asSigned())
+}
+
+/**
+ * Truncate to 32 bits and store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1w_scatter_[u64]offset[_u64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1wScatterU64offsetU64(pg: SvboolT, base: MutPtr, offsets: Svuint64T, data: Svuint64T) {
+    svstnt1wScatterS64offsetS64(pg, base.asSigned(), offsets.asSigned(), data.asSigned())
+}
+
+/**
+ * Truncate to 8 bits and store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1bScatter[_u32base]_offset[_s32])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1bScatterU32baseOffsetS32(pg: SvboolT, bases: Svuint32T, offset: Long, data: Svint32T) {
+    fun svstnt1bScatterU32baseOffsetS32(data1: Nxv4i8, pg1: Svbool4T, bases1: Svint32T, offset1: Long) {}
+    svstnt1bScatterU32baseOffsetS32(Simd.simdCast(data), pg.sveInto(), bases.asSigned(), offset)
+}
+
+/**
+ * Truncate to 16 bits and store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1hScatter[_u32base]_offset[_s32])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1hScatterU32baseOffsetS32(pg: SvboolT, bases: Svuint32T, offset: Long, data: Svint32T) {
+    fun svstnt1hScatterU32baseOffsetS32(data1: Nxv4i16, pg1: Svbool4T, bases1: Svint32T, offset1: Long) {}
+    svstnt1hScatterU32baseOffsetS32(Simd.simdCast(data), pg.sveInto(), bases.asSigned(), offset)
+}
+
+/**
+ * Truncate to 8 bits and store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1bScatter[_u32base]_offset[_u32])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1bScatterU32baseOffsetU32(pg: SvboolT, bases: Svuint32T, offset: Long, data: Svuint32T) {
+    svstnt1bScatterU32baseOffsetS32(pg, bases, offset, data.asSigned())
+}
+
+/**
+ * Truncate to 16 bits and store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1hScatter[_u32base]_offset[_u32])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1hScatterU32baseOffsetU32(pg: SvboolT, bases: Svuint32T, offset: Long, data: Svuint32T) {
+    svstnt1hScatterU32baseOffsetS32(pg, bases, offset, data.asSigned())
+}
+
+/**
+ * Truncate to 8 bits and store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1bScatter[_u64base]_offset[_s64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1bScatterU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset: Long, data: Svint64T) {
+    fun svstnt1bScatterU64baseOffsetS64(data1: Nxv2i8, pg1: Svbool2T, bases1: Svint64T, offset1: Long) {}
+    svstnt1bScatterU64baseOffsetS64(Simd.simdCast(data), pg.sveInto(), bases.asSigned(), offset)
+}
+
+/**
+ * Truncate to 16 bits and store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1hScatter[_u64base]_offset[_s64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1hScatterU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset: Long, data: Svint64T) {
+    fun svstnt1hScatterU64baseOffsetS64(data1: Nxv2i16, pg1: Svbool2T, bases1: Svint64T, offset1: Long) {}
+    svstnt1hScatterU64baseOffsetS64(Simd.simdCast(data), pg.sveInto(), bases.asSigned(), offset)
+}
+
+/**
+ * Truncate to 32 bits and store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1wScatter[_u64base]_offset[_s64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1wScatterU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset: Long, data: Svint64T) {
+    fun svstnt1wScatterU64baseOffsetS64(data1: Nxv2i32, pg1: Svbool2T, bases1: Svint64T, offset1: Long) {}
+    svstnt1wScatterU64baseOffsetS64(Simd.simdCast(data), pg.sveInto(), bases.asSigned(), offset)
+}
+
+/**
+ * Truncate to 8 bits and store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1bScatter[_u64base]_offset[_u64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1bScatterU64baseOffsetU64(pg: SvboolT, bases: Svuint64T, offset: Long, data: Svuint64T) {
+    svstnt1bScatterU64baseOffsetS64(pg, bases, offset, data.asSigned())
+}
+
+/**
+ * Truncate to 16 bits and store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1hScatter[_u64base]_offset[_u64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1hScatterU64baseOffsetU64(pg: SvboolT, bases: Svuint64T, offset: Long, data: Svuint64T) {
+    svstnt1hScatterU64baseOffsetS64(pg, bases, offset, data.asSigned())
+}
+
+/**
+ * Truncate to 32 bits and store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1wScatter[_u64base]_offset[_u64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1wScatterU64baseOffsetU64(pg: SvboolT, bases: Svuint64T, offset: Long, data: Svuint64T) {
+    svstnt1wScatterU64baseOffsetS64(pg, bases, offset, data.asSigned())
+}
+
+/**
+ * Truncate to 8 bits and store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1bScatter[_u32base_s32])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1bScatterU32baseS32(pg: SvboolT, bases: Svuint32T, data: Svint32T) {
+    svstnt1bScatterU32baseOffsetS32(pg, bases, 0L, data)
+}
+
+/**
+ * Truncate to 16 bits and store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1hScatter[_u32base_s32])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1hScatterU32baseS32(pg: SvboolT, bases: Svuint32T, data: Svint32T) {
+    svstnt1hScatterU32baseOffsetS32(pg, bases, 0L, data)
+}
+
+/**
+ * Truncate to 8 bits and store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1bScatter[_u32base_u32])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1bScatterU32baseU32(pg: SvboolT, bases: Svuint32T, data: Svuint32T) {
+    svstnt1bScatterU32baseOffsetU32(pg, bases, 0L, data)
+}
+
+/**
+ * Truncate to 16 bits and store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1hScatter[_u32base_u32])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1hScatterU32baseU32(pg: SvboolT, bases: Svuint32T, data: Svuint32T) {
+    svstnt1hScatterU32baseOffsetU32(pg, bases, 0L, data)
+}
+
+/**
+ * Truncate to 8 bits and store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1bScatter[_u64base_s64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1bScatterU64baseS64(pg: SvboolT, bases: Svuint64T, data: Svint64T) {
+    svstnt1bScatterU64baseOffsetS64(pg, bases, 0L, data)
+}
+
+/**
+ * Truncate to 16 bits and store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1hScatter[_u64base_s64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1hScatterU64baseS64(pg: SvboolT, bases: Svuint64T, data: Svint64T) {
+    svstnt1hScatterU64baseOffsetS64(pg, bases, 0L, data)
+}
+
+/**
+ * Truncate to 32 bits and store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1wScatter[_u64base_s64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1wScatterU64baseS64(pg: SvboolT, bases: Svuint64T, data: Svint64T) {
+    svstnt1wScatterU64baseOffsetS64(pg, bases, 0L, data)
+}
+
+/**
+ * Truncate to 8 bits and store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1bScatter[_u64base_u64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1bScatterU64baseU64(pg: SvboolT, bases: Svuint64T, data: Svuint64T) {
+    svstnt1bScatterU64baseOffsetU64(pg, bases, 0L, data)
+}
+
+/**
+ * Truncate to 16 bits and store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1hScatter[_u64base_u64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1hScatterU64baseU64(pg: SvboolT, bases: Svuint64T, data: Svuint64T) {
+    svstnt1hScatterU64baseOffsetU64(pg, bases, 0L, data)
+}
+
+/**
+ * Truncate to 32 bits and store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1wScatter[_u64base_u64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1wScatterU64baseU64(pg: SvboolT, bases: Svuint64T, data: Svuint64T) {
+    svstnt1wScatterU64baseOffsetU64(pg, bases, 0L, data)
+}
+
+/**
+ * Truncate to 16 bits and store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1h_scatter_[s64]index[_s64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1hScatterS64indexS64(pg: SvboolT, base: MutPtr, indices: Svint64T, data: Svint64T) {
+    fun svstnt1hScatterS64indexS64(data1: Nxv2i16, pg1: Svbool2T, base1: MutPtr, indices1: Svint64T) {}
+    svstnt1hScatterS64indexS64(Simd.simdCast(data), pg.sveInto(), base, indices)
+}
+
+/**
+ * Truncate to 32 bits and store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1w_scatter_[s64]index[_s64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1wScatterS64indexS64(pg: SvboolT, base: MutPtr, indices: Svint64T, data: Svint64T) {
+    fun svstnt1wScatterS64indexS64(data1: Nxv2i32, pg1: Svbool2T, base1: MutPtr, indices1: Svint64T) {}
+    svstnt1wScatterS64indexS64(Simd.simdCast(data), pg.sveInto(), base, indices)
+}
+
+/**
+ * Truncate to 16 bits and store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1h_scatter_[s64]index[_u64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1hScatterS64indexU64(pg: SvboolT, base: MutPtr, indices: Svint64T, data: Svuint64T) {
+    svstnt1hScatterS64indexS64(pg, base.asSigned(), indices, data.asSigned())
+}
+
+/**
+ * Truncate to 32 bits and store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1w_scatter_[s64]index[_u64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1wScatterS64indexU64(pg: SvboolT, base: MutPtr, indices: Svint64T, data: Svuint64T) {
+    svstnt1wScatterS64indexS64(pg, base.asSigned(), indices, data.asSigned())
+}
+
+/**
+ * Truncate to 16 bits and store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1h_scatter_[u64]index[_s64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1hScatterU64indexS64(pg: SvboolT, base: MutPtr, indices: Svuint64T, data: Svint64T) {
+    svstnt1hScatterS64indexS64(pg, base, indices.asSigned(), data)
+}
+
+/**
+ * Truncate to 32 bits and store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1w_scatter_[u64]index[_s64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1wScatterU64indexS64(pg: SvboolT, base: MutPtr, indices: Svuint64T, data: Svint64T) {
+    svstnt1wScatterS64indexS64(pg, base, indices.asSigned(), data)
+}
+
+/**
+ * Truncate to 16 bits and store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1h_scatter_[u64]index[_u64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1hScatterU64indexU64(pg: SvboolT, base: MutPtr, indices: Svuint64T, data: Svuint64T) {
+    svstnt1hScatterS64indexS64(pg, base.asSigned(), indices.asSigned(), data.asSigned())
+}
+
+/**
+ * Truncate to 32 bits and store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1w_scatter_[u64]index[_u64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1wScatterU64indexU64(pg: SvboolT, base: MutPtr, indices: Svuint64T, data: Svuint64T) {
+    svstnt1wScatterS64indexS64(pg, base.asSigned(), indices.asSigned(), data.asSigned())
+}
+
+/**
+ * Truncate to 16 bits and store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1hScatter[_u32base]_index[_s32])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1hScatterU32baseIndexS32(pg: SvboolT, bases: Svuint32T, index: Long, data: Svint32T) {
+    svstnt1hScatterU32baseOffsetS32(pg, bases, index.uncheckedShl(1), data)
+}
+
+/**
+ * Truncate to 16 bits and store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1hScatter[_u32base]_index[_u32])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1hScatterU32baseIndexU32(pg: SvboolT, bases: Svuint32T, index: Long, data: Svuint32T) {
+    svstnt1hScatterU32baseOffsetU32(pg, bases, index.uncheckedShl(1), data)
+}
+
+/**
+ * Truncate to 16 bits and store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1hScatter[_u64base]_index[_s64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1hScatterU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: Long, data: Svint64T) {
+    svstnt1hScatterU64baseOffsetS64(pg, bases, index.uncheckedShl(1), data)
+}
+
+/**
+ * Truncate to 32 bits and store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1wScatter[_u64base]_index[_s64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1wScatterU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: Long, data: Svint64T) {
+    svstnt1wScatterU64baseOffsetS64(pg, bases, index.uncheckedShl(2), data)
+}
+
+/**
+ * Truncate to 16 bits and store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1hScatter[_u64base]_index[_u64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1hScatterU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: Long, data: Svuint64T) {
+    svstnt1hScatterU64baseOffsetU64(pg, bases, index.uncheckedShl(1), data)
+}
+
+/**
+ * Truncate to 32 bits and store, non-temporal
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svstnt1wScatter[_u64base]_index[_u64])
+ * ## Safety
+ *  * [`pointer.offset`](pointer#method.offset) safety constraints must be met for the address calculation for each active element (governed by `pg`).
+ *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
+ *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
+ *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
+ */
+public fun svstnt1wScatterU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: Long, data: Svuint64T) {
+    svstnt1wScatterU64baseOffsetU64(pg, bases, index.uncheckedShl(2), data)
+}
+
+/**
+ * Subtract narrow high part (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubhnb[_s16])
+ */
+public fun svsubhnbS16(op1: Svint16T, op2: Svint16T): Svint8T {
+    fun svsubhnbS16(op11: Svint16T, op21: Svint16T): Svint8T = null as Svint8T
+    return svsubhnbS16(op1, op2)
+}
+
+/**
+ * Subtract narrow high part (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubhnb[_n_s16])
+ */
+public fun svsubhnbNS16(op1: Svint16T, op2: Short): Svint8T = svsubhnbS16(op1, svdupNS16(op2))
+
+/**
+ * Subtract narrow high part (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubhnb[_s32])
+ */
+public fun svsubhnbS32(op1: Svint32T, op2: Svint32T): Svint16T {
+    fun svsubhnbS32(op11: Svint32T, op21: Svint32T): Svint16T = null as Svint16T
+    return svsubhnbS32(op1, op2)
+}
+
+/**
+ * Subtract narrow high part (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubhnb[_n_s32])
+ */
+public fun svsubhnbNS32(op1: Svint32T, op2: Int): Svint16T = svsubhnbS32(op1, svdupNS32(op2))
+
+/**
+ * Subtract narrow high part (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubhnb[_s64])
+ */
+public fun svsubhnbS64(op1: Svint64T, op2: Svint64T): Svint32T {
+    fun svsubhnbS64(op11: Svint64T, op21: Svint64T): Svint32T = null as Svint32T
+    return svsubhnbS64(op1, op2)
+}
+
+/**
+ * Subtract narrow high part (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubhnb[_n_s64])
+ */
+public fun svsubhnbNS64(op1: Svint64T, op2: Long): Svint32T = svsubhnbS64(op1, svdupNS64(op2))
+
+/**
+ * Subtract narrow high part (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubhnb[_u16])
+ */
+public fun svsubhnbU16(op1: Svuint16T, op2: Svuint16T): Svuint8T = svsubhnbS16(op1.asSigned(), op2.asSigned()).asUnsigned()
+
+/**
+ * Subtract narrow high part (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubhnb[_n_u16])
+ */
+public fun svsubhnbNU16(op1: Svuint16T, op2: UShort): Svuint8T = svsubhnbU16(op1, svdupNU16(op2))
+
+/**
+ * Subtract narrow high part (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubhnb[_u32])
+ */
+public fun svsubhnbU32(op1: Svuint32T, op2: Svuint32T): Svuint16T = svsubhnbS32(op1.asSigned(), op2.asSigned()).asUnsigned()
+
+/**
+ * Subtract narrow high part (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubhnb[_n_u32])
+ */
+public fun svsubhnbNU32(op1: Svuint32T, op2: UInt): Svuint16T = svsubhnbU32(op1, svdupNU32(op2))
+
+/**
+ * Subtract narrow high part (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubhnb[_u64])
+ */
+public fun svsubhnbU64(op1: Svuint64T, op2: Svuint64T): Svuint32T = svsubhnbS64(op1.asSigned(), op2.asSigned()).asUnsigned()
+
+/**
+ * Subtract narrow high part (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubhnb[_n_u64])
+ */
+public fun svsubhnbNU64(op1: Svuint64T, op2: ULong): Svuint32T = svsubhnbU64(op1, svdupNU64(op2))
+
+/**
+ * Subtract narrow high part (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubhnt[_s16])
+ */
+public fun svsubhntS16(even: Svint8T, op1: Svint16T, op2: Svint16T): Svint8T {
+    fun svsubhntS16(even1: Svint8T, op11: Svint16T, op21: Svint16T): Svint8T = null as Svint8T
+    return svsubhntS16(even, op1, op2)
+}
+
+/**
+ * Subtract narrow high part (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubhnt[_n_s16])
+ */
+public fun svsubhntNS16(even: Svint8T, op1: Svint16T, op2: Short): Svint8T = svsubhntS16(even, op1, svdupNS16(op2))
+
+/**
+ * Subtract narrow high part (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubhnt[_s32])
+ */
+public fun svsubhntS32(even: Svint16T, op1: Svint32T, op2: Svint32T): Svint16T {
+    fun svsubhntS32(even1: Svint16T, op11: Svint32T, op21: Svint32T): Svint16T = null as Svint16T
+    return svsubhntS32(even, op1, op2)
+}
+
+/**
+ * Subtract narrow high part (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubhnt[_n_s32])
+ */
+public fun svsubhntNS32(even: Svint16T, op1: Svint32T, op2: Int): Svint16T = svsubhntS32(even, op1, svdupNS32(op2))
+
+/**
+ * Subtract narrow high part (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubhnt[_s64])
+ */
+public fun svsubhntS64(even: Svint32T, op1: Svint64T, op2: Svint64T): Svint32T {
+    fun svsubhntS64(even1: Svint32T, op11: Svint64T, op21: Svint64T): Svint32T = null as Svint32T
+    return svsubhntS64(even, op1, op2)
+}
+
+/**
+ * Subtract narrow high part (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubhnt[_n_s64])
+ */
+public fun svsubhntNS64(even: Svint32T, op1: Svint64T, op2: Long): Svint32T = svsubhntS64(even, op1, svdupNS64(op2))
+
+/**
+ * Subtract narrow high part (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubhnt[_u16])
+ */
+public fun svsubhntU16(even: Svuint8T, op1: Svuint16T, op2: Svuint16T): Svuint8T = svsubhntS16(even.asSigned(), op1.asSigned(), op2.asSigned()).asUnsigned()
+
+/**
+ * Subtract narrow high part (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubhnt[_n_u16])
+ */
+public fun svsubhntNU16(even: Svuint8T, op1: Svuint16T, op2: UShort): Svuint8T = svsubhntU16(even, op1, svdupNU16(op2))
+
+/**
+ * Subtract narrow high part (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubhnt[_u32])
+ */
+public fun svsubhntU32(even: Svuint16T, op1: Svuint32T, op2: Svuint32T): Svuint16T = svsubhntS32(even.asSigned(), op1.asSigned(), op2.asSigned()).asUnsigned()
+
+/**
+ * Subtract narrow high part (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubhnt[_n_u32])
+ */
+public fun svsubhntNU32(even: Svuint16T, op1: Svuint32T, op2: UInt): Svuint16T = svsubhntU32(even, op1, svdupNU32(op2))
+
+/**
+ * Subtract narrow high part (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubhnt[_u64])
+ */
+public fun svsubhntU64(even: Svuint32T, op1: Svuint64T, op2: Svuint64T): Svuint32T = svsubhntS64(even.asSigned(), op1.asSigned(), op2.asSigned()).asUnsigned()
+
+/**
+ * Subtract narrow high part (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubhnt[_n_u64])
+ */
+public fun svsubhntNU64(even: Svuint32T, op1: Svuint64T, op2: ULong): Svuint32T = svsubhntU64(even, op1, svdupNU64(op2))
+
+/**
+ * Subtract long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsublb[_s16])
+ */
+public fun svsublbS16(op1: Svint8T, op2: Svint8T): Svint16T {
+    fun svsublbS16(op11: Svint8T, op21: Svint8T): Svint16T = null as Svint16T
+    return svsublbS16(op1, op2)
+}
+
+/**
+ * Subtract long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsublb[_n_s16])
+ */
+public fun svsublbNS16(op1: Svint8T, op2: Byte): Svint16T = svsublbS16(op1, svdupNS8(op2))
+
+/**
+ * Subtract long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsublb[_s32])
+ */
+public fun svsublbS32(op1: Svint16T, op2: Svint16T): Svint32T {
+    fun svsublbS32(op11: Svint16T, op21: Svint16T): Svint32T = null as Svint32T
+    return svsublbS32(op1, op2)
+}
+
+/**
+ * Subtract long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsublb[_n_s32])
+ */
+public fun svsublbNS32(op1: Svint16T, op2: Short): Svint32T = svsublbS32(op1, svdupNS16(op2))
+
+/**
+ * Subtract long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsublb[_s64])
+ */
+public fun svsublbS64(op1: Svint32T, op2: Svint32T): Svint64T {
+    fun svsublbS64(op11: Svint32T, op21: Svint32T): Svint64T = null as Svint64T
+    return svsublbS64(op1, op2)
+}
+
+/**
+ * Subtract long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsublb[_n_s64])
+ */
+public fun svsublbNS64(op1: Svint32T, op2: Int): Svint64T = svsublbS64(op1, svdupNS32(op2))
+
+/**
+ * Subtract long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsublb[_u16])
+ */
+public fun svsublbU16(op1: Svuint8T, op2: Svuint8T): Svuint16T {
+    fun svsublbU16(op11: Svint8T, op21: Svint8T): Svint16T = null as Svint16T
+    return svsublbU16(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Subtract long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsublb[_n_u16])
+ */
+public fun svsublbNU16(op1: Svuint8T, op2: UByte): Svuint16T = svsublbU16(op1, svdupNU8(op2))
+
+/**
+ * Subtract long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsublb[_u32])
+ */
+public fun svsublbU32(op1: Svuint16T, op2: Svuint16T): Svuint32T {
+    fun svsublbU32(op11: Svint16T, op21: Svint16T): Svint32T = null as Svint32T
+    return svsublbU32(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Subtract long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsublb[_n_u32])
+ */
+public fun svsublbNU32(op1: Svuint16T, op2: UShort): Svuint32T = svsublbU32(op1, svdupNU16(op2))
+
+/**
+ * Subtract long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsublb[_u64])
+ */
+public fun svsublbU64(op1: Svuint32T, op2: Svuint32T): Svuint64T {
+    fun svsublbU64(op11: Svint32T, op21: Svint32T): Svint64T = null as Svint64T
+    return svsublbU64(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Subtract long (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsublb[_n_u64])
+ */
+public fun svsublbNU64(op1: Svuint32T, op2: UInt): Svuint64T = svsublbU64(op1, svdupNU32(op2))
+
+/**
+ * Subtract long (bottom - top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsublbt[_s16])
+ */
+public fun svsublbtS16(op1: Svint8T, op2: Svint8T): Svint16T {
+    fun svsublbtS16(op11: Svint8T, op21: Svint8T): Svint16T = null as Svint16T
+    return svsublbtS16(op1, op2)
+}
+
+/**
+ * Subtract long (bottom - top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsublbt[_n_s16])
+ */
+public fun svsublbtNS16(op1: Svint8T, op2: Byte): Svint16T = svsublbtS16(op1, svdupNS8(op2))
+
+/**
+ * Subtract long (bottom - top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsublbt[_s32])
+ */
+public fun svsublbtS32(op1: Svint16T, op2: Svint16T): Svint32T {
+    fun svsublbtS32(op11: Svint16T, op21: Svint16T): Svint32T = null as Svint32T
+    return svsublbtS32(op1, op2)
+}
+
+/**
+ * Subtract long (bottom - top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsublbt[_n_s32])
+ */
+public fun svsublbtNS32(op1: Svint16T, op2: Short): Svint32T = svsublbtS32(op1, svdupNS16(op2))
+
+/**
+ * Subtract long (bottom - top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsublbt[_s64])
+ */
+public fun svsublbtS64(op1: Svint32T, op2: Svint32T): Svint64T {
+    fun svsublbtS64(op11: Svint32T, op21: Svint32T): Svint64T = null as Svint64T
+    return svsublbtS64(op1, op2)
+}
+
+/**
+ * Subtract long (bottom - top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsublbt[_n_s64])
+ */
+public fun svsublbtNS64(op1: Svint32T, op2: Int): Svint64T = svsublbtS64(op1, svdupNS32(op2))
+
+/**
+ * Subtract long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsublt[_s16])
+ */
+public fun svsubltS16(op1: Svint8T, op2: Svint8T): Svint16T {
+    fun svsubltS16(op11: Svint8T, op21: Svint8T): Svint16T = null as Svint16T
+    return svsubltS16(op1, op2)
+}
+
+/**
+ * Subtract long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsublt[_n_s16])
+ */
+public fun svsubltNS16(op1: Svint8T, op2: Byte): Svint16T = svsubltS16(op1, svdupNS8(op2))
+
+/**
+ * Subtract long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsublt[_s32])
+ */
+public fun svsubltS32(op1: Svint16T, op2: Svint16T): Svint32T {
+    fun svsubltS32(op11: Svint16T, op21: Svint16T): Svint32T = null as Svint32T
+    return svsubltS32(op1, op2)
+}
+
+/**
+ * Subtract long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsublt[_n_s32])
+ */
+public fun svsubltNS32(op1: Svint16T, op2: Short): Svint32T = svsubltS32(op1, svdupNS16(op2))
+
+/**
+ * Subtract long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsublt[_s64])
+ */
+public fun svsubltS64(op1: Svint32T, op2: Svint32T): Svint64T {
+    fun svsubltS64(op11: Svint32T, op21: Svint32T): Svint64T = null as Svint64T
+    return svsubltS64(op1, op2)
+}
+
+/**
+ * Subtract long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsublt[_n_s64])
+ */
+public fun svsubltNS64(op1: Svint32T, op2: Int): Svint64T = svsubltS64(op1, svdupNS32(op2))
+
+/**
+ * Subtract long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsublt[_u16])
+ */
+public fun svsubltU16(op1: Svuint8T, op2: Svuint8T): Svuint16T {
+    fun svsubltU16(op11: Svint8T, op21: Svint8T): Svint16T = null as Svint16T
+    return svsubltU16(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Subtract long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsublt[_n_u16])
+ */
+public fun svsubltNU16(op1: Svuint8T, op2: UByte): Svuint16T = svsubltU16(op1, svdupNU8(op2))
+
+/**
+ * Subtract long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsublt[_u32])
+ */
+public fun svsubltU32(op1: Svuint16T, op2: Svuint16T): Svuint32T {
+    fun svsubltU32(op11: Svint16T, op21: Svint16T): Svint32T = null as Svint32T
+    return svsubltU32(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Subtract long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsublt[_n_u32])
+ */
+public fun svsubltNU32(op1: Svuint16T, op2: UShort): Svuint32T = svsubltU32(op1, svdupNU16(op2))
+
+/**
+ * Subtract long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsublt[_u64])
+ */
+public fun svsubltU64(op1: Svuint32T, op2: Svuint32T): Svuint64T {
+    fun svsubltU64(op11: Svint32T, op21: Svint32T): Svint64T = null as Svint64T
+    return svsubltU64(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Subtract long (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsublt[_n_u64])
+ */
+public fun svsubltNU64(op1: Svuint32T, op2: UInt): Svuint64T = svsubltU64(op1, svdupNU32(op2))
+
+/**
+ * Subtract long (top - bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubltb[_s16])
+ */
+public fun svsubltbS16(op1: Svint8T, op2: Svint8T): Svint16T {
+    fun svsubltbS16(op11: Svint8T, op21: Svint8T): Svint16T = null as Svint16T
+    return svsubltbS16(op1, op2)
+}
+
+/**
+ * Subtract long (top - bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubltb[_n_s16])
+ */
+public fun svsubltbNS16(op1: Svint8T, op2: Byte): Svint16T = svsubltbS16(op1, svdupNS8(op2))
+
+/**
+ * Subtract long (top - bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubltb[_s32])
+ */
+public fun svsubltbS32(op1: Svint16T, op2: Svint16T): Svint32T {
+    fun svsubltbS32(op11: Svint16T, op21: Svint16T): Svint32T = null as Svint32T
+    return svsubltbS32(op1, op2)
+}
+
+/**
+ * Subtract long (top - bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubltb[_n_s32])
+ */
+public fun svsubltbNS32(op1: Svint16T, op2: Short): Svint32T = svsubltbS32(op1, svdupNS16(op2))
+
+/**
+ * Subtract long (top - bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubltb[_s64])
+ */
+public fun svsubltbS64(op1: Svint32T, op2: Svint32T): Svint64T {
+    fun svsubltbS64(op11: Svint32T, op21: Svint32T): Svint64T = null as Svint64T
+    return svsubltbS64(op1, op2)
+}
+
+/**
+ * Subtract long (top - bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubltb[_n_s64])
+ */
+public fun svsubltbNS64(op1: Svint32T, op2: Int): Svint64T = svsubltbS64(op1, svdupNS32(op2))
+
+/**
+ * Subtract wide (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubwb[_s16])
+ */
+public fun svsubwbS16(op1: Svint16T, op2: Svint8T): Svint16T {
+    fun svsubwbS16(op11: Svint16T, op21: Svint8T): Svint16T = null as Svint16T
+    return svsubwbS16(op1, op2)
+}
+
+/**
+ * Subtract wide (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubwb[_n_s16])
+ */
+public fun svsubwbNS16(op1: Svint16T, op2: Byte): Svint16T = svsubwbS16(op1, svdupNS8(op2))
+
+/**
+ * Subtract wide (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubwb[_s32])
+ */
+public fun svsubwbS32(op1: Svint32T, op2: Svint16T): Svint32T {
+    fun svsubwbS32(op11: Svint32T, op21: Svint16T): Svint32T = null as Svint32T
+    return svsubwbS32(op1, op2)
+}
+
+/**
+ * Subtract wide (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubwb[_n_s32])
+ */
+public fun svsubwbNS32(op1: Svint32T, op2: Short): Svint32T = svsubwbS32(op1, svdupNS16(op2))
+
+/**
+ * Subtract wide (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubwb[_s64])
+ */
+public fun svsubwbS64(op1: Svint64T, op2: Svint32T): Svint64T {
+    fun svsubwbS64(op11: Svint64T, op21: Svint32T): Svint64T = null as Svint64T
+    return svsubwbS64(op1, op2)
+}
+
+/**
+ * Subtract wide (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubwb[_n_s64])
+ */
+public fun svsubwbNS64(op1: Svint64T, op2: Int): Svint64T = svsubwbS64(op1, svdupNS32(op2))
+
+/**
+ * Subtract wide (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubwb[_u16])
+ */
+public fun svsubwbU16(op1: Svuint16T, op2: Svuint8T): Svuint16T {
+    fun svsubwbU16(op11: Svint16T, op21: Svint8T): Svint16T = null as Svint16T
+    return svsubwbU16(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Subtract wide (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubwb[_n_u16])
+ */
+public fun svsubwbNU16(op1: Svuint16T, op2: UByte): Svuint16T = svsubwbU16(op1, svdupNU8(op2))
+
+/**
+ * Subtract wide (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubwb[_u32])
+ */
+public fun svsubwbU32(op1: Svuint32T, op2: Svuint16T): Svuint32T {
+    fun svsubwbU32(op11: Svint32T, op21: Svint16T): Svint32T = null as Svint32T
+    return svsubwbU32(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Subtract wide (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubwb[_n_u32])
+ */
+public fun svsubwbNU32(op1: Svuint32T, op2: UShort): Svuint32T = svsubwbU32(op1, svdupNU16(op2))
+
+/**
+ * Subtract wide (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubwb[_u64])
+ */
+public fun svsubwbU64(op1: Svuint64T, op2: Svuint32T): Svuint64T {
+    fun svsubwbU64(op11: Svint64T, op21: Svint32T): Svint64T = null as Svint64T
+    return svsubwbU64(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Subtract wide (bottom)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubwb[_n_u64])
+ */
+public fun svsubwbNU64(op1: Svuint64T, op2: UInt): Svuint64T = svsubwbU64(op1, svdupNU32(op2))
+
+/**
+ * Subtract wide (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubwt[_s16])
+ */
+public fun svsubwtS16(op1: Svint16T, op2: Svint8T): Svint16T {
+    fun svsubwtS16(op11: Svint16T, op21: Svint8T): Svint16T = null as Svint16T
+    return svsubwtS16(op1, op2)
+}
+
+/**
+ * Subtract wide (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubwt[_n_s16])
+ */
+public fun svsubwtNS16(op1: Svint16T, op2: Byte): Svint16T = svsubwtS16(op1, svdupNS8(op2))
+
+/**
+ * Subtract wide (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubwt[_s32])
+ */
+public fun svsubwtS32(op1: Svint32T, op2: Svint16T): Svint32T {
+    fun svsubwtS32(op11: Svint32T, op21: Svint16T): Svint32T = null as Svint32T
+    return svsubwtS32(op1, op2)
+}
+
+/**
+ * Subtract wide (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubwt[_n_s32])
+ */
+public fun svsubwtNS32(op1: Svint32T, op2: Short): Svint32T = svsubwtS32(op1, svdupNS16(op2))
+
+/**
+ * Subtract wide (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubwt[_s64])
+ */
+public fun svsubwtS64(op1: Svint64T, op2: Svint32T): Svint64T {
+    fun svsubwtS64(op11: Svint64T, op21: Svint32T): Svint64T = null as Svint64T
+    return svsubwtS64(op1, op2)
+}
+
+/**
+ * Subtract wide (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubwt[_n_s64])
+ */
+public fun svsubwtNS64(op1: Svint64T, op2: Int): Svint64T = svsubwtS64(op1, svdupNS32(op2))
+
+/**
+ * Subtract wide (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubwt[_u16])
+ */
+public fun svsubwtU16(op1: Svuint16T, op2: Svuint8T): Svuint16T {
+    fun svsubwtU16(op11: Svint16T, op21: Svint8T): Svint16T = null as Svint16T
+    return svsubwtU16(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Subtract wide (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubwt[_n_u16])
+ */
+public fun svsubwtNU16(op1: Svuint16T, op2: UByte): Svuint16T = svsubwtU16(op1, svdupNU8(op2))
+
+/**
+ * Subtract wide (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubwt[_u32])
+ */
+public fun svsubwtU32(op1: Svuint32T, op2: Svuint16T): Svuint32T {
+    fun svsubwtU32(op11: Svint32T, op21: Svint16T): Svint32T = null as Svint32T
+    return svsubwtU32(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Subtract wide (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubwt[_n_u32])
+ */
+public fun svsubwtNU32(op1: Svuint32T, op2: UShort): Svuint32T = svsubwtU32(op1, svdupNU16(op2))
+
+/**
+ * Subtract wide (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubwt[_u64])
+ */
+public fun svsubwtU64(op1: Svuint64T, op2: Svuint32T): Svuint64T {
+    fun svsubwtU64(op11: Svint64T, op21: Svint32T): Svint64T = null as Svint64T
+    return svsubwtU64(op1.asSigned(), op2.asSigned()).asUnsigned()
+}
+
+/**
+ * Subtract wide (top)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubwt[_n_u64])
+ */
+public fun svsubwtNU64(op1: Svuint64T, op2: UInt): Svuint64T = svsubwtU64(op1, svdupNU32(op2))
+
+/**
+ * Table lookup in two-vector table
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtbl2[_f32])
+ */
+public fun svtbl2F32(data: Svfloat32x2T, indices: Svuint32T): Svfloat32T {
+    fun svtbl2F32(data0: Svfloat32T, data1: Svfloat32T, indices1: Svint32T): Svfloat32T = null as Svfloat32T
+    return svtbl2F32(svget2F32(data, 0), svget2F32(data, 1), indices.asSigned())
+}
+
+/**
+ * Table lookup in two-vector table
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtbl2[_f64])
+ */
+public fun svtbl2F64(data: Svfloat64x2T, indices: Svuint64T): Svfloat64T {
+    fun svtbl2F64(data0: Svfloat64T, data1: Svfloat64T, indices1: Svint64T): Svfloat64T = null as Svfloat64T
+    return svtbl2F64(svget2F64(data, 0), svget2F64(data, 1), indices.asSigned())
+}
+
+/**
+ * Table lookup in two-vector table
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtbl2[_s8])
+ */
+public fun svtbl2S8(data: Svint8x2T, indices: Svuint8T): Svint8T {
+    fun svtbl2S8(data0: Svint8T, data1: Svint8T, indices1: Svint8T): Svint8T = null as Svint8T
+    return svtbl2S8(svget2S8(data, 0), svget2S8(data, 1), indices.asSigned())
+}
+
+/**
+ * Table lookup in two-vector table
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtbl2[_s16])
+ */
+public fun svtbl2S16(data: Svint16x2T, indices: Svuint16T): Svint16T {
+    fun svtbl2S16(data0: Svint16T, data1: Svint16T, indices1: Svint16T): Svint16T = null as Svint16T
+    return svtbl2S16(svget2S16(data, 0), svget2S16(data, 1), indices.asSigned())
+}
+
+/**
+ * Table lookup in two-vector table
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtbl2[_s32])
+ */
+public fun svtbl2S32(data: Svint32x2T, indices: Svuint32T): Svint32T {
+    fun svtbl2S32(data0: Svint32T, data1: Svint32T, indices1: Svint32T): Svint32T = null as Svint32T
+    return svtbl2S32(svget2S32(data, 0), svget2S32(data, 1), indices.asSigned())
+}
+
+/**
+ * Table lookup in two-vector table
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtbl2[_s64])
+ */
+public fun svtbl2S64(data: Svint64x2T, indices: Svuint64T): Svint64T {
+    fun svtbl2S64(data0: Svint64T, data1: Svint64T, indices1: Svint64T): Svint64T = null as Svint64T
+    return svtbl2S64(svget2S64(data, 0), svget2S64(data, 1), indices.asSigned())
+}
+
+/**
+ * Table lookup in two-vector table
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtbl2[_u8])
+ */
+public fun svtbl2U8(data: Svuint8x2T, indices: Svuint8T): Svuint8T = svtbl2S8(data.asSigned(), indices).asUnsigned()
+
+/**
+ * Table lookup in two-vector table
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtbl2[_u16])
+ */
+public fun svtbl2U16(data: Svuint16x2T, indices: Svuint16T): Svuint16T = svtbl2S16(data.asSigned(), indices).asUnsigned()
+
+/**
+ * Table lookup in two-vector table
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtbl2[_u32])
+ */
+public fun svtbl2U32(data: Svuint32x2T, indices: Svuint32T): Svuint32T = svtbl2S32(data.asSigned(), indices).asUnsigned()
+
+/**
+ * Table lookup in two-vector table
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtbl2[_u64])
+ */
+public fun svtbl2U64(data: Svuint64x2T, indices: Svuint64T): Svuint64T = svtbl2S64(data.asSigned(), indices).asUnsigned()
+
+/**
+ * Table lookup in single-vector table (merging)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtbx[_f32])
+ */
+public fun svtbxF32(fallback: Svfloat32T, data: Svfloat32T, indices: Svuint32T): Svfloat32T {
+    fun svtbxF32(fallback1: Svfloat32T, data1: Svfloat32T, indices1: Svint32T): Svfloat32T = null as Svfloat32T
+    return svtbxF32(fallback, data, indices.asSigned())
+}
+
+/**
+ * Table lookup in single-vector table (merging)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtbx[_f64])
+ */
+public fun svtbxF64(fallback: Svfloat64T, data: Svfloat64T, indices: Svuint64T): Svfloat64T {
+    fun svtbxF64(fallback1: Svfloat64T, data1: Svfloat64T, indices1: Svint64T): Svfloat64T = null as Svfloat64T
+    return svtbxF64(fallback, data, indices.asSigned())
+}
+
+/**
+ * Table lookup in single-vector table (merging)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtbx[_s8])
+ */
+public fun svtbxS8(fallback: Svint8T, data: Svint8T, indices: Svuint8T): Svint8T {
+    fun svtbxS8(fallback1: Svint8T, data1: Svint8T, indices1: Svint8T): Svint8T = null as Svint8T
+    return svtbxS8(fallback, data, indices.asSigned())
+}
+
+/**
+ * Table lookup in single-vector table (merging)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtbx[_s16])
+ */
+public fun svtbxS16(fallback: Svint16T, data: Svint16T, indices: Svuint16T): Svint16T {
+    fun svtbxS16(fallback1: Svint16T, data1: Svint16T, indices1: Svint16T): Svint16T = null as Svint16T
+    return svtbxS16(fallback, data, indices.asSigned())
+}
+
+/**
+ * Table lookup in single-vector table (merging)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtbx[_s32])
+ */
+public fun svtbxS32(fallback: Svint32T, data: Svint32T, indices: Svuint32T): Svint32T {
+    fun svtbxS32(fallback1: Svint32T, data1: Svint32T, indices1: Svint32T): Svint32T = null as Svint32T
+    return svtbxS32(fallback, data, indices.asSigned())
+}
+
+/**
+ * Table lookup in single-vector table (merging)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtbx[_s64])
+ */
+public fun svtbxS64(fallback: Svint64T, data: Svint64T, indices: Svuint64T): Svint64T {
+    fun svtbxS64(fallback1: Svint64T, data1: Svint64T, indices1: Svint64T): Svint64T = null as Svint64T
+    return svtbxS64(fallback, data, indices.asSigned())
+}
+
+/**
+ * Table lookup in single-vector table (merging)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtbx[_u8])
+ */
+public fun svtbxU8(fallback: Svuint8T, data: Svuint8T, indices: Svuint8T): Svuint8T = svtbxS8(fallback.asSigned(), data.asSigned(), indices).asUnsigned()
+
+/**
+ * Table lookup in single-vector table (merging)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtbx[_u16])
+ */
+public fun svtbxU16(fallback: Svuint16T, data: Svuint16T, indices: Svuint16T): Svuint16T = svtbxS16(fallback.asSigned(), data.asSigned(), indices).asUnsigned()
+
+/**
+ * Table lookup in single-vector table (merging)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtbx[_u32])
+ */
+public fun svtbxU32(fallback: Svuint32T, data: Svuint32T, indices: Svuint32T): Svuint32T = svtbxS32(fallback.asSigned(), data.asSigned(), indices).asUnsigned()
+
+/**
+ * Table lookup in single-vector table (merging)
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtbx[_u64])
+ */
+public fun svtbxU64(fallback: Svuint64T, data: Svuint64T, indices: Svuint64T): Svuint64T = svtbxS64(fallback.asSigned(), data.asSigned(), indices).asUnsigned()
+
+/**
+ * Unpack and extend high half
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svunpkhi[_b])
+ */
+public fun svunpkhiB(op: SvboolT): SvboolT {
+    fun svunpkhiB(op1: SvboolT): Svbool8T = null as Svbool8T
+    return svunpkhiB(op).sveInto()
+}
+
+/**
+ * Unpack and extend high half
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svunpkhi[_s16])
+ */
+public fun svunpkhiS16(op: Svint8T): Svint16T {
+    fun svunpkhiS16(op1: Svint8T): Svint16T = null as Svint16T
+    return svunpkhiS16(op)
+}
+
+/**
+ * Unpack and extend high half
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svunpkhi[_s32])
+ */
+public fun svunpkhiS32(op: Svint16T): Svint32T {
+    fun svunpkhiS32(op1: Svint16T): Svint32T = null as Svint32T
+    return svunpkhiS32(op)
+}
+
+/**
+ * Unpack and extend high half
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svunpkhi[_s64])
+ */
+public fun svunpkhiS64(op: Svint32T): Svint64T {
+    fun svunpkhiS64(op1: Svint32T): Svint64T = null as Svint64T
+    return svunpkhiS64(op)
+}
+
+/**
+ * Unpack and extend high half
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svunpkhi[_u16])
+ */
+public fun svunpkhiU16(op: Svuint8T): Svuint16T {
+    fun svunpkhiU16(op1: Svint8T): Svint16T = null as Svint16T
+    return svunpkhiU16(op.asSigned()).asUnsigned()
+}
+
+/**
+ * Unpack and extend high half
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svunpkhi[_u32])
+ */
+public fun svunpkhiU32(op: Svuint16T): Svuint32T {
+    fun svunpkhiU32(op1: Svint16T): Svint32T = null as Svint32T
+    return svunpkhiU32(op.asSigned()).asUnsigned()
+}
+
+/**
+ * Unpack and extend high half
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svunpkhi[_u64])
+ */
+public fun svunpkhiU64(op: Svuint32T): Svuint64T {
+    fun svunpkhiU64(op1: Svint32T): Svint64T = null as Svint64T
+    return svunpkhiU64(op.asSigned()).asUnsigned()
+}
+
+/**
+ * Unpack and extend low half
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svunpklo[_b])
+ */
+public fun svunpkloB(op: SvboolT): SvboolT {
+    fun svunpkloB(op1: SvboolT): Svbool8T = null as Svbool8T
+    return svunpkloB(op).sveInto()
+}
+
+/**
+ * Unpack and extend low half
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svunpklo[_s16])
+ */
+public fun svunpkloS16(op: Svint8T): Svint16T {
+    fun svunpkloS16(op1: Svint8T): Svint16T = null as Svint16T
+    return svunpkloS16(op)
+}
+
+/**
+ * Unpack and extend low half
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svunpklo[_s32])
+ */
+public fun svunpkloS32(op: Svint16T): Svint32T {
+    fun svunpkloS32(op1: Svint16T): Svint32T = null as Svint32T
+    return svunpkloS32(op)
+}
+
+/**
+ * Unpack and extend low half
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svunpklo[_s64])
+ */
+public fun svunpkloS64(op: Svint32T): Svint64T {
+    fun svunpkloS64(op1: Svint32T): Svint64T = null as Svint64T
+    return svunpkloS64(op)
+}
+
+/**
+ * Unpack and extend low half
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svunpklo[_u16])
+ */
+public fun svunpkloU16(op: Svuint8T): Svuint16T {
+    fun svunpkloU16(op1: Svint8T): Svint16T = null as Svint16T
+    return svunpkloU16(op.asSigned()).asUnsigned()
+}
+
+/**
+ * Unpack and extend low half
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svunpklo[_u32])
+ */
+public fun svunpkloU32(op: Svuint16T): Svuint32T {
+    fun svunpkloU32(op1: Svint16T): Svint32T = null as Svint32T
+    return svunpkloU32(op.asSigned()).asUnsigned()
+}
+
+/**
+ * Unpack and extend low half
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svunpklo[_u64])
+ */
+public fun svunpkloU64(op: Svuint32T): Svuint64T {
+    fun svunpkloU64(op1: Svint32T): Svint64T = null as Svint64T
+    return svunpkloU64(op.asSigned()).asUnsigned()
+}
+
+/**
+ * Saturating add with unsigned addend
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuqadd[_s8]_m)
+ */
+public fun svuqaddS8M(pg: SvboolT, op1: Svint8T, op2: Svuint8T): Svint8T {
+    fun svuqaddS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = null as Svint8T
+    return svuqaddS8M(pg, op1, op2.asSigned())
+}
+
+/**
+ * Saturating add with unsigned addend
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuqadd[_n_s8]_m)
+ */
+public fun svuqaddNS8M(pg: SvboolT, op1: Svint8T, op2: UByte): Svint8T = svuqaddS8M(pg, op1, svdupNU8(op2))
+
+/**
+ * Saturating add with unsigned addend
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuqadd[_s8]_x)
+ */
+public fun svuqaddS8X(pg: SvboolT, op1: Svint8T, op2: Svuint8T): Svint8T = svuqaddS8M(pg, op1, op2)
+
+/**
+ * Saturating add with unsigned addend
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuqadd[_n_s8]_x)
+ */
+public fun svuqaddNS8X(pg: SvboolT, op1: Svint8T, op2: UByte): Svint8T = svuqaddS8X(pg, op1, svdupNU8(op2))
+
+/**
+ * Saturating add with unsigned addend
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuqadd[_s8]_z)
+ */
+public fun svuqaddS8Z(pg: SvboolT, op1: Svint8T, op2: Svuint8T): Svint8T = svuqaddS8M(pg, svselS8(pg, op1, svdupNS8(0)), op2)
+
+/**
+ * Saturating add with unsigned addend
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuqadd[_n_s8]_z)
+ */
+public fun svuqaddNS8Z(pg: SvboolT, op1: Svint8T, op2: UByte): Svint8T = svuqaddS8Z(pg, op1, svdupNU8(op2))
+
+/**
+ * Saturating add with unsigned addend
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuqadd[_s16]_m)
+ */
+public fun svuqaddS16M(pg: SvboolT, op1: Svint16T, op2: Svuint16T): Svint16T {
+    fun svuqaddS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = null as Svint16T
+    return svuqaddS16M(pg.sveInto(), op1, op2.asSigned())
+}
+
+/**
+ * Saturating add with unsigned addend
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuqadd[_n_s16]_m)
+ */
+public fun svuqaddNS16M(pg: SvboolT, op1: Svint16T, op2: UShort): Svint16T = svuqaddS16M(pg, op1, svdupNU16(op2))
+
+/**
+ * Saturating add with unsigned addend
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuqadd[_s16]_x)
+ */
+public fun svuqaddS16X(pg: SvboolT, op1: Svint16T, op2: Svuint16T): Svint16T = svuqaddS16M(pg, op1, op2)
+
+/**
+ * Saturating add with unsigned addend
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuqadd[_n_s16]_x)
+ */
+public fun svuqaddNS16X(pg: SvboolT, op1: Svint16T, op2: UShort): Svint16T = svuqaddS16X(pg, op1, svdupNU16(op2))
+
+/**
+ * Saturating add with unsigned addend
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuqadd[_s16]_z)
+ */
+public fun svuqaddS16Z(pg: SvboolT, op1: Svint16T, op2: Svuint16T): Svint16T = svuqaddS16M(pg, svselS16(pg, op1, svdupNS16(0)), op2)
+
+/**
+ * Saturating add with unsigned addend
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuqadd[_n_s16]_z)
+ */
+public fun svuqaddNS16Z(pg: SvboolT, op1: Svint16T, op2: UShort): Svint16T = svuqaddS16Z(pg, op1, svdupNU16(op2))
+
+/**
+ * Saturating add with unsigned addend
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuqadd[_s32]_m)
+ */
+public fun svuqaddS32M(pg: SvboolT, op1: Svint32T, op2: Svuint32T): Svint32T {
+    fun svuqaddS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = null as Svint32T
+    return svuqaddS32M(pg.sveInto(), op1, op2.asSigned())
+}
+
+/**
+ * Saturating add with unsigned addend
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuqadd[_n_s32]_m)
+ */
+public fun svuqaddNS32M(pg: SvboolT, op1: Svint32T, op2: UInt): Svint32T = svuqaddS32M(pg, op1, svdupNU32(op2))
+
+/**
+ * Saturating add with unsigned addend
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuqadd[_s32]_x)
+ */
+public fun svuqaddS32X(pg: SvboolT, op1: Svint32T, op2: Svuint32T): Svint32T = svuqaddS32M(pg, op1, op2)
+
+/**
+ * Saturating add with unsigned addend
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuqadd[_n_s32]_x)
+ */
+public fun svuqaddNS32X(pg: SvboolT, op1: Svint32T, op2: UInt): Svint32T = svuqaddS32X(pg, op1, svdupNU32(op2))
+
+/**
+ * Saturating add with unsigned addend
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuqadd[_s32]_z)
+ */
+public fun svuqaddS32Z(pg: SvboolT, op1: Svint32T, op2: Svuint32T): Svint32T = svuqaddS32M(pg, svselS32(pg, op1, svdupNS32(0)), op2)
+
+/**
+ * Saturating add with unsigned addend
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuqadd[_n_s32]_z)
+ */
+public fun svuqaddNS32Z(pg: SvboolT, op1: Svint32T, op2: UInt): Svint32T = svuqaddS32Z(pg, op1, svdupNU32(op2))
+
+/**
+ * Saturating add with unsigned addend
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuqadd[_s64]_m)
+ */
+public fun svuqaddS64M(pg: SvboolT, op1: Svint64T, op2: Svuint64T): Svint64T {
+    fun svuqaddS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = null as Svint64T
+    return svuqaddS64M(pg.sveInto(), op1, op2.asSigned())
+}
+
+/**
+ * Saturating add with unsigned addend
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuqadd[_n_s64]_m)
+ */
+public fun svuqaddNS64M(pg: SvboolT, op1: Svint64T, op2: ULong): Svint64T = svuqaddS64M(pg, op1, svdupNU64(op2))
+
+/**
+ * Saturating add with unsigned addend
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuqadd[_s64]_x)
+ */
+public fun svuqaddS64X(pg: SvboolT, op1: Svint64T, op2: Svuint64T): Svint64T = svuqaddS64M(pg, op1, op2)
+
+/**
+ * Saturating add with unsigned addend
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuqadd[_n_s64]_x)
+ */
+public fun svuqaddNS64X(pg: SvboolT, op1: Svint64T, op2: ULong): Svint64T = svuqaddS64X(pg, op1, svdupNU64(op2))
+
+/**
+ * Saturating add with unsigned addend
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuqadd[_s64]_z)
+ */
+public fun svuqaddS64Z(pg: SvboolT, op1: Svint64T, op2: Svuint64T): Svint64T = svuqaddS64M(pg, svselS64(pg, op1, svdupNS64(0L)), op2)
+
+/**
+ * Saturating add with unsigned addend
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuqadd[_n_s64]_z)
+ */
+public fun svuqaddNS64Z(pg: SvboolT, op1: Svint64T, op2: ULong): Svint64T = svuqaddS64Z(pg, op1, svdupNU64(op2))
+
+/**
+ * While decrementing scalar is greater than or equal to
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegeB8[_s32])
+ */
+public fun svwhilegeB8S32(op1: Int, op2: Int): SvboolT {
+    fun svwhilegeB8S32(op11: Int, op21: Int): SvboolT = null as SvboolT
+    return svwhilegeB8S32(op1, op2)
+}
+
+/**
+ * While decrementing scalar is greater than or equal to
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegeB16[_s32])
+ */
+public fun svwhilegeB16S32(op1: Int, op2: Int): SvboolT {
+    fun svwhilegeB16S32(op11: Int, op21: Int): Svbool8T = null as Svbool8T
+    return svwhilegeB16S32(op1, op2).sveInto()
+}
+
+/**
+ * While decrementing scalar is greater than or equal to
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegeB32[_s32])
+ */
+public fun svwhilegeB32S32(op1: Int, op2: Int): SvboolT {
+    fun svwhilegeB32S32(op11: Int, op21: Int): Svbool4T = null as Svbool4T
+    return svwhilegeB32S32(op1, op2).sveInto()
+}
+
+/**
+ * While decrementing scalar is greater than or equal to
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegeB64[_s32])
+ */
+public fun svwhilegeB64S32(op1: Int, op2: Int): SvboolT {
+    fun svwhilegeB64S32(op11: Int, op21: Int): Svbool2T = null as Svbool2T
+    return svwhilegeB64S32(op1, op2).sveInto()
+}
+
+/**
+ * While decrementing scalar is greater than or equal to
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegeB8[_s64])
+ */
+public fun svwhilegeB8S64(op1: Long, op2: Long): SvboolT {
+    fun svwhilegeB8S64(op11: Long, op21: Long): SvboolT = null as SvboolT
+    return svwhilegeB8S64(op1, op2)
+}
+
+/**
+ * While decrementing scalar is greater than or equal to
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegeB16[_s64])
+ */
+public fun svwhilegeB16S64(op1: Long, op2: Long): SvboolT {
+    fun svwhilegeB16S64(op11: Long, op21: Long): Svbool8T = null as Svbool8T
+    return svwhilegeB16S64(op1, op2).sveInto()
+}
+
+/**
+ * While decrementing scalar is greater than or equal to
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegeB32[_s64])
+ */
+public fun svwhilegeB32S64(op1: Long, op2: Long): SvboolT {
+    fun svwhilegeB32S64(op11: Long, op21: Long): Svbool4T = null as Svbool4T
+    return svwhilegeB32S64(op1, op2).sveInto()
+}
+
+/**
+ * While decrementing scalar is greater than or equal to
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegeB64[_s64])
+ */
+public fun svwhilegeB64S64(op1: Long, op2: Long): SvboolT {
+    fun svwhilegeB64S64(op11: Long, op21: Long): Svbool2T = null as Svbool2T
+    return svwhilegeB64S64(op1, op2).sveInto()
+}
+
+/**
+ * While decrementing scalar is greater than or equal to
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegeB8[_u32])
+ */
+public fun svwhilegeB8U32(op1: UInt, op2: UInt): SvboolT {
+    fun svwhilegeB8U32(op11: Int, op21: Int): SvboolT = null as SvboolT
+    return svwhilegeB8U32(op1.asSigned(), op2.asSigned())
+}
+
+/**
+ * While decrementing scalar is greater than or equal to
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegeB16[_u32])
+ */
+public fun svwhilegeB16U32(op1: UInt, op2: UInt): SvboolT {
+    fun svwhilegeB16U32(op11: Int, op21: Int): Svbool8T = null as Svbool8T
+    return svwhilegeB16U32(op1.asSigned(), op2.asSigned()).sveInto()
+}
+
+/**
+ * While decrementing scalar is greater than or equal to
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegeB32[_u32])
+ */
+public fun svwhilegeB32U32(op1: UInt, op2: UInt): SvboolT {
+    fun svwhilegeB32U32(op11: Int, op21: Int): Svbool4T = null as Svbool4T
+    return svwhilegeB32U32(op1.asSigned(), op2.asSigned()).sveInto()
+}
+
+/**
+ * While decrementing scalar is greater than or equal to
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegeB64[_u32])
+ */
+public fun svwhilegeB64U32(op1: UInt, op2: UInt): SvboolT {
+    fun svwhilegeB64U32(op11: Int, op21: Int): Svbool2T = null as Svbool2T
+    return svwhilegeB64U32(op1.asSigned(), op2.asSigned()).sveInto()
+}
+
+/**
+ * While decrementing scalar is greater than or equal to
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegeB8[_u64])
+ */
+public fun svwhilegeB8U64(op1: ULong, op2: ULong): SvboolT {
+    fun svwhilegeB8U64(op11: Long, op21: Long): SvboolT = null as SvboolT
+    return svwhilegeB8U64(op1.asSigned(), op2.asSigned())
+}
+
+/**
+ * While decrementing scalar is greater than or equal to
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegeB16[_u64])
+ */
+public fun svwhilegeB16U64(op1: ULong, op2: ULong): SvboolT {
+    fun svwhilegeB16U64(op11: Long, op21: Long): Svbool8T = null as Svbool8T
+    return svwhilegeB16U64(op1.asSigned(), op2.asSigned()).sveInto()
+}
+
+/**
+ * While decrementing scalar is greater than or equal to
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegeB32[_u64])
+ */
+public fun svwhilegeB32U64(op1: ULong, op2: ULong): SvboolT {
+    fun svwhilegeB32U64(op11: Long, op21: Long): Svbool4T = null as Svbool4T
+    return svwhilegeB32U64(op1.asSigned(), op2.asSigned()).sveInto()
+}
+
+/**
+ * While decrementing scalar is greater than or equal to
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegeB64[_u64])
+ */
+public fun svwhilegeB64U64(op1: ULong, op2: ULong): SvboolT {
+    fun svwhilegeB64U64(op11: Long, op21: Long): Svbool2T = null as Svbool2T
+    return svwhilegeB64U64(op1.asSigned(), op2.asSigned()).sveInto()
+}
+
+/**
+ * While decrementing scalar is greater than
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegtB8[_s32])
+ */
+public fun svwhilegtB8S32(op1: Int, op2: Int): SvboolT {
+    fun svwhilegtB8S32(op11: Int, op21: Int): SvboolT = null as SvboolT
+    return svwhilegtB8S32(op1, op2)
+}
+
+/**
+ * While decrementing scalar is greater than
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegtB16[_s32])
+ */
+public fun svwhilegtB16S32(op1: Int, op2: Int): SvboolT {
+    fun svwhilegtB16S32(op11: Int, op21: Int): Svbool8T = null as Svbool8T
+    return svwhilegtB16S32(op1, op2).sveInto()
+}
+
+/**
+ * While decrementing scalar is greater than
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegtB32[_s32])
+ */
+public fun svwhilegtB32S32(op1: Int, op2: Int): SvboolT {
+    fun svwhilegtB32S32(op11: Int, op21: Int): Svbool4T = null as Svbool4T
+    return svwhilegtB32S32(op1, op2).sveInto()
+}
+
+/**
+ * While decrementing scalar is greater than
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegtB64[_s32])
+ */
+public fun svwhilegtB64S32(op1: Int, op2: Int): SvboolT {
+    fun svwhilegtB64S32(op11: Int, op21: Int): Svbool2T = null as Svbool2T
+    return svwhilegtB64S32(op1, op2).sveInto()
+}
+
+/**
+ * While decrementing scalar is greater than
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegtB8[_s64])
+ */
+public fun svwhilegtB8S64(op1: Long, op2: Long): SvboolT {
+    fun svwhilegtB8S64(op11: Long, op21: Long): SvboolT = null as SvboolT
+    return svwhilegtB8S64(op1, op2)
+}
+
+/**
+ * While decrementing scalar is greater than
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegtB16[_s64])
+ */
+public fun svwhilegtB16S64(op1: Long, op2: Long): SvboolT {
+    fun svwhilegtB16S64(op11: Long, op21: Long): Svbool8T = null as Svbool8T
+    return svwhilegtB16S64(op1, op2).sveInto()
+}
+
+/**
+ * While decrementing scalar is greater than
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegtB32[_s64])
+ */
+public fun svwhilegtB32S64(op1: Long, op2: Long): SvboolT {
+    fun svwhilegtB32S64(op11: Long, op21: Long): Svbool4T = null as Svbool4T
+    return svwhilegtB32S64(op1, op2).sveInto()
+}
+
+/**
+ * While decrementing scalar is greater than
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegtB64[_s64])
+ */
+public fun svwhilegtB64S64(op1: Long, op2: Long): SvboolT {
+    fun svwhilegtB64S64(op11: Long, op21: Long): Svbool2T = null as Svbool2T
+    return svwhilegtB64S64(op1, op2).sveInto()
+}
+
+/**
+ * While decrementing scalar is greater than
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegtB8[_u32])
+ */
+public fun svwhilegtB8U32(op1: UInt, op2: UInt): SvboolT {
+    fun svwhilegtB8U32(op11: Int, op21: Int): SvboolT = null as SvboolT
+    return svwhilegtB8U32(op1.asSigned(), op2.asSigned())
+}
+
+/**
+ * While decrementing scalar is greater than
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegtB16[_u32])
+ */
+public fun svwhilegtB16U32(op1: UInt, op2: UInt): SvboolT {
+    fun svwhilegtB16U32(op11: Int, op21: Int): Svbool8T = null as Svbool8T
+    return svwhilegtB16U32(op1.asSigned(), op2.asSigned()).sveInto()
+}
+
+/**
+ * While decrementing scalar is greater than
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegtB32[_u32])
+ */
+public fun svwhilegtB32U32(op1: UInt, op2: UInt): SvboolT {
+    fun svwhilegtB32U32(op11: Int, op21: Int): Svbool4T = null as Svbool4T
+    return svwhilegtB32U32(op1.asSigned(), op2.asSigned()).sveInto()
+}
+
+/**
+ * While decrementing scalar is greater than
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegtB64[_u32])
+ */
+public fun svwhilegtB64U32(op1: UInt, op2: UInt): SvboolT {
+    fun svwhilegtB64U32(op11: Int, op21: Int): Svbool2T = null as Svbool2T
+    return svwhilegtB64U32(op1.asSigned(), op2.asSigned()).sveInto()
+}
+
+/**
+ * While decrementing scalar is greater than
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegtB8[_u64])
+ */
+public fun svwhilegtB8U64(op1: ULong, op2: ULong): SvboolT {
+    fun svwhilegtB8U64(op11: Long, op21: Long): SvboolT = null as SvboolT
+    return svwhilegtB8U64(op1.asSigned(), op2.asSigned())
+}
+
+/**
+ * While decrementing scalar is greater than
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegtB16[_u64])
+ */
+public fun svwhilegtB16U64(op1: ULong, op2: ULong): SvboolT {
+    fun svwhilegtB16U64(op11: Long, op21: Long): Svbool8T = null as Svbool8T
+    return svwhilegtB16U64(op1.asSigned(), op2.asSigned()).sveInto()
+}
+
+/**
+ * While decrementing scalar is greater than
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegtB32[_u64])
+ */
+public fun svwhilegtB32U64(op1: ULong, op2: ULong): SvboolT {
+    fun svwhilegtB32U64(op11: Long, op21: Long): Svbool4T = null as Svbool4T
+    return svwhilegtB32U64(op1.asSigned(), op2.asSigned()).sveInto()
+}
+
+/**
+ * While decrementing scalar is greater than
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegtB64[_u64])
+ */
+public fun svwhilegtB64U64(op1: ULong, op2: ULong): SvboolT {
+    fun svwhilegtB64U64(op11: Long, op21: Long): Svbool2T = null as Svbool2T
+    return svwhilegtB64U64(op1.asSigned(), op2.asSigned()).sveInto()
+}
+
+public fun svwhilerw8ptr(op1: ConstPtr, op2: ConstPtr): SvboolT {
+    fun svwhilerw8ptr(op11: ConstPtr, op21: ConstPtr): SvboolT = null as SvboolT
+    val op11 = ConstPtr(op1.rawAddress, op1.rawMeta)
+    val op21 = ConstPtr(op2.rawAddress, op2.rawMeta)
+    return svwhilerw8ptr(op11, op21)
+}
+
+public fun svwhilerw16ptr(op1: ConstPtr, op2: ConstPtr): SvboolT {
+    fun svwhilerw16ptr(op11: ConstPtr, op21: ConstPtr): Svbool8T = null as Svbool8T
+    val op11 = ConstPtr(op1.rawAddress, op1.rawMeta)
+    val op21 = ConstPtr(op2.rawAddress, op2.rawMeta)
+    return svwhilerw16ptr(op11, op21).sveInto()
+}
+
+public fun svwhilerw32ptr(op1: ConstPtr, op2: ConstPtr): SvboolT {
+    fun svwhilerw32ptr(op11: ConstPtr, op21: ConstPtr): Svbool4T = null as Svbool4T
+    val op11 = ConstPtr(op1.rawAddress, op1.rawMeta)
+    val op21 = ConstPtr(op2.rawAddress, op2.rawMeta)
+    return svwhilerw32ptr(op11, op21).sveInto()
+}
+
+public fun svwhilerw64ptr(op1: ConstPtr, op2: ConstPtr): SvboolT {
+    fun svwhilerw64ptr(op11: ConstPtr, op21: ConstPtr): Svbool2T = null as Svbool2T
+    val op11 = ConstPtr(op1.rawAddress, op1.rawMeta)
+    val op21 = ConstPtr(op2.rawAddress, op2.rawMeta)
+    return svwhilerw64ptr(op11, op21).sveInto()
+}
+
+/**
+ * While free of read-after-write conflicts
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilerw[_f32])
+ * ## Safety
+ *  * [`pointer.byteOffsetFrom`](pointer#method.byteOffsetFrom) safety constraints must be met for at least the base pointers, `op1` and `op2`.
+ */
+public fun svwhilerwF32(op1: ConstPtr, op2: ConstPtr): SvboolT = svwhilerw32ptr<Float>(op1, op2)
+
+/**
+ * While free of read-after-write conflicts
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilerw[_f64])
+ * ## Safety
+ *  * [`pointer.byteOffsetFrom`](pointer#method.byteOffsetFrom) safety constraints must be met for at least the base pointers, `op1` and `op2`.
+ */
+public fun svwhilerwF64(op1: ConstPtr, op2: ConstPtr): SvboolT = svwhilerw64ptr<Double>(op1, op2)
+
+/**
+ * While free of read-after-write conflicts
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilerw[_s8])
+ * ## Safety
+ *  * [`pointer.byteOffsetFrom`](pointer#method.byteOffsetFrom) safety constraints must be met for at least the base pointers, `op1` and `op2`.
+ */
+public fun svwhilerwS8(op1: ConstPtr, op2: ConstPtr): SvboolT = svwhilerw8ptr<Byte>(op1, op2)
+
+/**
+ * While free of read-after-write conflicts
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilerw[_s16])
+ * ## Safety
+ *  * [`pointer.byteOffsetFrom`](pointer#method.byteOffsetFrom) safety constraints must be met for at least the base pointers, `op1` and `op2`.
+ */
+public fun svwhilerwS16(op1: ConstPtr, op2: ConstPtr): SvboolT = svwhilerw16ptr<Short>(op1, op2)
+
+/**
+ * While free of read-after-write conflicts
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilerw[_s32])
+ * ## Safety
+ *  * [`pointer.byteOffsetFrom`](pointer#method.byteOffsetFrom) safety constraints must be met for at least the base pointers, `op1` and `op2`.
+ */
+public fun svwhilerwS32(op1: ConstPtr, op2: ConstPtr): SvboolT = svwhilerw32ptr<Int>(op1, op2)
+
+/**
+ * While free of read-after-write conflicts
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilerw[_s64])
+ * ## Safety
+ *  * [`pointer.byteOffsetFrom`](pointer#method.byteOffsetFrom) safety constraints must be met for at least the base pointers, `op1` and `op2`.
+ */
+public fun svwhilerwS64(op1: ConstPtr, op2: ConstPtr): SvboolT = svwhilerw64ptr<Long>(op1, op2)
+
+/**
+ * While free of read-after-write conflicts
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilerw[_u8])
+ * ## Safety
+ *  * [`pointer.byteOffsetFrom`](pointer#method.byteOffsetFrom) safety constraints must be met for at least the base pointers, `op1` and `op2`.
+ */
+public fun svwhilerwU8(op1: ConstPtr, op2: ConstPtr): SvboolT = svwhilerw8ptr<UByte>(op1, op2)
+
+/**
+ * While free of read-after-write conflicts
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilerw[_u16])
+ * ## Safety
+ *  * [`pointer.byteOffsetFrom`](pointer#method.byteOffsetFrom) safety constraints must be met for at least the base pointers, `op1` and `op2`.
+ */
+public fun svwhilerwU16(op1: ConstPtr, op2: ConstPtr): SvboolT = svwhilerw16ptr<UShort>(op1, op2)
+
+/**
+ * While free of read-after-write conflicts
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilerw[_u32])
+ * ## Safety
+ *  * [`pointer.byteOffsetFrom`](pointer#method.byteOffsetFrom) safety constraints must be met for at least the base pointers, `op1` and `op2`.
+ */
+public fun svwhilerwU32(op1: ConstPtr, op2: ConstPtr): SvboolT = svwhilerw32ptr<UInt>(op1, op2)
+
+/**
+ * While free of read-after-write conflicts
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilerw[_u64])
+ * ## Safety
+ *  * [`pointer.byteOffsetFrom`](pointer#method.byteOffsetFrom) safety constraints must be met for at least the base pointers, `op1` and `op2`.
+ */
+public fun svwhilerwU64(op1: ConstPtr, op2: ConstPtr): SvboolT = svwhilerw64ptr<ULong>(op1, op2)
+
+public fun svwhilewr8ptr(op1: ConstPtr, op2: ConstPtr): SvboolT {
+    fun svwhilewr8ptr(op11: ConstPtr, op21: ConstPtr): SvboolT = null as SvboolT
+    val op11 = ConstPtr(op1.rawAddress, op1.rawMeta)
+    val op21 = ConstPtr(op2.rawAddress, op2.rawMeta)
+    return svwhilewr8ptr(op11, op21)
+}
+
+public fun svwhilewr16ptr(op1: ConstPtr, op2: ConstPtr): SvboolT {
+    fun svwhilewr16ptr(op11: ConstPtr, op21: ConstPtr): Svbool8T = null as Svbool8T
+    val op11 = ConstPtr(op1.rawAddress, op1.rawMeta)
+    val op21 = ConstPtr(op2.rawAddress, op2.rawMeta)
+    return svwhilewr16ptr(op11, op21).sveInto()
+}
+
+public fun svwhilewr32ptr(op1: ConstPtr, op2: ConstPtr): SvboolT {
+    fun svwhilewr32ptr(op11: ConstPtr, op21: ConstPtr): Svbool4T = null as Svbool4T
+    val op11 = ConstPtr(op1.rawAddress, op1.rawMeta)
+    val op21 = ConstPtr(op2.rawAddress, op2.rawMeta)
+    return svwhilewr32ptr(op11, op21).sveInto()
+}
+
+public fun svwhilewr64ptr(op1: ConstPtr, op2: ConstPtr): SvboolT {
+    fun svwhilewr64ptr(op11: ConstPtr, op21: ConstPtr): Svbool2T = null as Svbool2T
+    val op11 = ConstPtr(op1.rawAddress, op1.rawMeta)
+    val op21 = ConstPtr(op2.rawAddress, op2.rawMeta)
+    return svwhilewr64ptr(op11, op21).sveInto()
+}
+
+/**
+ * While free of write-after-read conflicts
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilewr[_f32])
+ * ## Safety
+ *  * [`pointer.byteOffsetFrom`](pointer#method.byteOffsetFrom) safety constraints must be met for at least the base pointers, `op1` and `op2`.
+ */
+public fun svwhilewrF32(op1: ConstPtr, op2: ConstPtr): SvboolT = svwhilewr32ptr<Float>(op1, op2)
+
+/**
+ * While free of write-after-read conflicts
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilewr[_f64])
+ * ## Safety
+ *  * [`pointer.byteOffsetFrom`](pointer#method.byteOffsetFrom) safety constraints must be met for at least the base pointers, `op1` and `op2`.
+ */
+public fun svwhilewrF64(op1: ConstPtr, op2: ConstPtr): SvboolT = svwhilewr64ptr<Double>(op1, op2)
+
+/**
+ * While free of write-after-read conflicts
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilewr[_s8])
+ * ## Safety
+ *  * [`pointer.byteOffsetFrom`](pointer#method.byteOffsetFrom) safety constraints must be met for at least the base pointers, `op1` and `op2`.
+ */
+public fun svwhilewrS8(op1: ConstPtr, op2: ConstPtr): SvboolT = svwhilewr8ptr<Byte>(op1, op2)
+
+/**
+ * While free of write-after-read conflicts
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilewr[_s16])
+ * ## Safety
+ *  * [`pointer.byteOffsetFrom`](pointer#method.byteOffsetFrom) safety constraints must be met for at least the base pointers, `op1` and `op2`.
+ */
+public fun svwhilewrS16(op1: ConstPtr, op2: ConstPtr): SvboolT = svwhilewr16ptr<Short>(op1, op2)
+
+/**
+ * While free of write-after-read conflicts
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilewr[_s32])
+ * ## Safety
+ *  * [`pointer.byteOffsetFrom`](pointer#method.byteOffsetFrom) safety constraints must be met for at least the base pointers, `op1` and `op2`.
+ */
+public fun svwhilewrS32(op1: ConstPtr, op2: ConstPtr): SvboolT = svwhilewr32ptr<Int>(op1, op2)
+
+/**
+ * While free of write-after-read conflicts
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilewr[_s64])
+ * ## Safety
+ *  * [`pointer.byteOffsetFrom`](pointer#method.byteOffsetFrom) safety constraints must be met for at least the base pointers, `op1` and `op2`.
+ */
+public fun svwhilewrS64(op1: ConstPtr, op2: ConstPtr): SvboolT = svwhilewr64ptr<Long>(op1, op2)
+
+/**
+ * While free of write-after-read conflicts
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilewr[_u8])
+ * ## Safety
+ *  * [`pointer.byteOffsetFrom`](pointer#method.byteOffsetFrom) safety constraints must be met for at least the base pointers, `op1` and `op2`.
+ */
+public fun svwhilewrU8(op1: ConstPtr, op2: ConstPtr): SvboolT = svwhilewr8ptr<UByte>(op1, op2)
+
+/**
+ * While free of write-after-read conflicts
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilewr[_u16])
+ * ## Safety
+ *  * [`pointer.byteOffsetFrom`](pointer#method.byteOffsetFrom) safety constraints must be met for at least the base pointers, `op1` and `op2`.
+ */
+public fun svwhilewrU16(op1: ConstPtr, op2: ConstPtr): SvboolT = svwhilewr16ptr<UShort>(op1, op2)
+
+/**
+ * While free of write-after-read conflicts
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilewr[_u32])
+ * ## Safety
+ *  * [`pointer.byteOffsetFrom`](pointer#method.byteOffsetFrom) safety constraints must be met for at least the base pointers, `op1` and `op2`.
+ */
+public fun svwhilewrU32(op1: ConstPtr, op2: ConstPtr): SvboolT = svwhilewr32ptr<UInt>(op1, op2)
+
+/**
+ * While free of write-after-read conflicts
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilewr[_u64])
+ * ## Safety
+ *  * [`pointer.byteOffsetFrom`](pointer#method.byteOffsetFrom) safety constraints must be met for at least the base pointers, `op1` and `op2`.
+ */
+public fun svwhilewrU64(op1: ConstPtr, op2: ConstPtr): SvboolT = svwhilewr64ptr<ULong>(op1, op2)
+
+/**
+ * Bitwise exclusive OR and rotate right
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svxar[_n_s8])
+ */
+public fun svxarNS8(op1: Svint8T, op2: Svint8T, imm3: Int): Svint8T {
+    fun svxarNS8(op11: Svint8T, op21: Svint8T, imm3: Int): Svint8T = null as Svint8T
+    run {
+        check(1 <= imm3 && imm3 <= 8) { "IMM3 is not in range 1-8" }
+    }
+    return svxarNS8(op1, op2, imm3)
+}
+
+/**
+ * Bitwise exclusive OR and rotate right
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svxar[_n_s16])
+ */
+public fun svxarNS16(op1: Svint16T, op2: Svint16T, imm3: Int): Svint16T {
+    fun svxarNS16(op11: Svint16T, op21: Svint16T, imm3: Int): Svint16T = null as Svint16T
+    run {
+        check(1 <= imm3 && imm3 <= 16) { "IMM3 is not in range 1-16" }
+    }
+    return svxarNS16(op1, op2, imm3)
+}
+
+/**
+ * Bitwise exclusive OR and rotate right
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svxar[_n_s32])
+ */
+public fun svxarNS32(op1: Svint32T, op2: Svint32T, imm3: Int): Svint32T {
+    fun svxarNS32(op11: Svint32T, op21: Svint32T, imm3: Int): Svint32T = null as Svint32T
+    run {
+        check(1 <= imm3 && imm3 <= 32) { "IMM3 is not in range 1-32" }
+    }
+    return svxarNS32(op1, op2, imm3)
+}
+
+/**
+ * Bitwise exclusive OR and rotate right
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svxar[_n_s64])
+ */
+public fun svxarNS64(op1: Svint64T, op2: Svint64T, imm3: Int): Svint64T {
+    fun svxarNS64(op11: Svint64T, op21: Svint64T, imm3: Int): Svint64T = null as Svint64T
+    run {
+        check(1 <= imm3 && imm3 <= 64) { "IMM3 is not in range 1-64" }
+    }
+    return svxarNS64(op1, op2, imm3)
+}
+
+/**
+ * Bitwise exclusive OR and rotate right
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svxar[_n_u8])
+ */
+public fun svxarNU8(op1: Svuint8T, op2: Svuint8T, imm3: Int): Svuint8T {
+    run {
+        check(1 <= imm3 && imm3 <= 8) { "IMM3 is not in range 1-8" }
+    }
+    return svxarNS8(op1.asSigned(), op2.asSigned(), imm3).asUnsigned()
+}
+
+/**
+ * Bitwise exclusive OR and rotate right
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svxar[_n_u16])
+ */
+public fun svxarNU16(op1: Svuint16T, op2: Svuint16T, imm3: Int): Svuint16T {
+    run {
+        check(1 <= imm3 && imm3 <= 16) { "IMM3 is not in range 1-16" }
+    }
+    return svxarNS16(op1.asSigned(), op2.asSigned(), imm3).asUnsigned()
+}
+
+/**
+ * Bitwise exclusive OR and rotate right
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svxar[_n_u32])
+ */
+public fun svxarNU32(op1: Svuint32T, op2: Svuint32T, imm3: Int): Svuint32T {
+    run {
+        check(1 <= imm3 && imm3 <= 32) { "IMM3 is not in range 1-32" }
+    }
+    return svxarNS32(op1.asSigned(), op2.asSigned(), imm3).asUnsigned()
+}
+
+/**
+ * Bitwise exclusive OR and rotate right
+ * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svxar[_n_u64])
+ */
+public fun svxarNU64(op1: Svuint64T, op2: Svuint64T, imm3: Int): Svuint64T {
+    run {
+        check(1 <= imm3 && imm3 <= 64) { "IMM3 is not in range 1-64" }
+    }
+    return svxarNS64(op1.asSigned(), op2.asSigned(), imm3).asUnsigned()
+}

@@ -1,0 +1,22 @@
+// port-lint: source unicode/unicode_data.rs
+@file:OptIn(ExperimentalUnsignedTypes::class)
+
+package io.github.kotlinmania.rustlang.core.unicode.unicodedata.lowercase
+
+import io.github.kotlinmania.rustlang.core.char.isAscii
+import io.github.kotlinmania.rustlang.core.unicode.unicodedata.bitsetSearch
+
+public var BITSET_CHUNKS_MAP: UByteArray = ubyteArrayOf(12u, 17u, 0u, 0u, 8u, 0u, 0u, 13u, 14u, 9u, 0u, 16u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 6u, 3u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 4u, 1u, 0u, 15u, 0u, 11u, 0u, 0u, 10u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 5u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 19u, 0u, 2u, 18u, 0u, 7u)
+
+public var BITSET_INDEX_CHUNKS: List<UByteArray> = listOf(ubyteArrayOf(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u), ubyteArrayOf(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 67u, 0u, 0u), ubyteArrayOf(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 2u, 58u, 48u, 5u), ubyteArrayOf(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 16u, 14u, 62u, 0u), ubyteArrayOf(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 47u, 0u, 0u, 0u), ubyteArrayOf(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 8u, 20u, 66u, 0u, 0u, 0u, 0u), ubyteArrayOf(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 80u, 46u, 0u, 57u, 53u, 55u, 36u), ubyteArrayOf(0u, 0u, 0u, 0u, 9u, 63u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u), ubyteArrayOf(0u, 0u, 0u, 21u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 30u), ubyteArrayOf(0u, 0u, 0u, 68u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u), ubyteArrayOf(0u, 0u, 0u, 74u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u), ubyteArrayOf(0u, 0u, 0u, 76u, 0u, 16u, 64u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u), ubyteArrayOf(0u, 0u, 37u, 18u, 26u, 59u, 60u, 54u, 52u, 6u, 38u, 45u, 0u, 31u, 12u, 34u), ubyteArrayOf(0u, 0u, 51u, 0u, 62u, 62u, 62u, 0u, 24u, 24u, 82u, 24u, 39u, 28u, 27u, 40u), ubyteArrayOf(0u, 25u, 77u, 0u, 32u, 15u, 73u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u), ubyteArrayOf(10u, 65u, 0u, 35u, 0u, 0u, 33u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 17u, 0u), ubyteArrayOf(16u, 29u, 24u, 41u, 42u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u), ubyteArrayOf(16u, 56u, 4u, 23u, 81u, 7u, 49u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u), ubyteArrayOf(16u, 75u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u), ubyteArrayOf(71u, 43u, 61u, 11u, 72u, 69u, 19u, 13u, 1u, 70u, 44u, 22u, 78u, 3u, 79u, 50u))
+
+public var BITSET_CANONICAL: ULongArray = ulongArrayOf(0x0uL, 0xFFFFFFC000000FFuL, 0xFFFFFFFFFFFFFBFFuL, 0xFFFF0000003F7FFFuL, 0xAAAAAAAAAAAAA802uL, 0xFFFFFFFFFFFFE000uL, 0xFFFFFFFFFFFFAA85uL, 0xFFFFFFFF01000000uL, 0xFFFFFFFF00000000uL, 0xFFFFFFFC00000000uL, 0xFFFFFF0000000000uL, 0xFFFFFC000000FFEFuL, 0xFFFFF00000010000uL, 0xFFFFC000000FFFFFuL, 0xFFFF03FFF7FFFFFFuL, 0xFFFF0000000043C0uL, 0xFFFF000000000000uL, 0xFFFDFFFFFFFFFFB9uL, 0xFF7FFFFF80000000uL, 0xFC000000FFFFFFC0uL, 0xF800000000000000uL, 0xF7FFFFFFFFFF0000uL, 0xF0000003F7FFFFFCuL, 0xAAAAAAAAAAAAD554uL, 0xAAAAAAAAAAAAAAAAuL, 0x8002000000000000uL, 0x55AAAAAAAAAAAAAAuL, 0x40DF00FF00FF00FFuL, 0x3FFF00FF00FF003FuL, 0x3FDA1562FFFFFFFFuL, 0x3F00000000000000uL, 0x3C8A000000000020uL, 0x321080000008C400uL, 0x1BFBFFFBFF800000uL, 0x192FAAAAAAE37FFFuL, 0xFFFFFFFFF000000uL, 0x75E00000AAAA50AuL, 0x420040000000000uL, 0x1FFFFFFFFCFFFFFuL, 0xFF00FF003F00FFuL, 0xDC00FF00CF00DCuL, 0x8501AAAAAAAAAuL, 0x20BFFFFFFFFFuL, 0xFFFFDFC000uL, 0x7FFFFFFC00uL, 0x1F00000003uL, 0x3AAAAAAAuL, 0xF8007FuL, 0x7F0000uL, 0x19FFuL, 0xBF7uL, 0x5FFuL, 0x93FAAAAAAAAAAAAAuL, 0x95FFAAAAAAAAAAAAuL, 0xAA29AAAAB5555240uL, 0xAAA082AAAABA50AAuL, 0xAAAAAAAAFFFFFFFFuL, 0xAAABAAA800000000uL, 0xAAABAAFFFFFDDAFEuL, 0xD4AAAAAAAAAAAB55uL, 0xE6512D2A4E243129uL, 0xEBC000000FFFFFFCuL)
+
+public var BITSET_MAPPING: List<Pair<UByte, UByte>> = listOf(Pair(0, 64), Pair(1, 184), Pair(1, 182), Pair(1, 172), Pair(1, 168), Pair(1, 161), Pair(1, 146), Pair(1, 144), Pair(1, 140), Pair(1, 136), Pair(1, 132), Pair(2, 122), Pair(2, 160), Pair(2, 146), Pair(2, 141), Pair(3, 160), Pair(3, 6), Pair(3, 58), Pair(4, 146), Pair(4, 144), Pair(4, 83))
+
+public fun lookup(c: Char): Boolean {
+    if (false) {
+        check(!c.isAscii())
+    }
+    return (c.toUInt()) >= 0xaau && bitsetSearch(c.toUInt(), BITSET_CHUNKS_MAP, BITSET_INDEX_CHUNKS, BITSET_CANONICAL, BITSET_MAPPING)
+}

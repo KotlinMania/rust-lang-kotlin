@@ -1,0 +1,5 @@
+package = io.github.kotlinmania.rustlang.corearch.amdgpu.cinterop
+headers = amdgpu_wrapper.h
+headerFilter = amdgpu_wrapper.h
+compilerOpts = -Isrc/native/interop/cinterop
+staticLibraries = amdgpu_wrapper.a

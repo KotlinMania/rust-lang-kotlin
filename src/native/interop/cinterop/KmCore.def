@@ -1,0 +1,5 @@
+package = io.github.kotlinmania.rustlang.core.intrinsics.cinterop
+headers = km_core_intrinsics_inline.h km_core_llvm_asm.h
+headerFilter = km_core_intrinsics_inline.h km_core_llvm_asm.h
+compilerOpts = -O2 -Isrc/native/interop/cinterop
+staticLibraries = kmcore_wrapper.a

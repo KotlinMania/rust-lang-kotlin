@@ -1,0 +1,603 @@
+// port-lint: source bridge/client.rs
+package io.github.kotlinmania.rustlang.procmacro.bridge.client
+
+import io.github.kotlinmania.rustlang.core.cell.RefCell
+import io.github.kotlinmania.rustlang.core.ops.range.Bound
+import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
+import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
+import io.github.kotlinmania.rustlang.procmacro.bridge.ApiTags
+import io.github.kotlinmania.rustlang.procmacro.bridge.BridgeConfig
+import io.github.kotlinmania.rustlang.procmacro.bridge.Decode
+import io.github.kotlinmania.rustlang.procmacro.bridge.Diagnostic
+import io.github.kotlinmania.rustlang.procmacro.bridge.Encode
+import io.github.kotlinmania.rustlang.procmacro.bridge.ExpnGlobals
+import io.github.kotlinmania.rustlang.procmacro.bridge.Literal
+import io.github.kotlinmania.rustlang.procmacro.bridge.Methods
+import io.github.kotlinmania.rustlang.procmacro.bridge.TokenTree
+import io.github.kotlinmania.rustlang.procmacro.bridge.buffer.Buffer
+import io.github.kotlinmania.rustlang.procmacro.bridge.closure.Closure
+import io.github.kotlinmania.rustlang.procmacro.bridge.handle.Handle
+import io.github.kotlinmania.rustlang.procmacro.bridge.panicmessage.PanicMessage
+import io.github.kotlinmania.rustlang.procmacro.bridge.selflessreify.reifyToExternCFnHrtBridge
+import io.github.kotlinmania.rustlang.procmacro.bridge.symbol.Symbol
+import io.github.kotlinmania.rustlang.std.sync.once.Once
+
+// Client-side types.
+
+public fun interface ClientRunCallback {
+    public operator fun invoke(arg0: BridgeConfig): Buffer
+}
+
+internal open class TokenStream(
+    public var handle: Handle,
+) : Encode<S>, Decode<S, TokenStream> {
+    // Forward `Drop.drop` to the inherent `drop` method.
+    public open fun drop() {
+        Methods.tsDrop(TokenStream(handle = this.handle))
+    }
+
+    public override fun encode(w: Buffer, s: S) {
+        mem.ManuallyDrop.new(this).handle.encode(w, s)
+    }
+
+    public open fun clone(): TokenStream = Methods.tsClone(this)
+
+    public companion object {
+        public fun <S> decode(r: List<UByte>, s: S): TokenStream = TokenStream(handle = Handle.Handle.decode(r, s))
+    }
+}
+
+public fun TokenStream.encode(w: Buffer, s: Unit) {
+    this.value.encode(w, s)
+}
+
+public fun decodeTokenStream(r: List<UByte>, s: Unit): TokenStream = TokenStream(Decode.decode(r, s))
+
+internal open class Span(
+    public var handle: Handle,
+) : Encode<S>, Decode<S, Span> {
+    public override fun encode(w: Buffer, s: S) {
+        this.handle.encode(w, s)
+    }
+
+    public open fun fmt(f: StringBuilder) {
+        f.append(Methods.spanDebug(this))
+    }
+
+    public companion object {
+        public fun <S> decode(r: List<UByte>, s: S): Span = Span(handle = Handle.Handle.decode(r, s))
+
+        internal fun defSite(): Span = Bridge.with({ bridge -> bridge.globals.defSite })
+
+        internal fun callSite(): Span = Bridge.with({ bridge -> bridge.globals.callSite })
+
+        internal fun mixedSite(): Span = Bridge.with({ bridge -> bridge.globals.mixedSite })
+    }
+}
+
+internal fun Methods.Companion.trackEnvVar(variable: String, value: String?) {
+    Bridge.with({ bridge ->
+        var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
+        buf.clear()
+        ApiTags::trackEnvVar.encode(buf, Unit)
+        variable.encode(buf, Unit)
+        value.encode(buf, Unit)
+        buf = bridge.dispatch.call(buf)
+        val r = Result.decode(buf, Unit)
+        bridge.cachedBuffer = buf
+        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+    })
+}
+
+internal fun Methods.Companion.trackPath(path: String) {
+    Bridge.with({ bridge ->
+        var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
+        buf.clear()
+        ApiTags::trackPath.encode(buf, Unit)
+        path.encode(buf, Unit)
+        buf = bridge.dispatch.call(buf)
+        val r = Result.decode(buf, Unit)
+        bridge.cachedBuffer = buf
+        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+    })
+}
+
+internal fun Methods.Companion.literalFromStr(s: String): Result<Literal<Span, Symbol>, String> =
+    Bridge.with({ bridge ->
+        var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
+        buf.clear()
+        ApiTags::literalFromStr.encode(buf, Unit)
+        s.encode(buf, Unit)
+        buf = bridge.dispatch.call(buf)
+        val r = Result.decode(buf, Unit)
+        bridge.cachedBuffer = buf
+        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+    })
+
+internal fun Methods.Companion.emitDiagnostic(diagnostic: Diagnostic<Span>) {
+    Bridge.with({ bridge ->
+        var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
+        buf.clear()
+        ApiTags::emitDiagnostic.encode(buf, Unit)
+        diagnostic.encode(buf, Unit)
+        buf = bridge.dispatch.call(buf)
+        val r = Result.decode(buf, Unit)
+        bridge.cachedBuffer = buf
+        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+    })
+}
+
+internal fun Methods.Companion.tsDrop(stream: TokenStream) {
+    Bridge.with({ bridge ->
+        var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
+        buf.clear()
+        ApiTags::tsDrop.encode(buf, Unit)
+        stream.encode(buf, Unit)
+        buf = bridge.dispatch.call(buf)
+        val r = Result.decode(buf, Unit)
+        bridge.cachedBuffer = buf
+        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+    })
+}
+
+internal fun Methods.Companion.tsClone(stream: TokenStream): TokenStream =
+    Bridge.with({ bridge ->
+        var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
+        buf.clear()
+        ApiTags::tsClone.encode(buf, Unit)
+        stream.encode(buf, Unit)
+        buf = bridge.dispatch.call(buf)
+        val r = Result.decode(buf, Unit)
+        bridge.cachedBuffer = buf
+        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+    })
+
+internal fun Methods.Companion.tsIsEmpty(stream: TokenStream): Boolean =
+    Bridge.with({ bridge ->
+        var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
+        buf.clear()
+        ApiTags::tsIsEmpty.encode(buf, Unit)
+        stream.encode(buf, Unit)
+        buf = bridge.dispatch.call(buf)
+        val r = Result.decode(buf, Unit)
+        bridge.cachedBuffer = buf
+        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+    })
+
+internal fun Methods.Companion.tsExpandExpr(stream: TokenStream): Result<TokenStream, Unit> =
+    Bridge.with({ bridge ->
+        var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
+        buf.clear()
+        ApiTags::tsExpandExpr.encode(buf, Unit)
+        stream.encode(buf, Unit)
+        buf = bridge.dispatch.call(buf)
+        val r = Result.decode(buf, Unit)
+        bridge.cachedBuffer = buf
+        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+    })
+
+internal fun Methods.Companion.tsFromStr(src: String): Result<TokenStream, String> =
+    Bridge.with({ bridge ->
+        var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
+        buf.clear()
+        ApiTags::tsFromStr.encode(buf, Unit)
+        src.encode(buf, Unit)
+        buf = bridge.dispatch.call(buf)
+        val r = Result.decode(buf, Unit)
+        bridge.cachedBuffer = buf
+        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+    })
+
+internal fun Methods.Companion.tsToString(stream: TokenStream): String =
+    Bridge.with({ bridge ->
+        var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
+        buf.clear()
+        ApiTags::tsToString.encode(buf, Unit)
+        stream.encode(buf, Unit)
+        buf = bridge.dispatch.call(buf)
+        val r = Result.decode(buf, Unit)
+        bridge.cachedBuffer = buf
+        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+    })
+
+internal fun Methods.Companion.tsFromTokenTree(tree: TokenTree<TokenStream, Span, Symbol>): TokenStream =
+    Bridge.with({ bridge ->
+        var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
+        buf.clear()
+        ApiTags::tsFromTokenTree.encode(buf, Unit)
+        tree.encode(buf, Unit)
+        buf = bridge.dispatch.call(buf)
+        val r = Result.decode(buf, Unit)
+        bridge.cachedBuffer = buf
+        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+    })
+
+internal fun Methods.Companion.tsConcatTrees(base: TokenStream?, trees: List<TokenTree<TokenStream, Span, Symbol>>): TokenStream =
+    Bridge.with({ bridge ->
+        var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
+        buf.clear()
+        ApiTags::tsConcatTrees.encode(buf, Unit)
+        base.encode(buf, Unit)
+        trees.encode(buf, Unit)
+        buf = bridge.dispatch.call(buf)
+        val r = Result.decode(buf, Unit)
+        bridge.cachedBuffer = buf
+        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+    })
+
+internal fun Methods.Companion.tsConcatStreams(base: TokenStream?, streams: List<TokenStream>): TokenStream =
+    Bridge.with({ bridge ->
+        var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
+        buf.clear()
+        ApiTags::tsConcatStreams.encode(buf, Unit)
+        base.encode(buf, Unit)
+        streams.encode(buf, Unit)
+        buf = bridge.dispatch.call(buf)
+        val r = Result.decode(buf, Unit)
+        bridge.cachedBuffer = buf
+        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+    })
+
+internal fun Methods.Companion.tsIntoTrees(stream: TokenStream): List<TokenTree<TokenStream, Span, Symbol>> =
+    Bridge.with({ bridge ->
+        var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
+        buf.clear()
+        ApiTags::tsIntoTrees.encode(buf, Unit)
+        stream.encode(buf, Unit)
+        buf = bridge.dispatch.call(buf)
+        val r = Result.decode(buf, Unit)
+        bridge.cachedBuffer = buf
+        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+    })
+
+internal fun Methods.Companion.spanDebug(span: Span): String =
+    Bridge.with({ bridge ->
+        var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
+        buf.clear()
+        ApiTags::spanDebug.encode(buf, Unit)
+        span.encode(buf, Unit)
+        buf = bridge.dispatch.call(buf)
+        val r = Result.decode(buf, Unit)
+        bridge.cachedBuffer = buf
+        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+    })
+
+internal fun Methods.Companion.spanParent(span: Span): Span? =
+    Bridge.with({ bridge ->
+        var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
+        buf.clear()
+        ApiTags::spanParent.encode(buf, Unit)
+        span.encode(buf, Unit)
+        buf = bridge.dispatch.call(buf)
+        val r = Result.decode(buf, Unit)
+        bridge.cachedBuffer = buf
+        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+    })
+
+internal fun Methods.Companion.spanSource(span: Span): Span =
+    Bridge.with({ bridge ->
+        var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
+        buf.clear()
+        ApiTags::spanSource.encode(buf, Unit)
+        span.encode(buf, Unit)
+        buf = bridge.dispatch.call(buf)
+        val r = Result.decode(buf, Unit)
+        bridge.cachedBuffer = buf
+        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+    })
+
+internal fun Methods.Companion.spanByteRange(span: Span): IntRange =
+    Bridge.with({ bridge ->
+        var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
+        buf.clear()
+        ApiTags::spanByteRange.encode(buf, Unit)
+        span.encode(buf, Unit)
+        buf = bridge.dispatch.call(buf)
+        val r = Result.decode(buf, Unit)
+        bridge.cachedBuffer = buf
+        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+    })
+
+internal fun Methods.Companion.spanStart(span: Span): Span =
+    Bridge.with({ bridge ->
+        var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
+        buf.clear()
+        ApiTags::spanStart.encode(buf, Unit)
+        span.encode(buf, Unit)
+        buf = bridge.dispatch.call(buf)
+        val r = Result.decode(buf, Unit)
+        bridge.cachedBuffer = buf
+        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+    })
+
+internal fun Methods.Companion.spanEnd(span: Span): Span =
+    Bridge.with({ bridge ->
+        var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
+        buf.clear()
+        ApiTags::spanEnd.encode(buf, Unit)
+        span.encode(buf, Unit)
+        buf = bridge.dispatch.call(buf)
+        val r = Result.decode(buf, Unit)
+        bridge.cachedBuffer = buf
+        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+    })
+
+internal fun Methods.Companion.spanLine(span: Span): Int =
+    Bridge.with({ bridge ->
+        var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
+        buf.clear()
+        ApiTags::spanLine.encode(buf, Unit)
+        span.encode(buf, Unit)
+        buf = bridge.dispatch.call(buf)
+        val r = Result.decode(buf, Unit)
+        bridge.cachedBuffer = buf
+        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+    })
+
+internal fun Methods.Companion.spanColumn(span: Span): Int =
+    Bridge.with({ bridge ->
+        var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
+        buf.clear()
+        ApiTags::spanColumn.encode(buf, Unit)
+        span.encode(buf, Unit)
+        buf = bridge.dispatch.call(buf)
+        val r = Result.decode(buf, Unit)
+        bridge.cachedBuffer = buf
+        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+    })
+
+internal fun Methods.Companion.spanFile(span: Span): String =
+    Bridge.with({ bridge ->
+        var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
+        buf.clear()
+        ApiTags::spanFile.encode(buf, Unit)
+        span.encode(buf, Unit)
+        buf = bridge.dispatch.call(buf)
+        val r = Result.decode(buf, Unit)
+        bridge.cachedBuffer = buf
+        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+    })
+
+internal fun Methods.Companion.spanLocalFile(span: Span): String? =
+    Bridge.with({ bridge ->
+        var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
+        buf.clear()
+        ApiTags::spanLocalFile.encode(buf, Unit)
+        span.encode(buf, Unit)
+        buf = bridge.dispatch.call(buf)
+        val r = Result.decode(buf, Unit)
+        bridge.cachedBuffer = buf
+        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+    })
+
+internal fun Methods.Companion.spanJoin(span: Span, other: Span): Span? =
+    Bridge.with({ bridge ->
+        var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
+        buf.clear()
+        ApiTags::spanJoin.encode(buf, Unit)
+        span.encode(buf, Unit)
+        other.encode(buf, Unit)
+        buf = bridge.dispatch.call(buf)
+        val r = Result.decode(buf, Unit)
+        bridge.cachedBuffer = buf
+        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+    })
+
+internal fun Methods.Companion.spanSubspan(span: Span, start: Bound<Int>, end: Bound<Int>): Span? =
+    Bridge.with({ bridge ->
+        var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
+        buf.clear()
+        ApiTags::spanSubspan.encode(buf, Unit)
+        span.encode(buf, Unit)
+        start.encode(buf, Unit)
+        end.encode(buf, Unit)
+        buf = bridge.dispatch.call(buf)
+        val r = Result.decode(buf, Unit)
+        bridge.cachedBuffer = buf
+        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+    })
+
+internal fun Methods.Companion.spanResolvedAt(span: Span, at: Span): Span =
+    Bridge.with({ bridge ->
+        var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
+        buf.clear()
+        ApiTags::spanResolvedAt.encode(buf, Unit)
+        span.encode(buf, Unit)
+        at.encode(buf, Unit)
+        buf = bridge.dispatch.call(buf)
+        val r = Result.decode(buf, Unit)
+        bridge.cachedBuffer = buf
+        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+    })
+
+internal fun Methods.Companion.spanSourceText(span: Span): String? =
+    Bridge.with({ bridge ->
+        var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
+        buf.clear()
+        ApiTags::spanSourceText.encode(buf, Unit)
+        span.encode(buf, Unit)
+        buf = bridge.dispatch.call(buf)
+        val r = Result.decode(buf, Unit)
+        bridge.cachedBuffer = buf
+        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+    })
+
+internal fun Methods.Companion.spanSaveSpan(span: Span): Int =
+    Bridge.with({ bridge ->
+        var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
+        buf.clear()
+        ApiTags::spanSaveSpan.encode(buf, Unit)
+        span.encode(buf, Unit)
+        buf = bridge.dispatch.call(buf)
+        val r = Result.decode(buf, Unit)
+        bridge.cachedBuffer = buf
+        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+    })
+
+internal fun Methods.Companion.spanRecoverProcMacroSpan(id: Int): Span =
+    Bridge.with({ bridge ->
+        var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
+        buf.clear()
+        ApiTags::spanRecoverProcMacroSpan.encode(buf, Unit)
+        id.encode(buf, Unit)
+        buf = bridge.dispatch.call(buf)
+        val r = Result.decode(buf, Unit)
+        bridge.cachedBuffer = buf
+        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+    })
+
+internal fun Methods.Companion.symbolNormalizeAndValidateIdent(string: String): Result<Symbol, Unit> =
+    Bridge.with({ bridge ->
+        var buf = bridge.cachedBuffer.also { bridge.cachedBuffer = null }
+        buf.clear()
+        ApiTags::symbolNormalizeAndValidateIdent.encode(buf, Unit)
+        string.encode(buf, Unit)
+        buf = bridge.dispatch.call(buf)
+        val r = Result.decode(buf, Unit)
+        bridge.cachedBuffer = buf
+        r.unwrapOrElse({ e -> panic.resumeUnwind(e.into()) })
+    })
+
+public open class Bridge internal constructor(
+    /**
+     * Reusable buffer (only `clear`-ed, never shrunk), primarily
+     * used for making requests.
+     */
+    public var cachedBuffer: Buffer,
+    /**
+     * Server-side function that the client uses to make requests.
+     */
+    public var dispatch: Closure,
+    globalsCtorArg: ExpnGlobals<Span>,
+) {
+    /**
+     * Provided globals for this macro expansion.
+     */
+    public var globals: ExpnGlobals<Span> = globalsCtorArg
+        internal set
+
+    public companion object {
+        public operator fun invoke(
+            cachedBuffer: Buffer,
+            dispatch: Closure,
+            globals: ExpnGlobals<Span>,
+        ): Bridge = Bridge(
+            cachedBuffer = cachedBuffer,
+            dispatch = dispatch,
+            globalsCtorArg = globals,
+        )
+
+        public fun <R> with(f: (Bridge) -> R): R =
+            with({ state ->
+                val bridge = state.expect("procedural macro API is used outside of a procedural macro")
+                var bridge1 = bridge.tryBorrowMut().expect("procedural macro API is used while it's already in use")
+                f(bridge1)
+            })
+    }
+}
+
+internal fun <R> set(state: RefCell<Bridge>, f: () -> R): R {
+    open class RestoreOnDrop(
+        public var value: ConstPtr,
+    ) {
+        public var field0: ConstPtr
+            get() = value
+            set(v) {
+                value = v
+            }
+
+        public open fun drop() {
+            BRIDGE_STATE.set(this.value)
+        }
+    }
+    return f()
+}
+
+internal fun <R> with(f: (RefCell<Bridge>?) -> R): R {
+    val state = BRIDGE_STATE.get()
+    // SAFETY: the only place where the pointer is set is in `set`. It puts
+    // back the previous value after the inner call has returned, so we know
+    // that as long as the pointer is not null, it came from a reference to
+    // a `RefCell<Bridge>` that outlasts the call to this function. Since `f`
+    // works the same for any scope of the bridge, including the actual
+    // one, we can lie here and say that the scope is `static` without
+    // anyone noticing.
+    val bridge = state.cast().asRef()
+    return f(bridge)
+}
+
+internal fun isAvailable(): Boolean = with({ s -> s != null })
+
+/**
+ * A client-side RPC entry-point, which may be using a different `procMacro`
+ * from the one used by the server, but can be invoked compatibly.
+ *
+ * Note that the input and output type parameters are erased. They do not
+ * participate in the ABI, so while using the wrong runN method will likely
+ * result in a panic, it will not result in UB.
+ */
+public open class Client(
+    internal var run: ClientRunCallback,
+) {
+    public companion object {
+        public fun expand1(f: (TokenStream) -> TokenStream): Client =
+            Client(run = reifyToExternCFnHrtBridge({ bridge ->
+                runClient(bridge, f)
+            }))
+
+        public fun expand2(f: (TokenStream, TokenStream) -> TokenStream): Client =
+            Client(run = reifyToExternCFnHrtBridge({ bridge ->
+                runClient(bridge, { (input, input2) -> f(input, input2) })
+            }))
+    }
+}
+
+public fun maybeInstallPanicHook(forceShowPanics: Boolean) {
+    // Hide the default panic output within `procMacro` expansions.
+    // NB. the server can't do this because it may use a different std.
+    val HIDE_PANICS_DURING_EXPANSION: Once  = Once.new()
+    HIDE_PANICS_DURING_EXPANSION.callOnce({
+        val prev = panic.takeHook()
+        panic.setHook({ info ->
+            // We normally report panics by catching unwinds and passing the payload from the
+            // unwind back to the compiler, but if the panic doesn't unwind we'll abort before
+            // the compiler has a chance to print an error. So we special-case PanicInfo where
+            // canUnwind is false.
+            if (forceShowPanics || !isAvailable() || !info.canUnwind()) {
+                prev(info)
+            }
+        })
+    })
+}
+
+/**
+ * Client-side helper for handling client panics, entering the bridge,
+ * deserializing input and serializing output.
+ */
+public fun <A : Decode<Unit, A>> runClient(config: BridgeConfig, f: (A) -> TokenStream): Buffer {
+    var buf = config.input
+    val dispatch = config.dispatch
+    val forceShowPanics = config.forceShowPanics
+    val res =
+        panic.catchUnwind(panic.AssertUnwindSafe({
+            maybeInstallPanicHook(forceShowPanics)
+            // Make sure the symbol store is empty before decoding inputs.
+            Symbol.invalidateAll()
+            val reader = buf
+            val (globals, input) = Pair.decode(reader, Unit)
+            // Put the buffer we used for input back in the `Bridge` for requests.
+            val state = RefCell.new(Bridge(cachedBuffer = buf.also { buf = null }, dispatch = dispatch, globals = globals))
+            val output = set(state, { f(input) })
+            // Take the `cachedBuffer` back out, for the output value.
+            buf = RefCell.intoInner(state).cachedBuffer
+            output
+        }))
+    // Serialize response of type `Result<R, PanicMessage>`.
+    buf.clear()
+    res.mapErr(PanicMessage::from).encode(buf, Unit)
+    // Now that a response has been serialized, invalidate all symbols
+    // registered with the interner.
+    Symbol.invalidateAll()
+    return buf
+}

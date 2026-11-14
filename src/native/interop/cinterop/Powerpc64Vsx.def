@@ -1,0 +1,5 @@
+package = io.github.kotlinmania.rustlang.corearch.powerpc64.cinterop
+headers = powerpc64_vsx_wrapper.h
+headerFilter = powerpc64_vsx_wrapper.h
+compilerOpts = -Isrc/native/interop/cinterop
+staticLibraries = powerpc64_vsx_wrapper.a

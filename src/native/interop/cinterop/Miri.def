@@ -1,0 +1,5 @@
+package = io.github.kotlinmania.rustlang.panicunwind.miri.cinterop
+headers = miri_wrapper.h
+headerFilter = miri_wrapper.h
+compilerOpts = -Isrc/native/interop/cinterop
+staticLibraries = miri_wrapper.a

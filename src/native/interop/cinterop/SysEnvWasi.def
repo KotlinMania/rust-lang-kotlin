@@ -1,0 +1,5 @@
+package = io.github.kotlinmania.rustlang.std.sys.env.wasi.cinterop
+headers = sys_env_wasi_wrapper.h
+headerFilter = sys_env_wasi_wrapper.h
+compilerOpts = -Isrc/native/interop/cinterop
+staticLibraries = sys_env_wasi_wrapper.a

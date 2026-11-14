@@ -1,0 +1,17 @@
+#ifndef COREARCH_LOONGARCH64_LASX_GENERATED_LOONGARCH64_LASX_GENERATED_WRAPPER_H
+#define COREARCH_LOONGARCH64_LASX_GENERATED_LOONGARCH64_LASX_GENERATED_WRAPPER_H
+
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* COREARCH_LOONGARCH64_LASX_GENERATED_LOONGARCH64_LASX_GENERATED_WRAPPER_H */

@@ -1,0 +1,291 @@
+// port-lint: source x86/ssse3.rs
+package io.github.kotlinmania.rustlang.corearch.x86
+
+import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
+import io.github.kotlinmania.rustlang.corearch.simd.I16x8
+import io.github.kotlinmania.rustlang.corearch.simd.I32x4
+import io.github.kotlinmania.rustlang.corearch.simd.I8x16
+import io.github.kotlinmania.rustlang.corearch.simd.M16x8
+import io.github.kotlinmania.rustlang.corearch.simd.M32x4
+import io.github.kotlinmania.rustlang.corearch.simd.M8x16
+import io.github.kotlinmania.rustlang.corearch.simd.U8x16
+import io.github.kotlinmania.rustlang.corearch.simdShuffle
+
+// Supplemental Streaming SIMD Extensions 3 (SSSE3)
+
+/**
+ * Computes the absolute value of packed 8-bit signed integers in `a` and
+ * return the unsigned results.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_abs_epi8)
+ */
+public fun mmAbsEpi8(a: M128i): M128i =
+    run {
+        val a1 = a.asI8x16()
+        val zero = i8x16.ZERO
+        val r = simdSelect<M8x16>(simdLt(a1, zero), simdNeg(a1), a1)
+        transmute(r)
+    }
+
+/**
+ * Computes the absolute value of each of the packed 16-bit signed integers in
+ * `a` and
+ * return the 16-bit unsigned integer
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_abs_epi16)
+ */
+public fun mmAbsEpi16(a: M128i): M128i =
+    run {
+        val a1 = a.asI16x8()
+        val zero = i16x8.ZERO
+        val r = simdSelect<M16x8>(simdLt(a1, zero), simdNeg(a1), a1)
+        transmute(r)
+    }
+
+/**
+ * Computes the absolute value of each of the packed 32-bit signed integers in
+ * `a` and
+ * return the 32-bit unsigned integer
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_abs_epi32)
+ */
+public fun mmAbsEpi32(a: M128i): M128i =
+    run {
+        val a1 = a.asI32x4()
+        val zero = i32x4.ZERO
+        val r = simdSelect<M32x4>(simdLt(a1, zero), simdNeg(a1), a1)
+        transmute(r)
+    }
+
+/**
+ * Shuffles bytes from `a` according to the content of `b`.
+ *
+ * The last 4 bits of each byte of `b` are used as addresses
+ * into the 16 bytes of `a`.
+ *
+ * In addition, if the highest significant bit of a byte of `b`
+ * is set, the respective destination byte is set to 0.
+ *
+ * Picturing `a` and `b` as `[UByte; 16]`, `_mm_shuffle_epi8` is
+ * logically equivalent to:
+ *
+ * ```kotlin
+ * @file:OptIn(ExperimentalUnsignedTypes.cls)
+ *
+ * public fun doctestEntry() {
+ *     fun mmShuffleEpi8(a: UByteArray, b: UByteArray): UByteArray {
+ *         var r = UByteArray(16) { 0u.toUByte() }
+ *         for (i in 0 until 16) {
+ *             // if the most significant bit of b is set,
+ *             // then the destination byte is set to 0.
+ *             if (b[i] and 0x80u.toUByte() == 0u.toUByte()) {
+ *                 r[i] = a[(b[i] % 16u).toInt()]
+ *             }
+ *         }
+ *         return r
+ *     }
+ * }
+ * ```
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_shuffle_epi8)
+ */
+public fun mmShuffleEpi8(a: M128i, b: M128i): M128i = transmute(pshufb128(a.asU8x16(), b.asU8x16()))
+
+/**
+ * Concatenate 16-byte blocks in `a` and `b` into a 32-byte temporary result,
+ * shift the result right by `n` bytes, and returns the low 16 bytes.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_alignr_epi8)
+ */
+public fun mmAlignrEpi8(a: M128i, b: M128i, imm8: Int): M128i {
+    fun mask(shift: UInt, i: UInt): UInt =
+        if (shift > 32u) {
+            // Unused, but needs to be a valid index.
+            i
+        } else if (shift > 16u) {
+            shift - 16u + i
+        } else {
+            shift + i
+        }
+    run {
+        check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
+    }
+    // If palignr is shifting the pair of vectors more than the size of two
+    // lanes, emit zero.
+    if (imm8 > 32) {
+        return mmSetzeroSi128()
+    }
+    // If palignr is shifting the pair of input vectors more than one lane,
+    // but less than two lanes, convert to shifting in zeroes.
+    val (a1, b1) =
+        if (imm8 > 16) {
+            Pair(mmSetzeroSi128(), a)
+        } else {
+            Pair(a, b)
+        }
+    return run {
+        val r: I8x16 = simdShuffle(b1.asI8x16(), a1.asI8x16(), SimdShuffleIdx(listOf(mask(imm8.toUInt(), 0u), mask(imm8.toUInt(), 1u), mask(imm8.toUInt(), 2u), mask(imm8.toUInt(), 3u), mask(imm8.toUInt(), 4u), mask(imm8.toUInt(), 5u), mask(imm8.toUInt(), 6u), mask(imm8.toUInt(), 7u), mask(imm8.toUInt(), 8u), mask(imm8.toUInt(), 9u), mask(imm8.toUInt(), 10u), mask(imm8.toUInt(), 11u), mask(imm8.toUInt(), 12u), mask(imm8.toUInt(), 13u), mask(imm8.toUInt(), 14u), mask(imm8.toUInt(), 15u))))
+        transmute(r)
+    }
+}
+
+/**
+ * Horizontally adds the adjacent pairs of values contained in 2 packed
+ * 128-bit vectors of `[8 x Short]`.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_hadd_epi16)
+ */
+public fun mmHaddEpi16(a: M128i, b: M128i): M128i {
+    val a1 = a.asI16x8()
+    val b1 = b.asI16x8()
+    return run {
+        val even: I16x8 = simdShuffle(a1, b1, SimdShuffleIdx(listOf(0, 2, 4, 6, 8, 10, 12, 14)))
+        val odd: I16x8 = simdShuffle(a1, b1, SimdShuffleIdx(listOf(1, 3, 5, 7, 9, 11, 13, 15)))
+        simdAdd(even, odd).asM128i()
+    }
+}
+
+/**
+ * Horizontally adds the adjacent pairs of values contained in 2 packed
+ * 128-bit vectors of `[8 x Short]`. Positive sums greater than 7FFFh are
+ * saturated to 7FFFh. Negative sums less than 8000h are saturated to 8000h.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_hadds_epi16)
+ */
+public fun mmHaddsEpi16(a: M128i, b: M128i): M128i {
+    val a1 = a.asI16x8()
+    val b1 = b.asI16x8()
+    return run {
+        val even: I16x8 = simdShuffle(a1, b1, SimdShuffleIdx(listOf(0, 2, 4, 6, 8, 10, 12, 14)))
+        val odd: I16x8 = simdShuffle(a1, b1, SimdShuffleIdx(listOf(1, 3, 5, 7, 9, 11, 13, 15)))
+        simdSaturatingAdd(even, odd).asM128i()
+    }
+}
+
+/**
+ * Horizontally adds the adjacent pairs of values contained in 2 packed
+ * 128-bit vectors of `[4 x Int]`.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_hadd_epi32)
+ */
+public fun mmHaddEpi32(a: M128i, b: M128i): M128i {
+    val a1 = a.asI32x4()
+    val b1 = b.asI32x4()
+    return run {
+        val even: I32x4 = simdShuffle(a1, b1, SimdShuffleIdx(listOf(0, 2, 4, 6)))
+        val odd: I32x4 = simdShuffle(a1, b1, SimdShuffleIdx(listOf(1, 3, 5, 7)))
+        simdAdd(even, odd).asM128i()
+    }
+}
+
+/**
+ * Horizontally subtract the adjacent pairs of values contained in 2
+ * packed 128-bit vectors of `[8 x Short]`.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_hsub_epi16)
+ */
+public fun mmHsubEpi16(a: M128i, b: M128i): M128i {
+    val a1 = a.asI16x8()
+    val b1 = b.asI16x8()
+    return run {
+        val even: I16x8 = simdShuffle(a1, b1, SimdShuffleIdx(listOf(0, 2, 4, 6, 8, 10, 12, 14)))
+        val odd: I16x8 = simdShuffle(a1, b1, SimdShuffleIdx(listOf(1, 3, 5, 7, 9, 11, 13, 15)))
+        simdSub(even, odd).asM128i()
+    }
+}
+
+/**
+ * Horizontally subtract the adjacent pairs of values contained in 2
+ * packed 128-bit vectors of `[8 x Short]`. Positive differences greater than
+ * 7FFFh are saturated to 7FFFh. Negative differences less than 8000h are
+ * saturated to 8000h.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_hsubs_epi16)
+ */
+public fun mmHsubsEpi16(a: M128i, b: M128i): M128i {
+    val a1 = a.asI16x8()
+    val b1 = b.asI16x8()
+    return run {
+        val even: I16x8 = simdShuffle(a1, b1, SimdShuffleIdx(listOf(0, 2, 4, 6, 8, 10, 12, 14)))
+        val odd: I16x8 = simdShuffle(a1, b1, SimdShuffleIdx(listOf(1, 3, 5, 7, 9, 11, 13, 15)))
+        simdSaturatingSub(even, odd).asM128i()
+    }
+}
+
+/**
+ * Horizontally subtract the adjacent pairs of values contained in 2
+ * packed 128-bit vectors of `[4 x Int]`.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_hsub_epi32)
+ */
+public fun mmHsubEpi32(a: M128i, b: M128i): M128i {
+    val a1 = a.asI32x4()
+    val b1 = b.asI32x4()
+    return run {
+        val even: I32x4 = simdShuffle(a1, b1, SimdShuffleIdx(listOf(0, 2, 4, 6)))
+        val odd: I32x4 = simdShuffle(a1, b1, SimdShuffleIdx(listOf(1, 3, 5, 7)))
+        simdSub(even, odd).asM128i()
+    }
+}
+
+/**
+ * Multiplies corresponding pairs of packed 8-bit unsigned integer
+ * values contained in the first source operand and packed 8-bit signed
+ * integer values contained in the second source operand, add pairs of
+ * contiguous products with signed saturation, and writes the 16-bit sums to
+ * the corresponding bits in the destination.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maddubs_epi16)
+ */
+public fun mmMaddubsEpi16(a: M128i, b: M128i): M128i = transmute(pmaddubsw128(a.asU8x16(), b.asI8x16()))
+
+/**
+ * Multiplies packed 16-bit signed integer values, truncate the 32-bit
+ * product to the 18 most significant bits by right-shifting, round the
+ * truncated value by adding 1, and write bits `[16: 1]` to the destination.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mulhrs_epi16)
+ */
+public fun mmMulhrsEpi16(a: M128i, b: M128i): M128i = transmute(pmulhrsw128(a.asI16x8(), b.asI16x8()))
+
+/**
+ * Negates packed 8-bit integers in `a` when the corresponding signed 8-bit
+ * integer in `b` is negative, and returns the result.
+ * Elements in result are zeroed out when the corresponding element in `b`
+ * is zero.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_sign_epi8)
+ */
+public fun mmSignEpi8(a: M128i, b: M128i): M128i = transmute(psignb128(a.asI8x16(), b.asI8x16()))
+
+/**
+ * Negates packed 16-bit integers in `a` when the corresponding signed 16-bit
+ * integer in `b` is negative, and returns the results.
+ * Elements in result are zeroed out when the corresponding element in `b`
+ * is zero.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_sign_epi16)
+ */
+public fun mmSignEpi16(a: M128i, b: M128i): M128i = transmute(psignw128(a.asI16x8(), b.asI16x8()))
+
+/**
+ * Negates packed 32-bit integers in `a` when the corresponding signed 32-bit
+ * integer in `b` is negative, and returns the results.
+ * Element in result are zeroed out when the corresponding element in `b`
+ * is zero.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_sign_epi32)
+ */
+public fun mmSignEpi32(a: M128i, b: M128i): M128i = transmute(psignd128(a.asI32x4(), b.asI32x4()))
+
+public expect fun pshufb128(a: U8x16, b: U8x16): U8x16
+
+public expect fun pmaddubsw128(a: U8x16, b: I8x16): I16x8
+
+public expect fun pmulhrsw128(a: I16x8, b: I16x8): I16x8
+
+public expect fun psignb128(a: I8x16, b: I8x16): I8x16
+
+public expect fun psignw128(a: I16x8, b: I16x8): I16x8
+
+public expect fun psignd128(a: I32x4, b: I32x4): I32x4

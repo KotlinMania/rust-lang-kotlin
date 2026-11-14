@@ -1,0 +1,43 @@
+// port-lint: source collections/btree/set_val.rs
+package io.github.kotlinmania.rustlang.alloc.collections.btree.setval
+
+import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+
+/**
+ * Zero-Sized Type (ZST) for internal `BTreeSet` values.
+ * Used instead of `()` to differentiate between:
+ * * `BTreeMap<T, ()>` (possible user-defined map)
+ * * `BTreeMap<T, SetValZST>` (internal set representation)
+ */
+internal open class SetValZST : IsSetVal {
+    public companion object {
+        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<SetValZST> =
+            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<SetValZST> {
+                override val alignBytes: Long = 1L
+                override val sizeBytes: Long = 0L
+                override fun readNative(addr: Long): SetValZST =
+                    SetValZST()
+                override fun writeNative(addr: Long, value: SetValZST) {
+                }
+                override fun readBytes(buf: ByteArray, offset: Int): SetValZST =
+                    SetValZST()
+                override fun writeBytes(buf: ByteArray, offset: Int, value: SetValZST) {
+                }
+            }
+
+        // Specialization
+        public fun isSetVal(): Boolean = true
+    }
+}
+
+/**
+ * A trait to differentiate between `BTreeMap` and `BTreeSet` values.
+ * Returns `true` only for type `SetValZST`, `false` for all other types (blanket implementation).
+ * `TypeId` requires a `static` scope, use of this trait avoids that restriction.
+ */
+internal interface IsSetVal {
+    public fun isSetVal(): Boolean
+}
+
+// Blanket implementation
+public fun <V> isSetValV(): Boolean = false

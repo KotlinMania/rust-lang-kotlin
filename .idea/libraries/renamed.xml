@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="renamed">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/generation/core-03/mapped/renamed.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

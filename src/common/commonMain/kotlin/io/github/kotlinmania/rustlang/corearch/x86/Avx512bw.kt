@@ -1,0 +1,8638 @@
+// port-lint: source x86/avx512bw.rs
+@file:OptIn(ExperimentalUnsignedTypes::class)
+
+package io.github.kotlinmania.rustlang.corearch.x86
+
+import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
+import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
+import io.github.kotlinmania.rustlang.corearch.ptr
+import io.github.kotlinmania.rustlang.corearch.simd.I16x16
+import io.github.kotlinmania.rustlang.corearch.simd.I16x32
+import io.github.kotlinmania.rustlang.corearch.simd.I16x8
+import io.github.kotlinmania.rustlang.corearch.simd.I32x16
+import io.github.kotlinmania.rustlang.corearch.simd.I8x16
+import io.github.kotlinmania.rustlang.corearch.simd.I8x32
+import io.github.kotlinmania.rustlang.corearch.simd.I8x64
+import io.github.kotlinmania.rustlang.corearch.simd.I8x8
+import io.github.kotlinmania.rustlang.corearch.simd.U16x16
+import io.github.kotlinmania.rustlang.corearch.simd.U16x32
+import io.github.kotlinmania.rustlang.corearch.simd.U16x8
+import io.github.kotlinmania.rustlang.corearch.simd.U64x8
+import io.github.kotlinmania.rustlang.corearch.simd.U8x16
+import io.github.kotlinmania.rustlang.corearch.simd.U8x32
+import io.github.kotlinmania.rustlang.corearch.simd.U8x64
+import io.github.kotlinmania.rustlang.corearch.simd.U8x8
+import io.github.kotlinmania.rustlang.corearch.simd.simdImax
+import io.github.kotlinmania.rustlang.corearch.simd.simdImin
+import io.github.kotlinmania.rustlang.corearch.simdMaskedLoad
+import io.github.kotlinmania.rustlang.corearch.simdMaskedStore
+import io.github.kotlinmania.rustlang.corearch.simdShuffle
+
+/**
+ * Compute the absolute value of packed signed 16-bit integers in a, and store the unsigned results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_abs_epi16&expand=30)
+ */
+public fun mm512AbsEpi16(a: M512i): M512i =
+    run {
+        val a1 = a.asI16x32()
+        val cmp: I16x32 = simdGt(a1, i16x32.ZERO)
+        transmute(simdSelect(cmp, a1, simdNeg(a1)))
+    }
+
+/**
+ * Compute the absolute value of packed signed 16-bit integers in a, and store the unsigned results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_abs_epi16&expand=31)
+ */
+public fun mm512MaskAbsEpi16(src: M512i, k: Mmask32, a: M512i): M512i =
+    run {
+        val abs = mm512AbsEpi16(a).asI16x32()
+        transmute(simdSelectBitmask(k, abs, src.asI16x32()))
+    }
+
+/**
+ * Compute the absolute value of packed signed 16-bit integers in a, and store the unsigned results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_abs_epi16&expand=32)
+ */
+public fun mm512MaskzAbsEpi16(k: Mmask32, a: M512i): M512i =
+    run {
+        val abs = mm512AbsEpi16(a).asI16x32()
+        transmute(simdSelectBitmask(k, abs, i16x32.ZERO))
+    }
+
+/**
+ * Compute the absolute value of packed signed 16-bit integers in a, and store the unsigned results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_abs_epi16&expand=28)
+ */
+public fun mm256MaskAbsEpi16(src: M256i, k: Mmask16, a: M256i): M256i =
+    run {
+        val abs = mm256AbsEpi16(a).asI16x16()
+        transmute(simdSelectBitmask(k, abs, src.asI16x16()))
+    }
+
+/**
+ * Compute the absolute value of packed signed 16-bit integers in a, and store the unsigned results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_abs_epi16&expand=29)
+ */
+public fun mm256MaskzAbsEpi16(k: Mmask16, a: M256i): M256i =
+    run {
+        val abs = mm256AbsEpi16(a).asI16x16()
+        transmute(simdSelectBitmask(k, abs, i16x16.ZERO))
+    }
+
+/**
+ * Compute the absolute value of packed signed 16-bit integers in a, and store the unsigned results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_abs_epi16&expand=25)
+ */
+public fun mmMaskAbsEpi16(src: M128i, k: Mmask8, a: M128i): M128i =
+    run {
+        val abs = mmAbsEpi16(a).asI16x8()
+        transmute(simdSelectBitmask(k, abs, src.asI16x8()))
+    }
+
+/**
+ * Compute the absolute value of packed signed 16-bit integers in a, and store the unsigned results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_abs_epi16&expand=26)
+ */
+public fun mmMaskzAbsEpi16(k: Mmask8, a: M128i): M128i =
+    run {
+        val abs = mmAbsEpi16(a).asI16x8()
+        transmute(simdSelectBitmask(k, abs, i16x8.ZERO))
+    }
+
+/**
+ * Compute the absolute value of packed signed 8-bit integers in a, and store the unsigned results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_abs_epi8&expand=57)
+ */
+public fun mm512AbsEpi8(a: M512i): M512i =
+    run {
+        val a1 = a.asI8x64()
+        val cmp: I8x64 = simdGt(a1, i8x64.ZERO)
+        transmute(simdSelect(cmp, a1, simdNeg(a1)))
+    }
+
+/**
+ * Compute the absolute value of packed signed 8-bit integers in a, and store the unsigned results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_abs_epi8&expand=58)
+ */
+public fun mm512MaskAbsEpi8(src: M512i, k: Mmask64, a: M512i): M512i =
+    run {
+        val abs = mm512AbsEpi8(a).asI8x64()
+        transmute(simdSelectBitmask(k, abs, src.asI8x64()))
+    }
+
+/**
+ * Compute the absolute value of packed signed 8-bit integers in a, and store the unsigned results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_abs_epi8&expand=59)
+ */
+public fun mm512MaskzAbsEpi8(k: Mmask64, a: M512i): M512i =
+    run {
+        val abs = mm512AbsEpi8(a).asI8x64()
+        transmute(simdSelectBitmask(k, abs, i8x64.ZERO))
+    }
+
+/**
+ * Compute the absolute value of packed signed 8-bit integers in a, and store the unsigned results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_abs_epi8&expand=55)
+ */
+public fun mm256MaskAbsEpi8(src: M256i, k: Mmask32, a: M256i): M256i =
+    run {
+        val abs = mm256AbsEpi8(a).asI8x32()
+        transmute(simdSelectBitmask(k, abs, src.asI8x32()))
+    }
+
+/**
+ * Compute the absolute value of packed signed 8-bit integers in a, and store the unsigned results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_abs_epi8&expand=56)
+ */
+public fun mm256MaskzAbsEpi8(k: Mmask32, a: M256i): M256i =
+    run {
+        val abs = mm256AbsEpi8(a).asI8x32()
+        transmute(simdSelectBitmask(k, abs, i8x32.ZERO))
+    }
+
+/**
+ * Compute the absolute value of packed signed 8-bit integers in a, and store the unsigned results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set)
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_abs_epi8&expand=52)
+ */
+public fun mmMaskAbsEpi8(src: M128i, k: Mmask16, a: M128i): M128i =
+    run {
+        val abs = mmAbsEpi8(a).asI8x16()
+        transmute(simdSelectBitmask(k, abs, src.asI8x16()))
+    }
+
+/**
+ * Compute the absolute value of packed signed 8-bit integers in a, and store the unsigned results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_abs_epi8&expand=53)
+ */
+public fun mmMaskzAbsEpi8(k: Mmask16, a: M128i): M128i =
+    run {
+        val abs = mmAbsEpi8(a).asI8x16()
+        transmute(simdSelectBitmask(k, abs, i8x16.ZERO))
+    }
+
+/**
+ * Add packed 16-bit integers in a and b, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_add_epi16&expand=91)
+ */
+public fun mm512AddEpi16(a: M512i, b: M512i): M512i = transmute(simdAdd(a.asI16x32(), b.asI16x32()))
+
+/**
+ * Add packed 16-bit integers in a and b, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_add_epi16&expand=92)
+ */
+public fun mm512MaskAddEpi16(src: M512i, k: Mmask32, a: M512i, b: M512i): M512i =
+    run {
+        val add = mm512AddEpi16(a, b).asI16x32()
+        transmute(simdSelectBitmask(k, add, src.asI16x32()))
+    }
+
+/**
+ * Add packed 16-bit integers in a and b, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_add_epi16&expand=93)
+ */
+public fun mm512MaskzAddEpi16(k: Mmask32, a: M512i, b: M512i): M512i =
+    run {
+        val add = mm512AddEpi16(a, b).asI16x32()
+        transmute(simdSelectBitmask(k, add, i16x32.ZERO))
+    }
+
+/**
+ * Add packed 16-bit integers in a and b, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_add_epi16&expand=89)
+ */
+public fun mm256MaskAddEpi16(src: M256i, k: Mmask16, a: M256i, b: M256i): M256i =
+    run {
+        val add = mm256AddEpi16(a, b).asI16x16()
+        transmute(simdSelectBitmask(k, add, src.asI16x16()))
+    }
+
+/**
+ * Add packed 16-bit integers in a and b, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_add_epi16&expand=90)
+ */
+public fun mm256MaskzAddEpi16(k: Mmask16, a: M256i, b: M256i): M256i =
+    run {
+        val add = mm256AddEpi16(a, b).asI16x16()
+        transmute(simdSelectBitmask(k, add, i16x16.ZERO))
+    }
+
+/**
+ * Add packed 16-bit integers in a and b, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_add_epi16&expand=86)
+ */
+public fun mmMaskAddEpi16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
+    run {
+        val add = mmAddEpi16(a, b).asI16x8()
+        transmute(simdSelectBitmask(k, add, src.asI16x8()))
+    }
+
+/**
+ * Add packed 16-bit integers in a and b, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_add_epi16&expand=87)
+ */
+public fun mmMaskzAddEpi16(k: Mmask8, a: M128i, b: M128i): M128i =
+    run {
+        val add = mmAddEpi16(a, b).asI16x8()
+        transmute(simdSelectBitmask(k, add, i16x8.ZERO))
+    }
+
+/**
+ * Add packed 8-bit integers in a and b, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_add_epi8&expand=118)
+ */
+public fun mm512AddEpi8(a: M512i, b: M512i): M512i = transmute(simdAdd(a.asI8x64(), b.asI8x64()))
+
+/**
+ * Add packed 8-bit integers in a and b, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_add_epi8&expand=119)
+ */
+public fun mm512MaskAddEpi8(src: M512i, k: Mmask64, a: M512i, b: M512i): M512i =
+    run {
+        val add = mm512AddEpi8(a, b).asI8x64()
+        transmute(simdSelectBitmask(k, add, src.asI8x64()))
+    }
+
+/**
+ * Add packed 8-bit integers in a and b, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_add_epi8&expand=120)
+ */
+public fun mm512MaskzAddEpi8(k: Mmask64, a: M512i, b: M512i): M512i =
+    run {
+        val add = mm512AddEpi8(a, b).asI8x64()
+        transmute(simdSelectBitmask(k, add, i8x64.ZERO))
+    }
+
+/**
+ * Add packed 8-bit integers in a and b, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_add_epi8&expand=116)
+ */
+public fun mm256MaskAddEpi8(src: M256i, k: Mmask32, a: M256i, b: M256i): M256i =
+    run {
+        val add = mm256AddEpi8(a, b).asI8x32()
+        transmute(simdSelectBitmask(k, add, src.asI8x32()))
+    }
+
+/**
+ * Add packed 8-bit integers in a and b, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_add_epi8&expand=117)
+ */
+public fun mm256MaskzAddEpi8(k: Mmask32, a: M256i, b: M256i): M256i =
+    run {
+        val add = mm256AddEpi8(a, b).asI8x32()
+        transmute(simdSelectBitmask(k, add, i8x32.ZERO))
+    }
+
+/**
+ * Add packed 8-bit integers in a and b, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_add_epi8&expand=113)
+ */
+public fun mmMaskAddEpi8(src: M128i, k: Mmask16, a: M128i, b: M128i): M128i =
+    run {
+        val add = mmAddEpi8(a, b).asI8x16()
+        transmute(simdSelectBitmask(k, add, src.asI8x16()))
+    }
+
+/**
+ * Add packed 8-bit integers in a and b, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_add_epi8&expand=114)
+ */
+public fun mmMaskzAddEpi8(k: Mmask16, a: M128i, b: M128i): M128i =
+    run {
+        val add = mmAddEpi8(a, b).asI8x16()
+        transmute(simdSelectBitmask(k, add, i8x16.ZERO))
+    }
+
+/**
+ * Add packed unsigned 16-bit integers in a and b using saturation, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_adds_epu16&expand=197)
+ */
+public fun mm512AddsEpu16(a: M512i, b: M512i): M512i = transmute(simdSaturatingAdd(a.asU16x32(), b.asU16x32()))
+
+/**
+ * Add packed unsigned 16-bit integers in a and b using saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_adds_epu16&expand=198)
+ */
+public fun mm512MaskAddsEpu16(src: M512i, k: Mmask32, a: M512i, b: M512i): M512i =
+    run {
+        val add = mm512AddsEpu16(a, b).asU16x32()
+        transmute(simdSelectBitmask(k, add, src.asU16x32()))
+    }
+
+/**
+ * Add packed unsigned 16-bit integers in a and b using saturation, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_adds_epu16&expand=199)
+ */
+public fun mm512MaskzAddsEpu16(k: Mmask32, a: M512i, b: M512i): M512i =
+    run {
+        val add = mm512AddsEpu16(a, b).asU16x32()
+        transmute(simdSelectBitmask(k, add, u16x32.ZERO))
+    }
+
+/**
+ * Add packed unsigned 16-bit integers in a and b using saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_adds_epu16&expand=195)
+ */
+public fun mm256MaskAddsEpu16(src: M256i, k: Mmask16, a: M256i, b: M256i): M256i =
+    run {
+        val add = mm256AddsEpu16(a, b).asU16x16()
+        transmute(simdSelectBitmask(k, add, src.asU16x16()))
+    }
+
+/**
+ * Add packed unsigned 16-bit integers in a and b using saturation, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_adds_epu16&expand=196)
+ */
+public fun mm256MaskzAddsEpu16(k: Mmask16, a: M256i, b: M256i): M256i =
+    run {
+        val add = mm256AddsEpu16(a, b).asU16x16()
+        transmute(simdSelectBitmask(k, add, u16x16.ZERO))
+    }
+
+/**
+ * Add packed unsigned 16-bit integers in a and b using saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_adds_epu16&expand=192)
+ */
+public fun mmMaskAddsEpu16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
+    run {
+        val add = mmAddsEpu16(a, b).asU16x8()
+        transmute(simdSelectBitmask(k, add, src.asU16x8()))
+    }
+
+/**
+ * Add packed unsigned 16-bit integers in a and b using saturation, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_adds_epu16&expand=193)
+ */
+public fun mmMaskzAddsEpu16(k: Mmask8, a: M128i, b: M128i): M128i =
+    run {
+        val add = mmAddsEpu16(a, b).asU16x8()
+        transmute(simdSelectBitmask(k, add, u16x8.ZERO))
+    }
+
+/**
+ * Add packed unsigned 8-bit integers in a and b using saturation, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_adds_epu8&expand=206)
+ */
+public fun mm512AddsEpu8(a: M512i, b: M512i): M512i = transmute(simdSaturatingAdd(a.asU8x64(), b.asU8x64()))
+
+/**
+ * Add packed unsigned 8-bit integers in a and b using saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_adds_epu8&expand=207)
+ */
+public fun mm512MaskAddsEpu8(src: M512i, k: Mmask64, a: M512i, b: M512i): M512i =
+    run {
+        val add = mm512AddsEpu8(a, b).asU8x64()
+        transmute(simdSelectBitmask(k, add, src.asU8x64()))
+    }
+
+/**
+ * Add packed unsigned 8-bit integers in a and b using saturation, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_adds_epu8&expand=208)
+ */
+public fun mm512MaskzAddsEpu8(k: Mmask64, a: M512i, b: M512i): M512i =
+    run {
+        val add = mm512AddsEpu8(a, b).asU8x64()
+        transmute(simdSelectBitmask(k, add, u8x64.ZERO))
+    }
+
+/**
+ * Add packed unsigned 8-bit integers in a and b using saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_adds_epu8&expand=204)
+ */
+public fun mm256MaskAddsEpu8(src: M256i, k: Mmask32, a: M256i, b: M256i): M256i =
+    run {
+        val add = mm256AddsEpu8(a, b).asU8x32()
+        transmute(simdSelectBitmask(k, add, src.asU8x32()))
+    }
+
+/**
+ * Add packed unsigned 8-bit integers in a and b using saturation, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_adds_epu8&expand=205)
+ */
+public fun mm256MaskzAddsEpu8(k: Mmask32, a: M256i, b: M256i): M256i =
+    run {
+        val add = mm256AddsEpu8(a, b).asU8x32()
+        transmute(simdSelectBitmask(k, add, u8x32.ZERO))
+    }
+
+/**
+ * Add packed unsigned 8-bit integers in a and b using saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_adds_epu8&expand=201)
+ */
+public fun mmMaskAddsEpu8(src: M128i, k: Mmask16, a: M128i, b: M128i): M128i =
+    run {
+        val add = mmAddsEpu8(a, b).asU8x16()
+        transmute(simdSelectBitmask(k, add, src.asU8x16()))
+    }
+
+/**
+ * Add packed unsigned 8-bit integers in a and b using saturation, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_adds_epu8&expand=202)
+ */
+public fun mmMaskzAddsEpu8(k: Mmask16, a: M128i, b: M128i): M128i =
+    run {
+        val add = mmAddsEpu8(a, b).asU8x16()
+        transmute(simdSelectBitmask(k, add, u8x16.ZERO))
+    }
+
+/**
+ * Add packed signed 16-bit integers in a and b using saturation, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_adds_epi16&expand=179)
+ */
+public fun mm512AddsEpi16(a: M512i, b: M512i): M512i = transmute(simdSaturatingAdd(a.asI16x32(), b.asI16x32()))
+
+/**
+ * Add packed signed 16-bit integers in a and b using saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_adds_epi16&expand=180)
+ */
+public fun mm512MaskAddsEpi16(src: M512i, k: Mmask32, a: M512i, b: M512i): M512i =
+    run {
+        val add = mm512AddsEpi16(a, b).asI16x32()
+        transmute(simdSelectBitmask(k, add, src.asI16x32()))
+    }
+
+/**
+ * Add packed signed 16-bit integers in a and b using saturation, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_adds_epi16&expand=181)
+ */
+public fun mm512MaskzAddsEpi16(k: Mmask32, a: M512i, b: M512i): M512i =
+    run {
+        val add = mm512AddsEpi16(a, b).asI16x32()
+        transmute(simdSelectBitmask(k, add, i16x32.ZERO))
+    }
+
+/**
+ * Add packed signed 16-bit integers in a and b using saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_adds_epi16&expand=177)
+ */
+public fun mm256MaskAddsEpi16(src: M256i, k: Mmask16, a: M256i, b: M256i): M256i =
+    run {
+        val add = mm256AddsEpi16(a, b).asI16x16()
+        transmute(simdSelectBitmask(k, add, src.asI16x16()))
+    }
+
+/**
+ * Add packed signed 16-bit integers in a and b using saturation, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_adds_epi16&expand=178)
+ */
+public fun mm256MaskzAddsEpi16(k: Mmask16, a: M256i, b: M256i): M256i =
+    run {
+        val add = mm256AddsEpi16(a, b).asI16x16()
+        transmute(simdSelectBitmask(k, add, i16x16.ZERO))
+    }
+
+/**
+ * Add packed signed 16-bit integers in a and b using saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_adds_epi16&expand=174)
+ */
+public fun mmMaskAddsEpi16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
+    run {
+        val add = mmAddsEpi16(a, b).asI16x8()
+        transmute(simdSelectBitmask(k, add, src.asI16x8()))
+    }
+
+/**
+ * Add packed signed 16-bit integers in a and b using saturation, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_adds_epi16&expand=175)
+ */
+public fun mmMaskzAddsEpi16(k: Mmask8, a: M128i, b: M128i): M128i =
+    run {
+        val add = mmAddsEpi16(a, b).asI16x8()
+        transmute(simdSelectBitmask(k, add, i16x8.ZERO))
+    }
+
+/**
+ * Add packed signed 8-bit integers in a and b using saturation, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_adds_epi8&expand=188)
+ */
+public fun mm512AddsEpi8(a: M512i, b: M512i): M512i = transmute(simdSaturatingAdd(a.asI8x64(), b.asI8x64()))
+
+/**
+ * Add packed signed 8-bit integers in a and b using saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_adds_epi8&expand=189)
+ */
+public fun mm512MaskAddsEpi8(src: M512i, k: Mmask64, a: M512i, b: M512i): M512i =
+    run {
+        val add = mm512AddsEpi8(a, b).asI8x64()
+        transmute(simdSelectBitmask(k, add, src.asI8x64()))
+    }
+
+/**
+ * Add packed signed 8-bit integers in a and b using saturation, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_adds_epi8&expand=190)
+ */
+public fun mm512MaskzAddsEpi8(k: Mmask64, a: M512i, b: M512i): M512i =
+    run {
+        val add = mm512AddsEpi8(a, b).asI8x64()
+        transmute(simdSelectBitmask(k, add, i8x64.ZERO))
+    }
+
+/**
+ * Add packed signed 8-bit integers in a and b using saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_adds_epi8&expand=186)
+ */
+public fun mm256MaskAddsEpi8(src: M256i, k: Mmask32, a: M256i, b: M256i): M256i =
+    run {
+        val add = mm256AddsEpi8(a, b).asI8x32()
+        transmute(simdSelectBitmask(k, add, src.asI8x32()))
+    }
+
+/**
+ * Add packed signed 8-bit integers in a and b using saturation, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_adds_epi8&expand=187)
+ */
+public fun mm256MaskzAddsEpi8(k: Mmask32, a: M256i, b: M256i): M256i =
+    run {
+        val add = mm256AddsEpi8(a, b).asI8x32()
+        transmute(simdSelectBitmask(k, add, i8x32.ZERO))
+    }
+
+/**
+ * Add packed signed 8-bit integers in a and b using saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_adds_epi8&expand=183)
+ */
+public fun mmMaskAddsEpi8(src: M128i, k: Mmask16, a: M128i, b: M128i): M128i =
+    run {
+        val add = mmAddsEpi8(a, b).asI8x16()
+        transmute(simdSelectBitmask(k, add, src.asI8x16()))
+    }
+
+/**
+ * Add packed signed 8-bit integers in a and b using saturation, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_adds_epi8&expand=184)
+ */
+public fun mmMaskzAddsEpi8(k: Mmask16, a: M128i, b: M128i): M128i =
+    run {
+        val add = mmAddsEpi8(a, b).asI8x16()
+        transmute(simdSelectBitmask(k, add, i8x16.ZERO))
+    }
+
+/**
+ * Subtract packed 16-bit integers in b from packed 16-bit integers in a, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_sub_epi16&expand=5685)
+ */
+public fun mm512SubEpi16(a: M512i, b: M512i): M512i = transmute(simdSub(a.asI16x32(), b.asI16x32()))
+
+/**
+ * Subtract packed 16-bit integers in b from packed 16-bit integers in a, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_sub_epi16&expand=5683)
+ */
+public fun mm512MaskSubEpi16(src: M512i, k: Mmask32, a: M512i, b: M512i): M512i =
+    run {
+        val sub = mm512SubEpi16(a, b).asI16x32()
+        transmute(simdSelectBitmask(k, sub, src.asI16x32()))
+    }
+
+/**
+ * Subtract packed 16-bit integers in b from packed 16-bit integers in a, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_sub_epi16&expand=5684)
+ */
+public fun mm512MaskzSubEpi16(k: Mmask32, a: M512i, b: M512i): M512i =
+    run {
+        val sub = mm512SubEpi16(a, b).asI16x32()
+        transmute(simdSelectBitmask(k, sub, i16x32.ZERO))
+    }
+
+/**
+ * Subtract packed 16-bit integers in b from packed 16-bit integers in a, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_sub_epi16&expand=5680)
+ */
+public fun mm256MaskSubEpi16(src: M256i, k: Mmask16, a: M256i, b: M256i): M256i =
+    run {
+        val sub = mm256SubEpi16(a, b).asI16x16()
+        transmute(simdSelectBitmask(k, sub, src.asI16x16()))
+    }
+
+/**
+ * Subtract packed 16-bit integers in b from packed 16-bit integers in a, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_sub_epi16&expand=5681)
+ */
+public fun mm256MaskzSubEpi16(k: Mmask16, a: M256i, b: M256i): M256i =
+    run {
+        val sub = mm256SubEpi16(a, b).asI16x16()
+        transmute(simdSelectBitmask(k, sub, i16x16.ZERO))
+    }
+
+/**
+ * Subtract packed 16-bit integers in b from packed 16-bit integers in a, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_sub_epi16&expand=5677)
+ */
+public fun mmMaskSubEpi16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
+    run {
+        val sub = mmSubEpi16(a, b).asI16x8()
+        transmute(simdSelectBitmask(k, sub, src.asI16x8()))
+    }
+
+/**
+ * Subtract packed 16-bit integers in b from packed 16-bit integers in a, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_sub_epi16&expand=5678)
+ */
+public fun mmMaskzSubEpi16(k: Mmask8, a: M128i, b: M128i): M128i =
+    run {
+        val sub = mmSubEpi16(a, b).asI16x8()
+        transmute(simdSelectBitmask(k, sub, i16x8.ZERO))
+    }
+
+/**
+ * Subtract packed 8-bit integers in b from packed 8-bit integers in a, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_sub_epi8&expand=5712)
+ */
+public fun mm512SubEpi8(a: M512i, b: M512i): M512i = transmute(simdSub(a.asI8x64(), b.asI8x64()))
+
+/**
+ * Subtract packed 8-bit integers in b from packed 8-bit integers in a, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_sub_epi8&expand=5710)
+ */
+public fun mm512MaskSubEpi8(src: M512i, k: Mmask64, a: M512i, b: M512i): M512i =
+    run {
+        val sub = mm512SubEpi8(a, b).asI8x64()
+        transmute(simdSelectBitmask(k, sub, src.asI8x64()))
+    }
+
+/**
+ * Subtract packed 8-bit integers in b from packed 8-bit integers in a, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_sub_epi8&expand=5711)
+ */
+public fun mm512MaskzSubEpi8(k: Mmask64, a: M512i, b: M512i): M512i =
+    run {
+        val sub = mm512SubEpi8(a, b).asI8x64()
+        transmute(simdSelectBitmask(k, sub, i8x64.ZERO))
+    }
+
+/**
+ * Subtract packed 8-bit integers in b from packed 8-bit integers in a, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_sub_epi8&expand=5707)
+ */
+public fun mm256MaskSubEpi8(src: M256i, k: Mmask32, a: M256i, b: M256i): M256i =
+    run {
+        val sub = mm256SubEpi8(a, b).asI8x32()
+        transmute(simdSelectBitmask(k, sub, src.asI8x32()))
+    }
+
+/**
+ * Subtract packed 8-bit integers in b from packed 8-bit integers in a, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_sub_epi8&expand=5708)
+ */
+public fun mm256MaskzSubEpi8(k: Mmask32, a: M256i, b: M256i): M256i =
+    run {
+        val sub = mm256SubEpi8(a, b).asI8x32()
+        transmute(simdSelectBitmask(k, sub, i8x32.ZERO))
+    }
+
+/**
+ * Subtract packed 8-bit integers in b from packed 8-bit integers in a, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_sub_epi8&expand=5704)
+ */
+public fun mmMaskSubEpi8(src: M128i, k: Mmask16, a: M128i, b: M128i): M128i =
+    run {
+        val sub = mmSubEpi8(a, b).asI8x16()
+        transmute(simdSelectBitmask(k, sub, src.asI8x16()))
+    }
+
+/**
+ * Subtract packed 8-bit integers in b from packed 8-bit integers in a, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_sub_epi8&expand=5705)
+ */
+public fun mmMaskzSubEpi8(k: Mmask16, a: M128i, b: M128i): M128i =
+    run {
+        val sub = mmSubEpi8(a, b).asI8x16()
+        transmute(simdSelectBitmask(k, sub, i8x16.ZERO))
+    }
+
+/**
+ * Subtract packed unsigned 16-bit integers in b from packed unsigned 16-bit integers in a using saturation, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_subs_epu16&expand=5793)
+ */
+public fun mm512SubsEpu16(a: M512i, b: M512i): M512i = transmute(simdSaturatingSub(a.asU16x32(), b.asU16x32()))
+
+/**
+ * Subtract packed unsigned 16-bit integers in b from packed unsigned 16-bit integers in a using saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_subs_epu16&expand=5791)
+ */
+public fun mm512MaskSubsEpu16(src: M512i, k: Mmask32, a: M512i, b: M512i): M512i =
+    run {
+        val sub = mm512SubsEpu16(a, b).asU16x32()
+        transmute(simdSelectBitmask(k, sub, src.asU16x32()))
+    }
+
+/**
+ * Subtract packed unsigned 16-bit integers in b from packed unsigned 16-bit integers in a using saturation, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_subs_epu16&expand=5792)
+ */
+public fun mm512MaskzSubsEpu16(k: Mmask32, a: M512i, b: M512i): M512i =
+    run {
+        val sub = mm512SubsEpu16(a, b).asU16x32()
+        transmute(simdSelectBitmask(k, sub, u16x32.ZERO))
+    }
+
+/**
+ * Subtract packed unsigned 16-bit integers in b from packed unsigned 16-bit integers in a using saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_subs_epu16&expand=5788)
+ */
+public fun mm256MaskSubsEpu16(src: M256i, k: Mmask16, a: M256i, b: M256i): M256i =
+    run {
+        val sub = mm256SubsEpu16(a, b).asU16x16()
+        transmute(simdSelectBitmask(k, sub, src.asU16x16()))
+    }
+
+/**
+ * Subtract packed unsigned 16-bit integers in b from packed unsigned 16-bit integers in a using saturation, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_subs_epu16&expand=5789)
+ */
+public fun mm256MaskzSubsEpu16(k: Mmask16, a: M256i, b: M256i): M256i =
+    run {
+        val sub = mm256SubsEpu16(a, b).asU16x16()
+        transmute(simdSelectBitmask(k, sub, u16x16.ZERO))
+    }
+
+/**
+ * Subtract packed unsigned 16-bit integers in b from packed unsigned 16-bit integers in a using saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_subs_epu16&expand=5785)
+ */
+public fun mmMaskSubsEpu16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
+    run {
+        val sub = mmSubsEpu16(a, b).asU16x8()
+        transmute(simdSelectBitmask(k, sub, src.asU16x8()))
+    }
+
+/**
+ * Subtract packed unsigned 16-bit integers in b from packed unsigned 16-bit integers in a using saturation, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_subs_epu16&expand=5786)
+ */
+public fun mmMaskzSubsEpu16(k: Mmask8, a: M128i, b: M128i): M128i =
+    run {
+        val sub = mmSubsEpu16(a, b).asU16x8()
+        transmute(simdSelectBitmask(k, sub, u16x8.ZERO))
+    }
+
+/**
+ * Subtract packed unsigned 8-bit integers in b from packed unsigned 8-bit integers in a using saturation, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_subs_epu8&expand=5802)
+ */
+public fun mm512SubsEpu8(a: M512i, b: M512i): M512i = transmute(simdSaturatingSub(a.asU8x64(), b.asU8x64()))
+
+/**
+ * Subtract packed unsigned 8-bit integers in b from packed unsigned 8-bit integers in a using saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_subs_epu8&expand=5800)
+ */
+public fun mm512MaskSubsEpu8(src: M512i, k: Mmask64, a: M512i, b: M512i): M512i =
+    run {
+        val sub = mm512SubsEpu8(a, b).asU8x64()
+        transmute(simdSelectBitmask(k, sub, src.asU8x64()))
+    }
+
+/**
+ * Subtract packed unsigned 8-bit integers in b from packed unsigned 8-bit integers in a using saturation, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_subs_epu8&expand=5801)
+ */
+public fun mm512MaskzSubsEpu8(k: Mmask64, a: M512i, b: M512i): M512i =
+    run {
+        val sub = mm512SubsEpu8(a, b).asU8x64()
+        transmute(simdSelectBitmask(k, sub, u8x64.ZERO))
+    }
+
+/**
+ * Subtract packed unsigned 8-bit integers in b from packed unsigned 8-bit integers in a using saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_subs_epu8&expand=5797)
+ */
+public fun mm256MaskSubsEpu8(src: M256i, k: Mmask32, a: M256i, b: M256i): M256i =
+    run {
+        val sub = mm256SubsEpu8(a, b).asU8x32()
+        transmute(simdSelectBitmask(k, sub, src.asU8x32()))
+    }
+
+/**
+ * Subtract packed unsigned 8-bit integers in b from packed unsigned 8-bit integers in a using saturation, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_subs_epu8&expand=5798)
+ */
+public fun mm256MaskzSubsEpu8(k: Mmask32, a: M256i, b: M256i): M256i =
+    run {
+        val sub = mm256SubsEpu8(a, b).asU8x32()
+        transmute(simdSelectBitmask(k, sub, u8x32.ZERO))
+    }
+
+/**
+ * Subtract packed unsigned 8-bit integers in b from packed unsigned 8-bit integers in a using saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_subs_epu8&expand=5794)
+ */
+public fun mmMaskSubsEpu8(src: M128i, k: Mmask16, a: M128i, b: M128i): M128i =
+    run {
+        val sub = mmSubsEpu8(a, b).asU8x16()
+        transmute(simdSelectBitmask(k, sub, src.asU8x16()))
+    }
+
+/**
+ * Subtract packed unsigned 8-bit integers in b from packed unsigned 8-bit integers in a using saturation, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_subs_epu8&expand=5795)
+ */
+public fun mmMaskzSubsEpu8(k: Mmask16, a: M128i, b: M128i): M128i =
+    run {
+        val sub = mmSubsEpu8(a, b).asU8x16()
+        transmute(simdSelectBitmask(k, sub, u8x16.ZERO))
+    }
+
+/**
+ * Subtract packed signed 16-bit integers in b from packed 16-bit integers in a using saturation, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_subs_epi16&expand=5775)
+ */
+public fun mm512SubsEpi16(a: M512i, b: M512i): M512i = transmute(simdSaturatingSub(a.asI16x32(), b.asI16x32()))
+
+/**
+ * Subtract packed signed 16-bit integers in b from packed 16-bit integers in a using saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_subs_epi16&expand=5773)
+ */
+public fun mm512MaskSubsEpi16(src: M512i, k: Mmask32, a: M512i, b: M512i): M512i =
+    run {
+        val sub = mm512SubsEpi16(a, b).asI16x32()
+        transmute(simdSelectBitmask(k, sub, src.asI16x32()))
+    }
+
+/**
+ * Subtract packed signed 16-bit integers in b from packed 16-bit integers in a using saturation, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_subs_epi16&expand=5774)
+ */
+public fun mm512MaskzSubsEpi16(k: Mmask32, a: M512i, b: M512i): M512i =
+    run {
+        val sub = mm512SubsEpi16(a, b).asI16x32()
+        transmute(simdSelectBitmask(k, sub, i16x32.ZERO))
+    }
+
+/**
+ * Subtract packed signed 16-bit integers in b from packed 16-bit integers in a using saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_subs_epi16&expand=5770)
+ */
+public fun mm256MaskSubsEpi16(src: M256i, k: Mmask16, a: M256i, b: M256i): M256i =
+    run {
+        val sub = mm256SubsEpi16(a, b).asI16x16()
+        transmute(simdSelectBitmask(k, sub, src.asI16x16()))
+    }
+
+/**
+ * Subtract packed signed 16-bit integers in b from packed 16-bit integers in a using saturation, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_subs_epi16&expand=5771)
+ */
+public fun mm256MaskzSubsEpi16(k: Mmask16, a: M256i, b: M256i): M256i =
+    run {
+        val sub = mm256SubsEpi16(a, b).asI16x16()
+        transmute(simdSelectBitmask(k, sub, i16x16.ZERO))
+    }
+
+/**
+ * Subtract packed signed 16-bit integers in b from packed 16-bit integers in a using saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_subs_epi16&expand=5767)
+ */
+public fun mmMaskSubsEpi16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
+    run {
+        val sub = mmSubsEpi16(a, b).asI16x8()
+        transmute(simdSelectBitmask(k, sub, src.asI16x8()))
+    }
+
+/**
+ * Subtract packed signed 16-bit integers in b from packed 16-bit integers in a using saturation, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_subs_epi16&expand=5768)
+ */
+public fun mmMaskzSubsEpi16(k: Mmask8, a: M128i, b: M128i): M128i =
+    run {
+        val sub = mmSubsEpi16(a, b).asI16x8()
+        transmute(simdSelectBitmask(k, sub, i16x8.ZERO))
+    }
+
+/**
+ * Subtract packed signed 8-bit integers in b from packed 8-bit integers in a using saturation, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_subs_epi8&expand=5784)
+ */
+public fun mm512SubsEpi8(a: M512i, b: M512i): M512i = transmute(simdSaturatingSub(a.asI8x64(), b.asI8x64()))
+
+/**
+ * Subtract packed signed 8-bit integers in b from packed 8-bit integers in a using saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_subs_epi8&expand=5782)
+ */
+public fun mm512MaskSubsEpi8(src: M512i, k: Mmask64, a: M512i, b: M512i): M512i =
+    run {
+        val sub = mm512SubsEpi8(a, b).asI8x64()
+        transmute(simdSelectBitmask(k, sub, src.asI8x64()))
+    }
+
+/**
+ * Subtract packed signed 8-bit integers in b from packed 8-bit integers in a using saturation, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_subs_epi8&expand=5783)
+ */
+public fun mm512MaskzSubsEpi8(k: Mmask64, a: M512i, b: M512i): M512i =
+    run {
+        val sub = mm512SubsEpi8(a, b).asI8x64()
+        transmute(simdSelectBitmask(k, sub, i8x64.ZERO))
+    }
+
+/**
+ * Subtract packed signed 8-bit integers in b from packed 8-bit integers in a using saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_subs_epi8&expand=5779)
+ */
+public fun mm256MaskSubsEpi8(src: M256i, k: Mmask32, a: M256i, b: M256i): M256i =
+    run {
+        val sub = mm256SubsEpi8(a, b).asI8x32()
+        transmute(simdSelectBitmask(k, sub, src.asI8x32()))
+    }
+
+/**
+ * Subtract packed signed 8-bit integers in b from packed 8-bit integers in a using saturation, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_subs_epi8&expand=5780)
+ */
+public fun mm256MaskzSubsEpi8(k: Mmask32, a: M256i, b: M256i): M256i =
+    run {
+        val sub = mm256SubsEpi8(a, b).asI8x32()
+        transmute(simdSelectBitmask(k, sub, i8x32.ZERO))
+    }
+
+/**
+ * Subtract packed signed 8-bit integers in b from packed 8-bit integers in a using saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_subs_epi8&expand=5776)
+ */
+public fun mmMaskSubsEpi8(src: M128i, k: Mmask16, a: M128i, b: M128i): M128i =
+    run {
+        val sub = mmSubsEpi8(a, b).asI8x16()
+        transmute(simdSelectBitmask(k, sub, src.asI8x16()))
+    }
+
+/**
+ * Subtract packed signed 8-bit integers in b from packed 8-bit integers in a using saturation, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_subs_epi8&expand=5777)
+ */
+public fun mmMaskzSubsEpi8(k: Mmask16, a: M128i, b: M128i): M128i =
+    run {
+        val sub = mmSubsEpi8(a, b).asI8x16()
+        transmute(simdSelectBitmask(k, sub, i8x16.ZERO))
+    }
+
+/**
+ * Multiply the packed unsigned 16-bit integers in a and b, producing intermediate 32-bit integers, and store the high 16 bits of the intermediate integers in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mulhi_epu16&expand=3973)
+ */
+public fun mm512MulhiEpu16(a: M512i, b: M512i): M512i = transmute(vpmulhuw(a.asU16x32(), b.asU16x32()))
+
+/**
+ * Multiply the packed unsigned 16-bit integers in a and b, producing intermediate 32-bit integers, and store the high 16 bits of the intermediate integers in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_mulhi_epu16&expand=3971)
+ */
+public fun mm512MaskMulhiEpu16(src: M512i, k: Mmask32, a: M512i, b: M512i): M512i =
+    run {
+        val mul = mm512MulhiEpu16(a, b).asU16x32()
+        transmute(simdSelectBitmask(k, mul, src.asU16x32()))
+    }
+
+/**
+ * Multiply the packed unsigned 16-bit integers in a and b, producing intermediate 32-bit integers, and store the high 16 bits of the intermediate integers in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_mulhi_epu16&expand=3972)
+ */
+public fun mm512MaskzMulhiEpu16(k: Mmask32, a: M512i, b: M512i): M512i =
+    run {
+        val mul = mm512MulhiEpu16(a, b).asU16x32()
+        transmute(simdSelectBitmask(k, mul, u16x32.ZERO))
+    }
+
+/**
+ * Multiply the packed unsigned 16-bit integers in a and b, producing intermediate 32-bit integers, and store the high 16 bits of the intermediate integers in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_mulhi_epu16&expand=3968)
+ */
+public fun mm256MaskMulhiEpu16(src: M256i, k: Mmask16, a: M256i, b: M256i): M256i =
+    run {
+        val mul = mm256MulhiEpu16(a, b).asU16x16()
+        transmute(simdSelectBitmask(k, mul, src.asU16x16()))
+    }
+
+/**
+ * Multiply the packed unsigned 16-bit integers in a and b, producing intermediate 32-bit integers, and store the high 16 bits of the intermediate integers in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_mulhi_epu16&expand=3969)
+ */
+public fun mm256MaskzMulhiEpu16(k: Mmask16, a: M256i, b: M256i): M256i =
+    run {
+        val mul = mm256MulhiEpu16(a, b).asU16x16()
+        transmute(simdSelectBitmask(k, mul, u16x16.ZERO))
+    }
+
+/**
+ * Multiply the packed unsigned 16-bit integers in a and b, producing intermediate 32-bit integers, and store the high 16 bits of the intermediate integers in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_mulhi_epu16&expand=3965)
+ */
+public fun mmMaskMulhiEpu16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
+    run {
+        val mul = mmMulhiEpu16(a, b).asU16x8()
+        transmute(simdSelectBitmask(k, mul, src.asU16x8()))
+    }
+
+/**
+ * Multiply the packed unsigned 16-bit integers in a and b, producing intermediate 32-bit integers, and store the high 16 bits of the intermediate integers in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_mulhi_epu16&expand=3966)
+ */
+public fun mmMaskzMulhiEpu16(k: Mmask8, a: M128i, b: M128i): M128i =
+    run {
+        val mul = mmMulhiEpu16(a, b).asU16x8()
+        transmute(simdSelectBitmask(k, mul, u16x8.ZERO))
+    }
+
+/**
+ * Multiply the packed signed 16-bit integers in a and b, producing intermediate 32-bit integers, and store the high 16 bits of the intermediate integers in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mulhi_epi16&expand=3962)
+ */
+public fun mm512MulhiEpi16(a: M512i, b: M512i): M512i = transmute(vpmulhw(a.asI16x32(), b.asI16x32()))
+
+/**
+ * Multiply the packed signed 16-bit integers in a and b, producing intermediate 32-bit integers, and store the high 16 bits of the intermediate integers in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_mulhi_epi16&expand=3960)
+ */
+public fun mm512MaskMulhiEpi16(src: M512i, k: Mmask32, a: M512i, b: M512i): M512i =
+    run {
+        val mul = mm512MulhiEpi16(a, b).asI16x32()
+        transmute(simdSelectBitmask(k, mul, src.asI16x32()))
+    }
+
+/**
+ * Multiply the packed signed 16-bit integers in a and b, producing intermediate 32-bit integers, and store the high 16 bits of the intermediate integers in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_mulhi_epi16&expand=3961)
+ */
+public fun mm512MaskzMulhiEpi16(k: Mmask32, a: M512i, b: M512i): M512i =
+    run {
+        val mul = mm512MulhiEpi16(a, b).asI16x32()
+        transmute(simdSelectBitmask(k, mul, i16x32.ZERO))
+    }
+
+/**
+ * Multiply the packed signed 16-bit integers in a and b, producing intermediate 32-bit integers, and store the high 16 bits of the intermediate integers in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_mulhi_epi16&expand=3957)
+ */
+public fun mm256MaskMulhiEpi16(src: M256i, k: Mmask16, a: M256i, b: M256i): M256i =
+    run {
+        val mul = mm256MulhiEpi16(a, b).asI16x16()
+        transmute(simdSelectBitmask(k, mul, src.asI16x16()))
+    }
+
+/**
+ * Multiply the packed signed 16-bit integers in a and b, producing intermediate 32-bit integers, and store the high 16 bits of the intermediate integers in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_mulhi_epi16&expand=3958)
+ */
+public fun mm256MaskzMulhiEpi16(k: Mmask16, a: M256i, b: M256i): M256i =
+    run {
+        val mul = mm256MulhiEpi16(a, b).asI16x16()
+        transmute(simdSelectBitmask(k, mul, i16x16.ZERO))
+    }
+
+/**
+ * Multiply the packed signed 16-bit integers in a and b, producing intermediate 32-bit integers, and store the high 16 bits of the intermediate integers in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_mulhi_epi16&expand=3954)
+ */
+public fun mmMaskMulhiEpi16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
+    run {
+        val mul = mmMulhiEpi16(a, b).asI16x8()
+        transmute(simdSelectBitmask(k, mul, src.asI16x8()))
+    }
+
+/**
+ * Multiply the packed signed 16-bit integers in a and b, producing intermediate 32-bit integers, and store the high 16 bits of the intermediate integers in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_mulhi_epi16&expand=3955)
+ */
+public fun mmMaskzMulhiEpi16(k: Mmask8, a: M128i, b: M128i): M128i =
+    run {
+        val mul = mmMulhiEpi16(a, b).asI16x8()
+        transmute(simdSelectBitmask(k, mul, i16x8.ZERO))
+    }
+
+/**
+ * Multiply packed signed 16-bit integers in a and b, producing intermediate signed 32-bit integers. Truncate each intermediate integer to the 18 most significant bits, round by adding 1, and store bits \[16:1\] to dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mulhrs_epi16&expand=3986)
+ */
+public fun mm512MulhrsEpi16(a: M512i, b: M512i): M512i = transmute(vpmulhrsw(a.asI16x32(), b.asI16x32()))
+
+/**
+ * Multiply packed signed 16-bit integers in a and b, producing intermediate signed 32-bit integers. Truncate each intermediate integer to the 18 most significant bits, round by adding 1, and store bits \[16:1\] to dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_mulhrs_epi16&expand=3984)
+ */
+public fun mm512MaskMulhrsEpi16(src: M512i, k: Mmask32, a: M512i, b: M512i): M512i =
+    run {
+        val mul = mm512MulhrsEpi16(a, b).asI16x32()
+        transmute(simdSelectBitmask(k, mul, src.asI16x32()))
+    }
+
+/**
+ * Multiply packed signed 16-bit integers in a and b, producing intermediate signed 32-bit integers. Truncate each intermediate integer to the 18 most significant bits, round by adding 1, and store bits \[16:1\] to dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_mulhrs_epi16&expand=3985)
+ */
+public fun mm512MaskzMulhrsEpi16(k: Mmask32, a: M512i, b: M512i): M512i =
+    run {
+        val mul = mm512MulhrsEpi16(a, b).asI16x32()
+        transmute(simdSelectBitmask(k, mul, i16x32.ZERO))
+    }
+
+/**
+ * Multiply packed signed 16-bit integers in a and b, producing intermediate signed 32-bit integers. Truncate each intermediate integer to the 18 most significant bits, round by adding 1, and store bits \[16:1\] to dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_mulhrs_epi16&expand=3981)
+ */
+public fun mm256MaskMulhrsEpi16(src: M256i, k: Mmask16, a: M256i, b: M256i): M256i =
+    run {
+        val mul = mm256MulhrsEpi16(a, b).asI16x16()
+        transmute(simdSelectBitmask(k, mul, src.asI16x16()))
+    }
+
+/**
+ * Multiply packed signed 16-bit integers in a and b, producing intermediate signed 32-bit integers. Truncate each intermediate integer to the 18 most significant bits, round by adding 1, and store bits \[16:1\] to dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_mulhrs_epi16&expand=3982)
+ */
+public fun mm256MaskzMulhrsEpi16(k: Mmask16, a: M256i, b: M256i): M256i =
+    run {
+        val mul = mm256MulhrsEpi16(a, b).asI16x16()
+        transmute(simdSelectBitmask(k, mul, i16x16.ZERO))
+    }
+
+/**
+ * Multiply packed signed 16-bit integers in a and b, producing intermediate signed 32-bit integers. Truncate each intermediate integer to the 18 most significant bits, round by adding 1, and store bits \[16:1\] to dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_mulhrs_epi16&expand=3978)
+ */
+public fun mmMaskMulhrsEpi16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
+    run {
+        val mul = mmMulhrsEpi16(a, b).asI16x8()
+        transmute(simdSelectBitmask(k, mul, src.asI16x8()))
+    }
+
+/**
+ * Multiply packed signed 16-bit integers in a and b, producing intermediate signed 32-bit integers. Truncate each intermediate integer to the 18 most significant bits, round by adding 1, and store bits \[16:1\] to dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_mulhrs_epi16&expand=3979)
+ */
+public fun mmMaskzMulhrsEpi16(k: Mmask8, a: M128i, b: M128i): M128i =
+    run {
+        val mul = mmMulhrsEpi16(a, b).asI16x8()
+        transmute(simdSelectBitmask(k, mul, i16x8.ZERO))
+    }
+
+/**
+ * Multiply the packed 16-bit integers in a and b, producing intermediate 32-bit integers, and store the low 16 bits of the intermediate integers in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mullo_epi16&expand=3996)
+ */
+public fun mm512MulloEpi16(a: M512i, b: M512i): M512i = transmute(simdMul(a.asI16x32(), b.asI16x32()))
+
+/**
+ * Multiply the packed 16-bit integers in a and b, producing intermediate 32-bit integers, and store the low 16 bits of the intermediate integers in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_mullo_epi16&expand=3994)
+ */
+public fun mm512MaskMulloEpi16(src: M512i, k: Mmask32, a: M512i, b: M512i): M512i =
+    run {
+        val mul = mm512MulloEpi16(a, b).asI16x32()
+        transmute(simdSelectBitmask(k, mul, src.asI16x32()))
+    }
+
+/**
+ * Multiply the packed 16-bit integers in a and b, producing intermediate 32-bit integers, and store the low 16 bits of the intermediate integers in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_mullo_epi16&expand=3995)
+ */
+public fun mm512MaskzMulloEpi16(k: Mmask32, a: M512i, b: M512i): M512i =
+    run {
+        val mul = mm512MulloEpi16(a, b).asI16x32()
+        transmute(simdSelectBitmask(k, mul, i16x32.ZERO))
+    }
+
+/**
+ * Multiply the packed 16-bit integers in a and b, producing intermediate 32-bit integers, and store the low 16 bits of the intermediate integers in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_mullo_epi16&expand=3991)
+ */
+public fun mm256MaskMulloEpi16(src: M256i, k: Mmask16, a: M256i, b: M256i): M256i =
+    run {
+        val mul = mm256MulloEpi16(a, b).asI16x16()
+        transmute(simdSelectBitmask(k, mul, src.asI16x16()))
+    }
+
+/**
+ * Multiply the packed 16-bit integers in a and b, producing intermediate 32-bit integers, and store the low 16 bits of the intermediate integers in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_mullo_epi16&expand=3992)
+ */
+public fun mm256MaskzMulloEpi16(k: Mmask16, a: M256i, b: M256i): M256i =
+    run {
+        val mul = mm256MulloEpi16(a, b).asI16x16()
+        transmute(simdSelectBitmask(k, mul, i16x16.ZERO))
+    }
+
+/**
+ * Multiply the packed 16-bit integers in a and b, producing intermediate 32-bit integers, and store the low 16 bits of the intermediate integers in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_mullo_epi16&expand=3988)
+ */
+public fun mmMaskMulloEpi16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
+    run {
+        val mul = mmMulloEpi16(a, b).asI16x8()
+        transmute(simdSelectBitmask(k, mul, src.asI16x8()))
+    }
+
+/**
+ * Multiply the packed 16-bit integers in a and b, producing intermediate 32-bit integers, and store the low 16 bits of the intermediate integers in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_mullo_epi16&expand=3989)
+ */
+public fun mmMaskzMulloEpi16(k: Mmask8, a: M128i, b: M128i): M128i =
+    run {
+        val mul = mmMulloEpi16(a, b).asI16x8()
+        transmute(simdSelectBitmask(k, mul, i16x8.ZERO))
+    }
+
+/**
+ * Compare packed unsigned 16-bit integers in a and b, and store packed maximum values in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_max_epu16&expand=3609)
+ */
+public fun mm512MaxEpu16(a: M512i, b: M512i): M512i = simdImax(a.asU16x32(), b.asU16x32()).asM512i()
+
+/**
+ * Compare packed unsigned 16-bit integers in a and b, and store packed maximum values in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_max_epu16&expand=3607)
+ */
+public fun mm512MaskMaxEpu16(src: M512i, k: Mmask32, a: M512i, b: M512i): M512i =
+    run {
+        val max = mm512MaxEpu16(a, b).asU16x32()
+        transmute(simdSelectBitmask(k, max, src.asU16x32()))
+    }
+
+/**
+ * Compare packed unsigned 16-bit integers in a and b, and store packed maximum values in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_max_epu16&expand=3608)
+ */
+public fun mm512MaskzMaxEpu16(k: Mmask32, a: M512i, b: M512i): M512i =
+    run {
+        val max = mm512MaxEpu16(a, b).asU16x32()
+        transmute(simdSelectBitmask(k, max, u16x32.ZERO))
+    }
+
+/**
+ * Compare packed unsigned 16-bit integers in a and b, and store packed maximum values in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_max_epu16&expand=3604)
+ */
+public fun mm256MaskMaxEpu16(src: M256i, k: Mmask16, a: M256i, b: M256i): M256i =
+    run {
+        val max = mm256MaxEpu16(a, b).asU16x16()
+        transmute(simdSelectBitmask(k, max, src.asU16x16()))
+    }
+
+/**
+ * Compare packed unsigned 16-bit integers in a and b, and store packed maximum values in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_max_epu16&expand=3605)
+ */
+public fun mm256MaskzMaxEpu16(k: Mmask16, a: M256i, b: M256i): M256i =
+    run {
+        val max = mm256MaxEpu16(a, b).asU16x16()
+        transmute(simdSelectBitmask(k, max, u16x16.ZERO))
+    }
+
+/**
+ * Compare packed unsigned 16-bit integers in a and b, and store packed maximum values in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_max_epu16&expand=3601)
+ */
+public fun mmMaskMaxEpu16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
+    run {
+        val max = mmMaxEpu16(a, b).asU16x8()
+        transmute(simdSelectBitmask(k, max, src.asU16x8()))
+    }
+
+/**
+ * Compare packed unsigned 16-bit integers in a and b, and store packed maximum values in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_max_epu16&expand=3602)
+ */
+public fun mmMaskzMaxEpu16(k: Mmask8, a: M128i, b: M128i): M128i =
+    run {
+        val max = mmMaxEpu16(a, b).asU16x8()
+        transmute(simdSelectBitmask(k, max, u16x8.ZERO))
+    }
+
+/**
+ * Compare packed unsigned 8-bit integers in a and b, and store packed maximum values in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_max_epu8&expand=3636)
+ */
+public fun mm512MaxEpu8(a: M512i, b: M512i): M512i = simdImax(a.asU8x64(), b.asU8x64()).asM512i()
+
+/**
+ * Compare packed unsigned 8-bit integers in a and b, and store packed maximum values in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_max_epu8&expand=3634)
+ */
+public fun mm512MaskMaxEpu8(src: M512i, k: Mmask64, a: M512i, b: M512i): M512i =
+    run {
+        val max = mm512MaxEpu8(a, b).asU8x64()
+        transmute(simdSelectBitmask(k, max, src.asU8x64()))
+    }
+
+/**
+ * Compare packed unsigned 8-bit integers in a and b, and store packed maximum values in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_max_epu8&expand=3635)
+ */
+public fun mm512MaskzMaxEpu8(k: Mmask64, a: M512i, b: M512i): M512i =
+    run {
+        val max = mm512MaxEpu8(a, b).asU8x64()
+        transmute(simdSelectBitmask(k, max, u8x64.ZERO))
+    }
+
+/**
+ * Compare packed unsigned 8-bit integers in a and b, and store packed maximum values in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_max_epu8&expand=3631)
+ */
+public fun mm256MaskMaxEpu8(src: M256i, k: Mmask32, a: M256i, b: M256i): M256i =
+    run {
+        val max = mm256MaxEpu8(a, b).asU8x32()
+        transmute(simdSelectBitmask(k, max, src.asU8x32()))
+    }
+
+/**
+ * Compare packed unsigned 8-bit integers in a and b, and store packed maximum values in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_max_epu8&expand=3632)
+ */
+public fun mm256MaskzMaxEpu8(k: Mmask32, a: M256i, b: M256i): M256i =
+    run {
+        val max = mm256MaxEpu8(a, b).asU8x32()
+        transmute(simdSelectBitmask(k, max, u8x32.ZERO))
+    }
+
+/**
+ * Compare packed unsigned 8-bit integers in a and b, and store packed maximum values in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_max_epu8&expand=3628)
+ */
+public fun mmMaskMaxEpu8(src: M128i, k: Mmask16, a: M128i, b: M128i): M128i =
+    run {
+        val max = mmMaxEpu8(a, b).asU8x16()
+        transmute(simdSelectBitmask(k, max, src.asU8x16()))
+    }
+
+/**
+ * Compare packed unsigned 8-bit integers in a and b, and store packed maximum values in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_max_epu8&expand=3629)
+ */
+public fun mmMaskzMaxEpu8(k: Mmask16, a: M128i, b: M128i): M128i =
+    run {
+        val max = mmMaxEpu8(a, b).asU8x16()
+        transmute(simdSelectBitmask(k, max, u8x16.ZERO))
+    }
+
+/**
+ * Compare packed signed 16-bit integers in a and b, and store packed maximum values in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_max_epi16&expand=3573)
+ */
+public fun mm512MaxEpi16(a: M512i, b: M512i): M512i = simdImax(a.asI16x32(), b.asI16x32()).asM512i()
+
+/**
+ * Compare packed signed 16-bit integers in a and b, and store packed maximum values in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_max_epi16&expand=3571)
+ */
+public fun mm512MaskMaxEpi16(src: M512i, k: Mmask32, a: M512i, b: M512i): M512i =
+    run {
+        val max = mm512MaxEpi16(a, b).asI16x32()
+        transmute(simdSelectBitmask(k, max, src.asI16x32()))
+    }
+
+/**
+ * Compare packed signed 16-bit integers in a and b, and store packed maximum values in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_max_epi16&expand=3572)
+ */
+public fun mm512MaskzMaxEpi16(k: Mmask32, a: M512i, b: M512i): M512i =
+    run {
+        val max = mm512MaxEpi16(a, b).asI16x32()
+        transmute(simdSelectBitmask(k, max, i16x32.ZERO))
+    }
+
+/**
+ * Compare packed signed 16-bit integers in a and b, and store packed maximum values in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_max_epi16&expand=3568)
+ */
+public fun mm256MaskMaxEpi16(src: M256i, k: Mmask16, a: M256i, b: M256i): M256i =
+    run {
+        val max = mm256MaxEpi16(a, b).asI16x16()
+        transmute(simdSelectBitmask(k, max, src.asI16x16()))
+    }
+
+/**
+ * Compare packed signed 16-bit integers in a and b, and store packed maximum values in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_max_epi16&expand=3569)
+ */
+public fun mm256MaskzMaxEpi16(k: Mmask16, a: M256i, b: M256i): M256i =
+    run {
+        val max = mm256MaxEpi16(a, b).asI16x16()
+        transmute(simdSelectBitmask(k, max, i16x16.ZERO))
+    }
+
+/**
+ * Compare packed signed 16-bit integers in a and b, and store packed maximum values in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_max_epi16&expand=3565)
+ */
+public fun mmMaskMaxEpi16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
+    run {
+        val max = mmMaxEpi16(a, b).asI16x8()
+        transmute(simdSelectBitmask(k, max, src.asI16x8()))
+    }
+
+/**
+ * Compare packed signed 16-bit integers in a and b, and store packed maximum values in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_max_epi16&expand=3566)
+ */
+public fun mmMaskzMaxEpi16(k: Mmask8, a: M128i, b: M128i): M128i =
+    run {
+        val max = mmMaxEpi16(a, b).asI16x8()
+        transmute(simdSelectBitmask(k, max, i16x8.ZERO))
+    }
+
+/**
+ * Compare packed signed 8-bit integers in a and b, and store packed maximum values in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_max_epi8&expand=3600)
+ */
+public fun mm512MaxEpi8(a: M512i, b: M512i): M512i = simdImax(a.asI8x64(), b.asI8x64()).asM512i()
+
+/**
+ * Compare packed signed 8-bit integers in a and b, and store packed maximum values in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_max_epi8&expand=3598)
+ */
+public fun mm512MaskMaxEpi8(src: M512i, k: Mmask64, a: M512i, b: M512i): M512i =
+    run {
+        val max = mm512MaxEpi8(a, b).asI8x64()
+        transmute(simdSelectBitmask(k, max, src.asI8x64()))
+    }
+
+/**
+ * Compare packed signed 8-bit integers in a and b, and store packed maximum values in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_max_epi8&expand=3599)
+ */
+public fun mm512MaskzMaxEpi8(k: Mmask64, a: M512i, b: M512i): M512i =
+    run {
+        val max = mm512MaxEpi8(a, b).asI8x64()
+        transmute(simdSelectBitmask(k, max, i8x64.ZERO))
+    }
+
+/**
+ * Compare packed signed 8-bit integers in a and b, and store packed maximum values in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_max_epi8&expand=3595)
+ */
+public fun mm256MaskMaxEpi8(src: M256i, k: Mmask32, a: M256i, b: M256i): M256i =
+    run {
+        val max = mm256MaxEpi8(a, b).asI8x32()
+        transmute(simdSelectBitmask(k, max, src.asI8x32()))
+    }
+
+/**
+ * Compare packed signed 8-bit integers in a and b, and store packed maximum values in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_max_epi8&expand=3596)
+ */
+public fun mm256MaskzMaxEpi8(k: Mmask32, a: M256i, b: M256i): M256i =
+    run {
+        val max = mm256MaxEpi8(a, b).asI8x32()
+        transmute(simdSelectBitmask(k, max, i8x32.ZERO))
+    }
+
+/**
+ * Compare packed signed 8-bit integers in a and b, and store packed maximum values in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_max_epi8&expand=3592)
+ */
+public fun mmMaskMaxEpi8(src: M128i, k: Mmask16, a: M128i, b: M128i): M128i =
+    run {
+        val max = mmMaxEpi8(a, b).asI8x16()
+        transmute(simdSelectBitmask(k, max, src.asI8x16()))
+    }
+
+/**
+ * Compare packed signed 8-bit integers in a and b, and store packed maximum values in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_max_epi8&expand=3593)
+ */
+public fun mmMaskzMaxEpi8(k: Mmask16, a: M128i, b: M128i): M128i =
+    run {
+        val max = mmMaxEpi8(a, b).asI8x16()
+        transmute(simdSelectBitmask(k, max, i8x16.ZERO))
+    }
+
+/**
+ * Compare packed unsigned 16-bit integers in a and b, and store packed minimum values in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_min_epu16&expand=3723)
+ */
+public fun mm512MinEpu16(a: M512i, b: M512i): M512i = simdImin(a.asU16x32(), b.asU16x32()).asM512i()
+
+/**
+ * Compare packed unsigned 16-bit integers in a and b, and store packed minimum values in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_min_epu16&expand=3721)
+ */
+public fun mm512MaskMinEpu16(src: M512i, k: Mmask32, a: M512i, b: M512i): M512i =
+    run {
+        val min = mm512MinEpu16(a, b).asU16x32()
+        transmute(simdSelectBitmask(k, min, src.asU16x32()))
+    }
+
+/**
+ * Compare packed unsigned 16-bit integers in a and b, and store packed minimum values in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_min_epu16&expand=3722)
+ */
+public fun mm512MaskzMinEpu16(k: Mmask32, a: M512i, b: M512i): M512i =
+    run {
+        val min = mm512MinEpu16(a, b).asU16x32()
+        transmute(simdSelectBitmask(k, min, u16x32.ZERO))
+    }
+
+/**
+ * Compare packed unsigned 16-bit integers in a and b, and store packed minimum values in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_min_epu16&expand=3718)
+ */
+public fun mm256MaskMinEpu16(src: M256i, k: Mmask16, a: M256i, b: M256i): M256i =
+    run {
+        val min = mm256MinEpu16(a, b).asU16x16()
+        transmute(simdSelectBitmask(k, min, src.asU16x16()))
+    }
+
+/**
+ * Compare packed unsigned 16-bit integers in a and b, and store packed minimum values in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_min_epu16&expand=3719)
+ */
+public fun mm256MaskzMinEpu16(k: Mmask16, a: M256i, b: M256i): M256i =
+    run {
+        val min = mm256MinEpu16(a, b).asU16x16()
+        transmute(simdSelectBitmask(k, min, u16x16.ZERO))
+    }
+
+/**
+ * Compare packed unsigned 16-bit integers in a and b, and store packed minimum values in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_min_epu16&expand=3715)
+ */
+public fun mmMaskMinEpu16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
+    run {
+        val min = mmMinEpu16(a, b).asU16x8()
+        transmute(simdSelectBitmask(k, min, src.asU16x8()))
+    }
+
+/**
+ * Compare packed unsigned 16-bit integers in a and b, and store packed minimum values in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_min_epu16&expand=3716)
+ */
+public fun mmMaskzMinEpu16(k: Mmask8, a: M128i, b: M128i): M128i =
+    run {
+        val min = mmMinEpu16(a, b).asU16x8()
+        transmute(simdSelectBitmask(k, min, u16x8.ZERO))
+    }
+
+/**
+ * Compare packed unsigned 8-bit integers in a and b, and store packed minimum values in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_min_epu8&expand=3750)
+ */
+public fun mm512MinEpu8(a: M512i, b: M512i): M512i = simdImin(a.asU8x64(), b.asU8x64()).asM512i()
+
+/**
+ * Compare packed unsigned 8-bit integers in a and b, and store packed minimum values in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_min_epu8&expand=3748)
+ */
+public fun mm512MaskMinEpu8(src: M512i, k: Mmask64, a: M512i, b: M512i): M512i =
+    run {
+        val min = mm512MinEpu8(a, b).asU8x64()
+        transmute(simdSelectBitmask(k, min, src.asU8x64()))
+    }
+
+/**
+ * Compare packed unsigned 8-bit integers in a and b, and store packed minimum values in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_min_epu8&expand=3749)
+ */
+public fun mm512MaskzMinEpu8(k: Mmask64, a: M512i, b: M512i): M512i =
+    run {
+        val min = mm512MinEpu8(a, b).asU8x64()
+        transmute(simdSelectBitmask(k, min, u8x64.ZERO))
+    }
+
+/**
+ * Compare packed unsigned 8-bit integers in a and b, and store packed minimum values in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_min_epu8&expand=3745)
+ */
+public fun mm256MaskMinEpu8(src: M256i, k: Mmask32, a: M256i, b: M256i): M256i =
+    run {
+        val min = mm256MinEpu8(a, b).asU8x32()
+        transmute(simdSelectBitmask(k, min, src.asU8x32()))
+    }
+
+/**
+ * Compare packed unsigned 8-bit integers in a and b, and store packed minimum values in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_min_epu8&expand=3746)
+ */
+public fun mm256MaskzMinEpu8(k: Mmask32, a: M256i, b: M256i): M256i =
+    run {
+        val min = mm256MinEpu8(a, b).asU8x32()
+        transmute(simdSelectBitmask(k, min, u8x32.ZERO))
+    }
+
+/**
+ * Compare packed unsigned 8-bit integers in a and b, and store packed minimum values in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_min_epu8&expand=3742)
+ */
+public fun mmMaskMinEpu8(src: M128i, k: Mmask16, a: M128i, b: M128i): M128i =
+    run {
+        val min = mmMinEpu8(a, b).asU8x16()
+        transmute(simdSelectBitmask(k, min, src.asU8x16()))
+    }
+
+/**
+ * Compare packed unsigned 8-bit integers in a and b, and store packed minimum values in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_min_epu8&expand=3743)
+ */
+public fun mmMaskzMinEpu8(k: Mmask16, a: M128i, b: M128i): M128i =
+    run {
+        val min = mmMinEpu8(a, b).asU8x16()
+        transmute(simdSelectBitmask(k, min, u8x16.ZERO))
+    }
+
+/**
+ * Compare packed signed 16-bit integers in a and b, and store packed minimum values in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_min_epi16&expand=3687)
+ */
+public fun mm512MinEpi16(a: M512i, b: M512i): M512i = simdImin(a.asI16x32(), b.asI16x32()).asM512i()
+
+/**
+ * Compare packed signed 16-bit integers in a and b, and store packed minimum values in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_min_epi16&expand=3685)
+ */
+public fun mm512MaskMinEpi16(src: M512i, k: Mmask32, a: M512i, b: M512i): M512i =
+    run {
+        val min = mm512MinEpi16(a, b).asI16x32()
+        transmute(simdSelectBitmask(k, min, src.asI16x32()))
+    }
+
+/**
+ * Compare packed signed 16-bit integers in a and b, and store packed minimum values in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_min_epi16&expand=3686)
+ */
+public fun mm512MaskzMinEpi16(k: Mmask32, a: M512i, b: M512i): M512i =
+    run {
+        val min = mm512MinEpi16(a, b).asI16x32()
+        transmute(simdSelectBitmask(k, min, i16x32.ZERO))
+    }
+
+/**
+ * Compare packed signed 16-bit integers in a and b, and store packed minimum values in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_min_epi16&expand=3682)
+ */
+public fun mm256MaskMinEpi16(src: M256i, k: Mmask16, a: M256i, b: M256i): M256i =
+    run {
+        val min = mm256MinEpi16(a, b).asI16x16()
+        transmute(simdSelectBitmask(k, min, src.asI16x16()))
+    }
+
+/**
+ * Compare packed signed 16-bit integers in a and b, and store packed minimum values in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_min_epi16&expand=3683)
+ */
+public fun mm256MaskzMinEpi16(k: Mmask16, a: M256i, b: M256i): M256i =
+    run {
+        val min = mm256MinEpi16(a, b).asI16x16()
+        transmute(simdSelectBitmask(k, min, i16x16.ZERO))
+    }
+
+/**
+ * Compare packed signed 16-bit integers in a and b, and store packed minimum values in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_min_epi16&expand=3679)
+ */
+public fun mmMaskMinEpi16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
+    run {
+        val min = mmMinEpi16(a, b).asI16x8()
+        transmute(simdSelectBitmask(k, min, src.asI16x8()))
+    }
+
+/**
+ * Compare packed signed 16-bit integers in a and b, and store packed minimum values in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_min_epi16&expand=3680)
+ */
+public fun mmMaskzMinEpi16(k: Mmask8, a: M128i, b: M128i): M128i =
+    run {
+        val min = mmMinEpi16(a, b).asI16x8()
+        transmute(simdSelectBitmask(k, min, i16x8.ZERO))
+    }
+
+/**
+ * Compare packed signed 8-bit integers in a and b, and store packed minimum values in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_min_epi8&expand=3714)
+ */
+public fun mm512MinEpi8(a: M512i, b: M512i): M512i = simdImin(a.asI8x64(), b.asI8x64()).asM512i()
+
+/**
+ * Compare packed signed 8-bit integers in a and b, and store packed minimum values in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_min_epi8&expand=3712)
+ */
+public fun mm512MaskMinEpi8(src: M512i, k: Mmask64, a: M512i, b: M512i): M512i =
+    run {
+        val min = mm512MinEpi8(a, b).asI8x64()
+        transmute(simdSelectBitmask(k, min, src.asI8x64()))
+    }
+
+/**
+ * Compare packed signed 8-bit integers in a and b, and store packed minimum values in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_min_epi8&expand=3713)
+ */
+public fun mm512MaskzMinEpi8(k: Mmask64, a: M512i, b: M512i): M512i =
+    run {
+        val min = mm512MinEpi8(a, b).asI8x64()
+        transmute(simdSelectBitmask(k, min, i8x64.ZERO))
+    }
+
+/**
+ * Compare packed signed 8-bit integers in a and b, and store packed minimum values in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_min_epi8&expand=3709)
+ */
+public fun mm256MaskMinEpi8(src: M256i, k: Mmask32, a: M256i, b: M256i): M256i =
+    run {
+        val min = mm256MinEpi8(a, b).asI8x32()
+        transmute(simdSelectBitmask(k, min, src.asI8x32()))
+    }
+
+/**
+ * Compare packed signed 8-bit integers in a and b, and store packed minimum values in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_min_epi8&expand=3710)
+ */
+public fun mm256MaskzMinEpi8(k: Mmask32, a: M256i, b: M256i): M256i =
+    run {
+        val min = mm256MinEpi8(a, b).asI8x32()
+        transmute(simdSelectBitmask(k, min, i8x32.ZERO))
+    }
+
+/**
+ * Compare packed signed 8-bit integers in a and b, and store packed minimum values in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_min_epi8&expand=3706)
+ */
+public fun mmMaskMinEpi8(src: M128i, k: Mmask16, a: M128i, b: M128i): M128i =
+    run {
+        val min = mmMinEpi8(a, b).asI8x16()
+        transmute(simdSelectBitmask(k, min, src.asI8x16()))
+    }
+
+/**
+ * Compare packed signed 8-bit integers in a and b, and store packed minimum values in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_min_epi8&expand=3707)
+ */
+public fun mmMaskzMinEpi8(k: Mmask16, a: M128i, b: M128i): M128i =
+    run {
+        val min = mmMinEpi8(a, b).asI8x16()
+        transmute(simdSelectBitmask(k, min, i8x16.ZERO))
+    }
+
+/**
+ * Compare packed unsigned 16-bit integers in a and b for less-than, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmplt_epu16_mask&expand=1050)
+ */
+public fun mm512CmpltEpu16Mask(a: M512i, b: M512i): Mmask32 = simdBitmask<U16x32>(simdLt(a.asU16x32(), b.asU16x32()))
+
+/**
+ * Compare packed unsigned 16-bit integers in a and b for less-than, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmplt_epu16_mask&expand=1051)
+ */
+public fun mm512MaskCmpltEpu16Mask(k1: Mmask32, a: M512i, b: M512i): Mmask32 = mm512MaskCmpEpu16Mask<MmCmpintLt>(k1, a, b)
+
+/**
+ * Compare packed unsigned 16-bit integers in a and b for less-than, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cmplt_epu16_mask&expand=1050)
+ */
+public fun mm256CmpltEpu16Mask(a: M256i, b: M256i): Mmask16 = simdBitmask<U16x16>(simdLt(a.asU16x16(), b.asU16x16()))
+
+/**
+ * Compare packed unsigned 16-bit integers in a and b for less-than, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cmplt_epu16_mask&expand=1049)
+ */
+public fun mm256MaskCmpltEpu16Mask(k1: Mmask16, a: M256i, b: M256i): Mmask16 = mm256MaskCmpEpu16Mask<MmCmpintLt>(k1, a, b)
+
+/**
+ * Compare packed unsigned 16-bit integers in a and b for less-than, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmplt_epu16_mask&expand=1018)
+ */
+public fun mmCmpltEpu16Mask(a: M128i, b: M128i): Mmask8 = simdBitmask<U16x8>(simdLt(a.asU16x8(), b.asU16x8()))
+
+/**
+ * Compare packed unsigned 16-bit integers in a and b for less-than, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cmplt_epu16_mask&expand=1019)
+ */
+public fun mmMaskCmpltEpu16Mask(k1: Mmask8, a: M128i, b: M128i): Mmask8 = mmMaskCmpEpu16Mask<MmCmpintLt>(k1, a, b)
+
+/**
+ * Compare packed unsigned 8-bit integers in a and b for less-than, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=mm512CmpltEpu8Mask&expand=1068)
+ */
+public fun mm512CmpltEpu8Mask(a: M512i, b: M512i): Mmask64 = simdBitmask<U8x64>(simdLt(a.asU8x64(), b.asU8x64()))
+
+/**
+ * Compare packed unsigned 8-bit integers in a and b for less-than, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmplt_epu8_mask&expand=1069)
+ */
+public fun mm512MaskCmpltEpu8Mask(k1: Mmask64, a: M512i, b: M512i): Mmask64 = mm512MaskCmpEpu8Mask<MmCmpintLt>(k1, a, b)
+
+/**
+ * Compare packed unsigned 8-bit integers in a and b for less-than, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cmplt_epu8_mask&expand=1066)
+ */
+public fun mm256CmpltEpu8Mask(a: M256i, b: M256i): Mmask32 = simdBitmask<U8x32>(simdLt(a.asU8x32(), b.asU8x32()))
+
+/**
+ * Compare packed unsigned 8-bit integers in a and b for less-than, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cmplt_epu8_mask&expand=1067)
+ */
+public fun mm256MaskCmpltEpu8Mask(k1: Mmask32, a: M256i, b: M256i): Mmask32 = mm256MaskCmpEpu8Mask<MmCmpintLt>(k1, a, b)
+
+/**
+ * Compare packed unsigned 8-bit integers in a and b for less-than, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmplt_epu8_mask&expand=1064)
+ */
+public fun mmCmpltEpu8Mask(a: M128i, b: M128i): Mmask16 = simdBitmask<U8x16>(simdLt(a.asU8x16(), b.asU8x16()))
+
+/**
+ * Compare packed unsigned 8-bit integers in a and b for less-than, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cmplt_epu8_mask&expand=1065)
+ */
+public fun mmMaskCmpltEpu8Mask(k1: Mmask16, a: M128i, b: M128i): Mmask16 = mmMaskCmpEpu8Mask<MmCmpintLt>(k1, a, b)
+
+/**
+ * Compare packed signed 16-bit integers in a and b for less-than, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmplt_epi16_mask&expand=1022)
+ */
+public fun mm512CmpltEpi16Mask(a: M512i, b: M512i): Mmask32 = simdBitmask<I16x32>(simdLt(a.asI16x32(), b.asI16x32()))
+
+/**
+ * Compare packed signed 16-bit integers in a and b for less-than, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmplt_epi16_mask&expand=1023)
+ */
+public fun mm512MaskCmpltEpi16Mask(k1: Mmask32, a: M512i, b: M512i): Mmask32 = mm512MaskCmpEpi16Mask<MmCmpintLt>(k1, a, b)
+
+/**
+ * Compare packed signed 16-bit integers in a and b for less-than, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cmplt_epi16_mask&expand=1020)
+ */
+public fun mm256CmpltEpi16Mask(a: M256i, b: M256i): Mmask16 = simdBitmask<I16x16>(simdLt(a.asI16x16(), b.asI16x16()))
+
+/**
+ * Compare packed signed 16-bit integers in a and b for less-than, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cmplt_epi16_mask&expand=1021)
+ */
+public fun mm256MaskCmpltEpi16Mask(k1: Mmask16, a: M256i, b: M256i): Mmask16 = mm256MaskCmpEpi16Mask<MmCmpintLt>(k1, a, b)
+
+/**
+ * Compare packed signed 16-bit integers in a and b for less-than, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmplt_epi16_mask&expand=1018)
+ */
+public fun mmCmpltEpi16Mask(a: M128i, b: M128i): Mmask8 = simdBitmask<I16x8>(simdLt(a.asI16x8(), b.asI16x8()))
+
+/**
+ * Compare packed signed 16-bit integers in a and b for less-than, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cmplt_epi16_mask&expand=1019)
+ */
+public fun mmMaskCmpltEpi16Mask(k1: Mmask8, a: M128i, b: M128i): Mmask8 = mmMaskCmpEpi16Mask<MmCmpintLt>(k1, a, b)
+
+/**
+ * Compare packed signed 8-bit integers in a and b for less-than, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmplt_epi8_mask&expand=1044)
+ */
+public fun mm512CmpltEpi8Mask(a: M512i, b: M512i): Mmask64 = simdBitmask<I8x64>(simdLt(a.asI8x64(), b.asI8x64()))
+
+/**
+ * Compare packed signed 8-bit integers in a and b for less-than, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmplt_epi8_mask&expand=1045)
+ */
+public fun mm512MaskCmpltEpi8Mask(k1: Mmask64, a: M512i, b: M512i): Mmask64 = mm512MaskCmpEpi8Mask<MmCmpintLt>(k1, a, b)
+
+/**
+ * Compare packed signed 8-bit integers in a and b for less-than, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cmplt_epi8_mask&expand=1042)
+ */
+public fun mm256CmpltEpi8Mask(a: M256i, b: M256i): Mmask32 = simdBitmask<I8x32>(simdLt(a.asI8x32(), b.asI8x32()))
+
+/**
+ * Compare packed signed 8-bit integers in a and b for less-than, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cmplt_epi8_mask&expand=1043)
+ */
+public fun mm256MaskCmpltEpi8Mask(k1: Mmask32, a: M256i, b: M256i): Mmask32 = mm256MaskCmpEpi8Mask<MmCmpintLt>(k1, a, b)
+
+/**
+ * Compare packed signed 8-bit integers in a and b for less-than, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmplt_epi8_mask&expand=1040)
+ */
+public fun mmCmpltEpi8Mask(a: M128i, b: M128i): Mmask16 = simdBitmask<I8x16>(simdLt(a.asI8x16(), b.asI8x16()))
+
+/**
+ * Compare packed signed 8-bit integers in a and b for less-than, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cmplt_epi8_mask&expand=1041)
+ */
+public fun mmMaskCmpltEpi8Mask(k1: Mmask16, a: M128i, b: M128i): Mmask16 = mmMaskCmpEpi8Mask<MmCmpintLt>(k1, a, b)
+
+/**
+ * Compare packed unsigned 16-bit integers in a and b for greater-than, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmpgt_epu16_mask&expand=927)
+ */
+public fun mm512CmpgtEpu16Mask(a: M512i, b: M512i): Mmask32 = simdBitmask<U16x32>(simdGt(a.asU16x32(), b.asU16x32()))
+
+/**
+ * Compare packed unsigned 16-bit integers in a and b for greater-than, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmpgt_epu16_mask&expand=928)
+ */
+public fun mm512MaskCmpgtEpu16Mask(k1: Mmask32, a: M512i, b: M512i): Mmask32 = mm512MaskCmpEpu16Mask<MmCmpintNle>(k1, a, b)
+
+/**
+ * Compare packed unsigned 16-bit integers in a and b for greater-than, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cmpgt_epu16_mask&expand=925)
+ */
+public fun mm256CmpgtEpu16Mask(a: M256i, b: M256i): Mmask16 = simdBitmask<U16x16>(simdGt(a.asU16x16(), b.asU16x16()))
+
+/**
+ * Compare packed unsigned 16-bit integers in a and b for greater-than, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cmpgt_epu16_mask&expand=926)
+ */
+public fun mm256MaskCmpgtEpu16Mask(k1: Mmask16, a: M256i, b: M256i): Mmask16 = mm256MaskCmpEpu16Mask<MmCmpintNle>(k1, a, b)
+
+/**
+ * Compare packed unsigned 16-bit integers in a and b for greater-than, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmpgt_epu16_mask&expand=923)
+ */
+public fun mmCmpgtEpu16Mask(a: M128i, b: M128i): Mmask8 = simdBitmask<U16x8>(simdGt(a.asU16x8(), b.asU16x8()))
+
+/**
+ * Compare packed unsigned 16-bit integers in a and b for greater-than, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cmpgt_epu16_mask&expand=924)
+ */
+public fun mmMaskCmpgtEpu16Mask(k1: Mmask8, a: M128i, b: M128i): Mmask8 = mmMaskCmpEpu16Mask<MmCmpintNle>(k1, a, b)
+
+/**
+ * Compare packed unsigned 8-bit integers in a and b for greater-than, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmpgt_epu8_mask&expand=945)
+ */
+public fun mm512CmpgtEpu8Mask(a: M512i, b: M512i): Mmask64 = simdBitmask<U8x64>(simdGt(a.asU8x64(), b.asU8x64()))
+
+/**
+ * Compare packed unsigned 8-bit integers in a and b for greater-than, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmpgt_epu8_mask&expand=946)
+ */
+public fun mm512MaskCmpgtEpu8Mask(k1: Mmask64, a: M512i, b: M512i): Mmask64 = mm512MaskCmpEpu8Mask<MmCmpintNle>(k1, a, b)
+
+/**
+ * Compare packed unsigned 8-bit integers in a and b for greater-than, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cmpgt_epu8_mask&expand=943)
+ */
+public fun mm256CmpgtEpu8Mask(a: M256i, b: M256i): Mmask32 = simdBitmask<U8x32>(simdGt(a.asU8x32(), b.asU8x32()))
+
+/**
+ * Compare packed unsigned 8-bit integers in a and b for greater-than, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cmpgt_epu8_mask&expand=944)
+ */
+public fun mm256MaskCmpgtEpu8Mask(k1: Mmask32, a: M256i, b: M256i): Mmask32 = mm256MaskCmpEpu8Mask<MmCmpintNle>(k1, a, b)
+
+/**
+ * Compare packed unsigned 8-bit integers in a and b for greater-than, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmpgt_epu8_mask&expand=941)
+ */
+public fun mmCmpgtEpu8Mask(a: M128i, b: M128i): Mmask16 = simdBitmask<U8x16>(simdGt(a.asU8x16(), b.asU8x16()))
+
+/**
+ * Compare packed unsigned 8-bit integers in a and b for greater-than, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cmpgt_epu8_mask&expand=942)
+ */
+public fun mmMaskCmpgtEpu8Mask(k1: Mmask16, a: M128i, b: M128i): Mmask16 = mmMaskCmpEpu8Mask<MmCmpintNle>(k1, a, b)
+
+/**
+ * Compare packed signed 16-bit integers in a and b for greater-than, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmpgt_epi16_mask&expand=897)
+ */
+public fun mm512CmpgtEpi16Mask(a: M512i, b: M512i): Mmask32 = simdBitmask<I16x32>(simdGt(a.asI16x32(), b.asI16x32()))
+
+/**
+ * Compare packed signed 16-bit integers in a and b for greater-than, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmpgt_epi16_mask&expand=898)
+ */
+public fun mm512MaskCmpgtEpi16Mask(k1: Mmask32, a: M512i, b: M512i): Mmask32 = mm512MaskCmpEpi16Mask<MmCmpintNle>(k1, a, b)
+
+/**
+ * Compare packed signed 16-bit integers in a and b for greater-than, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cmpgt_epi16_mask&expand=895)
+ */
+public fun mm256CmpgtEpi16Mask(a: M256i, b: M256i): Mmask16 = simdBitmask<I16x16>(simdGt(a.asI16x16(), b.asI16x16()))
+
+/**
+ * Compare packed signed 16-bit integers in a and b for greater-than, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cmpgt_epi16_mask&expand=896)
+ */
+public fun mm256MaskCmpgtEpi16Mask(k1: Mmask16, a: M256i, b: M256i): Mmask16 = mm256MaskCmpEpi16Mask<MmCmpintNle>(k1, a, b)
+
+/**
+ * Compare packed signed 16-bit integers in a and b for greater-than, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmpgt_epi16_mask&expand=893)
+ */
+public fun mmCmpgtEpi16Mask(a: M128i, b: M128i): Mmask8 = simdBitmask<I16x8>(simdGt(a.asI16x8(), b.asI16x8()))
+
+/**
+ * Compare packed signed 16-bit integers in a and b for greater-than, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cmpgt_epi16_mask&expand=894)
+ */
+public fun mmMaskCmpgtEpi16Mask(k1: Mmask8, a: M128i, b: M128i): Mmask8 = mmMaskCmpEpi16Mask<MmCmpintNle>(k1, a, b)
+
+/**
+ * Compare packed signed 8-bit integers in a and b for greater-than, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmpgt_epi8_mask&expand=921)
+ */
+public fun mm512CmpgtEpi8Mask(a: M512i, b: M512i): Mmask64 = simdBitmask<I8x64>(simdGt(a.asI8x64(), b.asI8x64()))
+
+/**
+ * Compare packed signed 8-bit integers in a and b for greater-than, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmpgt_epi8_mask&expand=922)
+ */
+public fun mm512MaskCmpgtEpi8Mask(k1: Mmask64, a: M512i, b: M512i): Mmask64 = mm512MaskCmpEpi8Mask<MmCmpintNle>(k1, a, b)
+
+/**
+ * Compare packed signed 8-bit integers in a and b for greater-than, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cmpgt_epi8_mask&expand=919)
+ */
+public fun mm256CmpgtEpi8Mask(a: M256i, b: M256i): Mmask32 = simdBitmask<I8x32>(simdGt(a.asI8x32(), b.asI8x32()))
+
+/**
+ * Compare packed signed 8-bit integers in a and b for greater-than, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cmpgt_epi8_mask&expand=920)
+ */
+public fun mm256MaskCmpgtEpi8Mask(k1: Mmask32, a: M256i, b: M256i): Mmask32 = mm256MaskCmpEpi8Mask<MmCmpintNle>(k1, a, b)
+
+/**
+ * Compare packed signed 8-bit integers in a and b for greater-than, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmpgt_epi8_mask&expand=917)
+ */
+public fun mmCmpgtEpi8Mask(a: M128i, b: M128i): Mmask16 = simdBitmask<I8x16>(simdGt(a.asI8x16(), b.asI8x16()))
+
+/**
+ * Compare packed signed 8-bit integers in a and b for greater-than, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cmpgt_epi8_mask&expand=918)
+ */
+public fun mmMaskCmpgtEpi8Mask(k1: Mmask16, a: M128i, b: M128i): Mmask16 = mmMaskCmpEpi8Mask<MmCmpintNle>(k1, a, b)
+
+/**
+ * Compare packed unsigned 16-bit integers in a and b for less-than-or-equal, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmple_epu16_mask&expand=989)
+ */
+public fun mm512CmpleEpu16Mask(a: M512i, b: M512i): Mmask32 = simdBitmask<U16x32>(simdLe(a.asU16x32(), b.asU16x32()))
+
+/**
+ * Compare packed unsigned 16-bit integers in a and b for less-than-or-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmple_epu16_mask&expand=990)
+ */
+public fun mm512MaskCmpleEpu16Mask(k1: Mmask32, a: M512i, b: M512i): Mmask32 = mm512MaskCmpEpu16Mask<MmCmpintLe>(k1, a, b)
+
+/**
+ * Compare packed unsigned 16-bit integers in a and b for less-than-or-equal, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cmple_epu16_mask&expand=987)
+ */
+public fun mm256CmpleEpu16Mask(a: M256i, b: M256i): Mmask16 = simdBitmask<U16x16>(simdLe(a.asU16x16(), b.asU16x16()))
+
+/**
+ * Compare packed unsigned 16-bit integers in a and b for less-than-or-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cmple_epu16_mask&expand=988)
+ */
+public fun mm256MaskCmpleEpu16Mask(k1: Mmask16, a: M256i, b: M256i): Mmask16 = mm256MaskCmpEpu16Mask<MmCmpintLe>(k1, a, b)
+
+/**
+ * Compare packed unsigned 16-bit integers in a and b for less-than-or-equal, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmple_epu16_mask&expand=985)
+ */
+public fun mmCmpleEpu16Mask(a: M128i, b: M128i): Mmask8 = simdBitmask<U16x8>(simdLe(a.asU16x8(), b.asU16x8()))
+
+/**
+ * Compare packed unsigned 16-bit integers in a and b for less-than-or-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cmple_epu16_mask&expand=986)
+ */
+public fun mmMaskCmpleEpu16Mask(k1: Mmask8, a: M128i, b: M128i): Mmask8 = mmMaskCmpEpu16Mask<MmCmpintLe>(k1, a, b)
+
+/**
+ * Compare packed unsigned 8-bit integers in a and b for less-than-or-equal, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmple_epu8_mask&expand=1007)
+ */
+public fun mm512CmpleEpu8Mask(a: M512i, b: M512i): Mmask64 = simdBitmask<U8x64>(simdLe(a.asU8x64(), b.asU8x64()))
+
+/**
+ * Compare packed unsigned 8-bit integers in a and b for less-than-or-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmple_epu8_mask&expand=1008)
+ */
+public fun mm512MaskCmpleEpu8Mask(k1: Mmask64, a: M512i, b: M512i): Mmask64 = mm512MaskCmpEpu8Mask<MmCmpintLe>(k1, a, b)
+
+/**
+ * Compare packed unsigned 8-bit integers in a and b for less-than-or-equal, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cmple_epu8_mask&expand=1005)
+ */
+public fun mm256CmpleEpu8Mask(a: M256i, b: M256i): Mmask32 = simdBitmask<U8x32>(simdLe(a.asU8x32(), b.asU8x32()))
+
+/**
+ * Compare packed unsigned 8-bit integers in a and b for less-than-or-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cmple_epu8_mask&expand=1006)
+ */
+public fun mm256MaskCmpleEpu8Mask(k1: Mmask32, a: M256i, b: M256i): Mmask32 = mm256MaskCmpEpu8Mask<MmCmpintLe>(k1, a, b)
+
+/**
+ * Compare packed unsigned 8-bit integers in a and b for less-than-or-equal, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmple_epu8_mask&expand=1003)
+ */
+public fun mmCmpleEpu8Mask(a: M128i, b: M128i): Mmask16 = simdBitmask<U8x16>(simdLe(a.asU8x16(), b.asU8x16()))
+
+/**
+ * Compare packed unsigned 8-bit integers in a and b for less-than-or-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cmple_epu8_mask&expand=1004)
+ */
+public fun mmMaskCmpleEpu8Mask(k1: Mmask16, a: M128i, b: M128i): Mmask16 = mmMaskCmpEpu8Mask<MmCmpintLe>(k1, a, b)
+
+/**
+ * Compare packed signed 16-bit integers in a and b for less-than-or-equal, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmple_epi16_mask&expand=965)
+ */
+public fun mm512CmpleEpi16Mask(a: M512i, b: M512i): Mmask32 = simdBitmask<I16x32>(simdLe(a.asI16x32(), b.asI16x32()))
+
+/**
+ * Compare packed signed 16-bit integers in a and b for less-than-or-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmple_epi16_mask&expand=966)
+ */
+public fun mm512MaskCmpleEpi16Mask(k1: Mmask32, a: M512i, b: M512i): Mmask32 = mm512MaskCmpEpi16Mask<MmCmpintLe>(k1, a, b)
+
+/**
+ * Compare packed signed 16-bit integers in a and b for less-than-or-equal, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cmple_epi16_mask&expand=963)
+ */
+public fun mm256CmpleEpi16Mask(a: M256i, b: M256i): Mmask16 = simdBitmask<I16x16>(simdLe(a.asI16x16(), b.asI16x16()))
+
+/**
+ * Compare packed signed 16-bit integers in a and b for less-than-or-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cmple_epi16_mask&expand=964)
+ */
+public fun mm256MaskCmpleEpi16Mask(k1: Mmask16, a: M256i, b: M256i): Mmask16 = mm256MaskCmpEpi16Mask<MmCmpintLe>(k1, a, b)
+
+/**
+ * Compare packed signed 16-bit integers in a and b for less-than-or-equal, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmple_epi16_mask&expand=961)
+ */
+public fun mmCmpleEpi16Mask(a: M128i, b: M128i): Mmask8 = simdBitmask<I16x8>(simdLe(a.asI16x8(), b.asI16x8()))
+
+/**
+ * Compare packed signed 16-bit integers in a and b for less-than-or-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cmple_epi16_mask&expand=962)
+ */
+public fun mmMaskCmpleEpi16Mask(k1: Mmask8, a: M128i, b: M128i): Mmask8 = mmMaskCmpEpi16Mask<MmCmpintLe>(k1, a, b)
+
+/**
+ * Compare packed signed 8-bit integers in a and b for less-than-or-equal, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmple_epi8_mask&expand=983)
+ */
+public fun mm512CmpleEpi8Mask(a: M512i, b: M512i): Mmask64 = simdBitmask<I8x64>(simdLe(a.asI8x64(), b.asI8x64()))
+
+/**
+ * Compare packed signed 8-bit integers in a and b for less-than-or-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmple_epi8_mask&expand=984)
+ */
+public fun mm512MaskCmpleEpi8Mask(k1: Mmask64, a: M512i, b: M512i): Mmask64 = mm512MaskCmpEpi8Mask<MmCmpintLe>(k1, a, b)
+
+/**
+ * Compare packed signed 8-bit integers in a and b for less-than-or-equal, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cmple_epi8_mask&expand=981)
+ */
+public fun mm256CmpleEpi8Mask(a: M256i, b: M256i): Mmask32 = simdBitmask<I8x32>(simdLe(a.asI8x32(), b.asI8x32()))
+
+/**
+ * Compare packed signed 8-bit integers in a and b for less-than-or-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cmple_epi8_mask&expand=982)
+ */
+public fun mm256MaskCmpleEpi8Mask(k1: Mmask32, a: M256i, b: M256i): Mmask32 = mm256MaskCmpEpi8Mask<MmCmpintLe>(k1, a, b)
+
+/**
+ * Compare packed signed 8-bit integers in a and b for less-than-or-equal, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmple_epi8_mask&expand=979)
+ */
+public fun mmCmpleEpi8Mask(a: M128i, b: M128i): Mmask16 = simdBitmask<I8x16>(simdLe(a.asI8x16(), b.asI8x16()))
+
+/**
+ * Compare packed signed 8-bit integers in a and b for less-than-or-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cmple_epi8_mask&expand=980)
+ */
+public fun mmMaskCmpleEpi8Mask(k1: Mmask16, a: M128i, b: M128i): Mmask16 = mmMaskCmpEpi8Mask<MmCmpintLe>(k1, a, b)
+
+/**
+ * Compare packed unsigned 16-bit integers in a and b for greater-than-or-equal, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmpge_epu16_mask&expand=867)
+ */
+public fun mm512CmpgeEpu16Mask(a: M512i, b: M512i): Mmask32 = simdBitmask<U16x32>(simdGe(a.asU16x32(), b.asU16x32()))
+
+/**
+ * Compare packed unsigned 16-bit integers in a and b for greater-than-or-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmpge_epu16_mask&expand=868)
+ */
+public fun mm512MaskCmpgeEpu16Mask(k1: Mmask32, a: M512i, b: M512i): Mmask32 = mm512MaskCmpEpu16Mask<MmCmpintNlt>(k1, a, b)
+
+/**
+ * Compare packed unsigned 16-bit integers in a and b for greater-than-or-equal, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cmpge_epu16_mask&expand=865)
+ */
+public fun mm256CmpgeEpu16Mask(a: M256i, b: M256i): Mmask16 = simdBitmask<U16x16>(simdGe(a.asU16x16(), b.asU16x16()))
+
+/**
+ * Compare packed unsigned 16-bit integers in a and b for greater-than-or-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cmpge_epu16_mask&expand=866)
+ */
+public fun mm256MaskCmpgeEpu16Mask(k1: Mmask16, a: M256i, b: M256i): Mmask16 = mm256MaskCmpEpu16Mask<MmCmpintNlt>(k1, a, b)
+
+/**
+ * Compare packed unsigned 16-bit integers in a and b for greater-than-or-equal, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmpge_epu16_mask&expand=863)
+ */
+public fun mmCmpgeEpu16Mask(a: M128i, b: M128i): Mmask8 = simdBitmask<U16x8>(simdGe(a.asU16x8(), b.asU16x8()))
+
+/**
+ * Compare packed unsigned 16-bit integers in a and b for greater-than-or-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cmpge_epu16_mask&expand=864)
+ */
+public fun mmMaskCmpgeEpu16Mask(k1: Mmask8, a: M128i, b: M128i): Mmask8 = mmMaskCmpEpu16Mask<MmCmpintNlt>(k1, a, b)
+
+/**
+ * Compare packed unsigned 8-bit integers in a and b for greater-than-or-equal, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmpge_epu8_mask&expand=885)
+ */
+public fun mm512CmpgeEpu8Mask(a: M512i, b: M512i): Mmask64 = simdBitmask<U8x64>(simdGe(a.asU8x64(), b.asU8x64()))
+
+/**
+ * Compare packed unsigned 8-bit integers in a and b for greater-than-or-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmpge_epu8_mask&expand=886)
+ */
+public fun mm512MaskCmpgeEpu8Mask(k1: Mmask64, a: M512i, b: M512i): Mmask64 = mm512MaskCmpEpu8Mask<MmCmpintNlt>(k1, a, b)
+
+/**
+ * Compare packed unsigned 8-bit integers in a and b for greater-than-or-equal, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cmpge_epu8_mask&expand=883)
+ */
+public fun mm256CmpgeEpu8Mask(a: M256i, b: M256i): Mmask32 = simdBitmask<U8x32>(simdGe(a.asU8x32(), b.asU8x32()))
+
+/**
+ * Compare packed unsigned 8-bit integers in a and b for greater-than-or-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cmpge_epu8_mask&expand=884)
+ */
+public fun mm256MaskCmpgeEpu8Mask(k1: Mmask32, a: M256i, b: M256i): Mmask32 = mm256MaskCmpEpu8Mask<MmCmpintNlt>(k1, a, b)
+
+/**
+ * Compare packed unsigned 8-bit integers in a and b for greater-than-or-equal, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmpge_epu8_mask&expand=881)
+ */
+public fun mmCmpgeEpu8Mask(a: M128i, b: M128i): Mmask16 = simdBitmask<U8x16>(simdGe(a.asU8x16(), b.asU8x16()))
+
+/**
+ * Compare packed unsigned 8-bit integers in a and b for greater-than-or-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cmpge_epu8_mask&expand=882)
+ */
+public fun mmMaskCmpgeEpu8Mask(k1: Mmask16, a: M128i, b: M128i): Mmask16 = mmMaskCmpEpu8Mask<MmCmpintNlt>(k1, a, b)
+
+/**
+ * Compare packed signed 16-bit integers in a and b for greater-than-or-equal, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmpge_epi16_mask&expand=843)
+ */
+public fun mm512CmpgeEpi16Mask(a: M512i, b: M512i): Mmask32 = simdBitmask<I16x32>(simdGe(a.asI16x32(), b.asI16x32()))
+
+/**
+ * Compare packed signed 16-bit integers in a and b for greater-than-or-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmpge_epi16_mask&expand=844)
+ */
+public fun mm512MaskCmpgeEpi16Mask(k1: Mmask32, a: M512i, b: M512i): Mmask32 = mm512MaskCmpEpi16Mask<MmCmpintNlt>(k1, a, b)
+
+/**
+ * Compare packed signed 16-bit integers in a and b for greater-than-or-equal, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cmpge_epi16_mask&expand=841)
+ */
+public fun mm256CmpgeEpi16Mask(a: M256i, b: M256i): Mmask16 = simdBitmask<I16x16>(simdGe(a.asI16x16(), b.asI16x16()))
+
+/**
+ * Compare packed signed 16-bit integers in a and b for greater-than-or-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cmpge_epi16_mask&expand=842)
+ */
+public fun mm256MaskCmpgeEpi16Mask(k1: Mmask16, a: M256i, b: M256i): Mmask16 = mm256MaskCmpEpi16Mask<MmCmpintNlt>(k1, a, b)
+
+/**
+ * Compare packed signed 16-bit integers in a and b for greater-than-or-equal, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmpge_epi16_mask&expand=839)
+ */
+public fun mmCmpgeEpi16Mask(a: M128i, b: M128i): Mmask8 = simdBitmask<I16x8>(simdGe(a.asI16x8(), b.asI16x8()))
+
+/**
+ * Compare packed signed 16-bit integers in a and b for greater-than-or-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cmpge_epi16_mask&expand=840)
+ */
+public fun mmMaskCmpgeEpi16Mask(k1: Mmask8, a: M128i, b: M128i): Mmask8 = mmMaskCmpEpi16Mask<MmCmpintNlt>(k1, a, b)
+
+/**
+ * Compare packed signed 8-bit integers in a and b for greater-than-or-equal, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmpge_epi8_mask&expand=861)
+ */
+public fun mm512CmpgeEpi8Mask(a: M512i, b: M512i): Mmask64 = simdBitmask<I8x64>(simdGe(a.asI8x64(), b.asI8x64()))
+
+/**
+ * Compare packed signed 8-bit integers in a and b for greater-than-or-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmpge_epi8_mask&expand=862)
+ */
+public fun mm512MaskCmpgeEpi8Mask(k1: Mmask64, a: M512i, b: M512i): Mmask64 = mm512MaskCmpEpi8Mask<MmCmpintNlt>(k1, a, b)
+
+/**
+ * Compare packed signed 8-bit integers in a and b for greater-than-or-equal, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cmpge_epi8_mask&expand=859)
+ */
+public fun mm256CmpgeEpi8Mask(a: M256i, b: M256i): Mmask32 = simdBitmask<I8x32>(simdGe(a.asI8x32(), b.asI8x32()))
+
+/**
+ * Compare packed signed 8-bit integers in a and b for greater-than-or-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cmpge_epi8_mask&expand=860)
+ */
+public fun mm256MaskCmpgeEpi8Mask(k1: Mmask32, a: M256i, b: M256i): Mmask32 = mm256MaskCmpEpi8Mask<MmCmpintNlt>(k1, a, b)
+
+/**
+ * Compare packed signed 8-bit integers in a and b for greater-than-or-equal, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmpge_epi8_mask&expand=857)
+ */
+public fun mmCmpgeEpi8Mask(a: M128i, b: M128i): Mmask16 = simdBitmask<I8x16>(simdGe(a.asI8x16(), b.asI8x16()))
+
+/**
+ * Compare packed signed 8-bit integers in a and b for greater-than-or-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cmpge_epi8_mask&expand=858)
+ */
+public fun mmMaskCmpgeEpi8Mask(k1: Mmask16, a: M128i, b: M128i): Mmask16 = mmMaskCmpEpi8Mask<MmCmpintNlt>(k1, a, b)
+
+/**
+ * Compare packed unsigned 16-bit integers in a and b for equality, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmpeq_epu16_mask&expand=801)
+ */
+public fun mm512CmpeqEpu16Mask(a: M512i, b: M512i): Mmask32 = simdBitmask<U16x32>(simdEq(a.asU16x32(), b.asU16x32()))
+
+/**
+ * Compare packed unsigned 16-bit integers in a and b for equality, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmpeq_epu16_mask&expand=802)
+ */
+public fun mm512MaskCmpeqEpu16Mask(k1: Mmask32, a: M512i, b: M512i): Mmask32 = mm512MaskCmpEpu16Mask<MmCmpintEq>(k1, a, b)
+
+/**
+ * Compare packed unsigned 16-bit integers in a and b for equality, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cmpeq_epu16_mask&expand=799)
+ */
+public fun mm256CmpeqEpu16Mask(a: M256i, b: M256i): Mmask16 = simdBitmask<U16x16>(simdEq(a.asU16x16(), b.asU16x16()))
+
+/**
+ * Compare packed unsigned 16-bit integers in a and b for equality, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cmpeq_epu16_mask&expand=800)
+ */
+public fun mm256MaskCmpeqEpu16Mask(k1: Mmask16, a: M256i, b: M256i): Mmask16 = mm256MaskCmpEpu16Mask<MmCmpintEq>(k1, a, b)
+
+/**
+ * Compare packed unsigned 16-bit integers in a and b for equality, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmpeq_epu16_mask&expand=797)
+ */
+public fun mmCmpeqEpu16Mask(a: M128i, b: M128i): Mmask8 = simdBitmask<U16x8>(simdEq(a.asU16x8(), b.asU16x8()))
+
+/**
+ * Compare packed unsigned 16-bit integers in a and b for equality, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cmpeq_epu16_mask&expand=798)
+ */
+public fun mmMaskCmpeqEpu16Mask(k1: Mmask8, a: M128i, b: M128i): Mmask8 = mmMaskCmpEpu16Mask<MmCmpintEq>(k1, a, b)
+
+/**
+ * Compare packed unsigned 8-bit integers in a and b for equality, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmpeq_epu8_mask&expand=819)
+ */
+public fun mm512CmpeqEpu8Mask(a: M512i, b: M512i): Mmask64 = simdBitmask<U8x64>(simdEq(a.asU8x64(), b.asU8x64()))
+
+/**
+ * Compare packed unsigned 8-bit integers in a and b for equality, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmpeq_epu8_mask&expand=820)
+ */
+public fun mm512MaskCmpeqEpu8Mask(k1: Mmask64, a: M512i, b: M512i): Mmask64 = mm512MaskCmpEpu8Mask<MmCmpintEq>(k1, a, b)
+
+/**
+ * Compare packed unsigned 8-bit integers in a and b for equality, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cmpeq_epu8_mask&expand=817)
+ */
+public fun mm256CmpeqEpu8Mask(a: M256i, b: M256i): Mmask32 = simdBitmask<U8x32>(simdEq(a.asU8x32(), b.asU8x32()))
+
+/**
+ * Compare packed unsigned 8-bit integers in a and b for equality, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cmpeq_epu8_mask&expand=818)
+ */
+public fun mm256MaskCmpeqEpu8Mask(k1: Mmask32, a: M256i, b: M256i): Mmask32 = mm256MaskCmpEpu8Mask<MmCmpintEq>(k1, a, b)
+
+/**
+ * Compare packed unsigned 8-bit integers in a and b for equality, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmpeq_epu8_mask&expand=815)
+ */
+public fun mmCmpeqEpu8Mask(a: M128i, b: M128i): Mmask16 = simdBitmask<U8x16>(simdEq(a.asU8x16(), b.asU8x16()))
+
+/**
+ * Compare packed unsigned 8-bit integers in a and b for equality, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cmpeq_epu8_mask&expand=816)
+ */
+public fun mmMaskCmpeqEpu8Mask(k1: Mmask16, a: M128i, b: M128i): Mmask16 = mmMaskCmpEpu8Mask<MmCmpintEq>(k1, a, b)
+
+/**
+ * Compare packed signed 16-bit integers in a and b for equality, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmpeq_epi16_mask&expand=771)
+ */
+public fun mm512CmpeqEpi16Mask(a: M512i, b: M512i): Mmask32 = simdBitmask<I16x32>(simdEq(a.asI16x32(), b.asI16x32()))
+
+/**
+ * Compare packed signed 16-bit integers in a and b for equality, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmpeq_epi16_mask&expand=772)
+ */
+public fun mm512MaskCmpeqEpi16Mask(k1: Mmask32, a: M512i, b: M512i): Mmask32 = mm512MaskCmpEpi16Mask<MmCmpintEq>(k1, a, b)
+
+/**
+ * Compare packed signed 16-bit integers in a and b for equality, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cmpeq_epi16_mask&expand=769)
+ */
+public fun mm256CmpeqEpi16Mask(a: M256i, b: M256i): Mmask16 = simdBitmask<I16x16>(simdEq(a.asI16x16(), b.asI16x16()))
+
+/**
+ * Compare packed signed 16-bit integers in a and b for equality, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cmpeq_epi16_mask&expand=770)
+ */
+public fun mm256MaskCmpeqEpi16Mask(k1: Mmask16, a: M256i, b: M256i): Mmask16 = mm256MaskCmpEpi16Mask<MmCmpintEq>(k1, a, b)
+
+/**
+ * Compare packed signed 16-bit integers in a and b for equality, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmpeq_epi16_mask&expand=767)
+ */
+public fun mmCmpeqEpi16Mask(a: M128i, b: M128i): Mmask8 = simdBitmask<I16x8>(simdEq(a.asI16x8(), b.asI16x8()))
+
+/**
+ * Compare packed signed 16-bit integers in a and b for equality, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cmpeq_epi16_mask&expand=768)
+ */
+public fun mmMaskCmpeqEpi16Mask(k1: Mmask8, a: M128i, b: M128i): Mmask8 = mmMaskCmpEpi16Mask<MmCmpintEq>(k1, a, b)
+
+/**
+ * Compare packed signed 8-bit integers in a and b for equality, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmpeq_epi8_mask&expand=795)
+ */
+public fun mm512CmpeqEpi8Mask(a: M512i, b: M512i): Mmask64 = simdBitmask<I8x64>(simdEq(a.asI8x64(), b.asI8x64()))
+
+/**
+ * Compare packed signed 8-bit integers in a and b for equality, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmpeq_epi8_mask&expand=796)
+ */
+public fun mm512MaskCmpeqEpi8Mask(k1: Mmask64, a: M512i, b: M512i): Mmask64 = mm512MaskCmpEpi8Mask<MmCmpintEq>(k1, a, b)
+
+/**
+ * Compare packed signed 8-bit integers in a and b for equality, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cmpeq_epi8_mask&expand=793)
+ */
+public fun mm256CmpeqEpi8Mask(a: M256i, b: M256i): Mmask32 = simdBitmask<I8x32>(simdEq(a.asI8x32(), b.asI8x32()))
+
+/**
+ * Compare packed signed 8-bit integers in a and b for equality, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cmpeq_epi8_mask&expand=794)
+ */
+public fun mm256MaskCmpeqEpi8Mask(k1: Mmask32, a: M256i, b: M256i): Mmask32 = mm256MaskCmpEpi8Mask<MmCmpintEq>(k1, a, b)
+
+/**
+ * Compare packed signed 8-bit integers in a and b for equality, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmpeq_epi8_mask&expand=791)
+ */
+public fun mmCmpeqEpi8Mask(a: M128i, b: M128i): Mmask16 = simdBitmask<I8x16>(simdEq(a.asI8x16(), b.asI8x16()))
+
+/**
+ * Compare packed signed 8-bit integers in a and b for equality, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cmpeq_epi8_mask&expand=792)
+ */
+public fun mmMaskCmpeqEpi8Mask(k1: Mmask16, a: M128i, b: M128i): Mmask16 = mmMaskCmpEpi8Mask<MmCmpintEq>(k1, a, b)
+
+/**
+ * Compare packed unsigned 16-bit integers in a and b for not-equal, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmpneq_epu16_mask&expand=1106)
+ */
+public fun mm512CmpneqEpu16Mask(a: M512i, b: M512i): Mmask32 = simdBitmask<U16x32>(simdNe(a.asU16x32(), b.asU16x32()))
+
+/**
+ * Compare packed unsigned 16-bit integers in a and b for not-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmpneq_epu16_mask&expand=1107)
+ */
+public fun mm512MaskCmpneqEpu16Mask(k1: Mmask32, a: M512i, b: M512i): Mmask32 = mm512MaskCmpEpu16Mask<MmCmpintNe>(k1, a, b)
+
+/**
+ * Compare packed unsigned 16-bit integers in a and b for not-equal, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cmpneq_epu16_mask&expand=1104)
+ */
+public fun mm256CmpneqEpu16Mask(a: M256i, b: M256i): Mmask16 = simdBitmask<U16x16>(simdNe(a.asU16x16(), b.asU16x16()))
+
+/**
+ * Compare packed unsigned 16-bit integers in a and b for not-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cmpneq_epu16_mask&expand=1105)
+ */
+public fun mm256MaskCmpneqEpu16Mask(k1: Mmask16, a: M256i, b: M256i): Mmask16 = mm256MaskCmpEpu16Mask<MmCmpintNe>(k1, a, b)
+
+/**
+ * Compare packed unsigned 16-bit integers in a and b for not-equal, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmpneq_epu16_mask&expand=1102)
+ */
+public fun mmCmpneqEpu16Mask(a: M128i, b: M128i): Mmask8 = simdBitmask<U16x8>(simdNe(a.asU16x8(), b.asU16x8()))
+
+/**
+ * Compare packed unsigned 16-bit integers in a and b for not-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cmpneq_epu16_mask&expand=1103)
+ */
+public fun mmMaskCmpneqEpu16Mask(k1: Mmask8, a: M128i, b: M128i): Mmask8 = mmMaskCmpEpu16Mask<MmCmpintNe>(k1, a, b)
+
+/**
+ * Compare packed unsigned 8-bit integers in a and b for not-equal, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmpneq_epu8_mask&expand=1124)
+ */
+public fun mm512CmpneqEpu8Mask(a: M512i, b: M512i): Mmask64 = simdBitmask<U8x64>(simdNe(a.asU8x64(), b.asU8x64()))
+
+/**
+ * Compare packed unsigned 8-bit integers in a and b for not-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmpneq_epu8_mask&expand=1125)
+ */
+public fun mm512MaskCmpneqEpu8Mask(k1: Mmask64, a: M512i, b: M512i): Mmask64 = mm512MaskCmpEpu8Mask<MmCmpintNe>(k1, a, b)
+
+/**
+ * Compare packed unsigned 8-bit integers in a and b for not-equal, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cmpneq_epu8_mask&expand=1122)
+ */
+public fun mm256CmpneqEpu8Mask(a: M256i, b: M256i): Mmask32 = simdBitmask<U8x32>(simdNe(a.asU8x32(), b.asU8x32()))
+
+/**
+ * Compare packed unsigned 8-bit integers in a and b for not-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cmpneq_epu8_mask&expand=1123)
+ */
+public fun mm256MaskCmpneqEpu8Mask(k1: Mmask32, a: M256i, b: M256i): Mmask32 = mm256MaskCmpEpu8Mask<MmCmpintNe>(k1, a, b)
+
+/**
+ * Compare packed unsigned 8-bit integers in a and b for not-equal, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmpneq_epu8_mask&expand=1120)
+ */
+public fun mmCmpneqEpu8Mask(a: M128i, b: M128i): Mmask16 = simdBitmask<U8x16>(simdNe(a.asU8x16(), b.asU8x16()))
+
+/**
+ * Compare packed unsigned 8-bit integers in a and b for not-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cmpneq_epu8_mask&expand=1121)
+ */
+public fun mmMaskCmpneqEpu8Mask(k1: Mmask16, a: M128i, b: M128i): Mmask16 = mmMaskCmpEpu8Mask<MmCmpintNe>(k1, a, b)
+
+/**
+ * Compare packed signed 16-bit integers in a and b for not-equal, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmpneq_epi16_mask&expand=1082)
+ */
+public fun mm512CmpneqEpi16Mask(a: M512i, b: M512i): Mmask32 = simdBitmask<I16x32>(simdNe(a.asI16x32(), b.asI16x32()))
+
+/**
+ * Compare packed signed 16-bit integers in a and b for not-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmpneq_epi16_mask&expand=1083)
+ */
+public fun mm512MaskCmpneqEpi16Mask(k1: Mmask32, a: M512i, b: M512i): Mmask32 = mm512MaskCmpEpi16Mask<MmCmpintNe>(k1, a, b)
+
+/**
+ * Compare packed signed 16-bit integers in a and b for not-equal, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cmpneq_epi16_mask&expand=1080)
+ */
+public fun mm256CmpneqEpi16Mask(a: M256i, b: M256i): Mmask16 = simdBitmask<I16x16>(simdNe(a.asI16x16(), b.asI16x16()))
+
+/**
+ * Compare packed signed 16-bit integers in a and b for not-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cmpneq_epi16_mask&expand=1081)
+ */
+public fun mm256MaskCmpneqEpi16Mask(k1: Mmask16, a: M256i, b: M256i): Mmask16 = mm256MaskCmpEpi16Mask<MmCmpintNe>(k1, a, b)
+
+/**
+ * Compare packed signed 16-bit integers in a and b for not-equal, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmpneq_epi16_mask&expand=1078)
+ */
+public fun mmCmpneqEpi16Mask(a: M128i, b: M128i): Mmask8 = simdBitmask<I16x8>(simdNe(a.asI16x8(), b.asI16x8()))
+
+/**
+ * Compare packed signed 16-bit integers in a and b for not-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cmpneq_epi16_mask&expand=1079)
+ */
+public fun mmMaskCmpneqEpi16Mask(k1: Mmask8, a: M128i, b: M128i): Mmask8 = mmMaskCmpEpi16Mask<MmCmpintNe>(k1, a, b)
+
+/**
+ * Compare packed signed 8-bit integers in a and b for not-equal, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmpneq_epi8_mask&expand=1100)
+ */
+public fun mm512CmpneqEpi8Mask(a: M512i, b: M512i): Mmask64 = simdBitmask<I8x64>(simdNe(a.asI8x64(), b.asI8x64()))
+
+/**
+ * Compare packed signed 8-bit integers in a and b for not-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmpneq_epi8_mask&expand=1101)
+ */
+public fun mm512MaskCmpneqEpi8Mask(k1: Mmask64, a: M512i, b: M512i): Mmask64 = mm512MaskCmpEpi8Mask<MmCmpintNe>(k1, a, b)
+
+/**
+ * Compare packed signed 8-bit integers in a and b for not-equal, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cmpneq_epi8_mask&expand=1098)
+ */
+public fun mm256CmpneqEpi8Mask(a: M256i, b: M256i): Mmask32 = simdBitmask<I8x32>(simdNe(a.asI8x32(), b.asI8x32()))
+
+/**
+ * Compare packed signed 8-bit integers in a and b for not-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cmpneq_epi8_mask&expand=1099)
+ */
+public fun mm256MaskCmpneqEpi8Mask(k1: Mmask32, a: M256i, b: M256i): Mmask32 = mm256MaskCmpEpi8Mask<MmCmpintNe>(k1, a, b)
+
+/**
+ * Compare packed signed 8-bit integers in a and b for not-equal, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmpneq_epi8_mask&expand=1096)
+ */
+public fun mmCmpneqEpi8Mask(a: M128i, b: M128i): Mmask16 = simdBitmask<I8x16>(simdNe(a.asI8x16(), b.asI8x16()))
+
+/**
+ * Compare packed signed 8-bit integers in a and b for not-equal, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cmpneq_epi8_mask&expand=1097)
+ */
+public fun mmMaskCmpneqEpi8Mask(k1: Mmask16, a: M128i, b: M128i): Mmask16 = mmMaskCmpEpi8Mask<MmCmpintNe>(k1, a, b)
+
+/**
+ * Compare packed unsigned 16-bit integers in a and b based on the comparison operand specified by `IMM8`, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmp_epu16_mask&expand=715)
+ */
+public fun mm512CmpEpu16Mask(a: M512i, b: M512i, imm8: Int): Mmask32 =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 3)) { "IMM8 doesn't fit in 3 bits (unsigned)" }
+        }
+        val a1 = a.asU16x32()
+        val b1 = b.asU16x32()
+        val r =
+            when (imm8) {
+                0 -> simdEq(a1, b1)
+                1 -> simdLt(a1, b1)
+                2 -> simdLe(a1, b1)
+                3 -> i16x32.ZERO
+                4 -> simdNe(a1, b1)
+                5 -> simdGe(a1, b1)
+                6 -> simdGt(a1, b1)
+                else -> i16x32.splat(-1)
+            }
+        simdBitmask(r)
+    }
+
+/**
+ * Compare packed unsigned 16-bit integers in a and b based on the comparison operand specified by imm8, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmp_epu16_mask&expand=716)
+ */
+public fun mm512MaskCmpEpu16Mask(k1: Mmask32, a: M512i, b: M512i, imm8: Int): Mmask32 =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 3)) { "IMM8 doesn't fit in 3 bits (unsigned)" }
+        }
+        val a1 = a.asU16x32()
+        val b1 = b.asU16x32()
+        val k11 = simdSelectBitmask(k1, i16x32.splat(-1), i16x32.ZERO)
+        val r =
+            when (imm8) {
+                0 -> simdAnd(k11, simdEq(a1, b1))
+                1 -> simdAnd(k11, simdLt(a1, b1))
+                2 -> simdAnd(k11, simdLe(a1, b1))
+                3 -> i16x32.ZERO
+                4 -> simdAnd(k11, simdNe(a1, b1))
+                5 -> simdAnd(k11, simdGe(a1, b1))
+                6 -> simdAnd(k11, simdGt(a1, b1))
+                else -> k11
+            }
+        simdBitmask(r)
+    }
+
+/**
+ * Compare packed unsigned 16-bit integers in a and b based on the comparison operand specified by imm8, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cmp_epu16_mask&expand=713)
+ */
+public fun mm256CmpEpu16Mask(a: M256i, b: M256i, imm8: Int): Mmask16 =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 3)) { "IMM8 doesn't fit in 3 bits (unsigned)" }
+        }
+        val a1 = a.asU16x16()
+        val b1 = b.asU16x16()
+        val r =
+            when (imm8) {
+                0 -> simdEq(a1, b1)
+                1 -> simdLt(a1, b1)
+                2 -> simdLe(a1, b1)
+                3 -> i16x16.ZERO
+                4 -> simdNe(a1, b1)
+                5 -> simdGe(a1, b1)
+                6 -> simdGt(a1, b1)
+                else -> i16x16.splat(-1)
+            }
+        simdBitmask(r)
+    }
+
+/**
+ * Compare packed unsigned 16-bit integers in a and b based on the comparison operand specified by imm8, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cmp_epu16_mask&expand=714)
+ */
+public fun mm256MaskCmpEpu16Mask(k1: Mmask16, a: M256i, b: M256i, imm8: Int): Mmask16 =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 3)) { "IMM8 doesn't fit in 3 bits (unsigned)" }
+        }
+        val a1 = a.asU16x16()
+        val b1 = b.asU16x16()
+        val k11 = simdSelectBitmask(k1, i16x16.splat(-1), i16x16.ZERO)
+        val r =
+            when (imm8) {
+                0 -> simdAnd(k11, simdEq(a1, b1))
+                1 -> simdAnd(k11, simdLt(a1, b1))
+                2 -> simdAnd(k11, simdLe(a1, b1))
+                3 -> i16x16.ZERO
+                4 -> simdAnd(k11, simdNe(a1, b1))
+                5 -> simdAnd(k11, simdGe(a1, b1))
+                6 -> simdAnd(k11, simdGt(a1, b1))
+                else -> k11
+            }
+        simdBitmask(r)
+    }
+
+/**
+ * Compare packed unsigned 16-bit integers in a and b based on the comparison operand specified by imm8, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmp_epu16_mask&expand=711)
+ */
+public fun mmCmpEpu16Mask(a: M128i, b: M128i, imm8: Int): Mmask8 =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 3)) { "IMM8 doesn't fit in 3 bits (unsigned)" }
+        }
+        val a1 = a.asU16x8()
+        val b1 = b.asU16x8()
+        val r =
+            when (imm8) {
+                0 -> simdEq(a1, b1)
+                1 -> simdLt(a1, b1)
+                2 -> simdLe(a1, b1)
+                3 -> i16x8.ZERO
+                4 -> simdNe(a1, b1)
+                5 -> simdGe(a1, b1)
+                6 -> simdGt(a1, b1)
+                else -> i16x8.splat(-1)
+            }
+        simdBitmask(r)
+    }
+
+/**
+ * Compare packed unsigned 16-bit integers in a and b based on the comparison operand specified by imm8, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cmp_epu16_mask&expand=712)
+ */
+public fun mmMaskCmpEpu16Mask(k1: Mmask8, a: M128i, b: M128i, imm8: Int): Mmask8 =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 3)) { "IMM8 doesn't fit in 3 bits (unsigned)" }
+        }
+        val a1 = a.asU16x8()
+        val b1 = b.asU16x8()
+        val k11 = simdSelectBitmask(k1, i16x8.splat(-1), i16x8.ZERO)
+        val r =
+            when (imm8) {
+                0 -> simdAnd(k11, simdEq(a1, b1))
+                1 -> simdAnd(k11, simdLt(a1, b1))
+                2 -> simdAnd(k11, simdLe(a1, b1))
+                3 -> i16x8.ZERO
+                4 -> simdAnd(k11, simdNe(a1, b1))
+                5 -> simdAnd(k11, simdGe(a1, b1))
+                6 -> simdAnd(k11, simdGt(a1, b1))
+                else -> k11
+            }
+        simdBitmask(r)
+    }
+
+/**
+ * Compare packed unsigned 8-bit integers in a and b based on the comparison operand specified by imm8, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmp_epu8_mask&expand=733)
+ */
+public fun mm512CmpEpu8Mask(a: M512i, b: M512i, imm8: Int): Mmask64 =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 3)) { "IMM8 doesn't fit in 3 bits (unsigned)" }
+        }
+        val a1 = a.asU8x64()
+        val b1 = b.asU8x64()
+        val r =
+            when (imm8) {
+                0 -> simdEq(a1, b1)
+                1 -> simdLt(a1, b1)
+                2 -> simdLe(a1, b1)
+                3 -> i8x64.ZERO
+                4 -> simdNe(a1, b1)
+                5 -> simdGe(a1, b1)
+                6 -> simdGt(a1, b1)
+                else -> i8x64.splat(-1)
+            }
+        simdBitmask(r)
+    }
+
+/**
+ * Compare packed unsigned 8-bit integers in a and b based on the comparison operand specified by imm8, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmp_epu8_mask&expand=734)
+ */
+public fun mm512MaskCmpEpu8Mask(k1: Mmask64, a: M512i, b: M512i, imm8: Int): Mmask64 =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 3)) { "IMM8 doesn't fit in 3 bits (unsigned)" }
+        }
+        val a1 = a.asU8x64()
+        val b1 = b.asU8x64()
+        val k11 = simdSelectBitmask(k1, i8x64.splat(-1), i8x64.ZERO)
+        val r =
+            when (imm8) {
+                0 -> simdAnd(k11, simdEq(a1, b1))
+                1 -> simdAnd(k11, simdLt(a1, b1))
+                2 -> simdAnd(k11, simdLe(a1, b1))
+                3 -> i8x64.ZERO
+                4 -> simdAnd(k11, simdNe(a1, b1))
+                5 -> simdAnd(k11, simdGe(a1, b1))
+                6 -> simdAnd(k11, simdGt(a1, b1))
+                else -> k11
+            }
+        simdBitmask(r)
+    }
+
+/**
+ * Compare packed unsigned 8-bit integers in a and b based on the comparison operand specified by imm8, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cmp_epu8_mask&expand=731)
+ */
+public fun mm256CmpEpu8Mask(a: M256i, b: M256i, imm8: Int): Mmask32 =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 3)) { "IMM8 doesn't fit in 3 bits (unsigned)" }
+        }
+        val a1 = a.asU8x32()
+        val b1 = b.asU8x32()
+        val r =
+            when (imm8) {
+                0 -> simdEq(a1, b1)
+                1 -> simdLt(a1, b1)
+                2 -> simdLe(a1, b1)
+                3 -> i8x32.ZERO
+                4 -> simdNe(a1, b1)
+                5 -> simdGe(a1, b1)
+                6 -> simdGt(a1, b1)
+                else -> i8x32.splat(-1)
+            }
+        simdBitmask(r)
+    }
+
+/**
+ * Compare packed unsigned 8-bit integers in a and b based on the comparison operand specified by imm8, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cmp_epu8_mask&expand=732)
+ */
+public fun mm256MaskCmpEpu8Mask(k1: Mmask32, a: M256i, b: M256i, imm8: Int): Mmask32 =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 3)) { "IMM8 doesn't fit in 3 bits (unsigned)" }
+        }
+        val a1 = a.asU8x32()
+        val b1 = b.asU8x32()
+        val k11 = simdSelectBitmask(k1, i8x32.splat(-1), i8x32.ZERO)
+        val r =
+            when (imm8) {
+                0 -> simdAnd(k11, simdEq(a1, b1))
+                1 -> simdAnd(k11, simdLt(a1, b1))
+                2 -> simdAnd(k11, simdLe(a1, b1))
+                3 -> i8x32.ZERO
+                4 -> simdAnd(k11, simdNe(a1, b1))
+                5 -> simdAnd(k11, simdGe(a1, b1))
+                6 -> simdAnd(k11, simdGt(a1, b1))
+                else -> k11
+            }
+        simdBitmask(r)
+    }
+
+/**
+ * Compare packed unsigned 8-bit integers in a and b based on the comparison operand specified by imm8, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmp_epu8_mask&expand=729)
+ */
+public fun mmCmpEpu8Mask(a: M128i, b: M128i, imm8: Int): Mmask16 =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 3)) { "IMM8 doesn't fit in 3 bits (unsigned)" }
+        }
+        val a1 = a.asU8x16()
+        val b1 = b.asU8x16()
+        val r =
+            when (imm8) {
+                0 -> simdEq(a1, b1)
+                1 -> simdLt(a1, b1)
+                2 -> simdLe(a1, b1)
+                3 -> i8x16.ZERO
+                4 -> simdNe(a1, b1)
+                5 -> simdGe(a1, b1)
+                6 -> simdGt(a1, b1)
+                else -> i8x16.splat(-1)
+            }
+        simdBitmask(r)
+    }
+
+/**
+ * Compare packed unsigned 8-bit integers in a and b based on the comparison operand specified by imm8, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cmp_epu8_mask&expand=730)
+ */
+public fun mmMaskCmpEpu8Mask(k1: Mmask16, a: M128i, b: M128i, imm8: Int): Mmask16 =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 3)) { "IMM8 doesn't fit in 3 bits (unsigned)" }
+        }
+        val a1 = a.asU8x16()
+        val b1 = b.asU8x16()
+        val k11 = simdSelectBitmask(k1, i8x16.splat(-1), i8x16.ZERO)
+        val r =
+            when (imm8) {
+                0 -> simdAnd(k11, simdEq(a1, b1))
+                1 -> simdAnd(k11, simdLt(a1, b1))
+                2 -> simdAnd(k11, simdLe(a1, b1))
+                3 -> i8x16.ZERO
+                4 -> simdAnd(k11, simdNe(a1, b1))
+                5 -> simdAnd(k11, simdGe(a1, b1))
+                6 -> simdAnd(k11, simdGt(a1, b1))
+                else -> k11
+            }
+        simdBitmask(r)
+    }
+
+/**
+ * Compare packed signed 16-bit integers in a and b based on the comparison operand specified by imm8, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmp_epi16_mask&expand=691)
+ */
+public fun mm512CmpEpi16Mask(a: M512i, b: M512i, imm8: Int): Mmask32 =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 3)) { "IMM8 doesn't fit in 3 bits (unsigned)" }
+        }
+        val a1 = a.asI16x32()
+        val b1 = b.asI16x32()
+        val r =
+            when (imm8) {
+                0 -> simdEq(a1, b1)
+                1 -> simdLt(a1, b1)
+                2 -> simdLe(a1, b1)
+                3 -> i16x32.ZERO
+                4 -> simdNe(a1, b1)
+                5 -> simdGe(a1, b1)
+                6 -> simdGt(a1, b1)
+                else -> i16x32.splat(-1)
+            }
+        simdBitmask(r)
+    }
+
+/**
+ * Compare packed signed 16-bit integers in a and b based on the comparison operand specified by imm8, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmp_epi16_mask&expand=692)
+ */
+public fun mm512MaskCmpEpi16Mask(k1: Mmask32, a: M512i, b: M512i, imm8: Int): Mmask32 =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 3)) { "IMM8 doesn't fit in 3 bits (unsigned)" }
+        }
+        val a1 = a.asI16x32()
+        val b1 = b.asI16x32()
+        val k11 = simdSelectBitmask(k1, i16x32.splat(-1), i16x32.ZERO)
+        val r =
+            when (imm8) {
+                0 -> simdAnd(k11, simdEq(a1, b1))
+                1 -> simdAnd(k11, simdLt(a1, b1))
+                2 -> simdAnd(k11, simdLe(a1, b1))
+                3 -> i16x32.ZERO
+                4 -> simdAnd(k11, simdNe(a1, b1))
+                5 -> simdAnd(k11, simdGe(a1, b1))
+                6 -> simdAnd(k11, simdGt(a1, b1))
+                else -> k11
+            }
+        simdBitmask(r)
+    }
+
+/**
+ * Compare packed signed 16-bit integers in a and b based on the comparison operand specified by imm8, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cmp_epi16_mask&expand=689)
+ */
+public fun mm256CmpEpi16Mask(a: M256i, b: M256i, imm8: Int): Mmask16 =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 3)) { "IMM8 doesn't fit in 3 bits (unsigned)" }
+        }
+        val a1 = a.asI16x16()
+        val b1 = b.asI16x16()
+        val r =
+            when (imm8) {
+                0 -> simdEq(a1, b1)
+                1 -> simdLt(a1, b1)
+                2 -> simdLe(a1, b1)
+                3 -> i16x16.ZERO
+                4 -> simdNe(a1, b1)
+                5 -> simdGe(a1, b1)
+                6 -> simdGt(a1, b1)
+                else -> i16x16.splat(-1)
+            }
+        simdBitmask(r)
+    }
+
+/**
+ * Compare packed signed 16-bit integers in a and b based on the comparison operand specified by imm8, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cmp_epi16_mask&expand=690)
+ */
+public fun mm256MaskCmpEpi16Mask(k1: Mmask16, a: M256i, b: M256i, imm8: Int): Mmask16 =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 3)) { "IMM8 doesn't fit in 3 bits (unsigned)" }
+        }
+        val a1 = a.asI16x16()
+        val b1 = b.asI16x16()
+        val k11 = simdSelectBitmask(k1, i16x16.splat(-1), i16x16.ZERO)
+        val r =
+            when (imm8) {
+                0 -> simdAnd(k11, simdEq(a1, b1))
+                1 -> simdAnd(k11, simdLt(a1, b1))
+                2 -> simdAnd(k11, simdLe(a1, b1))
+                3 -> i16x16.ZERO
+                4 -> simdAnd(k11, simdNe(a1, b1))
+                5 -> simdAnd(k11, simdGe(a1, b1))
+                6 -> simdAnd(k11, simdGt(a1, b1))
+                else -> k11
+            }
+        simdBitmask(r)
+    }
+
+/**
+ * Compare packed signed 16-bit integers in a and b based on the comparison operand specified by imm8, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmp_epi16_mask&expand=687)
+ */
+public fun mmCmpEpi16Mask(a: M128i, b: M128i, imm8: Int): Mmask8 =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 3)) { "IMM8 doesn't fit in 3 bits (unsigned)" }
+        }
+        val a1 = a.asI16x8()
+        val b1 = b.asI16x8()
+        val r =
+            when (imm8) {
+                0 -> simdEq(a1, b1)
+                1 -> simdLt(a1, b1)
+                2 -> simdLe(a1, b1)
+                3 -> i16x8.ZERO
+                4 -> simdNe(a1, b1)
+                5 -> simdGe(a1, b1)
+                6 -> simdGt(a1, b1)
+                else -> i16x8.splat(-1)
+            }
+        simdBitmask(r)
+    }
+
+/**
+ * Compare packed signed 16-bit integers in a and b based on the comparison operand specified by imm8, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cmp_epi16_mask&expand=688)
+ */
+public fun mmMaskCmpEpi16Mask(k1: Mmask8, a: M128i, b: M128i, imm8: Int): Mmask8 =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 3)) { "IMM8 doesn't fit in 3 bits (unsigned)" }
+        }
+        val a1 = a.asI16x8()
+        val b1 = b.asI16x8()
+        val k11 = simdSelectBitmask(k1, i16x8.splat(-1), i16x8.ZERO)
+        val r =
+            when (imm8) {
+                0 -> simdAnd(k11, simdEq(a1, b1))
+                1 -> simdAnd(k11, simdLt(a1, b1))
+                2 -> simdAnd(k11, simdLe(a1, b1))
+                3 -> i16x8.ZERO
+                4 -> simdAnd(k11, simdNe(a1, b1))
+                5 -> simdAnd(k11, simdGe(a1, b1))
+                6 -> simdAnd(k11, simdGt(a1, b1))
+                else -> k11
+            }
+        simdBitmask(r)
+    }
+
+/**
+ * Compare packed signed 8-bit integers in a and b based on the comparison operand specified by imm8, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cmp_epi8_mask&expand=709)
+ */
+public fun mm512CmpEpi8Mask(a: M512i, b: M512i, imm8: Int): Mmask64 =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 3)) { "IMM8 doesn't fit in 3 bits (unsigned)" }
+        }
+        val a1 = a.asI8x64()
+        val b1 = b.asI8x64()
+        val r =
+            when (imm8) {
+                0 -> simdEq(a1, b1)
+                1 -> simdLt(a1, b1)
+                2 -> simdLe(a1, b1)
+                3 -> i8x64.ZERO
+                4 -> simdNe(a1, b1)
+                5 -> simdGe(a1, b1)
+                6 -> simdGt(a1, b1)
+                else -> i8x64.splat(-1)
+            }
+        simdBitmask(r)
+    }
+
+/**
+ * Compare packed signed 8-bit integers in a and b based on the comparison operand specified by imm8, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cmp_epi8_mask&expand=710)
+ */
+public fun mm512MaskCmpEpi8Mask(k1: Mmask64, a: M512i, b: M512i, imm8: Int): Mmask64 =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 3)) { "IMM8 doesn't fit in 3 bits (unsigned)" }
+        }
+        val a1 = a.asI8x64()
+        val b1 = b.asI8x64()
+        val k11 = simdSelectBitmask(k1, i8x64.splat(-1), i8x64.ZERO)
+        val r =
+            when (imm8) {
+                0 -> simdAnd(k11, simdEq(a1, b1))
+                1 -> simdAnd(k11, simdLt(a1, b1))
+                2 -> simdAnd(k11, simdLe(a1, b1))
+                3 -> i8x64.ZERO
+                4 -> simdAnd(k11, simdNe(a1, b1))
+                5 -> simdAnd(k11, simdGe(a1, b1))
+                6 -> simdAnd(k11, simdGt(a1, b1))
+                else -> k11
+            }
+        simdBitmask(r)
+    }
+
+/**
+ * Compare packed signed 8-bit integers in a and b based on the comparison operand specified by imm8, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cmp_epi8_mask&expand=707)
+ */
+public fun mm256CmpEpi8Mask(a: M256i, b: M256i, imm8: Int): Mmask32 =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 3)) { "IMM8 doesn't fit in 3 bits (unsigned)" }
+        }
+        val a1 = a.asI8x32()
+        val b1 = b.asI8x32()
+        val r =
+            when (imm8) {
+                0 -> simdEq(a1, b1)
+                1 -> simdLt(a1, b1)
+                2 -> simdLe(a1, b1)
+                3 -> i8x32.ZERO
+                4 -> simdNe(a1, b1)
+                5 -> simdGe(a1, b1)
+                6 -> simdGt(a1, b1)
+                else -> i8x32.splat(-1)
+            }
+        simdBitmask(r)
+    }
+
+/**
+ * Compare packed signed 8-bit integers in a and b based on the comparison operand specified by imm8, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cmp_epi8_mask&expand=708)
+ */
+public fun mm256MaskCmpEpi8Mask(k1: Mmask32, a: M256i, b: M256i, imm8: Int): Mmask32 =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 3)) { "IMM8 doesn't fit in 3 bits (unsigned)" }
+        }
+        val a1 = a.asI8x32()
+        val b1 = b.asI8x32()
+        val k11 = simdSelectBitmask(k1, i8x32.splat(-1), i8x32.ZERO)
+        val r =
+            when (imm8) {
+                0 -> simdAnd(k11, simdEq(a1, b1))
+                1 -> simdAnd(k11, simdLt(a1, b1))
+                2 -> simdAnd(k11, simdLe(a1, b1))
+                3 -> i8x32.ZERO
+                4 -> simdAnd(k11, simdNe(a1, b1))
+                5 -> simdAnd(k11, simdGe(a1, b1))
+                6 -> simdAnd(k11, simdGt(a1, b1))
+                else -> k11
+            }
+        simdBitmask(r)
+    }
+
+/**
+ * Compare packed signed 8-bit integers in a and b based on the comparison operand specified by imm8, and store the results in mask vector k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmp_epi8_mask&expand=705)
+ */
+public fun mmCmpEpi8Mask(a: M128i, b: M128i, imm8: Int): Mmask16 =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 3)) { "IMM8 doesn't fit in 3 bits (unsigned)" }
+        }
+        val a1 = a.asI8x16()
+        val b1 = b.asI8x16()
+        val r =
+            when (imm8) {
+                0 -> simdEq(a1, b1)
+                1 -> simdLt(a1, b1)
+                2 -> simdLe(a1, b1)
+                3 -> i8x16.ZERO
+                4 -> simdNe(a1, b1)
+                5 -> simdGe(a1, b1)
+                6 -> simdGt(a1, b1)
+                else -> i8x16.splat(-1)
+            }
+        simdBitmask(r)
+    }
+
+/**
+ * Compare packed signed 8-bit integers in a and b based on the comparison operand specified by imm8, and store the results in mask vector k using zeromask k1 (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cmp_epi8_mask&expand=706)
+ */
+public fun mmMaskCmpEpi8Mask(k1: Mmask16, a: M128i, b: M128i, imm8: Int): Mmask16 =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 3)) { "IMM8 doesn't fit in 3 bits (unsigned)" }
+        }
+        val a1 = a.asI8x16()
+        val b1 = b.asI8x16()
+        val k11 = simdSelectBitmask(k1, i8x16.splat(-1), i8x16.ZERO)
+        val r =
+            when (imm8) {
+                0 -> simdAnd(k11, simdEq(a1, b1))
+                1 -> simdAnd(k11, simdLt(a1, b1))
+                2 -> simdAnd(k11, simdLe(a1, b1))
+                3 -> i8x16.ZERO
+                4 -> simdAnd(k11, simdNe(a1, b1))
+                5 -> simdAnd(k11, simdGe(a1, b1))
+                6 -> simdAnd(k11, simdGt(a1, b1))
+                else -> k11
+            }
+        simdBitmask(r)
+    }
+
+/**
+ * Reduce the packed 16-bit integers in a by addition. Returns the sum of all elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_reduce_add_epi16)
+ */
+public fun mm256ReduceAddEpi16(a: M256i): Short = simdReduceAddOrdered(a.asI16x16(), 0)
+
+/**
+ * Reduce the packed 16-bit integers in a by addition using mask k. Returns the sum of all active elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_reduce_add_epi16)
+ */
+public fun mm256MaskReduceAddEpi16(k: Mmask16, a: M256i): Short = simdReduceAddOrdered(simdSelectBitmask(k, a.asI16x16(), i16x16.ZERO), 0)
+
+/**
+ * Reduce the packed 16-bit integers in a by addition. Returns the sum of all elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_reduce_add_epi16)
+ */
+public fun mmReduceAddEpi16(a: M128i): Short = simdReduceAddOrdered(a.asI16x8(), 0)
+
+/**
+ * Reduce the packed 16-bit integers in a by addition using mask k. Returns the sum of all active elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_reduce_add_epi16)
+ */
+public fun mmMaskReduceAddEpi16(k: Mmask8, a: M128i): Short = simdReduceAddOrdered(simdSelectBitmask(k, a.asI16x8(), i16x8.ZERO), 0)
+
+/**
+ * Reduce the packed 8-bit integers in a by addition. Returns the sum of all elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_reduce_add_epi8)
+ */
+public fun mm256ReduceAddEpi8(a: M256i): Byte = simdReduceAddOrdered(a.asI8x32(), 0)
+
+/**
+ * Reduce the packed 8-bit integers in a by addition using mask k. Returns the sum of all active elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_reduce_add_epi8)
+ */
+public fun mm256MaskReduceAddEpi8(k: Mmask32, a: M256i): Byte = simdReduceAddOrdered(simdSelectBitmask(k, a.asI8x32(), i8x32.ZERO), 0)
+
+/**
+ * Reduce the packed 8-bit integers in a by addition. Returns the sum of all elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_reduce_add_epi8)
+ */
+public fun mmReduceAddEpi8(a: M128i): Byte = simdReduceAddOrdered(a.asI8x16(), 0)
+
+/**
+ * Reduce the packed 8-bit integers in a by addition using mask k. Returns the sum of all active elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_reduce_add_epi8)
+ */
+public fun mmMaskReduceAddEpi8(k: Mmask16, a: M128i): Byte = simdReduceAddOrdered(simdSelectBitmask(k, a.asI8x16(), i8x16.ZERO), 0)
+
+/**
+ * Reduce the packed 16-bit integers in a by bitwise AND. Returns the bitwise AND of all elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_reduce_and_epi16)
+ */
+public fun mm256ReduceAndEpi16(a: M256i): Short = simdReduceAnd(a.asI16x16())
+
+/**
+ * Reduce the packed 16-bit integers in a by bitwise AND using mask k. Returns the bitwise AND of all active elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_reduce_and_epi16)
+ */
+public fun mm256MaskReduceAndEpi16(k: Mmask16, a: M256i): Short = simdReduceAnd(simdSelectBitmask(k, a.asI16x16(), mm256Set1Epi64x(-1L).asI16x16()))
+
+/**
+ * Reduce the packed 16-bit integers in a by bitwise AND. Returns the bitwise AND of all elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_reduce_and_epi16)
+ */
+public fun mmReduceAndEpi16(a: M128i): Short = simdReduceAnd(a.asI16x8())
+
+/**
+ * Reduce the packed 16-bit integers in a by bitwise AND using mask k. Returns the bitwise AND of all active elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_reduce_and_epi16)
+ */
+public fun mmMaskReduceAndEpi16(k: Mmask8, a: M128i): Short = simdReduceAnd(simdSelectBitmask(k, a.asI16x8(), mmSet1Epi64x(-1L).asI16x8()))
+
+/**
+ * Reduce the packed 8-bit integers in a by bitwise AND. Returns the bitwise AND of all elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_reduce_and_epi8)
+ */
+public fun mm256ReduceAndEpi8(a: M256i): Byte = simdReduceAnd(a.asI8x32())
+
+/**
+ * Reduce the packed 8-bit integers in a by bitwise AND using mask k. Returns the bitwise AND of all active elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_reduce_and_epi8)
+ */
+public fun mm256MaskReduceAndEpi8(k: Mmask32, a: M256i): Byte = simdReduceAnd(simdSelectBitmask(k, a.asI8x32(), mm256Set1Epi64x(-1L).asI8x32()))
+
+/**
+ * Reduce the packed 8-bit integers in a by bitwise AND. Returns the bitwise AND of all elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_reduce_and_epi8)
+ */
+public fun mmReduceAndEpi8(a: M128i): Byte = simdReduceAnd(a.asI8x16())
+
+/**
+ * Reduce the packed 8-bit integers in a by bitwise AND using mask k. Returns the bitwise AND of all active elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_reduce_and_epi8)
+ */
+public fun mmMaskReduceAndEpi8(k: Mmask16, a: M128i): Byte = simdReduceAnd(simdSelectBitmask(k, a.asI8x16(), mmSet1Epi64x(-1L).asI8x16()))
+
+/**
+ * Reduce the packed 16-bit integers in a by maximum. Returns the maximum of all elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_reduce_max_epi16)
+ */
+public fun mm256ReduceMaxEpi16(a: M256i): Short = simdReduceMax(a.asI16x16())
+
+/**
+ * Reduce the packed 16-bit integers in a by maximum using mask k. Returns the maximum of all active elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_reduce_max_epi16)
+ */
+public fun mm256MaskReduceMaxEpi16(k: Mmask16, a: M256i): Short = simdReduceMax(simdSelectBitmask(k, a.asI16x16(), i16x16.splat(-32768)))
+
+/**
+ * Reduce the packed 16-bit integers in a by maximum. Returns the maximum of all elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_reduce_max_epi16)
+ */
+public fun mmReduceMaxEpi16(a: M128i): Short = simdReduceMax(a.asI16x8())
+
+/**
+ * Reduce the packed 16-bit integers in a by maximum using mask k. Returns the maximum of all active elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_reduce_max_epi16)
+ */
+public fun mmMaskReduceMaxEpi16(k: Mmask8, a: M128i): Short = simdReduceMax(simdSelectBitmask(k, a.asI16x8(), i16x8.splat(-32768)))
+
+/**
+ * Reduce the packed 8-bit integers in a by maximum. Returns the maximum of all elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_reduce_max_epi8)
+ */
+public fun mm256ReduceMaxEpi8(a: M256i): Byte = simdReduceMax(a.asI8x32())
+
+/**
+ * Reduce the packed 8-bit integers in a by maximum using mask k. Returns the maximum of all active elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_reduce_max_epi8)
+ */
+public fun mm256MaskReduceMaxEpi8(k: Mmask32, a: M256i): Byte = simdReduceMax(simdSelectBitmask(k, a.asI8x32(), i8x32.splat(-128)))
+
+/**
+ * Reduce the packed 8-bit integers in a by maximum. Returns the maximum of all elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_reduce_max_epi8)
+ */
+public fun mmReduceMaxEpi8(a: M128i): Byte = simdReduceMax(a.asI8x16())
+
+/**
+ * Reduce the packed 8-bit integers in a by maximum using mask k. Returns the maximum of all active elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_reduce_max_epi8)
+ */
+public fun mmMaskReduceMaxEpi8(k: Mmask16, a: M128i): Byte = simdReduceMax(simdSelectBitmask(k, a.asI8x16(), i8x16.splat(-128)))
+
+/**
+ * Reduce the packed unsigned 16-bit integers in a by maximum. Returns the maximum of all elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_reduce_max_epu16)
+ */
+public fun mm256ReduceMaxEpu16(a: M256i): UShort = simdReduceMax(a.asU16x16())
+
+/**
+ * Reduce the packed unsigned 16-bit integers in a by maximum using mask k. Returns the maximum of all active elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_reduce_max_epu16)
+ */
+public fun mm256MaskReduceMaxEpu16(k: Mmask16, a: M256i): UShort = simdReduceMax(simdSelectBitmask(k, a.asU16x16(), u16x16.ZERO))
+
+/**
+ * Reduce the packed unsigned 16-bit integers in a by maximum. Returns the maximum of all elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_reduce_max_epu16)
+ */
+public fun mmReduceMaxEpu16(a: M128i): UShort = simdReduceMax(a.asU16x8())
+
+/**
+ * Reduce the packed unsigned 16-bit integers in a by maximum using mask k. Returns the maximum of all active elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_reduce_max_epu16)
+ */
+public fun mmMaskReduceMaxEpu16(k: Mmask8, a: M128i): UShort = simdReduceMax(simdSelectBitmask(k, a.asU16x8(), u16x8.ZERO))
+
+/**
+ * Reduce the packed unsigned 8-bit integers in a by maximum. Returns the maximum of all elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_reduce_max_epu8)
+ */
+public fun mm256ReduceMaxEpu8(a: M256i): UByte = simdReduceMax(a.asU8x32())
+
+/**
+ * Reduce the packed unsigned 8-bit integers in a by maximum using mask k. Returns the maximum of all active elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_reduce_max_epu8)
+ */
+public fun mm256MaskReduceMaxEpu8(k: Mmask32, a: M256i): UByte = simdReduceMax(simdSelectBitmask(k, a.asU8x32(), u8x32.ZERO))
+
+/**
+ * Reduce the packed unsigned 8-bit integers in a by maximum. Returns the maximum of all elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_reduce_max_epu8)
+ */
+public fun mmReduceMaxEpu8(a: M128i): UByte = simdReduceMax(a.asU8x16())
+
+/**
+ * Reduce the packed unsigned 8-bit integers in a by maximum using mask k. Returns the maximum of all active elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_reduce_max_epu8)
+ */
+public fun mmMaskReduceMaxEpu8(k: Mmask16, a: M128i): UByte = simdReduceMax(simdSelectBitmask(k, a.asU8x16(), u8x16.ZERO))
+
+/**
+ * Reduce the packed 16-bit integers in a by minimum. Returns the minimum of all elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_reduce_min_epi16)
+ */
+public fun mm256ReduceMinEpi16(a: M256i): Short = simdReduceMin(a.asI16x16())
+
+/**
+ * Reduce the packed 16-bit integers in a by minimum using mask k. Returns the minimum of all active elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_reduce_min_epi16)
+ */
+public fun mm256MaskReduceMinEpi16(k: Mmask16, a: M256i): Short = simdReduceMin(simdSelectBitmask(k, a.asI16x16(), i16x16.splat(0x7fff)))
+
+/**
+ * Reduce the packed 16-bit integers in a by minimum. Returns the minimum of all elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_reduce_min_epi16)
+ */
+public fun mmReduceMinEpi16(a: M128i): Short = simdReduceMin(a.asI16x8())
+
+/**
+ * Reduce the packed 16-bit integers in a by minimum using mask k. Returns the minimum of all active elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_reduce_min_epi16)
+ */
+public fun mmMaskReduceMinEpi16(k: Mmask8, a: M128i): Short = simdReduceMin(simdSelectBitmask(k, a.asI16x8(), i16x8.splat(0x7fff)))
+
+/**
+ * Reduce the packed 8-bit integers in a by minimum. Returns the minimum of all elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_reduce_min_epi8)
+ */
+public fun mm256ReduceMinEpi8(a: M256i): Byte = simdReduceMin(a.asI8x32())
+
+/**
+ * Reduce the packed 8-bit integers in a by minimum using mask k. Returns the minimum of all active elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_reduce_min_epi8)
+ */
+public fun mm256MaskReduceMinEpi8(k: Mmask32, a: M256i): Byte = simdReduceMin(simdSelectBitmask(k, a.asI8x32(), i8x32.splat(0x7f)))
+
+/**
+ * Reduce the packed 8-bit integers in a by minimum. Returns the minimum of all elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_reduce_min_epi8)
+ */
+public fun mmReduceMinEpi8(a: M128i): Byte = simdReduceMin(a.asI8x16())
+
+/**
+ * Reduce the packed 8-bit integers in a by minimum using mask k. Returns the minimum of all active elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_reduce_min_epi8)
+ */
+public fun mmMaskReduceMinEpi8(k: Mmask16, a: M128i): Byte = simdReduceMin(simdSelectBitmask(k, a.asI8x16(), i8x16.splat(0x7f)))
+
+/**
+ * Reduce the packed unsigned 16-bit integers in a by minimum. Returns the minimum of all elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_reduce_min_epu16)
+ */
+public fun mm256ReduceMinEpu16(a: M256i): UShort = simdReduceMin(a.asU16x16())
+
+/**
+ * Reduce the packed unsigned 16-bit integers in a by minimum using mask k. Returns the minimum of all active elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_reduce_min_epu16)
+ */
+public fun mm256MaskReduceMinEpu16(k: Mmask16, a: M256i): UShort = simdReduceMin(simdSelectBitmask(k, a.asU16x16(), u16x16.splat(0xffff)))
+
+/**
+ * Reduce the packed unsigned 16-bit integers in a by minimum. Returns the minimum of all elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_reduce_min_epu16)
+ */
+public fun mmReduceMinEpu16(a: M128i): UShort = simdReduceMin(a.asU16x8())
+
+/**
+ * Reduce the packed unsigned 16-bit integers in a by minimum using mask k. Returns the minimum of all active elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_reduce_min_epu16)
+ */
+public fun mmMaskReduceMinEpu16(k: Mmask8, a: M128i): UShort = simdReduceMin(simdSelectBitmask(k, a.asU16x8(), u16x8.splat(0xffff)))
+
+/**
+ * Reduce the packed unsigned 8-bit integers in a by minimum. Returns the minimum of all elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_reduce_min_epu8)
+ */
+public fun mm256ReduceMinEpu8(a: M256i): UByte = simdReduceMin(a.asU8x32())
+
+/**
+ * Reduce the packed unsigned 8-bit integers in a by minimum using mask k. Returns the minimum of all active elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_reduce_min_epu8)
+ */
+public fun mm256MaskReduceMinEpu8(k: Mmask32, a: M256i): UByte = simdReduceMin(simdSelectBitmask(k, a.asU8x32(), u8x32.splat(0xff)))
+
+/**
+ * Reduce the packed unsigned 8-bit integers in a by minimum. Returns the minimum of all elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_reduce_min_epu8)
+ */
+public fun mmReduceMinEpu8(a: M128i): UByte = simdReduceMin(a.asU8x16())
+
+/**
+ * Reduce the packed unsigned 8-bit integers in a by minimum using mask k. Returns the minimum of all active elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_reduce_min_epu8)
+ */
+public fun mmMaskReduceMinEpu8(k: Mmask16, a: M128i): UByte = simdReduceMin(simdSelectBitmask(k, a.asU8x16(), u8x16.splat(0xff)))
+
+/**
+ * Reduce the packed 16-bit integers in a by multiplication. Returns the product of all elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_reduce_mul_epi16)
+ */
+public fun mm256ReduceMulEpi16(a: M256i): Short = simdReduceMulOrdered(a.asI16x16(), 1)
+
+/**
+ * Reduce the packed 16-bit integers in a by multiplication using mask k. Returns the product of all active elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_reduce_mul_epi16)
+ */
+public fun mm256MaskReduceMulEpi16(k: Mmask16, a: M256i): Short = simdReduceMulOrdered(simdSelectBitmask(k, a.asI16x16(), i16x16.splat(1)), 1)
+
+/**
+ * Reduce the packed 16-bit integers in a by multiplication. Returns the product of all elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_reduce_mul_epi16)
+ */
+public fun mmReduceMulEpi16(a: M128i): Short = simdReduceMulOrdered(a.asI16x8(), 1)
+
+/**
+ * Reduce the packed 16-bit integers in a by multiplication using mask k. Returns the product of all active elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_reduce_mul_epi16)
+ */
+public fun mmMaskReduceMulEpi16(k: Mmask8, a: M128i): Short = simdReduceMulOrdered(simdSelectBitmask(k, a.asI16x8(), i16x8.splat(1)), 1)
+
+/**
+ * Reduce the packed 8-bit integers in a by multiplication. Returns the product of all elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_reduce_mul_epi8)
+ */
+public fun mm256ReduceMulEpi8(a: M256i): Byte = simdReduceMulOrdered(a.asI8x32(), 1)
+
+/**
+ * Reduce the packed 8-bit integers in a by multiplication using mask k. Returns the product of all active elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_reduce_mul_epi8)
+ */
+public fun mm256MaskReduceMulEpi8(k: Mmask32, a: M256i): Byte = simdReduceMulOrdered(simdSelectBitmask(k, a.asI8x32(), i8x32.splat(1)), 1)
+
+/**
+ * Reduce the packed 8-bit integers in a by multiplication. Returns the product of all elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_reduce_mul_epi8)
+ */
+public fun mmReduceMulEpi8(a: M128i): Byte = simdReduceMulOrdered(a.asI8x16(), 1)
+
+/**
+ * Reduce the packed 8-bit integers in a by multiplication using mask k. Returns the product of all active elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_reduce_mul_epi8)
+ */
+public fun mmMaskReduceMulEpi8(k: Mmask16, a: M128i): Byte = simdReduceMulOrdered(simdSelectBitmask(k, a.asI8x16(), i8x16.splat(1)), 1)
+
+/**
+ * Reduce the packed 16-bit integers in a by bitwise OR. Returns the bitwise OR of all elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_reduce_or_epi16)
+ */
+public fun mm256ReduceOrEpi16(a: M256i): Short = simdReduceOr(a.asI16x16())
+
+/**
+ * Reduce the packed 16-bit integers in a by bitwise OR using mask k. Returns the bitwise OR of all active elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_reduce_or_epi16)
+ */
+public fun mm256MaskReduceOrEpi16(k: Mmask16, a: M256i): Short = simdReduceOr(simdSelectBitmask(k, a.asI16x16(), i16x16.ZERO))
+
+/**
+ * Reduce the packed 16-bit integers in a by bitwise OR. Returns the bitwise OR of all elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_reduce_or_epi16)
+ */
+public fun mmReduceOrEpi16(a: M128i): Short = simdReduceOr(a.asI16x8())
+
+/**
+ * Reduce the packed 16-bit integers in a by bitwise OR using mask k. Returns the bitwise OR of all active elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_reduce_or_epi16)
+ */
+public fun mmMaskReduceOrEpi16(k: Mmask8, a: M128i): Short = simdReduceOr(simdSelectBitmask(k, a.asI16x8(), i16x8.ZERO))
+
+/**
+ * Reduce the packed 8-bit integers in a by bitwise OR. Returns the bitwise OR of all elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_reduce_or_epi8)
+ */
+public fun mm256ReduceOrEpi8(a: M256i): Byte = simdReduceOr(a.asI8x32())
+
+/**
+ * Reduce the packed 8-bit integers in a by bitwise OR using mask k. Returns the bitwise OR of all active elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_reduce_or_epi8)
+ */
+public fun mm256MaskReduceOrEpi8(k: Mmask32, a: M256i): Byte = simdReduceOr(simdSelectBitmask(k, a.asI8x32(), i8x32.ZERO))
+
+/**
+ * Reduce the packed 8-bit integers in a by bitwise OR. Returns the bitwise OR of all elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_reduce_or_epi8)
+ */
+public fun mmReduceOrEpi8(a: M128i): Byte = simdReduceOr(a.asI8x16())
+
+/**
+ * Reduce the packed 8-bit integers in a by bitwise OR using mask k. Returns the bitwise OR of all active elements in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_reduce_or_epi8)
+ */
+public fun mmMaskReduceOrEpi8(k: Mmask16, a: M128i): Byte = simdReduceOr(simdSelectBitmask(k, a.asI8x16(), i8x16.ZERO))
+
+// should be vmovdqu16
+
+/**
+ * Load 512-bits (composed of 32 packed 16-bit integers) from memory into dst. memAddr does not need to be aligned on any particular boundary.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_loadu_epi16&expand=3368)
+ */
+public fun mm512LoaduEpi16(memAddr: ConstPtr): M512i = ptr.readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = ObjectSlotLayout<M512i>())
+
+// should be vmovdqu16
+
+/**
+ * Load 256-bits (composed of 16 packed 16-bit integers) from memory into dst. memAddr does not need to be aligned on any particular boundary.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_loadu_epi16&expand=3365)
+ */
+public fun mm256LoaduEpi16(memAddr: ConstPtr): M256i = ptr.readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = ObjectSlotLayout<M256i>())
+
+// should be vmovdqu16
+
+/**
+ * Load 128-bits (composed of 8 packed 16-bit integers) from memory into dst. memAddr does not need to be aligned on any particular boundary.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_loadu_epi16&expand=3362)
+ */
+public fun mmLoaduEpi16(memAddr: ConstPtr): M128i = ptr.readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = ObjectSlotLayout<M128i>())
+
+// should be vmovdqu8
+
+/**
+ * Load 512-bits (composed of 64 packed 8-bit integers) from memory into dst. memAddr does not need to be aligned on any particular boundary.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_loadu_epi8&expand=3395)
+ */
+public fun mm512LoaduEpi8(memAddr: ConstPtr): M512i = ptr.readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = ObjectSlotLayout<M512i>())
+
+// should be vmovdqu8
+
+/**
+ * Load 256-bits (composed of 32 packed 8-bit integers) from memory into dst. memAddr does not need to be aligned on any particular boundary.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_loadu_epi8&expand=3392)
+ */
+public fun mm256LoaduEpi8(memAddr: ConstPtr): M256i = ptr.readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = ObjectSlotLayout<M256i>())
+
+// should be vmovdqu8
+
+/**
+ * Load 128-bits (composed of 16 packed 8-bit integers) from memory into dst. memAddr does not need to be aligned on any particular boundary.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_loadu_epi8&expand=3389)
+ */
+public fun mmLoaduEpi8(memAddr: ConstPtr): M128i = ptr.readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = ObjectSlotLayout<M128i>())
+
+// should be vmovdqu16
+
+/**
+ * Store 512-bits (composed of 32 packed 16-bit integers) from a into memory. memAddr does not need to be aligned on any particular boundary.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_storeu_epi16&expand=5622)
+ */
+public fun mm512StoreuEpi16(memAddr: MutPtr, a: M512i) {
+    ptr.writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = ObjectSlotLayout<M512i>())
+}
+
+// should be vmovdqu16
+
+/**
+ * Store 256-bits (composed of 16 packed 16-bit integers) from a into memory. memAddr does not need to be aligned on any particular boundary.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_storeu_epi16&expand=5620)
+ */
+public fun mm256StoreuEpi16(memAddr: MutPtr, a: M256i) {
+    ptr.writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = ObjectSlotLayout<M256i>())
+}
+
+// should be vmovdqu16
+
+/**
+ * Store 128-bits (composed of 8 packed 16-bit integers) from a into memory. memAddr does not need to be aligned on any particular boundary.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_storeu_epi16&expand=5618)
+ */
+public fun mmStoreuEpi16(memAddr: MutPtr, a: M128i) {
+    ptr.writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = ObjectSlotLayout<M128i>())
+}
+
+// should be vmovdqu8
+
+/**
+ * Store 512-bits (composed of 64 packed 8-bit integers) from a into memory. memAddr does not need to be aligned on any particular boundary.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_storeu_epi8&expand=5640)
+ */
+public fun mm512StoreuEpi8(memAddr: MutPtr, a: M512i) {
+    ptr.writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = ObjectSlotLayout<M512i>())
+}
+
+// should be vmovdqu8
+
+/**
+ * Store 256-bits (composed of 32 packed 8-bit integers) from a into memory. memAddr does not need to be aligned on any particular boundary.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_storeu_epi8&expand=5638)
+ */
+public fun mm256StoreuEpi8(memAddr: MutPtr, a: M256i) {
+    ptr.writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = ObjectSlotLayout<M256i>())
+}
+
+// should be vmovdqu8
+
+/**
+ * Store 128-bits (composed of 16 packed 8-bit integers) from a into memory. memAddr does not need to be aligned on any particular boundary.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_storeu_epi8&expand=5636)
+ */
+public fun mmStoreuEpi8(memAddr: MutPtr, a: M128i) {
+    ptr.writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = ObjectSlotLayout<M128i>())
+}
+
+/**
+ * Load packed 16-bit integers from memory into dst using writemask k
+ * (elements are copied from src when the corresponding mask bit is not set).
+ * memAddr does not need to be aligned on any particular boundary.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_loadu_epi16)
+ */
+public fun mm512MaskLoaduEpi16(src: M512i, k: Mmask32, memAddr: ConstPtr): M512i {
+    val mask = simdSelectBitmask(k, i16x32.splat(0.inv()), i16x32.ZERO)
+    return simdMaskedLoad(mask, memAddr, src.asI16x32(), SimdAlign.Unaligned).asM512i()
+}
+
+/**
+ * Load packed 16-bit integers from memory into dst using zeromask k
+ * (elements are zeroed out when the corresponding mask bit is not set).
+ * memAddr does not need to be aligned on any particular boundary.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_loadu_epi16)
+ */
+public fun mm512MaskzLoaduEpi16(k: Mmask32, memAddr: ConstPtr): M512i = mm512MaskLoaduEpi16(mm512SetzeroSi512(), k, memAddr)
+
+/**
+ * Load packed 8-bit integers from memory into dst using writemask k
+ * (elements are copied from src when the corresponding mask bit is not set).
+ * memAddr does not need to be aligned on any particular boundary.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_loadu_epi8)
+ */
+public fun mm512MaskLoaduEpi8(src: M512i, k: Mmask64, memAddr: ConstPtr): M512i {
+    val mask = simdSelectBitmask(k, i8x64.splat(0.inv()), i8x64.ZERO)
+    return simdMaskedLoad(mask, memAddr, src.asI8x64(), SimdAlign.Unaligned).asM512i()
+}
+
+/**
+ * Load packed 8-bit integers from memory into dst using zeromask k
+ * (elements are zeroed out when the corresponding mask bit is not set).
+ * memAddr does not need to be aligned on any particular boundary.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_loadu_epi8)
+ */
+public fun mm512MaskzLoaduEpi8(k: Mmask64, memAddr: ConstPtr): M512i = mm512MaskLoaduEpi8(mm512SetzeroSi512(), k, memAddr)
+
+/**
+ * Load packed 16-bit integers from memory into dst using writemask k
+ * (elements are copied from src when the corresponding mask bit is not set).
+ * memAddr does not need to be aligned on any particular boundary.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_loadu_epi16)
+ */
+public fun mm256MaskLoaduEpi16(src: M256i, k: Mmask16, memAddr: ConstPtr): M256i {
+    val mask = simdSelectBitmask(k, i16x16.splat(0.inv()), i16x16.ZERO)
+    return simdMaskedLoad(mask, memAddr, src.asI16x16(), SimdAlign.Unaligned).asM256i()
+}
+
+/**
+ * Load packed 16-bit integers from memory into dst using zeromask k
+ * (elements are zeroed out when the corresponding mask bit is not set).
+ * memAddr does not need to be aligned on any particular boundary.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_loadu_epi16)
+ */
+public fun mm256MaskzLoaduEpi16(k: Mmask16, memAddr: ConstPtr): M256i = mm256MaskLoaduEpi16(mm256SetzeroSi256(), k, memAddr)
+
+/**
+ * Load packed 8-bit integers from memory into dst using writemask k
+ * (elements are copied from src when the corresponding mask bit is not set).
+ * memAddr does not need to be aligned on any particular boundary.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_loadu_epi8)
+ */
+public fun mm256MaskLoaduEpi8(src: M256i, k: Mmask32, memAddr: ConstPtr): M256i {
+    val mask = simdSelectBitmask(k, i8x32.splat(0.inv()), i8x32.ZERO)
+    return simdMaskedLoad(mask, memAddr, src.asI8x32(), SimdAlign.Unaligned).asM256i()
+}
+
+/**
+ * Load packed 8-bit integers from memory into dst using zeromask k
+ * (elements are zeroed out when the corresponding mask bit is not set).
+ * memAddr does not need to be aligned on any particular boundary.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_loadu_epi8)
+ */
+public fun mm256MaskzLoaduEpi8(k: Mmask32, memAddr: ConstPtr): M256i = mm256MaskLoaduEpi8(mm256SetzeroSi256(), k, memAddr)
+
+/**
+ * Load packed 16-bit integers from memory into dst using writemask k
+ * (elements are copied from src when the corresponding mask bit is not set).
+ * memAddr does not need to be aligned on any particular boundary.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_loadu_epi16)
+ */
+public fun mmMaskLoaduEpi16(src: M128i, k: Mmask8, memAddr: ConstPtr): M128i {
+    val mask = simdSelectBitmask(k, i16x8.splat(0.inv()), i16x8.ZERO)
+    return simdMaskedLoad(mask, memAddr, src.asI16x8(), SimdAlign.Unaligned).asM128i()
+}
+
+/**
+ * Load packed 16-bit integers from memory into dst using zeromask k
+ * (elements are zeroed out when the corresponding mask bit is not set).
+ * memAddr does not need to be aligned on any particular boundary.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_loadu_epi16)
+ */
+public fun mmMaskzLoaduEpi16(k: Mmask8, memAddr: ConstPtr): M128i = mmMaskLoaduEpi16(mmSetzeroSi128(), k, memAddr)
+
+/**
+ * Load packed 8-bit integers from memory into dst using writemask k
+ * (elements are copied from src when the corresponding mask bit is not set).
+ * memAddr does not need to be aligned on any particular boundary.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_loadu_epi8)
+ */
+public fun mmMaskLoaduEpi8(src: M128i, k: Mmask16, memAddr: ConstPtr): M128i {
+    val mask = simdSelectBitmask(k, i8x16.splat(0.inv()), i8x16.ZERO)
+    return simdMaskedLoad(mask, memAddr, src.asI8x16(), SimdAlign.Unaligned).asM128i()
+}
+
+/**
+ * Load packed 8-bit integers from memory into dst using zeromask k
+ * (elements are zeroed out when the corresponding mask bit is not set).
+ * memAddr does not need to be aligned on any particular boundary.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_loadu_epi8)
+ */
+public fun mmMaskzLoaduEpi8(k: Mmask16, memAddr: ConstPtr): M128i = mmMaskLoaduEpi8(mmSetzeroSi128(), k, memAddr)
+
+/**
+ * Store packed 16-bit integers from a into memory using writemask k.
+ * memAddr does not need to be aligned on any particular boundary.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_storeu_epi16)
+ */
+public fun mm512MaskStoreuEpi16(memAddr: MutPtr, mask: Mmask32, a: M512i) {
+    val mask1 = simdSelectBitmask(mask, i16x32.splat(0.inv()), i16x32.ZERO)
+    simdMaskedStore(mask1, memAddr, a.asI16x32(), SimdAlign.Unaligned)
+}
+
+/**
+ * Store packed 8-bit integers from a into memory using writemask k.
+ * memAddr does not need to be aligned on any particular boundary.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_storeu_epi8)
+ */
+public fun mm512MaskStoreuEpi8(memAddr: MutPtr, mask: Mmask64, a: M512i) {
+    val mask1 = simdSelectBitmask(mask, i8x64.splat(0.inv()), i8x64.ZERO)
+    simdMaskedStore(mask1, memAddr, a.asI8x64(), SimdAlign.Unaligned)
+}
+
+/**
+ * Store packed 16-bit integers from a into memory using writemask k.
+ * memAddr does not need to be aligned on any particular boundary.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_storeu_epi16)
+ */
+public fun mm256MaskStoreuEpi16(memAddr: MutPtr, mask: Mmask16, a: M256i) {
+    val mask1 = simdSelectBitmask(mask, i16x16.splat(0.inv()), i16x16.ZERO)
+    simdMaskedStore(mask1, memAddr, a.asI16x16(), SimdAlign.Unaligned)
+}
+
+/**
+ * Store packed 8-bit integers from a into memory using writemask k.
+ * memAddr does not need to be aligned on any particular boundary.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_storeu_epi8)
+ */
+public fun mm256MaskStoreuEpi8(memAddr: MutPtr, mask: Mmask32, a: M256i) {
+    val mask1 = simdSelectBitmask(mask, i8x32.splat(0.inv()), i8x32.ZERO)
+    simdMaskedStore(mask1, memAddr, a.asI8x32(), SimdAlign.Unaligned)
+}
+
+/**
+ * Store packed 16-bit integers from a into memory using writemask k.
+ * memAddr does not need to be aligned on any particular boundary.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_storeu_epi16)
+ */
+public fun mmMaskStoreuEpi16(memAddr: MutPtr, mask: Mmask8, a: M128i) {
+    val mask1 = simdSelectBitmask(mask, i16x8.splat(0.inv()), i16x8.ZERO)
+    simdMaskedStore(mask1, memAddr, a.asI16x8(), SimdAlign.Unaligned)
+}
+
+/**
+ * Store packed 8-bit integers from a into memory using writemask k.
+ * memAddr does not need to be aligned on any particular boundary.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_storeu_epi8)
+ */
+public fun mmMaskStoreuEpi8(memAddr: MutPtr, mask: Mmask16, a: M128i) {
+    val mask1 = simdSelectBitmask(mask, i8x16.splat(0.inv()), i8x16.ZERO)
+    simdMaskedStore(mask1, memAddr, a.asI8x16(), SimdAlign.Unaligned)
+}
+
+/**
+ * Multiply packed signed 16-bit integers in a and b, producing intermediate signed 32-bit integers. Horizontally add adjacent pairs of intermediate 32-bit integers, and pack the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_madd_epi16&expand=3511)
+ */
+public fun mm512MaddEpi16(a: M512i, b: M512i): M512i {
+    // It's a trick used in the Adler-32 algorithm to perform a widening addition.
+    //
+    // `rust
+    // @targetFeature(enable = "avx512bw")
+    // unchecked fn wideningAdd(mad: __m512i) -> __m512i {
+    // _mm512_madd_epi16(mad, _mm512_set1_epi16(1))
+    // }
+    // `
+    //
+    // If we implement this using generic vector intrinsics, the optimizer
+    // will eliminate this pattern, and `vpmaddwd` will no longer be emitted.
+    // For this reason, we use x86 intrinsics.
+    return transmute(vpmaddwd(a.asI16x32(), b.asI16x32()))
+}
+
+/**
+ * Multiply packed signed 16-bit integers in a and b, producing intermediate signed 32-bit integers. Horizontally add adjacent pairs of intermediate 32-bit integers, and pack the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_madd_epi16&expand=3512)
+ */
+public fun mm512MaskMaddEpi16(src: M512i, k: Mmask16, a: M512i, b: M512i): M512i =
+    run {
+        val madd = mm512MaddEpi16(a, b).asI32x16()
+        transmute(simdSelectBitmask(k, madd, src.asI32x16()))
+    }
+
+/**
+ * Multiply packed signed 16-bit integers in a and b, producing intermediate signed 32-bit integers. Horizontally add adjacent pairs of intermediate 32-bit integers, and pack the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_madd_epi16&expand=3513)
+ */
+public fun mm512MaskzMaddEpi16(k: Mmask16, a: M512i, b: M512i): M512i =
+    run {
+        val madd = mm512MaddEpi16(a, b).asI32x16()
+        transmute(simdSelectBitmask(k, madd, i32x16.ZERO))
+    }
+
+/**
+ * Multiply packed signed 16-bit integers in a and b, producing intermediate signed 32-bit integers. Horizontally add adjacent pairs of intermediate 32-bit integers, and pack the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_madd_epi16&expand=3509)
+ */
+public fun mm256MaskMaddEpi16(src: M256i, k: Mmask8, a: M256i, b: M256i): M256i =
+    run {
+        val madd = mm256MaddEpi16(a, b).asI32x8()
+        transmute(simdSelectBitmask(k, madd, src.asI32x8()))
+    }
+
+/**
+ * Multiply packed signed 16-bit integers in a and b, producing intermediate signed 32-bit integers. Horizontally add adjacent pairs of intermediate 32-bit integers, and pack the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_madd_epi16&expand=3510)
+ */
+public fun mm256MaskzMaddEpi16(k: Mmask8, a: M256i, b: M256i): M256i =
+    run {
+        val madd = mm256MaddEpi16(a, b).asI32x8()
+        transmute(simdSelectBitmask(k, madd, i32x8.ZERO))
+    }
+
+/**
+ * Multiply packed signed 16-bit integers in a and b, producing intermediate signed 32-bit integers. Horizontally add adjacent pairs of intermediate 32-bit integers, and pack the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_madd_epi16&expand=3506)
+ */
+public fun mmMaskMaddEpi16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
+    run {
+        val madd = mmMaddEpi16(a, b).asI32x4()
+        transmute(simdSelectBitmask(k, madd, src.asI32x4()))
+    }
+
+/**
+ * Multiply packed signed 16-bit integers in a and b, producing intermediate signed 32-bit integers. Horizontally add adjacent pairs of intermediate 32-bit integers, and pack the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_madd_epi16&expand=3507)
+ */
+public fun mmMaskzMaddEpi16(k: Mmask8, a: M128i, b: M128i): M128i =
+    run {
+        val madd = mmMaddEpi16(a, b).asI32x4()
+        transmute(simdSelectBitmask(k, madd, i32x4.ZERO))
+    }
+
+/**
+ * Vertically multiply each unsigned 8-bit integer from a with the corresponding signed 8-bit integer from b, producing intermediate signed 16-bit integers. Horizontally add adjacent pairs of intermediate signed 16-bit integers, and pack the saturated results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maddubs_epi16&expand=3539)
+ */
+public fun mm512MaddubsEpi16(a: M512i, b: M512i): M512i = transmute(vpmaddubsw(a.asU8x64(), b.asI8x64()))
+
+/**
+ * Multiply packed unsigned 8-bit integers in a by packed signed 8-bit integers in b, producing intermediate signed 16-bit integers. Horizontally add adjacent pairs of intermediate signed 16-bit integers, and pack the saturated results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_maddubs_epi16&expand=3540)
+ */
+public fun mm512MaskMaddubsEpi16(src: M512i, k: Mmask32, a: M512i, b: M512i): M512i =
+    run {
+        val madd = mm512MaddubsEpi16(a, b).asI16x32()
+        transmute(simdSelectBitmask(k, madd, src.asI16x32()))
+    }
+
+/**
+ * Multiply packed unsigned 8-bit integers in a by packed signed 8-bit integers in b, producing intermediate signed 16-bit integers. Horizontally add adjacent pairs of intermediate signed 16-bit integers, and pack the saturated results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_maddubs_epi16&expand=3541)
+ */
+public fun mm512MaskzMaddubsEpi16(k: Mmask32, a: M512i, b: M512i): M512i =
+    run {
+        val madd = mm512MaddubsEpi16(a, b).asI16x32()
+        transmute(simdSelectBitmask(k, madd, i16x32.ZERO))
+    }
+
+/**
+ * Multiply packed unsigned 8-bit integers in a by packed signed 8-bit integers in b, producing intermediate signed 16-bit integers. Horizontally add adjacent pairs of intermediate signed 16-bit integers, and pack the saturated results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_maddubs_epi16&expand=3537)
+ */
+public fun mm256MaskMaddubsEpi16(src: M256i, k: Mmask16, a: M256i, b: M256i): M256i =
+    run {
+        val madd = mm256MaddubsEpi16(a, b).asI16x16()
+        transmute(simdSelectBitmask(k, madd, src.asI16x16()))
+    }
+
+/**
+ * Multiply packed unsigned 8-bit integers in a by packed signed 8-bit integers in b, producing intermediate signed 16-bit integers. Horizontally add adjacent pairs of intermediate signed 16-bit integers, and pack the saturated results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_maddubs_epi16&expand=3538)
+ */
+public fun mm256MaskzMaddubsEpi16(k: Mmask16, a: M256i, b: M256i): M256i =
+    run {
+        val madd = mm256MaddubsEpi16(a, b).asI16x16()
+        transmute(simdSelectBitmask(k, madd, i16x16.ZERO))
+    }
+
+/**
+ * Multiply packed unsigned 8-bit integers in a by packed signed 8-bit integers in b, producing intermediate signed 16-bit integers. Horizontally add adjacent pairs of intermediate signed 16-bit integers, and pack the saturated results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_maddubs_epi16&expand=3534)
+ */
+public fun mmMaskMaddubsEpi16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
+    run {
+        val madd = mmMaddubsEpi16(a, b).asI16x8()
+        transmute(simdSelectBitmask(k, madd, src.asI16x8()))
+    }
+
+/**
+ * Multiply packed unsigned 8-bit integers in a by packed signed 8-bit integers in b, producing intermediate signed 16-bit integers. Horizontally add adjacent pairs of intermediate signed 16-bit integers, and pack the saturated results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_maddubs_epi16&expand=3535)
+ */
+public fun mmMaskzMaddubsEpi16(k: Mmask8, a: M128i, b: M128i): M128i =
+    run {
+        val madd = mmMaddubsEpi16(a, b).asI16x8()
+        transmute(simdSelectBitmask(k, madd, i16x8.ZERO))
+    }
+
+/**
+ * Convert packed signed 32-bit integers from a and b to packed 16-bit integers using signed saturation, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_packs_epi32&expand=4091)
+ */
+public fun mm512PacksEpi32(a: M512i, b: M512i): M512i = transmute(vpackssdw(a.asI32x16(), b.asI32x16()))
+
+/**
+ * Convert packed signed 32-bit integers from a and b to packed 16-bit integers using signed saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_packs_epi32&expand=4089)
+ */
+public fun mm512MaskPacksEpi32(src: M512i, k: Mmask32, a: M512i, b: M512i): M512i =
+    run {
+        val pack = mm512PacksEpi32(a, b).asI16x32()
+        transmute(simdSelectBitmask(k, pack, src.asI16x32()))
+    }
+
+/**
+ * Convert packed signed 32-bit integers from a and b to packed 16-bit integers using signed saturation, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_packs_epi32&expand=4090)
+ */
+public fun mm512MaskzPacksEpi32(k: Mmask32, a: M512i, b: M512i): M512i =
+    run {
+        val pack = mm512PacksEpi32(a, b).asI16x32()
+        transmute(simdSelectBitmask(k, pack, i16x32.ZERO))
+    }
+
+/**
+ * Convert packed signed 32-bit integers from a and b to packed 16-bit integers using signed saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_packs_epi32&expand=4086)
+ */
+public fun mm256MaskPacksEpi32(src: M256i, k: Mmask16, a: M256i, b: M256i): M256i =
+    run {
+        val pack = mm256PacksEpi32(a, b).asI16x16()
+        transmute(simdSelectBitmask(k, pack, src.asI16x16()))
+    }
+
+/**
+ * Convert packed signed 32-bit integers from a and b to packed 16-bit integers using signed saturation, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_packs_epi32&expand=4087)
+ */
+public fun mm256MaskzPacksEpi32(k: Mmask16, a: M256i, b: M256i): M256i =
+    run {
+        val pack = mm256PacksEpi32(a, b).asI16x16()
+        transmute(simdSelectBitmask(k, pack, i16x16.ZERO))
+    }
+
+/**
+ * Convert packed signed 32-bit integers from a and b to packed 16-bit integers using signed saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_packs_epi32&expand=4083)
+ */
+public fun mmMaskPacksEpi32(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
+    run {
+        val pack = mmPacksEpi32(a, b).asI16x8()
+        transmute(simdSelectBitmask(k, pack, src.asI16x8()))
+    }
+
+/**
+ * Convert packed signed 32-bit integers from a and b to packed 16-bit integers using signed saturation, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_packs_epi32&expand=4084)
+ */
+public fun mmMaskzPacksEpi32(k: Mmask8, a: M128i, b: M128i): M128i =
+    run {
+        val pack = mmPacksEpi32(a, b).asI16x8()
+        transmute(simdSelectBitmask(k, pack, i16x8.ZERO))
+    }
+
+/**
+ * Convert packed signed 16-bit integers from a and b to packed 8-bit integers using signed saturation, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_packs_epi16&expand=4082)
+ */
+public fun mm512PacksEpi16(a: M512i, b: M512i): M512i = transmute(vpacksswb(a.asI16x32(), b.asI16x32()))
+
+/**
+ * Convert packed signed 16-bit integers from a and b to packed 8-bit integers using signed saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_packs_epi16&expand=4080)
+ */
+public fun mm512MaskPacksEpi16(src: M512i, k: Mmask64, a: M512i, b: M512i): M512i =
+    run {
+        val pack = mm512PacksEpi16(a, b).asI8x64()
+        transmute(simdSelectBitmask(k, pack, src.asI8x64()))
+    }
+
+/**
+ * Convert packed signed 16-bit integers from a and b to packed 8-bit integers using signed saturation, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_packs_epi16&expand=4081)
+ */
+public fun mm512MaskzPacksEpi16(k: Mmask64, a: M512i, b: M512i): M512i =
+    run {
+        val pack = mm512PacksEpi16(a, b).asI8x64()
+        transmute(simdSelectBitmask(k, pack, i8x64.ZERO))
+    }
+
+/**
+ * Convert packed signed 16-bit integers from a and b to packed 8-bit integers using signed saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_packs_epi16&expand=4077)
+ */
+public fun mm256MaskPacksEpi16(src: M256i, k: Mmask32, a: M256i, b: M256i): M256i =
+    run {
+        val pack = mm256PacksEpi16(a, b).asI8x32()
+        transmute(simdSelectBitmask(k, pack, src.asI8x32()))
+    }
+
+/**
+ * Convert packed signed 16-bit integers from a and b to packed 8-bit integers using signed saturation, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=#text=_mm256_maskz_packs_epi16&expand=4078)
+ */
+public fun mm256MaskzPacksEpi16(k: Mmask32, a: M256i, b: M256i): M256i =
+    run {
+        val pack = mm256PacksEpi16(a, b).asI8x32()
+        transmute(simdSelectBitmask(k, pack, i8x32.ZERO))
+    }
+
+/**
+ * Convert packed signed 16-bit integers from a and b to packed 8-bit integers using signed saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_packs_epi16&expand=4074)
+ */
+public fun mmMaskPacksEpi16(src: M128i, k: Mmask16, a: M128i, b: M128i): M128i =
+    run {
+        val pack = mmPacksEpi16(a, b).asI8x16()
+        transmute(simdSelectBitmask(k, pack, src.asI8x16()))
+    }
+
+/**
+ * Convert packed signed 16-bit integers from a and b to packed 8-bit integers using signed saturation, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_packs_epi16&expand=4075)
+ */
+public fun mmMaskzPacksEpi16(k: Mmask16, a: M128i, b: M128i): M128i =
+    run {
+        val pack = mmPacksEpi16(a, b).asI8x16()
+        transmute(simdSelectBitmask(k, pack, i8x16.ZERO))
+    }
+
+/**
+ * Convert packed signed 32-bit integers from a and b to packed 16-bit integers using unsigned saturation, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_packus_epi32&expand=4130)
+ */
+public fun mm512PackusEpi32(a: M512i, b: M512i): M512i = transmute(vpackusdw(a.asI32x16(), b.asI32x16()))
+
+/**
+ * Convert packed signed 32-bit integers from a and b to packed 16-bit integers using unsigned saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_packus_epi32&expand=4128)
+ */
+public fun mm512MaskPackusEpi32(src: M512i, k: Mmask32, a: M512i, b: M512i): M512i =
+    run {
+        val pack = mm512PackusEpi32(a, b).asI16x32()
+        transmute(simdSelectBitmask(k, pack, src.asI16x32()))
+    }
+
+/**
+ * Convert packed signed 32-bit integers from a and b to packed 16-bit integers using unsigned saturation, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_packus_epi32&expand=4129)
+ */
+public fun mm512MaskzPackusEpi32(k: Mmask32, a: M512i, b: M512i): M512i =
+    run {
+        val pack = mm512PackusEpi32(a, b).asI16x32()
+        transmute(simdSelectBitmask(k, pack, i16x32.ZERO))
+    }
+
+/**
+ * Convert packed signed 32-bit integers from a and b to packed 16-bit integers using unsigned saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_packus_epi32&expand=4125)
+ */
+public fun mm256MaskPackusEpi32(src: M256i, k: Mmask16, a: M256i, b: M256i): M256i =
+    run {
+        val pack = mm256PackusEpi32(a, b).asI16x16()
+        transmute(simdSelectBitmask(k, pack, src.asI16x16()))
+    }
+
+/**
+ * Convert packed signed 32-bit integers from a and b to packed 16-bit integers using unsigned saturation, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_packus_epi32&expand=4126)
+ */
+public fun mm256MaskzPackusEpi32(k: Mmask16, a: M256i, b: M256i): M256i =
+    run {
+        val pack = mm256PackusEpi32(a, b).asI16x16()
+        transmute(simdSelectBitmask(k, pack, i16x16.ZERO))
+    }
+
+/**
+ * Convert packed signed 32-bit integers from a and b to packed 16-bit integers using unsigned saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_packus_epi32&expand=4122)
+ */
+public fun mmMaskPackusEpi32(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
+    run {
+        val pack = mmPackusEpi32(a, b).asI16x8()
+        transmute(simdSelectBitmask(k, pack, src.asI16x8()))
+    }
+
+/**
+ * Convert packed signed 32-bit integers from a and b to packed 16-bit integers using unsigned saturation, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_packus_epi32&expand=4123)
+ */
+public fun mmMaskzPackusEpi32(k: Mmask8, a: M128i, b: M128i): M128i =
+    run {
+        val pack = mmPackusEpi32(a, b).asI16x8()
+        transmute(simdSelectBitmask(k, pack, i16x8.ZERO))
+    }
+
+/**
+ * Convert packed signed 16-bit integers from a and b to packed 8-bit integers using unsigned saturation, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_packus_epi16&expand=4121)
+ */
+public fun mm512PackusEpi16(a: M512i, b: M512i): M512i = transmute(vpackuswb(a.asI16x32(), b.asI16x32()))
+
+/**
+ * Convert packed signed 16-bit integers from a and b to packed 8-bit integers using unsigned saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_packus_epi16&expand=4119)
+ */
+public fun mm512MaskPackusEpi16(src: M512i, k: Mmask64, a: M512i, b: M512i): M512i =
+    run {
+        val pack = mm512PackusEpi16(a, b).asI8x64()
+        transmute(simdSelectBitmask(k, pack, src.asI8x64()))
+    }
+
+/**
+ * Convert packed signed 16-bit integers from a and b to packed 8-bit integers using unsigned saturation, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_packus_epi16&expand=4120)
+ */
+public fun mm512MaskzPackusEpi16(k: Mmask64, a: M512i, b: M512i): M512i =
+    run {
+        val pack = mm512PackusEpi16(a, b).asI8x64()
+        transmute(simdSelectBitmask(k, pack, i8x64.ZERO))
+    }
+
+/**
+ * Convert packed signed 16-bit integers from a and b to packed 8-bit integers using unsigned saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_packus_epi16&expand=4116)
+ */
+public fun mm256MaskPackusEpi16(src: M256i, k: Mmask32, a: M256i, b: M256i): M256i =
+    run {
+        val pack = mm256PackusEpi16(a, b).asI8x32()
+        transmute(simdSelectBitmask(k, pack, src.asI8x32()))
+    }
+
+/**
+ * Convert packed signed 16-bit integers from a and b to packed 8-bit integers using unsigned saturation, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_packus_epi16&expand=4117)
+ */
+public fun mm256MaskzPackusEpi16(k: Mmask32, a: M256i, b: M256i): M256i =
+    run {
+        val pack = mm256PackusEpi16(a, b).asI8x32()
+        transmute(simdSelectBitmask(k, pack, i8x32.ZERO))
+    }
+
+/**
+ * Convert packed signed 16-bit integers from a and b to packed 8-bit integers using unsigned saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_packus_epi16&expand=4113)
+ */
+public fun mmMaskPackusEpi16(src: M128i, k: Mmask16, a: M128i, b: M128i): M128i =
+    run {
+        val pack = mmPackusEpi16(a, b).asI8x16()
+        transmute(simdSelectBitmask(k, pack, src.asI8x16()))
+    }
+
+/**
+ * Convert packed signed 16-bit integers from a and b to packed 8-bit integers using unsigned saturation, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_packus_epi16&expand=4114)
+ */
+public fun mmMaskzPackusEpi16(k: Mmask16, a: M128i, b: M128i): M128i =
+    run {
+        val pack = mmPackusEpi16(a, b).asI8x16()
+        transmute(simdSelectBitmask(k, pack, i8x16.ZERO))
+    }
+
+/**
+ * Average packed unsigned 16-bit integers in a and b, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_avg_epu16&expand=388)
+ */
+public fun mm512AvgEpu16(a: M512i, b: M512i): M512i = transmute(vpavgw(a.asU16x32(), b.asU16x32()))
+
+/**
+ * Average packed unsigned 16-bit integers in a and b, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_avg_epu16&expand=389)
+ */
+public fun mm512MaskAvgEpu16(src: M512i, k: Mmask32, a: M512i, b: M512i): M512i =
+    run {
+        val avg = mm512AvgEpu16(a, b).asU16x32()
+        transmute(simdSelectBitmask(k, avg, src.asU16x32()))
+    }
+
+/**
+ * Average packed unsigned 16-bit integers in a and b, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_avg_epu16&expand=390)
+ */
+public fun mm512MaskzAvgEpu16(k: Mmask32, a: M512i, b: M512i): M512i =
+    run {
+        val avg = mm512AvgEpu16(a, b).asU16x32()
+        transmute(simdSelectBitmask(k, avg, u16x32.ZERO))
+    }
+
+/**
+ * Average packed unsigned 16-bit integers in a and b, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_avg_epu16&expand=386)
+ */
+public fun mm256MaskAvgEpu16(src: M256i, k: Mmask16, a: M256i, b: M256i): M256i =
+    run {
+        val avg = mm256AvgEpu16(a, b).asU16x16()
+        transmute(simdSelectBitmask(k, avg, src.asU16x16()))
+    }
+
+/**
+ * Average packed unsigned 16-bit integers in a and b, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_avg_epu16&expand=387)
+ */
+public fun mm256MaskzAvgEpu16(k: Mmask16, a: M256i, b: M256i): M256i =
+    run {
+        val avg = mm256AvgEpu16(a, b).asU16x16()
+        transmute(simdSelectBitmask(k, avg, u16x16.ZERO))
+    }
+
+/**
+ * Average packed unsigned 16-bit integers in a and b, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_avg_epu16&expand=383)
+ */
+public fun mmMaskAvgEpu16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
+    run {
+        val avg = mmAvgEpu16(a, b).asU16x8()
+        transmute(simdSelectBitmask(k, avg, src.asU16x8()))
+    }
+
+/**
+ * Average packed unsigned 16-bit integers in a and b, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_avg_epu16&expand=384)
+ */
+public fun mmMaskzAvgEpu16(k: Mmask8, a: M128i, b: M128i): M128i =
+    run {
+        val avg = mmAvgEpu16(a, b).asU16x8()
+        transmute(simdSelectBitmask(k, avg, u16x8.ZERO))
+    }
+
+/**
+ * Average packed unsigned 8-bit integers in a and b, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_avg_epu8&expand=397)
+ */
+public fun mm512AvgEpu8(a: M512i, b: M512i): M512i = transmute(vpavgb(a.asU8x64(), b.asU8x64()))
+
+/**
+ * Average packed unsigned 8-bit integers in a and b, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_avg_epu8&expand=398)
+ */
+public fun mm512MaskAvgEpu8(src: M512i, k: Mmask64, a: M512i, b: M512i): M512i =
+    run {
+        val avg = mm512AvgEpu8(a, b).asU8x64()
+        transmute(simdSelectBitmask(k, avg, src.asU8x64()))
+    }
+
+/**
+ * Average packed unsigned 8-bit integers in a and b, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_avg_epu8&expand=399)
+ */
+public fun mm512MaskzAvgEpu8(k: Mmask64, a: M512i, b: M512i): M512i =
+    run {
+        val avg = mm512AvgEpu8(a, b).asU8x64()
+        transmute(simdSelectBitmask(k, avg, u8x64.ZERO))
+    }
+
+/**
+ * Average packed unsigned 8-bit integers in a and b, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_avg_epu8&expand=395)
+ */
+public fun mm256MaskAvgEpu8(src: M256i, k: Mmask32, a: M256i, b: M256i): M256i =
+    run {
+        val avg = mm256AvgEpu8(a, b).asU8x32()
+        transmute(simdSelectBitmask(k, avg, src.asU8x32()))
+    }
+
+/**
+ * Average packed unsigned 8-bit integers in a and b, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_avg_epu8&expand=396)
+ */
+public fun mm256MaskzAvgEpu8(k: Mmask32, a: M256i, b: M256i): M256i =
+    run {
+        val avg = mm256AvgEpu8(a, b).asU8x32()
+        transmute(simdSelectBitmask(k, avg, u8x32.ZERO))
+    }
+
+/**
+ * Average packed unsigned 8-bit integers in a and b, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_avg_epu8&expand=392)
+ */
+public fun mmMaskAvgEpu8(src: M128i, k: Mmask16, a: M128i, b: M128i): M128i =
+    run {
+        val avg = mmAvgEpu8(a, b).asU8x16()
+        transmute(simdSelectBitmask(k, avg, src.asU8x16()))
+    }
+
+/**
+ * Average packed unsigned 8-bit integers in a and b, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_avg_epu8&expand=393)
+ */
+public fun mmMaskzAvgEpu8(k: Mmask16, a: M128i, b: M128i): M128i =
+    run {
+        val avg = mmAvgEpu8(a, b).asU8x16()
+        transmute(simdSelectBitmask(k, avg, u8x16.ZERO))
+    }
+
+/**
+ * Shift packed 16-bit integers in a left by count while shifting in zeros, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_sll_epi16&expand=5271)
+ */
+public fun mm512SllEpi16(a: M512i, count: M128i): M512i = transmute(vpsllw(a.asI16x32(), count.asI16x8()))
+
+/**
+ * Shift packed 16-bit integers in a left by count while shifting in zeros, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_sll_epi16&expand=5269)
+ */
+public fun mm512MaskSllEpi16(src: M512i, k: Mmask32, a: M512i, count: M128i): M512i =
+    run {
+        val shf = mm512SllEpi16(a, count).asI16x32()
+        transmute(simdSelectBitmask(k, shf, src.asI16x32()))
+    }
+
+/**
+ * Shift packed 16-bit integers in a left by count while shifting in zeros, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_sll_epi16&expand=5270)
+ */
+public fun mm512MaskzSllEpi16(k: Mmask32, a: M512i, count: M128i): M512i =
+    run {
+        val shf = mm512SllEpi16(a, count).asI16x32()
+        transmute(simdSelectBitmask(k, shf, i16x32.ZERO))
+    }
+
+/**
+ * Shift packed 16-bit integers in a left by count while shifting in zeros, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_sll_epi16&expand=5266)
+ */
+public fun mm256MaskSllEpi16(src: M256i, k: Mmask16, a: M256i, count: M128i): M256i =
+    run {
+        val shf = mm256SllEpi16(a, count).asI16x16()
+        transmute(simdSelectBitmask(k, shf, src.asI16x16()))
+    }
+
+/**
+ * Shift packed 16-bit integers in a left by count while shifting in zeros, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_sll_epi16&expand=5267)
+ */
+public fun mm256MaskzSllEpi16(k: Mmask16, a: M256i, count: M128i): M256i =
+    run {
+        val shf = mm256SllEpi16(a, count).asI16x16()
+        transmute(simdSelectBitmask(k, shf, i16x16.ZERO))
+    }
+
+/**
+ * Shift packed 16-bit integers in a left by count while shifting in zeros, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_sll_epi16&expand=5263)
+ */
+public fun mmMaskSllEpi16(src: M128i, k: Mmask8, a: M128i, count: M128i): M128i =
+    run {
+        val shf = mmSllEpi16(a, count).asI16x8()
+        transmute(simdSelectBitmask(k, shf, src.asI16x8()))
+    }
+
+/**
+ * Shift packed 16-bit integers in a left by count while shifting in zeros, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_sll_epi16&expand=5264)
+ */
+public fun mmMaskzSllEpi16(k: Mmask8, a: M128i, count: M128i): M128i =
+    run {
+        val shf = mmSllEpi16(a, count).asI16x8()
+        transmute(simdSelectBitmask(k, shf, i16x8.ZERO))
+    }
+
+/**
+ * Shift packed 16-bit integers in a left by imm8 while shifting in zeros, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_slli_epi16&expand=5301)
+ */
+public fun mm512SlliEpi16(a: M512i, imm8: UInt): M512i =
+    run {
+        run {
+            check(0u <= imm8 && imm8 < (1u shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
+        }
+        if (imm8 >= 16u) {
+            mm512SetzeroSi512()
+        } else {
+            transmute(simdShl(a.asU16x32(), u16x32.splat(imm8.toUShort())))
+        }
+    }
+
+/**
+ * Shift packed 16-bit integers in a left by imm8 while shifting in zeros, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_slli_epi16&expand=5299)
+ */
+public fun mm512MaskSlliEpi16(src: M512i, k: Mmask32, a: M512i, imm8: UInt): M512i =
+    run {
+        run {
+            check(0u <= imm8 && imm8 < (1u shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
+        }
+        val shf =
+            if (imm8 >= 16u) {
+                u16x32.ZERO
+            } else {
+                simdShl(a.asU16x32(), u16x32.splat(imm8.toUShort()))
+            }
+        transmute(simdSelectBitmask(k, shf, src.asU16x32()))
+    }
+
+/**
+ * Shift packed 16-bit integers in a left by imm8 while shifting in zeros, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_slli_epi16&expand=5300)
+ */
+public fun mm512MaskzSlliEpi16(k: Mmask32, a: M512i, imm8: UInt): M512i =
+    run {
+        run {
+            check(0u <= imm8 && imm8 < (1u shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
+        }
+        if (imm8 >= 16u) {
+            mm512SetzeroSi512()
+        } else {
+            val shf = simdShl(a.asU16x32(), u16x32.splat(imm8.toUShort()))
+            transmute(simdSelectBitmask(k, shf, u16x32.ZERO))
+        }
+    }
+
+/**
+ * Shift packed 16-bit integers in a left by imm8 while shifting in zeros, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_slli_epi16&expand=5296)
+ */
+public fun mm256MaskSlliEpi16(src: M256i, k: Mmask16, a: M256i, imm8: UInt): M256i =
+    run {
+        run {
+            check(0u <= imm8 && imm8 < (1u shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
+        }
+        val shf =
+            if (imm8 >= 16u) {
+                u16x16.ZERO
+            } else {
+                simdShl(a.asU16x16(), u16x16.splat(imm8.toUShort()))
+            }
+        transmute(simdSelectBitmask(k, shf, src.asU16x16()))
+    }
+
+/**
+ * Shift packed 16-bit integers in a left by imm8 while shifting in zeros, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_slli_epi16&expand=5297)
+ */
+public fun mm256MaskzSlliEpi16(k: Mmask16, a: M256i, imm8: UInt): M256i =
+    run {
+        run {
+            check(0u <= imm8 && imm8 < (1u shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
+        }
+        if (imm8 >= 16u) {
+            mm256SetzeroSi256()
+        } else {
+            val shf = simdShl(a.asU16x16(), u16x16.splat(imm8.toUShort()))
+            transmute(simdSelectBitmask(k, shf, u16x16.ZERO))
+        }
+    }
+
+/**
+ * Shift packed 16-bit integers in a left by imm8 while shifting in zeros, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_slli_epi16&expand=5293)
+ */
+public fun mmMaskSlliEpi16(src: M128i, k: Mmask8, a: M128i, imm8: UInt): M128i =
+    run {
+        run {
+            check(0u <= imm8 && imm8 < (1u shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
+        }
+        val shf =
+            if (imm8 >= 16u) {
+                u16x8.ZERO
+            } else {
+                simdShl(a.asU16x8(), u16x8.splat(imm8.toUShort()))
+            }
+        transmute(simdSelectBitmask(k, shf, src.asU16x8()))
+    }
+
+/**
+ * Shift packed 16-bit integers in a left by imm8 while shifting in zeros, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_slli_epi16&expand=5294)
+ */
+public fun mmMaskzSlliEpi16(k: Mmask8, a: M128i, imm8: UInt): M128i =
+    run {
+        run {
+            check(0u <= imm8 && imm8 < (1u shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
+        }
+        if (imm8 >= 16u) {
+            mmSetzeroSi128()
+        } else {
+            val shf = simdShl(a.asU16x8(), u16x8.splat(imm8.toUShort()))
+            transmute(simdSelectBitmask(k, shf, u16x8.ZERO))
+        }
+    }
+
+/**
+ * Shift packed 16-bit integers in a left by the amount specified by the corresponding element in count while shifting in zeros, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_sllv_epi16&expand=5333)
+ */
+public fun mm512SllvEpi16(a: M512i, count: M512i): M512i = transmute(vpsllvw(a.asI16x32(), count.asI16x32()))
+
+/**
+ * Shift packed 16-bit integers in a left by the amount specified by the corresponding element in count while shifting in zeros, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_sllv_epi16&expand=5331)
+ */
+public fun mm512MaskSllvEpi16(src: M512i, k: Mmask32, a: M512i, count: M512i): M512i =
+    run {
+        val shf = mm512SllvEpi16(a, count).asI16x32()
+        transmute(simdSelectBitmask(k, shf, src.asI16x32()))
+    }
+
+/**
+ * Shift packed 16-bit integers in a left by the amount specified by the corresponding element in count while shifting in zeros, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_sllv_epi16&expand=5332)
+ */
+public fun mm512MaskzSllvEpi16(k: Mmask32, a: M512i, count: M512i): M512i =
+    run {
+        val shf = mm512SllvEpi16(a, count).asI16x32()
+        transmute(simdSelectBitmask(k, shf, i16x32.ZERO))
+    }
+
+/**
+ * Shift packed 16-bit integers in a left by the amount specified by the corresponding element in count while shifting in zeros, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_sllv_epi16&expand=5330)
+ */
+public fun mm256SllvEpi16(a: M256i, count: M256i): M256i = transmute(vpsllvw256(a.asI16x16(), count.asI16x16()))
+
+/**
+ * Shift packed 16-bit integers in a left by the amount specified by the corresponding element in count while shifting in zeros, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_sllv_epi16&expand=5328)
+ */
+public fun mm256MaskSllvEpi16(src: M256i, k: Mmask16, a: M256i, count: M256i): M256i =
+    run {
+        val shf = mm256SllvEpi16(a, count).asI16x16()
+        transmute(simdSelectBitmask(k, shf, src.asI16x16()))
+    }
+
+/**
+ * Shift packed 16-bit integers in a left by the amount specified by the corresponding element in count while shifting in zeros, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_sllv_epi16&expand=5329)
+ */
+public fun mm256MaskzSllvEpi16(k: Mmask16, a: M256i, count: M256i): M256i =
+    run {
+        val shf = mm256SllvEpi16(a, count).asI16x16()
+        transmute(simdSelectBitmask(k, shf, i16x16.ZERO))
+    }
+
+/**
+ * Shift packed 16-bit integers in a left by the amount specified by the corresponding element in count while shifting in zeros, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_sllv_epi16&expand=5327)
+ */
+public fun mmSllvEpi16(a: M128i, count: M128i): M128i = transmute(vpsllvw128(a.asI16x8(), count.asI16x8()))
+
+/**
+ * Shift packed 16-bit integers in a left by the amount specified by the corresponding element in count while shifting in zeros, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_sllv_epi16&expand=5325)
+ */
+public fun mmMaskSllvEpi16(src: M128i, k: Mmask8, a: M128i, count: M128i): M128i =
+    run {
+        val shf = mmSllvEpi16(a, count).asI16x8()
+        transmute(simdSelectBitmask(k, shf, src.asI16x8()))
+    }
+
+/**
+ * Shift packed 16-bit integers in a left by the amount specified by the corresponding element in count while shifting in zeros, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_sllv_epi16&expand=5326)
+ */
+public fun mmMaskzSllvEpi16(k: Mmask8, a: M128i, count: M128i): M128i =
+    run {
+        val shf = mmSllvEpi16(a, count).asI16x8()
+        transmute(simdSelectBitmask(k, shf, i16x8.ZERO))
+    }
+
+/**
+ * Shift packed 16-bit integers in a right by count while shifting in zeros, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_srl_epi16&expand=5483)
+ */
+public fun mm512SrlEpi16(a: M512i, count: M128i): M512i = transmute(vpsrlw(a.asI16x32(), count.asI16x8()))
+
+/**
+ * Shift packed 16-bit integers in a right by count while shifting in zeros, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_srl_epi16&expand=5481)
+ */
+public fun mm512MaskSrlEpi16(src: M512i, k: Mmask32, a: M512i, count: M128i): M512i =
+    run {
+        val shf = mm512SrlEpi16(a, count).asI16x32()
+        transmute(simdSelectBitmask(k, shf, src.asI16x32()))
+    }
+
+/**
+ * Shift packed 16-bit integers in a right by count while shifting in zeros, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_srl_epi16&expand=5482)
+ */
+public fun mm512MaskzSrlEpi16(k: Mmask32, a: M512i, count: M128i): M512i =
+    run {
+        val shf = mm512SrlEpi16(a, count).asI16x32()
+        transmute(simdSelectBitmask(k, shf, i16x32.ZERO))
+    }
+
+/**
+ * Shift packed 16-bit integers in a right by count while shifting in zeros, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_srl_epi16&expand=5478)
+ */
+public fun mm256MaskSrlEpi16(src: M256i, k: Mmask16, a: M256i, count: M128i): M256i =
+    run {
+        val shf = mm256SrlEpi16(a, count).asI16x16()
+        transmute(simdSelectBitmask(k, shf, src.asI16x16()))
+    }
+
+/**
+ * Shift packed 16-bit integers in a right by count while shifting in zeros, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_srl_epi16&expand=5479)
+ */
+public fun mm256MaskzSrlEpi16(k: Mmask16, a: M256i, count: M128i): M256i =
+    run {
+        val shf = mm256SrlEpi16(a, count).asI16x16()
+        transmute(simdSelectBitmask(k, shf, i16x16.ZERO))
+    }
+
+/**
+ * Shift packed 16-bit integers in a right by count while shifting in zeros, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_srl_epi16&expand=5475)
+ */
+public fun mmMaskSrlEpi16(src: M128i, k: Mmask8, a: M128i, count: M128i): M128i =
+    run {
+        val shf = mmSrlEpi16(a, count).asI16x8()
+        transmute(simdSelectBitmask(k, shf, src.asI16x8()))
+    }
+
+/**
+ * Shift packed 16-bit integers in a right by count while shifting in zeros, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_srl_epi16&expand=5476)
+ */
+public fun mmMaskzSrlEpi16(k: Mmask8, a: M128i, count: M128i): M128i =
+    run {
+        val shf = mmSrlEpi16(a, count).asI16x8()
+        transmute(simdSelectBitmask(k, shf, i16x8.ZERO))
+    }
+
+/**
+ * Shift packed 16-bit integers in a right by imm8 while shifting in zeros, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_srli_epi16&expand=5513)
+ */
+public fun mm512SrliEpi16(a: M512i, imm8: UInt): M512i =
+    run {
+        run {
+            check(0u <= imm8 && imm8 < (1u shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
+        }
+        if (imm8 >= 16u) {
+            mm512SetzeroSi512()
+        } else {
+            transmute(simdShr(a.asU16x32(), u16x32.splat(imm8.toUShort())))
+        }
+    }
+
+/**
+ * Shift packed 16-bit integers in a right by imm8 while shifting in zeros, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_srli_epi16&expand=5511)
+ */
+public fun mm512MaskSrliEpi16(src: M512i, k: Mmask32, a: M512i, imm8: UInt): M512i =
+    run {
+        run {
+            check(0u <= imm8 && imm8 < (1u shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
+        }
+        val shf =
+            if (imm8 >= 16u) {
+                u16x32.ZERO
+            } else {
+                simdShr(a.asU16x32(), u16x32.splat(imm8.toUShort()))
+            }
+        transmute(simdSelectBitmask(k, shf, src.asU16x32()))
+    }
+
+/**
+ * Shift packed 16-bit integers in a right by imm8 while shifting in zeros, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_srli_epi16&expand=5512)
+ */
+public fun mm512MaskzSrliEpi16(k: Mmask32, a: M512i, imm8: Int): M512i =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
+        }
+        // imm8 should be u32, it seems the document to verify is incorrect
+        if (imm8 >= 16) {
+            mm512SetzeroSi512()
+        } else {
+            val shf = simdShr(a.asU16x32(), u16x32.splat(imm8.toUShort()))
+            transmute(simdSelectBitmask(k, shf, u16x32.ZERO))
+        }
+    }
+
+/**
+ * Shift packed 16-bit integers in a right by imm8 while shifting in zeros, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_srli_epi16&expand=5508)
+ */
+public fun mm256MaskSrliEpi16(src: M256i, k: Mmask16, a: M256i, imm8: Int): M256i =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
+        }
+        val shf = mm256SrliEpi16(a, imm8)
+        transmute(simdSelectBitmask(k, shf.asI16x16(), src.asI16x16()))
+    }
+
+/**
+ * Shift packed 16-bit integers in a right by imm8 while shifting in zeros, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_srli_epi16&expand=5509)
+ */
+public fun mm256MaskzSrliEpi16(k: Mmask16, a: M256i, imm8: Int): M256i =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
+        }
+        val shf = mm256SrliEpi16(a, imm8)
+        transmute(simdSelectBitmask(k, shf.asI16x16(), i16x16.ZERO))
+    }
+
+/**
+ * Shift packed 16-bit integers in a right by imm8 while shifting in zeros, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_srli_epi16&expand=5505)
+ */
+public fun mmMaskSrliEpi16(src: M128i, k: Mmask8, a: M128i, imm8: Int): M128i =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
+        }
+        val shf = mmSrliEpi16(a, imm8)
+        transmute(simdSelectBitmask(k, shf.asI16x8(), src.asI16x8()))
+    }
+
+/**
+ * Shift packed 16-bit integers in a right by imm8 while shifting in zeros, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_srli_epi16&expand=5506)
+ */
+public fun mmMaskzSrliEpi16(k: Mmask8, a: M128i, imm8: Int): M128i =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
+        }
+        val shf = mmSrliEpi16(a, imm8)
+        transmute(simdSelectBitmask(k, shf.asI16x8(), i16x8.ZERO))
+    }
+
+/**
+ * Shift packed 16-bit integers in a right by the amount specified by the corresponding element in count while shifting in zeros, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_srlv_epi16&expand=5545)
+ */
+public fun mm512SrlvEpi16(a: M512i, count: M512i): M512i = transmute(vpsrlvw(a.asI16x32(), count.asI16x32()))
+
+/**
+ * Shift packed 16-bit integers in a right by the amount specified by the corresponding element in count while shifting in zeros, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_srlv_epi16&expand=5543)
+ */
+public fun mm512MaskSrlvEpi16(src: M512i, k: Mmask32, a: M512i, count: M512i): M512i =
+    run {
+        val shf = mm512SrlvEpi16(a, count).asI16x32()
+        transmute(simdSelectBitmask(k, shf, src.asI16x32()))
+    }
+
+/**
+ * Shift packed 16-bit integers in a right by the amount specified by the corresponding element in count while shifting in zeros, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_srlv_epi16&expand=5544)
+ */
+public fun mm512MaskzSrlvEpi16(k: Mmask32, a: M512i, count: M512i): M512i =
+    run {
+        val shf = mm512SrlvEpi16(a, count).asI16x32()
+        transmute(simdSelectBitmask(k, shf, i16x32.ZERO))
+    }
+
+/**
+ * Shift packed 16-bit integers in a right by the amount specified by the corresponding element in count while shifting in zeros, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_srlv_epi16&expand=5542)
+ */
+public fun mm256SrlvEpi16(a: M256i, count: M256i): M256i = transmute(vpsrlvw256(a.asI16x16(), count.asI16x16()))
+
+/**
+ * Shift packed 16-bit integers in a right by the amount specified by the corresponding element in count while shifting in zeros, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_srlv_epi16&expand=5540)
+ */
+public fun mm256MaskSrlvEpi16(src: M256i, k: Mmask16, a: M256i, count: M256i): M256i =
+    run {
+        val shf = mm256SrlvEpi16(a, count).asI16x16()
+        transmute(simdSelectBitmask(k, shf, src.asI16x16()))
+    }
+
+/**
+ * Shift packed 16-bit integers in a right by the amount specified by the corresponding element in count while shifting in zeros, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_srlv_epi16&expand=5541)
+ */
+public fun mm256MaskzSrlvEpi16(k: Mmask16, a: M256i, count: M256i): M256i =
+    run {
+        val shf = mm256SrlvEpi16(a, count).asI16x16()
+        transmute(simdSelectBitmask(k, shf, i16x16.ZERO))
+    }
+
+/**
+ * Shift packed 16-bit integers in a right by the amount specified by the corresponding element in count while shifting in zeros, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_srlv_epi16&expand=5539)
+ */
+public fun mmSrlvEpi16(a: M128i, count: M128i): M128i = transmute(vpsrlvw128(a.asI16x8(), count.asI16x8()))
+
+/**
+ * Shift packed 16-bit integers in a right by the amount specified by the corresponding element in count while shifting in zeros, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_srlv_epi16&expand=5537)
+ */
+public fun mmMaskSrlvEpi16(src: M128i, k: Mmask8, a: M128i, count: M128i): M128i =
+    run {
+        val shf = mmSrlvEpi16(a, count).asI16x8()
+        transmute(simdSelectBitmask(k, shf, src.asI16x8()))
+    }
+
+/**
+ * Shift packed 16-bit integers in a right by the amount specified by the corresponding element in count while shifting in zeros, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_srlv_epi16&expand=5538)
+ */
+public fun mmMaskzSrlvEpi16(k: Mmask8, a: M128i, count: M128i): M128i =
+    run {
+        val shf = mmSrlvEpi16(a, count).asI16x8()
+        transmute(simdSelectBitmask(k, shf, i16x8.ZERO))
+    }
+
+/**
+ * Shift packed 16-bit integers in a right by count while shifting in sign bits, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_sra_epi16&expand=5398)
+ */
+public fun mm512SraEpi16(a: M512i, count: M128i): M512i = transmute(vpsraw(a.asI16x32(), count.asI16x8()))
+
+/**
+ * Shift packed 16-bit integers in a right by count while shifting in sign bits, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_sra_epi16&expand=5396)
+ */
+public fun mm512MaskSraEpi16(src: M512i, k: Mmask32, a: M512i, count: M128i): M512i =
+    run {
+        val shf = mm512SraEpi16(a, count).asI16x32()
+        transmute(simdSelectBitmask(k, shf, src.asI16x32()))
+    }
+
+/**
+ * Shift packed 16-bit integers in a right by count while shifting in sign bits, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_sra_epi16&expand=5397)
+ */
+public fun mm512MaskzSraEpi16(k: Mmask32, a: M512i, count: M128i): M512i =
+    run {
+        val shf = mm512SraEpi16(a, count).asI16x32()
+        transmute(simdSelectBitmask(k, shf, i16x32.ZERO))
+    }
+
+/**
+ * Shift packed 16-bit integers in a right by count while shifting in sign bits, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_sra_epi16&expand=5393)
+ */
+public fun mm256MaskSraEpi16(src: M256i, k: Mmask16, a: M256i, count: M128i): M256i =
+    run {
+        val shf = mm256SraEpi16(a, count).asI16x16()
+        transmute(simdSelectBitmask(k, shf, src.asI16x16()))
+    }
+
+/**
+ * Shift packed 16-bit integers in a right by count while shifting in sign bits, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_sra_epi16&expand=5394)
+ */
+public fun mm256MaskzSraEpi16(k: Mmask16, a: M256i, count: M128i): M256i =
+    run {
+        val shf = mm256SraEpi16(a, count).asI16x16()
+        transmute(simdSelectBitmask(k, shf, i16x16.ZERO))
+    }
+
+/**
+ * Shift packed 16-bit integers in a right by count while shifting in sign bits, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_sra_epi16&expand=5390)
+ */
+public fun mmMaskSraEpi16(src: M128i, k: Mmask8, a: M128i, count: M128i): M128i =
+    run {
+        val shf = mmSraEpi16(a, count).asI16x8()
+        transmute(simdSelectBitmask(k, shf, src.asI16x8()))
+    }
+
+/**
+ * Shift packed 16-bit integers in a right by count while shifting in sign bits, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_sra_epi16&expand=5391)
+ */
+public fun mmMaskzSraEpi16(k: Mmask8, a: M128i, count: M128i): M128i =
+    run {
+        val shf = mmSraEpi16(a, count).asI16x8()
+        transmute(simdSelectBitmask(k, shf, i16x8.ZERO))
+    }
+
+/**
+ * Shift packed 16-bit integers in a right by imm8 while shifting in sign bits, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_srai_epi16&expand=5427)
+ */
+public fun mm512SraiEpi16(a: M512i, imm8: UInt): M512i =
+    run {
+        run {
+            check(0u <= imm8 && imm8 < (1u shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
+        }
+        transmute(simdShr(a.asI16x32(), i16x32.splat(imm8.min(15u).toShort())))
+    }
+
+/**
+ * Shift packed 16-bit integers in a right by imm8 while shifting in sign bits, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_srai_epi16&expand=5425)
+ */
+public fun mm512MaskSraiEpi16(src: M512i, k: Mmask32, a: M512i, imm8: UInt): M512i =
+    run {
+        run {
+            check(0u <= imm8 && imm8 < (1u shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
+        }
+        val shf = simdShr(a.asI16x32(), i16x32.splat(imm8.min(15u).toShort()))
+        transmute(simdSelectBitmask(k, shf, src.asI16x32()))
+    }
+
+/**
+ * Shift packed 16-bit integers in a right by imm8 while shifting in sign bits, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_srai_epi16&expand=5426)
+ */
+public fun mm512MaskzSraiEpi16(k: Mmask32, a: M512i, imm8: UInt): M512i =
+    run {
+        run {
+            check(0u <= imm8 && imm8 < (1u shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
+        }
+        val shf = simdShr(a.asI16x32(), i16x32.splat(imm8.min(15u).toShort()))
+        transmute(simdSelectBitmask(k, shf, i16x32.ZERO))
+    }
+
+/**
+ * Shift packed 16-bit integers in a right by imm8 while shifting in sign bits, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_srai_epi16&expand=5422)
+ */
+public fun mm256MaskSraiEpi16(src: M256i, k: Mmask16, a: M256i, imm8: UInt): M256i =
+    run {
+        run {
+            check(0u <= imm8 && imm8 < (1u shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
+        }
+        val r = simdShr(a.asI16x16(), i16x16.splat(imm8.min(15u).toShort()))
+        transmute(simdSelectBitmask(k, r, src.asI16x16()))
+    }
+
+/**
+ * Shift packed 16-bit integers in a right by imm8 while shifting in sign bits, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_srai_epi16&expand=5423)
+ */
+public fun mm256MaskzSraiEpi16(k: Mmask16, a: M256i, imm8: UInt): M256i =
+    run {
+        run {
+            check(0u <= imm8 && imm8 < (1u shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
+        }
+        val r = simdShr(a.asI16x16(), i16x16.splat(imm8.min(15u).toShort()))
+        transmute(simdSelectBitmask(k, r, i16x16.ZERO))
+    }
+
+/**
+ * Shift packed 16-bit integers in a right by imm8 while shifting in sign bits, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_srai_epi16&expand=5419)
+ */
+public fun mmMaskSraiEpi16(src: M128i, k: Mmask8, a: M128i, imm8: UInt): M128i =
+    run {
+        run {
+            check(0u <= imm8 && imm8 < (1u shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
+        }
+        val r = simdShr(a.asI16x8(), i16x8.splat(imm8.min(15u).toShort()))
+        transmute(simdSelectBitmask(k, r, src.asI16x8()))
+    }
+
+/**
+ * Shift packed 16-bit integers in a right by imm8 while shifting in sign bits, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_srai_epi16&expand=5420)
+ */
+public fun mmMaskzSraiEpi16(k: Mmask8, a: M128i, imm8: UInt): M128i =
+    run {
+        run {
+            check(0u <= imm8 && imm8 < (1u shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
+        }
+        val r = simdShr(a.asI16x8(), i16x8.splat(imm8.min(15u).toShort()))
+        transmute(simdSelectBitmask(k, r, i16x8.ZERO))
+    }
+
+/**
+ * Shift packed 16-bit integers in a right by the amount specified by the corresponding element in count while shifting in sign bits, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_srav_epi16&expand=5456)
+ */
+public fun mm512SravEpi16(a: M512i, count: M512i): M512i = transmute(vpsravw(a.asI16x32(), count.asI16x32()))
+
+/**
+ * Shift packed 16-bit integers in a right by the amount specified by the corresponding element in count while shifting in sign bits, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_srav_epi16&expand=5454)
+ */
+public fun mm512MaskSravEpi16(src: M512i, k: Mmask32, a: M512i, count: M512i): M512i =
+    run {
+        val shf = mm512SravEpi16(a, count).asI16x32()
+        transmute(simdSelectBitmask(k, shf, src.asI16x32()))
+    }
+
+/**
+ * Shift packed 16-bit integers in a right by the amount specified by the corresponding element in count while shifting in sign bits, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_srav_epi16&expand=5455)
+ */
+public fun mm512MaskzSravEpi16(k: Mmask32, a: M512i, count: M512i): M512i =
+    run {
+        val shf = mm512SravEpi16(a, count).asI16x32()
+        transmute(simdSelectBitmask(k, shf, i16x32.ZERO))
+    }
+
+/**
+ * Shift packed 16-bit integers in a right by the amount specified by the corresponding element in count while shifting in sign bits, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_srav_epi16&expand=5453)
+ */
+public fun mm256SravEpi16(a: M256i, count: M256i): M256i = transmute(vpsravw256(a.asI16x16(), count.asI16x16()))
+
+/**
+ * Shift packed 16-bit integers in a right by the amount specified by the corresponding element in count while shifting in sign bits, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_srav_epi16&expand=5451)
+ */
+public fun mm256MaskSravEpi16(src: M256i, k: Mmask16, a: M256i, count: M256i): M256i =
+    run {
+        val shf = mm256SravEpi16(a, count).asI16x16()
+        transmute(simdSelectBitmask(k, shf, src.asI16x16()))
+    }
+
+/**
+ * Shift packed 16-bit integers in a right by the amount specified by the corresponding element in count while shifting in sign bits, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_srav_epi16&expand=5452)
+ */
+public fun mm256MaskzSravEpi16(k: Mmask16, a: M256i, count: M256i): M256i =
+    run {
+        val shf = mm256SravEpi16(a, count).asI16x16()
+        transmute(simdSelectBitmask(k, shf, i16x16.ZERO))
+    }
+
+/**
+ * Shift packed 16-bit integers in a right by the amount specified by the corresponding element in count while shifting in sign bits, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_srav_epi16&expand=5450)
+ */
+public fun mmSravEpi16(a: M128i, count: M128i): M128i = transmute(vpsravw128(a.asI16x8(), count.asI16x8()))
+
+/**
+ * Shift packed 16-bit integers in a right by the amount specified by the corresponding element in count while shifting in sign bits, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_srav_epi16&expand=5448)
+ */
+public fun mmMaskSravEpi16(src: M128i, k: Mmask8, a: M128i, count: M128i): M128i =
+    run {
+        val shf = mmSravEpi16(a, count).asI16x8()
+        transmute(simdSelectBitmask(k, shf, src.asI16x8()))
+    }
+
+/**
+ * Shift packed 16-bit integers in a right by the amount specified by the corresponding element in count while shifting in sign bits, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_srav_epi16&expand=5449)
+ */
+public fun mmMaskzSravEpi16(k: Mmask8, a: M128i, count: M128i): M128i =
+    run {
+        val shf = mmSravEpi16(a, count).asI16x8()
+        transmute(simdSelectBitmask(k, shf, i16x8.ZERO))
+    }
+
+// vpermi2w or vpermt2w
+
+/**
+ * Shuffle 16-bit integers in a and b across lanes using the corresponding selector and index in idx, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_permutex2var_epi16&expand=4226)
+ */
+public fun mm512Permutex2varEpi16(a: M512i, idx: M512i, b: M512i): M512i = transmute(vpermi2w(a.asI16x32(), idx.asI16x32(), b.asI16x32()))
+
+/**
+ * Shuffle 16-bit integers in a and b across lanes using the corresponding selector and index in idx, and store the results in dst using writemask k (elements are copied from a when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_permutex2var_epi16&expand=4223)
+ */
+public fun mm512MaskPermutex2varEpi16(a: M512i, k: Mmask32, idx: M512i, b: M512i): M512i =
+    run {
+        val permute = mm512Permutex2varEpi16(a, idx, b).asI16x32()
+        transmute(simdSelectBitmask(k, permute, a.asI16x32()))
+    }
+
+// vpermi2w or vpermt2w
+
+/**
+ * Shuffle 16-bit integers in a and b across lanes using the corresponding selector and index in idx, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_permutex2var_epi16&expand=4225)
+ */
+public fun mm512MaskzPermutex2varEpi16(k: Mmask32, a: M512i, idx: M512i, b: M512i): M512i =
+    run {
+        val permute = mm512Permutex2varEpi16(a, idx, b).asI16x32()
+        transmute(simdSelectBitmask(k, permute, i16x32.ZERO))
+    }
+
+/**
+ * Shuffle 16-bit integers in a and b across lanes using the corresponding selector and index in idx, and store the results in dst using writemask k (elements are copied from idx when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask2_permutex2var_epi16&expand=4224)
+ */
+public fun mm512Mask2Permutex2varEpi16(a: M512i, idx: M512i, k: Mmask32, b: M512i): M512i =
+    run {
+        val permute = mm512Permutex2varEpi16(a, idx, b).asI16x32()
+        transmute(simdSelectBitmask(k, permute, idx.asI16x32()))
+    }
+
+// vpermi2w or vpermt2w
+
+/**
+ * Shuffle 16-bit integers in a and b across lanes using the corresponding selector and index in idx, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_permutex2var_epi16&expand=4222)
+ */
+public fun mm256Permutex2varEpi16(a: M256i, idx: M256i, b: M256i): M256i = transmute(vpermi2w256(a.asI16x16(), idx.asI16x16(), b.asI16x16()))
+
+/**
+ * Shuffle 16-bit integers in a and b across lanes using the corresponding selector and index in idx, and store the results in dst using writemask k (elements are copied from a when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_permutex2var_epi16&expand=4219)
+ */
+public fun mm256MaskPermutex2varEpi16(a: M256i, k: Mmask16, idx: M256i, b: M256i): M256i =
+    run {
+        val permute = mm256Permutex2varEpi16(a, idx, b).asI16x16()
+        transmute(simdSelectBitmask(k, permute, a.asI16x16()))
+    }
+
+// vpermi2w or vpermt2w
+
+/**
+ * Shuffle 16-bit integers in a and b across lanes using the corresponding selector and index in idx, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_permutex2var_epi16&expand=4221)
+ */
+public fun mm256MaskzPermutex2varEpi16(k: Mmask16, a: M256i, idx: M256i, b: M256i): M256i =
+    run {
+        val permute = mm256Permutex2varEpi16(a, idx, b).asI16x16()
+        transmute(simdSelectBitmask(k, permute, i16x16.ZERO))
+    }
+
+/**
+ * Shuffle 16-bit integers in a and b across lanes using the corresponding selector and index in idx, and store the results in dst using writemask k (elements are copied from idx when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask2_permutex2var_epi16&expand=4220)
+ */
+public fun mm256Mask2Permutex2varEpi16(a: M256i, idx: M256i, k: Mmask16, b: M256i): M256i =
+    run {
+        val permute = mm256Permutex2varEpi16(a, idx, b).asI16x16()
+        transmute(simdSelectBitmask(k, permute, idx.asI16x16()))
+    }
+
+// vpermi2w or vpermt2w
+
+/**
+ * Shuffle 16-bit integers in a and b across lanes using the corresponding selector and index in idx, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_permutex2var_epi16&expand=4218)
+ */
+public fun mmPermutex2varEpi16(a: M128i, idx: M128i, b: M128i): M128i = transmute(vpermi2w128(a.asI16x8(), idx.asI16x8(), b.asI16x8()))
+
+/**
+ * Shuffle 16-bit integers in a and b across lanes using the corresponding selector and index in idx, and store the results in dst using writemask k (elements are copied from a when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_permutex2var_epi16&expand=4215)
+ */
+public fun mmMaskPermutex2varEpi16(a: M128i, k: Mmask8, idx: M128i, b: M128i): M128i =
+    run {
+        val permute = mmPermutex2varEpi16(a, idx, b).asI16x8()
+        transmute(simdSelectBitmask(k, permute, a.asI16x8()))
+    }
+
+// vpermi2w or vpermt2w
+
+/**
+ * Shuffle 16-bit integers in a and b across lanes using the corresponding selector and index in idx, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_permutex2var_epi16&expand=4217)
+ */
+public fun mmMaskzPermutex2varEpi16(k: Mmask8, a: M128i, idx: M128i, b: M128i): M128i =
+    run {
+        val permute = mmPermutex2varEpi16(a, idx, b).asI16x8()
+        transmute(simdSelectBitmask(k, permute, i16x8.ZERO))
+    }
+
+/**
+ * Shuffle 16-bit integers in a and b across lanes using the corresponding selector and index in idx, and store the results in dst using writemask k (elements are copied from idx when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask2_permutex2var_epi16&expand=4216)
+ */
+public fun mmMask2Permutex2varEpi16(a: M128i, idx: M128i, k: Mmask8, b: M128i): M128i =
+    run {
+        val permute = mmPermutex2varEpi16(a, idx, b).asI16x8()
+        transmute(simdSelectBitmask(k, permute, idx.asI16x8()))
+    }
+
+/**
+ * Shuffle 16-bit integers in a across lanes using the corresponding index in idx, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_permutexvar_epi16&expand=4295)
+ */
+public fun mm512PermutexvarEpi16(idx: M512i, a: M512i): M512i = transmute(vpermw(a.asI16x32(), idx.asI16x32()))
+
+/**
+ * Shuffle 16-bit integers in a across lanes using the corresponding index in idx, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_permutexvar_epi16&expand=4293)
+ */
+public fun mm512MaskPermutexvarEpi16(src: M512i, k: Mmask32, idx: M512i, a: M512i): M512i =
+    run {
+        val permute = mm512PermutexvarEpi16(idx, a).asI16x32()
+        transmute(simdSelectBitmask(k, permute, src.asI16x32()))
+    }
+
+/**
+ * Shuffle 16-bit integers in a across lanes using the corresponding index in idx, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_permutexvar_epi16&expand=4294)
+ */
+public fun mm512MaskzPermutexvarEpi16(k: Mmask32, idx: M512i, a: M512i): M512i =
+    run {
+        val permute = mm512PermutexvarEpi16(idx, a).asI16x32()
+        transmute(simdSelectBitmask(k, permute, i16x32.ZERO))
+    }
+
+/**
+ * Shuffle 16-bit integers in a across lanes using the corresponding index in idx, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_permutexvar_epi16&expand=4292)
+ */
+public fun mm256PermutexvarEpi16(idx: M256i, a: M256i): M256i = transmute(vpermw256(a.asI16x16(), idx.asI16x16()))
+
+/**
+ * Shuffle 16-bit integers in a across lanes using the corresponding index in idx, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_permutexvar_epi16&expand=4290)
+ */
+public fun mm256MaskPermutexvarEpi16(src: M256i, k: Mmask16, idx: M256i, a: M256i): M256i =
+    run {
+        val permute = mm256PermutexvarEpi16(idx, a).asI16x16()
+        transmute(simdSelectBitmask(k, permute, src.asI16x16()))
+    }
+
+/**
+ * Shuffle 16-bit integers in a across lanes using the corresponding index in idx, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_permutexvar_epi16&expand=4291)
+ */
+public fun mm256MaskzPermutexvarEpi16(k: Mmask16, idx: M256i, a: M256i): M256i =
+    run {
+        val permute = mm256PermutexvarEpi16(idx, a).asI16x16()
+        transmute(simdSelectBitmask(k, permute, i16x16.ZERO))
+    }
+
+/**
+ * Shuffle 16-bit integers in a across lanes using the corresponding index in idx, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_permutexvar_epi16&expand=4289)
+ */
+public fun mmPermutexvarEpi16(idx: M128i, a: M128i): M128i = transmute(vpermw128(a.asI16x8(), idx.asI16x8()))
+
+/**
+ * Shuffle 16-bit integers in a across lanes using the corresponding index in idx, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_permutexvar_epi16&expand=4287)
+ */
+public fun mmMaskPermutexvarEpi16(src: M128i, k: Mmask8, idx: M128i, a: M128i): M128i =
+    run {
+        val permute = mmPermutexvarEpi16(idx, a).asI16x8()
+        transmute(simdSelectBitmask(k, permute, src.asI16x8()))
+    }
+
+/**
+ * Shuffle 16-bit integers in a across lanes using the corresponding index in idx, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_permutexvar_epi16&expand=4288)
+ */
+public fun mmMaskzPermutexvarEpi16(k: Mmask8, idx: M128i, a: M128i): M128i =
+    run {
+        val permute = mmPermutexvarEpi16(idx, a).asI16x8()
+        transmute(simdSelectBitmask(k, permute, i16x8.ZERO))
+    }
+
+// should be vpblendmw
+
+/**
+ * Blend packed 16-bit integers from a and b using control mask k, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_blend_epi16&expand=430)
+ */
+public fun mm512MaskBlendEpi16(k: Mmask32, a: M512i, b: M512i): M512i = transmute(simdSelectBitmask(k, b.asI16x32(), a.asI16x32()))
+
+// should be vpblendmw
+
+/**
+ * Blend packed 16-bit integers from a and b using control mask k, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_blend_epi16&expand=429)
+ */
+public fun mm256MaskBlendEpi16(k: Mmask16, a: M256i, b: M256i): M256i = transmute(simdSelectBitmask(k, b.asI16x16(), a.asI16x16()))
+
+// should be vpblendmw
+
+/**
+ * Blend packed 16-bit integers from a and b using control mask k, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_blend_epi16&expand=427)
+ */
+public fun mmMaskBlendEpi16(k: Mmask8, a: M128i, b: M128i): M128i = transmute(simdSelectBitmask(k, b.asI16x8(), a.asI16x8()))
+
+// should be vpblendmb
+
+/**
+ * Blend packed 8-bit integers from a and b using control mask k, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_blend_epi8&expand=441)
+ */
+public fun mm512MaskBlendEpi8(k: Mmask64, a: M512i, b: M512i): M512i = transmute(simdSelectBitmask(k, b.asI8x64(), a.asI8x64()))
+
+// should be vpblendmb
+
+/**
+ * Blend packed 8-bit integers from a and b using control mask k, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_blend_epi8&expand=440)
+ */
+public fun mm256MaskBlendEpi8(k: Mmask32, a: M256i, b: M256i): M256i = transmute(simdSelectBitmask(k, b.asI8x32(), a.asI8x32()))
+
+// should be vpblendmb
+
+/**
+ * Blend packed 8-bit integers from a and b using control mask k, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_blend_epi8&expand=439)
+ */
+public fun mmMaskBlendEpi8(k: Mmask16, a: M128i, b: M128i): M128i = transmute(simdSelectBitmask(k, b.asI8x16(), a.asI8x16()))
+
+/**
+ * Broadcast the low packed 16-bit integer from a to all elements of dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_broadcastw_epi16&expand=587)
+ */
+public fun mm512BroadcastwEpi16(a: M128i): M512i =
+    run {
+        val a1 = mm512Castsi128Si512(a).asI16x32()
+        val ret: I16x32 = simdShuffle(a1, a1, SimdShuffleIdx(listOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)))
+        transmute(ret)
+    }
+
+/**
+ * Broadcast the low packed 16-bit integer from a to all elements of dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_broadcastw_epi16&expand=588)
+ */
+public fun mm512MaskBroadcastwEpi16(src: M512i, k: Mmask32, a: M128i): M512i =
+    run {
+        val broadcast = mm512BroadcastwEpi16(a).asI16x32()
+        transmute(simdSelectBitmask(k, broadcast, src.asI16x32()))
+    }
+
+/**
+ * Broadcast the low packed 16-bit integer from a to all elements of dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_broadcastw_epi16&expand=589)
+ */
+public fun mm512MaskzBroadcastwEpi16(k: Mmask32, a: M128i): M512i =
+    run {
+        val broadcast = mm512BroadcastwEpi16(a).asI16x32()
+        transmute(simdSelectBitmask(k, broadcast, i16x32.ZERO))
+    }
+
+/**
+ * Broadcast the low packed 16-bit integer from a to all elements of dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_broadcastw_epi16&expand=585)
+ */
+public fun mm256MaskBroadcastwEpi16(src: M256i, k: Mmask16, a: M128i): M256i =
+    run {
+        val broadcast = mm256BroadcastwEpi16(a).asI16x16()
+        transmute(simdSelectBitmask(k, broadcast, src.asI16x16()))
+    }
+
+/**
+ * Broadcast the low packed 16-bit integer from a to all elements of dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_broadcastw_epi16&expand=586)
+ */
+public fun mm256MaskzBroadcastwEpi16(k: Mmask16, a: M128i): M256i =
+    run {
+        val broadcast = mm256BroadcastwEpi16(a).asI16x16()
+        transmute(simdSelectBitmask(k, broadcast, i16x16.ZERO))
+    }
+
+/**
+ * Broadcast the low packed 16-bit integer from a to all elements of dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_broadcastw_epi16&expand=582)
+ */
+public fun mmMaskBroadcastwEpi16(src: M128i, k: Mmask8, a: M128i): M128i =
+    run {
+        val broadcast = mmBroadcastwEpi16(a).asI16x8()
+        transmute(simdSelectBitmask(k, broadcast, src.asI16x8()))
+    }
+
+/**
+ * Broadcast the low packed 16-bit integer from a to all elements of dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_broadcastw_epi16&expand=583)
+ */
+public fun mmMaskzBroadcastwEpi16(k: Mmask8, a: M128i): M128i =
+    run {
+        val broadcast = mmBroadcastwEpi16(a).asI16x8()
+        transmute(simdSelectBitmask(k, broadcast, i16x8.ZERO))
+    }
+
+/**
+ * Broadcast the low packed 8-bit integer from a to all elements of dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_broadcastb_epi8&expand=536)
+ */
+public fun mm512BroadcastbEpi8(a: M128i): M512i =
+    run {
+        val a1 = mm512Castsi128Si512(a).asI8x64()
+        val ret: I8x64 = simdShuffle(a1, a1, SimdShuffleIdx(listOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)))
+        transmute(ret)
+    }
+
+/**
+ * Broadcast the low packed 8-bit integer from a to all elements of dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_broadcastb_epi8&expand=537)
+ */
+public fun mm512MaskBroadcastbEpi8(src: M512i, k: Mmask64, a: M128i): M512i =
+    run {
+        val broadcast = mm512BroadcastbEpi8(a).asI8x64()
+        transmute(simdSelectBitmask(k, broadcast, src.asI8x64()))
+    }
+
+/**
+ * Broadcast the low packed 8-bit integer from a to all elements of dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_broadcastb_epi8&expand=538)
+ */
+public fun mm512MaskzBroadcastbEpi8(k: Mmask64, a: M128i): M512i =
+    run {
+        val broadcast = mm512BroadcastbEpi8(a).asI8x64()
+        transmute(simdSelectBitmask(k, broadcast, i8x64.ZERO))
+    }
+
+/**
+ * Broadcast the low packed 8-bit integer from a to all elements of dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_broadcastb_epi8&expand=534)
+ */
+public fun mm256MaskBroadcastbEpi8(src: M256i, k: Mmask32, a: M128i): M256i =
+    run {
+        val broadcast = mm256BroadcastbEpi8(a).asI8x32()
+        transmute(simdSelectBitmask(k, broadcast, src.asI8x32()))
+    }
+
+/**
+ * Broadcast the low packed 8-bit integer from a to all elements of dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_broadcastb_epi8&expand=535)
+ */
+public fun mm256MaskzBroadcastbEpi8(k: Mmask32, a: M128i): M256i =
+    run {
+        val broadcast = mm256BroadcastbEpi8(a).asI8x32()
+        transmute(simdSelectBitmask(k, broadcast, i8x32.ZERO))
+    }
+
+/**
+ * Broadcast the low packed 8-bit integer from a to all elements of dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_broadcastb_epi8&expand=531)
+ */
+public fun mmMaskBroadcastbEpi8(src: M128i, k: Mmask16, a: M128i): M128i =
+    run {
+        val broadcast = mmBroadcastbEpi8(a).asI8x16()
+        transmute(simdSelectBitmask(k, broadcast, src.asI8x16()))
+    }
+
+/**
+ * Broadcast the low packed 8-bit integer from a to all elements of dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_broadcastb_epi8&expand=532)
+ */
+public fun mmMaskzBroadcastbEpi8(k: Mmask16, a: M128i): M128i =
+    run {
+        val broadcast = mmBroadcastbEpi8(a).asI8x16()
+        transmute(simdSelectBitmask(k, broadcast, i8x16.ZERO))
+    }
+
+/**
+ * Unpack and interleave 16-bit integers from the high half of each 128-bit lane in a and b, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_unpackhi_epi16&expand=6012)
+ */
+public fun mm512UnpackhiEpi16(a: M512i, b: M512i): M512i =
+    run {
+        val a1 = a.asI16x32()
+        val b1 = b.asI16x32()
+        val r: I16x32 = simdShuffle(a1, b1, SimdShuffleIdx(listOf(4, 32 + 4, 5, 32 + 5, 6, 32 + 6, 7, 32 + 7, 12, 32 + 12, 13, 32 + 13, 14, 32 + 14, 15, 32 + 15, 20, 32 + 20, 21, 32 + 21, 22, 32 + 22, 23, 32 + 23, 28, 32 + 28, 29, 32 + 29, 30, 32 + 30, 31, 32 + 31)))
+        transmute(r)
+    }
+
+/**
+ * Unpack and interleave 16-bit integers from the high half of each 128-bit lane in a and b, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_unpackhi_epi16&expand=6010)
+ */
+public fun mm512MaskUnpackhiEpi16(src: M512i, k: Mmask32, a: M512i, b: M512i): M512i =
+    run {
+        val unpackhi = mm512UnpackhiEpi16(a, b).asI16x32()
+        transmute(simdSelectBitmask(k, unpackhi, src.asI16x32()))
+    }
+
+/**
+ * Unpack and interleave 16-bit integers from the high half of each 128-bit lane in a and b, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_unpackhi_epi16&expand=6011)
+ */
+public fun mm512MaskzUnpackhiEpi16(k: Mmask32, a: M512i, b: M512i): M512i =
+    run {
+        val unpackhi = mm512UnpackhiEpi16(a, b).asI16x32()
+        transmute(simdSelectBitmask(k, unpackhi, i16x32.ZERO))
+    }
+
+/**
+ * Unpack and interleave 16-bit integers from the high half of each 128-bit lane in a and b, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_unpackhi_epi16&expand=6007)
+ */
+public fun mm256MaskUnpackhiEpi16(src: M256i, k: Mmask16, a: M256i, b: M256i): M256i =
+    run {
+        val unpackhi = mm256UnpackhiEpi16(a, b).asI16x16()
+        transmute(simdSelectBitmask(k, unpackhi, src.asI16x16()))
+    }
+
+/**
+ * Unpack and interleave 16-bit integers from the high half of each 128-bit lane in a and b, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_unpackhi_epi16&expand=6008)
+ */
+public fun mm256MaskzUnpackhiEpi16(k: Mmask16, a: M256i, b: M256i): M256i =
+    run {
+        val unpackhi = mm256UnpackhiEpi16(a, b).asI16x16()
+        transmute(simdSelectBitmask(k, unpackhi, i16x16.ZERO))
+    }
+
+/**
+ * Unpack and interleave 16-bit integers from the high half of each 128-bit lane in a and b, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_unpackhi_epi16&expand=6004)
+ */
+public fun mmMaskUnpackhiEpi16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
+    run {
+        val unpackhi = mmUnpackhiEpi16(a, b).asI16x8()
+        transmute(simdSelectBitmask(k, unpackhi, src.asI16x8()))
+    }
+
+/**
+ * Unpack and interleave 16-bit integers from the high half of each 128-bit lane in a and b, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_unpackhi_epi16&expand=6005)
+ */
+public fun mmMaskzUnpackhiEpi16(k: Mmask8, a: M128i, b: M128i): M128i =
+    run {
+        val unpackhi = mmUnpackhiEpi16(a, b).asI16x8()
+        transmute(simdSelectBitmask(k, unpackhi, i16x8.ZERO))
+    }
+
+/**
+ * Unpack and interleave 8-bit integers from the high half of each 128-bit lane in a and b, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_unpackhi_epi8&expand=6039)
+ */
+public fun mm512UnpackhiEpi8(a: M512i, b: M512i): M512i =
+    run {
+        val a1 = a.asI8x64()
+        val b1 = b.asI8x64()
+        val r: I8x64 = simdShuffle(a1, b1, SimdShuffleIdx(listOf(8, 64 + 8, 9, 64 + 9, 10, 64 + 10, 11, 64 + 11, 12, 64 + 12, 13, 64 + 13, 14, 64 + 14, 15, 64 + 15, 24, 64 + 24, 25, 64 + 25, 26, 64 + 26, 27, 64 + 27, 28, 64 + 28, 29, 64 + 29, 30, 64 + 30, 31, 64 + 31, 40, 64 + 40, 41, 64 + 41, 42, 64 + 42, 43, 64 + 43, 44, 64 + 44, 45, 64 + 45, 46, 64 + 46, 47, 64 + 47, 56, 64 + 56, 57, 64 + 57, 58, 64 + 58, 59, 64 + 59, 60, 64 + 60, 61, 64 + 61, 62, 64 + 62, 63, 64 + 63)))
+        transmute(r)
+    }
+
+/**
+ * Unpack and interleave 8-bit integers from the high half of each 128-bit lane in a and b, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_unpackhi_epi8&expand=6037)
+ */
+public fun mm512MaskUnpackhiEpi8(src: M512i, k: Mmask64, a: M512i, b: M512i): M512i =
+    run {
+        val unpackhi = mm512UnpackhiEpi8(a, b).asI8x64()
+        transmute(simdSelectBitmask(k, unpackhi, src.asI8x64()))
+    }
+
+/**
+ * Unpack and interleave 8-bit integers from the high half of each 128-bit lane in a and b, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_unpackhi_epi8&expand=6038)
+ */
+public fun mm512MaskzUnpackhiEpi8(k: Mmask64, a: M512i, b: M512i): M512i =
+    run {
+        val unpackhi = mm512UnpackhiEpi8(a, b).asI8x64()
+        transmute(simdSelectBitmask(k, unpackhi, i8x64.ZERO))
+    }
+
+/**
+ * Unpack and interleave 8-bit integers from the high half of each 128-bit lane in a and b, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_unpackhi_epi8&expand=6034)
+ */
+public fun mm256MaskUnpackhiEpi8(src: M256i, k: Mmask32, a: M256i, b: M256i): M256i =
+    run {
+        val unpackhi = mm256UnpackhiEpi8(a, b).asI8x32()
+        transmute(simdSelectBitmask(k, unpackhi, src.asI8x32()))
+    }
+
+/**
+ * Unpack and interleave 8-bit integers from the high half of each 128-bit lane in a and b, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_unpackhi_epi8&expand=6035)
+ */
+public fun mm256MaskzUnpackhiEpi8(k: Mmask32, a: M256i, b: M256i): M256i =
+    run {
+        val unpackhi = mm256UnpackhiEpi8(a, b).asI8x32()
+        transmute(simdSelectBitmask(k, unpackhi, i8x32.ZERO))
+    }
+
+/**
+ * Unpack and interleave 8-bit integers from the high half of each 128-bit lane in a and b, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_unpackhi_epi8&expand=6031)
+ */
+public fun mmMaskUnpackhiEpi8(src: M128i, k: Mmask16, a: M128i, b: M128i): M128i =
+    run {
+        val unpackhi = mmUnpackhiEpi8(a, b).asI8x16()
+        transmute(simdSelectBitmask(k, unpackhi, src.asI8x16()))
+    }
+
+/**
+ * Unpack and interleave 8-bit integers from the high half of each 128-bit lane in a and b, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_unpackhi_epi8&expand=6032)
+ */
+public fun mmMaskzUnpackhiEpi8(k: Mmask16, a: M128i, b: M128i): M128i =
+    run {
+        val unpackhi = mmUnpackhiEpi8(a, b).asI8x16()
+        transmute(simdSelectBitmask(k, unpackhi, i8x16.ZERO))
+    }
+
+/**
+ * Unpack and interleave 16-bit integers from the low half of each 128-bit lane in a and b, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_unpacklo_epi16&expand=6069)
+ */
+public fun mm512UnpackloEpi16(a: M512i, b: M512i): M512i =
+    run {
+        val a1 = a.asI16x32()
+        val b1 = b.asI16x32()
+        val r: I16x32 = simdShuffle(a1, b1, SimdShuffleIdx(listOf(0, 32 + 0, 1, 32 + 1, 2, 32 + 2, 3, 32 + 3, 8, 32 + 8, 9, 32 + 9, 10, 32 + 10, 11, 32 + 11, 16, 32 + 16, 17, 32 + 17, 18, 32 + 18, 19, 32 + 19, 24, 32 + 24, 25, 32 + 25, 26, 32 + 26, 27, 32 + 27)))
+        transmute(r)
+    }
+
+/**
+ * Unpack and interleave 16-bit integers from the low half of each 128-bit lane in a and b, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_unpacklo_epi16&expand=6067)
+ */
+public fun mm512MaskUnpackloEpi16(src: M512i, k: Mmask32, a: M512i, b: M512i): M512i =
+    run {
+        val unpacklo = mm512UnpackloEpi16(a, b).asI16x32()
+        transmute(simdSelectBitmask(k, unpacklo, src.asI16x32()))
+    }
+
+/**
+ * Unpack and interleave 16-bit integers from the low half of each 128-bit lane in a and b, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_unpacklo_epi16&expand=6068)
+ */
+public fun mm512MaskzUnpackloEpi16(k: Mmask32, a: M512i, b: M512i): M512i =
+    run {
+        val unpacklo = mm512UnpackloEpi16(a, b).asI16x32()
+        transmute(simdSelectBitmask(k, unpacklo, i16x32.ZERO))
+    }
+
+/**
+ * Unpack and interleave 16-bit integers from the low half of each 128-bit lane in a and b, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_unpacklo_epi16&expand=6064)
+ */
+public fun mm256MaskUnpackloEpi16(src: M256i, k: Mmask16, a: M256i, b: M256i): M256i =
+    run {
+        val unpacklo = mm256UnpackloEpi16(a, b).asI16x16()
+        transmute(simdSelectBitmask(k, unpacklo, src.asI16x16()))
+    }
+
+/**
+ * Unpack and interleave 16-bit integers from the low half of each 128-bit lane in a and b, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_unpacklo_epi16&expand=6065)
+ */
+public fun mm256MaskzUnpackloEpi16(k: Mmask16, a: M256i, b: M256i): M256i =
+    run {
+        val unpacklo = mm256UnpackloEpi16(a, b).asI16x16()
+        transmute(simdSelectBitmask(k, unpacklo, i16x16.ZERO))
+    }
+
+/**
+ * Unpack and interleave 16-bit integers from the low half of each 128-bit lane in a and b, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_unpacklo_epi16&expand=6061)
+ */
+public fun mmMaskUnpackloEpi16(src: M128i, k: Mmask8, a: M128i, b: M128i): M128i =
+    run {
+        val unpacklo = mmUnpackloEpi16(a, b).asI16x8()
+        transmute(simdSelectBitmask(k, unpacklo, src.asI16x8()))
+    }
+
+/**
+ * Unpack and interleave 16-bit integers from the low half of each 128-bit lane in a and b, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_unpacklo_epi16&expand=6062)
+ */
+public fun mmMaskzUnpackloEpi16(k: Mmask8, a: M128i, b: M128i): M128i =
+    run {
+        val unpacklo = mmUnpackloEpi16(a, b).asI16x8()
+        transmute(simdSelectBitmask(k, unpacklo, i16x8.ZERO))
+    }
+
+/**
+ * Unpack and interleave 8-bit integers from the low half of each 128-bit lane in a and b, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_unpacklo_epi8&expand=6096)
+ */
+public fun mm512UnpackloEpi8(a: M512i, b: M512i): M512i =
+    run {
+        val a1 = a.asI8x64()
+        val b1 = b.asI8x64()
+        val r: I8x64 = simdShuffle(a1, b1, SimdShuffleIdx(listOf(0, 64 + 0, 1, 64 + 1, 2, 64 + 2, 3, 64 + 3, 4, 64 + 4, 5, 64 + 5, 6, 64 + 6, 7, 64 + 7, 16, 64 + 16, 17, 64 + 17, 18, 64 + 18, 19, 64 + 19, 20, 64 + 20, 21, 64 + 21, 22, 64 + 22, 23, 64 + 23, 32, 64 + 32, 33, 64 + 33, 34, 64 + 34, 35, 64 + 35, 36, 64 + 36, 37, 64 + 37, 38, 64 + 38, 39, 64 + 39, 48, 64 + 48, 49, 64 + 49, 50, 64 + 50, 51, 64 + 51, 52, 64 + 52, 53, 64 + 53, 54, 64 + 54, 55, 64 + 55)))
+        transmute(r)
+    }
+
+/**
+ * Unpack and interleave 8-bit integers from the low half of each 128-bit lane in a and b, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_unpacklo_epi8&expand=6094)
+ */
+public fun mm512MaskUnpackloEpi8(src: M512i, k: Mmask64, a: M512i, b: M512i): M512i =
+    run {
+        val unpacklo = mm512UnpackloEpi8(a, b).asI8x64()
+        transmute(simdSelectBitmask(k, unpacklo, src.asI8x64()))
+    }
+
+/**
+ * Unpack and interleave 8-bit integers from the low half of each 128-bit lane in a and b, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_unpacklo_epi8&expand=6095)
+ */
+public fun mm512MaskzUnpackloEpi8(k: Mmask64, a: M512i, b: M512i): M512i =
+    run {
+        val unpacklo = mm512UnpackloEpi8(a, b).asI8x64()
+        transmute(simdSelectBitmask(k, unpacklo, i8x64.ZERO))
+    }
+
+/**
+ * Unpack and interleave 8-bit integers from the low half of each 128-bit lane in a and b, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_unpacklo_epi8&expand=6091)
+ */
+public fun mm256MaskUnpackloEpi8(src: M256i, k: Mmask32, a: M256i, b: M256i): M256i =
+    run {
+        val unpacklo = mm256UnpackloEpi8(a, b).asI8x32()
+        transmute(simdSelectBitmask(k, unpacklo, src.asI8x32()))
+    }
+
+/**
+ * Unpack and interleave 8-bit integers from the low half of each 128-bit lane in a and b, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_unpacklo_epi8&expand=6092)
+ */
+public fun mm256MaskzUnpackloEpi8(k: Mmask32, a: M256i, b: M256i): M256i =
+    run {
+        val unpacklo = mm256UnpackloEpi8(a, b).asI8x32()
+        transmute(simdSelectBitmask(k, unpacklo, i8x32.ZERO))
+    }
+
+/**
+ * Unpack and interleave 8-bit integers from the low half of each 128-bit lane in a and b, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_unpacklo_epi8&expand=6088)
+ */
+public fun mmMaskUnpackloEpi8(src: M128i, k: Mmask16, a: M128i, b: M128i): M128i =
+    run {
+        val unpacklo = mmUnpackloEpi8(a, b).asI8x16()
+        transmute(simdSelectBitmask(k, unpacklo, src.asI8x16()))
+    }
+
+/**
+ * Unpack and interleave 8-bit integers from the low half of each 128-bit lane in a and b, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_unpacklo_epi8&expand=6089)
+ */
+public fun mmMaskzUnpackloEpi8(k: Mmask16, a: M128i, b: M128i): M128i =
+    run {
+        val unpacklo = mmUnpackloEpi8(a, b).asI8x16()
+        transmute(simdSelectBitmask(k, unpacklo, i8x16.ZERO))
+    }
+
+/**
+ * Move packed 16-bit integers from a into dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_mov_epi16&expand=3795)
+ */
+public fun mm512MaskMovEpi16(src: M512i, k: Mmask32, a: M512i): M512i =
+    run {
+        val mov = a.asI16x32()
+        transmute(simdSelectBitmask(k, mov, src.asI16x32()))
+    }
+
+/**
+ * Move packed 16-bit integers from a into dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_mov_epi16&expand=3796)
+ */
+public fun mm512MaskzMovEpi16(k: Mmask32, a: M512i): M512i =
+    run {
+        val mov = a.asI16x32()
+        transmute(simdSelectBitmask(k, mov, i16x32.ZERO))
+    }
+
+/**
+ * Move packed 16-bit integers from a into dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_mov_epi16&expand=3793)
+ */
+public fun mm256MaskMovEpi16(src: M256i, k: Mmask16, a: M256i): M256i =
+    run {
+        val mov = a.asI16x16()
+        transmute(simdSelectBitmask(k, mov, src.asI16x16()))
+    }
+
+/**
+ * Move packed 16-bit integers from a into dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_mov_epi16&expand=3794)
+ */
+public fun mm256MaskzMovEpi16(k: Mmask16, a: M256i): M256i =
+    run {
+        val mov = a.asI16x16()
+        transmute(simdSelectBitmask(k, mov, i16x16.ZERO))
+    }
+
+/**
+ * Move packed 16-bit integers from a into dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_mov_epi16&expand=3791)
+ */
+public fun mmMaskMovEpi16(src: M128i, k: Mmask8, a: M128i): M128i =
+    run {
+        val mov = a.asI16x8()
+        transmute(simdSelectBitmask(k, mov, src.asI16x8()))
+    }
+
+/**
+ * Move packed 16-bit integers from a into dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_mov_epi16&expand=3792)
+ */
+public fun mmMaskzMovEpi16(k: Mmask8, a: M128i): M128i =
+    run {
+        val mov = a.asI16x8()
+        transmute(simdSelectBitmask(k, mov, i16x8.ZERO))
+    }
+
+/**
+ * Move packed 8-bit integers from a into dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_mov_epi8&expand=3813)
+ */
+public fun mm512MaskMovEpi8(src: M512i, k: Mmask64, a: M512i): M512i =
+    run {
+        val mov = a.asI8x64()
+        transmute(simdSelectBitmask(k, mov, src.asI8x64()))
+    }
+
+/**
+ * Move packed 8-bit integers from a into dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_mov_epi8&expand=3814)
+ */
+public fun mm512MaskzMovEpi8(k: Mmask64, a: M512i): M512i =
+    run {
+        val mov = a.asI8x64()
+        transmute(simdSelectBitmask(k, mov, i8x64.ZERO))
+    }
+
+/**
+ * Move packed 8-bit integers from a into dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_mov_epi8&expand=3811)
+ */
+public fun mm256MaskMovEpi8(src: M256i, k: Mmask32, a: M256i): M256i =
+    run {
+        val mov = a.asI8x32()
+        transmute(simdSelectBitmask(k, mov, src.asI8x32()))
+    }
+
+/**
+ * Move packed 8-bit integers from a into dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_mov_epi8&expand=3812)
+ */
+public fun mm256MaskzMovEpi8(k: Mmask32, a: M256i): M256i =
+    run {
+        val mov = a.asI8x32()
+        transmute(simdSelectBitmask(k, mov, i8x32.ZERO))
+    }
+
+/**
+ * Move packed 8-bit integers from a into dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_mov_epi8&expand=3809)
+ */
+public fun mmMaskMovEpi8(src: M128i, k: Mmask16, a: M128i): M128i =
+    run {
+        val mov = a.asI8x16()
+        transmute(simdSelectBitmask(k, mov, src.asI8x16()))
+    }
+
+/**
+ * Move packed 8-bit integers from a into dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_mov_epi8&expand=3810)
+ */
+public fun mmMaskzMovEpi8(k: Mmask16, a: M128i): M128i =
+    run {
+        val mov = a.asI8x16()
+        transmute(simdSelectBitmask(k, mov, i8x16.ZERO))
+    }
+
+/**
+ * Broadcast 16-bit integer a to all elements of dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_set1_epi16&expand=4942)
+ */
+public fun mm512MaskSet1Epi16(src: M512i, k: Mmask32, a: Short): M512i =
+    run {
+        val r = mm512Set1Epi16(a).asI16x32()
+        transmute(simdSelectBitmask(k, r, src.asI16x32()))
+    }
+
+/**
+ * Broadcast the low packed 16-bit integer from a to all elements of dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_set1_epi16&expand=4943)
+ */
+public fun mm512MaskzSet1Epi16(k: Mmask32, a: Short): M512i =
+    run {
+        val r = mm512Set1Epi16(a).asI16x32()
+        transmute(simdSelectBitmask(k, r, i16x32.ZERO))
+    }
+
+/**
+ * Broadcast 16-bit integer a to all elements of dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_set1_epi16&expand=4939)
+ */
+public fun mm256MaskSet1Epi16(src: M256i, k: Mmask16, a: Short): M256i =
+    run {
+        val r = mm256Set1Epi16(a).asI16x16()
+        transmute(simdSelectBitmask(k, r, src.asI16x16()))
+    }
+
+/**
+ * Broadcast the low packed 16-bit integer from a to all elements of dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_set1_epi16&expand=4940)
+ */
+public fun mm256MaskzSet1Epi16(k: Mmask16, a: Short): M256i =
+    run {
+        val r = mm256Set1Epi16(a).asI16x16()
+        transmute(simdSelectBitmask(k, r, i16x16.ZERO))
+    }
+
+/**
+ * Broadcast 16-bit integer a to all elements of dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_set1_epi16&expand=4936)
+ */
+public fun mmMaskSet1Epi16(src: M128i, k: Mmask8, a: Short): M128i =
+    run {
+        val r = mmSet1Epi16(a).asI16x8()
+        transmute(simdSelectBitmask(k, r, src.asI16x8()))
+    }
+
+/**
+ * Broadcast the low packed 16-bit integer from a to all elements of dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_set1_epi16&expand=4937)
+ */
+public fun mmMaskzSet1Epi16(k: Mmask8, a: Short): M128i =
+    run {
+        val r = mmSet1Epi16(a).asI16x8()
+        transmute(simdSelectBitmask(k, r, i16x8.ZERO))
+    }
+
+/**
+ * Broadcast 8-bit integer a to all elements of dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_set1_epi8&expand=4970)
+ */
+public fun mm512MaskSet1Epi8(src: M512i, k: Mmask64, a: Byte): M512i =
+    run {
+        val r = mm512Set1Epi8(a).asI8x64()
+        transmute(simdSelectBitmask(k, r, src.asI8x64()))
+    }
+
+/**
+ * Broadcast 8-bit integer a to all elements of dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_set1_epi8&expand=4971)
+ */
+public fun mm512MaskzSet1Epi8(k: Mmask64, a: Byte): M512i =
+    run {
+        val r = mm512Set1Epi8(a).asI8x64()
+        transmute(simdSelectBitmask(k, r, i8x64.ZERO))
+    }
+
+/**
+ * Broadcast 8-bit integer a to all elements of dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_set1_epi8&expand=4967)
+ */
+public fun mm256MaskSet1Epi8(src: M256i, k: Mmask32, a: Byte): M256i =
+    run {
+        val r = mm256Set1Epi8(a).asI8x32()
+        transmute(simdSelectBitmask(k, r, src.asI8x32()))
+    }
+
+/**
+ * Broadcast 8-bit integer a to all elements of dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_set1_epi8&expand=4968)
+ */
+public fun mm256MaskzSet1Epi8(k: Mmask32, a: Byte): M256i =
+    run {
+        val r = mm256Set1Epi8(a).asI8x32()
+        transmute(simdSelectBitmask(k, r, i8x32.ZERO))
+    }
+
+/**
+ * Broadcast 8-bit integer a to all elements of dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_set1_epi8&expand=4964)
+ */
+public fun mmMaskSet1Epi8(src: M128i, k: Mmask16, a: Byte): M128i =
+    run {
+        val r = mmSet1Epi8(a).asI8x16()
+        transmute(simdSelectBitmask(k, r, src.asI8x16()))
+    }
+
+/**
+ * Broadcast 8-bit integer a to all elements of dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_set1_epi8&expand=4965)
+ */
+public fun mmMaskzSet1Epi8(k: Mmask16, a: Byte): M128i =
+    run {
+        val r = mmSet1Epi8(a).asI8x16()
+        transmute(simdSelectBitmask(k, r, i8x16.ZERO))
+    }
+
+/**
+ * Shuffle 16-bit integers in the low 64 bits of 128-bit lanes of a using the control in imm8. Store the results in the low 64 bits of 128-bit lanes of dst, with the high 64 bits of 128-bit lanes being copied from a to dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_shufflelo_epi16&expand=5221)
+ */
+public fun mm512ShuffleloEpi16(a: M512i, imm8: Int): M512i =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
+        }
+        val a1 = a.asI16x32()
+        val r: I16x32 = simdShuffle(a1, a1, SimdShuffleIdx(uintArrayOf(imm8.toUInt() and 0x3u, (imm8.toUInt() shr 2) and 0x3u, (imm8.toUInt() shr 4) and 0x3u, (imm8.toUInt() shr 6) and 0x3u, 4u, 5u, 6u, 7u, (imm8.toUInt() and 0x3u) + 8u, ((imm8.toUInt() shr 2) and 0x3u) + 8u, ((imm8.toUInt() shr 4) and 0x3u) + 8u, ((imm8.toUInt() shr 6) and 0x3u) + 8u, 12u, 13u, 14u, 15u, (imm8.toUInt() and 0x3u) + 16u, ((imm8.toUInt() shr 2) and 0x3u) + 16u, ((imm8.toUInt() shr 4) and 0x3u) + 16u, ((imm8.toUInt() shr 6) and 0x3u) + 16u, 20u, 21u, 22u, 23u, (imm8.toUInt() and 0x3u) + 24u, ((imm8.toUInt() shr 2) and 0x3u) + 24u, ((imm8.toUInt() shr 4) and 0x3u) + 24u, ((imm8.toUInt() shr 6) and 0x3u) + 24u, 28u, 29u, 30u, 31u)))
+        transmute(r)
+    }
+
+/**
+ * Shuffle 16-bit integers in the low 64 bits of 128-bit lanes of a using the control in imm8. Store the results in the low 64 bits of 128-bit lanes of dst, with the high 64 bits of 128-bit lanes being copied from a to dst, using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_shufflelo_epi16&expand=5219)
+ */
+public fun mm512MaskShuffleloEpi16(src: M512i, k: Mmask32, a: M512i, imm8: Int): M512i =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
+        }
+        val r = mm512ShuffleloEpi16(a, imm8)
+        transmute(simdSelectBitmask(k, r.asI16x32(), src.asI16x32()))
+    }
+
+/**
+ * Shuffle 16-bit integers in the low 64 bits of 128-bit lanes of a using the control in imm8. Store the results in the low 64 bits of 128-bit lanes of dst, with the high 64 bits of 128-bit lanes being copied from a to dst, using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_shufflelo_epi16&expand=5220)
+ */
+public fun mm512MaskzShuffleloEpi16(k: Mmask32, a: M512i, imm8: Int): M512i =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
+        }
+        val r = mm512ShuffleloEpi16(a, imm8)
+        transmute(simdSelectBitmask(k, r.asI16x32(), i16x32.ZERO))
+    }
+
+/**
+ * Shuffle 16-bit integers in the low 64 bits of 128-bit lanes of a using the control in imm8. Store the results in the low 64 bits of 128-bit lanes of dst, with the high 64 bits of 128-bit lanes being copied from a to dst, using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_shufflelo_epi16&expand=5216)
+ */
+public fun mm256MaskShuffleloEpi16(src: M256i, k: Mmask16, a: M256i, imm8: Int): M256i =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
+        }
+        val shuffle = mm256ShuffleloEpi16(a, imm8)
+        transmute(simdSelectBitmask(k, shuffle.asI16x16(), src.asI16x16()))
+    }
+
+/**
+ * Shuffle 16-bit integers in the low 64 bits of 128-bit lanes of a using the control in imm8. Store the results in the low 64 bits of 128-bit lanes of dst, with the high 64 bits of 128-bit lanes being copied from a to dst, using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_shufflelo_epi16&expand=5217)
+ */
+public fun mm256MaskzShuffleloEpi16(k: Mmask16, a: M256i, imm8: Int): M256i =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
+        }
+        val shuffle = mm256ShuffleloEpi16(a, imm8)
+        transmute(simdSelectBitmask(k, shuffle.asI16x16(), i16x16.ZERO))
+    }
+
+/**
+ * Shuffle 16-bit integers in the low 64 bits of 128-bit lanes of a using the control in imm8. Store the results in the low 64 bits of 128-bit lanes of dst, with the high 64 bits of 128-bit lanes being copied from a to dst, using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_shufflelo_epi16&expand=5213)
+ */
+public fun mmMaskShuffleloEpi16(src: M128i, k: Mmask8, a: M128i, imm8: Int): M128i =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
+        }
+        val shuffle = mmShuffleloEpi16(a, imm8)
+        transmute(simdSelectBitmask(k, shuffle.asI16x8(), src.asI16x8()))
+    }
+
+/**
+ * Shuffle 16-bit integers in the low 64 bits of 128-bit lanes of a using the control in imm8. Store the results in the low 64 bits of 128-bit lanes of dst, with the high 64 bits of 128-bit lanes being copied from a to dst, using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_shufflelo_epi16&expand=5214)
+ */
+public fun mmMaskzShuffleloEpi16(k: Mmask8, a: M128i, imm8: Int): M128i =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
+        }
+        val shuffle = mmShuffleloEpi16(a, imm8)
+        transmute(simdSelectBitmask(k, shuffle.asI16x8(), i16x8.ZERO))
+    }
+
+/**
+ * Shuffle 16-bit integers in the high 64 bits of 128-bit lanes of a using the control in imm8. Store the results in the high 64 bits of 128-bit lanes of dst, with the low 64 bits of 128-bit lanes being copied from a to dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_shufflehi_epi16&expand=5212)
+ */
+public fun mm512ShufflehiEpi16(a: M512i, imm8: Int): M512i =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
+        }
+        val a1 = a.asI16x32()
+        val r: I16x32 = simdShuffle(a1, a1, SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, (imm8.toUInt() and 0x3u) + 4u, ((imm8.toUInt() shr 2) and 0x3u) + 4u, ((imm8.toUInt() shr 4) and 0x3u) + 4u, ((imm8.toUInt() shr 6) and 0x3u) + 4u, 8u, 9u, 10u, 11u, (imm8.toUInt() and 0x3u) + 12u, ((imm8.toUInt() shr 2) and 0x3u) + 12u, ((imm8.toUInt() shr 4) and 0x3u) + 12u, ((imm8.toUInt() shr 6) and 0x3u) + 12u, 16u, 17u, 18u, 19u, (imm8.toUInt() and 0x3u) + 20u, ((imm8.toUInt() shr 2) and 0x3u) + 20u, ((imm8.toUInt() shr 4) and 0x3u) + 20u, ((imm8.toUInt() shr 6) and 0x3u) + 20u, 24u, 25u, 26u, 27u, (imm8.toUInt() and 0x3u) + 28u, ((imm8.toUInt() shr 2) and 0x3u) + 28u, ((imm8.toUInt() shr 4) and 0x3u) + 28u, ((imm8.toUInt() shr 6) and 0x3u) + 28u)))
+        transmute(r)
+    }
+
+/**
+ * Shuffle 16-bit integers in the high 64 bits of 128-bit lanes of a using the control in imm8. Store the results in the high 64 bits of 128-bit lanes of dst, with the low 64 bits of 128-bit lanes being copied from a to dst, using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_shufflehi_epi16&expand=5210)
+ */
+public fun mm512MaskShufflehiEpi16(src: M512i, k: Mmask32, a: M512i, imm8: Int): M512i =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
+        }
+        val r = mm512ShufflehiEpi16(a, imm8)
+        transmute(simdSelectBitmask(k, r.asI16x32(), src.asI16x32()))
+    }
+
+/**
+ * Shuffle 16-bit integers in the high 64 bits of 128-bit lanes of a using the control in imm8. Store the results in the high 64 bits of 128-bit lanes of dst, with the low 64 bits of 128-bit lanes being copied from a to dst, using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_shufflehi_epi16&expand=5211)
+ */
+public fun mm512MaskzShufflehiEpi16(k: Mmask32, a: M512i, imm8: Int): M512i =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
+        }
+        val r = mm512ShufflehiEpi16(a, imm8)
+        transmute(simdSelectBitmask(k, r.asI16x32(), i16x32.ZERO))
+    }
+
+/**
+ * Shuffle 16-bit integers in the high 64 bits of 128-bit lanes of a using the control in imm8. Store the results in the high 64 bits of 128-bit lanes of dst, with the low 64 bits of 128-bit lanes being copied from a to dst, using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_shufflehi_epi16&expand=5207)
+ */
+public fun mm256MaskShufflehiEpi16(src: M256i, k: Mmask16, a: M256i, imm8: Int): M256i =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
+        }
+        val shuffle = mm256ShufflehiEpi16(a, imm8)
+        transmute(simdSelectBitmask(k, shuffle.asI16x16(), src.asI16x16()))
+    }
+
+/**
+ * Shuffle 16-bit integers in the high 64 bits of 128-bit lanes of a using the control in imm8. Store the results in the high 64 bits of 128-bit lanes of dst, with the low 64 bits of 128-bit lanes being copied from a to dst, using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_shufflehi_epi16&expand=5208)
+ */
+public fun mm256MaskzShufflehiEpi16(k: Mmask16, a: M256i, imm8: Int): M256i =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
+        }
+        val shuffle = mm256ShufflehiEpi16(a, imm8)
+        transmute(simdSelectBitmask(k, shuffle.asI16x16(), i16x16.ZERO))
+    }
+
+/**
+ * Shuffle 16-bit integers in the high 64 bits of 128-bit lanes of a using the control in imm8. Store the results in the high 64 bits of 128-bit lanes of dst, with the low 64 bits of 128-bit lanes being copied from a to dst, using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_shufflehi_epi16&expand=5204)
+ */
+public fun mmMaskShufflehiEpi16(src: M128i, k: Mmask8, a: M128i, imm8: Int): M128i =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
+        }
+        val shuffle = mmShufflehiEpi16(a, imm8)
+        transmute(simdSelectBitmask(k, shuffle.asI16x8(), src.asI16x8()))
+    }
+
+/**
+ * Shuffle 16-bit integers in the high 64 bits of 128-bit lanes of a using the control in imm8. Store the results in the high 64 bits of 128-bit lanes of dst, with the low 64 bits of 128-bit lanes being copied from a to dst, using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_shufflehi_epi16&expand=5205)
+ */
+public fun mmMaskzShufflehiEpi16(k: Mmask8, a: M128i, imm8: Int): M128i =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
+        }
+        val shuffle = mmShufflehiEpi16(a, imm8)
+        transmute(simdSelectBitmask(k, shuffle.asI16x8(), i16x8.ZERO))
+    }
+
+/**
+ * Shuffle packed 8-bit integers in a according to shuffle control mask in the corresponding 8-bit element of b, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_shuffle_epi8&expand=5159)
+ */
+public fun mm512ShuffleEpi8(a: M512i, b: M512i): M512i = transmute(vpshufb(a.asI8x64(), b.asI8x64()))
+
+/**
+ * Shuffle 8-bit integers in a within 128-bit lanes using the control in the corresponding 8-bit element of b, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_shuffle_epi8&expand=5157)
+ */
+public fun mm512MaskShuffleEpi8(src: M512i, k: Mmask64, a: M512i, b: M512i): M512i =
+    run {
+        val shuffle = mm512ShuffleEpi8(a, b).asI8x64()
+        transmute(simdSelectBitmask(k, shuffle, src.asI8x64()))
+    }
+
+/**
+ * Shuffle packed 8-bit integers in a according to shuffle control mask in the corresponding 8-bit element of b, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_shuffle_epi8&expand=5158)
+ */
+public fun mm512MaskzShuffleEpi8(k: Mmask64, a: M512i, b: M512i): M512i =
+    run {
+        val shuffle = mm512ShuffleEpi8(a, b).asI8x64()
+        transmute(simdSelectBitmask(k, shuffle, i8x64.ZERO))
+    }
+
+/**
+ * Shuffle 8-bit integers in a within 128-bit lanes using the control in the corresponding 8-bit element of b, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_shuffle_epi8&expand=5154)
+ */
+public fun mm256MaskShuffleEpi8(src: M256i, k: Mmask32, a: M256i, b: M256i): M256i =
+    run {
+        val shuffle = mm256ShuffleEpi8(a, b).asI8x32()
+        transmute(simdSelectBitmask(k, shuffle, src.asI8x32()))
+    }
+
+/**
+ * Shuffle packed 8-bit integers in a according to shuffle control mask in the corresponding 8-bit element of b, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_shuffle_epi8&expand=5155)
+ */
+public fun mm256MaskzShuffleEpi8(k: Mmask32, a: M256i, b: M256i): M256i =
+    run {
+        val shuffle = mm256ShuffleEpi8(a, b).asI8x32()
+        transmute(simdSelectBitmask(k, shuffle, i8x32.ZERO))
+    }
+
+/**
+ * Shuffle 8-bit integers in a within 128-bit lanes using the control in the corresponding 8-bit element of b, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_shuffle_epi8&expand=5151)
+ */
+public fun mmMaskShuffleEpi8(src: M128i, k: Mmask16, a: M128i, b: M128i): M128i =
+    run {
+        val shuffle = mmShuffleEpi8(a, b).asI8x16()
+        transmute(simdSelectBitmask(k, shuffle, src.asI8x16()))
+    }
+
+/**
+ * Shuffle packed 8-bit integers in a according to shuffle control mask in the corresponding 8-bit element of b, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_shuffle_epi8&expand=5152)
+ */
+public fun mmMaskzShuffleEpi8(k: Mmask16, a: M128i, b: M128i): M128i =
+    run {
+        val shuffle = mmShuffleEpi8(a, b).asI8x16()
+        transmute(simdSelectBitmask(k, shuffle, i8x16.ZERO))
+    }
+
+/**
+ * Compute the bitwise AND of packed 16-bit integers in a and b, producing intermediate 16-bit values, and set the corresponding bit in result mask k if the intermediate value is non-zero.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_test_epi16_mask&expand=5884)
+ */
+public fun mm512TestEpi16Mask(a: M512i, b: M512i): Mmask32 {
+    val and = mm512AndSi512(a, b)
+    val zero = mm512SetzeroSi512()
+    return mm512CmpneqEpi16Mask(and, zero)
+}
+
+/**
+ * Compute the bitwise AND of packed 16-bit integers in a and b, producing intermediate 16-bit values, and set the corresponding bit in result mask k (subject to writemask k) if the intermediate value is non-zero.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_test_epi16_mask&expand=5883)
+ */
+public fun mm512MaskTestEpi16Mask(k: Mmask32, a: M512i, b: M512i): Mmask32 {
+    val and = mm512AndSi512(a, b)
+    val zero = mm512SetzeroSi512()
+    return mm512MaskCmpneqEpi16Mask(k, and, zero)
+}
+
+/**
+ * Compute the bitwise AND of packed 16-bit integers in a and b, producing intermediate 16-bit values, and set the corresponding bit in result mask k if the intermediate value is non-zero.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_test_epi16_mask&expand=5882)
+ */
+public fun mm256TestEpi16Mask(a: M256i, b: M256i): Mmask16 {
+    val and = mm256AndSi256(a, b)
+    val zero = mm256SetzeroSi256()
+    return mm256CmpneqEpi16Mask(and, zero)
+}
+
+/**
+ * Compute the bitwise AND of packed 16-bit integers in a and b, producing intermediate 16-bit values, and set the corresponding bit in result mask k (subject to writemask k) if the intermediate value is non-zero.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_test_epi16_mask&expand=5881)
+ */
+public fun mm256MaskTestEpi16Mask(k: Mmask16, a: M256i, b: M256i): Mmask16 {
+    val and = mm256AndSi256(a, b)
+    val zero = mm256SetzeroSi256()
+    return mm256MaskCmpneqEpi16Mask(k, and, zero)
+}
+
+/**
+ * Compute the bitwise AND of packed 16-bit integers in a and b, producing intermediate 16-bit values, and set the corresponding bit in result mask k if the intermediate value is non-zero.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_test_epi16_mask&expand=5880)
+ */
+public fun mmTestEpi16Mask(a: M128i, b: M128i): Mmask8 {
+    val and = mmAndSi128(a, b)
+    val zero = mmSetzeroSi128()
+    return mmCmpneqEpi16Mask(and, zero)
+}
+
+/**
+ * Compute the bitwise AND of packed 16-bit integers in a and b, producing intermediate 16-bit values, and set the corresponding bit in result mask k (subject to writemask k) if the intermediate value is non-zero.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_test_epi16_mask&expand=5879)
+ */
+public fun mmMaskTestEpi16Mask(k: Mmask8, a: M128i, b: M128i): Mmask8 {
+    val and = mmAndSi128(a, b)
+    val zero = mmSetzeroSi128()
+    return mmMaskCmpneqEpi16Mask(k, and, zero)
+}
+
+/**
+ * Compute the bitwise AND of packed 8-bit integers in a and b, producing intermediate 8-bit values, and set the corresponding bit in result mask k if the intermediate value is non-zero.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_test_epi8_mask&expand=5902)
+ */
+public fun mm512TestEpi8Mask(a: M512i, b: M512i): Mmask64 {
+    val and = mm512AndSi512(a, b)
+    val zero = mm512SetzeroSi512()
+    return mm512CmpneqEpi8Mask(and, zero)
+}
+
+/**
+ * Compute the bitwise AND of packed 8-bit integers in a and b, producing intermediate 8-bit values, and set the corresponding bit in result mask k (subject to writemask k) if the intermediate value is non-zero.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_test_epi8_mask&expand=5901)
+ */
+public fun mm512MaskTestEpi8Mask(k: Mmask64, a: M512i, b: M512i): Mmask64 {
+    val and = mm512AndSi512(a, b)
+    val zero = mm512SetzeroSi512()
+    return mm512MaskCmpneqEpi8Mask(k, and, zero)
+}
+
+/**
+ * Compute the bitwise AND of packed 8-bit integers in a and b, producing intermediate 8-bit values, and set the corresponding bit in result mask k if the intermediate value is non-zero.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_test_epi8_mask&expand=5900)
+ */
+public fun mm256TestEpi8Mask(a: M256i, b: M256i): Mmask32 {
+    val and = mm256AndSi256(a, b)
+    val zero = mm256SetzeroSi256()
+    return mm256CmpneqEpi8Mask(and, zero)
+}
+
+/**
+ * Compute the bitwise AND of packed 8-bit integers in a and b, producing intermediate 8-bit values, and set the corresponding bit in result mask k (subject to writemask k) if the intermediate value is non-zero.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_test_epi8_mask&expand=5899)
+ */
+public fun mm256MaskTestEpi8Mask(k: Mmask32, a: M256i, b: M256i): Mmask32 {
+    val and = mm256AndSi256(a, b)
+    val zero = mm256SetzeroSi256()
+    return mm256MaskCmpneqEpi8Mask(k, and, zero)
+}
+
+/**
+ * Compute the bitwise AND of packed 8-bit integers in a and b, producing intermediate 8-bit values, and set the corresponding bit in result mask k if the intermediate value is non-zero.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_test_epi8_mask&expand=5898)
+ */
+public fun mmTestEpi8Mask(a: M128i, b: M128i): Mmask16 {
+    val and = mmAndSi128(a, b)
+    val zero = mmSetzeroSi128()
+    return mmCmpneqEpi8Mask(and, zero)
+}
+
+/**
+ * Compute the bitwise AND of packed 8-bit integers in a and b, producing intermediate 8-bit values, and set the corresponding bit in result mask k (subject to writemask k) if the intermediate value is non-zero.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_test_epi8_mask&expand=5897)
+ */
+public fun mmMaskTestEpi8Mask(k: Mmask16, a: M128i, b: M128i): Mmask16 {
+    val and = mmAndSi128(a, b)
+    val zero = mmSetzeroSi128()
+    return mmMaskCmpneqEpi8Mask(k, and, zero)
+}
+
+/**
+ * Compute the bitwise NAND of packed 16-bit integers in a and b, producing intermediate 16-bit values, and set the corresponding bit in result mask k if the intermediate value is zero.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_testn_epi16_mask&expand=5915)
+ */
+public fun mm512TestnEpi16Mask(a: M512i, b: M512i): Mmask32 {
+    val and = mm512AndSi512(a, b)
+    val zero = mm512SetzeroSi512()
+    return mm512CmpeqEpi16Mask(and, zero)
+}
+
+/**
+ * Compute the bitwise NAND of packed 16-bit integers in a and b, producing intermediate 16-bit values, and set the corresponding bit in result mask k (subject to writemask k) if the intermediate value is zero.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_testn_epi16_mask&expand=5914)
+ */
+public fun mm512MaskTestnEpi16Mask(k: Mmask32, a: M512i, b: M512i): Mmask32 {
+    val and = mm512AndSi512(a, b)
+    val zero = mm512SetzeroSi512()
+    return mm512MaskCmpeqEpi16Mask(k, and, zero)
+}
+
+/**
+ * Compute the bitwise NAND of packed 16-bit integers in a and b, producing intermediate 16-bit values, and set the corresponding bit in result mask k if the intermediate value is zero.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_testn_epi16_mask&expand=5913)
+ */
+public fun mm256TestnEpi16Mask(a: M256i, b: M256i): Mmask16 {
+    val and = mm256AndSi256(a, b)
+    val zero = mm256SetzeroSi256()
+    return mm256CmpeqEpi16Mask(and, zero)
+}
+
+/**
+ * Compute the bitwise NAND of packed 16-bit integers in a and b, producing intermediate 16-bit values, and set the corresponding bit in result mask k (subject to writemask k) if the intermediate value is zero.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_testn_epi16_mask&expand=5912)
+ */
+public fun mm256MaskTestnEpi16Mask(k: Mmask16, a: M256i, b: M256i): Mmask16 {
+    val and = mm256AndSi256(a, b)
+    val zero = mm256SetzeroSi256()
+    return mm256MaskCmpeqEpi16Mask(k, and, zero)
+}
+
+/**
+ * Compute the bitwise NAND of packed 16-bit integers in a and b, producing intermediate 16-bit values, and set the corresponding bit in result mask k if the intermediate value is zero.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_testn_epi16_mask&expand=5911)
+ */
+public fun mmTestnEpi16Mask(a: M128i, b: M128i): Mmask8 {
+    val and = mmAndSi128(a, b)
+    val zero = mmSetzeroSi128()
+    return mmCmpeqEpi16Mask(and, zero)
+}
+
+/**
+ * Compute the bitwise NAND of packed 16-bit integers in a and b, producing intermediate 16-bit values, and set the corresponding bit in result mask k (subject to writemask k) if the intermediate value is zero.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_testn_epi16_mask&expand=5910)
+ */
+public fun mmMaskTestnEpi16Mask(k: Mmask8, a: M128i, b: M128i): Mmask8 {
+    val and = mmAndSi128(a, b)
+    val zero = mmSetzeroSi128()
+    return mmMaskCmpeqEpi16Mask(k, and, zero)
+}
+
+/**
+ * Compute the bitwise NAND of packed 8-bit integers in a and b, producing intermediate 8-bit values, and set the corresponding bit in result mask k if the intermediate value is zero.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_testn_epi8_mask&expand=5933)
+ */
+public fun mm512TestnEpi8Mask(a: M512i, b: M512i): Mmask64 {
+    val and = mm512AndSi512(a, b)
+    val zero = mm512SetzeroSi512()
+    return mm512CmpeqEpi8Mask(and, zero)
+}
+
+/**
+ * Compute the bitwise NAND of packed 8-bit integers in a and b, producing intermediate 8-bit values, and set the corresponding bit in result mask k (subject to writemask k) if the intermediate value is zero.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_testn_epi8_mask&expand=5932)
+ */
+public fun mm512MaskTestnEpi8Mask(k: Mmask64, a: M512i, b: M512i): Mmask64 {
+    val and = mm512AndSi512(a, b)
+    val zero = mm512SetzeroSi512()
+    return mm512MaskCmpeqEpi8Mask(k, and, zero)
+}
+
+/**
+ * Compute the bitwise NAND of packed 8-bit integers in a and b, producing intermediate 8-bit values, and set the corresponding bit in result mask k if the intermediate value is zero.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_testn_epi8_mask&expand=5931)
+ */
+public fun mm256TestnEpi8Mask(a: M256i, b: M256i): Mmask32 {
+    val and = mm256AndSi256(a, b)
+    val zero = mm256SetzeroSi256()
+    return mm256CmpeqEpi8Mask(and, zero)
+}
+
+/**
+ * Compute the bitwise NAND of packed 8-bit integers in a and b, producing intermediate 8-bit values, and set the corresponding bit in result mask k (subject to writemask k) if the intermediate value is zero.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_testn_epi8_mask&expand=5930)
+ */
+public fun mm256MaskTestnEpi8Mask(k: Mmask32, a: M256i, b: M256i): Mmask32 {
+    val and = mm256AndSi256(a, b)
+    val zero = mm256SetzeroSi256()
+    return mm256MaskCmpeqEpi8Mask(k, and, zero)
+}
+
+/**
+ * Compute the bitwise NAND of packed 8-bit integers in a and b, producing intermediate 8-bit values, and set the corresponding bit in result mask k if the intermediate value is zero.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_testn_epi8_mask&expand=5929)
+ */
+public fun mmTestnEpi8Mask(a: M128i, b: M128i): Mmask16 {
+    val and = mmAndSi128(a, b)
+    val zero = mmSetzeroSi128()
+    return mmCmpeqEpi8Mask(and, zero)
+}
+
+/**
+ * Compute the bitwise NAND of packed 8-bit integers in a and b, producing intermediate 8-bit values, and set the corresponding bit in result mask k (subject to writemask k) if the intermediate value is zero.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_testn_epi8_mask&expand=5928)
+ */
+public fun mmMaskTestnEpi8Mask(k: Mmask16, a: M128i, b: M128i): Mmask16 {
+    val and = mmAndSi128(a, b)
+    val zero = mmSetzeroSi128()
+    return mmMaskCmpeqEpi8Mask(k, and, zero)
+}
+
+// should be kmovq
+
+/**
+ * Store 64-bit mask from a into memory.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_store_mask64&expand=5578)
+ */
+public fun storeMask64(memAddr: MutPtr, a: Mmask64) {
+    ptr.write(memAddr, a, typeLayoutT = ObjectSlotLayout<Mmask64>())
+}
+
+// should be kmovd
+
+/**
+ * Store 32-bit mask from a into memory.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_store_mask32&expand=5577)
+ */
+public fun storeMask32(memAddr: MutPtr, a: Mmask32) {
+    ptr.write(memAddr, a, typeLayoutT = ObjectSlotLayout<Mmask32>())
+}
+
+// should be kmovq
+
+/**
+ * Load 64-bit mask from memory into k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_load_mask64&expand=3318)
+ */
+public fun loadMask64(memAddr: ConstPtr): Mmask64 = ptr.read(memAddr, typeLayoutT = ObjectSlotLayout<Mmask64>())
+
+// should be kmovd
+
+/**
+ * Load 32-bit mask from memory into k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_load_mask32&expand=3317)
+ */
+public fun loadMask32(memAddr: ConstPtr): Mmask32 = ptr.read(memAddr, typeLayoutT = ObjectSlotLayout<Mmask32>())
+
+/**
+ * Compute the absolute differences of packed unsigned 8-bit integers in a and b, then horizontally sum each consecutive 8 differences to produce eight unsigned 16-bit integers, and pack these unsigned 16-bit integers in the low 16 bits of 64-bit elements in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_sad_epu8&expand=4855)
+ */
+public fun mm512SadEpu8(a: M512i, b: M512i): M512i = transmute(vpsadbw(a.asU8x64(), b.asU8x64()))
+
+/**
+ * Compute the sum of absolute differences (SADs) of quadruplets of unsigned 8-bit integers in a compared to those in b, and store the 16-bit results in dst. Four SADs are performed on four 8-bit quadruplets for each 64-bit lane. The first two SADs use the lower 8-bit quadruplet of the lane from a, and the last two SADs use the uppper 8-bit quadruplet of the lane from a. Quadruplets from b are selected from within 128-bit lanes according to the control in imm8, and each SAD in each 64-bit lane uses the selected quadruplet at 8-bit offsets.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_dbsad_epu8&expand=2114)
+ */
+public fun mm512DbsadEpu8(a: M512i, b: M512i, imm8: Int): M512i =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
+        }
+        val a1 = a.asU8x64()
+        val b1 = b.asU8x64()
+        val r = vdbpsadbw(a1, b1, imm8)
+        transmute(r)
+    }
+
+/**
+ * Compute the sum of absolute differences (SADs) of quadruplets of unsigned 8-bit integers in a compared to those in b, and store the 16-bit results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set). Four SADs are performed on four 8-bit quadruplets for each 64-bit lane. The first two SADs use the lower 8-bit quadruplet of the lane from a, and the last two SADs use the uppper 8-bit quadruplet of the lane from a. Quadruplets from b are selected from within 128-bit lanes according to the control in imm8, and each SAD in each 64-bit lane uses the selected quadruplet at 8-bit offsets.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_dbsad_epu8&expand=2115)
+ */
+public fun mm512MaskDbsadEpu8(src: M512i, k: Mmask32, a: M512i, b: M512i, imm8: Int): M512i =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
+        }
+        val a1 = a.asU8x64()
+        val b1 = b.asU8x64()
+        val r = vdbpsadbw(a1, b1, imm8)
+        transmute(simdSelectBitmask(k, r, src.asU16x32()))
+    }
+
+/**
+ * Compute the sum of absolute differences (SADs) of quadruplets of unsigned 8-bit integers in a compared to those in b, and store the 16-bit results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set). Four SADs are performed on four 8-bit quadruplets for each 64-bit lane. The first two SADs use the lower 8-bit quadruplet of the lane from a, and the last two SADs use the uppper 8-bit quadruplet of the lane from a. Quadruplets from b are selected from within 128-bit lanes according to the control in imm8, and each SAD in each 64-bit lane uses the selected quadruplet at 8-bit offsets.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_dbsad_epu8&expand=2116)
+ */
+public fun mm512MaskzDbsadEpu8(k: Mmask32, a: M512i, b: M512i, imm8: Int): M512i =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
+        }
+        val a1 = a.asU8x64()
+        val b1 = b.asU8x64()
+        val r = vdbpsadbw(a1, b1, imm8)
+        transmute(simdSelectBitmask(k, r, u16x32.ZERO))
+    }
+
+/**
+ * Compute the sum of absolute differences (SADs) of quadruplets of unsigned 8-bit integers in a compared to those in b, and store the 16-bit results in dst. Four SADs are performed on four 8-bit quadruplets for each 64-bit lane. The first two SADs use the lower 8-bit quadruplet of the lane from a, and the last two SADs use the uppper 8-bit quadruplet of the lane from a. Quadruplets from b are selected from within 128-bit lanes according to the control in imm8, and each SAD in each 64-bit lane uses the selected quadruplet at 8-bit offsets.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_dbsad_epu8&expand=2111)
+ */
+public fun mm256DbsadEpu8(a: M256i, b: M256i, imm8: Int): M256i =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
+        }
+        val a1 = a.asU8x32()
+        val b1 = b.asU8x32()
+        val r = vdbpsadbw256(a1, b1, imm8)
+        transmute(r)
+    }
+
+/**
+ * Compute the sum of absolute differences (SADs) of quadruplets of unsigned 8-bit integers in a compared to those in b, and store the 16-bit results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set). Four SADs are performed on four 8-bit quadruplets for each 64-bit lane. The first two SADs use the lower 8-bit quadruplet of the lane from a, and the last two SADs use the uppper 8-bit quadruplet of the lane from a. Quadruplets from b are selected from within 128-bit lanes according to the control in imm8, and each SAD in each 64-bit lane uses the selected quadruplet at 8-bit offsets.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_dbsad_epu8&expand=2112)
+ */
+public fun mm256MaskDbsadEpu8(src: M256i, k: Mmask16, a: M256i, b: M256i, imm8: Int): M256i =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
+        }
+        val a1 = a.asU8x32()
+        val b1 = b.asU8x32()
+        val r = vdbpsadbw256(a1, b1, imm8)
+        transmute(simdSelectBitmask(k, r, src.asU16x16()))
+    }
+
+/**
+ * Compute the sum of absolute differences (SADs) of quadruplets of unsigned 8-bit integers in a compared to those in b, and store the 16-bit results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set). Four SADs are performed on four 8-bit quadruplets for each 64-bit lane. The first two SADs use the lower 8-bit quadruplet of the lane from a, and the last two SADs use the uppper 8-bit quadruplet of the lane from a. Quadruplets from b are selected from within 128-bit lanes according to the control in imm8, and each SAD in each 64-bit lane uses the selected quadruplet at 8-bit offsets.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_dbsad_epu8&expand=2113)
+ */
+public fun mm256MaskzDbsadEpu8(k: Mmask16, a: M256i, b: M256i, imm8: Int): M256i =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
+        }
+        val a1 = a.asU8x32()
+        val b1 = b.asU8x32()
+        val r = vdbpsadbw256(a1, b1, imm8)
+        transmute(simdSelectBitmask(k, r, u16x16.ZERO))
+    }
+
+/**
+ * Compute the sum of absolute differences (SADs) of quadruplets of unsigned 8-bit integers in a compared to those in b, and store the 16-bit results in dst. Four SADs are performed on four 8-bit quadruplets for each 64-bit lane. The first two SADs use the lower 8-bit quadruplet of the lane from a, and the last two SADs use the uppper 8-bit quadruplet of the lane from a. Quadruplets from b are selected from within 128-bit lanes according to the control in imm8, and each SAD in each 64-bit lane uses the selected quadruplet at 8-bit offsets.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_dbsad_epu8&expand=2108)
+ */
+public fun mmDbsadEpu8(a: M128i, b: M128i, imm8: Int): M128i =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
+        }
+        val a1 = a.asU8x16()
+        val b1 = b.asU8x16()
+        val r = vdbpsadbw128(a1, b1, imm8)
+        transmute(r)
+    }
+
+/**
+ * Compute the sum of absolute differences (SADs) of quadruplets of unsigned 8-bit integers in a compared to those in b, and store the 16-bit results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set). Four SADs are performed on four 8-bit quadruplets for each 64-bit lane. The first two SADs use the lower 8-bit quadruplet of the lane from a, and the last two SADs use the uppper 8-bit quadruplet of the lane from a. Quadruplets from b are selected from within 128-bit lanes according to the control in imm8, and each SAD in each 64-bit lane uses the selected quadruplet at 8-bit offsets.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_dbsad_epu8&expand=2109)
+ */
+public fun mmMaskDbsadEpu8(src: M128i, k: Mmask8, a: M128i, b: M128i, imm8: Int): M128i =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
+        }
+        val a1 = a.asU8x16()
+        val b1 = b.asU8x16()
+        val r = vdbpsadbw128(a1, b1, imm8)
+        transmute(simdSelectBitmask(k, r, src.asU16x8()))
+    }
+
+/**
+ * Compute the sum of absolute differences (SADs) of quadruplets of unsigned 8-bit integers in a compared to those in b, and store the 16-bit results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set). Four SADs are performed on four 8-bit quadruplets for each 64-bit lane. The first two SADs use the lower 8-bit quadruplet of the lane from a, and the last two SADs use the uppper 8-bit quadruplet of the lane from a. Quadruplets from b are selected from within 128-bit lanes according to the control in imm8, and each SAD in each 64-bit lane uses the selected quadruplet at 8-bit offsets.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_dbsad_epu8&expand=2110)
+ */
+public fun mmMaskzDbsadEpu8(k: Mmask8, a: M128i, b: M128i, imm8: Int): M128i =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
+        }
+        val a1 = a.asU8x16()
+        val b1 = b.asU8x16()
+        val r = vdbpsadbw128(a1, b1, imm8)
+        transmute(simdSelectBitmask(k, r, u16x8.ZERO))
+    }
+
+/**
+ * Set each bit of mask register k based on the most significant bit of the corresponding packed 16-bit integer in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_movepi16_mask&expand=3873)
+ */
+public fun mm512Movepi16Mask(a: M512i): Mmask32 {
+    val filter = mm512Set1Epi16((1 shl 15).toShort())
+    val a1 = mm512AndSi512(a, filter)
+    return mm512CmpeqEpi16Mask(a1, filter)
+}
+
+/**
+ * Set each bit of mask register k based on the most significant bit of the corresponding packed 16-bit integer in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_movepi16_mask&expand=3872)
+ */
+public fun mm256Movepi16Mask(a: M256i): Mmask16 {
+    val filter = mm256Set1Epi16((1 shl 15).toShort())
+    val a1 = mm256AndSi256(a, filter)
+    return mm256CmpeqEpi16Mask(a1, filter)
+}
+
+/**
+ * Set each bit of mask register k based on the most significant bit of the corresponding packed 16-bit integer in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_movepi16_mask&expand=3871)
+ */
+public fun mmMovepi16Mask(a: M128i): Mmask8 {
+    val filter = mmSet1Epi16((1 shl 15).toShort())
+    val a1 = mmAndSi128(a, filter)
+    return mmCmpeqEpi16Mask(a1, filter)
+}
+
+/**
+ * Set each bit of mask register k based on the most significant bit of the corresponding packed 8-bit integer in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_movepi8_mask&expand=3883)
+ */
+public fun mm512Movepi8Mask(a: M512i): Mmask64 {
+    val filter = mm512Set1Epi8((1 shl 7).toByte())
+    val a1 = mm512AndSi512(a, filter)
+    return mm512CmpeqEpi8Mask(a1, filter)
+}
+
+// should be vpmovb2m but compiled to vpmovmskb in the test shim because that takes less cycles than
+// using vpmovb2m plus converting the mask register to a standard register.
+
+/**
+ * Set each bit of mask register k based on the most significant bit of the corresponding packed 8-bit integer in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_movepi8_mask&expand=3882)
+ */
+public fun mm256Movepi8Mask(a: M256i): Mmask32 {
+    val filter = mm256Set1Epi8((1 shl 7).toByte())
+    val a1 = mm256AndSi256(a, filter)
+    return mm256CmpeqEpi8Mask(a1, filter)
+}
+
+// should be vpmovb2m but compiled to vpmovmskb in the test shim because that takes less cycles than
+// using vpmovb2m plus converting the mask register to a standard register.
+
+/**
+ * Set each bit of mask register k based on the most significant bit of the corresponding packed 8-bit integer in a.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_movepi8_mask&expand=3881)
+ */
+public fun mmMovepi8Mask(a: M128i): Mmask16 {
+    val filter = mmSet1Epi8((1 shl 7).toByte())
+    val a1 = mmAndSi128(a, filter)
+    return mmCmpeqEpi8Mask(a1, filter)
+}
+
+/**
+ * Set each packed 16-bit integer in dst to all ones or all zeros based on the value of the corresponding bit in k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_movm_epi16&expand=3886)
+ */
+public fun mm512MovmEpi16(k: Mmask32): M512i =
+    run {
+        val one = mm512Set1Epi16(((((((((((((((((((((((((((((((1 shl 15).toInt() or (1 shl 14).toInt()).toShort()).toInt() or (1 shl 13).toInt()).toShort()).toInt() or (1 shl 12).toInt()).toShort()).toInt() or (1 shl 11).toInt()).toShort()).toInt() or (1 shl 10).toInt()).toShort()).toInt() or (1 shl 9).toInt()).toShort()).toInt() or (1 shl 8).toInt()).toShort()).toInt() or (1 shl 7).toInt()).toShort()).toInt() or (1 shl 6).toInt()).toShort()).toInt() or (1 shl 5).toInt()).toShort()).toInt() or (1 shl 4).toInt()).toShort()).toInt() or (1 shl 3).toInt()).toShort()).toInt() or (1 shl 2).toInt()).toShort()).toInt() or (1 shl 1).toInt()).toShort()).toInt() or (1 shl 0).toInt()).toShort()).asI16x32()
+        transmute(simdSelectBitmask(k, one, i16x32.ZERO))
+    }
+
+/**
+ * Set each packed 16-bit integer in dst to all ones or all zeros based on the value of the corresponding bit in k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_movm_epi16&expand=3885)
+ */
+public fun mm256MovmEpi16(k: Mmask16): M256i =
+    run {
+        val one = mm256Set1Epi16(((((((((((((((((((((((((((((((1 shl 15).toInt() or (1 shl 14).toInt()).toShort()).toInt() or (1 shl 13).toInt()).toShort()).toInt() or (1 shl 12).toInt()).toShort()).toInt() or (1 shl 11).toInt()).toShort()).toInt() or (1 shl 10).toInt()).toShort()).toInt() or (1 shl 9).toInt()).toShort()).toInt() or (1 shl 8).toInt()).toShort()).toInt() or (1 shl 7).toInt()).toShort()).toInt() or (1 shl 6).toInt()).toShort()).toInt() or (1 shl 5).toInt()).toShort()).toInt() or (1 shl 4).toInt()).toShort()).toInt() or (1 shl 3).toInt()).toShort()).toInt() or (1 shl 2).toInt()).toShort()).toInt() or (1 shl 1).toInt()).toShort()).toInt() or (1 shl 0).toInt()).toShort()).asI16x16()
+        transmute(simdSelectBitmask(k, one, i16x16.ZERO))
+    }
+
+/**
+ * Set each packed 16-bit integer in dst to all ones or all zeros based on the value of the corresponding bit in k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_movm_epi16&expand=3884)
+ */
+public fun mmMovmEpi16(k: Mmask8): M128i =
+    run {
+        val one = mmSet1Epi16(((((((((((((((((((((((((((((((1 shl 15).toInt() or (1 shl 14).toInt()).toShort()).toInt() or (1 shl 13).toInt()).toShort()).toInt() or (1 shl 12).toInt()).toShort()).toInt() or (1 shl 11).toInt()).toShort()).toInt() or (1 shl 10).toInt()).toShort()).toInt() or (1 shl 9).toInt()).toShort()).toInt() or (1 shl 8).toInt()).toShort()).toInt() or (1 shl 7).toInt()).toShort()).toInt() or (1 shl 6).toInt()).toShort()).toInt() or (1 shl 5).toInt()).toShort()).toInt() or (1 shl 4).toInt()).toShort()).toInt() or (1 shl 3).toInt()).toShort()).toInt() or (1 shl 2).toInt()).toShort()).toInt() or (1 shl 1).toInt()).toShort()).toInt() or (1 shl 0).toInt()).toShort()).asI16x8()
+        transmute(simdSelectBitmask(k, one, i16x8.ZERO))
+    }
+
+/**
+ * Set each packed 8-bit integer in dst to all ones or all zeros based on the value of the corresponding bit in k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_movm_epi8&expand=3895)
+ */
+public fun mm512MovmEpi8(k: Mmask64): M512i =
+    run {
+        val one = mm512Set1Epi8(((((((((((((((1 shl 7).toInt() or (1 shl 6).toInt()).toByte()).toInt() or (1 shl 5).toInt()).toByte()).toInt() or (1 shl 4).toInt()).toByte()).toInt() or (1 shl 3).toInt()).toByte()).toInt() or (1 shl 2).toInt()).toByte()).toInt() or (1 shl 1).toInt()).toByte()).toInt() or (1 shl 0).toInt()).toByte()).asI8x64()
+        transmute(simdSelectBitmask(k, one, i8x64.ZERO))
+    }
+
+/**
+ * Set each packed 8-bit integer in dst to all ones or all zeros based on the value of the corresponding bit in k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_movm_epi8&expand=3894)
+ */
+public fun mm256MovmEpi8(k: Mmask32): M256i =
+    run {
+        val one = mm256Set1Epi8(((((((((((((((1 shl 7).toInt() or (1 shl 6).toInt()).toByte()).toInt() or (1 shl 5).toInt()).toByte()).toInt() or (1 shl 4).toInt()).toByte()).toInt() or (1 shl 3).toInt()).toByte()).toInt() or (1 shl 2).toInt()).toByte()).toInt() or (1 shl 1).toInt()).toByte()).toInt() or (1 shl 0).toInt()).toByte()).asI8x32()
+        transmute(simdSelectBitmask(k, one, i8x32.ZERO))
+    }
+
+/**
+ * Set each packed 8-bit integer in dst to all ones or all zeros based on the value of the corresponding bit in k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_movm_epi8&expand=3893)
+ */
+public fun mmMovmEpi8(k: Mmask16): M128i =
+    run {
+        val one = mmSet1Epi8(((((((((((((((1 shl 7).toInt() or (1 shl 6).toInt()).toByte()).toInt() or (1 shl 5).toInt()).toByte()).toInt() or (1 shl 4).toInt()).toByte()).toInt() or (1 shl 3).toInt()).toByte()).toInt() or (1 shl 2).toInt()).toByte()).toInt() or (1 shl 1).toInt()).toByte()).toInt() or (1 shl 0).toInt()).toByte()).asI8x16()
+        transmute(simdSelectBitmask(k, one, i8x16.ZERO))
+    }
+
+/**
+ * Convert 32-bit mask a into an integer value, and store the result in dst.
+ *
+ * [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#_cvtmask32_u32)
+ */
+public fun cvtmask32U32(a: Mmask32): UInt = a
+
+/**
+ * Convert integer value a into an 32-bit mask, and store the result in k.
+ *
+ * [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_cvtu32_mask32)
+ */
+public fun cvtu32Mask32(a: UInt): Mmask32 = a
+
+/**
+ * Add 32-bit masks in a and b, and store the result in k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_kadd_mask32&expand=3207)
+ */
+public fun kaddMask32(a: Mmask32, b: Mmask32): Mmask32 = (a + (b.toUInt()))
+
+/**
+ * Add 64-bit masks in a and b, and store the result in k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_kadd_mask64&expand=3208)
+ */
+public fun kaddMask64(a: Mmask64, b: Mmask64): Mmask64 = (a + (b.toULong()))
+
+/**
+ * Compute the bitwise AND of 32-bit masks a and b, and store the result in k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_kand_mask32&expand=3213)
+ */
+public fun kandMask32(a: Mmask32, b: Mmask32): Mmask32 = a and b
+
+/**
+ * Compute the bitwise AND of 64-bit masks a and b, and store the result in k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_kand_mask64&expand=3214)
+ */
+public fun kandMask64(a: Mmask64, b: Mmask64): Mmask64 = a and b
+
+/**
+ * Compute the bitwise NOT of 32-bit mask a, and store the result in k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_knot_mask32&expand=3234)
+ */
+public fun knotMask32(a: Mmask32): Mmask32 = !a
+
+/**
+ * Compute the bitwise NOT of 64-bit mask a, and store the result in k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_knot_mask64&expand=3235)
+ */
+public fun knotMask64(a: Mmask64): Mmask64 = !a
+
+/**
+ * Compute the bitwise NOT of 32-bit masks a and then AND with b, and store the result in k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_kandn_mask32&expand=3219)
+ */
+public fun kandnMask32(a: Mmask32, b: Mmask32): Mmask32 = knotMask32(a) and b
+
+/**
+ * Compute the bitwise NOT of 64-bit masks a and then AND with b, and store the result in k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_kandn_mask64&expand=3220)
+ */
+public fun kandnMask64(a: Mmask64, b: Mmask64): Mmask64 = knotMask64(a) and b
+
+/**
+ * Compute the bitwise OR of 32-bit masks a and b, and store the result in k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_kor_mask32&expand=3240)
+ */
+public fun korMask32(a: Mmask32, b: Mmask32): Mmask32 = a or b
+
+/**
+ * Compute the bitwise OR of 64-bit masks a and b, and store the result in k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_kor_mask64&expand=3241)
+ */
+public fun korMask64(a: Mmask64, b: Mmask64): Mmask64 = a or b
+
+/**
+ * Compute the bitwise XOR of 32-bit masks a and b, and store the result in k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_kxor_mask32&expand=3292)
+ */
+public fun kxorMask32(a: Mmask32, b: Mmask32): Mmask32 = a xor b
+
+/**
+ * Compute the bitwise XOR of 64-bit masks a and b, and store the result in k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_kxor_mask64&expand=3293)
+ */
+public fun kxorMask64(a: Mmask64, b: Mmask64): Mmask64 = a xor b
+
+/**
+ * Compute the bitwise XNOR of 32-bit masks a and b, and store the result in k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_kxnor_mask32&expand=3286)
+ */
+public fun kxnorMask32(a: Mmask32, b: Mmask32): Mmask32 = knotMask32(a xor b)
+
+/**
+ * Compute the bitwise XNOR of 64-bit masks a and b, and store the result in k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_kxnor_mask64&expand=3287)
+ */
+public fun kxnorMask64(a: Mmask64, b: Mmask64): Mmask64 = knotMask64(a xor b)
+
+/**
+ * Compute the bitwise OR of 32-bit masks a and b. If the result is all zeros, store 1 in dst, otherwise
+ * store 0 in dst. If the result is all ones, store 1 in allOnes, otherwise store 0 in allOnes.
+ *
+ * [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_kortest_mask32_u8)
+ */
+public fun kortestMask32U8(a: Mmask32, b: Mmask32, allOnes: MutPtr): UByte {
+    val allOnes1 = allOnes
+    val tmp = korMask32(a, b)
+    (PrimitiveLayouts.U8).writeNative((allOnes1).rawAddress, (if (tmp == 0xffffffffu) 1u else 0u).toUByte())
+    return (if (tmp == 0u) 1u else 0u).toUByte()
+}
+
+/**
+ * Compute the bitwise OR of 64-bit masks a and b. If the result is all zeros, store 1 in dst, otherwise
+ * store 0 in dst. If the result is all ones, store 1 in allOnes, otherwise store 0 in allOnes.
+ *
+ * [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_kortest_mask64_u8)
+ */
+public fun kortestMask64U8(a: Mmask64, b: Mmask64, allOnes: MutPtr): UByte {
+    val allOnes1 = allOnes
+    val tmp = korMask64(a, b)
+    (PrimitiveLayouts.U8).writeNative((allOnes1).rawAddress, (if (tmp == 0xffffffffffffffffuL) 1u else 0u).toUByte())
+    return (if (tmp == 0uL) 1u else 0u).toUByte()
+}
+
+/**
+ * Compute the bitwise OR of 32-bit masks a and b. If the result is all ones, store 1 in dst, otherwise
+ * store 0 in dst.
+ *
+ * [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_kortestc_mask32_u8)
+ */
+public fun kortestcMask32U8(a: Mmask32, b: Mmask32): UByte = (if (korMask32(a, b) == 0xffffffffu) 1u else 0u).toUByte()
+
+/**
+ * Compute the bitwise OR of 64-bit masks a and b. If the result is all ones, store 1 in dst, otherwise
+ * store 0 in dst.
+ *
+ * [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_kortestc_mask64_u8)
+ */
+public fun kortestcMask64U8(a: Mmask64, b: Mmask64): UByte = (if (korMask64(a, b) == 0xffffffffffffffffuL) 1u else 0u).toUByte()
+
+/**
+ * Compute the bitwise OR of 32-bit masks a and b. If the result is all zeros, store 1 in dst, otherwise
+ * store 0 in dst.
+ *
+ * [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_kortestz_mask32_u8)
+ */
+public fun kortestzMask32U8(a: Mmask32, b: Mmask32): UByte = (if (korMask32(a, b) == 0u) 1u else 0u).toUByte()
+
+/**
+ * Compute the bitwise OR of 64-bit masks a and b. If the result is all zeros, store 1 in dst, otherwise
+ * store 0 in dst.
+ *
+ * [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_kortestz_mask64_u8)
+ */
+public fun kortestzMask64U8(a: Mmask64, b: Mmask64): UByte = (if (korMask64(a, b) == 0uL) 1u else 0u).toUByte()
+
+/**
+ * Shift the bits of 32-bit mask a left by count while shifting in zeros, and store the least significant 32 bits of the result in k.
+ *
+ * [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_kshiftli_mask32)
+ */
+public fun kshiftliMask32(a: Mmask32, count: UInt): Mmask32 = a.unboundedShl(count)
+
+/**
+ * Shift the bits of 64-bit mask a left by count while shifting in zeros, and store the least significant 32 bits of the result in k.
+ *
+ * [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_kshiftli_mask64)
+ */
+public fun kshiftliMask64(a: Mmask64, count: UInt): Mmask64 = a.unboundedShl(count)
+
+/**
+ * Shift the bits of 32-bit mask a right by count while shifting in zeros, and store the least significant 32 bits of the result in k.
+ *
+ * [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_kshiftri_mask32)
+ */
+public fun kshiftriMask32(a: Mmask32, count: UInt): Mmask32 = a.unboundedShr(count)
+
+/**
+ * Shift the bits of 64-bit mask a right by count while shifting in zeros, and store the least significant 32 bits of the result in k.
+ *
+ * [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_kshiftri_mask64)
+ */
+public fun kshiftriMask64(a: Mmask64, count: UInt): Mmask64 = a.unboundedShr(count)
+
+/**
+ * Compute the bitwise AND of 32-bit masks a and b, and if the result is all zeros, store 1 in dst,
+ * otherwise store 0 in dst. Compute the bitwise NOT of a and then AND with b, if the result is all
+ * zeros, store 1 in andNot, otherwise store 0 in andNot.
+ *
+ * [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_ktest_mask32_u8)
+ */
+public fun ktestMask32U8(a: Mmask32, b: Mmask32, andNot: MutPtr): UByte {
+    val andNot1 = andNot
+    (PrimitiveLayouts.U8).writeNative((andNot1).rawAddress, (if (kandnMask32(a, b) == 0u) 1u else 0u).toUByte())
+    return (if (kandMask32(a, b) == 0u) 1u else 0u).toUByte()
+}
+
+/**
+ * Compute the bitwise AND of 64-bit masks a and b, and if the result is all zeros, store 1 in dst,
+ * otherwise store 0 in dst. Compute the bitwise NOT of a and then AND with b, if the result is all
+ * zeros, store 1 in andNot, otherwise store 0 in andNot.
+ *
+ * [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_ktest_mask64_u8)
+ */
+public fun ktestMask64U8(a: Mmask64, b: Mmask64, andNot: MutPtr): UByte {
+    val andNot1 = andNot
+    (PrimitiveLayouts.U8).writeNative((andNot1).rawAddress, (if (kandnMask64(a, b) == 0uL) 1u else 0u).toUByte())
+    return (if (kandMask64(a, b) == 0uL) 1u else 0u).toUByte()
+}
+
+/**
+ * Compute the bitwise NOT of 32-bit mask a and then AND with 16-bit mask b, if the result is all
+ * zeros, store 1 in dst, otherwise store 0 in dst.
+ *
+ * [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_ktestc_mask32_u8)
+ */
+public fun ktestcMask32U8(a: Mmask32, b: Mmask32): UByte = (if (kandnMask32(a, b) == 0u) 1u else 0u).toUByte()
+
+/**
+ * Compute the bitwise NOT of 64-bit mask a and then AND with 8-bit mask b, if the result is all
+ * zeros, store 1 in dst, otherwise store 0 in dst.
+ *
+ * [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_ktestc_mask64_u8)
+ */
+public fun ktestcMask64U8(a: Mmask64, b: Mmask64): UByte = (if (kandnMask64(a, b) == 0uL) 1u else 0u).toUByte()
+
+/**
+ * Compute the bitwise AND of 32-bit masks a and  b, if the result is all zeros, store 1 in dst, otherwise
+ * store 0 in dst.
+ *
+ * [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_ktestz_mask32_u8)
+ */
+public fun ktestzMask32U8(a: Mmask32, b: Mmask32): UByte = (if (kandMask32(a, b) == 0u) 1u else 0u).toUByte()
+
+/**
+ * Compute the bitwise AND of 64-bit masks a and  b, if the result is all zeros, store 1 in dst, otherwise
+ * store 0 in dst.
+ *
+ * [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_ktestz_mask64_u8)
+ */
+public fun ktestzMask64U8(a: Mmask64, b: Mmask64): UByte = (if (kandMask64(a, b) == 0uL) 1u else 0u).toUByte()
+
+// generate normal and code instead of kunpckwd
+
+/**
+ * Unpack and interleave 16 bits from masks a and b, and store the 32-bit result in k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_kunpackw)
+ */
+public fun mm512Kunpackw(a: Mmask32, b: Mmask32): Mmask32 = ((a and 0xffffu) shl 16) or (b and 0xffffu)
+
+// generate normal and code instead of kunpckdq
+
+/**
+ * Unpack and interleave 32 bits from masks a and b, and store the 64-bit result in k.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_kunpackd)
+ */
+public fun mm512Kunpackd(a: Mmask64, b: Mmask64): Mmask64 = ((a and 0xffffffffuL) shl 32) or (b and 0xffffffffuL)
+
+/**
+ * Convert packed 16-bit integers in a to packed 8-bit integers with truncation, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cvtepi16_epi8&expand=1407)
+ */
+public fun mm512Cvtepi16Epi8(a: M512i): M256i =
+    run {
+        val a1 = a.asI16x32()
+        transmute<I8x32>(simdCast(a1))
+    }
+
+/**
+ * Convert packed 16-bit integers in a to packed 8-bit integers with truncation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cvtepi16_epi8&expand=1408)
+ */
+public fun mm512MaskCvtepi16Epi8(src: M256i, k: Mmask32, a: M512i): M256i =
+    run {
+        val convert = mm512Cvtepi16Epi8(a).asI8x32()
+        transmute(simdSelectBitmask(k, convert, src.asI8x32()))
+    }
+
+/**
+ * Convert packed 16-bit integers in a to packed 8-bit integers with truncation, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_cvtepi16_epi8&expand=1409)
+ */
+public fun mm512MaskzCvtepi16Epi8(k: Mmask32, a: M512i): M256i =
+    run {
+        val convert = mm512Cvtepi16Epi8(a).asI8x32()
+        transmute(simdSelectBitmask(k, convert, i8x32.ZERO))
+    }
+
+/**
+ * Convert packed 16-bit integers in a to packed 8-bit integers with truncation, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cvtepi16_epi8&expand=1404)
+ */
+public fun mm256Cvtepi16Epi8(a: M256i): M128i =
+    run {
+        val a1 = a.asI16x16()
+        transmute<I8x16>(simdCast(a1))
+    }
+
+/**
+ * Convert packed 16-bit integers in a to packed 8-bit integers with truncation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cvtepi16_epi8&expand=1405)
+ */
+public fun mm256MaskCvtepi16Epi8(src: M128i, k: Mmask16, a: M256i): M128i =
+    run {
+        val convert = mm256Cvtepi16Epi8(a).asI8x16()
+        transmute(simdSelectBitmask(k, convert, src.asI8x16()))
+    }
+
+/**
+ * Convert packed 16-bit integers in a to packed 8-bit integers with truncation, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_cvtepi16_epi8&expand=1406)
+ */
+public fun mm256MaskzCvtepi16Epi8(k: Mmask16, a: M256i): M128i =
+    run {
+        val convert = mm256Cvtepi16Epi8(a).asI8x16()
+        transmute(simdSelectBitmask(k, convert, i8x16.ZERO))
+    }
+
+/**
+ * Convert packed 16-bit integers in a to packed 8-bit integers with truncation, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cvtepi16_epi8&expand=1401)
+ */
+public fun mmCvtepi16Epi8(a: M128i): M128i =
+    run {
+        val a1 = a.asI16x8()
+        val v256: I16x16 = simdShuffle(a1, i16x8.ZERO, SimdShuffleIdx(listOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 8, 8, 8, 8, 8, 8, 8)))
+        transmute<I8x16>(simdCast(v256))
+    }
+
+/**
+ * Convert packed 16-bit integers in a to packed 8-bit integers with truncation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cvtepi16_epi8&expand=1402)
+ */
+public fun mmMaskCvtepi16Epi8(src: M128i, k: Mmask8, a: M128i): M128i =
+    run {
+        val a1 = mmCvtepi16Epi8(a).asI8x16()
+        val src1 = simdShuffle(src.asI8x16(), i8x16.ZERO, SimdShuffleIdx(listOf(0, 1, 2, 3, 4, 5, 6, 7, 16, 16, 16, 16, 16, 16, 16, 16)))
+        simdSelectBitmask(k.toUShort(), a1, src1).asM128i()
+    }
+
+/**
+ * Convert packed 16-bit integers in a to packed 8-bit integers with truncation, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_cvtepi16_epi8&expand=1403)
+ */
+public fun mmMaskzCvtepi16Epi8(k: Mmask8, a: M128i): M128i = mmMaskCvtepi16Epi8(mmSetzeroSi128(), k, a)
+
+/**
+ * Convert packed signed 16-bit integers in a to packed 8-bit integers with signed saturation, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cvtsepi16_epi8&expand=1807)
+ */
+public fun mm512Cvtsepi16Epi8(a: M512i): M256i = simdCast<I8x32>(simdImax(simdImin(a.asI16x32(), i16x32.splat(((Byte.MAX_VALUE as Any?) as M256i))), i16x32.splat(((Byte.MIN_VALUE as Any?) as M256i)))).asM256i()
+
+/**
+ * Convert packed signed 16-bit integers in a to packed 8-bit integers with signed saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cvtsepi16_epi8&expand=1808)
+ */
+public fun mm512MaskCvtsepi16Epi8(src: M256i, k: Mmask32, a: M512i): M256i = simdSelectBitmask(k, mm512Cvtsepi16Epi8(a).asI8x32(), src.asI8x32()).asM256i()
+
+/**
+ * Convert packed signed 16-bit integers in a to packed 8-bit integers with signed saturation, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_cvtsepi16_epi8&expand=1809)
+ */
+public fun mm512MaskzCvtsepi16Epi8(k: Mmask32, a: M512i): M256i = simdSelectBitmask(k, mm512Cvtsepi16Epi8(a).asI8x32(), i8x32.ZERO).asM256i()
+
+/**
+ * Convert packed signed 16-bit integers in a to packed 8-bit integers with signed saturation, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cvtsepi16_epi8&expand=1804)
+ */
+public fun mm256Cvtsepi16Epi8(a: M256i): M128i = simdCast<I8x16>(simdImax(simdImin(a.asI16x16(), i16x16.splat(((Byte.MAX_VALUE as Any?) as M128i))), i16x16.splat(((Byte.MIN_VALUE as Any?) as M128i)))).asM128i()
+
+/**
+ * Convert packed signed 16-bit integers in a to packed 8-bit integers with signed saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cvtsepi16_epi8&expand=1805)
+ */
+public fun mm256MaskCvtsepi16Epi8(src: M128i, k: Mmask16, a: M256i): M128i = simdSelectBitmask(k, mm256Cvtsepi16Epi8(a).asI8x16(), src.asI8x16()).asM128i()
+
+/**
+ * Convert packed signed 16-bit integers in a to packed 8-bit integers with signed saturation, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_cvtsepi16_epi8&expand=1806)
+ */
+public fun mm256MaskzCvtsepi16Epi8(k: Mmask16, a: M256i): M128i = simdSelectBitmask(k, mm256Cvtsepi16Epi8(a).asI8x16(), i8x16.ZERO).asM128i()
+
+/**
+ * Convert packed signed 16-bit integers in a to packed 8-bit integers with signed saturation, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cvtsepi16_epi8&expand=1801)
+ */
+public fun mmCvtsepi16Epi8(a: M128i): M128i = transmute(vpmovswb128(a.asI16x8(), i8x16.ZERO, 0xFFu))
+
+/**
+ * Convert packed signed 16-bit integers in a to packed 8-bit integers with signed saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cvtsepi16_epi8&expand=1802)
+ */
+public fun mmMaskCvtsepi16Epi8(src: M128i, k: Mmask8, a: M128i): M128i = transmute(vpmovswb128(a.asI16x8(), src.asI8x16(), k))
+
+/**
+ * Convert packed signed 16-bit integers in a to packed 8-bit integers with signed saturation, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_cvtsepi16_epi8&expand=1803)
+ */
+public fun mmMaskzCvtsepi16Epi8(k: Mmask8, a: M128i): M128i = transmute(vpmovswb128(a.asI16x8(), i8x16.ZERO, k))
+
+/**
+ * Convert packed unsigned 16-bit integers in a to packed unsigned 8-bit integers with unsigned saturation, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cvtusepi16_epi8&expand=2042)
+ */
+public fun mm512Cvtusepi16Epi8(a: M512i): M256i = simdCast<U8x32>(simdImin(a.asU16x32(), u16x32.splat(((UByte.MAX_VALUE as Any?) as M256i)))).asM256i()
+
+/**
+ * Convert packed unsigned 16-bit integers in a to packed unsigned 8-bit integers with unsigned saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cvtusepi16_epi8&expand=2043)
+ */
+public fun mm512MaskCvtusepi16Epi8(src: M256i, k: Mmask32, a: M512i): M256i = simdSelectBitmask(k, mm512Cvtusepi16Epi8(a).asU8x32(), src.asU8x32()).asM256i()
+
+/**
+ * Convert packed unsigned 16-bit integers in a to packed unsigned 8-bit integers with unsigned saturation, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_cvtusepi16_epi8&expand=2044)
+ */
+public fun mm512MaskzCvtusepi16Epi8(k: Mmask32, a: M512i): M256i = simdSelectBitmask(k, mm512Cvtusepi16Epi8(a).asU8x32(), u8x32.ZERO).asM256i()
+
+/**
+ * Convert packed unsigned 16-bit integers in a to packed unsigned 8-bit integers with unsigned saturation, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cvtusepi16_epi8&expand=2039)
+ */
+public fun mm256Cvtusepi16Epi8(a: M256i): M128i = simdCast<U8x16>(simdImin(a.asU16x16(), u16x16.splat(((UByte.MAX_VALUE as Any?) as M128i)))).asM128i()
+
+/**
+ * Convert packed unsigned 16-bit integers in a to packed unsigned 8-bit integers with unsigned saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cvtusepi16_epi8&expand=2040)
+ */
+public fun mm256MaskCvtusepi16Epi8(src: M128i, k: Mmask16, a: M256i): M128i = simdSelectBitmask(k, mm256Cvtusepi16Epi8(a).asU8x16(), src.asU8x16()).asM128i()
+
+/**
+ * Convert packed unsigned 16-bit integers in a to packed unsigned 8-bit integers with unsigned saturation, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_cvtusepi16_epi8&expand=2041)
+ */
+public fun mm256MaskzCvtusepi16Epi8(k: Mmask16, a: M256i): M128i = simdSelectBitmask(k, mm256Cvtusepi16Epi8(a).asU8x16(), u8x16.ZERO).asM128i()
+
+/**
+ * Convert packed unsigned 16-bit integers in a to packed unsigned 8-bit integers with unsigned saturation, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cvtusepi16_epi8&expand=2036)
+ */
+public fun mmCvtusepi16Epi8(a: M128i): M128i = transmute(vpmovuswb128(a.asU16x8(), u8x16.ZERO, 0xFFu))
+
+/**
+ * Convert packed unsigned 16-bit integers in a to packed unsigned 8-bit integers with unsigned saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cvtusepi16_epi8&expand=2037)
+ */
+public fun mmMaskCvtusepi16Epi8(src: M128i, k: Mmask8, a: M128i): M128i = transmute(vpmovuswb128(a.asU16x8(), src.asU8x16(), k))
+
+/**
+ * Convert packed unsigned 16-bit integers in a to packed unsigned 8-bit integers with unsigned saturation, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_cvtusepi16_epi8&expand=2038)
+ */
+public fun mmMaskzCvtusepi16Epi8(k: Mmask8, a: M128i): M128i = transmute(vpmovuswb128(a.asU16x8(), u8x16.ZERO, k))
+
+/**
+ * Sign extend packed 8-bit integers in a to packed 16-bit integers, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cvtepi8_epi16&expand=1526)
+ */
+public fun mm512Cvtepi8Epi16(a: M256i): M512i =
+    run {
+        val a1 = a.asI8x32()
+        transmute<I16x32>(simdCast(a1))
+    }
+
+/**
+ * Sign extend packed 8-bit integers in a to packed 16-bit integers, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cvtepi8_epi16&expand=1527)
+ */
+public fun mm512MaskCvtepi8Epi16(src: M512i, k: Mmask32, a: M256i): M512i =
+    run {
+        val convert = mm512Cvtepi8Epi16(a).asI16x32()
+        transmute(simdSelectBitmask(k, convert, src.asI16x32()))
+    }
+
+/**
+ * Sign extend packed 8-bit integers in a to packed 16-bit integers, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_cvtepi8_epi16&expand=1528)
+ */
+public fun mm512MaskzCvtepi8Epi16(k: Mmask32, a: M256i): M512i =
+    run {
+        val convert = mm512Cvtepi8Epi16(a).asI16x32()
+        transmute(simdSelectBitmask(k, convert, i16x32.ZERO))
+    }
+
+/**
+ * Sign extend packed 8-bit integers in a to packed 16-bit integers, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cvtepi8_epi16&expand=1524)
+ */
+public fun mm256MaskCvtepi8Epi16(src: M256i, k: Mmask16, a: M128i): M256i =
+    run {
+        val convert = mm256Cvtepi8Epi16(a).asI16x16()
+        transmute(simdSelectBitmask(k, convert, src.asI16x16()))
+    }
+
+/**
+ * Sign extend packed 8-bit integers in a to packed 16-bit integers, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_cvtepi8_epi16&expand=1525)
+ */
+public fun mm256MaskzCvtepi8Epi16(k: Mmask16, a: M128i): M256i =
+    run {
+        val convert = mm256Cvtepi8Epi16(a).asI16x16()
+        transmute(simdSelectBitmask(k, convert, i16x16.ZERO))
+    }
+
+/**
+ * Sign extend packed 8-bit integers in a to packed 16-bit integers, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cvtepi8_epi16&expand=1521)
+ */
+public fun mmMaskCvtepi8Epi16(src: M128i, k: Mmask8, a: M128i): M128i =
+    run {
+        val convert = mmCvtepi8Epi16(a).asI16x8()
+        transmute(simdSelectBitmask(k, convert, src.asI16x8()))
+    }
+
+/**
+ * Sign extend packed 8-bit integers in a to packed 16-bit integers, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_cvtepi8_epi16&expand=1522)
+ */
+public fun mmMaskzCvtepi8Epi16(k: Mmask8, a: M128i): M128i =
+    run {
+        val convert = mmCvtepi8Epi16(a).asI16x8()
+        transmute(simdSelectBitmask(k, convert, i16x8.ZERO))
+    }
+
+/**
+ * Zero extend packed unsigned 8-bit integers in a to packed 16-bit integers, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cvtepu8_epi16&expand=1612)
+ */
+public fun mm512Cvtepu8Epi16(a: M256i): M512i =
+    run {
+        val a1 = a.asU8x32()
+        transmute<I16x32>(simdCast(a1))
+    }
+
+/**
+ * Zero extend packed unsigned 8-bit integers in a to packed 16-bit integers, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cvtepu8_epi16&expand=1613)
+ */
+public fun mm512MaskCvtepu8Epi16(src: M512i, k: Mmask32, a: M256i): M512i =
+    run {
+        val convert = mm512Cvtepu8Epi16(a).asI16x32()
+        transmute(simdSelectBitmask(k, convert, src.asI16x32()))
+    }
+
+/**
+ * Zero extend packed unsigned 8-bit integers in a to packed 16-bit integers, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_cvtepu8_epi16&expand=1614)
+ */
+public fun mm512MaskzCvtepu8Epi16(k: Mmask32, a: M256i): M512i =
+    run {
+        val convert = mm512Cvtepu8Epi16(a).asI16x32()
+        transmute(simdSelectBitmask(k, convert, i16x32.ZERO))
+    }
+
+/**
+ * Zero extend packed unsigned 8-bit integers in a to packed 16-bit integers, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cvtepu8_epi16&expand=1610)
+ */
+public fun mm256MaskCvtepu8Epi16(src: M256i, k: Mmask16, a: M128i): M256i =
+    run {
+        val convert = mm256Cvtepu8Epi16(a).asI16x16()
+        transmute(simdSelectBitmask(k, convert, src.asI16x16()))
+    }
+
+/**
+ * Zero extend packed unsigned 8-bit integers in a to packed 16-bit integers, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_cvtepu8_epi16&expand=1611)
+ */
+public fun mm256MaskzCvtepu8Epi16(k: Mmask16, a: M128i): M256i =
+    run {
+        val convert = mm256Cvtepu8Epi16(a).asI16x16()
+        transmute(simdSelectBitmask(k, convert, i16x16.ZERO))
+    }
+
+/**
+ * Zero extend packed unsigned 8-bit integers in a to packed 16-bit integers, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cvtepu8_epi16&expand=1607)
+ */
+public fun mmMaskCvtepu8Epi16(src: M128i, k: Mmask8, a: M128i): M128i =
+    run {
+        val convert = mmCvtepu8Epi16(a).asI16x8()
+        transmute(simdSelectBitmask(k, convert, src.asI16x8()))
+    }
+
+/**
+ * Zero extend packed unsigned 8-bit integers in a to packed 16-bit integers, and store the results in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_cvtepu8_epi16&expand=1608)
+ */
+public fun mmMaskzCvtepu8Epi16(k: Mmask8, a: M128i): M128i =
+    run {
+        val convert = mmCvtepu8Epi16(a).asI16x8()
+        transmute(simdSelectBitmask(k, convert, i16x8.ZERO))
+    }
+
+/**
+ * Shift 128-bit lanes in a left by imm8 bytes while shifting in zeros, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_bslli_epi128&expand=591)
+ */
+public fun mm512BslliEpi128(a: M512i, imm8: Int): M512i {
+    return run {
+        fun mask(shift: Int, i: UInt): UInt {
+            val shift1 = shift.toUInt() and 0xffu
+            return if (shift1 > 15u || i % 16u < shift1) {
+                0u
+            } else {
+                64u + (i - shift1)
+            }
+        }
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
+        }
+        val a1 = a.asI8x64()
+        val zero = i8x64.ZERO
+        val r: I8x64 = simdShuffle(zero, a1, SimdShuffleIdx(listOf(mask(imm8, 0u), mask(imm8, 1u), mask(imm8, 2u), mask(imm8, 3u), mask(imm8, 4u), mask(imm8, 5u), mask(imm8, 6u), mask(imm8, 7u), mask(imm8, 8u), mask(imm8, 9u), mask(imm8, 10u), mask(imm8, 11u), mask(imm8, 12u), mask(imm8, 13u), mask(imm8, 14u), mask(imm8, 15u), mask(imm8, 16u), mask(imm8, 17u), mask(imm8, 18u), mask(imm8, 19u), mask(imm8, 20u), mask(imm8, 21u), mask(imm8, 22u), mask(imm8, 23u), mask(imm8, 24u), mask(imm8, 25u), mask(imm8, 26u), mask(imm8, 27u), mask(imm8, 28u), mask(imm8, 29u), mask(imm8, 30u), mask(imm8, 31u), mask(imm8, 32u), mask(imm8, 33u), mask(imm8, 34u), mask(imm8, 35u), mask(imm8, 36u), mask(imm8, 37u), mask(imm8, 38u), mask(imm8, 39u), mask(imm8, 40u), mask(imm8, 41u), mask(imm8, 42u), mask(imm8, 43u), mask(imm8, 44u), mask(imm8, 45u), mask(imm8, 46u), mask(imm8, 47u), mask(imm8, 48u), mask(imm8, 49u), mask(imm8, 50u), mask(imm8, 51u), mask(imm8, 52u), mask(imm8, 53u), mask(imm8, 54u), mask(imm8, 55u), mask(imm8, 56u), mask(imm8, 57u), mask(imm8, 58u), mask(imm8, 59u), mask(imm8, 60u), mask(imm8, 61u), mask(imm8, 62u), mask(imm8, 63u))))
+        transmute(r)
+    }
+}
+
+/**
+ * Shift 128-bit lanes in a right by imm8 bytes while shifting in zeros, and store the results in dst.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_bsrli_epi128&expand=594)
+ */
+public fun mm512BsrliEpi128(a: M512i, imm8: Int): M512i {
+    return run {
+        fun mask(shift: Int, i: UInt): UInt {
+            val shift1 = shift.toUInt() and 0xffu
+            return if (shift1 > 15u || (15u - (i % 16u)) < shift1) {
+                0u
+            } else {
+                64u + (i + shift1)
+            }
+        }
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
+        }
+        val a1 = a.asI8x64()
+        val zero = i8x64.ZERO
+        val r: I8x64 = simdShuffle(zero, a1, SimdShuffleIdx(listOf(mask(imm8, 0u), mask(imm8, 1u), mask(imm8, 2u), mask(imm8, 3u), mask(imm8, 4u), mask(imm8, 5u), mask(imm8, 6u), mask(imm8, 7u), mask(imm8, 8u), mask(imm8, 9u), mask(imm8, 10u), mask(imm8, 11u), mask(imm8, 12u), mask(imm8, 13u), mask(imm8, 14u), mask(imm8, 15u), mask(imm8, 16u), mask(imm8, 17u), mask(imm8, 18u), mask(imm8, 19u), mask(imm8, 20u), mask(imm8, 21u), mask(imm8, 22u), mask(imm8, 23u), mask(imm8, 24u), mask(imm8, 25u), mask(imm8, 26u), mask(imm8, 27u), mask(imm8, 28u), mask(imm8, 29u), mask(imm8, 30u), mask(imm8, 31u), mask(imm8, 32u), mask(imm8, 33u), mask(imm8, 34u), mask(imm8, 35u), mask(imm8, 36u), mask(imm8, 37u), mask(imm8, 38u), mask(imm8, 39u), mask(imm8, 40u), mask(imm8, 41u), mask(imm8, 42u), mask(imm8, 43u), mask(imm8, 44u), mask(imm8, 45u), mask(imm8, 46u), mask(imm8, 47u), mask(imm8, 48u), mask(imm8, 49u), mask(imm8, 50u), mask(imm8, 51u), mask(imm8, 52u), mask(imm8, 53u), mask(imm8, 54u), mask(imm8, 55u), mask(imm8, 56u), mask(imm8, 57u), mask(imm8, 58u), mask(imm8, 59u), mask(imm8, 60u), mask(imm8, 61u), mask(imm8, 62u), mask(imm8, 63u))))
+        transmute(r)
+    }
+}
+
+/**
+ * Concatenate pairs of 16-byte blocks in a and b into a 32-byte temporary result, shift the result right by imm8 bytes, and store the low 16 bytes in dst.
+ * Unlike [mmAlignrEpi8], [mm256AlignrEpi8] functions, where the entire input vectors are concatenated to the temporary result,
+ * this concatenation happens in 4 steps, where each step builds 32-byte temporary result.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_alignr_epi8&expand=263)
+ */
+public fun mm512AlignrEpi8(a: M512i, b: M512i, imm8: Int): M512i {
+    fun mask(shift: UInt, i: UInt): UInt {
+        val shift1 = shift % 16u
+        val modI = i % 16u
+        return if (modI < (16u - shift1)) {
+            i + shift1
+        } else {
+            i + 48u + shift1
+        }
+    }
+    // If palignr is shifting the pair of vectors more than the size of two
+    // lanes, emit zero.
+    if (imm8 >= 32) {
+        return mm512SetzeroSi512()
+    }
+    // If palignr is shifting the pair of input vectors more than one lane,
+    // but less than two lanes, convert to shifting in zeroes.
+    val (a1, b1) =
+        if (imm8 > 16) {
+            Pair(mm512SetzeroSi512(), a)
+        } else {
+            Pair(a, b)
+        }
+    return run {
+        if (imm8 == 16) {
+            return transmute(a1)
+        }
+        val r: I8x64 = simdShuffle(b1.asI8x64(), a1.asI8x64(), SimdShuffleIdx(listOf(mask(imm8.toUInt(), 0u), mask(imm8.toUInt(), 1u), mask(imm8.toUInt(), 2u), mask(imm8.toUInt(), 3u), mask(imm8.toUInt(), 4u), mask(imm8.toUInt(), 5u), mask(imm8.toUInt(), 6u), mask(imm8.toUInt(), 7u), mask(imm8.toUInt(), 8u), mask(imm8.toUInt(), 9u), mask(imm8.toUInt(), 10u), mask(imm8.toUInt(), 11u), mask(imm8.toUInt(), 12u), mask(imm8.toUInt(), 13u), mask(imm8.toUInt(), 14u), mask(imm8.toUInt(), 15u), mask(imm8.toUInt(), 16u), mask(imm8.toUInt(), 17u), mask(imm8.toUInt(), 18u), mask(imm8.toUInt(), 19u), mask(imm8.toUInt(), 20u), mask(imm8.toUInt(), 21u), mask(imm8.toUInt(), 22u), mask(imm8.toUInt(), 23u), mask(imm8.toUInt(), 24u), mask(imm8.toUInt(), 25u), mask(imm8.toUInt(), 26u), mask(imm8.toUInt(), 27u), mask(imm8.toUInt(), 28u), mask(imm8.toUInt(), 29u), mask(imm8.toUInt(), 30u), mask(imm8.toUInt(), 31u), mask(imm8.toUInt(), 32u), mask(imm8.toUInt(), 33u), mask(imm8.toUInt(), 34u), mask(imm8.toUInt(), 35u), mask(imm8.toUInt(), 36u), mask(imm8.toUInt(), 37u), mask(imm8.toUInt(), 38u), mask(imm8.toUInt(), 39u), mask(imm8.toUInt(), 40u), mask(imm8.toUInt(), 41u), mask(imm8.toUInt(), 42u), mask(imm8.toUInt(), 43u), mask(imm8.toUInt(), 44u), mask(imm8.toUInt(), 45u), mask(imm8.toUInt(), 46u), mask(imm8.toUInt(), 47u), mask(imm8.toUInt(), 48u), mask(imm8.toUInt(), 49u), mask(imm8.toUInt(), 50u), mask(imm8.toUInt(), 51u), mask(imm8.toUInt(), 52u), mask(imm8.toUInt(), 53u), mask(imm8.toUInt(), 54u), mask(imm8.toUInt(), 55u), mask(imm8.toUInt(), 56u), mask(imm8.toUInt(), 57u), mask(imm8.toUInt(), 58u), mask(imm8.toUInt(), 59u), mask(imm8.toUInt(), 60u), mask(imm8.toUInt(), 61u), mask(imm8.toUInt(), 62u), mask(imm8.toUInt(), 63u))))
+        transmute(r)
+    }
+}
+
+/**
+ * Concatenate pairs of 16-byte blocks in a and b into a 32-byte temporary result, shift the result right by imm8 bytes, and store the low 16 bytes in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_alignr_epi8&expand=264)
+ */
+public fun mm512MaskAlignrEpi8(src: M512i, k: Mmask64, a: M512i, b: M512i, imm8: Int): M512i =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
+        }
+        val r = mm512AlignrEpi8(a, b, imm8)
+        transmute(simdSelectBitmask(k, r.asI8x64(), src.asI8x64()))
+    }
+
+/**
+ * Concatenate pairs of 16-byte blocks in a and b into a 32-byte temporary result, shift the result right by imm8 bytes, and store the low 16 bytes in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_maskz_alignr_epi8&expand=265)
+ */
+public fun mm512MaskzAlignrEpi8(k: Mmask64, a: M512i, b: M512i, imm8: Int): M512i =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
+        }
+        val r = mm512AlignrEpi8(a, b, imm8)
+        transmute(simdSelectBitmask(k, r.asI8x64(), i8x64.ZERO))
+    }
+
+/**
+ * Concatenate pairs of 16-byte blocks in a and b into a 32-byte temporary result, shift the result right by imm8 bytes, and store the low 16 bytes in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_alignr_epi8&expand=261)
+ */
+public fun mm256MaskAlignrEpi8(src: M256i, k: Mmask32, a: M256i, b: M256i, imm8: Int): M256i =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
+        }
+        val r = mm256AlignrEpi8(a, b, imm8)
+        transmute(simdSelectBitmask(k, r.asI8x32(), src.asI8x32()))
+    }
+
+/**
+ * Concatenate pairs of 16-byte blocks in a and b into a 32-byte temporary result, shift the result right by imm8 bytes, and store the low 16 bytes in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_maskz_alignr_epi8&expand=262)
+ */
+public fun mm256MaskzAlignrEpi8(k: Mmask32, a: M256i, b: M256i, imm8: Int): M256i =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
+        }
+        val r = mm256AlignrEpi8(a, b, imm8)
+        transmute(simdSelectBitmask(k, r.asI8x32(), i8x32.ZERO))
+    }
+
+/**
+ * Concatenate pairs of 16-byte blocks in a and b into a 32-byte temporary result, shift the result right by imm8 bytes, and store the low 16 bytes in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_alignr_epi8&expand=258)
+ */
+public fun mmMaskAlignrEpi8(src: M128i, k: Mmask16, a: M128i, b: M128i, imm8: Int): M128i =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
+        }
+        val r = mmAlignrEpi8(a, b, imm8)
+        transmute(simdSelectBitmask(k, r.asI8x16(), src.asI8x16()))
+    }
+
+/**
+ * Concatenate pairs of 16-byte blocks in a and b into a 32-byte temporary result, shift the result right by imm8 bytes, and store the low 16 bytes in dst using zeromask k (elements are zeroed out when the corresponding mask bit is not set).
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_alignr_epi8&expand=259)
+ */
+public fun mmMaskzAlignrEpi8(k: Mmask16, a: M128i, b: M128i, imm8: Int): M128i =
+    run {
+        run {
+            check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
+        }
+        val r = mmAlignrEpi8(a, b, imm8)
+        transmute(simdSelectBitmask(k, r.asI8x16(), i8x16.ZERO))
+    }
+
+/**
+ * Convert packed signed 16-bit integers in a to packed 8-bit integers with signed saturation, and store the active results (those with their respective bit set in writemask k) to unaligned memory at baseAddr.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cvtsepi16_storeu_epi8&expand=1812)
+ */
+public fun mm512MaskCvtsepi16StoreuEpi8(memAddr: MutPtr, k: Mmask32, a: M512i) {
+    vpmovswbmem(memAddr, a.asI16x32(), k)
+}
+
+/**
+ * Convert packed signed 16-bit integers in a to packed 8-bit integers with signed saturation, and store the active results (those with their respective bit set in writemask k) to unaligned memory at baseAddr.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cvtsepi16_storeu_epi8&expand=1811)
+ */
+public fun mm256MaskCvtsepi16StoreuEpi8(memAddr: MutPtr, k: Mmask16, a: M256i) {
+    val mask = simdSelectBitmask(k, i16x16.splat(0.inv()), i16x16.ZERO)
+    val max = simdSplat(Short.from(Byte.MAX_VALUE))
+    val min = simdSplat(Short.from(Byte.MIN_VALUE))
+    val v = simdImax(simdImin(a.asI16x16(), max), min)
+    val truncated: I8x16 = simdCast(v)
+    simdMaskedStore(mask, memAddr, truncated, SimdAlign.Unaligned)
+}
+
+/**
+ * Convert packed signed 16-bit integers in a to packed 8-bit integers with signed saturation, and store the active results (those with their respective bit set in writemask k) to unaligned memory at baseAddr.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cvtsepi16_storeu_epi8&expand=1810)
+ */
+public fun mmMaskCvtsepi16StoreuEpi8(memAddr: MutPtr, k: Mmask8, a: M128i) {
+    val mask = simdSelectBitmask(k, i16x8.splat(0.inv()), i16x8.ZERO)
+    val max = simdSplat(Short.from(Byte.MAX_VALUE))
+    val min = simdSplat(Short.from(Byte.MIN_VALUE))
+    val v = simdImax(simdImin(a.asI16x8(), max), min)
+    val truncated: I8x8 = simdCast(v)
+    simdMaskedStore(mask, memAddr, truncated, SimdAlign.Unaligned)
+}
+
+/**
+ * Convert packed 16-bit integers in a to packed 8-bit integers with truncation, and store the active results (those with their respective bit set in writemask k) to unaligned memory at baseAddr.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cvtepi16_storeu_epi8&expand=1412)
+ */
+public fun mm512MaskCvtepi16StoreuEpi8(memAddr: MutPtr, k: Mmask32, a: M512i) {
+    val result = mm512Cvtepi16Epi8(a).asI8x32()
+    val mask = simdSelectBitmask(k, i8x32.splat(0.inv()), i8x32.ZERO)
+    simdMaskedStore(mask, memAddr, result, SimdAlign.Unaligned)
+}
+
+/**
+ * Convert packed 16-bit integers in a to packed 8-bit integers with truncation, and store the active results (those with their respective bit set in writemask k) to unaligned memory at baseAddr.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cvtepi16_storeu_epi8&expand=1411)
+ */
+public fun mm256MaskCvtepi16StoreuEpi8(memAddr: MutPtr, k: Mmask16, a: M256i) {
+    val result = mm256Cvtepi16Epi8(a).asI8x16()
+    val mask = simdSelectBitmask(k, i8x16.splat(0.inv()), i8x16.ZERO)
+    simdMaskedStore(mask, memAddr, result, SimdAlign.Unaligned)
+}
+
+/**
+ * Convert packed 16-bit integers in a to packed 8-bit integers with truncation, and store the active results (those with their respective bit set in writemask k) to unaligned memory at baseAddr.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cvtepi16_storeu_epi8&expand=1410)
+ */
+public fun mmMaskCvtepi16StoreuEpi8(memAddr: MutPtr, k: Mmask8, a: M128i) {
+    val result: I8x8 = simdShuffle(mmCvtepi16Epi8(a).asI8x16(), i8x16.ZERO, SimdShuffleIdx(listOf(0, 1, 2, 3, 4, 5, 6, 7)))
+    val mask = simdSelectBitmask(k, i8x8.splat(0.inv()), i8x8.ZERO)
+    simdMaskedStore(mask, memAddr, result, SimdAlign.Unaligned)
+}
+
+/**
+ * Convert packed unsigned 16-bit integers in a to packed unsigned 8-bit integers with unsigned saturation, and store the active results (those with their respective bit set in writemask k) to unaligned memory at baseAddr.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_cvtusepi16_storeu_epi8&expand=2047)
+ */
+public fun mm512MaskCvtusepi16StoreuEpi8(memAddr: MutPtr, k: Mmask32, a: M512i) {
+    vpmovuswbmem(memAddr, a.asI16x32(), k)
+}
+
+/**
+ * Convert packed unsigned 16-bit integers in a to packed unsigned 8-bit integers with unsigned saturation, and store the active results (those with their respective bit set in writemask k) to unaligned memory at baseAddr.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_cvtusepi16_storeu_epi8&expand=2046)
+ */
+public fun mm256MaskCvtusepi16StoreuEpi8(memAddr: MutPtr, k: Mmask16, a: M256i) {
+    val mask = simdSelectBitmask(k, i16x16.splat(0.inv()), i16x16.ZERO)
+    val memAddr1 = MutPtr((memAddr).rawAddress)
+    val max = simdSplat(UShort.from(UByte.MAX_VALUE))
+    val truncated: U8x16 = simdCast(simdImin(a.asU16x16(), max))
+    simdMaskedStore(mask, memAddr1, truncated, SimdAlign.Unaligned)
+}
+
+/**
+ * Convert packed unsigned 16-bit integers in a to packed unsigned 8-bit integers with unsigned saturation, and store the active results (those with their respective bit set in writemask k) to unaligned memory at baseAddr.
+ *
+ * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_cvtusepi16_storeu_epi8&expand=2045)
+ */
+public fun mmMaskCvtusepi16StoreuEpi8(memAddr: MutPtr, k: Mmask8, a: M128i) {
+    val mask = simdSelectBitmask(k, i16x8.splat(0.inv()), i16x8.ZERO)
+    val memAddr1 = MutPtr((memAddr).rawAddress)
+    val max = simdSplat(UShort.from(UByte.MAX_VALUE))
+    val v = a.asU16x8()
+    val v1 = simdImin(v, max)
+    val truncated: U8x8 = simdCast(v1)
+    simdMaskedStore(mask, memAddr1, truncated, SimdAlign.Unaligned)
+}
+
+public expect fun vpmulhrsw(a: I16x32, b: I16x32): I16x32
+
+public expect fun vpmulhuw(a: U16x32, b: U16x32): U16x32
+
+public expect fun vpmulhw(a: I16x32, b: I16x32): I16x32
+
+public expect fun vpmaddwd(a: I16x32, b: I16x32): I32x16
+
+public expect fun vpmaddubsw(a: U8x64, b: I8x64): I16x32
+
+public expect fun vpackssdw(a: I32x16, b: I32x16): I16x32
+
+public expect fun vpacksswb(a: I16x32, b: I16x32): I8x64
+
+public expect fun vpackusdw(a: I32x16, b: I32x16): U16x32
+
+public expect fun vpackuswb(a: I16x32, b: I16x32): U8x64
+
+public expect fun vpsllw(a: I16x32, count: I16x8): I16x32
+
+public expect fun vpsllvw(a: I16x32, b: I16x32): I16x32
+
+public expect fun vpsllvw256(a: I16x16, b: I16x16): I16x16
+
+public expect fun vpsllvw128(a: I16x8, b: I16x8): I16x8
+
+public expect fun vpsrlw(a: I16x32, count: I16x8): I16x32
+
+public expect fun vpsrlvw(a: I16x32, b: I16x32): I16x32
+
+public expect fun vpsrlvw256(a: I16x16, b: I16x16): I16x16
+
+public expect fun vpsrlvw128(a: I16x8, b: I16x8): I16x8
+
+public expect fun vpsraw(a: I16x32, count: I16x8): I16x32
+
+public expect fun vpsravw(a: I16x32, count: I16x32): I16x32
+
+public expect fun vpsravw256(a: I16x16, count: I16x16): I16x16
+
+public expect fun vpsravw128(a: I16x8, count: I16x8): I16x8
+
+public expect fun vpermi2w(a: I16x32, idx: I16x32, b: I16x32): I16x32
+
+public expect fun vpermi2w256(a: I16x16, idx: I16x16, b: I16x16): I16x16
+
+public expect fun vpermi2w128(a: I16x8, idx: I16x8, b: I16x8): I16x8
+
+public expect fun vpermw(a: I16x32, idx: I16x32): I16x32
+
+public expect fun vpermw256(a: I16x16, idx: I16x16): I16x16
+
+public expect fun vpermw128(a: I16x8, idx: I16x8): I16x8
+
+public expect fun vpshufb(a: I8x64, b: I8x64): I8x64
+
+public expect fun vpsadbw(a: U8x64, b: U8x64): U64x8
+
+public expect fun vdbpsadbw(a: U8x64, b: U8x64, imm8: Int): U16x32
+
+public expect fun vdbpsadbw256(a: U8x32, b: U8x32, imm8: Int): U16x16
+
+public expect fun vdbpsadbw128(a: U8x16, b: U8x16, imm8: Int): U16x8
+
+public expect fun vpmovswb128(a: I16x8, src: I8x16, mask: UByte): I8x16
+
+public expect fun vpmovuswb128(a: U16x8, src: U8x16, mask: UByte): U8x16
+
+public expect fun vpmovswbmem(memAddr: MutPtr, a: I16x32, mask: UInt)
+
+public expect fun vpmovuswbmem(memAddr: MutPtr, a: I16x32, mask: UInt)
+
+public expect fun vpavgb(a: U8x64, b: U8x64): U8x64
+
+public expect fun vpavgw(a: U16x32, b: U16x32): U16x32

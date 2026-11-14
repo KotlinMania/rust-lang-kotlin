@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="tasks">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/generation/core-03/j2k/idea-config/tasks/candidate_j2k.tasks.zip!/" />
+      <root url="jar://$PROJECT_DIR$/generation/core-03/j2k/idea-config/tasks/candidate_j2k.contexts.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
