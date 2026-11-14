@@ -34,6 +34,8 @@ public open class Ready<T>(
      * # Examples
      *
      * ```kotlin
+     * import std.future
+     *
      * val a = future.ready(1)
      * check(a.intoInner() == 1)
      * ```
@@ -51,6 +53,8 @@ public open class Ready<T>(
  * # Examples
  *
  * ```kotlin
+ * import std.future
+ *
  * val a = future.ready(1)
  * check(a == 1)
  * ```

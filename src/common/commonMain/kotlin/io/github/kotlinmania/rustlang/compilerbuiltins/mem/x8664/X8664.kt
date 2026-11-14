@@ -1,7 +1,6 @@
 // port-lint: source mem/x86_64.rs
 package io.github.kotlinmania.rustlang.compilerbuiltins.mem.x8664
 
-import io.github.kotlinmania.rustlang.compilerbuiltins.float.cmp.cmp
 import io.github.kotlinmania.rustlang.core.ffi.CChar
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -31,16 +30,16 @@ public fun compareBytes(a: ConstPtr, b: ConstPtr, n: Int): Int {
         var a23 = a2
         var b23 = b2
         // Ensure T is not a ZST.
-        check(mem.sizeOf<T>(typeLayoutT = typeLayoutT) != 0)
-        val end = ConstPtr((a23).rawAddress + ((intrinsics.uncheckedDiv(n1, mem.sizeOf<T>(typeLayoutT = typeLayoutT))).toLong() * (typeLayoutT).strideBytes))
+        check(sizeOf<T>(typeLayoutT = typeLayoutT) != 0)
+        val end = ConstPtr((a23).rawAddress + ((uncheckedDiv(n1, sizeOf<T>(typeLayoutT = typeLayoutT))).toLong() * (typeLayoutT).strideBytes))
         while (((a23).rawAddress.toULong() != (end).rawAddress.toULong())) {
             if ((typeLayoutT).readNative((a23).rawAddress) != (typeLayoutT).readNative((b23).rawAddress)) {
-                return f(a23, b23, mem.sizeOf<T>(typeLayoutT = typeLayoutT))
+                return f(a23, b23, sizeOf<T>(typeLayoutT = typeLayoutT))
             }
             a23 = ConstPtr((a23).rawAddress + ((1).toLong() * (typeLayoutT).strideBytes))
             b23 = ConstPtr((b23).rawAddress + ((1).toLong() * (typeLayoutT).strideBytes))
         }
-        return f(a23, b23, intrinsics.uncheckedRem(n1, mem.sizeOf<T>(typeLayoutT = typeLayoutT)))
+        return f(a23, b23, uncheckedRem(n1, sizeOf<T>(typeLayoutT = typeLayoutT)))
     }
     val c1 =
         closure@{ a2: ConstPtr, b2: ConstPtr, n1 ->

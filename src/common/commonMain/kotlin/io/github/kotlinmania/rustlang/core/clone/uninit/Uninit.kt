@@ -28,7 +28,7 @@ public fun <T> copySpecCloneOneT(src: T, dst: MutPtr, cloneTFn: (T) -> T = { it 
     run {
         // We hope the optimizer will figure out to create the cloned value in-place,
         // skipping ever storing it on the stack and the copy to the destination.
-        ptr.write(dst, cloneTFn(src), typeLayoutT = ObjectSlotLayout<T>())
+        write(dst, cloneTFn(src), typeLayoutT = ObjectSlotLayout<T>())
     }
 }
 
@@ -59,7 +59,7 @@ public fun <T> copySpecCloneSliceT(src: List<T>, dst: MutPtr, typeLayoutT: TypeL
     }
     // If we reach here, then the entire slice is initialized, and we've satisfied our
     // responsibilities to the caller. Disarm the cleanup guard by forgetting it.
-    mem.forget(initializing)
+    forget(initializing)
 }
 
 // Specialized implementation for types that are [TrivialClone], not just [Clone],
@@ -68,7 +68,7 @@ public fun <T : TrivialClone<T>> copySpecCloneOneT(src: T, dst: MutPtr) {
     // SAFETY: The safety conditions of cloneToUninit() are a superset of those of
     // ptr.copyNonoverlapping().
     run {
-        ptr.copyNonoverlapping(src, dst, 1, typeLayoutT = ObjectSlotLayout<T>())
+        copyNonoverlapping(src, dst, 1, typeLayoutT = ObjectSlotLayout<T>())
     }
 }
 
@@ -89,7 +89,7 @@ public fun <T : TrivialClone<T>> copySpecCloneSliceT(src: List<T>, dst: MutPtr) 
     // SAFETY: The safety conditions of cloneToUninit() are a superset of those of
     // ptr.copyNonoverlapping().
     run {
-        ptr.copyNonoverlapping(src.asPtr(), dst.asMutPtr(), len)
+        copyNonoverlapping(src.asPtr(), dst.asMutPtr(), len)
     }
 }
 

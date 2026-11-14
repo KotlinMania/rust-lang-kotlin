@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.test.time
 
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 import io.github.kotlinmania.rustlang.core.time.Duration
+import io.github.kotlinmania.rustlang.std.time.Instant
 import io.github.kotlinmania.rustlang.test.types.TestDesc
 import io.github.kotlinmania.rustlang.test.types.TestType
 
@@ -70,6 +71,8 @@ public open class TestExecTime(
             value = v
         }
 
+    public open fun clone(): TestExecTime = TestExecTime(value)
+
     public open fun fmt(f: StringBuilder) {
         f.append("${this.value.asSecsF64()}s")
     }
@@ -87,6 +90,8 @@ internal open class TestSuiteExecTime(
             value = v
         }
 
+    public open fun clone(): TestSuiteExecTime = TestSuiteExecTime(value)
+
     public open fun fmt(f: StringBuilder) {
         f.append("${this.value.asSecsF64()}s")
     }
@@ -99,6 +104,8 @@ public open class TimeThreshold(
     public var warn: Duration,
     public var critical: Duration,
 ) {
+    public open fun clone(): TimeThreshold = TimeThreshold(warn, critical)
+
     public companion object {
         /**
          * Creates a new `TimeThreshold` instance with provided durations.
@@ -148,6 +155,8 @@ public open class TestTimeOptions(
     public var integrationThreshold: TimeThreshold,
     public var doctestThreshold: TimeThreshold,
 ) {
+    public open fun clone(): TestTimeOptions = TestTimeOptions(errorOnExcess, unitThreshold, integrationThreshold, doctestThreshold)
+
     public open fun isWarn(test: TestDesc, execTime: TestExecTime): Boolean = execTime.value >= this.warnTime(test)
 
     public open fun isCritical(test: TestDesc, execTime: TestExecTime): Boolean = execTime.value >= this.criticalTime(test)

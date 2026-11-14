@@ -1,4 +1,4 @@
-@file:OptIn(kotlinx.cinterop.ExperimentalForeignApi::class, kotlin.ExperimentalUnsignedTypes::class)
+@file:OptIn(ExperimentalForeignApi::class, ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.corearch.x86
 
@@ -16,6 +16,7 @@ import io.github.kotlinmania.rustlang.corearch.simd.U16x8
 import io.github.kotlinmania.rustlang.corearch.simd.U8x16
 import io.github.kotlinmania.rustlang.corearch.simd.U8x32
 import io.github.kotlinmania.rustlang.corearch.simd.U8x64
+import kotlinx.cinterop.ExperimentalForeignApi
 
 public actual fun vpdpwssd(src: I32x16, a: I16x32, b: I16x32): I32x16 =
     null as I32x16

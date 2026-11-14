@@ -16,9 +16,7 @@ import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
-import io.github.kotlinmania.rustlang.std.fmt
 import io.github.kotlinmania.rustlang.std.io.stdio.trySetOutputCapture
-import io.github.kotlinmania.rustlang.std.mem
 import io.github.kotlinmania.rustlang.std.panic.BacktraceStyle
 import io.github.kotlinmania.rustlang.std.panic.PanicHookInfo
 import io.github.kotlinmania.rustlang.std.panic.getBacktraceStyle
@@ -31,9 +29,7 @@ import io.github.kotlinmania.rustlang.std.process.abort
 import io.github.kotlinmania.rustlang.std.sync.mpmc.counter.new
 import io.github.kotlinmania.rustlang.std.sync.nonpoison.rwlock.RwLock
 import io.github.kotlinmania.rustlang.std.sys.backtrace.rustEndShortBacktrace
-import io.github.kotlinmania.rustlang.std.sys.process.unix.unix.Process
-import io.github.kotlinmania.rustlang.std.sys.stdio.motor.panicOutput
-import io.github.kotlinmania.rustlang.std.sys.thread.unix.Thread
+import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
 
 // Implementation of various bits and pieces of the `panic` macro and
 // associated runtime pieces.
@@ -161,6 +157,8 @@ public var HOOK: RwLock<Hook> = RwLock.new(Hook.Default)
  * The following will print "Custom panic hook":
  *
  * ```kotlin
+ * import std.panic
+ *
  * panic.setHook({
  *     println("Custom panic hook")
  * })
@@ -168,7 +166,7 @@ public var HOOK: RwLock<Hook> = RwLock.new(Hook.Default)
  * ```
  */
 public fun setHook(hook: (PanicHookInfo) -> Unit) {
-    if (Thread.panicking()) {
+    if (thread.panicking()) {
         error("cannot modify the panic hook from a panicking thread")
     }
     // Drop the old hook after changing the hook to avoid deadlocking if its
@@ -195,6 +193,8 @@ public fun setHook(hook: (PanicHookInfo) -> Unit) {
  * The following will print "Normal panic":
  *
  * ```kotlin
+ * import std.panic
+ *
  * panic.setHook({
  *     println("Custom panic hook")
  * })
@@ -203,7 +203,7 @@ public fun setHook(hook: (PanicHookInfo) -> Unit) {
  * ```
  */
 public fun takeHook(): (PanicHookInfo) -> Unit {
-    if (Thread.panicking()) {
+    if (thread.panicking()) {
         error("cannot modify the panic hook from a panicking thread")
     }
     return HOOK.replace(Hook.Default).intoBox()
@@ -225,6 +225,8 @@ public fun takeHook(): (PanicHookInfo) -> Unit {
  * The following will print the custom message, and then the normal output of panic.
  *
  * ```kotlin
+ * import std.panic
+ *
  * @feature(panicUpdateHook)
  * public fun doctestEntry() {
  *     // Equivalent to
@@ -242,11 +244,11 @@ public fun takeHook(): (PanicHookInfo) -> Unit {
  * ```
  */
 public fun updateHook(hookFn: ((PanicHookInfo) -> Unit, PanicHookInfo) -> Unit) {
-    if (Thread.panicking()) {
+    if (thread.panicking()) {
         error("cannot modify the panic hook from a panicking thread")
     }
     var hook = HOOK.write()
-    val prev = mem.take(hook).intoBox()
+    val prev = take(hook).intoBox()
     hook = Hook.Custom({ info -> hookFn(prev, info) })
 }
 
@@ -272,9 +274,9 @@ public fun defaultHook(info: PanicHookInfo) {
             // Use a lock to prevent mixed output in multithreading context.
             // Some platforms also require it when printing a backtrace, like `SymFromAddr` on Windows.
             var lock = backtrace.lock()
-            Thread.withCurrentName({ name ->
+            thread.withCurrentName({ name ->
                 val name1 = name.unwrapOr("<unnamed>")
-                val tid = Thread.currentOsId()
+                val tid = thread.currentOsId()
                 // Try to write the panic message to a buffer first to prevent other concurrent outputs
                 // interleaving with it.
                 var buffer = UByteArray(512) { 0u.toUByte() }
@@ -318,7 +320,7 @@ public fun defaultHook(info: PanicHookInfo) {
             write(local.lock().unwrapOrElse({ e -> e.intoInner() }))
             trySetOutputCapture(local).ok()
         } else {
-            when (val matchVal = io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput()) {
+            when (val matchVal = panicOutput()) {
                 null -> {}
                 else -> {
                     val out = matchVal
@@ -352,7 +354,7 @@ internal fun panicHandler(info: PanicInfo): Nothing {
             // Lazily, the first time this gets called, run the actual string formatting.
             return this.string.getOrInsertWith({
                 var s = ""
-                var fmt = fmt.Formatter.new(s, fmt.FormattingOptions.new())
+                var fmt = Formatter.new(s, FormattingOptions.new())
                 val err = fmt.append((inner).toString())
                 s
             })
@@ -362,7 +364,7 @@ internal fun panicHandler(info: PanicInfo): Nothing {
             // We do two allocations here, unfortunately. But (a) they're required with the current
             // scheme, and (b) we don't handle panic + OOM properly anyway (see comment in
             // beginPanic below).
-            val contents = mem.take(this.fill())
+            val contents = take(this.fill())
             return contents
         }
 
@@ -436,7 +438,7 @@ public fun <M> beginPanic(msg: M): Nothing {
             // propagate this allocation to be performed in the parent of this thread instead of the
             // thread that's panicking.
             return when (val matchVal = this.inner.also { this.inner = null }) {
-                null -> Process.abort()
+                null -> process.abort()
                 else -> {
                     val a = matchVal
                     RustAny.from(a)
@@ -446,7 +448,7 @@ public fun <M> beginPanic(msg: M): Nothing {
 
         public open fun get(): RustAny =
             when (val matchVal = this.inner) {
-                null -> Process.abort()
+                null -> process.abort()
                 else -> {
                     val a = matchVal
                     a
@@ -455,7 +457,7 @@ public fun <M> beginPanic(msg: M): Nothing {
 
         public open fun fmt(f: StringBuilder) {
             when (val matchVal = this.inner) {
-                null -> Process.abort()
+                null -> process.abort()
                 else -> {
                     val a = matchVal
                     f.append(payloadAsStr(a))
@@ -530,7 +532,7 @@ public fun panicWithHook(payload: PanicPayload, location: Location, canUnwind: B
             // methods, this means we avoid formatting the string at all!
             // (The panic runtime might still call `payload.takeBox()` though and trigger
             // formatting.)
-            matchVal == Hook.Default && io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput() == null -> {}
+            matchVal == Hook.Default && panicOutput() == null -> {}
             matchVal == Hook.Default -> {
                 defaultHook(PanicHookInfo.new(location, payload.get(), canUnwind, forceNoBacktrace))
             }
@@ -574,7 +576,7 @@ internal fun resumeUnwind(payload: RustAny): Nothing {
                 value = v
             }
 
-        public open fun takeBox(): RustAny = mem.replace(this.value, Box.new())
+        public open fun takeBox(): RustAny = replace(this.value, Box.new())
 
         public open fun get(): RustAny = this.value
 

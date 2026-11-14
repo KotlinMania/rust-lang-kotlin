@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.test.formatters.junit
 
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.test.TestDesc
 import io.github.kotlinmania.rustlang.test.TestType
 import io.github.kotlinmania.rustlang.test.console.ConsoleTestDiscoveryState
@@ -15,42 +16,42 @@ internal open class JunitFormatter<T>(
     public var out: OutputLocation<T>,
     public var results: MutableList<List<Any?>>,
 ) : OutputFormatter {
-    public open fun writeMessage(s: String): io.Result<Unit> {
+    public open fun writeMessage(s: String): Result<Unit, Error> {
         check(!s.contains('\n'))
         return this.out.writeAll(s)
     }
 
-    public override fun writeDiscoveryStart(): io.Result<Unit> = Result.Err(io.constError(io.ErrorKind.NotFound, "not yet implemented!"))
+    public override fun writeDiscoveryStart(): Result<Unit, Error> = Result.Err(io.constError(ErrorKind.NotFound, "not yet implemented!"))
 
-    public override fun writeTestDiscovered(desc: TestDesc, testType: String): io.Result<Unit> = Result.Err(io.constError(io.ErrorKind.NotFound, "not yet implemented!"))
+    public override fun writeTestDiscovered(desc: TestDesc, testType: String): Result<Unit, Error> = Result.Err(io.constError(ErrorKind.NotFound, "not yet implemented!"))
 
-    public override fun writeDiscoveryFinish(state: ConsoleTestDiscoveryState): io.Result<Unit> = Result.Err(io.constError(io.ErrorKind.NotFound, "not yet implemented!"))
+    public override fun writeDiscoveryFinish(state: ConsoleTestDiscoveryState): Result<Unit, Error> = Result.Err(io.constError(ErrorKind.NotFound, "not yet implemented!"))
 
-    public override fun writeRunStart(testCount: Int, shuffleSeed: ULong?): io.Result<Unit> {
+    public override fun writeRunStart(testCount: Int, shuffleSeed: ULong?): Result<Unit, Error> {
         // We write xml header on run start
         return this.writeMessage("<?xml version=\"1.0\" encoding=\"UTF-8\"?>")
     }
 
-    public override fun writeTestStart(desc: TestDesc): io.Result<Unit> {
+    public override fun writeTestStart(desc: TestDesc): Result<Unit, Error> {
         // We do not output anything on test start.
         return Result.Ok(Unit)
     }
 
-    public override fun writeTimeout(desc: TestDesc): io.Result<Unit> {
+    public override fun writeTimeout(desc: TestDesc): Result<Unit, Error> {
         // We do not output anything on test timeout.
         return Result.Ok(Unit)
     }
 
-    public override fun writeResult(desc: TestDesc, result: TestResult, execTime: TestExecTime?, stdout: List<UByte>, state: ConsoleTestState): io.Result<Unit> {
+    public override fun writeResult(desc: TestDesc, result: TestResult, execTime: TestExecTime?, stdout: List<UByte>, state: ConsoleTestState): Result<Unit, Error> {
         // Because the testsuite node holds some of the information as attributes, we can't write it
         // until all of the tests have finished. Instead of writing every result as they come in, we add
         // them to a Vec and write them all at once when run is complete.
         val duration = execTime?.let({ t -> t.first }).unwrapOrDefault()
-        this.results.add(listOf(desc.clone(), result.clone(), duration, stdout.toVec()))
+        this.results.add(listOf(desc.clone(), result.clone(), duration, stdout.toMutableList()))
         return Result.Ok(Unit)
     }
 
-    public override fun writeRunFinish(state: ConsoleTestState): io.Result<Boolean> {
+    public override fun writeRunFinish(state: ConsoleTestState): Result<Boolean, Error> {
         when (val tryResult = this.writeMessage("<testsuites>")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         when (val tryResult = this.writeMessage("<testsuite name=\"test\" package=\"test\" id=\"0\" errors=\"0\" failures=\"${state.failed}\" tests=\"${state.total}\" skipped=\"${state.ignored}\" >")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         for ((desc, result, duration, stdout) in take(this.results)) {
@@ -110,7 +111,7 @@ internal open class JunitFormatter<T>(
         return Result.Ok(state.failed == 0)
     }
 
-    public override fun writeMergedDoctestsTimes(totalTime: Double, compilationTime: Double): io.Result<Unit> {
+    public override fun writeMergedDoctestsTimes(totalTime: Double, compilationTime: Double): Result<Unit, Error> {
         when (val tryResult = this.writeMessage("<report total_time=\"$totalTime\" compilation_time=\"$compilationTime\"></report>")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         when (val tryResult = this.out.writeAll("\n".encodeToByteArray())) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         return Result.Ok(Unit)

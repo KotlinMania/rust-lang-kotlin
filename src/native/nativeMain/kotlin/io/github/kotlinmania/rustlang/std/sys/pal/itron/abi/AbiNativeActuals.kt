@@ -1,4 +1,4 @@
-@file:OptIn(kotlinx.cinterop.ExperimentalForeignApi::class, kotlin.ExperimentalUnsignedTypes::class)
+@file:OptIn(ExperimentalForeignApi::class, ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.std.sys.pal.itron.abi
 
@@ -33,6 +33,7 @@ import io.github.kotlinmania.rustlang.std.sys.pal.itron.abi.cinterop.stdSysPalIt
 import io.github.kotlinmania.rustlang.std.sys.pal.itron.abi.cinterop.stdSysPalItronAbiWaiFlg
 import io.github.kotlinmania.rustlang.std.sys.pal.itron.abi.cinterop.stdSysPalItronAbiWupTsk
 import kotlinx.cinterop.ByteVar
+import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.toCPointer
 
 public actual fun acreTsk(pkCtsk: ConstPtr): ErId =

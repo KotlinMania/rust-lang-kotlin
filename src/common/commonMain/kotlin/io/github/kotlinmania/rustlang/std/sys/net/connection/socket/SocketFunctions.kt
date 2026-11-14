@@ -9,6 +9,7 @@ import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.net.ipaddr.Ipv4Addr
 import io.github.kotlinmania.rustlang.core.net.ipaddr.Ipv6Addr
+import io.github.kotlinmania.rustlang.core.net.socketaddr.SocketAddr
 import io.github.kotlinmania.rustlang.core.net.socketaddr.SocketAddrV4
 import io.github.kotlinmania.rustlang.core.net.socketaddr.SocketAddrV6
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
@@ -16,10 +17,10 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
+import io.github.kotlinmania.rustlang.std.c.Addrinfo
 import io.github.kotlinmania.rustlang.std.ffi.CInt
-import io.github.kotlinmania.rustlang.std.os.unix.net.SocketAddr
+import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.sys.helpers.smallcstring.runWithCstr
-import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.solid.cvt
 import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.unix.Socket
 import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.unix.cvtGai
 import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.unix.init
@@ -31,9 +32,9 @@ import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.windows.netc
 import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.windows.netc.SockaddrIn6
 import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.windows.netc.SocklenT
 import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.windows.netc.getaddrinfo
-import io.github.kotlinmania.rustlang.std.sys.pal.solid.abi.sockets.Addrinfo
-import io.github.kotlinmania.rustlang.std.sys.pal.solid.abi.sockets.SOCK_STREAM
-import io.github.kotlinmania.rustlang.std.sys.pal.solid.abi.sockets.SockaddrStorage
+import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.SOCK_STREAM
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.SockaddrStorage
 
 // ///////////////////////////////////////////////////////////////////////////
 // address conversions
@@ -50,9 +51,9 @@ public fun ipV4AddrFromC(addr: InAddr): Ipv4Addr = Ipv4Addr.from(run { val rawBi
 
 public fun ipV6AddrFromC(addr: In6Addr): Ipv6Addr = Ipv6Addr.from(addr.s6Addr)
 
-public fun socketAddrV4ToC(addr: SocketAddrV4): SockaddrIn = null.copy(sinFamily = (AF_INET.toUByte()).toUShort(), sinPort = addr.port().toBe(), sinAddr = ipV4AddrToC(addr.ip()))
+public fun socketAddrV4ToC(addr: SocketAddrV4): SockaddrIn = null.copy(sinFamily = AF_INET.toUShort(), sinPort = addr.port().toBe(), sinAddr = ipV4AddrToC(addr.ip()))
 
-public fun socketAddrV6ToC(addr: SocketAddrV6): SockaddrIn6 = null.copy(sin6Family = (AF_INET6.toUByte()).toUShort(), sin6Port = addr.port().toBe(), sin6Addr = ipV6AddrToC(addr.ip()), sin6Flowinfo = addr.flowinfo(), sin6ScopeId = addr.scopeId())
+public fun socketAddrV6ToC(addr: SocketAddrV6): SockaddrIn6 = null.copy(sin6Family = AF_INET6.toUShort(), sin6Port = addr.port().toBe(), sin6Addr = ipV6AddrToC(addr.ip()), sin6Flowinfo = addr.flowinfo(), sin6ScopeId = addr.scopeId())
 
 public fun socketAddrV4FromC(addr: SockaddrIn): SocketAddrV4 = SocketAddrV4.new(ipV4AddrFromC(addr.sinAddr), run { val swapVal0 = (addr.sinPort); (((((swapVal0).toUInt() and 0xFFu) shl 8) or (((swapVal0).toUInt() shr 8) and 0xFFu)).toUShort()) })
 
@@ -85,7 +86,7 @@ public fun addrFamily(addr: SocketAddr): CInt =
  * * `storage` must contain a valid C socket address whose length is no larger
  *   than `len`.
  */
-public fun socketAddrFromC(storage: ConstPtr, len: Int): Result<SocketAddr> =
+public fun socketAddrFromC(storage: ConstPtr, len: Int): Result<SocketAddr, Error> =
     when (((ObjectSlotLayout<SockaddrStorage>()).readNative((storage).rawAddress).ssFamily).toInt()) {
         AF_INET -> {
             check(len >= sizeOf<SockaddrIn>(typeLayoutT = ObjectSlotLayout<SockaddrIn>()))
@@ -108,7 +109,7 @@ public fun socketAddrFromC(storage: ConstPtr, len: Int): Result<SocketAddr> =
  * # Safety
  * `T` must be the type associated with the given socket option.
  */
-public fun <T> setsockopt(sock: Socket, level: CInt, optionName: CInt, optionValue: T, typeLayoutT: TypeLayout<T>): Result<Unit> {
+public fun <T> setsockopt(sock: Socket, level: CInt, optionName: CInt, optionValue: T, typeLayoutT: TypeLayout<T>): Result<Unit, Error> {
     val optionLen = sizeOf<T>(typeLayoutT = typeLayoutT)
     // SAFETY:
     // * `sock` is opened for the duration of this call, as `sock` owns the socket.
@@ -116,7 +117,7 @@ public fun <T> setsockopt(sock: Socket, level: CInt, optionName: CInt, optionVal
     // bytes
     // * the value of `optionValue` has a valid type for the given socket option
     // (guaranteed by caller).
-    when (val tryResult = cvt(setsockopt(sock.asRaw(), level, optionName, (addrOf(optionValue)), optionLen))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    when (val tryResult = cvt(setsockopt(sock.asRaw().toULong(), level, optionName, (addrOf(optionValue)), optionLen))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
     return Result.Ok(Unit)
 }
 
@@ -126,14 +127,14 @@ public fun <T> setsockopt(sock: Socket, level: CInt, optionName: CInt, optionVal
  * # Safety
  * `T` must be the type associated with the given socket option.
  */
-public fun <T> getsockopt(sock: Socket, level: CInt, optionName: CInt, typeLayoutT: TypeLayout<T>): Result<T> {
+public fun <T> getsockopt(sock: Socket, level: CInt, optionName: CInt, typeLayoutT: TypeLayout<T>): Result<T, Error> {
     val optionValue = MaybeUninit.zeroed(typeLayoutT)
     val optionLen = sizeOf<T>(typeLayoutT = typeLayoutT)
     // SAFETY:
     // * `sock` is opened for the duration of this call, as `sock` owns the socket.
     // * the pointer to `optionValue` is writable and the stack allocation has
     // space for `sizeOf<T>` bytes.
-    when (val tryResult = cvt(getsockopt(sock.asRaw(), level, optionName, optionValue.asMutPtr().cast(), optionLen))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    when (val tryResult = cvt(getsockopt(sock.asRaw().toULong(), level, optionName, optionValue.asMutPtr().cast(), optionLen))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
     // SAFETY: the `getsockopt` call succeeded and the caller guarantees that
     // `T` is the type of this option, thus `optionValue` must have
     // been initialized by the system.
@@ -149,7 +150,7 @@ public fun <T> getsockopt(sock: Socket, level: CInt, optionName: CInt, typeLayou
  *   with a valid C socket address, the length of which must be written
  *   to the second argument.
  */
-public fun sockname(f: (MutPtr, MutPtr) -> CInt): Result<SocketAddr> {
+public fun sockname(f: (MutPtr, MutPtr) -> CInt): Result<SocketAddr, Error> {
     val storage = MaybeUninit.zeroed(ObjectSlotLayout<SockaddrStorage>())
     val len = sizeOf<SockaddrStorage>(typeLayoutT = ObjectSlotLayout<SockaddrStorage>())
     when (val tryResult = cvt(f(storage.asMutPtr().cast(), len))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
@@ -161,7 +162,7 @@ public fun sockname(f: (MutPtr, MutPtr) -> CInt): Result<SocketAddr> {
 
 public fun toIpv6mrInterface(value: UInt): CInt = value.toInt()
 
-public fun lookupHost(host: String, port: UShort): Result<LookupHost> {
+public fun lookupHost(host: String, port: UShort): Result<LookupHost, Error> {
     init()
     return runWithCstr(host.encodeToByteArray().map { it.toUByte() }, { cHost ->
         var hints: Addrinfo? = null

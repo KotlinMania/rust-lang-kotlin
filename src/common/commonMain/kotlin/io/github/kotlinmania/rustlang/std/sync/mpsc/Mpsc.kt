@@ -3,9 +3,9 @@ package io.github.kotlinmania.rustlang.std.sync.mpsc
 
 import io.github.kotlinmania.rustlang.core.clone.Share
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.time.Duration
-import io.github.kotlinmania.rustlang.std.fmt
 import io.github.kotlinmania.rustlang.std.sync.mpmc.SendTimeoutError
 import io.github.kotlinmania.rustlang.std.time.Instant
 
@@ -60,6 +60,7 @@ import io.github.kotlinmania.rustlang.std.time.Instant
 //
 // ```kotlin
 // import std.sync.mpsc.channel
+// import std.thread
 //
 // // Create a simple streaming channel
 // val (tx, rx) = channel()
@@ -73,6 +74,7 @@ import io.github.kotlinmania.rustlang.std.time.Instant
 //
 // ```kotlin
 // import std.sync.mpsc.channel
+// import std.thread
 //
 // // Create a shared channel that can be sent along from many threads
 // // where tx is the sending half (tx for transmission), and rx is the receiving
@@ -106,6 +108,7 @@ import io.github.kotlinmania.rustlang.std.time.Instant
 //
 // ```kotlin
 // import std.sync.mpsc.syncChannel
+// import std.thread
 //
 // val (tx, rx) = syncChannel<Int>(0)
 // thread.spawn({
@@ -119,6 +122,7 @@ import io.github.kotlinmania.rustlang.std.time.Instant
 //
 // ```kotlin
 // import std.sync.mpsc.syncChannel
+// import std.thread
 //
 // val (tx, rx) = syncChannel(3)
 // for (unused in 0 until 3) {
@@ -201,6 +205,7 @@ public class DebugTuple(
  *
  * ```kotlin
  * import std.sync.mpsc.channel
+ * import std.thread
  * import std.time.Duration
  *
  * val (send, recv) = channel()
@@ -220,7 +225,7 @@ public class DebugTuple(
 public open class Receiver<T>(
     public var inner: Receiver<T>,
 ) : Iterable<T> {
-    override fun iterator(): kotlin.collections.Iterator<T> = this.intoIter().iterator()
+    override fun iterator(): Iterator<T> = this.intoIter().iterator()
 
     // The receiver port can be sent from place to place, so long as it
     // is not used to receive non-sendable things.
@@ -278,6 +283,7 @@ public open class Receiver<T>(
      *
      * ```kotlin
      * import std.sync.mpsc
+     * import std.thread
      *
      * val (send, recv) = mpsc.channel()
      * val handle = thread.spawn({
@@ -292,6 +298,7 @@ public open class Receiver<T>(
      * ```kotlin
      * import std.sync.mpsc
      * import std.sync.mpsc.RecvError
+     * import std.thread
      *
      * val (send, recv) = mpsc.channel()
      * val handle = thread.spawn({
@@ -332,6 +339,7 @@ public open class Receiver<T>(
      *
      * ```kotlin
      * import std.sync.mpsc
+     * import std.thread
      * import std.time.Duration
      *
      * val (send, recv) = mpsc.channel()
@@ -345,6 +353,7 @@ public open class Receiver<T>(
      *
      * ```kotlin
      * import std.sync.mpsc
+     * import std.thread
      * import std.time.Duration
      *
      * val (send, recv) = mpsc.channel()
@@ -378,6 +387,7 @@ public open class Receiver<T>(
      *
      * ```kotlin
      * import std.sync.mpsc
+     * import std.thread
      * import std.time.Duration
      * import std.time.Instant
      *
@@ -395,6 +405,7 @@ public open class Receiver<T>(
      *
      * ```kotlin
      * import std.sync.mpsc
+     * import std.thread
      * import std.time.Duration
      * import std.time.Instant
      *
@@ -419,6 +430,7 @@ public open class Receiver<T>(
      *
      * ```kotlin
      * import std.sync.mpsc.channel
+     * import std.thread
      *
      * val (send, recv) = channel()
      * thread.spawn({
@@ -445,6 +457,7 @@ public open class Receiver<T>(
      *
      * ```kotlin
      * import std.sync.mpsc.channel
+     * import std.thread
      * import std.time.Duration
      *
      * val (sender, receiver) = channel()
@@ -501,6 +514,7 @@ public open class Receiver<T>(
      *
      * ```kotlin
      * import std.sync.mpsc
+     * import std.thread
      *
      * @feature(mpscChannelLen)
      * public fun doctestEntry() {
@@ -561,6 +575,7 @@ public open class Receiver<T>(
  *
  * ```kotlin
  * import std.sync.mpsc.channel
+ * import std.thread
  *
  * val (send, recv) = channel()
  * thread.spawn({
@@ -576,7 +591,7 @@ public open class Receiver<T>(
 public open class Iter<T>(
     public var rx: Receiver<T>,
 ) : Iterable<T> {
-    override fun iterator(): kotlin.collections.Iterator<T> = object : AbstractIterator<T>() {
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@Iter.next()) {
                 null -> done()
@@ -606,6 +621,7 @@ public open class Iter<T>(
  *
  * ```kotlin
  * import std.sync.mpsc.channel
+ * import std.thread
  * import std.time.Duration
  *
  * val (sender, receiver) = channel()
@@ -628,7 +644,7 @@ public open class Iter<T>(
 public open class TryIter<T>(
     public var rx: Receiver<T>,
 ) : Iterable<T> {
-    override fun iterator(): kotlin.collections.Iterator<T> = object : AbstractIterator<T>() {
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@TryIter.next()) {
                 null -> done()
@@ -655,6 +671,7 @@ public open class TryIter<T>(
  *
  * ```kotlin
  * import std.sync.mpsc.channel
+ * import std.thread
  *
  * val (send, recv) = channel()
  * thread.spawn({
@@ -670,7 +687,7 @@ public open class TryIter<T>(
 public open class IntoIter<T>(
     public var rx: Receiver<T>,
 ) : Iterable<T> {
-    override fun iterator(): kotlin.collections.Iterator<T> = object : AbstractIterator<T>() {
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@IntoIter.next()) {
                 null -> done()
@@ -696,6 +713,7 @@ public open class IntoIter<T>(
  *
  * ```kotlin
  * import std.sync.mpsc.channel
+ * import std.thread
  *
  * val (sender, receiver) = channel()
  * val sender2 = sender.clone()
@@ -786,6 +804,7 @@ public open class Sender<T>(
      *
      * ```kotlin
      * import std.sync.mpsc
+     * import std.thread
      *
      * @feature(mpscChannelLen)
      * public fun doctestEntry() {
@@ -810,6 +829,7 @@ public open class Sender<T>(
      *
      * ```kotlin
      * import std.sync.mpsc
+     * import std.thread
      *
      * @feature(mpscChannelLen)
      * public fun doctestEntry() {
@@ -854,6 +874,7 @@ public open class Sender<T>(
  *
  * ```kotlin
  * import std.sync.mpsc.syncChannel
+ * import std.thread
  *
  * // Create a syncChannel with buffer size 2
  * val (syncSender, receiver) = syncChannel(2)
@@ -907,6 +928,7 @@ public open class SyncSender<T>(
      *
      * ```kotlin
      * import std.sync.mpsc.syncChannel
+     * import std.thread
      *
      * // Create a rendezvous syncChannel with buffer size 0
      * val (syncSender, receiver) = syncChannel(0)
@@ -939,6 +961,7 @@ public open class SyncSender<T>(
      *
      * ```kotlin
      * import std.sync.mpsc.syncChannel
+     * import std.thread
      *
      * // Create a syncChannel with buffer size 1
      * val (syncSender, receiver) = syncChannel(1)
@@ -991,6 +1014,7 @@ public open class SyncSender<T>(
      *
      * ```kotlin
      * import std.sync.mpsc
+     * import std.thread
      *
      * @feature(mpscChannelLen)
      * public fun doctestEntry() {
@@ -1065,10 +1089,10 @@ public open class SendError<T>(
     }
 
     public companion object {
-        public fun <T> typeLayout(typeLayoutT: io.github.kotlinmania.rustlang.core.mem.TypeLayout<T>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<SendError<T>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<SendError<T>> {
+        public fun <T> typeLayout(typeLayoutT: TypeLayout<T>): TypeLayout<SendError<T>> =
+            object : TypeLayout<SendError<T>> {
                 override val alignBytes: Long = listOf(1L, typeLayoutT.alignBytes).max()
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(typeLayoutT.sizeBytes, alignBytes)
+                override val sizeBytes: Long = alignUpBytes(typeLayoutT.sizeBytes, alignBytes)
                 override fun readNative(addr: Long): SendError<T> =
                     SendError(
                         (typeLayoutT).readNative(addr),
@@ -1097,13 +1121,15 @@ public open class SendError<T>(
  * [recv]: Receiver.recv
  */
 public open class RecvError {
+    public open fun clone(): RecvError = RecvError()
+
     public open fun fmt(f: StringBuilder) {
         "receiving on a closed channel".fmt(f)
     }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<RecvError> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<RecvError> {
+        public fun typeLayout(): TypeLayout<RecvError> =
+            object : TypeLayout<RecvError> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): RecvError =
@@ -1320,6 +1346,7 @@ public sealed class TrySendError<T> {
  *
  * ```kotlin
  * import std.sync.mpsc.channel
+ * import std.thread
  *
  * val (sender, receiver) = channel()
  * // Spawn off an expensive computation
@@ -1365,6 +1392,7 @@ public fun <T> channel(): Pair<Sender<T>, Receiver<T>> {
  *
  * ```kotlin
  * import std.sync.mpsc.syncChannel
+ * import std.thread
  *
  * val (sender, receiver) = syncChannel(1)
  * // this returns immediately

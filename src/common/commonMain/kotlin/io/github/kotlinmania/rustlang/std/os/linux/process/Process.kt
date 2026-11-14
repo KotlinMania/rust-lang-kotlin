@@ -1,6 +1,7 @@
 // port-lint: source os/linux/process.rs
 package io.github.kotlinmania.rustlang.std.os.linux.process
 
+import io.github.kotlinmania.rustlang.core.io.error.Result
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
@@ -16,8 +17,7 @@ import io.github.kotlinmania.rustlang.std.process.ExitStatus
 import io.github.kotlinmania.rustlang.std.sys.AsInner
 import io.github.kotlinmania.rustlang.std.sys.FromInner
 import io.github.kotlinmania.rustlang.std.sys.IntoInner
-import io.github.kotlinmania.rustlang.std.sys.fd.hermit.FileDesc
-import io.github.kotlinmania.rustlang.std.thread.Result
+import io.github.kotlinmania.rustlang.std.sys.fd.unix.FileDesc
 import io.github.kotlinmania.rustlang.std.sys.process.unix.pidfd.PidFd as InnerPidFd
 
 // Linux-specific extensions to primitives in the [std.process] module.
@@ -59,7 +59,7 @@ import io.github.kotlinmania.rustlang.std.sys.process.unix.pidfd.PidFd as InnerP
 public open class PidFd internal constructor(
     public val fieldStorage: MutPtr,
     public val fieldLayout: TypeLayout<InnerPidFd>,
-) : AsInner<InnerPidFd>, FromInner<InnerPidFd, PidFd>, IntoInner<InnerPidFd>, AsRawFd, FromRawFd<PidFd, Any?, Any>, IntoRawFd, AsFd {
+) : AsInner<InnerPidFd>, FromInner<InnerPidFd, PidFd>, IntoInner<InnerPidFd>, AsRawFd, FromRawFd<PidFd>, IntoRawFd, AsFd {
     public var inner: InnerPidFd
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
@@ -199,10 +199,10 @@ public interface CommandExt {
      * [pidfd]: fn@ChildExt.pidfd
      * [intoPidfd]: ChildExt.intoPidfd
      */
-    public fun createPidfd(value: Boolean): process.Command
+    public fun createPidfd(value: Boolean): Command
 }
 
-public fun process.Command.createPidfd(value: Boolean): process.Command {
+public fun Command.createPidfd(value: Boolean): Command {
     this.asInnerMut().createPidfd(value)
     return this
 }

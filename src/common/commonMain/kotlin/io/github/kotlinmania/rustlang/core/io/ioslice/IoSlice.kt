@@ -97,7 +97,7 @@ public open class IoSliceMut internal constructor(
          *
          * Panics on Windows if the slice is larger than 4GB.
          */
-        public fun new(buf: MutableList<UByte>, fieldLayout: TypeLayout<IoSliceMut>): IoSliceMut = IoSliceMut(repr.IoSliceMut.new(buf), fieldLayout = fieldLayout)
+        public fun new(buf: MutableList<UByte>, fieldLayout: TypeLayout<IoSliceMut>): IoSliceMut = IoSliceMut(IoSliceMut.new(buf, fieldLayout = fieldLayout), fieldLayout = fieldLayout)
 
         /**
          * Advance a slice of slices.
@@ -181,6 +181,8 @@ public open class IoSlice internal constructor(
 
     public fun pointerLayout(): TypeLayout<IoSlice> = TransparentTypeLayout(fieldLayout, { ptr, layout -> IoSlice(ptr, layout) }, { it.value })
 
+    public open fun clone(): IoSlice = IoSlice(value, fieldLayout)
+
     public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> = run { fmt.append((this.value.asSlice()).toString()); Result.Ok(Unit) }
 
     /**
@@ -247,7 +249,7 @@ public open class IoSlice internal constructor(
          *
          * Panics on Windows if the slice is larger than 4GB.
          */
-        public fun new(buf: List<UByte>, fieldLayout: TypeLayout<IoSlice>): IoSlice = IoSlice(repr.IoSlice.new(buf), fieldLayout = fieldLayout)
+        public fun new(buf: List<UByte>, fieldLayout: TypeLayout<IoSlice>): IoSlice = IoSlice(IoSlice.new(buf, fieldLayout = fieldLayout), fieldLayout = fieldLayout)
 
         /**
          * Advance a slice of slices.

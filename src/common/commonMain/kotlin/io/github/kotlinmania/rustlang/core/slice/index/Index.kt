@@ -282,23 +282,23 @@ public fun <T> Range<Int>.indexMut(slice: MutableList<T>): MutableList<T> {
     }
 }
 
-public fun <T> IntRange.get(slice: List<T>): List<T>? = ops.Range.from(this).get(slice)
+public fun <T> IntRange.get(slice: List<T>): List<T>? = Range.from(this).get(slice)
 
-public fun <T> IntRange.getMut(slice: MutableList<T>): MutableList<T>? = ops.Range.from(this).getMut(slice)
+public fun <T> IntRange.getMut(slice: MutableList<T>): MutableList<T>? = Range.from(this).getMut(slice)
 
 public fun IntRange.getUnchecked(slice: ConstPtr): ConstPtr {
     // SAFETY: the caller has to uphold the safety contract for `getUnchecked`.
-    return ops.Range.from(this).getUnchecked(slice)
+    return Range.from(this).getUnchecked(slice)
 }
 
 public fun IntRange.getUncheckedMut(slice: MutPtr): MutPtr {
     // SAFETY: the caller has to uphold the safety contract for `getUncheckedMut`.
-    return ops.Range.from(this).getUncheckedMut(slice)
+    return Range.from(this).getUncheckedMut(slice)
 }
 
-public fun <T> IntRange.index(slice: List<T>): List<T> = ops.Range.from(this).index(slice)
+public fun <T> IntRange.index(slice: List<T>): List<T> = Range.from(this).index(slice)
 
-public fun <T> IntRange.indexMut(slice: MutableList<T>): MutableList<T> = ops.Range.from(this).indexMut(slice)
+public fun <T> IntRange.indexMut(slice: MutableList<T>): MutableList<T> = Range.from(this).indexMut(slice)
 
 /**
  * The methods `index` and `indexMut` panic if the end of the range is out of bounds.
@@ -360,23 +360,23 @@ public fun <T> RangeFrom<Int>.indexMut(slice: MutableList<T>): MutableList<T> {
     }
 }
 
-public fun <T> RangeFrom<Int>.getTSlice(slice: List<T>): List<T>? = ops.RangeFrom.from(this).get(slice)
+public fun <T> RangeFrom<Int>.getTSlice(slice: List<T>): List<T>? = RangeFrom.from(this).get(slice)
 
-public fun <T> RangeFrom<Int>.getMutTSlice(slice: MutableList<T>): MutableList<T>? = ops.RangeFrom.from(this).getMut(slice)
+public fun <T> RangeFrom<Int>.getMutTSlice(slice: MutableList<T>): MutableList<T>? = RangeFrom.from(this).getMut(slice)
 
 public fun RangeFrom<Int>.getUncheckedTSlice(slice: ConstPtr): ConstPtr {
     // SAFETY: the caller has to uphold the safety contract for `getUnchecked`.
-    return ops.RangeFrom.from(this).getUnchecked(slice)
+    return RangeFrom.from(this).getUnchecked(slice)
 }
 
 public fun RangeFrom<Int>.getUncheckedMutTSlice(slice: MutPtr): MutPtr {
     // SAFETY: the caller has to uphold the safety contract for `getUncheckedMut`.
-    return ops.RangeFrom.from(this).getUncheckedMut(slice)
+    return RangeFrom.from(this).getUncheckedMut(slice)
 }
 
-public fun <T> RangeFrom<Int>.indexTSlice(slice: List<T>): List<T> = ops.RangeFrom.from(this).index(slice)
+public fun <T> RangeFrom<Int>.indexTSlice(slice: List<T>): List<T> = RangeFrom.from(this).index(slice)
 
-public fun <T> RangeFrom<Int>.indexMutTSlice(slice: MutableList<T>): MutableList<T> = ops.RangeFrom.from(this).indexMut(slice)
+public fun <T> RangeFrom<Int>.indexMutTSlice(slice: MutableList<T>): MutableList<T> = RangeFrom.from(this).indexMut(slice)
 
 public fun <T> RangeFull.get(slice: List<T>): List<T>? = slice
 
@@ -467,23 +467,23 @@ public fun <T> RangeInclusive<Int>.indexMut(slice: MutableList<T>): MutableList<
     return sliceIndexFail(start, end, slice.size)
 }
 
-public fun <T> IntRange.getTSlice(slice: List<T>): List<T>? = ops.RangeInclusive.from(this).get(slice)
+public fun <T> IntRange.getTSlice(slice: List<T>): List<T>? = RangeInclusive.from(this).get(slice)
 
-public fun <T> IntRange.getMutTSlice(slice: MutableList<T>): MutableList<T>? = ops.RangeInclusive.from(this).getMut(slice)
+public fun <T> IntRange.getMutTSlice(slice: MutableList<T>): MutableList<T>? = RangeInclusive.from(this).getMut(slice)
 
 public fun IntRange.getUncheckedTSlice(slice: ConstPtr): ConstPtr {
     // SAFETY: the caller has to uphold the safety contract for `getUnchecked`.
-    return ops.RangeInclusive.from(this).getUnchecked(slice)
+    return RangeInclusive.from(this).getUnchecked(slice)
 }
 
 public fun IntRange.getUncheckedMutTSlice(slice: MutPtr): MutPtr {
     // SAFETY: the caller has to uphold the safety contract for `getUncheckedMut`.
-    return ops.RangeInclusive.from(this).getUncheckedMut(slice)
+    return RangeInclusive.from(this).getUncheckedMut(slice)
 }
 
-public fun <T> IntRange.indexTSlice(slice: List<T>): List<T> = ops.RangeInclusive.from(this).index(slice)
+public fun <T> IntRange.indexTSlice(slice: List<T>): List<T> = RangeInclusive.from(this).index(slice)
 
-public fun <T> IntRange.indexMutTSlice(slice: MutableList<T>): MutableList<T> = ops.RangeInclusive.from(this).indexMut(slice)
+public fun <T> IntRange.indexMutTSlice(slice: MutableList<T>): MutableList<T> = RangeInclusive.from(this).indexMut(slice)
 
 /**
  * The methods `index` and `indexMut` panic if the end of the range is out of bounds.
@@ -552,6 +552,8 @@ public fun <T> RangeToInclusive<Int>.indexMutTSlice(slice: MutableList<T>): Muta
  * # Examples
  *
  * ```kotlin
+ * import std.slice
+ *
  * @feature(sliceRange)
  * public fun doctestEntry() {
  *     val v = listOf(10, 40, 30)
@@ -564,6 +566,8 @@ public fun <T> RangeToInclusive<Int>.indexMutTSlice(slice: MutableList<T>): Muta
  * Panics when [Index.index] would panic:
  *
  * ```kotlin
+ * import std.slice
+ *
  * @feature(sliceRange)
  * public fun doctestEntry() {
  *     slice.range(2 until 1, 0 until 3)
@@ -571,6 +575,8 @@ public fun <T> RangeToInclusive<Int>.indexMutTSlice(slice: MutableList<T>): Muta
  * ```
  *
  * ```kotlin
+ * import std.slice
+ *
  * @feature(sliceRange)
  * public fun doctestEntry() {
  *     slice.range(1 until 4, 0 until 3)
@@ -578,6 +584,8 @@ public fun <T> RangeToInclusive<Int>.indexMutTSlice(slice: MutableList<T>): Muta
  * ```
  *
  * ```kotlin
+ * import std.slice
+ *
  * @feature(sliceRange)
  * public fun doctestEntry() {
  *     slice.range(1..Int.MAX_VALUE, 0 until 3)
@@ -599,6 +607,8 @@ public fun <R> range(range: R, bounds: RangeTo<Int>): Range<Int> where R : Range
  * # Examples
  *
  * ```kotlin
+ * import std.slice
+ *
  * @feature(sliceRange)
  * public fun doctestEntry() {
  *     val v = listOf(10, 40, 30)
@@ -611,6 +621,8 @@ public fun <R> range(range: R, bounds: RangeTo<Int>): Range<Int> where R : Range
  * Returns [None] when [Index.index] would panic:
  *
  * ```kotlin
+ * import std.slice
+ *
  * @feature(sliceRange)
  * public fun doctestEntry() {
  *     check(null == slice.tryRange(2 until 1, 0 until 3))
@@ -683,20 +695,20 @@ internal sealed class RangeError {
 internal fun tryIntoSliceRange(len: Int, tupleArg1: Pair<Bound<Int>, Bound<Int>>): Result<Range<Int>, RangeError> {
     val end4 =
         when {
-            end is ops.Bound.Included && (end as ops.Bound.Included).value >= len -> {
-                val (end) = end as ops.Bound.Included
+            end is Bound.Included && (end as Bound.Included).value >= len -> {
+                val (end) = end as Bound.Included
                 return Result.Err(RangeError.EndPastLen(end = end))
             }
             // Cannot overflow because `end<len` implies `end<Int.MAX`.
-            end is ops.Bound.Included -> {
+            end is Bound.Included -> {
                 val (end1) = end
                 end1 + 1
             }
-            end is ops.Bound.Excluded && (end as ops.Bound.Excluded).value > len -> {
-                val (end2) = end as ops.Bound.Excluded
+            end is Bound.Excluded && (end as Bound.Excluded).value > len -> {
+                val (end2) = end as Bound.Excluded
                 return Result.Err(RangeError.EndPastLen(end = end2))
             }
-            end is ops.Bound.Excluded -> {
+            end is Bound.Excluded -> {
                 val (end3) = end
                 end3
             }
@@ -704,20 +716,20 @@ internal fun tryIntoSliceRange(len: Int, tupleArg1: Pair<Bound<Int>, Bound<Int>>
         }
     val start4 =
         when {
-            start is ops.Bound.Excluded && (start as ops.Bound.Excluded).value >= end4 -> {
-                val (start) = start as ops.Bound.Excluded
+            start is Bound.Excluded && (start as Bound.Excluded).value >= end4 -> {
+                val (start) = start as Bound.Excluded
                 return Result.Err(RangeError.StartPastEnd(start = start, end = end4))
             }
             // Cannot overflow because `start<end` implies `start<Int.MAX`.
-            start is ops.Bound.Excluded -> {
+            start is Bound.Excluded -> {
                 val (start1) = start
                 start1 + 1
             }
-            start is ops.Bound.Included && (start as ops.Bound.Included).value > end4 -> {
-                val (start2) = start as ops.Bound.Included
+            start is Bound.Included && (start as Bound.Included).value > end4 -> {
+                val (start2) = start as Bound.Included
                 return Result.Err(RangeError.StartPastEnd(start = start2, end = end4))
             }
-            start is ops.Bound.Included -> {
+            start is Bound.Included -> {
                 val (start3) = start
                 start3
             }

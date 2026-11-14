@@ -1,10 +1,9 @@
-@file:OptIn(kotlin.ExperimentalUnsignedTypes::class, kotlin.wasm.ExperimentalWasmInterop::class)
+@file:OptIn(ExperimentalUnsignedTypes::class, ExperimentalWasmInterop::class)
 
 package io.github.kotlinmania.rustlang.std.sys.alloc.unix
 
 import io.github.kotlinmania.rustlang.core.ffi.CSizeT
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.std.ptr
 
 // The host must provide the C companion wrapper exports in import module std.
 public actual fun malloc(size: CSizeT): MutPtr =

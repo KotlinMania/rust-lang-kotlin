@@ -1,10 +1,11 @@
-@file:OptIn(kotlinx.cinterop.ExperimentalForeignApi::class, kotlin.ExperimentalUnsignedTypes::class)
+@file:OptIn(ExperimentalForeignApi::class, ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.corearch.powerpc64
 
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.corearch.s390x.vector.VectorSignedInt
+import kotlinx.cinterop.ExperimentalForeignApi
 
 public actual fun lxvl(a: ConstPtr, l: ULong): VectorSignedInt =
     VectorSignedInt()

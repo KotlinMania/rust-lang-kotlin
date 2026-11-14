@@ -192,3 +192,217 @@ void* unwindLibunwindUnwindGetDataRelBase(void* ctx) {
     return NULL;
 }
 
+void* unwindLibunwindUnwindGetGr(void* ctx, int32_t regIndex) {
+    typedef void* (*km_fn_t)(void*, int32_t);
+    static km_fn_t km_fn_ptr = NULL;
+#ifdef _WIN32
+    if (km_fn_ptr == NULL) {
+        HMODULE km_h_msvcrt = GetModuleHandleA("msvcrt.dll");
+        if (km_h_msvcrt == NULL) km_h_msvcrt = LoadLibraryA("msvcrt.dll");
+        if (km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "_Unwind_GetGR");
+        if (km_fn_ptr == NULL) {
+            HMODULE km_h_ucrt = GetModuleHandleA("ucrtbase.dll");
+            if (km_h_ucrt == NULL) km_h_ucrt = LoadLibraryA("ucrtbase.dll");
+            if (km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "_Unwind_GetGR");
+        }
+    }
+#else
+    if (km_fn_ptr == NULL) {
+        km_fn_ptr = (km_fn_t)dlsym(RTLD_DEFAULT, "_Unwind_GetGR");
+#ifdef __APPLE__
+        if (km_fn_ptr == NULL) {
+            static void* km_h_unwind = NULL;
+            static bool km_h_unwind_init = false;
+            if (!km_h_unwind_init) {
+                km_h_unwind_init = true;
+                km_h_unwind = dlopen("/usr/lib/libunwind.dylib", RTLD_LAZY | RTLD_LOCAL);
+            }
+            if (km_h_unwind != NULL) km_fn_ptr = (km_fn_t)dlsym(km_h_unwind, "_Unwind_GetGR");
+        }
+#elif defined(__linux__) && !defined(__ANDROID__)
+        if (km_fn_ptr == NULL) {
+            static void* km_h_unwind = NULL;
+            static bool km_h_unwind_init = false;
+            if (!km_h_unwind_init) {
+                km_h_unwind_init = true;
+                km_h_unwind = dlopen("libunwind.so", RTLD_LAZY | RTLD_LOCAL);
+            }
+            if (km_h_unwind != NULL) km_fn_ptr = (km_fn_t)dlsym(km_h_unwind, "_Unwind_GetGR");
+        }
+#endif
+    }
+#endif
+    if (km_fn_ptr != NULL) {
+        return km_fn_ptr(ctx, regIndex);
+    }
+    errno = ENOSYS;
+    return NULL;
+}
+
+void unwindLibunwindUnwindSetGr(void* ctx, int32_t regIndex, void* value) {
+    typedef void (*km_fn_t)(void*, int32_t, void*);
+    static km_fn_t km_fn_ptr = NULL;
+#ifdef _WIN32
+    if (km_fn_ptr == NULL) {
+        HMODULE km_h_msvcrt = GetModuleHandleA("msvcrt.dll");
+        if (km_h_msvcrt == NULL) km_h_msvcrt = LoadLibraryA("msvcrt.dll");
+        if (km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "_Unwind_SetGR");
+        if (km_fn_ptr == NULL) {
+            HMODULE km_h_ucrt = GetModuleHandleA("ucrtbase.dll");
+            if (km_h_ucrt == NULL) km_h_ucrt = LoadLibraryA("ucrtbase.dll");
+            if (km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "_Unwind_SetGR");
+        }
+    }
+#else
+    if (km_fn_ptr == NULL) {
+        km_fn_ptr = (km_fn_t)dlsym(RTLD_DEFAULT, "_Unwind_SetGR");
+#ifdef __APPLE__
+        if (km_fn_ptr == NULL) {
+            static void* km_h_unwind = NULL;
+            static bool km_h_unwind_init = false;
+            if (!km_h_unwind_init) {
+                km_h_unwind_init = true;
+                km_h_unwind = dlopen("/usr/lib/libunwind.dylib", RTLD_LAZY | RTLD_LOCAL);
+            }
+            if (km_h_unwind != NULL) km_fn_ptr = (km_fn_t)dlsym(km_h_unwind, "_Unwind_SetGR");
+        }
+#elif defined(__linux__) && !defined(__ANDROID__)
+        if (km_fn_ptr == NULL) {
+            static void* km_h_unwind = NULL;
+            static bool km_h_unwind_init = false;
+            if (!km_h_unwind_init) {
+                km_h_unwind_init = true;
+                km_h_unwind = dlopen("libunwind.so", RTLD_LAZY | RTLD_LOCAL);
+            }
+            if (km_h_unwind != NULL) km_fn_ptr = (km_fn_t)dlsym(km_h_unwind, "_Unwind_SetGR");
+        }
+#endif
+    }
+#endif
+    if (km_fn_ptr != NULL) {
+        km_fn_ptr(ctx, regIndex, value);
+        return;
+    }
+    errno = ENOSYS;
+}
+
+void unwindLibunwindUnwindSetIp(void* ctx, void* value) {
+    typedef void (*km_fn_t)(void*, void*);
+    static km_fn_t km_fn_ptr = NULL;
+#ifdef _WIN32
+    if (km_fn_ptr == NULL) {
+        HMODULE km_h_msvcrt = GetModuleHandleA("msvcrt.dll");
+        if (km_h_msvcrt == NULL) km_h_msvcrt = LoadLibraryA("msvcrt.dll");
+        if (km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "_Unwind_SetIP");
+        if (km_fn_ptr == NULL) {
+            HMODULE km_h_ucrt = GetModuleHandleA("ucrtbase.dll");
+            if (km_h_ucrt == NULL) km_h_ucrt = LoadLibraryA("ucrtbase.dll");
+            if (km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "_Unwind_SetIP");
+        }
+    }
+#else
+    if (km_fn_ptr == NULL) {
+        km_fn_ptr = (km_fn_t)dlsym(RTLD_DEFAULT, "_Unwind_SetIP");
+#ifdef __APPLE__
+        if (km_fn_ptr == NULL) {
+            static void* km_h_unwind = NULL;
+            static bool km_h_unwind_init = false;
+            if (!km_h_unwind_init) {
+                km_h_unwind_init = true;
+                km_h_unwind = dlopen("/usr/lib/libunwind.dylib", RTLD_LAZY | RTLD_LOCAL);
+            }
+            if (km_h_unwind != NULL) km_fn_ptr = (km_fn_t)dlsym(km_h_unwind, "_Unwind_SetIP");
+        }
+#elif defined(__linux__) && !defined(__ANDROID__)
+        if (km_fn_ptr == NULL) {
+            static void* km_h_unwind = NULL;
+            static bool km_h_unwind_init = false;
+            if (!km_h_unwind_init) {
+                km_h_unwind_init = true;
+                km_h_unwind = dlopen("libunwind.so", RTLD_LAZY | RTLD_LOCAL);
+            }
+            if (km_h_unwind != NULL) km_fn_ptr = (km_fn_t)dlsym(km_h_unwind, "_Unwind_SetIP");
+        }
+#endif
+    }
+#endif
+    if (km_fn_ptr != NULL) {
+        km_fn_ptr(ctx, value);
+        return;
+    }
+    errno = ENOSYS;
+}
+
+void* unwindLibunwindUnwindGetIpinfo(void* ctx, void* ipBeforeInsn) {
+    typedef void* (*km_fn_t)(void*, void*);
+    static km_fn_t km_fn_ptr = NULL;
+#ifdef _WIN32
+    if (km_fn_ptr == NULL) {
+        HMODULE km_h_msvcrt = GetModuleHandleA("msvcrt.dll");
+        if (km_h_msvcrt == NULL) km_h_msvcrt = LoadLibraryA("msvcrt.dll");
+        if (km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "_Unwind_GetIPInfo");
+        if (km_fn_ptr == NULL) {
+            HMODULE km_h_ucrt = GetModuleHandleA("ucrtbase.dll");
+            if (km_h_ucrt == NULL) km_h_ucrt = LoadLibraryA("ucrtbase.dll");
+            if (km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "_Unwind_GetIPInfo");
+        }
+    }
+#else
+    if (km_fn_ptr == NULL) {
+        km_fn_ptr = (km_fn_t)dlsym(RTLD_DEFAULT, "_Unwind_GetIPInfo");
+#ifdef __APPLE__
+        if (km_fn_ptr == NULL) {
+            static void* km_h_unwind = NULL;
+            static bool km_h_unwind_init = false;
+            if (!km_h_unwind_init) {
+                km_h_unwind_init = true;
+                km_h_unwind = dlopen("/usr/lib/libunwind.dylib", RTLD_LAZY | RTLD_LOCAL);
+            }
+            if (km_h_unwind != NULL) km_fn_ptr = (km_fn_t)dlsym(km_h_unwind, "_Unwind_GetIPInfo");
+        }
+#elif defined(__linux__) && !defined(__ANDROID__)
+        if (km_fn_ptr == NULL) {
+            static void* km_h_unwind = NULL;
+            static bool km_h_unwind_init = false;
+            if (!km_h_unwind_init) {
+                km_h_unwind_init = true;
+                km_h_unwind = dlopen("libunwind.so", RTLD_LAZY | RTLD_LOCAL);
+            }
+            if (km_h_unwind != NULL) km_fn_ptr = (km_fn_t)dlsym(km_h_unwind, "_Unwind_GetIPInfo");
+        }
+#endif
+    }
+#endif
+    if (km_fn_ptr != NULL) {
+        return km_fn_ptr(ctx, ipBeforeInsn);
+    }
+    errno = ENOSYS;
+    return NULL;
+}
+
+int32_t unwindLibunwindGccSpecificHandler(void* exceptionRecord, void* establisherFrame, void* contextRecord, void* dispatcherContext, void* personality) {
+    typedef int32_t (*km_fn_t)(void*, void*, void*, void*, void*);
+    static km_fn_t km_fn_ptr = NULL;
+#ifdef _WIN32
+    if (km_fn_ptr == NULL) {
+        HMODULE km_h_msvcrt = GetModuleHandleA("msvcrt.dll");
+        if (km_h_msvcrt == NULL) km_h_msvcrt = LoadLibraryA("msvcrt.dll");
+        if (km_h_msvcrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_msvcrt, "_GCC_specific_handler");
+        if (km_fn_ptr == NULL) {
+            HMODULE km_h_ucrt = GetModuleHandleA("ucrtbase.dll");
+            if (km_h_ucrt == NULL) km_h_ucrt = LoadLibraryA("ucrtbase.dll");
+            if (km_h_ucrt != NULL) km_fn_ptr = (km_fn_t)(void*)GetProcAddress(km_h_ucrt, "_GCC_specific_handler");
+        }
+    }
+#else
+    if (km_fn_ptr == NULL) {
+        km_fn_ptr = (km_fn_t)dlsym(RTLD_DEFAULT, "_GCC_specific_handler");
+    }
+#endif
+    if (km_fn_ptr != NULL) {
+        return km_fn_ptr(exceptionRecord, establisherFrame, contextRecord, dispatcherContext, personality);
+    }
+    errno = ENOSYS;
+    return -1;
+}
+

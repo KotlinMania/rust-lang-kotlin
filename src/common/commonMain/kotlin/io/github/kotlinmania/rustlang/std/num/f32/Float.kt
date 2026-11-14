@@ -5,23 +5,22 @@ import io.github.kotlinmania.intrinsics.log
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
-import io.github.kotlinmania.rustlang.std.cmath.acosf
-import io.github.kotlinmania.rustlang.std.cmath.acoshf
-import io.github.kotlinmania.rustlang.std.cmath.asinf
-import io.github.kotlinmania.rustlang.std.cmath.asinhf
-import io.github.kotlinmania.rustlang.std.cmath.atan2f
-import io.github.kotlinmania.rustlang.std.cmath.atanf
-import io.github.kotlinmania.rustlang.std.cmath.coshf
-import io.github.kotlinmania.rustlang.std.cmath.sinhf
-import io.github.kotlinmania.rustlang.std.cmath.tanf
-import io.github.kotlinmania.rustlang.std.cmath.tanhf
-import io.github.kotlinmania.rustlang.std.intrinsics
+import io.github.kotlinmania.rustlang.std.sys.cmath.acosf
+import io.github.kotlinmania.rustlang.std.sys.cmath.acoshf
+import io.github.kotlinmania.rustlang.std.sys.cmath.asinf
+import io.github.kotlinmania.rustlang.std.sys.cmath.asinhf
+import io.github.kotlinmania.rustlang.std.sys.cmath.atan2f
+import io.github.kotlinmania.rustlang.std.sys.cmath.atanf
+import io.github.kotlinmania.rustlang.std.sys.cmath.coshf
 import io.github.kotlinmania.rustlang.std.sys.cmath.erfcf
 import io.github.kotlinmania.rustlang.std.sys.cmath.erff
 import io.github.kotlinmania.rustlang.std.sys.cmath.expm1f
 import io.github.kotlinmania.rustlang.std.sys.cmath.hypotf
 import io.github.kotlinmania.rustlang.std.sys.cmath.lgammafR
 import io.github.kotlinmania.rustlang.std.sys.cmath.log1pf
+import io.github.kotlinmania.rustlang.std.sys.cmath.sinhf
+import io.github.kotlinmania.rustlang.std.sys.cmath.tanf
+import io.github.kotlinmania.rustlang.std.sys.cmath.tanhf
 import io.github.kotlinmania.rustlang.std.sys.cmath.tgammaf
 import kotlin.math.cos
 import kotlin.math.ln
@@ -1007,11 +1006,11 @@ public fun Float.lnGamma(): Pair<Float, Int> {
  *         return (x * 0.70710677f).erf() * 100.0f
  *     }
  *     // 68% of a normal distribution is within one standard deviation
- *     check((withinStandardDeviations(1.0f) - 68.269).abs() < 0.01)
+ *     check((withinStandardDeviations(1.0f) - 68.269f).abs() < 0.01)
  *     // 95% of a normal distribution is within two standard deviations
- *     check((withinStandardDeviations(2.0f) - 95.450).abs() < 0.01)
+ *     check((withinStandardDeviations(2.0f) - 95.450f).abs() < 0.01)
  *     // 99.7% of a normal distribution is within three standard deviations
- *     check((withinStandardDeviations(3.0f) - 99.730).abs() < 0.01)
+ *     check((withinStandardDeviations(3.0f) - 99.730f).abs() < 0.01)
  * }
  * ```
  */

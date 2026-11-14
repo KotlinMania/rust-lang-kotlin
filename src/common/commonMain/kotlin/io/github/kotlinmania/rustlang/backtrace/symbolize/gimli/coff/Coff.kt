@@ -75,7 +75,7 @@ public open class Object(
             // name. Note that we only look at function symbols and also
             // note that the sections are 1-indexed because the zero section
             // is special (apparently).
-            var symbols = mutableListOf()
+            var symbols = mutableListOf<Pair<Int, ImageSymbol>>()
             for ((_, sym) in symtab.iter()) {
                 if (sym.derivedType() != Object.pe.IMAGE_SYM_DTYPE_FUNCTION) {
                     continue

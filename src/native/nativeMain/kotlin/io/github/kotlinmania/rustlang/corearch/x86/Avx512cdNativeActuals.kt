@@ -1,4 +1,4 @@
-@file:OptIn(kotlinx.cinterop.ExperimentalForeignApi::class, kotlin.ExperimentalUnsignedTypes::class)
+@file:OptIn(ExperimentalForeignApi::class, ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.corearch.x86
 
@@ -8,6 +8,7 @@ import io.github.kotlinmania.rustlang.corearch.simd.I32x8
 import io.github.kotlinmania.rustlang.corearch.simd.I64x2
 import io.github.kotlinmania.rustlang.corearch.simd.I64x4
 import io.github.kotlinmania.rustlang.corearch.simd.I64x8
+import kotlinx.cinterop.ExperimentalForeignApi
 
 public actual fun vpconflictd(a: I32x16): I32x16 =
     null as I32x16

@@ -52,7 +52,7 @@ public open class Symbol(
     // Note: this scope bound needs to be persisted eventually to `Symbol`,
     // but that's currently a breaking change. For now this is safe since
     // `Symbol` is only ever handed out by reference and can't be cloned.
-    public var inner: Symbol,
+    public var inner: io.github.kotlinmania.imp.Symbol,
 ) {
     /**
      * Returns the name of this function.

@@ -30,6 +30,8 @@ public open class HomeDirs(
     internal var state: PathBuf?,
     internal var extra: ExtraHomeDirs,
 ) {
+    public open fun clone(): HomeDirs = HomeDirs(cache, config, data, state, extra)
+
     // NB: HomeDirs and MediaDirs intentionally do not implement Default. Self.empty()
     // is a logical default, but users may also intuit the default to use default
     // platform conventions. Omitting Default pushes users to explicitly choose.
@@ -246,6 +248,8 @@ public open class MediaDirs(
     internal var videos: PathBuf?,
     internal var extra: ExtraMediaDirs,
 ) {
+    public open fun clone(): MediaDirs = MediaDirs(desktop, documents, downloads, music, pictures, videos, extra)
+
     /**
      * The OS-recognized user "Desktop" directory, often the `Desktop`
      * folder in the user's home directory.

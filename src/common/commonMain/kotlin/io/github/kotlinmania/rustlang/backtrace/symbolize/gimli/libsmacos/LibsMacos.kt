@@ -7,6 +7,7 @@ import io.github.kotlinmania.libc.dyldGetImageVmaddrSlide
 import io.github.kotlinmania.libc.dyldImageCount
 import io.github.kotlinmania.obj.NativeEndian
 import io.github.kotlinmania.obj.macho
+import io.github.kotlinmania.obj.read.macho.segment
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.Library
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.LibrarySegment
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mystd.ffi.OsStr
@@ -51,13 +52,13 @@ public fun nativeLibrary(i: UInt): Library? {
                 macho.mhMagic -> {
                     val endian = NativeEndian
                     val header1 = header.cast()
-                    val data = rawSliceList(ConstPtr((ptrFromRef(header1)).rawAddress), mem.sizeOfVal(header1) + header1.sizeofcmds.get(endian).toInt(), PrimitiveLayouts.U8)
+                    val data = rawSliceList(ConstPtr((ptrFromRef(header1)).rawAddress), sizeOfVal(header1) + header1.sizeofcmds.get(endian).toInt(), PrimitiveLayouts.U8)
                     Pair((header1.loadCommands(endian, data, 0).ok() ?: return null), endian)
                 }
                 macho.mhMagic64 -> {
                     val endian1 = NativeEndian
                     val header2 = header.cast()
-                    val data1 = rawSliceList(ConstPtr((ptrFromRef(header2)).rawAddress), mem.sizeOfVal(header2) + header2.sizeofcmds.get(endian1).toInt(), PrimitiveLayouts.U8)
+                    val data1 = rawSliceList(ConstPtr((ptrFromRef(header2)).rawAddress), sizeOfVal(header2) + header2.sizeofcmds.get(endian1).toInt(), PrimitiveLayouts.U8)
                     Pair((header2.loadCommands(endian1, data1, 0).ok() ?: return null), endian1)
                 }
                 else -> { return null }
@@ -66,7 +67,7 @@ public fun nativeLibrary(i: UInt): Library? {
     // Iterate over the segments and register known regions for segments
     // that we find. Additionally record information bout text segments
     // for processing later, see comments below.
-    var segments = mutableListOf()
+    var segments = mutableListOf<LibrarySegment>()
     var firstText = 0
     var textFileoffZero = false
     while (true) {

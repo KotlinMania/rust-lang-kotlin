@@ -2,13 +2,13 @@
 package io.github.kotlinmania.rustlang.core.iter.adapters.flatten
 
 import io.github.kotlinmania.rustlang.core.array.iter.IntoIter
-import io.github.kotlinmania.rustlang.core.fmt.Result
 import io.github.kotlinmania.rustlang.core.iter.TrustedLen
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
 import io.github.kotlinmania.rustlang.core.iter.adapters.fuse.Fuse
 import io.github.kotlinmania.rustlang.core.iter.adapters.map.Map
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
+import io.github.kotlinmania.rustlang.core.result.Result
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -48,7 +48,7 @@ public open class FlatMap<I, U, F> internal constructor(
     public var inner: FlattenCompat<Map<I, F>, IntoIter> = innerCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<Item> = object : AbstractIterator<Item>() {
+    override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
         override fun computeNext() {
             when (val v = this@FlatMap.next()) {
                 null -> done()
@@ -57,7 +57,7 @@ public open class FlatMap<I, U, F> internal constructor(
         }
     }
 
-    internal open fun intoParts(): Triple<IntoIter?, I?, IntoIter?> = Triple(this.inner.frontiter, this.inner.iter.intoInner().map(Map::intoInner), this.inner.backiter)
+    internal open fun intoParts(): Triple<IntoIter?, I?, IntoIter?> = Triple(this.inner.frontiter, this.inner.iter.intoInner().map({ it.intoInner() }), this.inner.backiter)
 
     public open fun clone(): FlatMap<I, U, F> = FlatMap(inner = this.inner.clone())
 
@@ -116,7 +116,7 @@ public open class Flatten<I> internal constructor(
     public var inner: FlattenCompat<I, IntoIter> = innerCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<U.Item> = object : AbstractIterator<U.Item>() {
+    override fun iterator(): Iterator<U.Item> = object : AbstractIterator<U.Item>() {
         override fun computeNext() {
             when (val v = this@Flatten.next()) {
                 null -> done()
@@ -190,7 +190,7 @@ public open class FlattenCompat<I, U>(
     public var frontiter: U?,
     public var backiter: U?,
 ) : Iterable<Item> {
-    override fun iterator(): kotlin.collections.Iterator<Item> = object : AbstractIterator<Item>() {
+    override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
         override fun computeNext() {
             when (val v = this@FlattenCompat.next()) {
                 null -> done()
@@ -217,7 +217,7 @@ public open class FlattenCompat<I, U>(
                 acc1 = fold(acc1, iter)
             }
         }
-        acc1 = this.iter.fold(acc1, Flatten(fold))
+        acc1 = this.iter.fold(acc1, flatten(fold))
         when (val matchVal1 = this.backiter) {
             null -> {}
             else -> {
@@ -246,7 +246,7 @@ public open class FlattenCompat<I, U>(
             }
         }
         this.frontiter = null
-        acc1 = when (val tryResult = this.iter.tryFold(acc1, Flatten(this.frontiter, fold))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        acc1 = when (val tryResult = this.iter.tryFold(acc1, flatten(this.frontiter, fold))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         this.frontiter = null
         when (val matchVal1 = this.backiter) {
             null -> {}
@@ -275,7 +275,7 @@ public open class FlattenCompat<I, U>(
                 acc1 = fold(acc1, iter)
             }
         }
-        acc1 = this.iter.rfold(acc1, Flatten(fold))
+        acc1 = this.iter.rfold(acc1, flatten(fold))
         when (val matchVal1 = this.frontiter) {
             null -> {}
             else -> {
@@ -304,7 +304,7 @@ public open class FlattenCompat<I, U>(
             }
         }
         this.backiter = null
-        acc1 = when (val tryResult = this.iter.tryRfold(acc1, Flatten(this.backiter, fold))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        acc1 = when (val tryResult = this.iter.tryRfold(acc1, flatten(this.backiter, fold))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         this.backiter = null
         when (val matchVal1 = this.frontiter) {
             null -> {}
@@ -363,12 +363,12 @@ public open class FlattenCompat<I, U>(
 
     public open fun <Acc, R> tryFold(init: Acc, fold: (Acc, U.Item) -> R): R where R : Try<R, Acc, Any?> {
         fun <Item, U, Acc, R : Try<R, Acc, Any?>> flatten(fold1: (Acc, Item) -> R): (Acc, U) -> R = { acc, iter -> iter.tryFold(acc, fold1) }
-        return this.iterTryFold(init, Flatten(fold))
+        return this.iterTryFold(init, flatten(fold))
     }
 
     public open fun <Acc> fold(init: Acc, fold: (Acc, U.Item) -> Acc): Acc {
         fun <Item, U, Acc> flatten(fold1: (Acc, Item) -> Acc): (Acc, U) -> Acc = { acc, iter -> iter.fold(acc, fold1) }
-        return this.iterFold(init, Flatten(fold))
+        return this.iterFold(init, flatten(fold))
     }
 
     public open fun advanceBy(n: Int): Result<Unit, NonZero<Int>> {
@@ -382,7 +382,7 @@ public open class FlattenCompat<I, U>(
                     ControlFlow.Continue(remaining.get())
                 } }
             }
-        return when (val matchVal = this.iterTryFold(n, advance)) {
+        return when (val matchVal = this.iterTryFold(n, ::advance)) {
             is ControlFlow.Continue -> {
                 val (remaining) = matchVal
                 NonZero.new(remaining).mapOr(Result.Ok(Unit), { Result.Err(it) })
@@ -393,12 +393,12 @@ public open class FlattenCompat<I, U>(
 
     public open fun count(): Int {
         fun <Item, U> count(acc: Int, iter: U): Int = acc + iter.count()
-        return this.iterFold(0, count)
+        return this.iterFold(0, ::count)
     }
 
     public open fun last(): Item? {
         fun <Item, U> last(last: Item?, iter: U): Item? = (iter.last() ?: last)
-        return this.iterFold(null, last)
+        return this.iterFold(null, ::last)
     }
 
     // See also the `OneShot` specialization below.
@@ -420,12 +420,12 @@ public open class FlattenCompat<I, U>(
 
     public open fun <Acc, R> tryRfold(init: Acc, fold: (Acc, U.Item) -> R): R where R : Try<R, Acc, Any?> {
         fun <U, Acc, R : Try<R, Acc, Any?>> flatten(fold1: (Acc, Item) -> R): (Acc, U) -> R = { acc, iter -> iter.tryRfold(acc, fold1) }
-        return this.iterTryRfold(init, Flatten(fold))
+        return this.iterTryRfold(init, flatten(fold))
     }
 
     public open fun <Acc> rfold(init: Acc, fold: (Acc, U.Item) -> Acc): Acc {
         fun <U, Acc> flatten(fold1: (Acc, Item) -> Acc): (Acc, U) -> Acc = { acc, iter -> iter.rfold(acc, fold1) }
-        return this.iterRfold(init, Flatten(fold))
+        return this.iterRfold(init, flatten(fold))
     }
 
     public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int>> {
@@ -439,7 +439,7 @@ public open class FlattenCompat<I, U>(
                     ControlFlow.Continue(remaining.get())
                 } }
             }
-        return when (val matchVal = this.iterTryRfold(n, advance)) {
+        return when (val matchVal = this.iterTryRfold(n, ::advance)) {
             is ControlFlow.Continue -> {
                 val (remaining) = matchVal
                 NonZero.new(remaining).mapOr(Result.Ok(Unit), { Result.Err(it) })

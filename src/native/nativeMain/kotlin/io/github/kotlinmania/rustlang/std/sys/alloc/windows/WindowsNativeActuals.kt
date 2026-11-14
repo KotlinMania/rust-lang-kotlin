@@ -1,4 +1,4 @@
-@file:OptIn(kotlinx.cinterop.ExperimentalForeignApi::class, kotlin.ExperimentalUnsignedTypes::class)
+@file:OptIn(ExperimentalForeignApi::class, ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.std.sys.alloc.windows
 
@@ -11,6 +11,7 @@ import io.github.kotlinmania.rustlang.std.sys.alloc.windows.cinterop.stdSysAlloc
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.Bool
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.handle.Handle
 import kotlinx.cinterop.ByteVar
+import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.toCPointer
 import kotlinx.cinterop.toLong
 

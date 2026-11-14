@@ -1,16 +1,23 @@
-@file:OptIn(kotlinx.cinterop.ExperimentalForeignApi::class, kotlin.ExperimentalUnsignedTypes::class)
+@file:OptIn(ExperimentalForeignApi::class, ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.std.sys.cmath
 
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.std.sys.cmath.cinterop.stdSysCmathAcos
+import io.github.kotlinmania.rustlang.std.sys.cmath.cinterop.stdSysCmathAcosf
 import io.github.kotlinmania.rustlang.std.sys.cmath.cinterop.stdSysCmathAcosh
+import io.github.kotlinmania.rustlang.std.sys.cmath.cinterop.stdSysCmathAcoshf
 import io.github.kotlinmania.rustlang.std.sys.cmath.cinterop.stdSysCmathAsin
+import io.github.kotlinmania.rustlang.std.sys.cmath.cinterop.stdSysCmathAsinf
 import io.github.kotlinmania.rustlang.std.sys.cmath.cinterop.stdSysCmathAsinh
+import io.github.kotlinmania.rustlang.std.sys.cmath.cinterop.stdSysCmathAsinhf
 import io.github.kotlinmania.rustlang.std.sys.cmath.cinterop.stdSysCmathAtan
 import io.github.kotlinmania.rustlang.std.sys.cmath.cinterop.stdSysCmathAtan2
+import io.github.kotlinmania.rustlang.std.sys.cmath.cinterop.stdSysCmathAtan2f
+import io.github.kotlinmania.rustlang.std.sys.cmath.cinterop.stdSysCmathAtanf
 import io.github.kotlinmania.rustlang.std.sys.cmath.cinterop.stdSysCmathCosh
+import io.github.kotlinmania.rustlang.std.sys.cmath.cinterop.stdSysCmathCoshf
 import io.github.kotlinmania.rustlang.std.sys.cmath.cinterop.stdSysCmathErf
 import io.github.kotlinmania.rustlang.std.sys.cmath.cinterop.stdSysCmathErfc
 import io.github.kotlinmania.rustlang.std.sys.cmath.cinterop.stdSysCmathErfcf
@@ -22,10 +29,14 @@ import io.github.kotlinmania.rustlang.std.sys.cmath.cinterop.stdSysCmathHypotf
 import io.github.kotlinmania.rustlang.std.sys.cmath.cinterop.stdSysCmathLog1p
 import io.github.kotlinmania.rustlang.std.sys.cmath.cinterop.stdSysCmathLog1pf
 import io.github.kotlinmania.rustlang.std.sys.cmath.cinterop.stdSysCmathSinh
+import io.github.kotlinmania.rustlang.std.sys.cmath.cinterop.stdSysCmathSinhf
 import io.github.kotlinmania.rustlang.std.sys.cmath.cinterop.stdSysCmathTan
+import io.github.kotlinmania.rustlang.std.sys.cmath.cinterop.stdSysCmathTanf
 import io.github.kotlinmania.rustlang.std.sys.cmath.cinterop.stdSysCmathTanh
+import io.github.kotlinmania.rustlang.std.sys.cmath.cinterop.stdSysCmathTanhf
 import io.github.kotlinmania.rustlang.std.sys.cmath.cinterop.stdSysCmathTgamma
 import io.github.kotlinmania.rustlang.std.sys.cmath.cinterop.stdSysCmathTgammaf
+import kotlinx.cinterop.ExperimentalForeignApi
 
 public actual fun acos(n: Double): Double =
     stdSysCmathAcos(n)
@@ -152,3 +163,33 @@ public actual fun erff128(n: F128): F128 =
 
 public actual fun erfcf128(n: F128): F128 =
     null as F128
+
+public actual fun acosf(n: Float): Float =
+    stdSysCmathAcosf(n)
+
+public actual fun acoshf(n: Float): Float =
+    stdSysCmathAcoshf(n)
+
+public actual fun asinf(n: Float): Float =
+    stdSysCmathAsinf(n)
+
+public actual fun asinhf(n: Float): Float =
+    stdSysCmathAsinhf(n)
+
+public actual fun atan2f(a: Float, b: Float): Float =
+    stdSysCmathAtan2f(a, b)
+
+public actual fun atanf(n: Float): Float =
+    stdSysCmathAtanf(n)
+
+public actual fun coshf(n: Float): Float =
+    stdSysCmathCoshf(n)
+
+public actual fun sinhf(n: Float): Float =
+    stdSysCmathSinhf(n)
+
+public actual fun tanf(n: Float): Float =
+    stdSysCmathTanf(n)
+
+public actual fun tanhf(n: Float): Float =
+    stdSysCmathTanhf(n)

@@ -133,7 +133,8 @@ public fun <A> slicePartialOrdPartialCompareA(left: List<A>, right: List<A>): Or
             }
         } }
     val lenChain = { a: Any?, b: Any? -> ControlFlow.Break(Int.partialCmp(a, b)) }
-    val b = chainingImpl(left, right, elemChain, lenChain)
+    val tupleStructVal = chainingImpl(left, right, elemChain, lenChain)
+    val b = tupleStructVal.value
     return b
 }
 
@@ -182,7 +183,8 @@ public fun <A> sliceOrdCompareA(left: List<A>, right: List<A>): Ordering {
             }
         } }
     val lenChain = { a: Any?, b: Any? -> ControlFlow.Break(Int.cmp(a, b)) }
-    val b = chainingImpl(left, right, elemChain, lenChain)
+    val tupleStructVal = chainingImpl(left, right, elemChain, lenChain)
+    val b = tupleStructVal.value
     return b
 }
 

@@ -70,7 +70,7 @@ public open class VecDeque<T, A : Allocator> internal constructor(
     public var buf: RawVec<T, A> = bufCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<T> = this.intoIter().iterator()
+    override fun iterator(): Iterator<T> = this.intoIter().iterator()
 
     public open fun clone(): VecDeque<T, A> {
         val deq = VecDeque.withCapacityIn(this.len(), this.allocator().clone())
@@ -2413,6 +2413,8 @@ public open class VecDeque<T, A : Allocator> internal constructor(
      * Getting immutable access to the contiguous slice.
      *
      * ```kotlin
+     * import core.slice
+     *
      * var buf = VecDeque.new()
      * buf.addLast(2)
      * buf.addLast(1)

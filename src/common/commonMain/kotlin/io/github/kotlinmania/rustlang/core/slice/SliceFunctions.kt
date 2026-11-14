@@ -3902,12 +3902,10 @@ public fun <T> List<T>.fillWith(f: () -> T) {
  * scope. Because of this, attempting to use `cloneFromSlice` on a
  * single slice will result in a compile failure:
  *
- * ```kotlin
- * import slice
+ * ```compile_fail
+ * let mut slice = [1, 2, 3, 4, 5];
  *
- * var slice = mutableListOf(1, 2, 3, 4, 5)
- * slice[0 until 2].cloneFromSlice(slice[3 until slice.size])
- * // compile fail!
+ * slice[..2].cloneFromSlice(&slice[3..]); // compile fail!
  * ```
  *
  * To work around this, we can use [splitAtMut] to create two distinct
@@ -3962,12 +3960,10 @@ public fun <T> List<T>.cloneFromSlice(src: List<T>) {
  * scope. Because of this, attempting to use `copyFromSlice` on a
  * single slice will result in a compile failure:
  *
- * ```kotlin
- * import slice
+ * ```compile_fail
+ * let mut slice = [1, 2, 3, 4, 5];
  *
- * var slice = mutableListOf(1, 2, 3, 4, 5)
- * run { val dstTmp0 = slice; val srcTmp0 = slice[3 until slice.size]; for (idxTmp0 in srcTmp0.indices) dstTmp0[idxTmp0] = srcTmp0[idxTmp0] }
- * // compile fail!
+ * slice[..2].copyFromSlice(&slice[3..]); // compile fail!
  * ```
  *
  * To work around this, we can use [splitAtMut] to create two distinct
@@ -4059,12 +4055,9 @@ public fun <T, R : RangeBounds<Int<R>>> List<T>.copyWithin(src: R, dest: Int) {
  * attempting to use `swapWithSlice` on a single slice will result in
  * a compile failure:
  *
- * ```kotlin
- * import slice
- *
- * var slice = mutableListOf(1, 2, 3, 4, 5)
- * slice[0 until 2].swapWithSlice(slice.subList(3, slice.size))
- * // compile fail!
+ * ```compile_fail
+ * let mut slice = [1, 2, 3, 4, 5];
+ * slice[..2].swapWithSlice(slice[3..]); // compile fail!
  * ```
  *
  * To work around this, we can use [splitAtMut] to create two distinct
@@ -4292,7 +4285,7 @@ public fun <T, U> List<T>.alignToMut(typeLayoutU: TypeLayout<U>): Triple<Mutable
  *     val it = prefix.iter().chain(suffix).copied()
  *     check(it.collect<Vec>() == mutableListOf(1, 2, 3))
  *     val numbers: List<Float> = (1 until 101).map({ x -> ((x as Any?) as Any?) }).toMutableList()
- *     check(basicSimdSum(((numbers).slice(1 until 99))) == 4949.0)
+ *     check(basicSimdSum(((numbers).slice(1 until 99))) == 4949.0f.toFloat())
  * }
  * ```
  */
@@ -5155,7 +5148,7 @@ public fun <T> List<List<T>>.asFlattenedMut(n: Int): MutableList<T> {
  * ```
  */
 public fun List<kotlin.Float>.sortFloats() {
-    this.sortUnstableBy(kotlin.Float::totalCmp)
+    this.sortUnstableBy({ kotlin.Float.totalCmp(it) })
 }
 
 public fun <T> List<T>.specCloneFrom(src: List<T>) {

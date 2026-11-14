@@ -176,142 +176,142 @@ internal sealed class Feature {
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun concurrentFunctions(): Boolean = checkFor(io.github.kotlinmania.rustlang.stddetect.detect.Feature::concurrentFunctions)
+public fun concurrentFunctions(): Boolean = checkFor(Feature::concurrentFunctions)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun deflateConversion(): Boolean = checkFor(io.github.kotlinmania.rustlang.stddetect.detect.Feature::deflateConversion)
+public fun deflateConversion(): Boolean = checkFor(Feature::deflateConversion)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun enhancedSort(): Boolean = checkFor(io.github.kotlinmania.rustlang.stddetect.detect.Feature::enhancedSort)
+public fun enhancedSort(): Boolean = checkFor(Feature::enhancedSort)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun guardedStorage(): Boolean = checkFor(io.github.kotlinmania.rustlang.stddetect.detect.Feature::guardedStorage)
+public fun guardedStorage(): Boolean = checkFor(Feature::guardedStorage)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun highWord(): Boolean = checkFor(io.github.kotlinmania.rustlang.stddetect.detect.Feature::highWord)
+public fun highWord(): Boolean = checkFor(Feature::highWord)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun messageSecurityAssistExtension3(): Boolean = checkFor(io.github.kotlinmania.rustlang.stddetect.detect.Feature::messageSecurityAssistExtension3)
+public fun messageSecurityAssistExtension3(): Boolean = checkFor(Feature::messageSecurityAssistExtension3)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun messageSecurityAssistExtension4(): Boolean = checkFor(io.github.kotlinmania.rustlang.stddetect.detect.Feature::messageSecurityAssistExtension4)
+public fun messageSecurityAssistExtension4(): Boolean = checkFor(Feature::messageSecurityAssistExtension4)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun messageSecurityAssistExtension5(): Boolean = checkFor(io.github.kotlinmania.rustlang.stddetect.detect.Feature::messageSecurityAssistExtension5)
+public fun messageSecurityAssistExtension5(): Boolean = checkFor(Feature::messageSecurityAssistExtension5)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun messageSecurityAssistExtension8(): Boolean = checkFor(io.github.kotlinmania.rustlang.stddetect.detect.Feature::messageSecurityAssistExtension8)
+public fun messageSecurityAssistExtension8(): Boolean = checkFor(Feature::messageSecurityAssistExtension8)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun messageSecurityAssistExtension9(): Boolean = checkFor(io.github.kotlinmania.rustlang.stddetect.detect.Feature::messageSecurityAssistExtension9)
+public fun messageSecurityAssistExtension9(): Boolean = checkFor(Feature::messageSecurityAssistExtension9)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun messageSecurityAssistExtension12(): Boolean = checkFor(io.github.kotlinmania.rustlang.stddetect.detect.Feature::messageSecurityAssistExtension12)
+public fun messageSecurityAssistExtension12(): Boolean = checkFor(Feature::messageSecurityAssistExtension12)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun miscellaneousExtensions2(): Boolean = checkFor(io.github.kotlinmania.rustlang.stddetect.detect.Feature::miscellaneousExtensions2)
+public fun miscellaneousExtensions2(): Boolean = checkFor(Feature::miscellaneousExtensions2)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun miscellaneousExtensions3(): Boolean = checkFor(io.github.kotlinmania.rustlang.stddetect.detect.Feature::miscellaneousExtensions3)
+public fun miscellaneousExtensions3(): Boolean = checkFor(Feature::miscellaneousExtensions3)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun miscellaneousExtensions4(): Boolean = checkFor(io.github.kotlinmania.rustlang.stddetect.detect.Feature::miscellaneousExtensions4)
+public fun miscellaneousExtensions4(): Boolean = checkFor(Feature::miscellaneousExtensions4)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun nnpAssist(): Boolean = checkFor(io.github.kotlinmania.rustlang.stddetect.detect.Feature::nnpAssist)
+public fun nnpAssist(): Boolean = checkFor(Feature::nnpAssist)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun transactionalExecution(): Boolean = checkFor(io.github.kotlinmania.rustlang.stddetect.detect.Feature::transactionalExecution)
+public fun transactionalExecution(): Boolean = checkFor(Feature::transactionalExecution)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun vector(): Boolean = checkFor(io.github.kotlinmania.rustlang.stddetect.detect.Feature::vector)
+public fun vector(): Boolean = checkFor(Feature::vector)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun vectorEnhancements1(): Boolean = checkFor(io.github.kotlinmania.rustlang.stddetect.detect.Feature::vectorEnhancements1)
+public fun vectorEnhancements1(): Boolean = checkFor(Feature::vectorEnhancements1)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun vectorEnhancements2(): Boolean = checkFor(io.github.kotlinmania.rustlang.stddetect.detect.Feature::vectorEnhancements2)
+public fun vectorEnhancements2(): Boolean = checkFor(Feature::vectorEnhancements2)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun vectorEnhancements3(): Boolean = checkFor(io.github.kotlinmania.rustlang.stddetect.detect.Feature::vectorEnhancements3)
+public fun vectorEnhancements3(): Boolean = checkFor(Feature::vectorEnhancements3)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun vectorPackedDecimal(): Boolean = checkFor(io.github.kotlinmania.rustlang.stddetect.detect.Feature::vectorPackedDecimal)
+public fun vectorPackedDecimal(): Boolean = checkFor(Feature::vectorPackedDecimal)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun vectorPackedDecimalEnhancement(): Boolean = checkFor(io.github.kotlinmania.rustlang.stddetect.detect.Feature::vectorPackedDecimalEnhancement)
+public fun vectorPackedDecimalEnhancement(): Boolean = checkFor(Feature::vectorPackedDecimalEnhancement)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun vectorPackedDecimalEnhancement2(): Boolean = checkFor(io.github.kotlinmania.rustlang.stddetect.detect.Feature::vectorPackedDecimalEnhancement2)
+public fun vectorPackedDecimalEnhancement2(): Boolean = checkFor(Feature::vectorPackedDecimalEnhancement2)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun vectorPackedDecimalEnhancement3(): Boolean = checkFor(io.github.kotlinmania.rustlang.stddetect.detect.Feature::vectorPackedDecimalEnhancement3)
+public fun vectorPackedDecimalEnhancement3(): Boolean = checkFor(Feature::vectorPackedDecimalEnhancement3)

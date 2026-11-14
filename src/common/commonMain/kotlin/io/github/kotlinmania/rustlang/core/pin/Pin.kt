@@ -6,6 +6,7 @@ import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.ops.DerefPure
 import io.github.kotlinmania.rustlang.core.ops.LegacyReceiver
@@ -808,17 +809,15 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 //     imagine if [RefCell.T] had a method
 //     <code>fn getPinMut(self: [Pin]<[mut.Self]>) -> [Pin]<[mut.T]></code>.
 //     Then we could do the following:
-//     ```kotlin
-//     import io.github.kotlinmania.rustlang.core.cell.RefCell
-//
-//     fun <T> exploitRefCell(rc: Pin<RefCell<T>>) {
+//     ```compile_fail
+//     fn exploitRefCell<T>(mut rc: Pin<RefCell<T>>) {
 //         // Here we get pinned access to the `T`.
-//         val unused: Pin<T> = rc.asMut().getPinMut()
+//         let _: Pin<T> = rc.asMut().getPinMut();
+//
 //         // And here we have `T` to the same data.
-//         val shared: RefCell<T> = rc.intoRef().getRef()
-//         shared.borrowMut().use { borrow ->
-//             val content = borrow
-//         }
+//         let shared: &RefCell<T> = rc.intoRef().getRef();
+//         let mut borrow = shared.borrowMut();
+//         let content = *borrow;
 //     }
 //     ```
 //     This is catastrophic: it means we can first pin the content of the
@@ -1305,6 +1304,7 @@ public open class Pin<Ptr>(
          * guarantee that a value, once pinned, remains pinned until it is dropped:
          *
          * ```kotlin
+         * import std.mem
          * import std.pin.Pin
          *
          * fun <T> movePinnedRef(a: T, b: T) {
@@ -1733,10 +1733,10 @@ public open class PinMacroHelper<T>(
     public var value: T,
 ) {
     public companion object {
-        public fun <T> typeLayout(typeLayoutT: io.github.kotlinmania.rustlang.core.mem.TypeLayout<T>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<PinMacroHelper<T>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<PinMacroHelper<T>> {
+        public fun <T> typeLayout(typeLayoutT: TypeLayout<T>): TypeLayout<PinMacroHelper<T>> =
+            object : TypeLayout<PinMacroHelper<T>> {
                 override val alignBytes: Long = listOf(1L, typeLayoutT.alignBytes).max()
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(typeLayoutT.sizeBytes, alignBytes)
+                override val sizeBytes: Long = alignUpBytes(typeLayoutT.sizeBytes, alignBytes)
                 override fun readNative(addr: Long): PinMacroHelper<T> =
                     PinMacroHelper(
                         (typeLayoutT).readNative(addr),

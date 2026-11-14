@@ -87,7 +87,7 @@ internal fun panic(data: PanicPayload): UInt {
     fun exceptionCleanup(unwindCode: UnwindReasonCode, exception: MutPtr) {
         rustDropPanic()
     }
-    val exception = Exception(uwe = UnwindException(exceptionClass = RUST_EXCEPTION_CLASS, exceptionCleanup = exceptionCleanup, private = List(_) { ConstPtr(0L) }), canary = CANARY, cause = data.takeBox())
+    val exception = Exception(uwe = UnwindException(exceptionClass = RUST_EXCEPTION_CLASS, exceptionCleanup = ::exceptionCleanup, private = List(_) { ConstPtr(0L) }), canary = CANARY, cause = data.takeBox())
     val exceptionParam = mutPtrFromRustCast(Box.intoRaw(exception))
     return unwindRaiseException(exceptionParam).toUInt()
 }

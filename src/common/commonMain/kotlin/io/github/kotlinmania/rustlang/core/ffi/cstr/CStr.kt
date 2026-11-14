@@ -2,7 +2,7 @@
 package io.github.kotlinmania.rustlang.core.ffi.cstr
 
 import io.github.kotlinmania.rustlang.core.bytestr.ByteStr
-import io.github.kotlinmania.rustlang.core.ffi.CChar
+import io.github.kotlinmania.rustlang.core.ffi.primitives.cchardefinition.CChar
 import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
@@ -304,7 +304,7 @@ public open class CStr internal constructor(
      * check("foo".toStr() == Result.success("foo"))
      * ```
      */
-    public open fun toStr(): Result<String, str.Utf8Error> {
+    public open fun toStr(): Result<String, Utf8Error> {
         // N.B., when `CStr` is changed to perform the length check in `.toBytes()`
         // instead of in `fromPtr()`, it may be worth considering if this should
         // be rewritten to do the UTF-8 check inline with the length calculation
@@ -363,7 +363,7 @@ public open class CStr internal constructor(
         }
     }
 
-    public open fun indexRangeFromInt(index: RangeFrom<Int>): CStr = this.index(ops.RangeFrom.from(index))
+    public open fun indexRangeFromInt(index: RangeFrom<Int>): CStr = this.index(RangeFrom.from(index))
 
     public override fun asRef(): CStr = this
 
@@ -649,26 +649,28 @@ public open class FromBytesUntilNulError(
             value = v
         }
 
+    public open fun clone(): FromBytesUntilNulError = FromBytesUntilNulError(value)
+
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = f.writeFmt("data provided does not contain a nul")
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<FromBytesUntilNulError> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<FromBytesUntilNulError> {
+        public fun typeLayout(): TypeLayout<FromBytesUntilNulError> =
+            object : TypeLayout<FromBytesUntilNulError> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): FromBytesUntilNulError =
                     FromBytesUntilNulError(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.UNIT).readNative(addr),
+                        (PrimitiveLayouts.UNIT).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: FromBytesUntilNulError) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.UNIT).writeNative(addr, value.value)
+                    (PrimitiveLayouts.UNIT).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): FromBytesUntilNulError =
                     FromBytesUntilNulError(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.UNIT).readBytes(buf, offset),
+                        (PrimitiveLayouts.UNIT).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: FromBytesUntilNulError) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.UNIT).writeBytes(buf, offset, value.value)
+                    (PrimitiveLayouts.UNIT).writeBytes(buf, offset, value.value)
                 }
             }
     }
@@ -707,7 +709,7 @@ public open class Bytes internal constructor(
     public var ptr: NonNull = ptrCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<UByte> = object : AbstractIterator<UByte>() {
+    override fun iterator(): Iterator<UByte> = object : AbstractIterator<UByte>() {
         override fun computeNext() {
             when (val v = this@Bytes.next()) {
                 null -> done()
@@ -715,6 +717,8 @@ public open class Bytes internal constructor(
             }
         }
     }
+
+    public open fun clone(): Bytes = Bytes(ptr, phantom)
 
     public open fun isEmpty(): Boolean {
         // SAFETY: We uphold that the pointer is always valid to dereference

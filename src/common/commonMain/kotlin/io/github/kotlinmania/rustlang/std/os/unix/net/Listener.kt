@@ -8,12 +8,9 @@ import io.github.kotlinmania.libc.getsockname
 import io.github.kotlinmania.libc.listen
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.std.fmt
-import io.github.kotlinmania.rustlang.std.mem
+import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.os.fd.AsFd
 import io.github.kotlinmania.rustlang.std.os.fd.AsRawFd
 import io.github.kotlinmania.rustlang.std.os.fd.BorrowedFd
@@ -21,11 +18,10 @@ import io.github.kotlinmania.rustlang.std.os.fd.FromRawFd
 import io.github.kotlinmania.rustlang.std.os.fd.IntoRawFd
 import io.github.kotlinmania.rustlang.std.os.fd.OwnedFd
 import io.github.kotlinmania.rustlang.std.os.fd.RawFd
-import io.github.kotlinmania.rustlang.std.os.xous.ffi.definitions.Error
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.sys.FromInner
-import io.github.kotlinmania.rustlang.std.sys.net.connection.motor.Socket
-import io.github.kotlinmania.rustlang.std.sys.pal.hermit.cvt
+import io.github.kotlinmania.rustlang.std.sys.net.connection.wasip1.Socket
+import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.SockaddrUn
 
 public class DebugStruct(
@@ -87,7 +83,7 @@ public class DebugStruct(
  */
 public open class UnixListener(
     public var value: Socket,
-) : AsRawFd, FromRawFd<UnixListener, Any?, Any>, IntoRawFd, AsFd {
+) : AsRawFd, FromRawFd<UnixListener>, IntoRawFd, AsFd {
     public var field0: Socket
         get() = value
         set(v) {
@@ -129,7 +125,7 @@ public open class UnixListener(
      * }
      * ```kotlin
      */
-    public open fun accept(): Result<Pair<UnixStream, SocketAddr>> {
+    public open fun accept(): Result<Pair<UnixStream, SocketAddr>, Error> {
         val localStorageL184C8 = AddressableLocal(null, ObjectSlotLayout<io.github.kotlinmania.libc.fuchsia.SockaddrUn>())
         val storage by localStorageL184C8
         val len = sizeOfVal(storage)
@@ -156,7 +152,7 @@ public open class UnixListener(
      * }
      * ```kotlin
      */
-    public open fun tryClone(): Result<UnixListener> = this.value.duplicate().map({ UnixListener(it) })
+    public open fun tryClone(): Result<UnixListener, Error> = this.value.duplicate().map({ UnixListener(it) })
 
     /**
      * Returns the local socket address of this listener.
@@ -172,7 +168,7 @@ public open class UnixListener(
      * }
      * ```kotlin
      */
-    public open fun localAddr(): Result<SocketAddr> = SocketAddr.new({ addr, len -> getsockname(this.asRawFd(), addr, len) })
+    public open fun localAddr(): Result<SocketAddr, Error> = SocketAddr.new({ addr, len -> getsockname(this.asRawFd(), addr, len) })
 
     /**
      * Moves the socket into or out of nonblocking mode.
@@ -194,7 +190,7 @@ public open class UnixListener(
      * }
      * ```kotlin
      */
-    public open fun setNonblocking(nonblocking: Boolean): Result<Unit> = this.value.setNonblocking(nonblocking)
+    public open fun setNonblocking(nonblocking: Boolean): Result<Unit, Error> = this.value.setNonblocking(nonblocking)
 
     /**
      * Returns the value of the `SO_ERROR` option.
@@ -216,7 +212,7 @@ public open class UnixListener(
      * On Redox this always returns `None`.
      * ```
      */
-    public open fun takeError(): Result<Error?> = this.value.takeError()
+    public open fun takeError(): Result<io.github.kotlinmania.rustlang.core.io.error.Error?, Error> = this.value.takeError()
 
     /**
      * Returns an iterator over incoming connections.
@@ -261,26 +257,6 @@ public open class UnixListener(
     public open fun intoIter(): Incoming = this.incoming()
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<UnixListener> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<UnixListener> {
-                override val alignBytes: Long = 8L
-                override val sizeBytes: Long = 8L
-                override fun readNative(addr: Long): UnixListener =
-                    UnixListener(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).readNative(addr),
-                    )
-                override fun writeNative(addr: Long, value: UnixListener) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).writeNative(addr, value.value)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): UnixListener =
-                    UnixListener(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).readBytes(buf, offset),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: UnixListener) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).writeBytes(buf, offset, value.value)
-                }
-            }
-
         /**
          * Creates a new `UnixListener` bound to the specified socket.
          *
@@ -297,11 +273,11 @@ public open class UnixListener(
          * };
          * ```kotlin
          */
-        public fun bind(path: Path): Result<UnixListener> {
+        public fun bind(path: Path): Result<UnixListener, Error> {
             return run {
                 val inner = when (val tryResult = Socket.new(AF_UNIX, SOCK_STREAM)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
                 val (addr, len) = when (val tryResult = SockaddrUn(path)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-                when (val tryResult = cvt(io.github.kotlinmania.libc.bind(inner.asInner().asRawFd(), constPtrFromRustCast((addrOf(addr))), ((len as Any?) as Result<UnixListener>)))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                when (val tryResult = cvt(io.github.kotlinmania.libc.bind(inner.asInner().asRawFd(), constPtrFromRustCast((addrOf(addr))), ((len as Any?) as Result<UnixListener, Error>)))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
                 when (val tryResult = cvt(listen(inner.asInner().asRawFd(), backlog))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
                 Result.Ok(UnixListener(inner))
             }
@@ -328,10 +304,10 @@ public open class UnixListener(
          * }
          * ```kotlin
          */
-        public fun bindAddr(socketAddr: SocketAddr): Result<UnixListener> {
+        public fun bindAddr(socketAddr: SocketAddr): Result<UnixListener, Error> {
             return run {
                 val inner = when (val tryResult = Socket.new(AF_UNIX, SOCK_STREAM)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-                when (val tryResult = cvt(bind(inner.asRawFd(), (addrOf(socketAddr.addr)), ((socketAddr.len as Any?) as Result<UnixListener>)))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                when (val tryResult = cvt(bind(inner.asRawFd(), (addrOf(socketAddr.addr)), ((socketAddr.len as Any?) as Result<UnixListener, Error>)))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
                 when (val tryResult = cvt(listen(inner.asRawFd(), backlog))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
                 Result.Ok(UnixListener(inner))
             }
@@ -381,8 +357,8 @@ public fun fromOwnedFd(listener: UnixListener): OwnedFd = listener.value.intoInn
  */
 public open class Incoming(
     public var listener: UnixListener,
-) : Iterable<Result<UnixStream>> {
-    override fun iterator(): kotlin.collections.Iterator<Result<UnixStream>> = object : AbstractIterator<Result<UnixStream>>() {
+) : Iterable<Result<UnixStream, Error>> {
+    override fun iterator(): Iterator<Result<UnixStream, Error>> = object : AbstractIterator<Result<UnixStream, Error>>() {
         override fun computeNext() {
             when (val v = this@Incoming.next()) {
                 null -> done()
@@ -391,7 +367,7 @@ public open class Incoming(
         }
     }
 
-    public open fun next(): Result<UnixStream>? = this.listener.accept().map({ s -> s.first })
+    public open fun next(): Result<UnixStream, Error>? = this.listener.accept().map({ s -> s.first })
 
     public open fun sizeHint(): Pair<Int, Int?> = Pair(Int.MAX_VALUE, null)
 }

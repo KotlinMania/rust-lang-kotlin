@@ -661,7 +661,7 @@ public open class OccupiedEntry<K, V, A : AllocatorClone>(
      * check(map["poneyland"] == 15)
      * ```
      */
-    public open fun insert(value: V): V = mem.replace(this.getMut(), value)
+    public open fun insert(value: V): V = replace(this.getMut(), value)
 
     /**
      * Takes the value of the entry out of the map, and returns it.

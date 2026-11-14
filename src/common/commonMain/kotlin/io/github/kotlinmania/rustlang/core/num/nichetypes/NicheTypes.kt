@@ -32,6 +32,8 @@ public open class Nanoseconds internal constructor(
 
     public fun pointerLayout(): TypeLayout<Nanoseconds> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Nanoseconds(ptr, layout) }, { it.value })
 
+    public open fun clone(): Nanoseconds = Nanoseconds(value, fieldLayout)
+
     public open fun asInner(): UInt = transmute(this)
 
     public open fun eq(other: Nanoseconds): Boolean = this.asInner() == other.asInner()
@@ -99,6 +101,8 @@ public open class NonZeroU8Inner internal constructor(
 
     public fun pointerLayout(): TypeLayout<NonZeroU8Inner> = TransparentTypeLayout(fieldLayout, { ptr, layout -> NonZeroU8Inner(ptr, layout) }, { it.value })
 
+    public open fun clone(): NonZeroU8Inner = NonZeroU8Inner(value, fieldLayout)
+
     public open fun asInner(): UByte = transmute(this)
 
     public open fun eq(other: NonZeroU8Inner): Boolean = this.asInner() == other.asInner()
@@ -156,6 +160,8 @@ public open class NonZeroU16Inner internal constructor(
     internal constructor(value: UShort, fieldLayout: TypeLayout<UShort>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<NonZeroU16Inner> = TransparentTypeLayout(fieldLayout, { ptr, layout -> NonZeroU16Inner(ptr, layout) }, { it.value })
+
+    public open fun clone(): NonZeroU16Inner = NonZeroU16Inner(value, fieldLayout)
 
     public open fun asInner(): UShort = transmute(this)
 
@@ -215,6 +221,8 @@ public open class NonZeroU32Inner internal constructor(
 
     public fun pointerLayout(): TypeLayout<NonZeroU32Inner> = TransparentTypeLayout(fieldLayout, { ptr, layout -> NonZeroU32Inner(ptr, layout) }, { it.value })
 
+    public open fun clone(): NonZeroU32Inner = NonZeroU32Inner(value, fieldLayout)
+
     public open fun asInner(): UInt = transmute(this)
 
     public open fun eq(other: NonZeroU32Inner): Boolean = this.asInner() == other.asInner()
@@ -272,6 +280,8 @@ public open class NonZeroU64Inner internal constructor(
     internal constructor(value: ULong, fieldLayout: TypeLayout<ULong>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<NonZeroU64Inner> = TransparentTypeLayout(fieldLayout, { ptr, layout -> NonZeroU64Inner(ptr, layout) }, { it.value })
+
+    public open fun clone(): NonZeroU64Inner = NonZeroU64Inner(value, fieldLayout)
 
     public open fun asInner(): ULong = transmute(this)
 
@@ -331,6 +341,8 @@ public open class NonZeroU128Inner internal constructor(
 
     public fun pointerLayout(): TypeLayout<NonZeroU128Inner> = TransparentTypeLayout(fieldLayout, { ptr, layout -> NonZeroU128Inner(ptr, layout) }, { it.value })
 
+    public open fun clone(): NonZeroU128Inner = NonZeroU128Inner(value, fieldLayout)
+
     public open fun asInner(): U128 = transmute(this)
 
     public open fun eq(other: NonZeroU128Inner): Boolean = this.asInner() == other.asInner()
@@ -388,6 +400,8 @@ public open class NonZeroI8Inner internal constructor(
     internal constructor(value: Byte, fieldLayout: TypeLayout<Byte>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<NonZeroI8Inner> = TransparentTypeLayout(fieldLayout, { ptr, layout -> NonZeroI8Inner(ptr, layout) }, { it.value })
+
+    public open fun clone(): NonZeroI8Inner = NonZeroI8Inner(value, fieldLayout)
 
     public open fun asInner(): Byte = transmute(this)
 
@@ -447,6 +461,8 @@ public open class NonZeroI16Inner internal constructor(
 
     public fun pointerLayout(): TypeLayout<NonZeroI16Inner> = TransparentTypeLayout(fieldLayout, { ptr, layout -> NonZeroI16Inner(ptr, layout) }, { it.value })
 
+    public open fun clone(): NonZeroI16Inner = NonZeroI16Inner(value, fieldLayout)
+
     public open fun asInner(): Short = transmute(this)
 
     public open fun eq(other: NonZeroI16Inner): Boolean = this.asInner() == other.asInner()
@@ -504,6 +520,8 @@ public open class NonZeroI32Inner internal constructor(
     internal constructor(value: Int, fieldLayout: TypeLayout<Int>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<NonZeroI32Inner> = TransparentTypeLayout(fieldLayout, { ptr, layout -> NonZeroI32Inner(ptr, layout) }, { it.value })
+
+    public open fun clone(): NonZeroI32Inner = NonZeroI32Inner(value, fieldLayout)
 
     public open fun asInner(): Int = transmute(this)
 
@@ -563,6 +581,8 @@ public open class NonZeroI64Inner internal constructor(
 
     public fun pointerLayout(): TypeLayout<NonZeroI64Inner> = TransparentTypeLayout(fieldLayout, { ptr, layout -> NonZeroI64Inner(ptr, layout) }, { it.value })
 
+    public open fun clone(): NonZeroI64Inner = NonZeroI64Inner(value, fieldLayout)
+
     public open fun asInner(): Long = transmute(this)
 
     public open fun eq(other: NonZeroI64Inner): Boolean = this.asInner() == other.asInner()
@@ -620,6 +640,8 @@ public open class NonZeroI128Inner internal constructor(
     internal constructor(value: I128, fieldLayout: TypeLayout<I128>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<NonZeroI128Inner> = TransparentTypeLayout(fieldLayout, { ptr, layout -> NonZeroI128Inner(ptr, layout) }, { it.value })
+
+    public open fun clone(): NonZeroI128Inner = NonZeroI128Inner(value, fieldLayout)
 
     public open fun asInner(): I128 = transmute(this)
 
@@ -679,6 +701,8 @@ public open class UsizeNoHighBit internal constructor(
 
     public fun pointerLayout(): TypeLayout<UsizeNoHighBit> = TransparentTypeLayout(fieldLayout, { ptr, layout -> UsizeNoHighBit(ptr, layout) }, { it.value })
 
+    public open fun clone(): UsizeNoHighBit = UsizeNoHighBit(value, fieldLayout)
+
     public open fun asInner(): Int = transmute(this)
 
     public open fun eq(other: UsizeNoHighBit): Boolean = this.asInner() == other.asInner()
@@ -736,6 +760,8 @@ public open class UsizeNoHighBitMinusOne internal constructor(
     internal constructor(value: Int, fieldLayout: TypeLayout<Int>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<UsizeNoHighBitMinusOne> = TransparentTypeLayout(fieldLayout, { ptr, layout -> UsizeNoHighBitMinusOne(ptr, layout) }, { it.value })
+
+    public open fun clone(): UsizeNoHighBitMinusOne = UsizeNoHighBitMinusOne(value, fieldLayout)
 
     public open fun asInner(): Int = transmute(this)
 
@@ -795,6 +821,8 @@ public open class NonZeroUsizeInner internal constructor(
 
     public fun pointerLayout(): TypeLayout<NonZeroUsizeInner> = TransparentTypeLayout(fieldLayout, { ptr, layout -> NonZeroUsizeInner(ptr, layout) }, { it.value })
 
+    public open fun clone(): NonZeroUsizeInner = NonZeroUsizeInner(value, fieldLayout)
+
     public open fun asInner(): Int = transmute(this)
 
     public open fun eq(other: NonZeroUsizeInner): Boolean = this.asInner() == other.asInner()
@@ -852,6 +880,8 @@ public open class NonZeroIsizeInner internal constructor(
     internal constructor(value: Int, fieldLayout: TypeLayout<Int>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<NonZeroIsizeInner> = TransparentTypeLayout(fieldLayout, { ptr, layout -> NonZeroIsizeInner(ptr, layout) }, { it.value })
+
+    public open fun clone(): NonZeroIsizeInner = NonZeroIsizeInner(value, fieldLayout)
 
     public open fun asInner(): Int = transmute(this)
 
@@ -911,6 +941,8 @@ public open class U32NotAllOnes internal constructor(
 
     public fun pointerLayout(): TypeLayout<U32NotAllOnes> = TransparentTypeLayout(fieldLayout, { ptr, layout -> U32NotAllOnes(ptr, layout) }, { it.value })
 
+    public open fun clone(): U32NotAllOnes = U32NotAllOnes(value, fieldLayout)
+
     public open fun asInner(): UInt = transmute(this)
 
     public open fun eq(other: U32NotAllOnes): Boolean = this.asInner() == other.asInner()
@@ -968,6 +1000,8 @@ public open class I32NotAllOnes internal constructor(
     internal constructor(value: Int, fieldLayout: TypeLayout<Int>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<I32NotAllOnes> = TransparentTypeLayout(fieldLayout, { ptr, layout -> I32NotAllOnes(ptr, layout) }, { it.value })
+
+    public open fun clone(): I32NotAllOnes = I32NotAllOnes(value, fieldLayout)
 
     public open fun asInner(): Int = transmute(this)
 
@@ -1027,6 +1061,8 @@ public open class U64NotAllOnes internal constructor(
 
     public fun pointerLayout(): TypeLayout<U64NotAllOnes> = TransparentTypeLayout(fieldLayout, { ptr, layout -> U64NotAllOnes(ptr, layout) }, { it.value })
 
+    public open fun clone(): U64NotAllOnes = U64NotAllOnes(value, fieldLayout)
+
     public open fun asInner(): ULong = transmute(this)
 
     public open fun eq(other: U64NotAllOnes): Boolean = this.asInner() == other.asInner()
@@ -1085,6 +1121,8 @@ public open class I64NotAllOnes internal constructor(
 
     public fun pointerLayout(): TypeLayout<I64NotAllOnes> = TransparentTypeLayout(fieldLayout, { ptr, layout -> I64NotAllOnes(ptr, layout) }, { it.value })
 
+    public open fun clone(): I64NotAllOnes = I64NotAllOnes(value, fieldLayout)
+
     public open fun asInner(): Long = transmute(this)
 
     public open fun eq(other: I64NotAllOnes): Boolean = this.asInner() == other.asInner()
@@ -1142,6 +1180,8 @@ public open class NonZeroCharInner internal constructor(
     internal constructor(value: Char, fieldLayout: TypeLayout<Char>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<NonZeroCharInner> = TransparentTypeLayout(fieldLayout, { ptr, layout -> NonZeroCharInner(ptr, layout) }, { it.value })
+
+    public open fun clone(): NonZeroCharInner = NonZeroCharInner(value, fieldLayout)
 
     public open fun asInner(): Char = transmute(this)
 
@@ -1204,6 +1244,8 @@ public open class CodePointInner internal constructor(
     internal constructor(value: UInt, fieldLayout: TypeLayout<UInt>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<CodePointInner> = TransparentTypeLayout(fieldLayout, { ptr, layout -> CodePointInner(ptr, layout) }, { it.value })
+
+    public open fun clone(): CodePointInner = CodePointInner(value, fieldLayout)
 
     public open fun asInner(): UInt = transmute(this)
 

@@ -1,4 +1,4 @@
-@file:OptIn(kotlinx.cinterop.ExperimentalForeignApi::class, kotlin.ExperimentalUnsignedTypes::class)
+@file:OptIn(ExperimentalForeignApi::class, ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.corearch.amdgpu
 
@@ -53,6 +53,7 @@ import io.github.kotlinmania.rustlang.corearch.amdgpu.cinterop.corearchAmdgpuLlv
 import io.github.kotlinmania.rustlang.corearch.amdgpu.cinterop.corearchAmdgpuLlvmWorkitemIdZ
 import io.github.kotlinmania.rustlang.corearch.amdgpu.cinterop.corearchAmdgpuLlvmWritelaneU32
 import io.github.kotlinmania.rustlang.corearch.amdgpu.cinterop.corearchAmdgpuLlvmWritelaneU64
+import kotlinx.cinterop.ExperimentalForeignApi
 
 public actual fun llvmWorkitemIdX(): UInt =
     corearchAmdgpuLlvmWorkitemIdX()

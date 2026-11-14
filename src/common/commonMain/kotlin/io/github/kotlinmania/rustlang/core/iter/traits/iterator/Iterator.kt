@@ -4,7 +4,6 @@ package io.github.kotlinmania.rustlang.core.iter.traits.iterator
 import io.github.kotlinmania.rustlang.core.array.iter.IntoIter
 import io.github.kotlinmania.rustlang.core.array.iterNextChunk
 import io.github.kotlinmania.rustlang.core.cmp.KeyAndValue
-import io.github.kotlinmania.rustlang.core.intrinsics.mir.call
 import io.github.kotlinmania.rustlang.core.iter.Product
 import io.github.kotlinmania.rustlang.core.iter.Sum
 import io.github.kotlinmania.rustlang.core.iter.adapters.arraychunks.ArrayChunks
@@ -242,7 +241,7 @@ public interface Iterator<SelfType, Item> {
      */
     public fun last(): Item? {
         fun <T> some(arg0: T?, x: T): T? = x
-        return this.fold(null, some)
+        return this.fold(null, ::some)
     }
 
     /**
@@ -1449,7 +1448,7 @@ public interface Iterator<SelfType, Item> {
      * @feature(iterMapWindows)
      * public fun doctestEntry() {
      *     open class NonFusedIterator(public var state: Int) : Iterable<Int> {
-     *         override fun iterator(): kotlin.collections.Iterator<Int> = object : AbstractIterator<Int>() {
+     *         override fun iterator(): Iterator<Int> = object : AbstractIterator<Int>() {
      *             override fun computeNext() {
      *                 when (val v = this@NonFusedIterator.next()) {
      *                     null -> done()
@@ -1518,7 +1517,7 @@ public interface Iterator<SelfType, Item> {
      * ```kotlin
      * // an iterator which alternates between Some and None
      * open class Alternate(public var state: Int) : Iterable<Int> {
-     *     override fun iterator(): kotlin.collections.Iterator<Int> = object : AbstractIterator<Int>() {
+     *     override fun iterator(): Iterator<Int> = object : AbstractIterator<Int>() {
      *         override fun computeNext() {
      *             when (val v = this@Alternate.next()) {
      *                 null -> done()
@@ -2721,7 +2720,7 @@ public interface Iterator<SelfType, Item> {
      * }
      * ```
      */
-    public fun max(): Item? = this.reduce(Ord::max)
+    public fun max(): Item? = this.reduce({ Ord.max(it) })
 
     /**
      * Returns the minimum element of an iterator.
@@ -2748,7 +2747,7 @@ public interface Iterator<SelfType, Item> {
      * }
      * ```
      */
-    public fun min(): Item? = this.reduce(Ord::min)
+    public fun min(): Item? = this.reduce({ Ord.min(it) })
 
     /**
      * Returns the element that gives the maximum value from the
@@ -2789,7 +2788,7 @@ public interface Iterator<SelfType, Item> {
      * ```
      */
     public fun maxBy(compare: (Item, Item) -> Ordering): Item? {
-        fun <T> fold(compare1: (T, T) -> Ordering): (T, T) -> T = { x, y -> cmp.maxBy(x, y, compare1) }
+        fun <T> fold(compare1: (T, T) -> Ordering): (T, T) -> T = { x, y -> maxBy(x, y, compare1) }
         return this.reduce(fold(compare))
     }
 
@@ -2832,7 +2831,7 @@ public interface Iterator<SelfType, Item> {
      * ```
      */
     public fun minBy(compare: (Item, Item) -> Ordering): Item? {
-        fun <T> fold(compare1: (T, T) -> Ordering): (T, T) -> T = { x, y -> cmp.minBy(x, y, compare1) }
+        fun <T> fold(compare1: (T, T) -> Ordering): (T, T) -> T = { x, y -> minBy(x, y, compare1) }
         return this.reduce(fold(compare))
     }
 
@@ -3056,9 +3055,9 @@ public interface Iterator<SelfType, Item> {
      * fun factorial(n: UInt): UInt {
      *     return (1u..n).product()
      * }
-     * check(factorial(0u) == 1)
-     * check(factorial(1u) == 1)
-     * check(factorial(5u) == 120)
+     * check(factorial(0u) == 1u)
+     * check(factorial(1u) == 1u)
+     * check(factorial(5u) == 120u)
      * ```
      */
     public fun <P> product(): P where P : Product<Item, P> = Product.product(this)

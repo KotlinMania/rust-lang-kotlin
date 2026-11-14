@@ -59,7 +59,7 @@ public open class Drain<T, A : Allocator>(
     internal var iter: ArrayDeque<T>,
     internal var vec: NonNull,
 ) : AsRef<List<T>>, TrustedLen, Iterable<T> {
-    override fun iterator(): kotlin.collections.Iterator<T> = object : AbstractIterator<T>() {
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@Drain.next()) {
                 null -> done()
@@ -69,7 +69,7 @@ public open class Drain<T, A : Allocator>(
     }
 
     public open fun fmt(f: StringBuilder) {
-        DebugTuple(f, "Drain").field(this.iter.asSlice()).finish()
+        DebugTuple(f, "Drain").field(this.iter.toList()).finish()
     }
 
     /**
@@ -85,7 +85,7 @@ public open class Drain<T, A : Allocator>(
      * check(drain.asSlice() == listOf('b', 'c'))
      * ```
      */
-    public open fun asSlice(): List<T> = this.iter.asSlice()
+    public open fun asSlice(): List<T> = this.iter.toList()
 
     /**
      * Returns a reference to the underlying allocator.
@@ -143,13 +143,13 @@ public open class Drain<T, A : Allocator>(
                 if (unyieldedPtr != startPtr) {
                     val src = unyieldedPtr
                     val dst = startPtr
-                    ptr.copy(src, dst, unyieldedLen)
+                    copy(src, dst, unyieldedLen)
                 }
                 // memmove back untouched tail
                 if (tail != (start + unyieldedLen)) {
                     val src1 = sourceVec.asPtr().add(tail)
                     val dst1 = startPtr.add(unyieldedLen)
-                    ptr.copy(src1, dst1, thisRef.tailLen)
+                    copy(src1, dst1, thisRef.tailLen)
                 }
             }
             sourceVec.setLen(start + unyieldedLen + thisRef.tailLen)
@@ -160,14 +160,14 @@ public open class Drain<T, A : Allocator>(
 
     public open fun next(): T? {
         // ignore-tidy-undocumented-unchecked
-        return this.iter.removeFirstOrNull()?.let({ elt -> ptr.read(constPtrFromRustCast(elt), typeLayoutT = ObjectSlotLayout<Any?>()) })
+        return this.iter.removeFirstOrNull()?.let({ elt -> read(constPtrFromRustCast(elt), typeLayoutT = ObjectSlotLayout<Any?>()) })
     }
 
-    public open fun sizeHint(): Pair<Int, Int?> = this.iter.sizeHint()
+    public open fun sizeHint(): Pair<Int, Int?> = run { val n = this.iter.size; Pair(n, n) }
 
     public open fun nextBack(): T? {
         // ignore-tidy-undocumented-unchecked
-        return this.iter.removeLastOrNull()?.let({ elt -> ptr.read(constPtrFromRustCast(elt), typeLayoutT = ObjectSlotLayout<Any?>()) })
+        return this.iter.removeLastOrNull()?.let({ elt -> read(constPtrFromRustCast(elt), typeLayoutT = ObjectSlotLayout<Any?>()) })
     }
 
     public open fun drop() {
@@ -194,14 +194,14 @@ public open class Drain<T, A : Allocator>(
                         if (tail != start) {
                             val src = sourceVec.asPtr().add(tail)
                             val dst = sourceVec.asMutPtr().add(start)
-                            ptr.copy(src, dst, this.value.tailLen)
+                            copy(src, dst, this.value.tailLen)
                         }
                         sourceVec.setLen(start + this.value.tailLen)
                     }
                 }
             }
         }
-        val iter = mem.take(this.iter)
+        val iter = take(this.iter)
         val dropLen = iter.len()
         val vec = this.vec
         if (T.IS_ZST) {
@@ -234,7 +234,7 @@ public open class Drain<T, A : Allocator>(
             val vecPtr = vec.asMut().asMutPtr()
             val dropOffset = dropPtr.offsetFromUnsigned(vecPtr)
             val toDrop = vecPtr.add(dropOffset).castSlice(dropLen)
-            ptr.dropInPlace(toDrop)
+            dropInPlace(toDrop)
         }
     }
 

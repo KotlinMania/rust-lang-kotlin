@@ -72,6 +72,8 @@ public open class Utf8Chunk(
     public var valid: String,
     public var invalid: List<UByte>,
 ) {
+    public open fun clone(): Utf8Chunk = Utf8Chunk(valid, invalid)
+
     /**
      * Returns the next validated UTF-8 substring.
      *
@@ -172,7 +174,7 @@ public open class Debug(
 public open class Utf8Chunks(
     public var source: List<UByte>,
 ) : Iterable<Utf8Chunk> {
-    override fun iterator(): kotlin.collections.Iterator<Utf8Chunk> = object : AbstractIterator<Utf8Chunk>() {
+    override fun iterator(): Iterator<Utf8Chunk> = object : AbstractIterator<Utf8Chunk>() {
         override fun computeNext() {
             when (val v = this@Utf8Chunks.next()) {
                 null -> done()
@@ -180,6 +182,8 @@ public open class Utf8Chunks(
             }
         }
     }
+
+    public open fun clone(): Utf8Chunks = Utf8Chunks(source)
 
     public open fun debug(): Debug = Debug(this.source)
 
@@ -204,7 +208,7 @@ public open class Utf8Chunks(
                 val w = utf8CharWidth(byte)
                 when (w) {
                     2 -> {
-                        if (safeGet(this.source, i) and 192 != TAG_CONT_U8) {
+                        if (safeGet(this.source, i) and 192u.toUByte() != TAG_CONT_U8) {
                             break
                         }
                         i += 1
@@ -221,7 +225,7 @@ public open class Utf8Chunks(
                             }
                         }
                         i += 1
-                        if (safeGet(this.source, i) and 192 != TAG_CONT_U8) {
+                        if (safeGet(this.source, i) and 192u.toUByte() != TAG_CONT_U8) {
                             break
                         }
                         i += 1
@@ -237,11 +241,11 @@ public open class Utf8Chunks(
                             }
                         }
                         i += 1
-                        if (safeGet(this.source, i) and 192 != TAG_CONT_U8) {
+                        if (safeGet(this.source, i) and 192u.toUByte() != TAG_CONT_U8) {
                             break
                         }
                         i += 1
-                        if (safeGet(this.source, i) and 192 != TAG_CONT_U8) {
+                        if (safeGet(this.source, i) and 192u.toUByte() != TAG_CONT_U8) {
                             break
                         }
                         i += 1

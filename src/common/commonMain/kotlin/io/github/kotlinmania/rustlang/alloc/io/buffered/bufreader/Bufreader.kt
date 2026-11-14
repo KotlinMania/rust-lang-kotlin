@@ -294,7 +294,7 @@ public open class BufReader<R>(
                 }
             }
         }
-        return this.seek(SeekFrom.Current(offset)).map(drop)
+        return this.seek(SeekFrom.Current(offset)).map({ Unit })
     }
 
     public override fun specReadByte(): Result<UByte>? {
@@ -374,7 +374,7 @@ public open class BufReader<R>(
     public override fun readToEnd(buf: List<UByte>): Result<Int> {
         val innerBuf = this.buffer()
         when (val tryResult = buf.tryReserve(innerBuf.len())) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-        cfgSelect(noGlobalOomHandling, buf, tryExtendFromSliceOfBytes, innerBuf, buf, extendFromSlice, innerBuf)
+        when (val tryResult = buf.tryExtendFromSliceOfBytes(innerBuf)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         val nread = innerBuf.len()
         this.discardBuffer()
         return Result.Ok(nread + when (val tryResult = this.inner.readToEnd(buf)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) })
@@ -406,8 +406,8 @@ public open class BufReader<R>(
             // buffer.
             val bytes = mutableListOf()
             when (val tryResult = this.readToEnd(bytes)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-            val string = when (val tryResult = fromUtf8(bytes).mapErr({ io.Error.INVALID_UTF8 })) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-            cfgSelect(noGlobalOomHandling, buf, tryPushStr, string, buf, pushStr, string)
+            val string = when (val tryResult = fromUtf8(bytes).mapErr({ Error.INVALID_UTF8 })) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            when (val tryResult = buf.tryPushStr(string)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
             Result.Ok(string.len())
         }
     }

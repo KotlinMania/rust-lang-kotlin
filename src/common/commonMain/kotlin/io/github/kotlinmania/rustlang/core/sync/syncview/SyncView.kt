@@ -81,46 +81,58 @@ public typealias Return<G> = G.Return
  *
  * A non-`Sync` field prevents the wrapping struct from being `Sync`:
  *
- * ```kotlin
- * import std.sync.mpsc.Receiver
+ * ```compile_fail,E0277
+ * use std.sync.mpsc::{self, Receiver};
  *
- * open class Inbox(public var name: String, public var receiver: Receiver<UInt>)
- * fun <T> requireSend() {}
- * fun <T> requireSendSync() {}
- * requireSend<Inbox>()
- * // compiled
- * requireSendSync<Inbox>()
- * // compile-failed
+ * struct Inbox {
+ *     name: &static str,
+ *     receiver: Receiver<u32>,
+ * }
+ *
+ * fn requireSend<T: Send>() {}
+ * fn requireSendSync<T: ThreadSafe>() {}
+ *
+ * requireSend::<Inbox>();      // compiled
+ * requireSendSync::<Inbox>(); // compile-failed
  * ```
  *
  * `SyncView` makes the value `Sync` without stripping the struct of its
  * functionality:
  *
- * ```kotlin
- * import std.sync.SyncView
- * import std.sync.mpsc.Receiver
+ * ```ignore-wasm
+ * use std.sync.SyncView;
+ * use std.sync.mpsc::{self, Receiver};
+ * use std.thread;
  *
- * open class Inbox(public var name: String, public var receiver: SyncView<Receiver<UInt>>) {
- *     public open fun name(): String {
- *         return this.name
+ * struct Inbox {
+ *     name: &static str,
+ *     receiver: SyncView<Receiver<u32>>,
+ * }
+ *
+ * impl Inbox {
+ *     fn name(&self) -> &static str {
+ *         self.name
  *     }
  *
- *     public open fun recv(): UInt {
- *         return this.receiver.asMut().recv().unwrap()
+ *     fn recv(self) -> u32 {
+ *         self.receiver.asMut().recv().unwrap()
  *     }
  * }
- * val (sender, receiver) = mpsc.channel()
- * var inbox = Inbox(name = "jobs", receiver = SyncView.new(receiver))
- * sender.send(42).unwrap()
- * drop(sender)
- * thread.scope({ scope ->
- *     val reader = scope.spawn({ inbox.name() })
- *     check(inbox.name() == "jobs")
- *     check(reader.join().unwrap() == "jobs")
- * })
- * val message = thread.spawn({ inbox.recv() }).join().unwrap()
- * check(message == 42)
- * println("Shared Inbox across threads, then moved it to a worker and received 42")
+ *
+ * let (sender, receiver) = mpsc.channel();
+ * let mut inbox = Inbox { name: "jobs", receiver: SyncView.new(receiver) };
+ * sender.send(42).unwrap();
+ * drop(sender);
+ *
+ * thread.scope(|scope| {
+ *     let reader = scope.spawn(|| inbox.name());
+ *     assertEq(inbox.name(), "jobs");
+ *     assertEq(reader.join().unwrap(), "jobs");
+ * });
+ *
+ * let message = thread.spawn(move || inbox.recv()).join().unwrap();
+ * assertEq(message, 42);
+ * println("Shared Inbox across threads, then moved it to a worker and received 42");
  * ```
  *
  * ## Parallels with a mutex

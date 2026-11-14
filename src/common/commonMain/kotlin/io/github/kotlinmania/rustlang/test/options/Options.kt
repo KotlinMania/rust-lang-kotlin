@@ -96,6 +96,8 @@ public open class Options(
     public var displayOutput: Boolean,
     public var panicAbort: Boolean,
 ) {
+    public open fun clone(): Options = Options(displayOutput, panicAbort)
+
     public open fun displayOutput(displayOutput: Boolean): Options {
         this.displayOutput = displayOutput
         return this
@@ -107,27 +109,27 @@ public open class Options(
     }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Options> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Options> {
+        public fun typeLayout(): TypeLayout<Options> =
+            object : TypeLayout<Options> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 2L
                 override fun readNative(addr: Long): Options =
                     Options(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 1L),
+                        (PrimitiveLayouts.BOOL).readNative(addr),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 1L),
                     )
                 override fun writeNative(addr: Long, value: Options) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr, value.displayOutput)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 1L, value.panicAbort)
+                    (PrimitiveLayouts.BOOL).writeNative(addr, value.displayOutput)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 1L, value.panicAbort)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Options =
                     Options(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 1),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 1),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Options) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset, value.displayOutput)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 1, value.panicAbort)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset, value.displayOutput)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 1, value.panicAbort)
                 }
             }
 

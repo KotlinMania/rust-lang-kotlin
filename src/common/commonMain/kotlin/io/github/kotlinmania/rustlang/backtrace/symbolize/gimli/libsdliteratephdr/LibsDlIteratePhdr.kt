@@ -18,7 +18,6 @@ import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.result.andThen
 import io.github.kotlinmania.rustlang.core.slice.rawSliceList
 
 public open class CallbackData(
@@ -84,7 +83,7 @@ public fun callback(info: MutPtr, size: SizeT, data: MutPtr): CInt {
         }
     val zipOffset: ULong? = maps?.let({ maps1 ->
         // check if file is embedded within a ZIP archive by searching for `! /`
-        extractZipPathAndroid(name).andThen({
+        extractZipPathAndroid(name)?.let({
             // find MapsEntry matching library's base address and get its file offset
             (maps1.iter().indexOf({ m -> m.ipMatches(dlpiAddr.toInt()) }).takeIf { it >= 0 })?.let({ m -> m.offset() })
         })

@@ -1,4 +1,4 @@
-@file:OptIn(kotlinx.cinterop.ExperimentalForeignApi::class, kotlin.ExperimentalUnsignedTypes::class)
+@file:OptIn(ExperimentalForeignApi::class, ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.corearch.nvptx
 
@@ -22,6 +22,7 @@ import io.github.kotlinmania.rustlang.corearch.nvptx.cinterop.corearchNvptxThrea
 import io.github.kotlinmania.rustlang.corearch.nvptx.cinterop.corearchNvptxThreadIdxZ
 import io.github.kotlinmania.rustlang.corearch.nvptx.cinterop.corearchNvptxVprintf
 import kotlinx.cinterop.ByteVar
+import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.toCPointer
 import kotlinx.cinterop.toLong
 

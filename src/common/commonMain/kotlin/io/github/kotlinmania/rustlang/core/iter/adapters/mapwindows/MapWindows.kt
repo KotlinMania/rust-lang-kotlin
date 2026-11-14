@@ -141,7 +141,7 @@ public fun <Item, I> MapWindowsInner<I, N>.nextWindow(n: Int): List<Item>? {
             }
         }
     }
-    return this.buffer?.let(Buffer::asArrayRef)
+    return this.buffer?.let({ it.asArrayRef() })
 }
 
 public fun <Item, I> MapWindowsInner<I, N>.sizeHint(n: Int): Pair<Int, Int?> {
@@ -215,7 +215,7 @@ public fun <T> Buffer<T, N>.push(next: T, n: Int) {
             // as initialized.
             val toDrop =
                 run {
-                    ptr.copyNonoverlapping(MutPtr((bufferMutPtr).rawAddress + ((this.start + 1).toLong() * (ObjectSlotLayout<MaybeUninit<T>>()).strideBytes)), bufferMutPtr, n - 1, typeLayoutT = ObjectSlotLayout<MaybeUninit<T>>())
+                    copyNonoverlapping(MutPtr((bufferMutPtr).rawAddress + ((this.start + 1).toLong() * (ObjectSlotLayout<MaybeUninit<T>>()).strideBytes)), bufferMutPtr, n - 1, typeLayoutT = ObjectSlotLayout<MaybeUninit<T>>())
                     (ObjectSlotLayout<MaybeUninit<T>>()).readNative((MutPtr((bufferMutPtr).rawAddress + ((n - 1).toLong() * (ObjectSlotLayout<MaybeUninit<T>>()).strideBytes))).rawAddress).write(next)
                     MutPtr((bufferMutPtr).rawAddress + ((this.start).toLong() * (ObjectSlotLayout<MaybeUninit<T>>()).strideBytes))
                 }
@@ -245,7 +245,7 @@ public fun <T> Buffer<T, N>.push(next: T, n: Int) {
         }
     // SAFETY: the index is valid and this is element `a` in the
     // diagram above and has not been dropped yet.
-    ptr.dropInPlace(toDrop2.castInit())
+    dropInPlace(toDrop2.castInit())
 }
 
 public fun <T> Buffer<T, N>.clone(n: Int): Buffer<T, N> {
@@ -265,7 +265,7 @@ public fun <T> Buffer<T, N>.drop(n: Int) {
     // `self.start` are initialized. We drop them here.
     run {
         val initializedPart: MutPtr = MutPtr((MutPtr((this.bufferMutPtr()).rawAddress + ((this.start).toLong() * (ObjectSlotLayout<MaybeUninit<T>>()).strideBytes))).rawAddress).castSlice(n)
-        ptr.dropInPlace(initializedPart)
+        dropInPlace(initializedPart)
     }
 }
 

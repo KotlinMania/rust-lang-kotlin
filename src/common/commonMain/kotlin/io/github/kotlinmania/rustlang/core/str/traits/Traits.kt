@@ -141,9 +141,9 @@ public fun checkRange(slice: String, range: Range<Int>): Boolean {
  * // &s[3 .. 100];
  * ```
  */
-public fun io.github.kotlinmania.rustlang.core.ops.range.Range<Int>.get(slice: String): String? = Range.Range.from(this).get(slice)
+public fun io.github.kotlinmania.rustlang.core.ops.range.Range<Int>.get(slice: String): String? = range.Range.from(this).get(slice)
 
-public fun io.github.kotlinmania.rustlang.core.ops.range.Range<Int>.getMut(slice: String): String? = Range.Range.from(this).getMut(slice)
+public fun io.github.kotlinmania.rustlang.core.ops.range.Range<Int>.getMut(slice: String): String? = range.Range.from(this).getMut(slice)
 
 public fun io.github.kotlinmania.rustlang.core.ops.range.Range<Int>.getUnchecked(slice: ConstPtr): ConstPtr {
     val slice1 = ConstPtr(slice.rawAddress, slice.rawMeta)
@@ -166,9 +166,9 @@ public fun io.github.kotlinmania.rustlang.core.ops.range.Range<Int>.getUnchecked
     }
 }
 
-public fun io.github.kotlinmania.rustlang.core.ops.range.Range<Int>.index(slice: String): String = Range.Range.from(this).index(slice)
+public fun io.github.kotlinmania.rustlang.core.ops.range.Range<Int>.index(slice: String): String = range.Range.from(this).index(slice)
 
-public fun io.github.kotlinmania.rustlang.core.ops.range.Range<Int>.indexMut(slice: String): String = Range.Range.from(this).indexMut(slice)
+public fun io.github.kotlinmania.rustlang.core.ops.range.Range<Int>.indexMut(slice: String): String = range.Range.from(this).indexMut(slice)
 
 public fun IntRange.get(slice: String): String? {
     return if (checkRange(slice, this)) {
@@ -549,23 +549,23 @@ public fun RangeInclusive<Int>.indexMut(slice: String): String {
     return sliceErrorFail(slice, start, end)
 }
 
-public fun IntRange.getString(slice: String): String? = ops.RangeInclusive.from(this).get(slice)
+public fun IntRange.getString(slice: String): String? = RangeInclusive.from(this).get(slice)
 
-public fun IntRange.getMutString(slice: String): String? = ops.RangeInclusive.from(this).getMut(slice)
+public fun IntRange.getMutString(slice: String): String? = RangeInclusive.from(this).getMut(slice)
 
 public fun IntRange.getUncheckedString(slice: ConstPtr): ConstPtr {
     // SAFETY: the caller must uphold the safety contract for `getUnchecked`.
-    return ops.RangeInclusive.from(this).getUnchecked(slice)
+    return RangeInclusive.from(this).getUnchecked(slice)
 }
 
 public fun IntRange.getUncheckedMutString(slice: MutPtr): MutPtr {
     // SAFETY: the caller must uphold the safety contract for `getUncheckedMut`.
-    return ops.RangeInclusive.from(this).getUncheckedMut(slice)
+    return RangeInclusive.from(this).getUncheckedMut(slice)
 }
 
-public fun IntRange.indexString(slice: String): String = ops.RangeInclusive.from(this).index(slice)
+public fun IntRange.indexString(slice: String): String = RangeInclusive.from(this).index(slice)
 
-public fun IntRange.indexMutString(slice: String): String = ops.RangeInclusive.from(this).indexMut(slice)
+public fun IntRange.indexMutString(slice: String): String = RangeInclusive.from(this).indexMut(slice)
 
 /**
  * Implements substring slicing with syntax `self[..= end]` or `&mut

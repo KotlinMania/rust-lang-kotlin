@@ -93,6 +93,8 @@ public open class Argument internal constructor(
 
     public fun pointerLayout(): TypeLayout<Argument> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Argument(ptr, layout) }, { it.ty })
 
+    public open fun clone(): Argument = Argument(ty, fieldLayout)
+
     /**
      * Format this Note argument.
      *

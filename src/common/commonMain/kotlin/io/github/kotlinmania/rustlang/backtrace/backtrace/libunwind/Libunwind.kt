@@ -3,12 +3,10 @@ package io.github.kotlinmania.rustlang.backtrace.backtrace.libunwind
 
 import io.github.kotlinmania.libc.CInt
 import io.github.kotlinmania.libc.fuchsia.UintptrT
-import io.github.kotlinmania.rustlang.backtrace.backtrace.sgximagebase.getImageBase
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.num.rustWrappingSub
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 
 // Backtrace support using libunwind/gccS/etc APIs.
@@ -116,14 +114,7 @@ public sealed class Frame {
                     return ip
                 }
             }
-        var ip1 = MutPtr(unwindGetIp(ctx1).toLong())
-        // To reduce TCB size in SGX enclaves, we do not want to implement
-        // symbol resolution functionality. Rather, we can print the offset of
-        // the address here, which could be later mapped to correct function.
-        run {
-            val imageBase = getImageBase()
-            ip1 = MutPtr(rustWrappingSub(ip1.rawAddress.toInt(), imageBase.toInt()).toLong())
-        }
+        val ip1 = MutPtr(unwindGetIp(ctx1).toLong())
         return ip1
     }
 
@@ -180,23 +171,23 @@ public open class Bomb(
     }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Bomb> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Bomb> {
+        public fun typeLayout(): TypeLayout<Bomb> =
+            object : TypeLayout<Bomb> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 1L
                 override fun readNative(addr: Long): Bomb =
                     Bomb(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr),
+                        (PrimitiveLayouts.BOOL).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: Bomb) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr, value.enabled)
+                    (PrimitiveLayouts.BOOL).writeNative(addr, value.enabled)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Bomb =
                     Bomb(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Bomb) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset, value.enabled)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset, value.enabled)
                 }
             }
     }
@@ -216,7 +207,7 @@ public fun trace(cb: (io.github.kotlinmania.rustlang.backtrace.backtrace.Frame) 
         }
     }
     run {
-        unwindBacktrace(traceFn, addrOfMut(cb).cast())
+        unwindBacktrace(::traceFn, addrOfMut(cb).cast())
     }
 }
 

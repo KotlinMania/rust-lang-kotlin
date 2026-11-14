@@ -18,7 +18,7 @@ internal open class GenericShunt<I, R>(
     public var iter: I,
     public var residual: R?,
 ) : SourceIter<Any?, Source>, InPlaceIterable, Iterable<Output> {
-    override fun iterator(): kotlin.collections.Iterator<Output> = object : AbstractIterator<Output>() {
+    override fun iterator(): Iterator<Output> = object : AbstractIterator<Output>() {
         override fun computeNext() {
             when (val v = this@GenericShunt.next()) {
                 null -> done()

@@ -1,6 +1,7 @@
 package io.github.kotlinmania.rustlang.std.os.windows.io
 
-import io.github.kotlinmania.rustlang.std.thread.Result
+import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.std.io.error.Error
 
 public interface StdioExt {
     /**
@@ -28,7 +29,7 @@ public interface StdioExt {
      * }
      * ```kotlin
      */
-    public fun setHandle(handle: OwnedHandle?): Result<Unit>
+    public fun setHandle(handle: OwnedHandle?): Result<Unit, Error>
 
     /**
      * Sets the stdio console handle to `replaceWith`. The previous handle is returned, or
@@ -41,7 +42,7 @@ public interface StdioExt {
      *
      * Like `setHandle()`, Rust std.io write buffers (if any) are flushed.
      */
-    public fun replaceHandle(replaceWith: OwnedHandle): Result<BorrowedHandle?>
+    public fun replaceHandle(replaceWith: OwnedHandle): Result<BorrowedHandle?, Error>
 
     /**
      * Sets the stdio console handle to `NULL` and returns the old one
@@ -50,5 +51,5 @@ public interface StdioExt {
      *
      * [setHandle]: StdioExt.setHandle
      */
-    public fun takeHandle(): Result<BorrowedHandle?>
+    public fun takeHandle(): Result<BorrowedHandle?, Error>
 }

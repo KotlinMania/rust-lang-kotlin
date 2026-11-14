@@ -4,7 +4,6 @@ package io.github.kotlinmania.rustlang.std.os.fd
 import io.github.kotlinmania.libc.hermit.STDERR_FILENO
 import io.github.kotlinmania.libc.hermit.STDIN_FILENO
 import io.github.kotlinmania.libc.hermit.STDOUT_FILENO
-import io.github.kotlinmania.rustlang.core.ffi.CInt
 import io.github.kotlinmania.rustlang.std.Rc
 import io.github.kotlinmania.rustlang.std.fs.File
 import io.github.kotlinmania.rustlang.std.io.pipe.PipeReader
@@ -15,16 +14,15 @@ import io.github.kotlinmania.rustlang.std.io.stdio.Stdin
 import io.github.kotlinmania.rustlang.std.io.stdio.StdinLock
 import io.github.kotlinmania.rustlang.std.io.stdio.Stdout
 import io.github.kotlinmania.rustlang.std.io.stdio.StdoutLock
-import io.github.kotlinmania.rustlang.std.os.owned.OwnedFd
+import io.github.kotlinmania.rustlang.std.raw.CInt
 import io.github.kotlinmania.rustlang.std.sync.Arc
-import io.github.kotlinmania.rustlang.std.sys.sync.mutex.windows7.raw
 
 // Raw Unix-like file descriptors.
 
 /**
  * Raw file descriptors.
  */
-public typealias RawFd = raw.CInt
+public typealias RawFd = CInt
 
 /**
  * A trait to extract the raw file descriptor from an underlying object.
@@ -65,7 +63,7 @@ public interface AsRawFd {
  * A trait to express the ability to construct an object from a raw file
  * descriptor.
  */
-public interface FromRawFd<T, Metadata> {
+public interface FromRawFd<T> {
     /**
      * Constructs a new instance of `Self` from the given raw file
      * descriptor.
@@ -142,7 +140,7 @@ public fun fromRawFdRawFd(fd: RawFd): RawFd = fd
 
 public fun File.asRawFd(): RawFd = this.asInner().asRawFd()
 
-public fun fromRawFdFile(fd: RawFd): File = fs.File.from(OwnedFd.FromRawFd(fd))
+public fun fromRawFdFile(fd: RawFd): File = File.from(OwnedFd.FromRawFd(fd))
 
 public fun File.intoRawFd(): RawFd = this.intoInner().intoInner().intoRawFd()
 

@@ -1,4 +1,4 @@
-@file:OptIn(kotlinx.cinterop.ExperimentalForeignApi::class, kotlin.ExperimentalUnsignedTypes::class)
+@file:OptIn(ExperimentalForeignApi::class, ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.corearch.x86
 
@@ -7,6 +7,7 @@ import io.github.kotlinmania.rustlang.corearch.simd.U8x16
 import io.github.kotlinmania.rustlang.corearch.x86.cinterop.corearchX86Sse42Crc323216
 import io.github.kotlinmania.rustlang.corearch.x86.cinterop.corearchX86Sse42Crc323232
 import io.github.kotlinmania.rustlang.corearch.x86.cinterop.corearchX86Sse42Crc32328
+import kotlinx.cinterop.ExperimentalForeignApi
 
 public actual fun pcmpestrm128(a: I8x16, la: Int, b: I8x16, lb: Int, imm8: Byte): U8x16 =
     null as U8x16

@@ -240,6 +240,8 @@ public fun fromChar(i: UByte): Char = i.toInt().toChar()
 public open class ParseCharError(
     public var kind: CharErrorKind,
 ) {
+    public open fun clone(): ParseCharError = ParseCharError(kind)
+
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> =
         when (this.kind) {
             CharErrorKind.EmptyString -> "cannot parse char from empty string"
@@ -307,26 +309,28 @@ public open class CharTryFromError(
             value = v
         }
 
+    public open fun clone(): CharTryFromError = CharTryFromError(value)
+
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = "converted integer out of range for `char`".fmt(f)
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<CharTryFromError> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<CharTryFromError> {
+        public fun typeLayout(): TypeLayout<CharTryFromError> =
+            object : TypeLayout<CharTryFromError> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): CharTryFromError =
                     CharTryFromError(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.UNIT).readNative(addr),
+                        (PrimitiveLayouts.UNIT).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: CharTryFromError) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.UNIT).writeNative(addr, value.value)
+                    (PrimitiveLayouts.UNIT).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): CharTryFromError =
                     CharTryFromError(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.UNIT).readBytes(buf, offset),
+                        (PrimitiveLayouts.UNIT).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: CharTryFromError) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.UNIT).writeBytes(buf, offset, value.value)
+                    (PrimitiveLayouts.UNIT).writeBytes(buf, offset, value.value)
                 }
             }
     }

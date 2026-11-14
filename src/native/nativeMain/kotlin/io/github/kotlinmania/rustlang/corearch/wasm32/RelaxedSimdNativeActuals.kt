@@ -1,6 +1,8 @@
-@file:OptIn(kotlinx.cinterop.ExperimentalForeignApi::class, kotlin.ExperimentalUnsignedTypes::class)
+@file:OptIn(ExperimentalForeignApi::class, ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.corearch.wasm32
+
+import kotlinx.cinterop.ExperimentalForeignApi
 
 public actual fun llvmRelaxedSwizzle(a: I8x16, b: I8x16): I8x16 =
     null as I8x16

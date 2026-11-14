@@ -6,7 +6,7 @@ package io.github.kotlinmania.rustlang.stddetect.detect.os.linux.s390x
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.stddetect.detect.Feature
+import io.github.kotlinmania.rustlang.stddetect.detect.arch.Feature
 import io.github.kotlinmania.rustlang.stddetect.detect.bit.test
 import io.github.kotlinmania.rustlang.stddetect.detect.cache.Cache
 import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.auxvec.AuxVec
@@ -49,111 +49,111 @@ public open class AtHwcap(
     public var sie: Boolean,
 ) {
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<AtHwcap> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<AtHwcap> {
+        public fun typeLayout(): TypeLayout<AtHwcap> =
+            object : TypeLayout<AtHwcap> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 23L
                 override fun readNative(addr: Long): AtHwcap =
                     AtHwcap(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 1L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 2L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 3L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 4L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 5L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 6L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 7L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 8L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 9L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 10L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 11L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 12L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 13L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 14L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 15L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 16L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 17L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 18L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 19L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 20L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 21L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 22L),
+                        (PrimitiveLayouts.BOOL).readNative(addr),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 1L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 2L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 3L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 4L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 5L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 6L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 7L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 8L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 9L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 10L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 11L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 12L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 13L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 14L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 15L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 16L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 17L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 18L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 19L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 20L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 21L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 22L),
                     )
                 override fun writeNative(addr: Long, value: AtHwcap) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr, value.esan3)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 1L, value.zarch)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 2L, value.stfle)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 3L, value.msa)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 4L, value.ldisp)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 5L, value.eimm)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 6L, value.dfp)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 7L, value.hpage)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 8L, value.etf3eh)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 9L, value.highGprs)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 10L, value.te)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 11L, value.vxrs)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 12L, value.vxrsBcd)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 13L, value.vxrsExt)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 14L, value.gs)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 15L, value.vxrsExt2)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 16L, value.vxrsPde)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 17L, value.sort)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 18L, value.dflt)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 19L, value.vxrsPde2)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 20L, value.nnpa)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 21L, value.pciMio)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 22L, value.sie)
+                    (PrimitiveLayouts.BOOL).writeNative(addr, value.esan3)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 1L, value.zarch)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 2L, value.stfle)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 3L, value.msa)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 4L, value.ldisp)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 5L, value.eimm)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 6L, value.dfp)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 7L, value.hpage)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 8L, value.etf3eh)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 9L, value.highGprs)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 10L, value.te)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 11L, value.vxrs)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 12L, value.vxrsBcd)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 13L, value.vxrsExt)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 14L, value.gs)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 15L, value.vxrsExt2)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 16L, value.vxrsPde)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 17L, value.sort)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 18L, value.dflt)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 19L, value.vxrsPde2)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 20L, value.nnpa)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 21L, value.pciMio)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 22L, value.sie)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): AtHwcap =
                     AtHwcap(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 1),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 2),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 3),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 4),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 5),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 6),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 7),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 8),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 9),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 10),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 11),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 12),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 13),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 14),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 15),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 16),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 17),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 18),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 19),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 20),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 21),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 22),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 1),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 2),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 3),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 4),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 5),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 6),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 7),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 8),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 9),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 10),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 11),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 12),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 13),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 14),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 15),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 16),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 17),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 18),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 19),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 20),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 21),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 22),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: AtHwcap) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset, value.esan3)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 1, value.zarch)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 2, value.stfle)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 3, value.msa)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 4, value.ldisp)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 5, value.eimm)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 6, value.dfp)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 7, value.hpage)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 8, value.etf3eh)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 9, value.highGprs)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 10, value.te)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 11, value.vxrs)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 12, value.vxrsBcd)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 13, value.vxrsExt)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 14, value.gs)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 15, value.vxrsExt2)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 16, value.vxrsPde)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 17, value.sort)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 18, value.dflt)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 19, value.vxrsPde2)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 20, value.nnpa)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 21, value.pciMio)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 22, value.sie)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset, value.esan3)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 1, value.zarch)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 2, value.stfle)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 3, value.msa)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 4, value.ldisp)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 5, value.eimm)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 6, value.dfp)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 7, value.hpage)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 8, value.etf3eh)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 9, value.highGprs)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 10, value.te)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 11, value.vxrs)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 12, value.vxrsBcd)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 13, value.vxrsExt)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 14, value.gs)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 15, value.vxrsExt2)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 16, value.vxrsPde)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 17, value.sort)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 18, value.dflt)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 19, value.vxrsPde2)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 20, value.nnpa)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 21, value.pciMio)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 22, value.sie)
                 }
             }
 
@@ -179,23 +179,23 @@ public open class ExtendedFacilityList(
     }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<ExtendedFacilityList> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<ExtendedFacilityList> {
+        public fun typeLayout(): TypeLayout<ExtendedFacilityList> =
+            object : TypeLayout<ExtendedFacilityList> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 32L
                 override fun readNative(addr: Long): ExtendedFacilityList =
                     ExtendedFacilityList(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uLongArray(4)).readNative(addr),
+                        (PrimitiveArrayLayouts.uLongArray(4)).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: ExtendedFacilityList) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uLongArray(4)).writeNative(addr, value.value)
+                    (PrimitiveArrayLayouts.uLongArray(4)).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): ExtendedFacilityList =
                     ExtendedFacilityList(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uLongArray(4)).readBytes(buf, offset),
+                        (PrimitiveArrayLayouts.uLongArray(4)).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: ExtendedFacilityList) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uLongArray(4)).writeBytes(buf, offset, value.value)
+                    (PrimitiveArrayLayouts.uLongArray(4)).writeBytes(buf, offset, value.value)
                 }
             }
 

@@ -1,4 +1,4 @@
-@file:OptIn(kotlinx.cinterop.ExperimentalForeignApi::class, kotlin.ExperimentalUnsignedTypes::class)
+@file:OptIn(ExperimentalForeignApi::class, ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.corearch.x8664
 
@@ -30,6 +30,7 @@ import io.github.kotlinmania.rustlang.corearch.x8664.cinterop.corearchX8664AmxTi
 import io.github.kotlinmania.rustlang.corearch.x8664.cinterop.corearchX8664AmxTilestored64
 import io.github.kotlinmania.rustlang.corearch.x8664.cinterop.corearchX8664AmxTilezero
 import kotlinx.cinterop.ByteVar
+import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.toCPointer
 
 public actual fun ldtilecfg(memAddr: ConstPtr) {

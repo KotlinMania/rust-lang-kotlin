@@ -70,6 +70,8 @@ public fun rustNoAllocShimIsUnstableV2() = Unit
  * [*equivalent*]: Allocator#equivalent-allocators
  */
 public open class Global : AllocatorClone, StaticAllocator, Allocator, AllocatorNightly {
+    public open fun clone(): Global = Global()
+
     // SAFETY: Same as `Allocator.grow`
     // even without panics, this helps for Miri backtraces
     public open fun growImplRuntime(ptr: NonNull, oldLayout: Layout, newLayout: Layout, zeroed: Boolean): Result<NonNull, AllocError> {
@@ -85,7 +87,7 @@ public open class Global : AllocatorClone, StaticAllocator, Allocator, Allocator
                     run {
                         val newSize = newLayout.size()
                         // `realloc` probably checks for `newSize >= oldLayout.size()` or something similar.
-                        hint.assertUnchecked(newSize >= oldLayout.size())
+                        assertUnchecked(newSize >= oldLayout.size())
                         val rawPtr = reallocNonnull(ptr, oldLayout, newSize)
                         val ptr1 = when (val tryResult = NonNull.new(rawPtr).okOr(AllocError)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
                         if (zeroed) {
@@ -103,7 +105,7 @@ public open class Global : AllocatorClone, StaticAllocator, Allocator, Allocator
                     val oldSize1 = matchVal
                     run {
                         val newPtr = when (val tryResult = this.allocImpl(newLayout, zeroed)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-                        ptr.copyNonoverlapping(ptr.asPtr(), newPtr.asMutPtr(), oldSize1)
+                        copyNonoverlapping(ptr.asPtr(), newPtr.asMutPtr(), oldSize1)
                         this.deallocate(ptr, oldLayout)
                         Result.Ok(newPtr)
                     }
@@ -129,7 +131,7 @@ public open class Global : AllocatorClone, StaticAllocator, Allocator, Allocator
                     val newSize = matchVal
                     run {
                         // `realloc` probably checks for `newSize <= oldLayout.size()` or something similar.
-                        hint.assertUnchecked(newSize <= oldLayout.size())
+                        assertUnchecked(newSize <= oldLayout.size())
                         val rawPtr = reallocNonnull(ptr, oldLayout, newSize)
                         val ptr1 = when (val tryResult = NonNull.new(rawPtr).okOr(AllocError)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
                         Result.Ok(ptr1.castSlice(newSize))
@@ -144,7 +146,7 @@ public open class Global : AllocatorClone, StaticAllocator, Allocator, Allocator
                     val newSize1 = matchVal
                     run {
                         val newPtr = when (val tryResult = this.allocate(newLayout)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-                        ptr.copyNonoverlapping(ptr.asPtr(), newPtr.asMutPtr(), newSize1)
+                        copyNonoverlapping(ptr.asPtr(), newPtr.asMutPtr(), newSize1)
                         this.deallocate(ptr, oldLayout)
                         Result.Ok(newPtr)
                     }
@@ -165,18 +167,18 @@ public open class Global : AllocatorClone, StaticAllocator, Allocator, Allocator
 
     // SAFETY: Same as `Allocator.grow`
     // even without panics, this helps for Miri backtraces
-    public open fun growImpl(ptr: NonNull, oldLayout: Layout, newLayout: Layout, zeroed: Boolean): Result<NonNull, AllocError> = constEvalSelect(listOf(this, ptr, oldLayout, newLayout, zeroed), Global::growShrinkImplConst, Global::growImplRuntime)
+    public open fun growImpl(ptr: NonNull, oldLayout: Layout, newLayout: Layout, zeroed: Boolean): Result<NonNull, AllocError> = constEvalSelect(listOf(this, ptr, oldLayout, newLayout, zeroed), { it.growShrinkImplConst() }, { it.growImplRuntime() })
 
     // SAFETY: Same as `Allocator.shrink`
     // even without panics, this helps for Miri backtraces
-    public open fun shrinkImpl(ptr: NonNull, oldLayout: Layout, newLayout: Layout): Result<NonNull, AllocError> = constEvalSelect(listOf(this, ptr, oldLayout, newLayout, false), Global::growShrinkImplConst, Global::shrinkImplRuntime)
+    public open fun shrinkImpl(ptr: NonNull, oldLayout: Layout, newLayout: Layout): Result<NonNull, AllocError> = constEvalSelect(listOf(this, ptr, oldLayout, newLayout, false), { it.growShrinkImplConst() }, { it.shrinkImplRuntime() })
 
     // even without panics, this helps for Miri backtraces
     public open fun growShrinkImplConst(ptr: NonNull, oldLayout: Layout, newLayout: Layout, zeroed: Boolean): Result<NonNull, AllocError> {
         val newPtr = when (val tryResult = this.allocImpl(newLayout, zeroed)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         // SAFETY: both pointers are valid and this operations is in bounds.
         run {
-            ptr.copyNonoverlapping(ptr.asPtr(), newPtr.asMutPtr(), minOf(oldLayout.size(), newLayout.size()))
+            copyNonoverlapping(ptr.asPtr(), newPtr.asMutPtr(), minOf(oldLayout.size(), newLayout.size()))
         }
         // SAFETY: Caller ensures the ptr & layout are correct.
         run {
@@ -216,8 +218,8 @@ public open class Global : AllocatorClone, StaticAllocator, Allocator, Allocator
     }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Global> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Global> {
+        public fun typeLayout(): TypeLayout<Global> =
+            object : TypeLayout<Global> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): Global =

@@ -132,7 +132,7 @@ public fun adjustIp(a: MutPtr): MutPtr =
  * See information on `resolve` for caveats on `cb` panicking.
  */
 public fun resolveUnsynchronized(addr: MutPtr, cb: (Symbol) -> Unit) {
-    resolve(ResolveWhat.Address(addr), cb)
+    io.github.kotlinmania.imp.resolve(ResolveWhat.Address(addr), cb)
 }
 
 /**
@@ -147,7 +147,7 @@ public fun resolveUnsynchronized(addr: MutPtr, cb: (Symbol) -> Unit) {
  * See information on `resolveFrame` for caveats on `cb` panicking.
  */
 public fun resolveFrameUnsynchronized(frame: Frame, cb: (Symbol) -> Unit) {
-    resolve(ResolveWhat.Frame(frame), cb)
+    io.github.kotlinmania.imp.resolve(ResolveWhat.Frame(frame), cb)
 }
 
 public fun formatSymbolName(fmt: FormatSymbolNameFmtCallback, bytes: List<UByte>, f: Formatter): Result {
@@ -192,6 +192,6 @@ public fun formatSymbolName(fmt: FormatSymbolNameFmtCallback, bytes: List<UByte>
  */
 public fun clearSymbolCache() {
     run {
-        clearSymbolCache()
+        io.github.kotlinmania.imp.clearSymbolCache()
     }
 }

@@ -658,7 +658,7 @@ public fun <T : TrivialClone, A : Allocator> List<T>.cloneIntoTA(target: List<T>
     target.extendFromSlice(this)
 }
 
-public fun <T> List<T>.toOwned(): List<T> = this.toVec()
+public fun <T> List<T>.toOwned(): List<T> = this.toMutableList()
 
 // ///////////////////////////////////////////////////////////////////////////
 // Sorting

@@ -1,8 +1,9 @@
-@file:OptIn(kotlinx.cinterop.ExperimentalForeignApi::class, kotlin.ExperimentalUnsignedTypes::class)
+@file:OptIn(ExperimentalForeignApi::class, ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
+import kotlinx.cinterop.ExperimentalForeignApi
 
 public actual fun loadiwkey(integrityKey: M128i, keyLo: M128i, keyHi: M128i, control: UInt) {
 }

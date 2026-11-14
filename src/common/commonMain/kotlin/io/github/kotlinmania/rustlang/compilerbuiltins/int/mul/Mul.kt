@@ -167,13 +167,6 @@ public fun muloti4(a: I128, b: I128, oflow: RustMutableReference<Int>): I128 {
     return mul
 }
 
-public fun muloti4(aLo: ULong, aHi: ULong, bLo: ULong, bHi: ULong, oflow: RustMutableReference<Int>): I128 {
-    val oflow1 = oflow
-    val (mul, o) = i128OverflowingMul((I128.from(aHi) shl 64) or I128.from(aLo), (I128.from(bHi) shl 64) or I128.from(bLo))
-    (oflow1).write(o.toInt())
-    return mul
-}
-
 public fun rustI128Mulo(a: I128, b: I128, oflow: RustMutableReference<Int>): I128 {
     val oflow1 = oflow
     val (mul, o) = i128OverflowingMul(a, b)

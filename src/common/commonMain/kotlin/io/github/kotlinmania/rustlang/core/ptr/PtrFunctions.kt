@@ -92,6 +92,7 @@ import io.github.kotlinmania.rustlang.core.ubchecks.checkLanguageUb
  * ```kotlin
  * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
  * import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+ * import std.ptr
  *
  * / **
  *  * Moves all the elements of `src` into `dst`, leaving `src` empty.
@@ -180,6 +181,7 @@ public fun <T> copyNonoverlapping(src: ConstPtr, dst: MutPtr, count: Int, typeLa
  * ```kotlin
  * import io.github.kotlinmania.rustlang.core.mem.TypeLayout
  * import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
+ * import std.ptr
  *
  * / **
  *  * # Safety
@@ -261,6 +263,8 @@ public fun <T> copy(src: ConstPtr, dst: MutPtr, count: Int, typeLayoutT: TypeLay
  * Basic usage:
  *
  * ```kotlin
+ * import std.ptr
+ *
  * var vec = mutableListOf(0u, 4)
  * run {
  *     val vecPtr = vec.asMutPtr()
@@ -339,6 +343,7 @@ public fun <T> writeBytes(dst: MutPtr, value: UByte, count: Int, typeLayoutT: Ty
  *
  * ```kotlin
  * import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
+ * import std.ptr
  *
  * val last = 1
  * val weak = Rc.downgrade(last)
@@ -388,6 +393,7 @@ internal fun <T> dropGlue(arg0: T) {
  *
  * ```kotlin
  * import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
+ * import std.ptr
  *
  * val p: ConstPtr = ptr.nullVal()
  * check(((p).rawAddress == 0L))
@@ -408,6 +414,7 @@ public fun nullVal(): ConstPtr = fromRawParts(withoutProvenance<Unit>(0))
  *
  * ```kotlin
  * import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+ * import std.ptr
  *
  * val p: MutPtr = ptr.nullMut()
  * check(((p).rawAddress == 0L))
@@ -662,6 +669,7 @@ public fun <T> fromMut(r: T): MutPtr = r
  *
  * ```kotlin
  * import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
+ * import std.ptr
  *
  * // create a slice pointer when starting out with a pointer to the first element
  * val localStorageL6C0 = AddressableArrayLocal.fromIntArray(intArrayOf(5, 6, 7))
@@ -675,6 +683,7 @@ public fun <T> fromMut(r: T): MutPtr = r
  *
  * ```kotlin
  * import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
+ * import std.ptr
  *
  * val danger: ConstPtr = ptr.sliceFromRawParts(ptr.nullVal(), 0)
  * run {
@@ -698,6 +707,8 @@ public fun <T> sliceFromRawParts(data: ConstPtr, len: Int): ConstPtr = rawSliceL
  * # Examples
  *
  * ```kotlin
+ * import std.ptr
+ *
  * val x = listOf(5, 6, 7)
  * val rawPointer = x.asMutPtr()
  * val slice = ptr.sliceFromRawPartsMut(rawPointer, 3)
@@ -713,6 +724,7 @@ public fun <T> sliceFromRawParts(data: ConstPtr, len: Int): ConstPtr = rawSliceL
  *
  * ```kotlin
  * import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+ * import std.ptr
  *
  * val danger: MutPtr = ptr.sliceFromRawPartsMut(ptr.nullMut(), 0)
  * run {
@@ -758,6 +770,8 @@ public fun <T> sliceFromRawPartsMut(data: MutPtr, len: Int): MutPtr = rawMutSlic
  * Swapping two non-overlapping regions:
  *
  * ```kotlin
+ * import std.ptr
+ *
  * var array = mutableListOf(0, 1, 2, 3)
  * val (x, y) = array.splitAtMut(2)
  * val x1 = x.asMutPtr().cast()
@@ -776,6 +790,7 @@ public fun <T> sliceFromRawPartsMut(data: MutPtr, len: Int): MutPtr = rawMutSlic
  * import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
  * import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
  * import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+ * import std.ptr
  *
  * val localStorageL5C0 = AddressableArrayLocal.fromIntArray(intArrayOf(0, 1, 2, 3))
  * var array by localStorageL5C0
@@ -845,6 +860,7 @@ public fun <T> swap(x: MutPtr, y: MutPtr, typeLayoutT: TypeLayout<T>) {
  *
  * ```kotlin
  * import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
+ * import std.ptr
  *
  * val localStorageL5C0 = AddressableArrayLocal.fromIntArray(intArrayOf(1, 2, 3, 4))
  * var x by localStorageL5C0
@@ -1001,6 +1017,8 @@ public fun swapNonoverlappingBytes(x: MutPtr, y: MutPtr, bytes: NonZero<Int>) {
  * # Examples
  *
  * ```kotlin
+ * import std.ptr
+ *
  * var rust = mutableListOf('b', 'u', 's', 't')
  * // `mem.replace` would have the same effect without requiring the unchecked
  * // block.
@@ -1064,6 +1082,8 @@ public fun <T> replace(dst: MutPtr, src: T, typeLayoutT: TypeLayout<T>): T {
  * Manually implement [mem.swap]:
  *
  * ```kotlin
+ * import std.ptr
+ *
  * fun <T> swap(a: T, b: T) {
  *     run {
  *         // Create a bitwise copy of the value at `a` in `tmp`.
@@ -1100,6 +1120,8 @@ public fun <T> replace(dst: MutPtr, src: T, typeLayoutT: TypeLayout<T>): T {
  * [write] can be used to overwrite data without causing it to be dropped.
  *
  * ```kotlin
+ * import std.ptr
+ *
  * var s = "foo"
  * run {
  *     // `s2` now points to the same underlying memory as `s`.
@@ -1286,6 +1308,8 @@ public fun <T> readUnaligned(src: ConstPtr, typeLayoutT: TypeLayout<T>): T {
  * Manually implement [mem.swap]:
  *
  * ```kotlin
+ * import std.ptr
+ *
  * fun <T> swap(a: T, b: T) {
  *     run {
  *         // Create a bitwise copy of the value at `a` in `tmp`.
@@ -1809,6 +1833,8 @@ internal fun <T> alignOffset(p: ConstPtr, a: Int, typeLayoutT: TypeLayout<T>): I
  * # Examples
  *
  * ```kotlin
+ * import std.ptr
+ *
  * val five = 5
  * val otherFive = 5
  * val fiveRef = five
@@ -1841,6 +1867,8 @@ public fun eq(a: ConstPtr, b: ConstPtr): Boolean = ((a).rawAddress.toULong() == 
  * # Examples
  *
  * ```kotlin
+ * import std.ptr
+ *
  * val whole: IntArray = intArrayOf(1, 2, 3)
  * val first: Int = whole[0]
  * check(ptr.addrEq(whole, first))
@@ -1925,6 +1953,7 @@ public fun <T : FnPtr<T>, U : FnPtr<U>> fnAddrEq(f: T, g: U): Boolean = f.addr()
  * ```kotlin
  * import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
  * import std.hash.DefaultHasher
+ * import std.ptr
  *
  * val five = 5
  * val fiveRef = five

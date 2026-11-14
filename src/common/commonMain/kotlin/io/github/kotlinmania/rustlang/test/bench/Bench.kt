@@ -6,10 +6,10 @@ import io.github.kotlinmania.rustlang.core.panic.unwindsafe.AssertUnwindSafe
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.time.Duration
 import io.github.kotlinmania.rustlang.std.panic.catchUnwind
+import io.github.kotlinmania.rustlang.std.time.Instant
 import io.github.kotlinmania.rustlang.test.Sender
 import io.github.kotlinmania.rustlang.test.event.CompletedTest
 import io.github.kotlinmania.rustlang.test.options.BenchMode
-import io.github.kotlinmania.rustlang.test.stats.Stats
 import io.github.kotlinmania.rustlang.test.testresult.TestResult
 import io.github.kotlinmania.rustlang.test.types.TestDesc
 import io.github.kotlinmania.rustlang.test.types.TestId
@@ -36,6 +36,8 @@ public open class Bencher(
     public var summary: Summary?,
     public var bytes: ULong,
 ) {
+    public open fun clone(): Bencher = Bencher(mode, summary, bytes)
+
     /**
      * Callback for benchmark functions to run in their body.
      */
@@ -56,7 +58,9 @@ public open class Bencher(
 public open class BenchSamples(
     public var nsIterSumm: Summary,
     public var mbS: Int,
-)
+) {
+    public open fun clone(): BenchSamples = BenchSamples(nsIterSumm, mbS)
+}
 
 public fun fmtBenchSamples(bs: BenchSamples): String {
     val output = ""
@@ -113,13 +117,13 @@ public fun <T> iter(inner: () -> T): Summary {
     // iterations if first run took < 1ns.
     val nsTargetTotal = 1000000
     // 1ms
-    var n = nsTargetTotal / cmp.max(1, nsSingle)
+    var n = nsTargetTotal / max(1, nsSingle)
     // if the first run took more than 1ms we don't want to just
     // be left doing 0 iterations on every loop. The unfortunate
     // side effect of not being able to do as many runs is
     // automatically handled by the statistical analysis below
     // (i.e., larger error bars).
-    n = cmp.max(1, n)
+    n = max(1, n)
     var totalRun = Duration.new(0, 0)
     val samples: MutableList<Double> = MutableList(50) { 0.0 }
     while (true) {
@@ -127,14 +131,14 @@ public fun <T> iter(inner: () -> T): Summary {
         for (idx in samples.indices) {
             samples[idx] = nsIterInner(inner, n).toDouble() / n.toDouble()
         }
-        Stats.winsorize(samples, 5.0)
-        val summ = Stats.Summary.new(samples)
+        stats.winsorize(samples, 5.0)
+        val summ = stats.Summary.new(samples)
         for (idx1 in samples.indices) {
             val ns = nsIterInner(inner, 5uL * n)
             samples[idx1] = ns.toDouble() / (5 * n).toDouble()
         }
-        Stats.winsorize(samples, 5.0)
-        val summ5 = Stats.Summary.new(samples)
+        stats.winsorize(samples, 5.0)
+        val summ5 = stats.Summary.new(samples)
         val loopRun = loopStart.elapsed()
         // If we've run for 100ms and seem to have converged to a
         // stable median.
@@ -163,15 +167,15 @@ public fun benchmark(id: TestId, desc: TestDesc, monitorCh: Sender<CompletedTest
     val bs = Bencher(mode = BenchMode.Auto, summary = null, bytes = 0uL)
     val data = Mutex.new(mutableListOf())
     if (!nocapture) {
-        io.setOutputCapture(data.clone())
+        setOutputCapture(data.clone())
     }
     val result = catchUnwind(AssertUnwindSafe({ bs.bench(f) }))
-    io.setOutputCapture(null)
+    setOutputCapture(null)
     val testResult =
         when {
             // bs.bench(f) {
             result is Result.Ok<*> && result.value is Result.Ok<*> && (result.value as Result.Ok<*>).value != null -> {
-                val nsIter = cmp.max(nsIterSumm.median.toULong(), 1)
+                val nsIter = max(nsIterSumm.median.toULong(), 1)
                 val mbS = bs.bytes * 1000uL / nsIter
                 val bs1 = BenchSamples(nsIterSumm = nsIterSumm, mbS = mbS.toInt())
                 TestResult.TrBench(bs1)
@@ -180,7 +184,7 @@ public fun benchmark(id: TestId, desc: TestDesc, monitorCh: Sender<CompletedTest
                 // iter not called, so no data.
                 // Note: error in this case?
                 val samples: MutableList<Double> = MutableList(1) { 0.0 }
-                val bs2 = BenchSamples(nsIterSumm = Stats.Summary.new(samples), mbS = 0)
+                val bs2 = BenchSamples(nsIterSumm = stats.Summary.new(samples), mbS = 0)
                 TestResult.TrBench(bs2)
             }
             result is Result.Err<*> -> TestResult.TrFailed

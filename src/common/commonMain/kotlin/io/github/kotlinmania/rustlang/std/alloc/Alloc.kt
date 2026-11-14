@@ -12,19 +12,16 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 import io.github.kotlinmania.rustlang.std.Layout
-import io.github.kotlinmania.rustlang.std.hint
-import io.github.kotlinmania.rustlang.std.mem
 import io.github.kotlinmania.rustlang.std.panic.BacktraceStyle
 import io.github.kotlinmania.rustlang.std.panic.getBacktraceStyle
 import io.github.kotlinmania.rustlang.std.process.abort
-import io.github.kotlinmania.rustlang.std.ptr
 import io.github.kotlinmania.rustlang.std.sys.alloc.unix.alloc
 import io.github.kotlinmania.rustlang.std.sys.alloc.unix.allocZeroed
 import io.github.kotlinmania.rustlang.std.sys.alloc.unix.dealloc
 import io.github.kotlinmania.rustlang.std.sys.alloc.unix.realloc
 import io.github.kotlinmania.rustlang.std.sys.backtrace.lock
 import io.github.kotlinmania.rustlang.std.sys.backtrace.rustEndShortBacktrace
-import io.github.kotlinmania.rustlang.std.sys.stdio.motor.panicOutput
+import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
 
 // Memory allocation APIs.
 //
@@ -68,12 +65,13 @@ import io.github.kotlinmania.rustlang.std.sys.stdio.motor.panicOutput
 // The attribute is used on a `static` item whose type implements the
 // [GlobalAlloc] trait. This type can be provided by an external library:
 //
-// ```kotlin
-// import jemallocator.Jemalloc
+// ```rust,ignore (demonstrates crates.io usage)
+// use jemallocator.Jemalloc;
 //
 // @globalAllocator
-// var GLOBAL: Jemalloc = Jemalloc
-// fun main() {}
+// static GLOBAL: Jemalloc = Jemalloc;
+//
+// fn main() {}
 // ```
 //
 // The `@globalAllocator` can only be used once in a crate
@@ -170,6 +168,8 @@ public fun interface SetAllocErrorHookHookCallback {
  * [globalAllocator]: GlobalAlloc#the-globalAllocator-attribute
  */
 public open class System : AllocatorClone, StaticAllocator, Allocator, GlobalAllocator, AllocatorNightly {
+    public open fun clone(): System = System()
+
     public open fun allocImpl(layout: Layout, zeroed: Boolean): Result<NonNull, AllocError> {
         return when (val matchVal = layout.size()) {
             0 -> Result.Ok(layout.danglingPtr().castSlice(0))
@@ -205,7 +205,7 @@ public open class System : AllocatorClone, StaticAllocator, Allocator, GlobalAll
                     run {
                         val newSize = newLayout.size()
                         // `realloc` probably checks for `newSize >= oldLayout.size()` or something similar.
-                        hint.assertUnchecked(newSize >= oldLayout.size())
+                        assertUnchecked(newSize >= oldLayout.size())
                         val rawPtr = realloc(ptr.asPtr(), oldLayout, newSize)
                         val ptr1 = when (val tryResult = NonNull.new(rawPtr).okOr(AllocError)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
                         if (zeroed) {
@@ -223,7 +223,7 @@ public open class System : AllocatorClone, StaticAllocator, Allocator, GlobalAll
                     val oldSize1 = matchVal
                     run {
                         val newPtr = when (val tryResult = this.allocImpl(newLayout, zeroed)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-                        ptr.copyNonoverlapping(ptr.asPtr(), newPtr.asMutPtr(), oldSize1)
+                        copyNonoverlapping(ptr.asPtr(), newPtr.asMutPtr(), oldSize1)
                         Allocator.deallocate(this, ptr, oldLayout)
                         Result.Ok(newPtr)
                     }
@@ -271,7 +271,7 @@ public open class System : AllocatorClone, StaticAllocator, Allocator, GlobalAll
                     val newSize = matchVal
                     run {
                         // `realloc` probably checks for `newSize <= oldLayout.size()` or something similar.
-                        hint.assertUnchecked(newSize <= oldLayout.size())
+                        assertUnchecked(newSize <= oldLayout.size())
                         val rawPtr = realloc(ptr.asPtr(), oldLayout, newSize)
                         val ptr1 = when (val tryResult = NonNull.new(rawPtr).okOr(AllocError)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
                         Result.Ok(ptr1.castSlice(newSize))
@@ -286,7 +286,7 @@ public open class System : AllocatorClone, StaticAllocator, Allocator, GlobalAll
                     val newSize1 = matchVal
                     run {
                         val newPtr = when (val tryResult = Allocator.allocate(this, newLayout)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-                        ptr.copyNonoverlapping(ptr.asPtr(), newPtr.asMutPtr(), newSize1)
+                        copyNonoverlapping(ptr.asPtr(), newPtr.asMutPtr(), newSize1)
                         Allocator.deallocate(this, ptr, oldLayout)
                         Result.Ok(newPtr)
                     }
@@ -300,8 +300,8 @@ public open class System : AllocatorClone, StaticAllocator, Allocator, GlobalAll
      */
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<System> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<System> {
+        public fun typeLayout(): TypeLayout<System> =
+            object : TypeLayout<System> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): System =
@@ -356,7 +356,7 @@ public var HOOK: AtomicPtr = AtomicPtr.new(MutPtr(0L))
  *     fun customAllocErrorHook(layout: Layout) {
  *         error("memory allocation of ${layout.size()} bytes failed")
  *     }
- *     setAllocErrorHook(customAllocErrorHook)
+ *     setAllocErrorHook(::customAllocErrorHook)
  * }
  * ```
  */
@@ -376,7 +376,7 @@ public fun takeAllocErrorHook(): SetAllocErrorHookHookCallback {
     return if (hook.isNull()) {
         ::defaultAllocErrorHook
     } else {
-        mem.transmute(hook)
+        transmute(hook)
     }
 }
 
@@ -440,7 +440,7 @@ public fun rustOom(layout: Layout): Nothing =
             if (hook.isNull()) {
                 ::defaultAllocErrorHook
             } else {
-                mem.transmute(hook)
+                transmute(hook)
             }
         hook1(layout)
         abort()

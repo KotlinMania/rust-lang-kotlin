@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.core.iter.sources.fromfn
 
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 
 public class DebugStruct(
@@ -86,7 +87,7 @@ public open class FromFn<F>(
             value = v
         }
 
-    override fun iterator(): kotlin.collections.Iterator<T> = object : AbstractIterator<T>() {
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@FromFn.next()) {
                 null -> done()
@@ -102,10 +103,10 @@ public open class FromFn<F>(
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "FromFn").finish()
 
     public companion object {
-        public fun <F> typeLayout(typeLayoutF: io.github.kotlinmania.rustlang.core.mem.TypeLayout<F>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<FromFn<F>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<FromFn<F>> {
+        public fun <F> typeLayout(typeLayoutF: TypeLayout<F>): TypeLayout<FromFn<F>> =
+            object : TypeLayout<FromFn<F>> {
                 override val alignBytes: Long = listOf(1L, typeLayoutF.alignBytes).max()
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(typeLayoutF.sizeBytes, alignBytes)
+                override val sizeBytes: Long = alignUpBytes(typeLayoutF.sizeBytes, alignBytes)
                 override fun readNative(addr: Long): FromFn<F> =
                     FromFn(
                         (typeLayoutF).readNative(addr),

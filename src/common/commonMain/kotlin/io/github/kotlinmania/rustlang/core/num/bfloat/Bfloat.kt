@@ -74,7 +74,7 @@ public open class F16b internal constructor(
      */
     public open fun toBits(): UShort {
         // SAFETY: `f16b` and `UShort` have the same size, and every bit pattern is valid.
-        return mem.transmute(this)
+        return transmute(this)
     }
 
     public open fun clone(): F16b = F16b(this.value)

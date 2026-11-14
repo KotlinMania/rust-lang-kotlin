@@ -141,6 +141,8 @@ public fun Error.intoInner(): Any? {
  *
  * ```kotlin
  * import std.error.Error
+ * import std.fmt
+ * import std.io
  *
  * sealed class E {
  *     public data class Io(public var value: io.Error) : E()

@@ -108,11 +108,6 @@ public typealias Pri = IntT
 public val TPRI_SELF: Pri = 0
 
 /**
- * Use the priority inheritance protocol
- */
-public val TA_INHERIT: Atr = 0x02u
-
-/**
  * Activate the task on creation
  */
 public val TA_ACT: Atr = 0x01u
@@ -192,32 +187,34 @@ public open class TCsem(
     public var isemcnt: UintT,
     public var maxsem: UintT,
 ) {
+    public open fun clone(): TCsem = TCsem(sematr, isemcnt, maxsem)
+
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<TCsem> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<TCsem> {
+        public fun typeLayout(): TypeLayout<TCsem> =
+            object : TypeLayout<TCsem> {
                 override val alignBytes: Long = 4L
                 override val sizeBytes: Long = 12L
                 override fun readNative(addr: Long): TCsem =
                     TCsem(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).readNative(addr + 4L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).readNative(addr + 8L),
+                        (PrimitiveLayouts.U32).readNative(addr),
+                        (PrimitiveLayouts.U32).readNative(addr + 4L),
+                        (PrimitiveLayouts.U32).readNative(addr + 8L),
                     )
                 override fun writeNative(addr: Long, value: TCsem) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).writeNative(addr, value.sematr)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).writeNative(addr + 4L, value.isemcnt)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).writeNative(addr + 8L, value.maxsem)
+                    (PrimitiveLayouts.U32).writeNative(addr, value.sematr)
+                    (PrimitiveLayouts.U32).writeNative(addr + 4L, value.isemcnt)
+                    (PrimitiveLayouts.U32).writeNative(addr + 8L, value.maxsem)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): TCsem =
                     TCsem(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).readBytes(buf, offset + 4),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).readBytes(buf, offset + 8),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 4),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 8),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: TCsem) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).writeBytes(buf, offset, value.sematr)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).writeBytes(buf, offset + 4, value.isemcnt)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).writeBytes(buf, offset + 8, value.maxsem)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset, value.sematr)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + 4, value.isemcnt)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + 8, value.maxsem)
                 }
             }
     }
@@ -227,28 +224,30 @@ public open class TCflg(
     public var flgatr: Atr,
     public var iflgptn: Flgptn,
 ) {
+    public open fun clone(): TCflg = TCflg(flgatr, iflgptn)
+
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<TCflg> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<TCflg> {
+        public fun typeLayout(): TypeLayout<TCflg> =
+            object : TypeLayout<TCflg> {
                 override val alignBytes: Long = 4L
                 override val sizeBytes: Long = 8L
                 override fun readNative(addr: Long): TCflg =
                     TCflg(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).readNative(addr + 4L),
+                        (PrimitiveLayouts.U32).readNative(addr),
+                        (PrimitiveLayouts.U32).readNative(addr + 4L),
                     )
                 override fun writeNative(addr: Long, value: TCflg) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).writeNative(addr, value.flgatr)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).writeNative(addr + 4L, value.iflgptn)
+                    (PrimitiveLayouts.U32).writeNative(addr, value.flgatr)
+                    (PrimitiveLayouts.U32).writeNative(addr + 4L, value.iflgptn)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): TCflg =
                     TCflg(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).readBytes(buf, offset + 4),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 4),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: TCflg) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).writeBytes(buf, offset, value.flgatr)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).writeBytes(buf, offset + 4, value.iflgptn)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset, value.flgatr)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + 4, value.iflgptn)
                 }
             }
     }
@@ -258,28 +257,30 @@ public open class TCmtx(
     public var mtxatr: Atr,
     public var ceilpri: Pri,
 ) {
+    public open fun clone(): TCmtx = TCmtx(mtxatr, ceilpri)
+
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<TCmtx> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<TCmtx> {
+        public fun typeLayout(): TypeLayout<TCmtx> =
+            object : TypeLayout<TCmtx> {
                 override val alignBytes: Long = 4L
                 override val sizeBytes: Long = 8L
                 override fun readNative(addr: Long): TCmtx =
                     TCmtx(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I32).readNative(addr + 4L),
+                        (PrimitiveLayouts.U32).readNative(addr),
+                        (PrimitiveLayouts.I32).readNative(addr + 4L),
                     )
                 override fun writeNative(addr: Long, value: TCmtx) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).writeNative(addr, value.mtxatr)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I32).writeNative(addr + 4L, value.ceilpri)
+                    (PrimitiveLayouts.U32).writeNative(addr, value.mtxatr)
+                    (PrimitiveLayouts.I32).writeNative(addr + 4L, value.ceilpri)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): TCmtx =
                     TCmtx(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I32).readBytes(buf, offset + 4),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset),
+                        (PrimitiveLayouts.I32).readBytes(buf, offset + 4),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: TCmtx) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).writeBytes(buf, offset, value.mtxatr)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I32).writeBytes(buf, offset + 4, value.ceilpri)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset, value.mtxatr)
+                    (PrimitiveLayouts.I32).writeBytes(buf, offset + 4, value.ceilpri)
                 }
             }
     }
@@ -295,6 +296,8 @@ public open class TCtsk internal constructor(
 ) {
     public var stk: MutPtr = stkCtorArg
         internal set
+
+    public open fun clone(): TCtsk = TCtsk(tskatr, exinf, task, itskpri, stksz, stk)
 
     public companion object {
         public operator fun invoke(

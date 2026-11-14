@@ -32,7 +32,7 @@ public fun <T> List<T>.specFill(value: T) {
 
 public fun <T : TrivialClone<T>> List<T>.specFillT(value: T) {
     for (idx in this.indices) {
-        this[idx] = ptr.read(value, typeLayoutT = ObjectSlotLayout<T>())
+        this[idx] = read(value, typeLayoutT = ObjectSlotLayout<T>())
     }
 }
 

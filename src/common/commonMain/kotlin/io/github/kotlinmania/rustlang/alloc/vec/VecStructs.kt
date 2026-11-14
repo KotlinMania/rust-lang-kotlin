@@ -280,7 +280,7 @@ public open class Vec<T, A : Allocator> internal constructor(
     public var buf: RawVec<T, A> = bufCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<T> = this.intoIter().iterator()
+    override fun iterator(): Iterator<T> = this.intoIter().iterator()
 
     /**
      * Appends an element to the back of a collection.
@@ -452,7 +452,9 @@ public open class Vec<T, A : Allocator> internal constructor(
      * A vector with zero-sized elements will always have a capacity of usize.Max:
      *
      * ```kotlin
-     * open class ZeroSized
+     * open class ZeroSized {
+     *     public open fun clone(): ZeroSized = ZeroSized()
+     * }
      * fun main() {
      *     check(sizeOf<ZeroSized>(typeLayoutT = ZeroSized.typeLayout()) == 0)
      *     val v = mutableListOf(ZeroSized(), 0)
@@ -1408,6 +1410,8 @@ public open class Vec<T, A : Allocator> internal constructor(
      * external state may be used to decide which elements to keep.
      *
      * ```kotlin
+     * import core.iter
+     *
      * var vec = mutableListOf(1, 2, 3, 4, 5)
      * val keep = booleanArrayOf(false, true, true, false, true)
      * var iter = keep.iter()
@@ -1656,6 +1660,8 @@ public open class Vec<T, A : Allocator> internal constructor(
      * This allows merging elements by mutating `p` and returning `true`:
      *
      * ```kotlin
+     * import core.cmp
+     *
      * var ranges = mutableListOf(1 until 2, 2 until 4, 2 until 5, 8 until 9)
      * // Sort ranges by start, and if equal, by end (lexicographically)
      * // Sorting in reverse instead (`x.start.cmp(p.start) ...`) would later fail
@@ -1814,6 +1820,8 @@ public open class Vec<T, A : Allocator> internal constructor(
      * A manual, panic-free alternative to [FromIterator]:
      *
      * ```kotlin
+     * import core.iter
+     *
      * @feature(vecPushWithinCapacity)
      * public fun doctestEntry(): Result<Unit> {
      *     fun <T> fromIterFallible(iter: Any): Result<Vec<T>> {
@@ -2307,6 +2315,8 @@ public open class Vec<T, A : Allocator> internal constructor(
      * # Examples
      *
      * ```kotlin
+     * import core.iter
+     *
      * @feature(vecSplitAtSpare)
      * public fun doctestEntry() {
      *     var v = mutableListOf(1, 1, 2)
@@ -2432,41 +2442,34 @@ public open class Vec<T, A : Allocator> internal constructor(
      *
      * The `Recyclable` bound prevents this method from being called when `T` and `U` have different sizes; e.g.:
      *
-     *  ```kotlin
-     *  @file:OptIn(ExperimentalUnsignedTypes.cls)
-     *
-     *  @feature(vecRecycle, transmutability)
-     *  public fun doctestEntry() {
-     *      val vec: Vec<UByteArray> = Vec.new()
-     *      val unused: Vec<UByteArray> = vec.recycle()
-     *  }
+     *  ```compile_fail,E0277
+     * @file:feature(vecRecycle, transmutability)
+     * let vec: Vec<[u8; 2]> = Vec.new();
+     * let _: Vec<[u8; 1]> = vec.recycle();
      * ```
      * ...or different alignments:
      *
-     *  ```kotlin
-     *  @file:OptIn(ExperimentalUnsignedTypes.cls)
-     *
-     *  @feature(vecRecycle, transmutability)
-     *  public fun doctestEntry() {
-     *      val vec: Vec<UShortArray> = Vec.new()
-     *      val unused: Vec<UByteArray> = vec.recycle()
-     *  }
+     *  ```compile_fail,E0277
+     * @file:feature(vecRecycle, transmutability)
+     * let vec: Vec<[u16; 0]> = Vec.new();
+     * let _: Vec<[u8; 0]> = vec.recycle();
      * ```
      *
      * However, due to temporary implementation limitations of `Recyclable`,
      * this method is not yet callable when `T` or `U` are slices, trait objects,
      * or other exotic types; e.g.:
      *
-     * ```kotlin
-     * @feature(vecRecycle, transmutability)
-     * public fun doctestEntry() {
-     *     var storage: Vec<List<String>> = Vec.new()
-     *     for (input in inputs) {
-     *         var buffer: Vec<String> = storage.recycle()
-     *         buffer.extend(input.split(" "))
-     *         process(buffer)
-     *         storage = buffer.recycle()
-     *     }
+     * ```compile_fail,E0277
+     * @file:feature(vecRecycle, transmutability)
+     * # let inputs = ["a b c", "d e f"];
+     * # fn process(_: &[&str]) {}
+     * let mut storage: Vec<&[&str]> = Vec.new();
+     *
+     * for input in inputs {
+     *     let mut buffer: Vec<&str> = storage.recycle();
+     *     buffer.extend(input.split(" "));
+     *     process(&buffer);
+     *     storage = buffer.recycle();
      * }
      * ```
      */
@@ -3133,6 +3136,7 @@ public open class Vec<T, A : Allocator> internal constructor(
          *
          * ```kotlin
          * import std.alloc.System
+         * import std.ptr
          *
          * var v = Vec.withCapacityIn(3, System)
          * v.push(1)
@@ -3405,6 +3409,8 @@ public fun <T> Vec.Companion.tryWithCapacity(capacity: Int): Result<Vec<T>, TryR
  * # Examples
  *
  * ```kotlin
+ * import std.ptr
+ *
  * val v = mutableListOf(1, 2, 3)
  * // Deconstruct the vector into parts.
  * val (p, len, cap) = v.intoRawParts()
@@ -3771,7 +3777,7 @@ public fun <T> defaultVecT(): Vec<T> = Vec.new()
  * check(Vec.from(listOf(1, 2, 3)) == mutableListOf(1, 2, 3))
  * ```
  */
-public fun <T> fromVecT(s: List<T>): Vec<T> = s.toVec()
+public fun <T> fromVecT(s: List<T>): Vec<T> = s.toMutableList()
 
 /**
  * Allocates a `List<T>` and fills it by cloning `s`s items.
@@ -3782,7 +3788,7 @@ public fun <T> fromVecT(s: List<T>): Vec<T> = s.toVec()
  * check(Vec.from(listOf(1, 2, 3)) == mutableListOf(1, 2, 3))
  * ```
  */
-public fun <T> fromVecT(s: MutableList<T>): Vec<T> = s.toVec()
+public fun <T> fromVecT(s: MutableList<T>): Vec<T> = s.toMutableList()
 
 /**
  * Allocates a `List<T>` and fills it by cloning `s`s items.

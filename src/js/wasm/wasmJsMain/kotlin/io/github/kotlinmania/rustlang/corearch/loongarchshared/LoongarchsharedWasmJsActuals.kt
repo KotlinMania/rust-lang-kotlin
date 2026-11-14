@@ -1,4 +1,4 @@
-@file:OptIn(kotlin.ExperimentalUnsignedTypes::class, kotlin.js.ExperimentalWasmJsInterop::class)
+@file:OptIn(ExperimentalUnsignedTypes::class, ExperimentalWasmJsInterop::class)
 
 package io.github.kotlinmania.rustlang.corearch.loongarchshared
 

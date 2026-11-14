@@ -16,28 +16,30 @@ public open class Iovec internal constructor(
     public var iovBase: MutPtr = iovBaseCtorArg
         internal set
 
+    public open fun clone(): Iovec = Iovec(iovBase, iovLen)
+
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Iovec> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Iovec> {
+        public fun typeLayout(): TypeLayout<Iovec> =
+            object : TypeLayout<Iovec> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): Iovec =
                     Iovec(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readNative(addr + 8L),
+                        (PrimitiveLayouts.mutPtrLayout(64)).readNative(addr),
+                        (PrimitiveLayouts.USIZE64).readNative(addr + 8L),
                     )
                 override fun writeNative(addr: Long, value: Iovec) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).writeNative(addr, value.iovBase)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeNative(addr + 8L, value.iovLen)
+                    (PrimitiveLayouts.mutPtrLayout(64)).writeNative(addr, value.iovBase)
+                    (PrimitiveLayouts.USIZE64).writeNative(addr + 8L, value.iovLen)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Iovec =
                     Iovec(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readBytes(buf, offset + 8),
+                        (PrimitiveLayouts.mutPtrLayout(64)).readBytes(buf, offset),
+                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset + 8),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Iovec) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).writeBytes(buf, offset, value.iovBase)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeBytes(buf, offset + 8, value.iovLen)
+                    (PrimitiveLayouts.mutPtrLayout(64)).writeBytes(buf, offset, value.iovBase)
+                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset + 8, value.iovLen)
                 }
             }
 
@@ -55,6 +57,8 @@ internal open class IoSlice(
     public var vec: Iovec,
     public var p: Unit,
 ) {
+    public open fun clone(): IoSlice = IoSlice(vec, p)
+
     internal open fun advance(n: Int) {
         check(n <= this.vec.iovLen) { "advancing IoSlice beyond its length" }
         // SAFETY:

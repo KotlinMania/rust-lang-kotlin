@@ -8,6 +8,7 @@ import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ops.indexrange.IndexRange
 import io.github.kotlinmania.rustlang.core.ops.range.Bound
+import io.github.kotlinmania.rustlang.core.ops.range.Range
 import io.github.kotlinmania.rustlang.core.ops.range.RangeFrom
 import io.github.kotlinmania.rustlang.core.ops.range.RangeFull
 import io.github.kotlinmania.rustlang.core.ops.range.RangeInclusive
@@ -15,8 +16,6 @@ import io.github.kotlinmania.rustlang.core.ops.range.RangeTo
 import io.github.kotlinmania.rustlang.core.ops.range.RangeToInclusive
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.hash
-import io.github.kotlinmania.rustlang.core.range.Range
 import io.github.kotlinmania.rustlang.core.slice.SliceIndex
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 

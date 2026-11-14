@@ -40,6 +40,8 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
  *
  * Creating multiple copies of a `String`:
  * ```kotlin
+ * import std.array
+ *
  * val string = "Hello there!".toString()
  * val strings = array.repeat(string)
  * check(strings == listOf("Hello there!", "Hello there!"))

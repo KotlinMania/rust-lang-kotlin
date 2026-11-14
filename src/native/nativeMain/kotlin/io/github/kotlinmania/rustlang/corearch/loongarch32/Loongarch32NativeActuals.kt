@@ -1,4 +1,4 @@
-@file:OptIn(kotlinx.cinterop.ExperimentalForeignApi::class, kotlin.ExperimentalUnsignedTypes::class)
+@file:OptIn(ExperimentalForeignApi::class, ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.corearch.loongarch32
 
@@ -6,6 +6,7 @@ import io.github.kotlinmania.rustlang.corearch.loongarch32.cinterop.corearchLoon
 import io.github.kotlinmania.rustlang.corearch.loongarch32.cinterop.corearchLoongarch32Csrrd
 import io.github.kotlinmania.rustlang.corearch.loongarch32.cinterop.corearchLoongarch32Csrwr
 import io.github.kotlinmania.rustlang.corearch.loongarch32.cinterop.corearchLoongarch32Csrxchg
+import kotlinx.cinterop.ExperimentalForeignApi
 
 public actual fun cacop(a: Int, b: Int, c: Int) {
     corearchLoongarch32Cacop(a, b, c)

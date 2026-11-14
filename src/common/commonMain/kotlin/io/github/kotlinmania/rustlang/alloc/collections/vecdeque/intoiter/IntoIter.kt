@@ -50,7 +50,7 @@ public open class IntoIter<T, A : Allocator> internal constructor(
     public var inner: VecDeque<T, A> = innerCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<T> = object : AbstractIterator<T>() {
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@IntoIter.next()) {
                 null -> done()
@@ -127,8 +127,8 @@ public open class IntoIter<T, A : Allocator> internal constructor(
 
     public open fun last(): T? = this.inner.popBack()
 
-    public open fun nextChunk(n: Int): Result<List<T>, array.IntoIter<T>> {
-        val rawArr = MutableList(n) { MaybeUninit.uninit(ObjectSlotLayout<Result<List<T>, array.IntoIter<T>>>()) }
+    public open fun nextChunk(n: Int): Result<List<T>, IntoIter<T>> {
+        val rawArr = MutableList(n) { MaybeUninit.uninit(ObjectSlotLayout<Result<List<T>, IntoIter<T>>>()) }
         val rawArrPtr = rawArr.asMutPtr().cast()
         val (head, tail) = this.inner.asSlices()
         if (head.len() >= n) {
@@ -159,7 +159,7 @@ public open class IntoIter<T, A : Allocator> internal constructor(
             this.inner.len = 0
             // SAFETY: We copied all elements from both slices to the beginning of the array, so
             // the given range is initialized.
-            Result.Err(array.IntoIter.newUnchecked(rawArr, 0 until init))
+            Result.Err(IntoIter.newUnchecked(rawArr, 0 until init))
         }
     }
 

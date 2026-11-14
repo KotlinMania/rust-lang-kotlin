@@ -30,27 +30,27 @@ public open class Mmap internal constructor(
     }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Mmap> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Mmap> {
+        public fun typeLayout(): TypeLayout<Mmap> =
+            object : TypeLayout<Mmap> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): Mmap =
                     Mmap(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readNative(addr + 8L),
+                        (PrimitiveLayouts.mutPtrLayout(64)).readNative(addr),
+                        (PrimitiveLayouts.USIZE64).readNative(addr + 8L),
                     )
                 override fun writeNative(addr: Long, value: Mmap) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).writeNative(addr, value.ptr)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeNative(addr + 8L, value.len)
+                    (PrimitiveLayouts.mutPtrLayout(64)).writeNative(addr, value.ptr)
+                    (PrimitiveLayouts.USIZE64).writeNative(addr + 8L, value.len)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Mmap =
                     Mmap(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readBytes(buf, offset + 8),
+                        (PrimitiveLayouts.mutPtrLayout(64)).readBytes(buf, offset),
+                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset + 8),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Mmap) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).writeBytes(buf, offset, value.ptr)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeBytes(buf, offset + 8, value.len)
+                    (PrimitiveLayouts.mutPtrLayout(64)).writeBytes(buf, offset, value.ptr)
+                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset + 8, value.len)
                 }
             }
 

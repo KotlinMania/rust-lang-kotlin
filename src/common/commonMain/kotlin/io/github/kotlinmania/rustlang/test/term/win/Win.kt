@@ -3,10 +3,12 @@ package io.github.kotlinmania.rustlang.test.term.win
 
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
+import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.test.term.Terminal
 import io.github.kotlinmania.rustlang.test.term.color.Color
 
@@ -38,17 +40,17 @@ internal open class WinConsole<T>(
         }
     }
 
-    public open fun write(buf: List<UByte>): io.Result<Int> = this.buf.write(buf)
+    public open fun write(buf: List<UByte>): Result<Int, Error> = this.buf.write(buf)
 
-    public open fun flush(): io.Result<Unit> = this.buf.flush()
+    public open fun flush(): Result<Unit, Error> = this.buf.flush()
 
-    public override fun fg(color: Color): io.Result<Boolean> {
+    public override fun fg(color: Color): Result<Boolean, Error> {
         this.foreground = color
         this.apply()
         return Result.Ok(true)
     }
 
-    public override fun reset(): io.Result<Boolean> {
+    public override fun reset(): Result<Boolean, Error> {
         this.foreground = this.defForeground
         this.background = this.defBackground
         this.apply()
@@ -56,43 +58,43 @@ internal open class WinConsole<T>(
     }
 
     public companion object {
-        public fun <T> typeLayout(typeLayoutT: io.github.kotlinmania.rustlang.core.mem.TypeLayout<T>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<WinConsole<T>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<WinConsole<T>> {
+        public fun <T> typeLayout(typeLayoutT: TypeLayout<T>): TypeLayout<WinConsole<T>> =
+            object : TypeLayout<WinConsole<T>> {
                 override val alignBytes: Long = listOf(4L, typeLayoutT.alignBytes).max()
-                private val off1: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(typeLayoutT.sizeBytes, 4L)
-                private val off2: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes((off1 + 4L), 4L)
-                private val off3: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes((off2 + 4L), 4L)
-                private val off4: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes((off3 + 4L), 4L)
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes((off4 + 4L), alignBytes)
+                private val off1: Long = alignUpBytes(typeLayoutT.sizeBytes, 4L)
+                private val off2: Long = alignUpBytes((off1 + 4L), 4L)
+                private val off3: Long = alignUpBytes((off2 + 4L), 4L)
+                private val off4: Long = alignUpBytes((off3 + 4L), 4L)
+                override val sizeBytes: Long = alignUpBytes((off4 + 4L), alignBytes)
                 override fun readNative(addr: Long): WinConsole<T> =
                     WinConsole(
                         (typeLayoutT).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).readNative(addr + off1),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).readNative(addr + off2),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).readNative(addr + off3),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).readNative(addr + off4),
+                        (PrimitiveLayouts.U32).readNative(addr + off1),
+                        (PrimitiveLayouts.U32).readNative(addr + off2),
+                        (PrimitiveLayouts.U32).readNative(addr + off3),
+                        (PrimitiveLayouts.U32).readNative(addr + off4),
                     )
                 override fun writeNative(addr: Long, value: WinConsole<T>) {
                     (typeLayoutT).writeNative(addr, value.buf)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).writeNative(addr + off1, value.defForeground)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).writeNative(addr + off2, value.defBackground)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).writeNative(addr + off3, value.foreground)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).writeNative(addr + off4, value.background)
+                    (PrimitiveLayouts.U32).writeNative(addr + off1, value.defForeground)
+                    (PrimitiveLayouts.U32).writeNative(addr + off2, value.defBackground)
+                    (PrimitiveLayouts.U32).writeNative(addr + off3, value.foreground)
+                    (PrimitiveLayouts.U32).writeNative(addr + off4, value.background)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): WinConsole<T> =
                     WinConsole(
                         (typeLayoutT).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).readBytes(buf, offset + off1.toInt()),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).readBytes(buf, offset + off2.toInt()),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).readBytes(buf, offset + off3.toInt()),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).readBytes(buf, offset + off4.toInt()),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + off1.toInt()),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + off2.toInt()),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + off3.toInt()),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + off4.toInt()),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: WinConsole<T>) {
                     (typeLayoutT).writeBytes(buf, offset, value.buf)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).writeBytes(buf, offset + off1.toInt(), value.defForeground)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).writeBytes(buf, offset + off2.toInt(), value.defBackground)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).writeBytes(buf, offset + off3.toInt(), value.foreground)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).writeBytes(buf, offset + off4.toInt(), value.background)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + off1.toInt(), value.defForeground)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + off2.toInt(), value.defBackground)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + off3.toInt(), value.foreground)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + off4.toInt(), value.background)
                 }
             }
 
@@ -134,35 +136,35 @@ public open class SmallRect(
     public var bottom: Short,
 ) {
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<SmallRect> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<SmallRect> {
+        public fun typeLayout(): TypeLayout<SmallRect> =
+            object : TypeLayout<SmallRect> {
                 override val alignBytes: Long = 2L
                 override val sizeBytes: Long = 8L
                 override fun readNative(addr: Long): SmallRect =
                     SmallRect(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I16).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I16).readNative(addr + 2L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I16).readNative(addr + 4L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I16).readNative(addr + 6L),
+                        (PrimitiveLayouts.I16).readNative(addr),
+                        (PrimitiveLayouts.I16).readNative(addr + 2L),
+                        (PrimitiveLayouts.I16).readNative(addr + 4L),
+                        (PrimitiveLayouts.I16).readNative(addr + 6L),
                     )
                 override fun writeNative(addr: Long, value: SmallRect) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I16).writeNative(addr, value.left)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I16).writeNative(addr + 2L, value.top)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I16).writeNative(addr + 4L, value.right)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I16).writeNative(addr + 6L, value.bottom)
+                    (PrimitiveLayouts.I16).writeNative(addr, value.left)
+                    (PrimitiveLayouts.I16).writeNative(addr + 2L, value.top)
+                    (PrimitiveLayouts.I16).writeNative(addr + 4L, value.right)
+                    (PrimitiveLayouts.I16).writeNative(addr + 6L, value.bottom)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): SmallRect =
                     SmallRect(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I16).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I16).readBytes(buf, offset + 2),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I16).readBytes(buf, offset + 4),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I16).readBytes(buf, offset + 6),
+                        (PrimitiveLayouts.I16).readBytes(buf, offset),
+                        (PrimitiveLayouts.I16).readBytes(buf, offset + 2),
+                        (PrimitiveLayouts.I16).readBytes(buf, offset + 4),
+                        (PrimitiveLayouts.I16).readBytes(buf, offset + 6),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: SmallRect) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I16).writeBytes(buf, offset, value.left)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I16).writeBytes(buf, offset + 2, value.top)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I16).writeBytes(buf, offset + 4, value.right)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I16).writeBytes(buf, offset + 6, value.bottom)
+                    (PrimitiveLayouts.I16).writeBytes(buf, offset, value.left)
+                    (PrimitiveLayouts.I16).writeBytes(buf, offset + 2, value.top)
+                    (PrimitiveLayouts.I16).writeBytes(buf, offset + 4, value.right)
+                    (PrimitiveLayouts.I16).writeBytes(buf, offset + 6, value.bottom)
                 }
             }
     }
@@ -173,27 +175,27 @@ public open class Coord(
     public var y: Short,
 ) {
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Coord> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Coord> {
+        public fun typeLayout(): TypeLayout<Coord> =
+            object : TypeLayout<Coord> {
                 override val alignBytes: Long = 2L
                 override val sizeBytes: Long = 4L
                 override fun readNative(addr: Long): Coord =
                     Coord(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I16).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I16).readNative(addr + 2L),
+                        (PrimitiveLayouts.I16).readNative(addr),
+                        (PrimitiveLayouts.I16).readNative(addr + 2L),
                     )
                 override fun writeNative(addr: Long, value: Coord) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I16).writeNative(addr, value.x)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I16).writeNative(addr + 2L, value.y)
+                    (PrimitiveLayouts.I16).writeNative(addr, value.x)
+                    (PrimitiveLayouts.I16).writeNative(addr + 2L, value.y)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Coord =
                     Coord(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I16).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I16).readBytes(buf, offset + 2),
+                        (PrimitiveLayouts.I16).readBytes(buf, offset),
+                        (PrimitiveLayouts.I16).readBytes(buf, offset + 2),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Coord) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I16).writeBytes(buf, offset, value.x)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I16).writeBytes(buf, offset + 2, value.y)
+                    (PrimitiveLayouts.I16).writeBytes(buf, offset, value.x)
+                    (PrimitiveLayouts.I16).writeBytes(buf, offset + 2, value.y)
                 }
             }
     }
@@ -207,22 +209,22 @@ public open class ConsoleScreenBufferInfo(
     public var dwMaximumWindowSize: Coord,
 ) {
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<ConsoleScreenBufferInfo> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<ConsoleScreenBufferInfo> {
+        public fun typeLayout(): TypeLayout<ConsoleScreenBufferInfo> =
+            object : TypeLayout<ConsoleScreenBufferInfo> {
                 override val alignBytes: Long = 2L
                 override val sizeBytes: Long = 22L
                 override fun readNative(addr: Long): ConsoleScreenBufferInfo =
                     ConsoleScreenBufferInfo(
                         (Coord.typeLayout()).readNative(addr),
                         (Coord.typeLayout()).readNative(addr + 4L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U16).readNative(addr + 8L),
+                        (PrimitiveLayouts.U16).readNative(addr + 8L),
                         (SmallRect.typeLayout()).readNative(addr + 10L),
                         (Coord.typeLayout()).readNative(addr + 18L),
                     )
                 override fun writeNative(addr: Long, value: ConsoleScreenBufferInfo) {
                     (Coord.typeLayout()).writeNative(addr, value.dwSize)
                     (Coord.typeLayout()).writeNative(addr + 4L, value.dwCursorPosition)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U16).writeNative(addr + 8L, value.wAttributes)
+                    (PrimitiveLayouts.U16).writeNative(addr + 8L, value.wAttributes)
                     (SmallRect.typeLayout()).writeNative(addr + 10L, value.srWindow)
                     (Coord.typeLayout()).writeNative(addr + 18L, value.dwMaximumWindowSize)
                 }
@@ -230,14 +232,14 @@ public open class ConsoleScreenBufferInfo(
                     ConsoleScreenBufferInfo(
                         (Coord.typeLayout()).readBytes(buf, offset),
                         (Coord.typeLayout()).readBytes(buf, offset + 4),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U16).readBytes(buf, offset + 8),
+                        (PrimitiveLayouts.U16).readBytes(buf, offset + 8),
                         (SmallRect.typeLayout()).readBytes(buf, offset + 10),
                         (Coord.typeLayout()).readBytes(buf, offset + 18),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: ConsoleScreenBufferInfo) {
                     (Coord.typeLayout()).writeBytes(buf, offset, value.dwSize)
                     (Coord.typeLayout()).writeBytes(buf, offset + 4, value.dwCursorPosition)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U16).writeBytes(buf, offset + 8, value.wAttributes)
+                    (PrimitiveLayouts.U16).writeBytes(buf, offset + 8, value.wAttributes)
                     (SmallRect.typeLayout()).writeBytes(buf, offset + 10, value.srWindow)
                     (Coord.typeLayout()).writeBytes(buf, offset + 18, value.dwMaximumWindowSize)
                 }

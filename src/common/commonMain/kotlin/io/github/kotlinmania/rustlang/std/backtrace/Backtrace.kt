@@ -13,13 +13,11 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU8
 import io.github.kotlinmania.rustlang.std.backtracers.BytesOrWideString
 import io.github.kotlinmania.rustlang.std.env.currentDir
-import io.github.kotlinmania.rustlang.std.fmt
 import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Relaxed
 import io.github.kotlinmania.rustlang.std.sync.lazylock.LazyLock
 import io.github.kotlinmania.rustlang.std.sys.backtrace.lock
 import io.github.kotlinmania.rustlang.std.sys.backtrace.outputFilename
 import io.github.kotlinmania.rustlang.std.sys.backtrace.setImageBase
-import io.github.kotlinmania.rustlang.std.sys.env.unix.env
 
 // Support for capturing a stack backtrace of an OS thread
 //
@@ -282,7 +280,7 @@ public open class Backtrace(
         // Capture a backtrace which start just before the function addressed by
         // `ip`
         public fun create(ip: Int): Backtrace {
-            var frames = mutableListOf()
+            var frames = mutableListOf<BacktraceFrame>()
             var actualStart = null
             setImageBase()
             run {
@@ -474,7 +472,7 @@ internal fun lazyResolve(capture: Capture): LazyResolve =
                 }
             run {
                 resolveFrameUnsynchronized(frame2, { symbol ->
-                    symbols.push(BacktraceSymbol(name = symbol.name().map({ m -> m.encodeToByteArray().map { it.toUByte() }.toVec() }), filename = symbol.filenameRaw().map({ b -> when (b) {
+                    symbols.push(BacktraceSymbol(name = symbol.name().map({ m -> (m.encodeToByteArray().map { it.toUByte() }).toMutableList() }), filename = symbol.filenameRaw().map({ b -> when (b) {
                         is BytesOrWideString.Bytes -> {
                             val (b1) = b
                             BytesOrWide.Bytes(b1.toOwned())

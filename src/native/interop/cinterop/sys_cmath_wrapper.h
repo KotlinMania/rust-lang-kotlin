@@ -31,6 +31,16 @@ double stdSysCmathErf(double n);
 float stdSysCmathErff(float n);
 double stdSysCmathErfc(double n);
 float stdSysCmathErfcf(float n);
+float stdSysCmathAcosf(float n);
+float stdSysCmathAcoshf(float n);
+float stdSysCmathAsinf(float n);
+float stdSysCmathAsinhf(float n);
+float stdSysCmathAtan2f(float a, float b);
+float stdSysCmathAtanf(float n);
+float stdSysCmathCoshf(float n);
+float stdSysCmathSinhf(float n);
+float stdSysCmathTanf(float n);
+float stdSysCmathTanhf(float n);
 
 #ifdef __cplusplus
 }

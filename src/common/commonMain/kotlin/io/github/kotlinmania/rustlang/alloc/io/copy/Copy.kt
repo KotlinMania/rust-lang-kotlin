@@ -52,6 +52,8 @@ public sealed class CopyState {
  * # Examples
  *
  * ```kotlin
+ * import std.io
+ *
  * fun main(): io.Result<Unit> {
  *     var reader: List<UByte> = "hello".encodeToByteArray().map { it.toUByte() }
  *     var writer: List<UByte> = mutableListOf()

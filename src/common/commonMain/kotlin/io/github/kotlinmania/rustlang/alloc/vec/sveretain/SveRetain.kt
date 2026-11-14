@@ -108,7 +108,7 @@ internal fun <T, A : Allocator> chunkedRetain(v: List<T>, f: (T) -> Boolean, typ
         }
         // Phase B: SVE compress.
         val kept =
-            when (mem.sizeOf<T>(typeLayoutT = typeLayoutT)) {
+            when (sizeOf<T>(typeLayoutT = typeLayoutT)) {
                 // SAFETY: write <= read and the dispatch guarantees sizeOf::<T>() matches
                 // the kernel lane width.
                 1 -> compact8Kernel(MutPtr((guard.v.asMutPtr()).rawAddress + ((guard.read).toLong() * (typeLayoutT).strideBytes)), MutPtr((guard.v.asMutPtr()).rawAddress + ((guard.write).toLong() * (typeLayoutT).strideBytes)), guard.mask.asPtr(), chunkLen)
@@ -125,7 +125,7 @@ internal fun <T, A : Allocator> chunkedRetain(v: List<T>, f: (T) -> Boolean, typ
     }
     // SAFETY: write <= originalLen, all retained elements are packed at the front.
     guard.v.setLen(guard.write)
-    mem.forget(guard)
+    forget(guard)
 }
 
 /**
@@ -139,7 +139,7 @@ internal fun <T, A : Allocator> chunkedRetain(v: List<T>, f: (T) -> Boolean, typ
  * - `sizeOf<T>()` equals this kernel's lane width in bytes.
  */
 public fun <T> compact8Kernel(src: ConstPtr, dst: MutPtr, mask: ConstPtr, chunkLen: Int): Int {
-    check(mem.sizeOf<T>(typeLayoutT = ObjectSlotLayout<T>()) == 1)
+    check(sizeOf<T>(typeLayoutT = ObjectSlotLayout<T>()) == 1)
     val idxIn = 0
     val idxOut = 0
     run {
@@ -159,7 +159,7 @@ public fun <T> compact8Kernel(src: ConstPtr, dst: MutPtr, mask: ConstPtr, chunkL
  * - `sizeOf<T>()` equals this kernel's lane width in bytes.
  */
 public fun <T> compact16Kernel(src: ConstPtr, dst: MutPtr, mask: ConstPtr, chunkLen: Int): Int {
-    check(mem.sizeOf<T>(typeLayoutT = ObjectSlotLayout<T>()) == 2)
+    check(sizeOf<T>(typeLayoutT = ObjectSlotLayout<T>()) == 2)
     val idxIn = 0
     val idxOut = 0
     run {
@@ -179,7 +179,7 @@ public fun <T> compact16Kernel(src: ConstPtr, dst: MutPtr, mask: ConstPtr, chunk
  * - `sizeOf<T>()` equals this kernel's lane width in bytes.
  */
 public fun <T> compact32Kernel(src: ConstPtr, dst: MutPtr, mask: ConstPtr, chunkLen: Int): Int {
-    check(mem.sizeOf<T>(typeLayoutT = ObjectSlotLayout<T>()) == 4)
+    check(sizeOf<T>(typeLayoutT = ObjectSlotLayout<T>()) == 4)
     val idxIn = 0
     val idxOut = 0
     run {
@@ -199,7 +199,7 @@ public fun <T> compact32Kernel(src: ConstPtr, dst: MutPtr, mask: ConstPtr, chunk
  * - `sizeOf<T>()` equals this kernel's lane width in bytes.
  */
 public fun <T> compact64Kernel(src: ConstPtr, dst: MutPtr, mask: ConstPtr, chunkLen: Int): Int {
-    check(mem.sizeOf<T>(typeLayoutT = ObjectSlotLayout<T>()) == 8)
+    check(sizeOf<T>(typeLayoutT = ObjectSlotLayout<T>()) == 8)
     val idxIn = 0
     val idxOut = 0
     run {

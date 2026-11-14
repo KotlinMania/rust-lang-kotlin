@@ -13,8 +13,6 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
 import io.github.kotlinmania.rustlang.corearch.arch.asm
 import io.github.kotlinmania.rustlang.corearch.intrinsics.sqrt
-import io.github.kotlinmania.rustlang.corearch.mem
-import io.github.kotlinmania.rustlang.corearch.ptr
 import io.github.kotlinmania.rustlang.corearch.simd.F32x2
 import io.github.kotlinmania.rustlang.corearch.simd.F32x4
 import io.github.kotlinmania.rustlang.corearch.simd.F64x2
@@ -362,7 +360,7 @@ public fun mmSlliSi128Impl(a: M128i, imm8: Int): M128i {
             16u - shift1 + i
         }
     }
-    return transmute<I8x16>(simdShuffle(i8x16.ZERO, a.asI8x16(), SimdShuffleIdx(listOf(mask(imm8, 0u), mask(imm8, 1u), mask(imm8, 2u), mask(imm8, 3u), mask(imm8, 4u), mask(imm8, 5u), mask(imm8, 6u), mask(imm8, 7u), mask(imm8, 8u), mask(imm8, 9u), mask(imm8, 10u), mask(imm8, 11u), mask(imm8, 12u), mask(imm8, 13u), mask(imm8, 14u), mask(imm8, 15u)))))
+    return transmute<I8x16>(simdShuffle(i8x16.ZERO, a.asI8x16(), SimdShuffleIdx(uintArrayOf(mask(imm8, 0u), mask(imm8, 1u), mask(imm8, 2u), mask(imm8, 3u), mask(imm8, 4u), mask(imm8, 5u), mask(imm8, 6u), mask(imm8, 7u), mask(imm8, 8u), mask(imm8, 9u), mask(imm8, 10u), mask(imm8, 11u), mask(imm8, 12u), mask(imm8, 13u), mask(imm8, 14u), mask(imm8, 15u)))))
 }
 
 /**
@@ -528,7 +526,7 @@ public fun mmSrliSi128Impl(a: M128i, imm8: Int): M128i {
         } else {
             i + (shift.toUInt())
         }
-    val x: I8x16 = simdShuffle(a.asI8x16(), i8x16.ZERO, SimdShuffleIdx(listOf(mask(imm8, 0u), mask(imm8, 1u), mask(imm8, 2u), mask(imm8, 3u), mask(imm8, 4u), mask(imm8, 5u), mask(imm8, 6u), mask(imm8, 7u), mask(imm8, 8u), mask(imm8, 9u), mask(imm8, 10u), mask(imm8, 11u), mask(imm8, 12u), mask(imm8, 13u), mask(imm8, 14u), mask(imm8, 15u))))
+    val x: I8x16 = simdShuffle(a.asI8x16(), i8x16.ZERO, SimdShuffleIdx(uintArrayOf(mask(imm8, 0u), mask(imm8, 1u), mask(imm8, 2u), mask(imm8, 3u), mask(imm8, 4u), mask(imm8, 5u), mask(imm8, 6u), mask(imm8, 7u), mask(imm8, 8u), mask(imm8, 9u), mask(imm8, 10u), mask(imm8, 11u), mask(imm8, 12u), mask(imm8, 13u), mask(imm8, 14u), mask(imm8, 15u))))
     return transmute(x)
 }
 
@@ -865,7 +863,7 @@ public fun mmSetzeroSi128(): M128i = null
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_loadl_epi64)
  */
-public fun mmLoadlEpi64(memAddr: ConstPtr): M128i = mmSetEpi64x(0L, ptr.readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = PrimitiveLayouts.I64))
+public fun mmLoadlEpi64(memAddr: ConstPtr): M128i = mmSetEpi64x(0L, readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = PrimitiveLayouts.I64))
 
 /**
  * Loads 128-bits of integer data from memory into a new vector.
@@ -885,7 +883,7 @@ public fun mmLoadSi128(memAddr: ConstPtr): M128i = (ObjectSlotLayout<M128i>()).r
  */
 public fun mmLoaduSi128(memAddr: ConstPtr): M128i {
     val dst: M128i  = mmUndefinedSi128()
-    ptr.copyNonoverlapping(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), mutPtrFromRustCast(addrOfMut(dst)), mem.sizeOf<M128i>(typeLayoutT = ObjectSlotLayout<M128i>()), typeLayoutT = PrimitiveLayouts.U8)
+    copyNonoverlapping(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), mutPtrFromRustCast(addrOfMut(dst)), sizeOf<M128i>(typeLayoutT = ObjectSlotLayout<M128i>()), typeLayoutT = PrimitiveLayouts.U8)
     return dst
 }
 
@@ -948,7 +946,7 @@ public fun mmStoreuSi128(memAddr: MutPtr, a: M128i) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_storel_epi64)
  */
 public fun mmStorelEpi64(memAddr: MutPtr, a: M128i) {
-    ptr.copyNonoverlapping(constPtrFromRustCast(addrOf(a)), MutPtr(memAddr.rawAddress, memAddr.rawMeta), 8, typeLayoutT = PrimitiveLayouts.U8)
+    copyNonoverlapping(constPtrFromRustCast(addrOf(a)), MutPtr(memAddr.rawAddress, memAddr.rawMeta), 8, typeLayoutT = PrimitiveLayouts.U8)
 }
 
 /**
@@ -1878,7 +1876,7 @@ public fun mmStoreuPd(memAddr: MutPtr, a: M128d) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_storeu_si16)
  */
 public fun mmStoreuSi16(memAddr: MutPtr, a: M128i) {
-    ptr.writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), simdExtract(a.asI16x8(), 0), typeLayoutT = PrimitiveLayouts.I16)
+    writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), simdExtract(a.asI16x8(), 0), typeLayoutT = PrimitiveLayouts.I16)
 }
 
 /**
@@ -1889,7 +1887,7 @@ public fun mmStoreuSi16(memAddr: MutPtr, a: M128i) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_storeu_si32)
  */
 public fun mmStoreuSi32(memAddr: MutPtr, a: M128i) {
-    ptr.writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), simdExtract(a.asI32x4(), 0), typeLayoutT = PrimitiveLayouts.I32)
+    writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), simdExtract(a.asI32x4(), 0), typeLayoutT = PrimitiveLayouts.I32)
 }
 
 /**
@@ -1900,7 +1898,7 @@ public fun mmStoreuSi32(memAddr: MutPtr, a: M128i) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_storeu_si64)
  */
 public fun mmStoreuSi64(memAddr: MutPtr, a: M128i) {
-    ptr.writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), simdExtract(a.asI64x2(), 0), typeLayoutT = PrimitiveLayouts.I64)
+    writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), simdExtract(a.asI64x2(), 0), typeLayoutT = PrimitiveLayouts.I64)
 }
 
 /**
@@ -2006,7 +2004,7 @@ public fun mmLoadrPd(memAddr: ConstPtr): M128d {
  */
 public fun mmLoaduPd(memAddr: ConstPtr): M128d {
     val dst = mmUndefinedPd()
-    ptr.copyNonoverlapping(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), mutPtrFromRustCast(addrOfMut(dst)), mem.sizeOf<M128d>(typeLayoutT = ObjectSlotLayout<M128d>()), typeLayoutT = PrimitiveLayouts.U8)
+    copyNonoverlapping(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), mutPtrFromRustCast(addrOfMut(dst)), sizeOf<M128d>(typeLayoutT = ObjectSlotLayout<M128d>()), typeLayoutT = PrimitiveLayouts.U8)
     return dst
 }
 
@@ -2017,7 +2015,7 @@ public fun mmLoaduPd(memAddr: ConstPtr): M128d {
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_loadu_si16)
  */
-public fun mmLoaduSi16(memAddr: ConstPtr): M128i = transmute(i16x8.new(ptr.readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = PrimitiveLayouts.I16), 0, 0, 0, 0, 0, 0, 0))
+public fun mmLoaduSi16(memAddr: ConstPtr): M128i = transmute(i16x8.new(readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = PrimitiveLayouts.I16), 0, 0, 0, 0, 0, 0, 0))
 
 /**
  * Loads unaligned 32-bits of integer data from memory into new vector.
@@ -2026,7 +2024,7 @@ public fun mmLoaduSi16(memAddr: ConstPtr): M128i = transmute(i16x8.new(ptr.readU
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_loadu_si32)
  */
-public fun mmLoaduSi32(memAddr: ConstPtr): M128i = transmute(i32x4.new(ptr.readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = PrimitiveLayouts.I32), 0, 0, 0))
+public fun mmLoaduSi32(memAddr: ConstPtr): M128i = transmute(i32x4.new(readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = PrimitiveLayouts.I32), 0, 0, 0))
 
 /**
  * Loads unaligned 64-bits of integer data from memory into new vector.
@@ -2035,7 +2033,7 @@ public fun mmLoaduSi32(memAddr: ConstPtr): M128i = transmute(i32x4.new(ptr.readU
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_loadu_si64)
  */
-public fun mmLoaduSi64(memAddr: ConstPtr): M128i = transmute(i64x2.new(ptr.readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = PrimitiveLayouts.I64), 0))
+public fun mmLoaduSi64(memAddr: ConstPtr): M128i = transmute(i64x2.new(readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = PrimitiveLayouts.I64), 0))
 
 /**
  * Constructs a 128-bit floating-point vector of `[2 x double]` from two

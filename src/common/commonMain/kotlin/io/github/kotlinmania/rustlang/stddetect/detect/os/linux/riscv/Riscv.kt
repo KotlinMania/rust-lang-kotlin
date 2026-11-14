@@ -11,7 +11,7 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
-import io.github.kotlinmania.rustlang.stddetect.detect.Feature
+import io.github.kotlinmania.rustlang.stddetect.detect.arch.Feature
 import io.github.kotlinmania.rustlang.stddetect.detect.bit.test
 import io.github.kotlinmania.rustlang.stddetect.detect.cache.Cache
 import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.auxvec.auxv
@@ -41,27 +41,27 @@ public open class RiscvHwprobe(
     public open fun get(): ULong? = (this.key != -1L).thenSome(this.value)
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<RiscvHwprobe> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<RiscvHwprobe> {
+        public fun typeLayout(): TypeLayout<RiscvHwprobe> =
+            object : TypeLayout<RiscvHwprobe> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): RiscvHwprobe =
                     RiscvHwprobe(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I64).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).readNative(addr + 8L),
+                        (PrimitiveLayouts.I64).readNative(addr),
+                        (PrimitiveLayouts.U64).readNative(addr + 8L),
                     )
                 override fun writeNative(addr: Long, value: RiscvHwprobe) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I64).writeNative(addr, value.key)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).writeNative(addr + 8L, value.value)
+                    (PrimitiveLayouts.I64).writeNative(addr, value.key)
+                    (PrimitiveLayouts.U64).writeNative(addr + 8L, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): RiscvHwprobe =
                     RiscvHwprobe(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I64).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).readBytes(buf, offset + 8),
+                        (PrimitiveLayouts.I64).readBytes(buf, offset),
+                        (PrimitiveLayouts.U64).readBytes(buf, offset + 8),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: RiscvHwprobe) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I64).writeBytes(buf, offset, value.key)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).writeBytes(buf, offset + 8, value.value)
+                    (PrimitiveLayouts.I64).writeBytes(buf, offset, value.key)
+                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 8, value.value)
                 }
             }
     }
@@ -211,7 +211,7 @@ public val RISCV_HWPROBE_MISALIGNED_VECTOR_FAST: ULong = 3uL
 // so we can safely use this function on older versions of Linux.
 public fun riscvHwprobe(out: MutableList<RiscvHwprobe>): Boolean {
     fun riscvHwprobe(pairs: MutPtr, pairCount: SizeT, cpuSetSize: SizeT, cpus: MutPtr, flags: CUint): CLong = syscall(NR_RISCV_HWPROBE, pairs.rawAddress, pairCount.toLong(), cpuSetSize.toLong(), cpus.rawAddress, flags.toLong())
-    return RiscvHwprobe(out.asMutPtr(), out.size, 0, MutPtr(0L), 0) == 0
+    return riscvHwprobe(out.asMutPtr(), out.size.toULong(), 0uL, MutPtr(0L), 0u) == 0L
 }
 
 /**

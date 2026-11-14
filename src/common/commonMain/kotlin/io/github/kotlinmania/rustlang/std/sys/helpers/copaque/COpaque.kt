@@ -16,32 +16,24 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
  * initialization state of data types and pointer aliasing. For instance, a
  * function like `pthreadMutexattrInit` might not fully initialize the
  * `libc.pthreadMutexattrT` passed to it, so doing e.g.
- * ```kotlin
- * import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
- * import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
- *
- * var attr = MaybeUninit.uninit(PrimitiveLayouts.U8)
- * pthreadMutexattrInit(attr.asMutPtr())
- * val attr1 = attr.assumeInit()
+ * ```ignore (for-illustration-purposes-only)
+ * let mut attr = MaybeUninit.uninit();
+ * pthreadMutexattrInit(attr.asMutPtr());
+ * let attr = attr.assumeInit();
  * ```
  * is unsound. Another example: on platforms like macOS a `pthreadMutexT`
  * cannot be moved because the implementation will dynamically align some inner
  * fields to a higher alignment than required by the definition. And furthermore,
  * some implementations (e.g. AIX) of `pthreadCondT` use intrinsically linked
  * lists, and hence doing
- * ```kotlin
- * import libc.PthreadContT
+ * ```ignore (for-illustration-purposes-only)
+ * pub struct Condvar(UnsafeCell<libc.pthreadContT>);
  *
- * open class Condvar(public var value: UnsafeCell<PthreadContT>) {
- *     public var field0: UnsafeCell<PthreadContT>
- *         get() = value
- *         set(v) {
- *             value = v
- *         }
+ * / * initialization and usage omitted for brevity * /
  *
- *     // initialization and usage omitted for brevity
- *     public open fun drop() {
- *         pthreadCondDestroy(this.value.get())
+ * impl Drop for Condvar {
+ *     fn drop(self) {
+ *         unchecked { libc.pthreadCondDestroy(self.0.get()) };
  *     }
  * }
  * ```
@@ -89,8 +81,8 @@ public open class COpaque<T> internal constructor(
          * T var;
          * ```
          * in C, the equivalent Rust code is
-         * ```kotlin
-         * val variable = pin(COpaque.uninit())
+         * ```ignore (for-illustration-purposes-only)
+         * let var = pin(COpaque.uninit());
          * ```
          */
         public fun <T> uninit(): COpaque<T> = COpaque(inner = UnsafePinned.new(MaybeUninit.uninit(PrimitiveLayouts.U8)))
@@ -103,8 +95,8 @@ public open class COpaque<T> internal constructor(
          * T var = {};
          * ```
          * in C, the equivalent Rust code is
-         * ```kotlin
-         * val variable = pin(COpaque.zeroed())
+         * ```ignore (for-illustration-purposes-only)
+         * let var = pin(COpaque.zeroed());
          * ```
          */
         public fun <T> zeroed(): COpaque<T> = COpaque(inner = UnsafePinned.new(MaybeUninit.zeroed(PrimitiveLayouts.U8)))
@@ -117,8 +109,8 @@ public open class COpaque<T> internal constructor(
          * T var = T_INITIALIZER;
          * ```
          * in C, the equivalent Rust code is
-         * ```kotlin
-         * val variable = pin(COpaque.new(T_INITIALIZER))
+         * ```ignore (for-illustration-purposes-only)
+         * let var = pin(COpaque.new(T_INITIALIZER));
          * ```
          */
         public fun <T> new(initializer: T): COpaque<T> = COpaque(inner = UnsafePinned.new(MaybeUninit.new(initializer, ObjectSlotLayout<T>())))

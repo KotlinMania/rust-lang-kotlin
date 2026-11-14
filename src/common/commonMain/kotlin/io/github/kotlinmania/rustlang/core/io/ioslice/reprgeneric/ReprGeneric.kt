@@ -10,6 +10,8 @@ internal open class IoSlice(
             value = v
         }
 
+    public open fun clone(): IoSlice = IoSlice(value)
+
     internal open fun advance(n: Int) {
         // Note(const-Note): Use `self.0[n ..]` once const.
         val (_, remaining) = this.value.splitAt(n)
@@ -34,7 +36,7 @@ internal open class IoSliceMut(
 
     internal open fun advance(n: Int) {
         // Note(const-Note): Use `mem.take` once const.
-        val slice = mem.replace(this.value, listOf())
+        val slice = replace(this.value, listOf())
         val (_, remaining) = slice.splitAtMut(n)
         this.value = remaining
     }

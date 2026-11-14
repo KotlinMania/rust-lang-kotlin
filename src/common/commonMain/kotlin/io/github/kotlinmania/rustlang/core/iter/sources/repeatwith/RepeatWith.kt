@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.core.iter.sources.repeatwith
 
 import io.github.kotlinmania.rustlang.core.iter.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 
 public class DebugStruct(
@@ -52,6 +53,8 @@ public class DebugStruct(
  * Basic usage:
  *
  * ```kotlin
+ * import std.iter
+ *
  * // let's assume we have some value of a type that is not `Clone`
  * // or which we don't want to have in memory just yet because it is expensive:
  * open class Expensive
@@ -67,6 +70,8 @@ public class DebugStruct(
  * Using mutation and going finite:
  *
  * ```kotlin
+ * import std.iter
+ *
  * // From the zeroth to the third power of two:
  * var curr = 1
  * var pow2 = iter.repeatWith({
@@ -94,7 +99,7 @@ public fun <A> repeatWith(repeater: () -> A): RepeatWith<() -> A> = RepeatWith(r
 public open class RepeatWith<F>(
     public var repeater: F,
 ) : TrustedLen<RepeatWith<F>>, Iterable<A> {
-    override fun iterator(): kotlin.collections.Iterator<A> = object : AbstractIterator<A>() {
+    override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
         override fun computeNext() {
             when (val v = this@RepeatWith.next()) {
                 null -> done()
@@ -123,10 +128,10 @@ public open class RepeatWith<F>(
     }
 
     public companion object {
-        public fun <F> typeLayout(typeLayoutF: io.github.kotlinmania.rustlang.core.mem.TypeLayout<F>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<RepeatWith<F>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<RepeatWith<F>> {
+        public fun <F> typeLayout(typeLayoutF: TypeLayout<F>): TypeLayout<RepeatWith<F>> =
+            object : TypeLayout<RepeatWith<F>> {
                 override val alignBytes: Long = listOf(1L, typeLayoutF.alignBytes).max()
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(typeLayoutF.sizeBytes, alignBytes)
+                override val sizeBytes: Long = alignUpBytes(typeLayoutF.sizeBytes, alignBytes)
                 override fun readNative(addr: Long): RepeatWith<F> =
                     RepeatWith(
                         (typeLayoutF).readNative(addr),

@@ -5,7 +5,6 @@ import io.github.kotlinmania.addr2line.FrameIter
 import io.github.kotlinmania.addr2line.Location
 import io.github.kotlinmania.addr2line.LookupResult
 import io.github.kotlinmania.addr2line.gimli
-import io.github.kotlinmania.cfgif.cfgIf
 import io.github.kotlinmania.rustlang.backtrace.mystd.ffi.OsString
 import io.github.kotlinmania.rustlang.backtrace.mystd.fs.file
 import io.github.kotlinmania.rustlang.backtrace.mystd.path.Path
@@ -287,14 +286,6 @@ public open class Library(
      */
     public var zipOffset: ULong?,
     /**
-     * On AIX, the library mmapped can be a member of a big-archive file.
-     * For example, with a big-archive named libfoo.a containing libbar.so,
-     * one can use `dlopen("libfoo.a(libbar.so)", RTLD_MEMBER | RTLD_LAZY)`
-     * to use the `libbar.so` library. In this case, only `libbar.so` is
-     * mmapped, not the whole `libfoo.a`.
-     */
-    public var memberName: OsString,
-    /**
      * Segments of this library loaded into memory, and where they're loaded.
      */
     public var segments: List<LibrarySegment>,
@@ -321,33 +312,33 @@ public open class LibrarySegment(
     public var len: Int,
 ) {
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<LibrarySegment> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<LibrarySegment> {
+        public fun typeLayout(): TypeLayout<LibrarySegment> =
+            object : TypeLayout<LibrarySegment> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): LibrarySegment =
                     LibrarySegment(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readNative(addr + 8L),
+                        (PrimitiveLayouts.USIZE64).readNative(addr),
+                        (PrimitiveLayouts.USIZE64).readNative(addr + 8L),
                     )
                 override fun writeNative(addr: Long, value: LibrarySegment) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeNative(addr, value.statedVirtualMemoryAddress)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeNative(addr + 8L, value.len)
+                    (PrimitiveLayouts.USIZE64).writeNative(addr, value.statedVirtualMemoryAddress)
+                    (PrimitiveLayouts.USIZE64).writeNative(addr + 8L, value.len)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): LibrarySegment =
                     LibrarySegment(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readBytes(buf, offset + 8),
+                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset),
+                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset + 8),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: LibrarySegment) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeBytes(buf, offset, value.statedVirtualMemoryAddress)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeBytes(buf, offset + 8, value.len)
+                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset, value.statedVirtualMemoryAddress)
+                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset + 8, value.len)
                 }
             }
     }
 }
 
-public fun createMapping(lib: Library): Mapping? = cfgIf(cfg, targetOs, "aix", Mapping, new, lib, name, asRef, lib, memberName, cfg, targetOs, "android", Mapping, newAndroid, lib, name, asRef, lib, zipOffset, Mapping, new, lib, name, asRef)
+public fun createMapping(lib: Library): Mapping? = Mapping.newAndroid(lib.name.asRef(), lib.zipOffset)
 
 /**
  * Try to extract the archive path from an "embedded" library path

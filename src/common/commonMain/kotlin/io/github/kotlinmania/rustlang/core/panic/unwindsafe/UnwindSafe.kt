@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.core.panic.unwindsafe
 import io.github.kotlinmania.rustlang.core.asynciter.asynciter.AsyncIterator
 import io.github.kotlinmania.rustlang.core.future.future.Future
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.pin.Pin
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.task.poll.Poll
@@ -199,10 +200,10 @@ public open class AssertUnwindSafe<T>(
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugTuple(f, "AssertUnwindSafe").field(this.value).finish()
 
     public companion object {
-        public fun <T> typeLayout(typeLayoutT: io.github.kotlinmania.rustlang.core.mem.TypeLayout<T>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<AssertUnwindSafe<T>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<AssertUnwindSafe<T>> {
+        public fun <T> typeLayout(typeLayoutT: TypeLayout<T>): TypeLayout<AssertUnwindSafe<T>> =
+            object : TypeLayout<AssertUnwindSafe<T>> {
                 override val alignBytes: Long = listOf(1L, typeLayoutT.alignBytes).max()
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(typeLayoutT.sizeBytes, alignBytes)
+                override val sizeBytes: Long = alignUpBytes(typeLayoutT.sizeBytes, alignBytes)
                 override fun readNative(addr: Long): AssertUnwindSafe<T> =
                     AssertUnwindSafe(
                         (typeLayoutT).readNative(addr),

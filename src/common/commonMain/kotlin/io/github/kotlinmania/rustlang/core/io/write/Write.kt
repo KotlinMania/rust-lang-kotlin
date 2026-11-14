@@ -397,14 +397,14 @@ public fun <W : Write<W>> defaultWriteFmt(thisRef: W, args: Arguments): Result<U
                 }; is Result.Err<*> -> {
                     val e = matchVal.error
                     this.error = Result.Err(e)
-                    Result.Err(fmt.Error)
+                    Result.Err(Error)
                 } }
             }
         }
     }
     val output = Adapter(inner = thisRef, error = Result.Ok(Unit))
     return run {
-        val matchVal = fmt.Write(output, args)
+        val matchVal = Write(output, args)
         when (matchVal) { is Result.Ok<*> -> {
             Result.Ok(Unit)
         }; is Result.Err<*> -> {

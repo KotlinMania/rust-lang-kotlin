@@ -183,7 +183,7 @@ public fun mm256AlignrEpi8(a: M256i, b: M256i, imm8: Int): M256i {
         return transmute(a1)
     }
     return run {
-        val r: I8x32 = simdShuffle(b1.asI8x32(), a1.asI8x32(), SimdShuffleIdx(listOf(mask(imm8.toUInt(), 0u), mask(imm8.toUInt(), 1u), mask(imm8.toUInt(), 2u), mask(imm8.toUInt(), 3u), mask(imm8.toUInt(), 4u), mask(imm8.toUInt(), 5u), mask(imm8.toUInt(), 6u), mask(imm8.toUInt(), 7u), mask(imm8.toUInt(), 8u), mask(imm8.toUInt(), 9u), mask(imm8.toUInt(), 10u), mask(imm8.toUInt(), 11u), mask(imm8.toUInt(), 12u), mask(imm8.toUInt(), 13u), mask(imm8.toUInt(), 14u), mask(imm8.toUInt(), 15u), mask(imm8.toUInt(), 16u), mask(imm8.toUInt(), 17u), mask(imm8.toUInt(), 18u), mask(imm8.toUInt(), 19u), mask(imm8.toUInt(), 20u), mask(imm8.toUInt(), 21u), mask(imm8.toUInt(), 22u), mask(imm8.toUInt(), 23u), mask(imm8.toUInt(), 24u), mask(imm8.toUInt(), 25u), mask(imm8.toUInt(), 26u), mask(imm8.toUInt(), 27u), mask(imm8.toUInt(), 28u), mask(imm8.toUInt(), 29u), mask(imm8.toUInt(), 30u), mask(imm8.toUInt(), 31u))))
+        val r: I8x32 = simdShuffle(b1.asI8x32(), a1.asI8x32(), SimdShuffleIdx(uintArrayOf(mask(imm8.toUInt(), 0u), mask(imm8.toUInt(), 1u), mask(imm8.toUInt(), 2u), mask(imm8.toUInt(), 3u), mask(imm8.toUInt(), 4u), mask(imm8.toUInt(), 5u), mask(imm8.toUInt(), 6u), mask(imm8.toUInt(), 7u), mask(imm8.toUInt(), 8u), mask(imm8.toUInt(), 9u), mask(imm8.toUInt(), 10u), mask(imm8.toUInt(), 11u), mask(imm8.toUInt(), 12u), mask(imm8.toUInt(), 13u), mask(imm8.toUInt(), 14u), mask(imm8.toUInt(), 15u), mask(imm8.toUInt(), 16u), mask(imm8.toUInt(), 17u), mask(imm8.toUInt(), 18u), mask(imm8.toUInt(), 19u), mask(imm8.toUInt(), 20u), mask(imm8.toUInt(), 21u), mask(imm8.toUInt(), 22u), mask(imm8.toUInt(), 23u), mask(imm8.toUInt(), 24u), mask(imm8.toUInt(), 25u), mask(imm8.toUInt(), 26u), mask(imm8.toUInt(), 27u), mask(imm8.toUInt(), 28u), mask(imm8.toUInt(), 29u), mask(imm8.toUInt(), 30u), mask(imm8.toUInt(), 31u))))
         transmute(r)
     }
 }
@@ -2020,7 +2020,7 @@ public fun mm256BslliEpi128(a: M256i, imm8: Int): M256i {
     }
     return run {
         val a1 = a.asI8x32()
-        val r: I8x32 = simdShuffle(i8x32.ZERO, a1, SimdShuffleIdx(listOf(mask(imm8, 0u), mask(imm8, 1u), mask(imm8, 2u), mask(imm8, 3u), mask(imm8, 4u), mask(imm8, 5u), mask(imm8, 6u), mask(imm8, 7u), mask(imm8, 8u), mask(imm8, 9u), mask(imm8, 10u), mask(imm8, 11u), mask(imm8, 12u), mask(imm8, 13u), mask(imm8, 14u), mask(imm8, 15u), mask(imm8, 16u), mask(imm8, 17u), mask(imm8, 18u), mask(imm8, 19u), mask(imm8, 20u), mask(imm8, 21u), mask(imm8, 22u), mask(imm8, 23u), mask(imm8, 24u), mask(imm8, 25u), mask(imm8, 26u), mask(imm8, 27u), mask(imm8, 28u), mask(imm8, 29u), mask(imm8, 30u), mask(imm8, 31u))))
+        val r: I8x32 = simdShuffle(i8x32.ZERO, a1, SimdShuffleIdx(uintArrayOf(mask(imm8, 0u), mask(imm8, 1u), mask(imm8, 2u), mask(imm8, 3u), mask(imm8, 4u), mask(imm8, 5u), mask(imm8, 6u), mask(imm8, 7u), mask(imm8, 8u), mask(imm8, 9u), mask(imm8, 10u), mask(imm8, 11u), mask(imm8, 12u), mask(imm8, 13u), mask(imm8, 14u), mask(imm8, 15u), mask(imm8, 16u), mask(imm8, 17u), mask(imm8, 18u), mask(imm8, 19u), mask(imm8, 20u), mask(imm8, 21u), mask(imm8, 22u), mask(imm8, 23u), mask(imm8, 24u), mask(imm8, 25u), mask(imm8, 26u), mask(imm8, 27u), mask(imm8, 28u), mask(imm8, 29u), mask(imm8, 30u), mask(imm8, 31u))))
         transmute(r)
     }
 }
@@ -2150,7 +2150,7 @@ public fun mm256BsrliEpi128(a: M256i, imm8: Int): M256i {
     }
     return run {
         val a1 = a.asI8x32()
-        val r: I8x32 = simdShuffle(i8x32.ZERO, a1, SimdShuffleIdx(listOf(mask(imm8, 0u), mask(imm8, 1u), mask(imm8, 2u), mask(imm8, 3u), mask(imm8, 4u), mask(imm8, 5u), mask(imm8, 6u), mask(imm8, 7u), mask(imm8, 8u), mask(imm8, 9u), mask(imm8, 10u), mask(imm8, 11u), mask(imm8, 12u), mask(imm8, 13u), mask(imm8, 14u), mask(imm8, 15u), mask(imm8, 16u), mask(imm8, 17u), mask(imm8, 18u), mask(imm8, 19u), mask(imm8, 20u), mask(imm8, 21u), mask(imm8, 22u), mask(imm8, 23u), mask(imm8, 24u), mask(imm8, 25u), mask(imm8, 26u), mask(imm8, 27u), mask(imm8, 28u), mask(imm8, 29u), mask(imm8, 30u), mask(imm8, 31u))))
+        val r: I8x32 = simdShuffle(i8x32.ZERO, a1, SimdShuffleIdx(uintArrayOf(mask(imm8, 0u), mask(imm8, 1u), mask(imm8, 2u), mask(imm8, 3u), mask(imm8, 4u), mask(imm8, 5u), mask(imm8, 6u), mask(imm8, 7u), mask(imm8, 8u), mask(imm8, 9u), mask(imm8, 10u), mask(imm8, 11u), mask(imm8, 12u), mask(imm8, 13u), mask(imm8, 14u), mask(imm8, 15u), mask(imm8, 16u), mask(imm8, 17u), mask(imm8, 18u), mask(imm8, 19u), mask(imm8, 20u), mask(imm8, 21u), mask(imm8, 22u), mask(imm8, 23u), mask(imm8, 24u), mask(imm8, 25u), mask(imm8, 26u), mask(imm8, 27u), mask(imm8, 28u), mask(imm8, 29u), mask(imm8, 30u), mask(imm8, 31u))))
         transmute(r)
     }
 }

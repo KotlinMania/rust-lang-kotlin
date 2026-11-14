@@ -190,6 +190,8 @@ public open class RawWakerVTable(
      */
     public var drop: FnCallback1,
 ) {
+    public open fun clone(): RawWakerVTable = RawWakerVTable(clone, wake, wakeByRef, drop)
+
     public companion object {
         /**
          * Creates a new `RawWakerVTable` from the provided `clone`, `wake`,
@@ -516,7 +518,7 @@ public open class Waker internal constructor(
         val structVal = other.waker
         val bData = structVal.data
         val bVtable = structVal.vtable
-        return ((aData).rawAddress.toULong() == (bData).rawAddress.toULong()) && ptr.eq(aVtable, bVtable)
+        return ((aData).rawAddress.toULong() == (bData).rawAddress.toULong()) && eq(aVtable, bVtable)
     }
 
     /**
@@ -650,6 +652,7 @@ public open class Waker internal constructor(
          *
          * ```kotlin
          * import std.future.Future
+         * import std.task
          *
          * var cx = task.Context.fromWaker(task.Waker.noop())
          * var future = Holder.pin(10)
@@ -796,7 +799,7 @@ public open class LocalWaker internal constructor(
         val structVal = other.waker
         val bData = structVal.data
         val bVtable = structVal.vtable
-        return ((aData).rawAddress.toULong() == (bData).rawAddress.toULong()) && ptr.eq(aVtable, bVtable)
+        return ((aData).rawAddress.toULong() == (bData).rawAddress.toULong()) && eq(aVtable, bVtable)
     }
 
     /**

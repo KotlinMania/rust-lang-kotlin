@@ -7,6 +7,7 @@ import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
 import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.sys.FromInner
 import io.github.kotlinmania.rustlang.std.sys.IntoInner
 import io.github.kotlinmania.rustlang.std.sys.pipe.unix.Pipe
@@ -84,7 +85,7 @@ import io.github.kotlinmania.rustlang.std.sys.pipe.unix.Pipe
  * [changes]: io#platform-specific-behavior
  * [man page]: https://man7.org/linux/man-pages/man7/pipe.7.html
  */
-public fun pipe(): Result<Pair<PipeReader, PipeWriter>> = pipe().map({ (reader, writer) -> Pair(PipeReader(reader), PipeWriter(writer)) })
+public fun pipe(): Result<Pair<PipeReader, PipeWriter>, Error> = pipe().map({ (reader, writer) -> Pair(PipeReader(reader), PipeWriter(writer)) })
 
 /**
  * Read end of an anonymous pipe.
@@ -108,6 +109,7 @@ public open class PipeReader(
      * ```kotlin
      * @file:OptIn(ExperimentalUnsignedTypes.cls)
      *
+     * import std.fs
      * import std.io.Write
      * import std.io.pipe
      * import std.process.Command
@@ -138,25 +140,25 @@ public open class PipeReader(
      * }
      * ```
      */
-    public open fun tryClone(): Result<PipeReader> = this.value.tryClone().map({ PipeReader(it) })
+    public open fun tryClone(): Result<PipeReader, Error> = this.value.tryClone().map({ PipeReader(it) })
 
-    public open fun read(buf: MutableList<UByte>): Result<Int> = this.value.read(buf)
+    public open fun read(buf: MutableList<UByte>): Result<Int, Error> = this.value.read(buf)
 
-    public open fun readVectored(bufs: MutableList<IoSliceMut>): Result<Int> = this.value.readVectored(bufs)
+    public open fun readVectored(bufs: MutableList<IoSliceMut>): Result<Int, Error> = this.value.readVectored(bufs)
 
     public open fun isReadVectored(): Boolean = this.value.isReadVectored()
 
-    public open fun readToEnd(buf: List<UByte>): Result<Int> = this.value.readToEnd(buf)
+    public open fun readToEnd(buf: List<UByte>): Result<Int, Error> = this.value.readToEnd(buf)
 
-    public open fun readBuf(buf: BorrowedCursor<UByte>): Result<Unit> = this.value.readBuf(buf)
+    public open fun readBuf(buf: BorrowedCursor<UByte>): Result<Unit, Error> = this.value.readBuf(buf)
 
-    public open fun readVectoredRead(bufs: MutableList<IoSliceMut>): Result<Int> = this.value.readVectored(bufs)
+    public open fun readVectoredRead(bufs: MutableList<IoSliceMut>): Result<Int, Error> = this.value.readVectored(bufs)
 
     public open fun isReadVectoredRead(): Boolean = this.value.isReadVectored()
 
-    public open fun readToEndRead(buf: List<UByte>): Result<Int> = this.value.readToEnd(buf)
+    public open fun readToEndRead(buf: List<UByte>): Result<Int, Error> = this.value.readToEnd(buf)
 
-    public open fun readBufRead(buf: BorrowedCursor<UByte>): Result<Unit> = this.value.readBuf(buf)
+    public open fun readBufRead(buf: BorrowedCursor<UByte>): Result<Unit, Error> = this.value.readBuf(buf)
 
     public companion object {
         public fun fromInner(inner: Pipe): PipeReader = PipeReader(inner)
@@ -197,19 +199,19 @@ public open class PipeWriter(
      * peer.wait().getOrElse { return Result.failure(it) }
      * ```
      */
-    public open fun tryClone(): Result<PipeWriter> = this.value.tryClone().map({ PipeWriter(it) })
+    public open fun tryClone(): Result<PipeWriter, Error> = this.value.tryClone().map({ PipeWriter(it) })
 
-    public open fun write(buf: List<UByte>): Result<Int> = this.value.write(buf)
+    public open fun write(buf: List<UByte>): Result<Int, Error> = this.value.write(buf)
 
-    public open fun flush(): Result<Unit> = Result.Ok(Unit)
+    public open fun flush(): Result<Unit, Error> = Result.Ok(Unit)
 
-    public open fun writeVectored(bufs: List<IoSlice>): Result<Int> = this.value.writeVectored(bufs)
+    public open fun writeVectored(bufs: List<IoSlice>): Result<Int, Error> = this.value.writeVectored(bufs)
 
     public open fun isWriteVectored(): Boolean = this.value.isWriteVectored()
 
-    public open fun flushWrite(): Result<Unit> = Result.Ok(Unit)
+    public open fun flushWrite(): Result<Unit, Error> = Result.Ok(Unit)
 
-    public open fun writeVectoredWrite(bufs: List<IoSlice>): Result<Int> = this.value.writeVectored(bufs)
+    public open fun writeVectoredWrite(bufs: List<IoSlice>): Result<Int, Error> = this.value.writeVectored(bufs)
 
     public open fun isWriteVectoredWrite(): Boolean = this.value.isWriteVectored()
 

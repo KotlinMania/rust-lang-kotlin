@@ -155,21 +155,19 @@ public open class Assume(
      * When `false`, [TransmuteFrom] is not implemented for transmutations
      * that might violate the alignment requirements of references; e.g.:
      *
-     * ```kotlin
-     * @file:OptIn(ExperimentalUnsignedTypes.cls)
+     * ```compile_fail,E0277
+     * @file:feature(transmutability)
+     * use core.mem.TransmuteFrom;
      *
-     * import core.mem.TransmuteFrom
-     * import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
-     * import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+     * assertEq(alignOf::<[u8; 2]>(), 1);
+     * assertEq(alignOf::<u16>(), 2);
      *
-     * @feature(transmutability)
-     * public fun doctestEntry() {
-     *     check(alignOf<UByteArray>(typeLayoutT = PrimitiveArrayLayouts.uByteArray((2).toInt())) == 1)
-     *     check(alignOf<UShort>(typeLayoutT = PrimitiveLayouts.U16) == 2)
-     *     val src: UByteArray = ubyteArrayOf(0xFFu, 0xFFu)
-     *     // SAFETY: No safety obligations.
-     *     val dst: UShort = Any?.reinterpret(src)
-     * }
+     * let src: &[u8; 2] = &[0xFF, 0xFF];
+     *
+     * // SAFETY: No safety obligations.
+     * let dst: &u16 = unchecked {
+     *     <_ as TransmuteFrom<_>>::reinterpret(src)
+     * };
      * ```
      *
      * When `true`, [TransmuteFrom] assumes that *you* have ensured
@@ -216,19 +214,21 @@ public open class Assume(
      * that might violate the library safety invariants of the destination
      * type; e.g.:
      *
-     * ```kotlin
-     * import core.mem.TransmuteFrom
+     * ```compile_fail,E0277
+     * @file:feature(transmutability)
+     * use core.mem.TransmuteFrom;
      *
-     * @feature(transmutability)
-     * public fun doctestEntry() {
-     *     open class EvenU8(
-     *         // SAFETY: `val` must be an even number.
-     *         public var value: UByte,
-     *     )
-     *     val src: UByte = 3u
-     *     // SAFETY: No safety obligations.
-     *     val dst: EvenU8 = Any?.reinterpret(src)
+     * let src: u8 = 3;
+     *
+     * struct EvenU8 {
+     *     // SAFETY: `val` must be an even number.
+     *     val: u8,
      * }
+     *
+     * // SAFETY: No safety obligations.
+     * let dst: EvenU8 = unchecked {
+     *     <_ as TransmuteFrom<_>>::reinterpret(src)
+     * };
      * ```
      *
      * When `true`, [TransmuteFrom] assumes that *you* have ensured
@@ -265,15 +265,16 @@ public open class Assume(
      * that might violate the language-level bit-validity invariant of the
      * destination type; e.g.:
      *
-     * ```kotlin
-     * import core.mem.TransmuteFrom
+     * ```compile_fail,E0277
+     * @file:feature(transmutability)
+     * use core.mem.TransmuteFrom;
      *
-     * @feature(transmutability)
-     * public fun doctestEntry() {
-     *     val src: UByte = 3u
-     *     // SAFETY: No safety obligations.
-     *     val dst: Boolean = Any?.reinterpret(src)
-     * }
+     * let src: u8 = 3;
+     *
+     * // SAFETY: No safety obligations.
+     * let dst: bool = unchecked {
+     *     <_ as TransmuteFrom<_>>::reinterpret(src)
+     * };
      * ```
      *
      * When `true`, [TransmuteFrom] assumes that *you* have ensured
@@ -300,6 +301,8 @@ public open class Assume(
      */
     public var validity: Boolean,
 ) : ConstParamTy, Add<Assume, Any?, Assume>, Sub<Assume, Any?, Assume> {
+    public open fun clone(): Assume = Assume(alignment, lifetimes, safety, validity)
+
     /**
      * Combine the assumptions of `self` and `otherAssumptions`.
      *
@@ -370,35 +373,35 @@ public open class Assume(
     public override fun sub(otherAssumptions: Assume): Assume = this.butNot(otherAssumptions)
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Assume> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Assume> {
+        public fun typeLayout(): TypeLayout<Assume> =
+            object : TypeLayout<Assume> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 4L
                 override fun readNative(addr: Long): Assume =
                     Assume(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 1L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 2L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 3L),
+                        (PrimitiveLayouts.BOOL).readNative(addr),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 1L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 2L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 3L),
                     )
                 override fun writeNative(addr: Long, value: Assume) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr, value.alignment)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 1L, value.lifetimes)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 2L, value.safety)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 3L, value.validity)
+                    (PrimitiveLayouts.BOOL).writeNative(addr, value.alignment)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 1L, value.lifetimes)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 2L, value.safety)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 3L, value.validity)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Assume =
                     Assume(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 1),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 2),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 3),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 1),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 2),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 3),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Assume) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset, value.alignment)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 1, value.lifetimes)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 2, value.safety)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 3, value.validity)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset, value.alignment)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 1, value.lifetimes)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 2, value.safety)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 3, value.validity)
                 }
             }
 

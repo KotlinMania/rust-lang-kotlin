@@ -81,27 +81,27 @@ internal open class ArrayToken(
     public var stamp: Int,
 ) {
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<ArrayToken> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<ArrayToken> {
+        public fun typeLayout(): TypeLayout<ArrayToken> =
+            object : TypeLayout<ArrayToken> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): ArrayToken =
                     ArrayToken(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.constPtrLayout(64)).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readNative(addr + 8L),
+                        (PrimitiveLayouts.constPtrLayout(64)).readNative(addr),
+                        (PrimitiveLayouts.USIZE64).readNative(addr + 8L),
                     )
                 override fun writeNative(addr: Long, value: ArrayToken) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.constPtrLayout(64)).writeNative(addr, value.slot)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeNative(addr + 8L, value.stamp)
+                    (PrimitiveLayouts.constPtrLayout(64)).writeNative(addr, value.slot)
+                    (PrimitiveLayouts.USIZE64).writeNative(addr + 8L, value.stamp)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): ArrayToken =
                     ArrayToken(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.constPtrLayout(64)).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readBytes(buf, offset + 8),
+                        (PrimitiveLayouts.constPtrLayout(64)).readBytes(buf, offset),
+                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset + 8),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: ArrayToken) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.constPtrLayout(64)).writeBytes(buf, offset, value.slot)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeBytes(buf, offset + 8, value.stamp)
+                    (PrimitiveLayouts.constPtrLayout(64)).writeBytes(buf, offset, value.slot)
+                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset + 8, value.stamp)
                 }
             }
 

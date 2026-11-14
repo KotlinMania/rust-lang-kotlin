@@ -3,7 +3,7 @@ package io.github.kotlinmania.rustlang.std.sys.args.unix
 
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
-import io.github.kotlinmania.rustlang.std.os.hermit.ffi.OsStringExt
+import io.github.kotlinmania.rustlang.std.os.unix.ffi.OsStringExt
 import io.github.kotlinmania.rustlang.std.sys.args.common.Args
 import io.github.kotlinmania.rustlang.std.sys.args.unix.imp.argcArgv
 
@@ -55,7 +55,7 @@ public fun args(): Args {
         // SAFETY: Just checked that the pointer is not NULL, and arguments
         // are otherwise guaranteed to be valid C strings.
         val cstr = CStr.fromPtr(ptr)
-        vec.add(OsStringExt.fromVec(cstr.toBytes().toVec()))
+        vec.add(OsStringExt.fromVec(cstr.toBytes().toMutableList()))
     }
     return Args.new(vec)
 }

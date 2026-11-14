@@ -115,7 +115,7 @@ public open class BoxedArrayIntoIter<T, A : Allocator>(
  * Returns an immutable slice of all elements that have not been yielded
  * yet.
  */
-public fun <T, A : Allocator> BoxedArrayIntoIter<T, N, A>.asSlice(n: Int): List<T> = this.inner.asSlice()
+public fun <T, A : Allocator> BoxedArrayIntoIter<T, N, A>.asSlice(n: Int): List<T> = this.inner.toList()
 
 /**
  * Returns a mutable slice of all elements that have not been yielded yet.

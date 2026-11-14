@@ -172,7 +172,7 @@ internal fun <Elem, T : SimdExt<T, Any?>> simdExtLdi(i: Int): T {
                 8 -> transmute(I8x8.splat(imm8.toByte()))
                 9 -> expandU8(imm8).toLong()
                 10 -> transmute(I32x2.splat(fp32Imm(i)))
-                11 -> transmute(I32x2.fromArray(listOf(fp32Imm(i), 0)))
+                11 -> transmute(I32x2.fromArray(intArrayOf(fp32Imm(i), 0)))
                 12 -> fp64Imm(i)
                 else -> error("unreachable")
             }

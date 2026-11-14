@@ -38,4 +38,4 @@ internal sealed class Feature {
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun msa(): Boolean = checkFor(io.github.kotlinmania.rustlang.stddetect.detect.Feature::msa)
+public fun msa(): Boolean = checkFor(Feature::msa)

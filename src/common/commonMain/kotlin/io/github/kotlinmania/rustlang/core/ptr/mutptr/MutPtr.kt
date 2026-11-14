@@ -173,7 +173,7 @@ public fun MutPtr.addr(): Int {
     // reinterpret semantics, it relies on sysroot crates having special status.
     // SAFETY: Pointer-to-integer transmutes are valid (if you are okay with losing the
     // provenance).
-    return mem.transmute(MutPtr((this).rawAddress))
+    return transmute(MutPtr((this).rawAddress))
 }
 
 /**
@@ -1561,6 +1561,7 @@ public fun MutPtr.castUninit(): MutPtr = MutPtr(this.rawAddress, this.rawMeta)
  *
  * ```kotlin
  * import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+ * import std.ptr
  *
  * val danger: MutPtr = MutPtr(0L).castSlice(0)
  * run {
@@ -1590,6 +1591,7 @@ public fun MutPtr.castInit(): MutPtr = MutPtr(this.rawAddress, this.rawMeta)
  *
  * ```kotlin
  * import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+ * import std.ptr
  *
  * val slice: MutPtr = ptr.sliceFromRawPartsMut(MutPtr(0L), 3)
  * check(slice.len() == 3)
@@ -1604,6 +1606,7 @@ public fun MutPtr.len(): Int = metadata(this)
  *
  * ```kotlin
  * import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+ * import std.ptr
  *
  * val slice: MutPtr = ptr.sliceFromRawPartsMut(MutPtr(0L), 3)
  * check(!slice.isEmpty())
@@ -1733,6 +1736,7 @@ public fun MutPtr.splitAtMutUnchecked(mid: Int): Pair<MutPtr, MutPtr> {
  *
  * ```kotlin
  * import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+ * import std.ptr
  *
  * @feature(slicePtrGet)
  * public fun doctestEntry() {
@@ -1854,6 +1858,7 @@ public fun MutPtr.castArray(n: Int): MutPtr = MutPtr((this).rawAddress)
  *
  * ```kotlin
  * import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+ * import std.ptr
  *
  * @feature(arrayPtrGet)
  * public fun doctestEntry() {

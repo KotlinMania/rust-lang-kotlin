@@ -1,4 +1,4 @@
-@file:OptIn(kotlin.ExperimentalUnsignedTypes::class)
+@file:OptIn(ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.core.num.imp.libm
 
@@ -239,6 +239,75 @@ internal actual fun rustDivhc3(a: F16, b: F16, c: F16, d: F16): Complex<F16> =
 
 internal actual fun rustDivtc3(a: F128, b: F128, c: F128, d: F128): Complex<F128> =
     throw UnsupportedOperationException("Native FFI addon is not available")
+
+internal actual fun acosf(n: kotlin.Float): kotlin.Float =
+    if (numImpLibmNapiAddon != null) (numImpLibmNapiAddon.coreNumImpLibmAcosf(n.toDouble()) as Double).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+internal actual fun asinf(n: kotlin.Float): kotlin.Float =
+    if (numImpLibmNapiAddon != null) (numImpLibmNapiAddon.coreNumImpLibmAsinf(n.toDouble()) as Double).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+internal actual fun atan2f(a: kotlin.Float, b: kotlin.Float): kotlin.Float =
+    if (numImpLibmNapiAddon != null) (numImpLibmNapiAddon.coreNumImpLibmAtan2f(a.toDouble(), b.toDouble()) as Double).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+internal actual fun atanf(n: kotlin.Float): kotlin.Float =
+    if (numImpLibmNapiAddon != null) (numImpLibmNapiAddon.coreNumImpLibmAtanf(n.toDouble()) as Double).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+internal actual fun cosf(x: kotlin.Float): kotlin.Float =
+    if (numImpLibmNapiAddon != null) (numImpLibmNapiAddon.coreNumImpLibmCosf(x.toDouble()) as Double).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+internal actual fun coshf(n: kotlin.Float): kotlin.Float =
+    if (numImpLibmNapiAddon != null) (numImpLibmNapiAddon.coreNumImpLibmCoshf(n.toDouble()) as Double).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+internal actual fun erfcf(x: kotlin.Float): kotlin.Float =
+    if (numImpLibmNapiAddon != null) (numImpLibmNapiAddon.coreNumImpLibmErfcf(x.toDouble()) as Double).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+internal actual fun erff(x: kotlin.Float): kotlin.Float =
+    if (numImpLibmNapiAddon != null) (numImpLibmNapiAddon.coreNumImpLibmErff(x.toDouble()) as Double).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+internal actual fun exp2f(x: kotlin.Float): kotlin.Float =
+    if (numImpLibmNapiAddon != null) (numImpLibmNapiAddon.coreNumImpLibmExp2f(x.toDouble()) as Double).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+internal actual fun expf(x: kotlin.Float): kotlin.Float =
+    if (numImpLibmNapiAddon != null) (numImpLibmNapiAddon.coreNumImpLibmExpf(x.toDouble()) as Double).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+internal actual fun expm1f(n: kotlin.Float): kotlin.Float =
+    if (numImpLibmNapiAddon != null) (numImpLibmNapiAddon.coreNumImpLibmExpm1f(n.toDouble()) as Double).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+internal actual fun hypotf(x: kotlin.Float, y: kotlin.Float): kotlin.Float =
+    if (numImpLibmNapiAddon != null) (numImpLibmNapiAddon.coreNumImpLibmHypotf(x.toDouble(), y.toDouble()) as Double).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+internal actual fun ldexpf(f: kotlin.Float, n: Int): kotlin.Float =
+    if (numImpLibmNapiAddon != null) (numImpLibmNapiAddon.coreNumImpLibmLdexpf(f.toDouble(), n) as Double).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+internal actual fun log10f(x: kotlin.Float): kotlin.Float =
+    if (numImpLibmNapiAddon != null) (numImpLibmNapiAddon.coreNumImpLibmLog10f(x.toDouble()) as Double).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+internal actual fun log1pf(n: kotlin.Float): kotlin.Float =
+    if (numImpLibmNapiAddon != null) (numImpLibmNapiAddon.coreNumImpLibmLog1pf(n.toDouble()) as Double).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+internal actual fun log2f(x: kotlin.Float): kotlin.Float =
+    if (numImpLibmNapiAddon != null) (numImpLibmNapiAddon.coreNumImpLibmLog2f(x.toDouble()) as Double).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+internal actual fun logf(x: kotlin.Float): kotlin.Float =
+    if (numImpLibmNapiAddon != null) (numImpLibmNapiAddon.coreNumImpLibmLogf(x.toDouble()) as Double).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+internal actual fun powf(x: kotlin.Float, y: kotlin.Float): kotlin.Float =
+    if (numImpLibmNapiAddon != null) (numImpLibmNapiAddon.coreNumImpLibmPowf(x.toDouble(), y.toDouble()) as Double).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+internal actual fun sinf(x: kotlin.Float): kotlin.Float =
+    if (numImpLibmNapiAddon != null) (numImpLibmNapiAddon.coreNumImpLibmSinf(x.toDouble()) as Double).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+internal actual fun sinhf(n: kotlin.Float): kotlin.Float =
+    if (numImpLibmNapiAddon != null) (numImpLibmNapiAddon.coreNumImpLibmSinhf(n.toDouble()) as Double).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+internal actual fun tanf(n: kotlin.Float): kotlin.Float =
+    if (numImpLibmNapiAddon != null) (numImpLibmNapiAddon.coreNumImpLibmTanf(n.toDouble()) as Double).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+internal actual fun tanhf(n: kotlin.Float): kotlin.Float =
+    if (numImpLibmNapiAddon != null) (numImpLibmNapiAddon.coreNumImpLibmTanhf(n.toDouble()) as Double).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+internal actual fun tgammaf(x: kotlin.Float): kotlin.Float =
+    if (numImpLibmNapiAddon != null) (numImpLibmNapiAddon.coreNumImpLibmTgammaf(x.toDouble()) as Double).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 internal actual fun acos(x: Double): Double =
     if (numImpLibmNapiAddon != null) (numImpLibmNapiAddon.coreNumImpLibmAcos(x) as Double) else throw UnsupportedOperationException("Native FFI addon is not available")

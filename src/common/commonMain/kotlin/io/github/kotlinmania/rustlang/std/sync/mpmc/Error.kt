@@ -1,7 +1,6 @@
 // port-lint: source sync/mpmc/error.rs
 package io.github.kotlinmania.rustlang.std.sync.mpmc
 
-import io.github.kotlinmania.rustlang.std.fmt
 import io.github.kotlinmania.rustlang.std.sync.mpsc.SendError
 
 /**

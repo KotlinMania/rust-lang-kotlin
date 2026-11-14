@@ -1,4 +1,76 @@
 // port-lint: source sys/exit.rs
 package io.github.kotlinmania.rustlang.std.sys.exit
 
-public fun exit(code: Int): Nothing = cfgSelect(targetOs, "hermit", hermitAbi, exit, code, targetOs, "linux", uniqueThreadExit, libc, exit, code, targetOs, "motor", motoRt, process, exit, code, all, targetVendor, "fortanix", targetEnv, "sgx", sys, pal, abi, exitWithCode, code, targetOs, "solid_asp3", rtabort, "exit({}) called", code, targetOs, "teeos", code, rtabort, "TA should not call `exit`", targetOs, "uefi", rEfi, base, Status, os, uefi, env, Some, bootServices, Some, handle, env, bootServices, env, tryImageHandle, bootServices, bootServices, cast, rEfi, efi, BootServices, bootServices, asPtr, exit, handle, asPtr, Status, fromUsize, code, 0, ptr, nullMut, intrinsics, abortImmediate, any, targetFamily, "unix", targetOs, "wasi", libc, exit, code, ffi, cInt, targetOs, "vexos", code, vexSdk, vexSystemExitRequest, vexSdk, vexTasksRun, targetOs, "windows", sys, pal, c, ExitProcess, code, targetOs, "xous", os, xous, ffi, exit, code, code, intrinsics, abortImmediate)
+import io.github.kotlinmania.libc.pause
+import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicPtr
+import io.github.kotlinmania.rustlang.std.ffi.CInt
+import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Relaxed
+import io.github.kotlinmania.rustlang.std.sys.io.error.unix.errnoLocation
+
+/**
+ * Mitigation for <https://github.com/rust-lang/rust/issues/126600>
+ *
+ * On glibc, `libc.exit` has been observed to not always be thread-safe.
+ * It is currently unclear whether that is a glibc bug or allowed by the standard.
+ * To mitigate this problem, we ensure that only one
+ * Rust thread calls `libc.exit` (or returns from `main`) by calling this function before
+ * calling `libc.exit` (or returning from `main`).
+ *
+ * Technically, this is not enough to ensure soundness, since other code directly calling
+ * `libc.exit` will still race with this.
+ *
+ * *This function does not itself call `libc.exit`.* This is so it can also be used
+ * to guard returning from `main`.
+ *
+ * This function will return only the first time it is called in a process.
+ *
+ * * If it is called again on the same thread as the first call, it will abort.
+ * * If it is called again on a different thread, it will wait in a loop
+ *   (waiting for the process to exit).
+ */
+public fun uniqueThreadExit() {
+    val EXITING_THREAD_ID: AtomicPtr  = AtomicPtr.new(MutPtr(0L))
+    // We use the address of `errno` as a cheap and safe way to identify
+    // threads. As the C standard mandates that `errno` must have thread
+    // storage duration, we can rely on its address not changing over the
+    // scope of the thread. Additionally, accesses to `errno` are
+    // async-signal-safe, so this function is available in all imaginable
+    // circumstances.
+    val thisThreadId = errnoLocation()
+    run {
+        val matchVal = EXITING_THREAD_ID.compareExchange(MutPtr(0L), thisThreadId, Acquire, Relaxed)
+        when {
+            matchVal is Result.Ok<*> -> {
+                // This is the first thread to call `uniqueThreadExit`,
+                // and this is the first time it is called. Continue exiting.
+            }
+            matchVal is Result.Err<*> && (((matchVal as Result.Err<*>).error).rawAddress.toULong() == (thisThreadId).rawAddress.toULong()) -> {
+                val exitingThreadId = (matchVal as Result.Err<*>).error
+                // This is the first thread to call `uniqueThreadExit`,
+                // but this is the second time it is called.
+                // Abort the process.
+                panicNounwind("std::process::exit called re-entrantly")
+            }
+            else -> {
+                // This is not the first thread to call `uniqueThreadExit`.
+                // Pause until the process exits.
+                while (true) {
+                    // Safety: libc.pause is safe to call.
+                    run {
+                        pause()
+                    }
+                }
+            }
+        }
+    }
+}
+
+public expect fun exit(status: CInt): Nothing
+
+public fun exit(code: Int): Nothing =
+    run {
+        uniqueThreadExit()
+        io.github.kotlinmania.libc.unix.linuxlike.linux.gnu.exit(code)
+    }

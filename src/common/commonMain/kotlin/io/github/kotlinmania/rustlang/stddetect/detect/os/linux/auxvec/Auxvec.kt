@@ -43,28 +43,30 @@ internal open class AuxVec(
     public var hwcap: Int,
     public var hwcap2: Int,
 ) {
+    public open fun clone(): AuxVec = AuxVec(hwcap, hwcap2)
+
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<AuxVec> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<AuxVec> {
+        public fun typeLayout(): TypeLayout<AuxVec> =
+            object : TypeLayout<AuxVec> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): AuxVec =
                     AuxVec(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readNative(addr + 8L),
+                        (PrimitiveLayouts.USIZE64).readNative(addr),
+                        (PrimitiveLayouts.USIZE64).readNative(addr + 8L),
                     )
                 override fun writeNative(addr: Long, value: AuxVec) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeNative(addr, value.hwcap)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeNative(addr + 8L, value.hwcap2)
+                    (PrimitiveLayouts.USIZE64).writeNative(addr, value.hwcap)
+                    (PrimitiveLayouts.USIZE64).writeNative(addr + 8L, value.hwcap2)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): AuxVec =
                     AuxVec(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readBytes(buf, offset + 8),
+                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset),
+                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset + 8),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: AuxVec) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeBytes(buf, offset, value.hwcap)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeBytes(buf, offset + 8, value.hwcap2)
+                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset, value.hwcap)
+                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset + 8, value.hwcap2)
                 }
             }
     }
@@ -144,7 +146,7 @@ internal fun auxv(): Result<AuxVec, Unit> {
  * `getauxval` function. If the function is not linked, this function return `Err`.
  */
 public fun getauxval(key: Int): Result<Int, Unit> {
-    cfgSelect(any, all, targetOs, "linux", any, targetEnv, "gnu", targetEnv, "musl", targetEnv, "ohos", targetOs, "android", ffiGetauxval, F, libc, getauxval, ffiGetauxval, F, ptr, libc, dlsym, libc, RTLD_DEFAULT, "getauxval", asPtr, ptr, isNull, Err, core, mem, transmute, ptr)
+    val ffiGetauxval: F = io.github.kotlinmania.libc.getauxval
     return Result.Ok(ffiGetauxval(key.toULong()).toInt())
 }
 

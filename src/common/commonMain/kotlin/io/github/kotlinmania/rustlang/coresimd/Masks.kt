@@ -214,7 +214,7 @@ public fun <T> Mask.Companion.fromArray(array: BooleanArray, fieldLayout: TypeLa
     // This would be hypothetically valid as an "in-place" reinterpret,
     // but these are "dependently-sized" types, so copy elision it is!
     return run {
-        val bytes: UByteArray = mem.transmuteCopy(array)
+        val bytes: UByteArray = transmuteCopy(array)
         val bools: Simd<Byte> = Simd.simdNe(Simd.fromArray(bytes), Simd.splat(0u.toUByte()))
         Mask.fromSimdUnchecked(Simd.simdCast(bools), fieldLayout = ObjectSlotLayout<Simd<T>>())
     }
@@ -237,7 +237,7 @@ public fun <T> Mask<T, N>.toArray(n: Int): BooleanArray where T : MaskElement<T>
     return run {
         var bytes: Simd<Byte> = Simd.simdCast(this.toSimd())
         bytes = bytes and Simd.splat(1)
-        mem.transmuteCopy(bytes)
+        transmuteCopy(bytes)
     }
 }
 
@@ -423,7 +423,7 @@ public fun <T> Mask<T, N>.firstSet(n: Int): Int? where T : MaskElement<T> {
     // Safety: the input is an integer vector
     val minIndex: Unsigned = Simd.simdReduceMin(maskedIndex1)
     // Safety: the return value is the unsigned version of T
-    val minIndex1: T = mem.transmuteCopy(minIndex)
+    val minIndex1: T = transmuteCopy(minIndex)
     return if (minIndex1.eq(T.TRUE)) {
         null
     } else {

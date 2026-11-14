@@ -1,4 +1,4 @@
-@file:OptIn(kotlin.ExperimentalUnsignedTypes::class, kotlin.js.ExperimentalWasmJsInterop::class)
+@file:OptIn(ExperimentalUnsignedTypes::class, ExperimentalWasmJsInterop::class)
 
 package io.github.kotlinmania.rustlang.core.num.imp.libm
 
@@ -118,6 +118,75 @@ private external fun wasmCoreNumImpLibmTrunc(p0: Double): Double
 
 @JsFun("(p0) => globalThis.__km_napi_core.coreNumImpLibmTruncf(p0)")
 private external fun wasmCoreNumImpLibmTruncf(p0: Double): Double
+
+@JsFun("(p0) => globalThis.__km_napi_core.coreNumImpLibmAcosf(p0)")
+private external fun wasmCoreNumImpLibmAcosf(p0: Double): Double
+
+@JsFun("(p0) => globalThis.__km_napi_core.coreNumImpLibmAsinf(p0)")
+private external fun wasmCoreNumImpLibmAsinf(p0: Double): Double
+
+@JsFun("(p0, p1) => globalThis.__km_napi_core.coreNumImpLibmAtan2f(p0, p1)")
+private external fun wasmCoreNumImpLibmAtan2f(p0: Double, p1: Double): Double
+
+@JsFun("(p0) => globalThis.__km_napi_core.coreNumImpLibmAtanf(p0)")
+private external fun wasmCoreNumImpLibmAtanf(p0: Double): Double
+
+@JsFun("(p0) => globalThis.__km_napi_core.coreNumImpLibmCosf(p0)")
+private external fun wasmCoreNumImpLibmCosf(p0: Double): Double
+
+@JsFun("(p0) => globalThis.__km_napi_core.coreNumImpLibmCoshf(p0)")
+private external fun wasmCoreNumImpLibmCoshf(p0: Double): Double
+
+@JsFun("(p0) => globalThis.__km_napi_core.coreNumImpLibmErfcf(p0)")
+private external fun wasmCoreNumImpLibmErfcf(p0: Double): Double
+
+@JsFun("(p0) => globalThis.__km_napi_core.coreNumImpLibmErff(p0)")
+private external fun wasmCoreNumImpLibmErff(p0: Double): Double
+
+@JsFun("(p0) => globalThis.__km_napi_core.coreNumImpLibmExp2f(p0)")
+private external fun wasmCoreNumImpLibmExp2f(p0: Double): Double
+
+@JsFun("(p0) => globalThis.__km_napi_core.coreNumImpLibmExpf(p0)")
+private external fun wasmCoreNumImpLibmExpf(p0: Double): Double
+
+@JsFun("(p0) => globalThis.__km_napi_core.coreNumImpLibmExpm1f(p0)")
+private external fun wasmCoreNumImpLibmExpm1f(p0: Double): Double
+
+@JsFun("(p0, p1) => globalThis.__km_napi_core.coreNumImpLibmHypotf(p0, p1)")
+private external fun wasmCoreNumImpLibmHypotf(p0: Double, p1: Double): Double
+
+@JsFun("(p0, p1) => globalThis.__km_napi_core.coreNumImpLibmLdexpf(p0, p1)")
+private external fun wasmCoreNumImpLibmLdexpf(p0: Double, p1: Int): Double
+
+@JsFun("(p0) => globalThis.__km_napi_core.coreNumImpLibmLog10f(p0)")
+private external fun wasmCoreNumImpLibmLog10f(p0: Double): Double
+
+@JsFun("(p0) => globalThis.__km_napi_core.coreNumImpLibmLog1pf(p0)")
+private external fun wasmCoreNumImpLibmLog1pf(p0: Double): Double
+
+@JsFun("(p0) => globalThis.__km_napi_core.coreNumImpLibmLog2f(p0)")
+private external fun wasmCoreNumImpLibmLog2f(p0: Double): Double
+
+@JsFun("(p0) => globalThis.__km_napi_core.coreNumImpLibmLogf(p0)")
+private external fun wasmCoreNumImpLibmLogf(p0: Double): Double
+
+@JsFun("(p0, p1) => globalThis.__km_napi_core.coreNumImpLibmPowf(p0, p1)")
+private external fun wasmCoreNumImpLibmPowf(p0: Double, p1: Double): Double
+
+@JsFun("(p0) => globalThis.__km_napi_core.coreNumImpLibmSinf(p0)")
+private external fun wasmCoreNumImpLibmSinf(p0: Double): Double
+
+@JsFun("(p0) => globalThis.__km_napi_core.coreNumImpLibmSinhf(p0)")
+private external fun wasmCoreNumImpLibmSinhf(p0: Double): Double
+
+@JsFun("(p0) => globalThis.__km_napi_core.coreNumImpLibmTanf(p0)")
+private external fun wasmCoreNumImpLibmTanf(p0: Double): Double
+
+@JsFun("(p0) => globalThis.__km_napi_core.coreNumImpLibmTanhf(p0)")
+private external fun wasmCoreNumImpLibmTanhf(p0: Double): Double
+
+@JsFun("(p0) => globalThis.__km_napi_core.coreNumImpLibmTgammaf(p0)")
+private external fun wasmCoreNumImpLibmTgammaf(p0: Double): Double
 
 @JsFun("(p0) => globalThis.__km_napi_core.coreNumImpLibmAcos(p0)")
 private external fun wasmCoreNumImpLibmAcos(p0: Double): Double
@@ -418,6 +487,75 @@ internal actual fun rustDivhc3(a: F16, b: F16, c: F16, d: F16): Complex<F16> =
 
 internal actual fun rustDivtc3(a: F128, b: F128, c: F128, d: F128): Complex<F128> =
     throw UnsupportedOperationException("Native FFI addon is not available")
+
+internal actual fun acosf(n: kotlin.Float): kotlin.Float =
+    if (numImpLibmNapiAvailable) wasmCoreNumImpLibmAcosf(n.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+internal actual fun asinf(n: kotlin.Float): kotlin.Float =
+    if (numImpLibmNapiAvailable) wasmCoreNumImpLibmAsinf(n.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+internal actual fun atan2f(a: kotlin.Float, b: kotlin.Float): kotlin.Float =
+    if (numImpLibmNapiAvailable) wasmCoreNumImpLibmAtan2f(a.toDouble(), b.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+internal actual fun atanf(n: kotlin.Float): kotlin.Float =
+    if (numImpLibmNapiAvailable) wasmCoreNumImpLibmAtanf(n.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+internal actual fun cosf(x: kotlin.Float): kotlin.Float =
+    if (numImpLibmNapiAvailable) wasmCoreNumImpLibmCosf(x.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+internal actual fun coshf(n: kotlin.Float): kotlin.Float =
+    if (numImpLibmNapiAvailable) wasmCoreNumImpLibmCoshf(n.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+internal actual fun erfcf(x: kotlin.Float): kotlin.Float =
+    if (numImpLibmNapiAvailable) wasmCoreNumImpLibmErfcf(x.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+internal actual fun erff(x: kotlin.Float): kotlin.Float =
+    if (numImpLibmNapiAvailable) wasmCoreNumImpLibmErff(x.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+internal actual fun exp2f(x: kotlin.Float): kotlin.Float =
+    if (numImpLibmNapiAvailable) wasmCoreNumImpLibmExp2f(x.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+internal actual fun expf(x: kotlin.Float): kotlin.Float =
+    if (numImpLibmNapiAvailable) wasmCoreNumImpLibmExpf(x.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+internal actual fun expm1f(n: kotlin.Float): kotlin.Float =
+    if (numImpLibmNapiAvailable) wasmCoreNumImpLibmExpm1f(n.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+internal actual fun hypotf(x: kotlin.Float, y: kotlin.Float): kotlin.Float =
+    if (numImpLibmNapiAvailable) wasmCoreNumImpLibmHypotf(x.toDouble(), y.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+internal actual fun ldexpf(f: kotlin.Float, n: Int): kotlin.Float =
+    if (numImpLibmNapiAvailable) wasmCoreNumImpLibmLdexpf(f.toDouble(), n).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+internal actual fun log10f(x: kotlin.Float): kotlin.Float =
+    if (numImpLibmNapiAvailable) wasmCoreNumImpLibmLog10f(x.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+internal actual fun log1pf(n: kotlin.Float): kotlin.Float =
+    if (numImpLibmNapiAvailable) wasmCoreNumImpLibmLog1pf(n.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+internal actual fun log2f(x: kotlin.Float): kotlin.Float =
+    if (numImpLibmNapiAvailable) wasmCoreNumImpLibmLog2f(x.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+internal actual fun logf(x: kotlin.Float): kotlin.Float =
+    if (numImpLibmNapiAvailable) wasmCoreNumImpLibmLogf(x.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+internal actual fun powf(x: kotlin.Float, y: kotlin.Float): kotlin.Float =
+    if (numImpLibmNapiAvailable) wasmCoreNumImpLibmPowf(x.toDouble(), y.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+internal actual fun sinf(x: kotlin.Float): kotlin.Float =
+    if (numImpLibmNapiAvailable) wasmCoreNumImpLibmSinf(x.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+internal actual fun sinhf(n: kotlin.Float): kotlin.Float =
+    if (numImpLibmNapiAvailable) wasmCoreNumImpLibmSinhf(n.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+internal actual fun tanf(n: kotlin.Float): kotlin.Float =
+    if (numImpLibmNapiAvailable) wasmCoreNumImpLibmTanf(n.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+internal actual fun tanhf(n: kotlin.Float): kotlin.Float =
+    if (numImpLibmNapiAvailable) wasmCoreNumImpLibmTanhf(n.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+internal actual fun tgammaf(x: kotlin.Float): kotlin.Float =
+    if (numImpLibmNapiAvailable) wasmCoreNumImpLibmTgammaf(x.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 internal actual fun acos(x: Double): Double =
     if (numImpLibmNapiAvailable) wasmCoreNumImpLibmAcos(x) else throw UnsupportedOperationException("Native FFI addon is not available")

@@ -20,7 +20,7 @@ public open class ByRefSized<I>(
             value = v
         }
 
-    override fun iterator(): kotlin.collections.Iterator<Item> = object : AbstractIterator<Item>() {
+    override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
         override fun computeNext() {
             when (val v = this@ByRefSized.next()) {
                 null -> done()

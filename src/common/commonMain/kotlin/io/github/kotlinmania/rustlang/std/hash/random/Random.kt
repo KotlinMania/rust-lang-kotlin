@@ -4,7 +4,6 @@ package io.github.kotlinmania.rustlang.std.hash.random
 import io.github.kotlinmania.rustlang.core.cell.Cell
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.std.fmt
 import io.github.kotlinmania.rustlang.std.hash.BuildHasher
 import io.github.kotlinmania.rustlang.std.hash.SipHasher13
 import io.github.kotlinmania.rustlang.std.sys.random.hashmapRandomKeys
@@ -64,6 +63,8 @@ public open class RandomState(
     public var k0: ULong,
     public var k1: ULong,
 ) : BuildHasher {
+    public open fun clone(): RandomState = RandomState(k0, k1)
+
     public open fun buildHasher(): DefaultHasher = DefaultHasher(SipHasher13.newWithKeys(this.k0, this.k1))
 
     public open fun fmt(f: StringBuilder) {
@@ -71,27 +72,27 @@ public open class RandomState(
     }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<RandomState> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<RandomState> {
+        public fun typeLayout(): TypeLayout<RandomState> =
+            object : TypeLayout<RandomState> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): RandomState =
                     RandomState(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).readNative(addr + 8L),
+                        (PrimitiveLayouts.U64).readNative(addr),
+                        (PrimitiveLayouts.U64).readNative(addr + 8L),
                     )
                 override fun writeNative(addr: Long, value: RandomState) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).writeNative(addr, value.k0)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).writeNative(addr + 8L, value.k1)
+                    (PrimitiveLayouts.U64).writeNative(addr, value.k0)
+                    (PrimitiveLayouts.U64).writeNative(addr + 8L, value.k1)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): RandomState =
                     RandomState(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).readBytes(buf, offset + 8),
+                        (PrimitiveLayouts.U64).readBytes(buf, offset),
+                        (PrimitiveLayouts.U64).readBytes(buf, offset + 8),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: RandomState) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).writeBytes(buf, offset, value.k0)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).writeBytes(buf, offset + 8, value.k1)
+                    (PrimitiveLayouts.U64).writeBytes(buf, offset, value.k0)
+                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 8, value.k1)
                 }
             }
 
@@ -138,6 +139,8 @@ public open class DefaultHasher(
         set(v) {
             value = v
         }
+
+    public open fun clone(): DefaultHasher = DefaultHasher(value)
 
     // The underlying `SipHasher13` doesn't override the other
     // `write_ *` methods, so it's ok not to forward them here.

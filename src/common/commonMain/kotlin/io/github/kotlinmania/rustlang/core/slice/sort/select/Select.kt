@@ -1,7 +1,6 @@
 // port-lint: source slice/sort/select.rs
 package io.github.kotlinmania.rustlang.core.slice.sort.select
 
-import io.github.kotlinmania.rustlang.core.cfgSelect
 import io.github.kotlinmania.rustlang.core.num.rustSaturatingMul
 import io.github.kotlinmania.rustlang.core.slice.sort.shared.pivot.choosePivot
 import io.github.kotlinmania.rustlang.core.slice.sort.shared.smallsort.insertionSortShiftLeft
@@ -37,7 +36,7 @@ internal fun <T> partitionAtIndex(v: MutableList<T>, index: Int, isLess: (T, T) 
         val minIdx = minIndex(v, isLess).unwrap()
         v.swap(minIdx, index)
     } else {
-        cfgSelect(feature, "optimize_for_size", medianOfMedians, v, isLess, index, partitionAtIndexLoop, v, index, None, isLess)
+        medianOfMedians(v, isLess, index)
     }
     val (left, right) = v.splitAtMut(index)
     val (pivot, right1) = right.splitAtMut(1)
@@ -226,10 +225,10 @@ public fun <T> ninther(v: MutableList<T>, isLess: (T, T) -> Boolean, a: Int, b: 
     b1 = medianIdx(v, isLess, a, b1, c)
     h1 = medianIdx(v, isLess, g, h1, i)
     if (isLess(v[h1], v[b1])) {
-        mem.swap(b1, h1)
+        swap(b1, h1)
     }
     if (isLess(v[f], v[d1])) {
-        mem.swap(d1, f)
+        swap(d1, f)
     }
     if (isLess(v[e], v[d1])) {
         // do nothing
@@ -257,7 +256,7 @@ public fun <T> ninther(v: MutableList<T>, isLess: (T, T) -> Boolean, a: Int, b: 
  */
 public fun <T> medianIdx(v: List<T>, isLess: (T, T) -> Boolean, a: Int, b: Int, c: Int): Int {
     if (isLess(v[c], v[a])) {
-        mem.swap(a, c)
+        swap(a, c)
     }
     if (isLess(v[c], v[b])) {
         return c

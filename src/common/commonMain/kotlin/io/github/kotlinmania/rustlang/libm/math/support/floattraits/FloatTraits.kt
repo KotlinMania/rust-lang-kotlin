@@ -10,6 +10,14 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.rustIsSignNegative
 import io.github.kotlinmania.rustlang.core.num.rustLeadingZeros
+import io.github.kotlinmania.rustlang.core.ops.Add
+import io.github.kotlinmania.rustlang.core.ops.AddAssign
+import io.github.kotlinmania.rustlang.core.ops.Div
+import io.github.kotlinmania.rustlang.core.ops.Mul
+import io.github.kotlinmania.rustlang.core.ops.MulAssign
+import io.github.kotlinmania.rustlang.core.ops.Neg
+import io.github.kotlinmania.rustlang.core.ops.Rem
+import io.github.kotlinmania.rustlang.core.ops.Sub
 import io.github.kotlinmania.rustlang.libm.math.arch.aarch64.fma.fmaf
 import io.github.kotlinmania.rustlang.libm.math.floor.floorf
 import io.github.kotlinmania.rustlang.libm.math.floor.floorf128
@@ -44,7 +52,7 @@ public val MIPS_NAN: Boolean = false || false || false || false
 /**
  * Trait for some basic operations on floats
  */
-public interface Float<T, Int, SignedInt> : DisplayHex, ops.AddAssign, ops.MulAssign, ops.Add<T>, ops.Sub<T>, ops.Mul<T>, ops.Div<T>, ops.Rem<T>, ops.Neg<T> {
+public interface Float<T, Int, SignedInt> : DisplayHex, AddAssign<T>, MulAssign<T>, Add<T, T>, Sub<T, T>, Mul<T, T>, Div<T, T>, Rem<T, T>, Neg<T> {
     public val ZERO: T
 
     public val NEG_ZERO: T

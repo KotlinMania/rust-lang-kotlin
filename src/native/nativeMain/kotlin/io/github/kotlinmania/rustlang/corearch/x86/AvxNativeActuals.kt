@@ -1,4 +1,4 @@
-@file:OptIn(kotlinx.cinterop.ExperimentalForeignApi::class, kotlin.ExperimentalUnsignedTypes::class)
+@file:OptIn(ExperimentalForeignApi::class, ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.corearch.x86
 
@@ -10,6 +10,7 @@ import io.github.kotlinmania.rustlang.corearch.simd.I64x4
 import io.github.kotlinmania.rustlang.corearch.simd.I8x32
 import io.github.kotlinmania.rustlang.corearch.x86.cinterop.corearchX86AvxVzeroall
 import io.github.kotlinmania.rustlang.corearch.x86.cinterop.corearchX86AvxVzeroupper
+import kotlinx.cinterop.ExperimentalForeignApi
 
 public actual fun roundpd256(a: M256d, b: Int): M256d =
     M256d()

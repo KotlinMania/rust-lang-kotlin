@@ -13,8 +13,6 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
 import io.github.kotlinmania.rustlang.corearch.arch.asm
 import io.github.kotlinmania.rustlang.corearch.intrinsics.sqrt
-import io.github.kotlinmania.rustlang.corearch.mem
-import io.github.kotlinmania.rustlang.corearch.ptr
 import io.github.kotlinmania.rustlang.corearch.simd.I32x4
 import io.github.kotlinmania.rustlang.corearch.simdExtract
 import io.github.kotlinmania.rustlang.corearch.simdInsert
@@ -183,9 +181,9 @@ public fun mmMaxPs(a: M128, b: M128): M128 {
  */
 public fun mmAndPs(a: M128, b: M128): M128 =
     run {
-        val a1: M128i = mem.transmute(a)
-        val b1: M128i = mem.transmute(b)
-        mem.transmute(simdAnd(a1, b1))
+        val a1: M128i = transmute(a)
+        val b1: M128i = transmute(b)
+        transmute(simdAnd(a1, b1))
     }
 
 // i586 only seems to generate plain `not` and `and` instructions, so ignore
@@ -201,10 +199,10 @@ public fun mmAndPs(a: M128, b: M128): M128 =
  */
 public fun mmAndnotPs(a: M128, b: M128): M128 =
     run {
-        val a1: M128i = mem.transmute(a)
-        val b1: M128i = mem.transmute(b)
-        val mask: M128i = mem.transmute(i32x4.splat(-1))
-        mem.transmute(simdAnd(simdXor(mask, a1), b1))
+        val a1: M128i = transmute(a)
+        val b1: M128i = transmute(b)
+        val mask: M128i = transmute(i32x4.splat(-1))
+        transmute(simdAnd(simdXor(mask, a1), b1))
     }
 
 // i586 only seems to generate plain `or` instructions, so we ignore it.
@@ -216,9 +214,9 @@ public fun mmAndnotPs(a: M128, b: M128): M128 =
  */
 public fun mmOrPs(a: M128, b: M128): M128 =
     run {
-        val a1: M128i = mem.transmute(a)
-        val b1: M128i = mem.transmute(b)
-        mem.transmute(simdOr(a1, b1))
+        val a1: M128i = transmute(a)
+        val b1: M128i = transmute(b)
+        transmute(simdOr(a1, b1))
     }
 
 // i586 only seems to generate plain `xor` instructions, so we ignore it.
@@ -231,9 +229,9 @@ public fun mmOrPs(a: M128, b: M128): M128 =
  */
 public fun mmXorPs(a: M128, b: M128): M128 =
     run {
-        val a1: M128i = mem.transmute(a)
-        val b1: M128i = mem.transmute(b)
-        mem.transmute(simdXor(a1, b1))
+        val a1: M128i = transmute(a)
+        val b1: M128i = transmute(b)
+        transmute(simdXor(a1, b1))
     }
 
 /**
@@ -863,7 +861,7 @@ public fun mmLoaduPs(p: ConstPtr): M128 {
     // Note: Using `* p` would require `Float` alignment, but `movups` has no
     // alignment restrictions.
     val dst = mmUndefinedPs()
-    ptr.copyNonoverlapping(ConstPtr(p.rawAddress, p.rawMeta), mutPtrFromRustCast(addrOfMut(dst)), mem.sizeOf<M128>(typeLayoutT = ObjectSlotLayout<M128>()), typeLayoutT = PrimitiveLayouts.U8)
+    copyNonoverlapping(ConstPtr(p.rawAddress, p.rawMeta), mutPtrFromRustCast(addrOfMut(dst)), sizeOf<M128>(typeLayoutT = ObjectSlotLayout<M128>()), typeLayoutT = PrimitiveLayouts.U8)
     return dst
 }
 
@@ -968,7 +966,7 @@ public fun mmStorePs(p: MutPtr, a: M128) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_storeu_ps)
  */
 public fun mmStoreuPs(p: MutPtr, a: M128) {
-    ptr.copyNonoverlapping(constPtrFromRustCast(addrOf(a)), MutPtr(p.rawAddress, p.rawMeta), mem.sizeOf<M128>(typeLayoutT = ObjectSlotLayout<M128>()), typeLayoutT = PrimitiveLayouts.U8)
+    copyNonoverlapping(constPtrFromRustCast(addrOf(a)), MutPtr(p.rawAddress, p.rawMeta), sizeOf<M128>(typeLayoutT = ObjectSlotLayout<M128>()), typeLayoutT = PrimitiveLayouts.U8)
 }
 
 /**
@@ -1164,11 +1162,10 @@ public fun mmGetcsr(): UInt =
  * `_MM_GET_EXCEPTION_STATE` and `_MM_SET_EXCEPTION_STATE`. For example, to
  * check if an operation caused some overflow:
  *
- * ```kotlin
- * mmSetExceptionState(0)
- * // clear all exception flags
- * // perform calculations
- * if (mmGetExceptionState() and MM_EXCEPT_OVERFLOW != 0) {
+ * ```rust,ignore
+ * _MM_SET_EXCEPTION_STATE(0); // clear all exception flags
+ *                             // perform calculations
+ * if _MM_GET_EXCEPTION_STATE() & _MM_EXCEPT_OVERFLOW != 0 {
  *     // handle overflow
  * }
  * ```
@@ -1181,17 +1178,16 @@ public fun mmGetcsr(): UInt =
  *
  * A single masking bit can be set via
  *
- * ```kotlin
- * mmSetExceptionMask(MM_MASK_UNDERFLOW)
+ * ```rust,ignore
+ * _MM_SET_EXCEPTION_MASK(_MM_MASK_UNDERFLOW);
  * ```
  *
  * However, since mask bits are by default all set to 1, it is more common to
  * want to *disable* certain bits. For example, to unmask the underflow
  * exception, use:
  *
- * ```kotlin
- * mmSetcsr(mmGetcsr() and MM_MASK_UNDERFLOW.inv())
- * // unmask underflow
+ * ```rust,ignore
+ * _mm_setcsr(_mm_getcsr() & !_MM_MASK_UNDERFLOW); // unmask underflow
  * exception
  * ```
  *
@@ -1221,8 +1217,8 @@ public fun mmGetcsr(): UInt =
  *
  * Example:
  *
- * ```kotlin
- * mmSetRoundingMode(MM_ROUND_DOWN)
+ * ```rust,ignore
+ * _MM_SET_ROUNDING_MODE(_MM_ROUND_DOWN)
  * ```
  *
  * ## Denormals-are-zero/Flush-to-zero Mode
@@ -1233,11 +1229,9 @@ public fun mmGetcsr(): UInt =
  * You can read and enable/disable this mode via the helper functions
  * `_MM_GET_FLUSH_ZERO_MODE()` and `_MM_SET_FLUSH_ZERO_MODE()`:
  *
- * ```kotlin
- * mmSetFlushZeroMode(MM_FLUSH_ZERO_OFF)
- * // turn off (default)
- * mmSetFlushZeroMode(MM_FLUSH_ZERO_ON)
- * // turn on
+ * ```rust,ignore
+ * _MM_SET_FLUSH_ZERO_MODE(_MM_FLUSH_ZERO_OFF); // turn off (default)
+ * _MM_SET_FLUSH_ZERO_MODE(_MM_FLUSH_ZERO_ON); // turn on
  * ```
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_setcsr)

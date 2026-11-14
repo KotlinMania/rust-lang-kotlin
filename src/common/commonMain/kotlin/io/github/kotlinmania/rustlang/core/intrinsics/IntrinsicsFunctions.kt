@@ -579,7 +579,7 @@ public fun contractCheckRequires(cond: () -> Boolean) {
             }
         }
         fun compiletime(cond1: () -> Boolean) {}
-        constEvalSelect(cond, compiletime, runtime)
+        constEvalSelect(cond, ::compiletime, ::runtime)
     }
 }
 
@@ -608,7 +608,7 @@ public fun <Ret> contractCheckEnsures(cond: (Ret) -> Boolean?, ret: Ret): Ret =
                 ret1
             }
         fun <Ret> compiletime(cond1: (Ret) -> Boolean?, ret1: Ret): Ret = ret1
-        constEvalSelect(Pair(cond, ret), compiletime, runtime)
+        constEvalSelect(Pair(cond, ret), ::compiletime, ::runtime)
     }
 
 /**

@@ -176,7 +176,7 @@ public open class BufWriter<W : Write>(
      */
     public open fun intoParts(): Pair<W, Result<List<UByte>, WriterPanicked>> {
         val thisRef = this
-        val buf = mem.take(thisRef.buf)
+        val buf = take(thisRef.buf)
         val buf1 =
             if (!thisRef.panicked) {
                 Result.Ok(buf)

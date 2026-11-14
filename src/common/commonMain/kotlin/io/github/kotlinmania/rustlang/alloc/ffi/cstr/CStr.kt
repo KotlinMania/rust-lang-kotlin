@@ -86,18 +86,22 @@ public typealias Owned = CString
  *
  * # Examples
  *
- * ```kotlin
- * import io.github.kotlinmania.rustlang.alloc.ffi.CString
- * import io.github.kotlinmania.rustlang.core.ffi.CChar
- * import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
+ * ```ignore (extern-declaration)
+ * # fn main() {
+ * use std.ffi.CString;
+ * use std.os.raw.cChar;
  *
- * fun myPrinter(s: ConstPtr) {}
+ * extern "C" {
+ *     fn myPrinter(s: *const cChar);
+ * }
+ *
  * // We are certain that our string doesn't have 0 bytes in the middle,
  * // so we can .expect()
- * val cToPrint = CString.new("Hello, world!").expect("we provided a string without NUL bytes, so CString.new should not fail")
- * run {
- *     myPrinter(cToPrint.asPtr())
+ * let cToPrint = CString.new("Hello, world!").expect("we provided a string without NUL bytes, so CString.new should not fail");
+ * unchecked {
+ *     myPrinter(cToPrint.asPtr());
  * }
+ * # }
  * ```
  *
  * # Safety
@@ -117,6 +121,8 @@ public open class CString(
     // Improper usage of unchecked function can break Invariant 2, but not Invariant 1.
     public var inner: List<UByte>,
 ) : Borrow<CStr>, FromStr, AsRef<CStr> {
+    public open fun clone(): CString = CString(inner)
+
     /**
      * Consumes the `CString` and transfers ownership of the string to a C caller.
      *
@@ -299,7 +305,7 @@ public open class CString(
      * Bypass "move out of struct which implements [Drop] trait" restriction.
      */
     public open fun intoInner(): List<UByte> {
-        val thisRef = mem.ManuallyDrop.new(this)
+        val thisRef = this
         // SAFETY: `mem.forget(self)` invalidates the previous call to `ptr.read(self.inner)`
         // so we use `ManuallyDrop` to ensure `self` is not dropped.
         // Then we can return the box directly without invalidating it.
@@ -341,7 +347,7 @@ public open class CString(
 
     public open fun neCowCStr(other: CStr): Boolean = this != other
 
-    public open fun index(index: ops.RangeFull): CStr = this
+    public open fun index(index: RangeFull): CStr = this
 
     public open fun asRef(): CStr = this
 
@@ -357,15 +363,15 @@ public open class CString(
          *
          * # Examples
          *
-         * ```kotlin
-         * import io.github.kotlinmania.rustlang.alloc.ffi.CString
-         * import io.github.kotlinmania.rustlang.core.ffi.CChar
-         * import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
+         * ```ignore (extern-declaration)
+         * use std.ffi.CString;
+         * use std.os.raw.cChar;
          *
-         * fun puts(s: ConstPtr) {}
-         * val toPrint = CString.new("Hello!").expect("we provided a string without NUL bytes, so CString.new should not fail")
-         * run {
-         *     puts(toPrint.asPtr())
+         * extern "C" { fn puts(s: *const cChar); }
+         *
+         * let toPrint = CString.new("Hello!").expect("we provided a string without NUL bytes, so CString.new should not fail");
+         * unchecked {
+         *     puts(toPrint.asPtr());
          * }
          * ```
          *
@@ -400,7 +406,7 @@ public open class CString(
                 val capacity = rustCheckedAdd(bytes.size, 1)!!
                 // Allocate before validation to avoid duplication of allocation code.
                 // We still need to allocate and copy memory even if we get an error.
-                val buffer = ArrayList(capacity)
+                val buffer = ArrayList<UByte>(capacity)
                 buffer.extend(bytes)
                 // Check memory of self instead of new buffer.
                 // This allows better optimizations if lto enabled.
@@ -484,17 +490,19 @@ public open class CString(
          * Creates a `CString`, pass ownership to an `extern` function (via raw pointer), then retake
          * ownership with `fromRaw`:
          *
-         * ```kotlin
-         * import io.github.kotlinmania.rustlang.alloc.ffi.CString
-         * import io.github.kotlinmania.rustlang.core.ffi.CChar
-         * import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+         * ```ignore (extern-declaration)
+         * use std.ffi.CString;
+         * use std.os.raw.cChar;
          *
-         * fun someExternFunction(s: MutPtr) {}
-         * val cString = CString.from("Hello!")
-         * val raw = cString.intoRaw()
-         * run {
-         *     someExternFunction(raw)
-         *     val cString1 = CString.fromRaw(raw)
+         * extern "C" {
+         *     fn someExternFunction(s: *mut cChar);
+         * }
+         *
+         * let cString = CString.from(c"Hello!");
+         * let raw = cString.intoRaw();
+         * unchecked {
+         *     someExternFunction(raw);
+         *     let cString = CString.fromRaw(raw);
          * }
          * ```
          */
@@ -534,7 +542,7 @@ public open class CString(
          * ```
          */
         public fun fromVecWithNulUnchecked(v: List<UByte>): CString {
-            check(memchr(0, v).unwrap() + 1 == v.size)
+            check(memchr(0, v)!! + 1 == v.size)
             // SAFETY: Upheld by caller.
             return CString.fromVecWithNulUnchecked(v)
         }
@@ -668,6 +676,8 @@ public open class NulError(
     public var field0: Int,
     public var field1: List<UByte>,
 ) {
+    public open fun clone(): NulError = NulError(field0, field1)
+
     /**
      * Returns the position of the nul byte in the slice that caused
      * [CString.new] to fail.
@@ -734,6 +744,8 @@ public open class FromVecWithNulError(
     public var errorKind: FromBytesWithNulErrorKind,
     public var bytes: List<UByte>,
 ) {
+    public open fun clone(): FromVecWithNulError = FromVecWithNulError(errorKind, bytes)
+
     /**
      * Returns a slice of [u8]s bytes that were attempted to convert to a [CString].
      *
@@ -801,6 +813,8 @@ public open class IntoStringError(
     public var inner: CString,
     public var error: Utf8Error,
 ) {
+    public open fun clone(): IntoStringError = IntoStringError(inner, error)
+
     /**
      * Consumes this error, returning original [CString] which generated the
      * error.
@@ -915,7 +929,7 @@ public fun CStr.cloneInto(target: CString) {
     } else {
         // Reuse the existing allocation's capacity by converting to a Vec.
         // We temporarily replace `target` with a valid dummy to remain panic-safe.
-        val b = mem.replace(target.inner, listOf(0)).intoVec()
+        val b = replace(target.inner, listOf(0)).intoVec()
         this.toBytesWithNul().cloneInto(b)
         target.inner = b.intoBoxedSlice()
     }

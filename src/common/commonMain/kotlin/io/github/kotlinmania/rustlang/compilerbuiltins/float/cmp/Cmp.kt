@@ -102,7 +102,7 @@ public fun lehf2(a: F16, b: F16): CmpResult = cmp(a, b).toDefaultCmpResult()
 
 public fun gehf2(a: F16, b: F16): CmpResult = cmp(a, b).toGtGeCmpResult()
 
-public fun unordhf2(a: F16, b: F16): CmpResult = ((unord(a, b) as Any?) as CmpResult)
+public fun unordhf2(a: F16, b: F16): CmpResult = unord(a, b).toInt()
 
 public fun eqhf2(a: F16, b: F16): CmpResult = cmp(a, b).toDefaultCmpResult()
 
@@ -116,7 +116,7 @@ public fun lesf2(a: Float, b: Float): CmpResult = cmp(a, b).toDefaultCmpResult()
 
 public fun gesf2(a: Float, b: Float): CmpResult = cmp(a, b).toGtGeCmpResult()
 
-public fun unordsf2(a: Float, b: Float): CmpResult = ((unord(a, b) as Any?) as CmpResult)
+public fun unordsf2(a: Float, b: Float): CmpResult = unord(a, b).toInt()
 
 public fun eqsf2(a: Float, b: Float): CmpResult = cmp(a, b).toDefaultCmpResult()
 
@@ -130,7 +130,7 @@ public fun ledf2(a: Double, b: Double): CmpResult = cmp(a, b).toDefaultCmpResult
 
 public fun gedf2(a: Double, b: Double): CmpResult = cmp(a, b).toGtGeCmpResult()
 
-public fun unorddf2(a: Double, b: Double): CmpResult = ((unord(a, b) as Any?) as CmpResult)
+public fun unorddf2(a: Double, b: Double): CmpResult = unord(a, b).toInt()
 
 public fun eqdf2(a: Double, b: Double): CmpResult = cmp(a, b).toDefaultCmpResult()
 
@@ -148,9 +148,9 @@ public fun getf2(a: F128, b: F128): CmpResult = cmp(a, b).toGtGeCmpResult()
 
 public fun gekf2(a: F128, b: F128): CmpResult = cmp(a, b).toGtGeCmpResult()
 
-public fun unordtf2(a: F128, b: F128): CmpResult = ((unord(a, b) as Any?) as CmpResult)
+public fun unordtf2(a: F128, b: F128): CmpResult = unord(a, b).toInt()
 
-public fun unordkf2(a: F128, b: F128): CmpResult = ((unord(a, b) as Any?) as CmpResult)
+public fun unordkf2(a: F128, b: F128): CmpResult = unord(a, b).toInt()
 
 public fun eqtf2(a: F128, b: F128): CmpResult = cmp(a, b).toDefaultCmpResult()
 

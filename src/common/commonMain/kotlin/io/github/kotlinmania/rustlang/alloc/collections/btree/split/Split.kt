@@ -61,7 +61,7 @@ internal fun <K, V, Q, A : AllocatorClone> Root<K, V>.splitOff(key: Q, alloc: A)
     // A panic from a later `searchNode` comparison would unwind out of
     // that state and double-free the shared values (#158165), so abort
     // instead of exposing it.
-    val guard = mem.DropGuard.new({ intrinsics.abortImmediate() })
+    val guard = DropGuard.new({ abortImmediate() })
     while (true) {
         splitEdge.moveSuffix(rightNode)
         run {
@@ -90,7 +90,7 @@ internal fun <K, V, Q, A : AllocatorClone> Root<K, V>.splitOff(key: Q, alloc: A)
     }
     leftRoot.fixRightBorder(alloc.clone())
     rightRoot.fixLeftBorder(alloc)
-    mem.DropGuard.dismiss(guard)
+    DropGuard.dismiss(guard)
     return rightRoot
 }
 

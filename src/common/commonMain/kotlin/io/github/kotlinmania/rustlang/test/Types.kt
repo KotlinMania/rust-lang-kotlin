@@ -318,24 +318,26 @@ public open class TestId(
             value = v
         }
 
+    public open fun clone(): TestId = TestId(value)
+
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<TestId> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<TestId> {
+        public fun typeLayout(): TypeLayout<TestId> =
+            object : TypeLayout<TestId> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 8L
                 override fun readNative(addr: Long): TestId =
                     TestId(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readNative(addr),
+                        (PrimitiveLayouts.USIZE64).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: TestId) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeNative(addr, value.value)
+                    (PrimitiveLayouts.USIZE64).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): TestId =
                     TestId(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readBytes(buf, offset),
+                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: TestId) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeBytes(buf, offset, value.value)
+                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset, value.value)
                 }
             }
     }
@@ -357,6 +359,8 @@ public open class TestDesc(
     public var noRun: Boolean,
     public var testType: TestType,
 ) {
+    public open fun clone(): TestDesc = TestDesc(name, ignore, ignoreMessage, sourceFile, startLine, startCol, endLine, endCol, shouldPanic, compileFail, noRun, testType)
+
     public open fun paddedName(columnCount: Int, align: NamePadding): String {
         var name = this.name.asSlice()
         val fill = rustSaturatingSub(columnCount, name.length)
@@ -401,6 +405,8 @@ public open class TestDescAndFn(
     public var desc: TestDesc,
     public var testfn: TestFn,
 ) {
+    public open fun clone(): TestDescAndFn = TestDescAndFn(desc, testfn)
+
     public companion object {
         public fun newDoctest(testName: String, ignore: Boolean, sourceFile: String, startLine: Int, noRun: Boolean, shouldPanic: Boolean, testfn: TestFn): TestDescAndFn =
             TestDescAndFn(desc = TestDesc(name = StaticTestName(testName), ignore = ignore, ignoreMessage = null, sourceFile = sourceFile, startLine = startLine, startCol = 0, endLine = 0, endCol = 0, compileFail = false, noRun = noRun, shouldPanic = if (shouldPanic) {

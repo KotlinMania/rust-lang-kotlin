@@ -4,12 +4,11 @@ package io.github.kotlinmania.rustlang.std.net.udp
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.net.ipaddr.Ipv4Addr
 import io.github.kotlinmania.rustlang.core.net.ipaddr.Ipv6Addr
+import io.github.kotlinmania.rustlang.core.net.socketaddr.SocketAddr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.time.Duration
-import io.github.kotlinmania.rustlang.std.fmt
+import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.net.socketaddr.ToSocketAddrs
-import io.github.kotlinmania.rustlang.std.os.unix.net.SocketAddr
-import io.github.kotlinmania.rustlang.std.os.xous.ffi.definitions.Error
 import io.github.kotlinmania.rustlang.std.sys.AsInner
 import io.github.kotlinmania.rustlang.std.sys.FromInner
 import io.github.kotlinmania.rustlang.std.sys.IntoInner
@@ -91,7 +90,7 @@ public open class UdpSocket(
      * val filledBuf = buf.subList(0, numberOfBytes)
      * ```
      */
-    public open fun recvFrom(buf: MutableList<UByte>): Result<Pair<Int, SocketAddr>> = this.value.recvFrom(buf)
+    public open fun recvFrom(buf: MutableList<UByte>): Result<Pair<Int, SocketAddr>, Error> = this.value.recvFrom(buf)
 
     /**
      * Receives a single datagram message on the socket, without removing it from the
@@ -118,7 +117,7 @@ public open class UdpSocket(
      * val filledBuf = buf.subList(0, numberOfBytes)
      * ```
      */
-    public open fun peekFrom(buf: MutableList<UByte>): Result<Pair<Int, SocketAddr>> = this.value.peekFrom(buf)
+    public open fun peekFrom(buf: MutableList<UByte>): Result<Pair<Int, SocketAddr>, Error> = this.value.peekFrom(buf)
 
     /**
      * Sends data on the socket to the given address. On success, returns the
@@ -148,7 +147,7 @@ public open class UdpSocket(
      *
      * [Issue #34202]: https://github.com/rust-lang/rust/issues/34202
      */
-    public open fun <Iter, A : ToSocketAddrs<Any?>> sendTo(buf: List<UByte>, addr: A): Result<Int> {
+    public open fun <Iter, A : ToSocketAddrs<Any?>> sendTo(buf: List<UByte>, addr: A): Result<Int, Error> {
         return when (val matchVal = when (val tryResult = addr.toSocketAddrs()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }.next()) {
             null -> Result.Err(io.constError(ErrorKind.InvalidInput, "no addresses to send data to"))
             else -> {
@@ -185,7 +184,7 @@ public open class UdpSocket(
      * check(socket.peerAddr().unwrapErr().kind() == ErrorKind.NotConnected)
      * ```
      */
-    public open fun peerAddr(): Result<SocketAddr> = this.value.peerAddr()
+    public open fun peerAddr(): Result<SocketAddr, Error> = this.value.peerAddr()
 
     /**
      * Returns the socket address that this socket was created from.
@@ -202,7 +201,7 @@ public open class UdpSocket(
      * check(socket.localAddr().unwrap() == SocketAddr.v4(SocketAddrV4.new(Ipv4Addr.new(127, 0, 0, 1), 34254)))
      * ```
      */
-    public open fun localAddr(): Result<SocketAddr> = this.value.socketAddr()
+    public open fun localAddr(): Result<SocketAddr, Error> = this.value.socketAddr()
 
     /**
      * Creates a new independently owned handle to the underlying socket.
@@ -220,7 +219,7 @@ public open class UdpSocket(
      * val socketClone = socket.tryClone().expect("tryClone should succeed")
      * ```
      */
-    public open fun tryClone(): Result<UdpSocket> = this.value.duplicate().map({ UdpSocket(it) })
+    public open fun tryClone(): Result<UdpSocket, Error> = this.value.duplicate().map({ UdpSocket(it) })
 
     /**
      * Sets the read timeout to the timeout specified.
@@ -252,6 +251,7 @@ public open class UdpSocket(
      * method:
      *
      * ```kotlin
+     * import std.io
      * import std.net.UdpSocket
      * import std.time.Duration
      *
@@ -261,7 +261,7 @@ public open class UdpSocket(
      * check(err.kind() == io.ErrorKind.InvalidInput)
      * ```
      */
-    public open fun setReadTimeout(dur: Duration?): Result<Unit> = this.value.setReadTimeout(dur)
+    public open fun setReadTimeout(dur: Duration?): Result<Unit, Error> = this.value.setReadTimeout(dur)
 
     /**
      * Sets the write timeout to the timeout specified.
@@ -293,6 +293,7 @@ public open class UdpSocket(
      * method:
      *
      * ```kotlin
+     * import std.io
      * import std.net.UdpSocket
      * import std.time.Duration
      *
@@ -302,7 +303,7 @@ public open class UdpSocket(
      * check(err.kind() == io.ErrorKind.InvalidInput)
      * ```
      */
-    public open fun setWriteTimeout(dur: Duration?): Result<Unit> = this.value.setWriteTimeout(dur)
+    public open fun setWriteTimeout(dur: Duration?): Result<Unit, Error> = this.value.setWriteTimeout(dur)
 
     /**
      * Returns the read timeout of this socket.
@@ -321,7 +322,7 @@ public open class UdpSocket(
      * check(socket.readTimeout().unwrap() == null)
      * ```
      */
-    public open fun readTimeout(): Result<Duration?> = this.value.readTimeout()
+    public open fun readTimeout(): Result<Duration?, Error> = this.value.readTimeout()
 
     /**
      * Returns the write timeout of this socket.
@@ -340,7 +341,7 @@ public open class UdpSocket(
      * check(socket.writeTimeout().unwrap() == null)
      * ```
      */
-    public open fun writeTimeout(): Result<Duration?> = this.value.writeTimeout()
+    public open fun writeTimeout(): Result<Duration?, Error> = this.value.writeTimeout()
 
     /**
      * Sets the value of the `SO_BROADCAST` option for this socket.
@@ -357,7 +358,7 @@ public open class UdpSocket(
      * socket.setBroadcast(false).expect("setBroadcast should succeed")
      * ```
      */
-    public open fun setBroadcast(broadcast: Boolean): Result<Unit> = this.value.setBroadcast(broadcast)
+    public open fun setBroadcast(broadcast: Boolean): Result<Unit, Error> = this.value.setBroadcast(broadcast)
 
     /**
      * Gets the value of the `SO_BROADCAST` option for this socket.
@@ -374,7 +375,7 @@ public open class UdpSocket(
      * check(socket.broadcast().unwrap() == false)
      * ```
      */
-    public open fun broadcast(): Result<Boolean> = this.value.broadcast()
+    public open fun broadcast(): Result<Boolean, Error> = this.value.broadcast()
 
     /**
      * Sets the value of the `IP_MULTICAST_LOOP` option for this socket.
@@ -391,7 +392,7 @@ public open class UdpSocket(
      * socket.setMulticastLoopV4(false).expect("setMulticastLoopV4 should succeed")
      * ```
      */
-    public open fun setMulticastLoopV4(multicastLoopV4: Boolean): Result<Unit> = this.value.setMulticastLoopV4(multicastLoopV4)
+    public open fun setMulticastLoopV4(multicastLoopV4: Boolean): Result<Unit, Error> = this.value.setMulticastLoopV4(multicastLoopV4)
 
     /**
      * Gets the value of the `IP_MULTICAST_LOOP` option for this socket.
@@ -408,7 +409,7 @@ public open class UdpSocket(
      * check(socket.multicastLoopV4().unwrap() == false)
      * ```
      */
-    public open fun multicastLoopV4(): Result<Boolean> = this.value.multicastLoopV4()
+    public open fun multicastLoopV4(): Result<Boolean, Error> = this.value.multicastLoopV4()
 
     /**
      * Sets the value of the `IP_MULTICAST_TTL` option for this socket.
@@ -431,7 +432,7 @@ public open class UdpSocket(
      * socket.setMulticastTtlV4(42).expect("setMulticastTtlV4 should succeed")
      * ```
      */
-    public open fun setMulticastTtlV4(multicastTtlV4: UInt): Result<Unit> = this.value.setMulticastTtlV4(multicastTtlV4)
+    public open fun setMulticastTtlV4(multicastTtlV4: UInt): Result<Unit, Error> = this.value.setMulticastTtlV4(multicastTtlV4)
 
     /**
      * Gets the value of the `IP_MULTICAST_TTL` option for this socket.
@@ -448,7 +449,7 @@ public open class UdpSocket(
      * check(socket.multicastTtlV4().unwrap() == 42)
      * ```
      */
-    public open fun multicastTtlV4(): Result<UInt> = this.value.multicastTtlV4()
+    public open fun multicastTtlV4(): Result<UInt, Error> = this.value.multicastTtlV4()
 
     /**
      * Sets the value of the `IPV6_MULTICAST_LOOP` option for this socket.
@@ -465,7 +466,7 @@ public open class UdpSocket(
      * socket.setMulticastLoopV6(false).expect("setMulticastLoopV6 should succeed")
      * ```
      */
-    public open fun setMulticastLoopV6(multicastLoopV6: Boolean): Result<Unit> = this.value.setMulticastLoopV6(multicastLoopV6)
+    public open fun setMulticastLoopV6(multicastLoopV6: Boolean): Result<Unit, Error> = this.value.setMulticastLoopV6(multicastLoopV6)
 
     /**
      * Gets the value of the `IPV6_MULTICAST_LOOP` option for this socket.
@@ -482,7 +483,7 @@ public open class UdpSocket(
      * check(socket.multicastLoopV6().unwrap() == false)
      * ```
      */
-    public open fun multicastLoopV6(): Result<Boolean> = this.value.multicastLoopV6()
+    public open fun multicastLoopV6(): Result<Boolean, Error> = this.value.multicastLoopV6()
 
     /**
      * Sets the value for the `IP_TTL` option on this socket.
@@ -499,7 +500,7 @@ public open class UdpSocket(
      * socket.setTtl(42).expect("setTtl should succeed")
      * ```
      */
-    public open fun setTtl(ttl: UInt): Result<Unit> = this.value.setTtl(ttl)
+    public open fun setTtl(ttl: UInt): Result<Unit, Error> = this.value.setTtl(ttl)
 
     /**
      * Gets the value of the `IP_TTL` option for this socket.
@@ -516,7 +517,7 @@ public open class UdpSocket(
      * check(socket.ttl().unwrap() == 42)
      * ```
      */
-    public open fun ttl(): Result<UInt> = this.value.ttl()
+    public open fun ttl(): Result<UInt, Error> = this.value.ttl()
 
     /**
      * Sets the value for the `IPV6_UNICAST_HOPS` option on this socket.
@@ -536,7 +537,7 @@ public open class UdpSocket(
      * }
      * ```
      */
-    public open fun setHopLimitV6(limit: UByte): Result<Unit> = this.value.setHopLimitV6(limit)
+    public open fun setHopLimitV6(limit: UByte): Result<Unit, Error> = this.value.setHopLimitV6(limit)
 
     /**
      * Gets the value of the `IPV6_UNICAST_HOPS` option on this socket.
@@ -556,7 +557,7 @@ public open class UdpSocket(
      * }
      * ```
      */
-    public open fun hopLimitV6(): Result<UByte> = this.value.hopLimitV6()
+    public open fun hopLimitV6(): Result<UByte, Error> = this.value.hopLimitV6()
 
     /**
      * Sets the value for the `IPV6_MULTICAST_HOPS` option on this socket.
@@ -576,7 +577,7 @@ public open class UdpSocket(
      * }
      * ```
      */
-    public open fun setMulticastHopLimitV6(limit: UByte): Result<Unit> = this.value.setMulticastHopLimitV6(limit)
+    public open fun setMulticastHopLimitV6(limit: UByte): Result<Unit, Error> = this.value.setMulticastHopLimitV6(limit)
 
     /**
      * Gets the value of the `IPV6_MULTICAST_HOPS` option on this socket.
@@ -596,7 +597,7 @@ public open class UdpSocket(
      * }
      * ```
      */
-    public open fun multicastHopLimitV6(): Result<UByte> = this.value.multicastHopLimitV6()
+    public open fun multicastHopLimitV6(): Result<UByte, Error> = this.value.multicastHopLimitV6()
 
     /**
      * Executes an operation of the `IP_ADD_MEMBERSHIP` type.
@@ -607,7 +608,7 @@ public open class UdpSocket(
      * multicast group. If it's equal to [`Unspecified`](Ipv4Addr.Unspecified)
      * then an appropriate interface is chosen by the system.
      */
-    public open fun joinMulticastV4(multiaddr: Ipv4Addr, iface: Ipv4Addr): Result<Unit> = this.value.joinMulticastV4(multiaddr, iface)
+    public open fun joinMulticastV4(multiaddr: Ipv4Addr, iface: Ipv4Addr): Result<Unit, Error> = this.value.joinMulticastV4(multiaddr, iface)
 
     /**
      * Executes an operation of the `IPV6_ADD_MEMBERSHIP` type.
@@ -616,21 +617,21 @@ public open class UdpSocket(
      * The address must be a valid multicast address, and `interface` is the
      * index of the interface to join/leave (or 0 to indicate any interface).
      */
-    public open fun joinMulticastV6(multiaddr: Ipv6Addr, iface: UInt): Result<Unit> = this.value.joinMulticastV6(multiaddr, iface)
+    public open fun joinMulticastV6(multiaddr: Ipv6Addr, iface: UInt): Result<Unit, Error> = this.value.joinMulticastV6(multiaddr, iface)
 
     /**
      * Executes an operation of the `IP_DROP_MEMBERSHIP` type.
      *
      * For more information about this option, see [UdpSocket.joinMulticastV4].
      */
-    public open fun leaveMulticastV4(multiaddr: Ipv4Addr, iface: Ipv4Addr): Result<Unit> = this.value.leaveMulticastV4(multiaddr, iface)
+    public open fun leaveMulticastV4(multiaddr: Ipv4Addr, iface: Ipv4Addr): Result<Unit, Error> = this.value.leaveMulticastV4(multiaddr, iface)
 
     /**
      * Executes an operation of the `IPV6_DROP_MEMBERSHIP` type.
      *
      * For more information about this option, see [UdpSocket.joinMulticastV6].
      */
-    public open fun leaveMulticastV6(multiaddr: Ipv6Addr, iface: UInt): Result<Unit> = this.value.leaveMulticastV6(multiaddr, iface)
+    public open fun leaveMulticastV6(multiaddr: Ipv6Addr, iface: UInt): Result<Unit, Error> = this.value.leaveMulticastV6(multiaddr, iface)
 
     /**
      * Gets the value of the `SO_ERROR` option on this socket.
@@ -664,7 +665,7 @@ public open class UdpSocket(
      * }
      * ```
      */
-    public open fun takeError(): Result<Error?> = this.value.takeError()
+    public open fun takeError(): Result<io.github.kotlinmania.rustlang.core.io.error.Error?, Error> = this.value.takeError()
 
     /**
      * Connects this UDP socket to a remote address, allowing the `send` and
@@ -700,7 +701,7 @@ public open class UdpSocket(
      * `connect`s to non-loopback addresses might fail, depending
      * on the platform.
      */
-    public open fun <Iter, A : ToSocketAddrs<Any?>> connect(addr: A): Result<Unit> = this.value.connect(addr)
+    public open fun <Iter, A : ToSocketAddrs<Any?>> connect(addr: A): Result<Unit, Error> = this.value.connect(addr)
 
     /**
      * Sends data on the socket to the remote address to which it is connected.
@@ -721,7 +722,7 @@ public open class UdpSocket(
      * socket.send(listOf(0, 1, 2)).expect("send should succeed")
      * ```
      */
-    public open fun send(buf: List<UByte>): Result<Int> = this.value.send(buf)
+    public open fun send(buf: List<UByte>): Result<Int, Error> = this.value.send(buf)
 
     /**
      * Receives a single datagram message on the socket from the remote address to
@@ -758,7 +759,7 @@ public open class UdpSocket(
      * }
      * ```
      */
-    public open fun recv(buf: MutableList<UByte>): Result<Int> = this.value.recv(buf)
+    public open fun recv(buf: MutableList<UByte>): Result<Int, Error> = this.value.recv(buf)
 
     /**
      * Receives single datagram on the socket from the remote address to which it is
@@ -803,7 +804,7 @@ public open class UdpSocket(
      * }
      * ```
      */
-    public open fun peek(buf: MutableList<UByte>): Result<Int> = this.value.peek(buf)
+    public open fun peek(buf: MutableList<UByte>): Result<Int, Error> = this.value.peek(buf)
 
     /**
      * Moves this UDP socket into or out of nonblocking mode.
@@ -825,6 +826,7 @@ public open class UdpSocket(
      * nonblocking mode:
      *
      * ```kotlin
+     * import std.io
      * import std.net.UdpSocket
      *
      * val socket = UdpSocket.bind("127.0.0.1:7878").unwrap()
@@ -854,7 +856,7 @@ public open class UdpSocket(
      * println("bytes: ${buf[0 until numBytesRead]}")
      * ```
      */
-    public open fun setNonblocking(nonblocking: Boolean): Result<Unit> = this.value.setNonblocking(nonblocking)
+    public open fun setNonblocking(nonblocking: Boolean): Result<Unit, Error> = this.value.setNonblocking(nonblocking)
 
     // In addition to the `implementation`s here, `UdpSocket` also has `implementation`s for
     // `AsFd`/`From<OwnedFd>`/`Into<OwnedFd>` and
@@ -921,7 +923,7 @@ public open class UdpSocket(
          * In order to limit your view of the network the least, `bind` to
          * [Ipv4Addr.Unspecified] or [Ipv6Addr.Unspecified].
          */
-        public fun <Iter, A : ToSocketAddrs<Any?>> bind(addr: A): Result<UdpSocket> = io.github.kotlinmania.netimp.UdpSocket.bind(addr).map({ UdpSocket(it) })
+        public fun <Iter, A : ToSocketAddrs<Any?>> bind(addr: A): Result<UdpSocket, Error> = io.github.kotlinmania.netimp.UdpSocket.bind(addr).map({ UdpSocket(it) })
 
         public fun fromInner(inner: io.github.kotlinmania.netimp.UdpSocket): UdpSocket = UdpSocket(inner)
     }

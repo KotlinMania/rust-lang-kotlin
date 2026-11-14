@@ -139,7 +139,7 @@ public typealias Source<T, A> = IntoIter<T, A>
 public open class BinaryHeap<T, A : Allocator>(
     public var data: MutableList<T>,
 ) : Iterable<T> {
-    override fun iterator(): kotlin.collections.Iterator<T> = this.intoIter().iterator()
+    override fun iterator(): Iterator<T> = this.intoIter().iterator()
 
     public open fun clone(): BinaryHeap<T, A> = BinaryHeap(data = this.data.toMutableList())
 
@@ -1438,7 +1438,7 @@ public open class Hole<T>(
 public open class Iter<T>(
     public var iter: ArrayDeque<T>,
 ) : Iterable<T> {
-    override fun iterator(): kotlin.collections.Iterator<T> = object : AbstractIterator<T>() {
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@Iter.next()) {
                 null -> done()
@@ -1448,7 +1448,7 @@ public open class Iter<T>(
     }
 
     public open fun fmt(f: StringBuilder) {
-        DebugTuple(f, "Iter").field(this.iter.asSlice()).finish()
+        DebugTuple(f, "Iter").field(this.iter.toList()).finish()
     }
 
     // Note(#26925) Remove in favor of `@derive(Clone)`
@@ -1456,7 +1456,7 @@ public open class Iter<T>(
 
     public open fun next(): T? = this.iter.removeFirstOrNull()
 
-    public open fun sizeHint(): Pair<Int, Int?> = this.iter.sizeHint()
+    public open fun sizeHint(): Pair<Int, Int?> = run { val n = this.iter.size; Pair(n, n) }
 
     public open fun last(): T? = this.iter.last()
 
@@ -1488,7 +1488,7 @@ public open class Iter<T>(
 public open class IntoIter<T, A : Allocator>(
     public var iter: ArrayDeque<T>,
 ) : TrustedFused, SourceIter, Iterable<T> {
-    override fun iterator(): kotlin.collections.Iterator<T> = object : AbstractIterator<T>() {
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@IntoIter.next()) {
                 null -> done()
@@ -1505,12 +1505,12 @@ public open class IntoIter<T, A : Allocator>(
     public open fun allocator(): A = this.iter.allocator()
 
     public open fun fmt(f: StringBuilder) {
-        DebugTuple(f, "IntoIter").field(this.iter.asSlice()).finish()
+        DebugTuple(f, "IntoIter").field(this.iter.toList()).finish()
     }
 
     public open fun next(): T? = this.iter.removeFirstOrNull()
 
-    public open fun sizeHint(): Pair<Int, Int?> = this.iter.sizeHint()
+    public open fun sizeHint(): Pair<Int, Int?> = run { val n = this.iter.size; Pair(n, n) }
 
     public open fun nextBack(): T? = this.iter.removeLastOrNull()
 
@@ -1543,7 +1543,7 @@ public open class IntoIterSorted<T, A : Allocator> internal constructor(
     public var inner: BinaryHeap<T, A> = innerCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<T> = object : AbstractIterator<T>() {
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@IntoIterSorted.next()) {
                 null -> done()
@@ -1589,7 +1589,7 @@ public open class Drain<T, A : Allocator> internal constructor(
     public var iter: Drain<T, A> = iterCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<T> = object : AbstractIterator<T>() {
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@Drain.next()) {
                 null -> done()
@@ -1634,7 +1634,7 @@ public open class DrainSorted<T, A : Allocator> internal constructor(
     public var inner: BinaryHeap<T, A> = innerCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<T> = object : AbstractIterator<T>() {
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@DrainSorted.next()) {
                 null -> done()

@@ -42,6 +42,8 @@ public open class Layout(
     // even though that is *also* a requirement of `posixMemalign`.)
     public var align: Alignment,
 ) {
+    public open fun clone(): Layout = Layout(size, align)
+
     /**
      * The minimum size in bytes for a memory block of this layout.
      */
@@ -355,7 +357,7 @@ public open class Layout(
         public fun fromSizeAlign(size: Int, align: Int): Result<Layout, LayoutError> =
             if (Layout.isSizeAlignValid(size, align)) {
                 // SAFETY: Layout.isSizeAlignValid checks the preconditions for this call.
-                Result.Ok(Layout(size = size, align = mem.transmute(align)))
+                Result.Ok(Layout(size = size, align = transmute(align)))
             } else {
                 Result.Err(LayoutError())
             }
@@ -414,7 +416,7 @@ public open class Layout(
         public fun fromSizeAlignUnchecked(size: Int, align: Int): Layout {
             assertUnsafePrecondition(checkLibraryUb, "Layout::from_size_align_unchecked requires that align is a power of 2 and the rounded-up allocation size does not exceed isize::MAX", size, size, align, align, Layout, isSizeAlignValid, size, align)
             // SAFETY: the caller is required to uphold the preconditions.
-            return Layout(size = size, align = mem.transmute(align))
+            return Layout(size = size, align = transmute(align))
         }
 
         /**
@@ -484,7 +486,7 @@ public open class Layout(
          */
         public fun forValueRaw(value: ConstPtr): Layout {
             // SAFETY: we pass along the prerequisites of these functions to the caller
-            val (size, alignment) = Pair(mem.sizeOfValRaw(value), Alignment.ofValRaw(value))
+            val (size, alignment) = Pair(sizeOfValRaw(value), Alignment.ofValRaw(value))
             // SAFETY: see rationale in `new` for why this is using the unchecked variant
             return Layout.fromSizeAlignmentUnchecked(size, alignment)
         }
@@ -533,12 +535,14 @@ public typealias LayoutErr = LayoutError
  * do not satisfy its documented constraints.
  */
 public open class LayoutError {
+    public open fun clone(): LayoutError = LayoutError()
+
     // (we need this for downstream impl of trait Error)
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append("invalid parameters to Layout::from_size_align"); Result.Ok(Unit) }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<LayoutError> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<LayoutError> {
+        public fun typeLayout(): TypeLayout<LayoutError> =
+            object : TypeLayout<LayoutError> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): LayoutError =

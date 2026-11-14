@@ -23,8 +23,6 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.str.error.Utf8Error
 import io.github.kotlinmania.rustlang.core.str.traits.FromStr
-import io.github.kotlinmania.rustlang.std.cmp
-import io.github.kotlinmania.rustlang.std.fmt
 import io.github.kotlinmania.rustlang.std.ops.range
 import io.github.kotlinmania.rustlang.std.rc.Rc
 import io.github.kotlinmania.rustlang.std.sync.Arc
@@ -790,7 +788,8 @@ public open class OsStr internal constructor(
      * import std.ffi.OsStr
      * import std.ffi.OsString
      * import std.os.unix.ffi.OsStrExt
-     * import std.os.windows.prelude.*
+     * import std.os.windows.ffi.OsStringExt
+     * import std.os.windows.ffi.encodeWide
      *
      * // Note, due to differences in how Unix and Windows represent strings,
      * // we are forced to complicate this example, setting up example `OsStr`s
@@ -879,7 +878,7 @@ public open class OsStr internal constructor(
      * check(osStr1.len() == 3)
      * ```
      */
-    public open fun len(): Int = this.inner.inner.length
+    public open fun len(): Int = this.inner.inner.len()
 
     /**
      * Converts a <code>[Holder]<[OsStr]></code> into an [OsString] without copying or allocating.

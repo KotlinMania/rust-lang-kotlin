@@ -26,4 +26,6 @@ public open class UCred(
      * domain socket's endpoint. Otherwise, it will be set to None.
      */
     public var pid: PidT?,
-)
+) {
+    public open fun clone(): UCred = UCred(uid, gid, pid)
+}

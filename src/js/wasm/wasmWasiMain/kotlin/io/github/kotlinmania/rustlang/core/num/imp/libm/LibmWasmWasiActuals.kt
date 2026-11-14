@@ -1,4 +1,4 @@
-@file:OptIn(kotlin.ExperimentalUnsignedTypes::class, kotlin.wasm.ExperimentalWasmInterop::class)
+@file:OptIn(ExperimentalUnsignedTypes::class, ExperimentalWasmInterop::class)
 
 package io.github.kotlinmania.rustlang.core.num.imp.libm
 
@@ -345,6 +345,144 @@ internal actual fun rustDivhc3(a: F16, b: F16, c: F16, d: F16): Complex<F16> =
 
 internal actual fun rustDivtc3(a: F128, b: F128, c: F128, d: F128): Complex<F128> =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for coreNumImpLibmRustDivtc3")
+
+@kotlin.wasm.WasmImport("core", "coreNumImpLibmAcosf")
+private external fun wasiCoreNumImpLibmAcosf(n: Float): Float
+
+internal actual fun acosf(n: kotlin.Float): kotlin.Float =
+    wasiCoreNumImpLibmAcosf(n).toFloat()
+
+@kotlin.wasm.WasmImport("core", "coreNumImpLibmAsinf")
+private external fun wasiCoreNumImpLibmAsinf(n: Float): Float
+
+internal actual fun asinf(n: kotlin.Float): kotlin.Float =
+    wasiCoreNumImpLibmAsinf(n).toFloat()
+
+@kotlin.wasm.WasmImport("core", "coreNumImpLibmAtan2f")
+private external fun wasiCoreNumImpLibmAtan2f(a: Float, b: Float): Float
+
+internal actual fun atan2f(a: kotlin.Float, b: kotlin.Float): kotlin.Float =
+    wasiCoreNumImpLibmAtan2f(a, b).toFloat()
+
+@kotlin.wasm.WasmImport("core", "coreNumImpLibmAtanf")
+private external fun wasiCoreNumImpLibmAtanf(n: Float): Float
+
+internal actual fun atanf(n: kotlin.Float): kotlin.Float =
+    wasiCoreNumImpLibmAtanf(n).toFloat()
+
+@kotlin.wasm.WasmImport("core", "coreNumImpLibmCosf")
+private external fun wasiCoreNumImpLibmCosf(x: Float): Float
+
+internal actual fun cosf(x: kotlin.Float): kotlin.Float =
+    wasiCoreNumImpLibmCosf(x).toFloat()
+
+@kotlin.wasm.WasmImport("core", "coreNumImpLibmCoshf")
+private external fun wasiCoreNumImpLibmCoshf(n: Float): Float
+
+internal actual fun coshf(n: kotlin.Float): kotlin.Float =
+    wasiCoreNumImpLibmCoshf(n).toFloat()
+
+@kotlin.wasm.WasmImport("core", "coreNumImpLibmErfcf")
+private external fun wasiCoreNumImpLibmErfcf(x: Float): Float
+
+internal actual fun erfcf(x: kotlin.Float): kotlin.Float =
+    wasiCoreNumImpLibmErfcf(x).toFloat()
+
+@kotlin.wasm.WasmImport("core", "coreNumImpLibmErff")
+private external fun wasiCoreNumImpLibmErff(x: Float): Float
+
+internal actual fun erff(x: kotlin.Float): kotlin.Float =
+    wasiCoreNumImpLibmErff(x).toFloat()
+
+@kotlin.wasm.WasmImport("core", "coreNumImpLibmExp2f")
+private external fun wasiCoreNumImpLibmExp2f(x: Float): Float
+
+internal actual fun exp2f(x: kotlin.Float): kotlin.Float =
+    wasiCoreNumImpLibmExp2f(x).toFloat()
+
+@kotlin.wasm.WasmImport("core", "coreNumImpLibmExpf")
+private external fun wasiCoreNumImpLibmExpf(x: Float): Float
+
+internal actual fun expf(x: kotlin.Float): kotlin.Float =
+    wasiCoreNumImpLibmExpf(x).toFloat()
+
+@kotlin.wasm.WasmImport("core", "coreNumImpLibmExpm1f")
+private external fun wasiCoreNumImpLibmExpm1f(n: Float): Float
+
+internal actual fun expm1f(n: kotlin.Float): kotlin.Float =
+    wasiCoreNumImpLibmExpm1f(n).toFloat()
+
+@kotlin.wasm.WasmImport("core", "coreNumImpLibmHypotf")
+private external fun wasiCoreNumImpLibmHypotf(x: Float, y: Float): Float
+
+internal actual fun hypotf(x: kotlin.Float, y: kotlin.Float): kotlin.Float =
+    wasiCoreNumImpLibmHypotf(x, y).toFloat()
+
+@kotlin.wasm.WasmImport("core", "coreNumImpLibmLdexpf")
+private external fun wasiCoreNumImpLibmLdexpf(f: Float, n: Int): Float
+
+internal actual fun ldexpf(f: kotlin.Float, n: Int): kotlin.Float =
+    wasiCoreNumImpLibmLdexpf(f, n).toFloat()
+
+@kotlin.wasm.WasmImport("core", "coreNumImpLibmLog10f")
+private external fun wasiCoreNumImpLibmLog10f(x: Float): Float
+
+internal actual fun log10f(x: kotlin.Float): kotlin.Float =
+    wasiCoreNumImpLibmLog10f(x).toFloat()
+
+@kotlin.wasm.WasmImport("core", "coreNumImpLibmLog1pf")
+private external fun wasiCoreNumImpLibmLog1pf(n: Float): Float
+
+internal actual fun log1pf(n: kotlin.Float): kotlin.Float =
+    wasiCoreNumImpLibmLog1pf(n).toFloat()
+
+@kotlin.wasm.WasmImport("core", "coreNumImpLibmLog2f")
+private external fun wasiCoreNumImpLibmLog2f(x: Float): Float
+
+internal actual fun log2f(x: kotlin.Float): kotlin.Float =
+    wasiCoreNumImpLibmLog2f(x).toFloat()
+
+@kotlin.wasm.WasmImport("core", "coreNumImpLibmLogf")
+private external fun wasiCoreNumImpLibmLogf(x: Float): Float
+
+internal actual fun logf(x: kotlin.Float): kotlin.Float =
+    wasiCoreNumImpLibmLogf(x).toFloat()
+
+@kotlin.wasm.WasmImport("core", "coreNumImpLibmPowf")
+private external fun wasiCoreNumImpLibmPowf(x: Float, y: Float): Float
+
+internal actual fun powf(x: kotlin.Float, y: kotlin.Float): kotlin.Float =
+    wasiCoreNumImpLibmPowf(x, y).toFloat()
+
+@kotlin.wasm.WasmImport("core", "coreNumImpLibmSinf")
+private external fun wasiCoreNumImpLibmSinf(x: Float): Float
+
+internal actual fun sinf(x: kotlin.Float): kotlin.Float =
+    wasiCoreNumImpLibmSinf(x).toFloat()
+
+@kotlin.wasm.WasmImport("core", "coreNumImpLibmSinhf")
+private external fun wasiCoreNumImpLibmSinhf(n: Float): Float
+
+internal actual fun sinhf(n: kotlin.Float): kotlin.Float =
+    wasiCoreNumImpLibmSinhf(n).toFloat()
+
+@kotlin.wasm.WasmImport("core", "coreNumImpLibmTanf")
+private external fun wasiCoreNumImpLibmTanf(n: Float): Float
+
+internal actual fun tanf(n: kotlin.Float): kotlin.Float =
+    wasiCoreNumImpLibmTanf(n).toFloat()
+
+@kotlin.wasm.WasmImport("core", "coreNumImpLibmTanhf")
+private external fun wasiCoreNumImpLibmTanhf(n: Float): Float
+
+internal actual fun tanhf(n: kotlin.Float): kotlin.Float =
+    wasiCoreNumImpLibmTanhf(n).toFloat()
+
+@kotlin.wasm.WasmImport("core", "coreNumImpLibmTgammaf")
+private external fun wasiCoreNumImpLibmTgammaf(x: Float): Float
+
+internal actual fun tgammaf(x: kotlin.Float): kotlin.Float =
+    wasiCoreNumImpLibmTgammaf(x).toFloat()
 
 @kotlin.wasm.WasmImport("core", "coreNumImpLibmAcos")
 private external fun wasiCoreNumImpLibmAcos(x: Double): Double

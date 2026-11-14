@@ -7,6 +7,7 @@ import io.github.kotlinmania.rustlang.core.iter.TrustedFused
 import io.github.kotlinmania.rustlang.core.iter.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.result.Result
 
@@ -50,7 +51,7 @@ public open class Zip<A, B>(
     public var index: Int,
     public var len: Int,
 ) : ZipImpl<A, B, Zip<A, B>, Any?, Pair<Item, Item>>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, TrustedFused, TrustedLen<Zip<A, B>>, SourceIter<Any?, Source>, InPlaceIterable, ZipFmt<A, B>, SpecFold<Zip<A, B>>, Iterable<Pair<Item, Item>> {
-    override fun iterator(): kotlin.collections.Iterator<Pair<Item, Item>> = object : AbstractIterator<Pair<Item, Item>>() {
+    override fun iterator(): Iterator<Pair<Item, Item>> = object : AbstractIterator<Pair<Item, Item>>() {
         override fun computeNext() {
             when (val v = this@Zip.next()) {
                 null -> done()
@@ -255,38 +256,38 @@ public open class Zip<A, B>(
     }
 
     public companion object {
-        public fun <A, B> typeLayout(typeLayoutA: io.github.kotlinmania.rustlang.core.mem.TypeLayout<A>, typeLayoutB: io.github.kotlinmania.rustlang.core.mem.TypeLayout<B>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Zip<A, B>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Zip<A, B>> {
+        public fun <A, B> typeLayout(typeLayoutA: TypeLayout<A>, typeLayoutB: TypeLayout<B>): TypeLayout<Zip<A, B>> =
+            object : TypeLayout<Zip<A, B>> {
                 override val alignBytes: Long = listOf(8L, typeLayoutA.alignBytes, typeLayoutB.alignBytes).max()
-                private val off1: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(typeLayoutA.sizeBytes, typeLayoutB.alignBytes)
-                private val off2: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes((off1 + typeLayoutB.sizeBytes), 8L)
-                private val off3: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes((off2 + 8L), 8L)
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes((off3 + 8L), alignBytes)
+                private val off1: Long = alignUpBytes(typeLayoutA.sizeBytes, typeLayoutB.alignBytes)
+                private val off2: Long = alignUpBytes((off1 + typeLayoutB.sizeBytes), 8L)
+                private val off3: Long = alignUpBytes((off2 + 8L), 8L)
+                override val sizeBytes: Long = alignUpBytes((off3 + 8L), alignBytes)
                 override fun readNative(addr: Long): Zip<A, B> =
                     Zip(
                         (typeLayoutA).readNative(addr),
                         (typeLayoutB).readNative(addr + off1),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readNative(addr + off2),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readNative(addr + off3),
+                        (PrimitiveLayouts.USIZE64).readNative(addr + off2),
+                        (PrimitiveLayouts.USIZE64).readNative(addr + off3),
                     )
                 override fun writeNative(addr: Long, value: Zip<A, B>) {
                     (typeLayoutA).writeNative(addr, value.a)
                     (typeLayoutB).writeNative(addr + off1, value.b)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeNative(addr + off2, value.index)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeNative(addr + off3, value.len)
+                    (PrimitiveLayouts.USIZE64).writeNative(addr + off2, value.index)
+                    (PrimitiveLayouts.USIZE64).writeNative(addr + off3, value.len)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Zip<A, B> =
                     Zip(
                         (typeLayoutA).readBytes(buf, offset),
                         (typeLayoutB).readBytes(buf, offset + off1.toInt()),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readBytes(buf, offset + off2.toInt()),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readBytes(buf, offset + off3.toInt()),
+                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset + off2.toInt()),
+                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset + off3.toInt()),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Zip<A, B>) {
                     (typeLayoutA).writeBytes(buf, offset, value.a)
                     (typeLayoutB).writeBytes(buf, offset + off1.toInt(), value.b)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeBytes(buf, offset + off2.toInt(), value.index)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeBytes(buf, offset + off3.toInt(), value.len)
+                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset + off2.toInt(), value.index)
+                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset + off3.toInt(), value.len)
                 }
             }
 

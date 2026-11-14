@@ -256,13 +256,13 @@ public fun schedBarrier(mask: UInt) {
  * Combining multiple `schedGroupBarrier` intrinsics enables an ordering of specific instruction types during instruction scheduling.
  * For example, the following enforces a sequence of 1 VMEM read, followed by 1 VALU instruction, followed by 5 MFMA instructions.
  *
- * ```kotlin
+ * ```ignore (only available on AMD)
  * // 1 VMEM read
- * schedGroupBarrier(32, 1, 0)
+ * schedGroupBarrier::<32, 1, 0>();
  * // 1 VALU
- * schedGroupBarrier(2, 1, 0)
+ * schedGroupBarrier::<2, 1, 0>();
  * // 5 MFMA
- * schedGroupBarrier(8, 5, 0)
+ * schedGroupBarrier::<8, 5, 0>();
  * ```
  */
 public fun schedGroupBarrier(mask: UInt, size: UInt, syncId: UInt) {

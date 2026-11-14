@@ -18,8 +18,8 @@ public val HEX_DIGITS: List<io.github.kotlinmania.rustlang.core.ascii.Char> = "0
  */
 public fun backslash(a: io.github.kotlinmania.rustlang.core.ascii.Char, n: Int): Pair<List<io.github.kotlinmania.rustlang.core.ascii.Char>, Range<UByte>> {
     check(n >= 2)
-    val output = MutableList(n) { ascii.Char.Null }
-    output[0] = ascii.Char.ReverseSolidus
+    val output = MutableList(n) { Char.Null }
+    output[0] = Char.ReverseSolidus
     output[1] = a
     return Pair(output, 0 until 2)
 }
@@ -31,11 +31,11 @@ public fun backslash(a: io.github.kotlinmania.rustlang.core.ascii.Char, n: Int):
  */
 public fun hexEscape(byte: UByte, n: Int): Pair<List<io.github.kotlinmania.rustlang.core.ascii.Char>, Range<UByte>> {
     check(n >= 4)
-    val output = MutableList(n) { ascii.Char.Null }
+    val output = MutableList(n) { Char.Null }
     val hi = HEX_DIGITS[((byte.toUInt() shr 4).toUByte()).toInt()]
     val lo = HEX_DIGITS[(byte and 0xfu.toUByte()).toInt()]
-    output[0] = ascii.Char.ReverseSolidus
-    output[1] = ascii.Char.SmallX
+    output[0] = Char.ReverseSolidus
+    output[1] = Char.SmallX
     output[2] = hi
     output[3] = lo
     return Pair(output, 0 until 4)
@@ -46,7 +46,7 @@ public fun hexEscape(byte: UByte, n: Int): Pair<List<io.github.kotlinmania.rustl
  */
 public fun verbatim(a: io.github.kotlinmania.rustlang.core.ascii.Char, n: Int): Pair<List<io.github.kotlinmania.rustlang.core.ascii.Char>, Range<UByte>> {
     check(n >= 1)
-    val output = MutableList(n) { ascii.Char.Null }
+    val output = MutableList(n) { Char.Null }
     output[0] = a
     return Pair(output, 0 until 1)
 }
@@ -59,14 +59,14 @@ public fun verbatim(a: io.github.kotlinmania.rustlang.core.ascii.Char, n: Int): 
 public fun escapeAscii(byte: UByte, n: Int): Pair<List<io.github.kotlinmania.rustlang.core.ascii.Char>, Range<UByte>> {
     check(n >= 4)
     return when (byte) {
-        9u -> backslash(ascii.Char.SmallT)
-        13u -> backslash(ascii.Char.SmallR)
-        10u -> backslash(ascii.Char.SmallN)
-        92u -> backslash(ascii.Char.ReverseSolidus)
-        39u -> backslash(ascii.Char.Apostrophe)
-        34u -> { backslash(ascii.Char.QuotationMark) }
+        9u -> backslash(Char.SmallT)
+        13u -> backslash(Char.SmallR)
+        10u -> backslash(Char.SmallN)
+        92u -> backslash(Char.ReverseSolidus)
+        39u -> backslash(Char.Apostrophe)
+        34u -> { backslash(Char.QuotationMark) }
         in 0x00..0x1F, 0x7F -> hexEscape(byte)
-        else -> when (val matchVal = ascii.Char.fromU8(byte)) {
+        else -> when (val matchVal = Char.fromU8(byte)) {
             null -> hexEscape(byte)
             else -> {
                 val a = matchVal
@@ -87,17 +87,17 @@ public fun escapeUnicode(c: Char, n: Int): Pair<List<io.github.kotlinmania.rustl
     // OR-ing `1` ensures that for `c == 0` the code computes that
     // one digit should be printed.
     val start = rustLeadingZeros((c1 or 1u)).toInt() / 4 - 2
-    val output = MutableList(n) { ascii.Char.Null }
+    val output = MutableList(n) { Char.Null }
     output[3] = HEX_DIGITS[((c1 shr 20) and 15u).toInt()]
     output[4] = HEX_DIGITS[((c1 shr 16) and 15u).toInt()]
     output[5] = HEX_DIGITS[((c1 shr 12) and 15u).toInt()]
     output[6] = HEX_DIGITS[((c1 shr 8) and 15u).toInt()]
     output[7] = HEX_DIGITS[((c1 shr 4) and 15u).toInt()]
     output[8] = HEX_DIGITS[((c1 shr 0) and 15u).toInt()]
-    output[9] = ascii.Char.RightCurlyBracket
-    output[start + 0] = ascii.Char.ReverseSolidus
-    output[start + 1] = ascii.Char.SmallU
-    output[start + 2] = ascii.Char.LeftCurlyBracket
+    output[9] = Char.RightCurlyBracket
+    output[start + 0] = Char.ReverseSolidus
+    output[start + 1] = Char.SmallU
+    output[start + 2] = Char.LeftCurlyBracket
     return Pair(output, (start.toUByte()) until (n.toUByte()))
 }
 
@@ -111,9 +111,11 @@ public open class MaybeEscapedCharacter(
  * used to optimize the iterator implementation.
  */
 internal open class AlwaysEscaped {
+    public open fun clone(): AlwaysEscaped = AlwaysEscaped()
+
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<AlwaysEscaped> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<AlwaysEscaped> {
+        public fun typeLayout(): TypeLayout<AlwaysEscaped> =
+            object : TypeLayout<AlwaysEscaped> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): AlwaysEscaped =
@@ -133,9 +135,11 @@ internal open class AlwaysEscaped {
  * used to optimize the iterator implementation.
  */
 internal open class MaybeEscaped {
+    public open fun clone(): MaybeEscaped = MaybeEscaped()
+
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<MaybeEscaped> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<MaybeEscaped> {
+        public fun typeLayout(): TypeLayout<MaybeEscaped> =
+            object : TypeLayout<MaybeEscaped> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): MaybeEscaped =
@@ -206,7 +210,7 @@ internal fun <Escaping> EscapeIterInner.Companion.unicode(c: Char, n: Int): Esca
 
 internal fun <Escaping> EscapeIterInner.Companion.empty(n: Int): EscapeIterInner<N, Escaping> {
     // SAFETY: `0 .. 0` ensures an empty escape sequence.
-    return EscapeIterInner.new(MaybeEscapedCharacter(escapeSeq = List(n) { ascii.Char.Null }), 0 until 0)
+    return EscapeIterInner.new(MaybeEscapedCharacter(escapeSeq = List(n) { Char.Null }), 0 until 0)
 }
 
 internal fun <Escaping> EscapeIterInner<N, Escaping>.len(n: Int): Int = Int.from(this.alive.end - this.alive.start)

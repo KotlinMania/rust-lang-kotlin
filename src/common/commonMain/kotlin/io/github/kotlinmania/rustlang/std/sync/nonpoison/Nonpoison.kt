@@ -3,7 +3,6 @@ package io.github.kotlinmania.rustlang.std.sync.nonpoison
 
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.std.fmt
 import io.github.kotlinmania.rustlang.std.sync.poison.Guard
 
 // Non-poisoning synchronous locks.
@@ -29,8 +28,8 @@ public open class WouldBlock {
     }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<WouldBlock> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<WouldBlock> {
+        public fun typeLayout(): TypeLayout<WouldBlock> =
+            object : TypeLayout<WouldBlock> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): WouldBlock =

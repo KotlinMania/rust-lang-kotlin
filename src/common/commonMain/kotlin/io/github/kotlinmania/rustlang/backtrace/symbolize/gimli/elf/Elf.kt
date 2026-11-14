@@ -2,7 +2,6 @@
 package io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.elf
 
 import io.github.kotlinmania.addr2line.SplitDwarfLoad
-import io.github.kotlinmania.cfgif.cfgIf
 import io.github.kotlinmania.minizoxide.inflate.TINFLStatus
 import io.github.kotlinmania.minizoxide.inflate.core.DecompressorOxide
 import io.github.kotlinmania.minizoxide.inflate.core.decompress
@@ -36,14 +35,14 @@ import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mystd.fs
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mystd.path.Path
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mystd.path.PathBuf
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.stash.Stash
-import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.andThen
-import io.github.kotlinmania.rustlang.core.result.orElse
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
+import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU8
+import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 import io.github.kotlinmania.ruzstd.decoding.StreamingDecoder
 import io.github.kotlinmania.ruzstd.decoding.errors.FrameDecoderError
 import io.github.kotlinmania.ruzstd.decoding.errors.ReadFrameHeaderError
@@ -120,7 +119,7 @@ public fun Mapping.Companion.newAndroid(path: Path, zipOffset: ULong?): Mapping?
     // otherwise, fallback to mapping as a literal filepath
     return if (zipOffset != null) {
         val zipOffset1 = zipOffset
-        mapEmbeddedLibrary(path, zipOffset1).orElse({ Mapping.new(path) })
+        (mapEmbeddedLibrary(path, zipOffset1) ?: Mapping.new(path))
     } else {
         Mapping.new(path)
     }
@@ -201,31 +200,31 @@ public open class ParsedSym(
     public var name: UInt,
 ) {
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<ParsedSym> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<ParsedSym> {
+        public fun typeLayout(): TypeLayout<ParsedSym> =
+            object : TypeLayout<ParsedSym> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 24L
                 override fun readNative(addr: Long): ParsedSym =
                     ParsedSym(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).readNative(addr + 8L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).readNative(addr + 16L),
+                        (PrimitiveLayouts.U64).readNative(addr),
+                        (PrimitiveLayouts.U64).readNative(addr + 8L),
+                        (PrimitiveLayouts.U32).readNative(addr + 16L),
                     )
                 override fun writeNative(addr: Long, value: ParsedSym) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).writeNative(addr, value.address)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).writeNative(addr + 8L, value.size)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).writeNative(addr + 16L, value.name)
+                    (PrimitiveLayouts.U64).writeNative(addr, value.address)
+                    (PrimitiveLayouts.U64).writeNative(addr + 8L, value.size)
+                    (PrimitiveLayouts.U32).writeNative(addr + 16L, value.name)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): ParsedSym =
                     ParsedSym(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).readBytes(buf, offset + 8),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).readBytes(buf, offset + 16),
+                        (PrimitiveLayouts.U64).readBytes(buf, offset),
+                        (PrimitiveLayouts.U64).readBytes(buf, offset + 8),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 16),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: ParsedSym) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).writeBytes(buf, offset, value.address)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).writeBytes(buf, offset + 8, value.size)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).writeBytes(buf, offset + 16, value.name)
+                    (PrimitiveLayouts.U64).writeBytes(buf, offset, value.address)
+                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 8, value.size)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + 16, value.name)
                 }
             }
     }
@@ -462,7 +461,19 @@ public fun decompressZstd(input: List<UByte>, output: MutableList<UByte>): Unit?
 
 public val DEBUG_PATH: String = "/usr/lib/debug"
 
-public fun debugPathExists(): Boolean = cfgIf(cfg, any, targetOs, "freebsd", targetOs, "hurd", targetOs, "linux", core, sync, atomic, AtomicU8, Ordering, DEBUG_PATH_EXISTS, AtomicU8, AtomicU8, new, 0, exists, DEBUG_PATH_EXISTS, load, Ordering, Relaxed, exists, 0, exists, Path, new, DEBUG_PATH, isDir, 1, 2, DEBUG_PATH_EXISTS, store, exists, Ordering, Relaxed, exists, 1, false)
+public fun debugPathExists(): Boolean {
+    val DEBUG_PATH_EXISTS: AtomicU8  = AtomicU8.new(0)
+    var exists = DEBUG_PATH_EXISTS.load(Ordering.Relaxed)
+    if (exists == 0) {
+        exists = if (Path.new(DEBUG_PATH).isDir()) {
+            1
+        } else {
+            2
+        }
+        DEBUG_PATH_EXISTS.store(exists, Ordering.Relaxed)
+    }
+    return exists == 1
+}
 
 /**
  * Locate a debug file based on its build ID.

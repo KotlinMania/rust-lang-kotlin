@@ -7,10 +7,8 @@ import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.hash.BuildHasher
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.collections.hash.map.Entry.*
-import io.github.kotlinmania.rustlang.std.fmt
 import io.github.kotlinmania.rustlang.std.hash.random.RandomState
 import io.github.kotlinmania.rustlang.std.ops.index
-import io.github.kotlinmania.rustlang.std.sys.pal.sgx.abi.entry
 import io.github.kotlinmania.hashbrown.hashMap as base
 
 public class DebugStruct(
@@ -177,7 +175,7 @@ public class DebugTuple(
  * playerStats.entry("health").orInsert(100)
  * // insert a key using a function that provides a new value only if it
  * // doesn't already exist
- * playerStats.entry("defence").orInsertWith(randomStatBuff)
+ * playerStats.entry("defence").orInsertWith(::randomStatBuff)
  * // update a key, guarding against the key possibly not being set
  * val stat = playerStats.entry("attack").orInsert(100)
  * stat += randomStatBuff()
@@ -243,7 +241,7 @@ public open class HashMap<K, V, S, A : Allocator> internal constructor(
     public var base: base.HashMap<K, V, S, A> = baseCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<Pair<K, V>> = this.intoIter().iterator()
+    override fun iterator(): Iterator<Pair<K, V>> = this.intoIter().iterator()
 
     /**
      * Returns the number of elements the map can hold without reallocating.
@@ -694,6 +692,8 @@ public open class HashMap<K, V, S, A : Allocator> internal constructor(
      *
      * ```kotlin
      * open class S(public var id: UInt, public var name: String) {
+     *     public open fun clone(): S = S(id, name)
+     *
      *     public open fun eq(other: S): Boolean {
      *         return this.id == other.id
      *     }
@@ -1253,7 +1253,7 @@ public fun <K, V> fromHashMapKVRandomState(arr: List<Pair<K, V>>, n: Int): HashM
 public open class Iter<K, V>(
     public var base: base.Iter<K, V>,
 ) : Iterable<Pair<K, V>> {
-    override fun iterator(): kotlin.collections.Iterator<Pair<K, V>> = object : AbstractIterator<Pair<K, V>>() {
+    override fun iterator(): Iterator<Pair<K, V>> = object : AbstractIterator<Pair<K, V>>() {
         override fun computeNext() {
             when (val v = this@Iter.next()) {
                 null -> done()
@@ -1302,7 +1302,7 @@ public open class Iter<K, V>(
 public open class IterMut<K, V>(
     public var base: base.IterMut<K, V>,
 ) : Iterable<Pair<K, V>> {
-    override fun iterator(): kotlin.collections.Iterator<Pair<K, V>> = object : AbstractIterator<Pair<K, V>>() {
+    override fun iterator(): Iterator<Pair<K, V>> = object : AbstractIterator<Pair<K, V>>() {
         override fun computeNext() {
             when (val v = this@IterMut.next()) {
                 null -> done()
@@ -1356,7 +1356,7 @@ public open class IntoIter<K, V, A : Allocator> internal constructor(
     public var base: base.IntoIter<K, V, A> = baseCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<Pair<K, V>> = object : AbstractIterator<Pair<K, V>>() {
+    override fun iterator(): Iterator<Pair<K, V>> = object : AbstractIterator<Pair<K, V>>() {
         override fun computeNext() {
             when (val v = this@IntoIter.next()) {
                 null -> done()
@@ -1413,7 +1413,7 @@ public fun <K, V> defaultIntoIterKV(): IntoIter<K, V> = IntoIter(base = Default.
 public open class Keys<K, V>(
     public var inner: Iter<K, V>,
 ) : Iterable<K> {
-    override fun iterator(): kotlin.collections.Iterator<K> = object : AbstractIterator<K>() {
+    override fun iterator(): Iterator<K> = object : AbstractIterator<K>() {
         override fun computeNext() {
             when (val v = this@Keys.next()) {
                 null -> done()
@@ -1462,7 +1462,7 @@ public open class Keys<K, V>(
 public open class Values<K, V>(
     public var inner: Iter<K, V>,
 ) : Iterable<V> {
-    override fun iterator(): kotlin.collections.Iterator<V> = object : AbstractIterator<V>() {
+    override fun iterator(): Iterator<V> = object : AbstractIterator<V>() {
         override fun computeNext() {
             when (val v = this@Values.next()) {
                 null -> done()
@@ -1514,7 +1514,7 @@ public open class Drain<K, V, A : Allocator> internal constructor(
     public var base: base.Drain<K, V, A> = baseCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<Pair<K, V>> = object : AbstractIterator<Pair<K, V>>() {
+    override fun iterator(): Iterator<Pair<K, V>> = object : AbstractIterator<Pair<K, V>>() {
         override fun computeNext() {
             when (val v = this@Drain.next()) {
                 null -> done()
@@ -1569,7 +1569,7 @@ public open class ExtractIf<K, V, F, A : Allocator> internal constructor(
     public var base: base.ExtractIf<K, V, F, A> = baseCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<Pair<K, V>> = object : AbstractIterator<Pair<K, V>>() {
+    override fun iterator(): Iterator<Pair<K, V>> = object : AbstractIterator<Pair<K, V>>() {
         override fun computeNext() {
             when (val v = this@ExtractIf.next()) {
                 null -> done()
@@ -1613,7 +1613,7 @@ public open class ExtractIf<K, V, F, A : Allocator> internal constructor(
 public open class ValuesMut<K, V>(
     public var inner: IterMut<K, V>,
 ) : Iterable<V> {
-    override fun iterator(): kotlin.collections.Iterator<V> = object : AbstractIterator<V>() {
+    override fun iterator(): Iterator<V> = object : AbstractIterator<V>() {
         override fun computeNext() {
             when (val v = this@ValuesMut.next()) {
                 null -> done()
@@ -1662,7 +1662,7 @@ public open class IntoKeys<K, V, A : Allocator> internal constructor(
     public var inner: IntoIter<K, V, A> = innerCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<K> = object : AbstractIterator<K>() {
+    override fun iterator(): Iterator<K> = object : AbstractIterator<K>() {
         override fun computeNext() {
             when (val v = this@IntoKeys.next()) {
                 null -> done()
@@ -1717,7 +1717,7 @@ public open class IntoValues<K, V, A : Allocator> internal constructor(
     public var inner: IntoIter<K, V, A> = innerCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<V> = object : AbstractIterator<V>() {
+    override fun iterator(): Iterator<V> = object : AbstractIterator<V>() {
         override fun computeNext() {
             when (val v = this@IntoValues.next()) {
                 null -> done()

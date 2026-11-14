@@ -20,12 +20,12 @@ import io.github.kotlinmania.rustlang.std.random.random as sys
 // take care to avoid sampling bias when using the filled byte buffer to create
 // an instance of another type. In particular, the modulo operation is **not**
 // suitable for constraining the range of an unconstrained number:
-// ```kotlin
-// var buf = MutableList(2) { 0 }
-// rng.fillBytes(buf)
+// ```compile_fail
+// let mut buf = [0; 2];
+// rng.fillBytes(buf);
 // // 💀 **DO NOT DO THIS** 💀
 // // Numbers below ca. 22000 will be twice as likely.
-// val veryBadRandomNumber = run { val bytesTmp0 = buf; ((bytesTmp0[1].toInt() shl 8) or bytesTmp0[0].toInt()).toUShort() } % 45000u
+// let veryBadRandomNumber = u16.fromNeBytes(buf) % 45000;
 // ```
 //
 // # Examples
@@ -144,13 +144,15 @@ import io.github.kotlinmania.rustlang.std.random.random as sys
  * ```
  */
 public open class SystemRng : Rng {
+    public open fun clone(): SystemRng = SystemRng()
+
     public open fun fillBytes(bytes: MutableList<UByte>) {
         io.github.kotlinmania.rustlang.std.sys.random.apple.fillBytes(bytes)
     }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<SystemRng> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<SystemRng> {
+        public fun typeLayout(): TypeLayout<SystemRng> =
+            object : TypeLayout<SystemRng> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): SystemRng =

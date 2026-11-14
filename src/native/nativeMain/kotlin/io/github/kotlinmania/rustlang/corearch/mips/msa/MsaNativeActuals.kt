@@ -1,10 +1,11 @@
-@file:OptIn(kotlinx.cinterop.ExperimentalForeignApi::class, kotlin.ExperimentalUnsignedTypes::class)
+@file:OptIn(ExperimentalForeignApi::class, ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.corearch.mips.msa
 
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.corearch.mips.msa.cinterop.corearchMipsMsaMsaCfcmsa
 import io.github.kotlinmania.rustlang.corearch.mips.msa.cinterop.corearchMipsMsaMsaCtcmsa
+import kotlinx.cinterop.ExperimentalForeignApi
 
 public actual fun msaAddAB(a: V16i8, b: V16i8): V16i8 =
     V16i8()

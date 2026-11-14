@@ -3,10 +3,9 @@ package io.github.kotlinmania.rustlang.std.sys.args.unsupported
 
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
-import io.github.kotlinmania.rustlang.std.fmt
 
 public open class Args : Iterable<OsString> {
-    override fun iterator(): kotlin.collections.Iterator<OsString> = object : AbstractIterator<OsString>() {
+    override fun iterator(): Iterator<OsString> = object : AbstractIterator<OsString>() {
         override fun computeNext() {
             when (val v = this@Args.next()) {
                 null -> done()
@@ -28,8 +27,8 @@ public open class Args : Iterable<OsString> {
     public open fun len(): Int = 0
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Args> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Args> {
+        public fun typeLayout(): TypeLayout<Args> =
+            object : TypeLayout<Args> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): Args =

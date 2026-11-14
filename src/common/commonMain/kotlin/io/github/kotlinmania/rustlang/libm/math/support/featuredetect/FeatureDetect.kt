@@ -36,6 +36,8 @@ public open class Flags(
             value = v
         }
 
+    public open fun clone(): Flags = Flags(value)
+
     // only used on some architectures
 
     /**
@@ -64,23 +66,23 @@ public open class Flags(
     }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Flags> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Flags> {
+        public fun typeLayout(): TypeLayout<Flags> =
+            object : TypeLayout<Flags> {
                 override val alignBytes: Long = 4L
                 override val sizeBytes: Long = 4L
                 override fun readNative(addr: Long): Flags =
                     Flags(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).readNative(addr),
+                        (PrimitiveLayouts.U32).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: Flags) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).writeNative(addr, value.value)
+                    (PrimitiveLayouts.U32).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Flags =
                     Flags(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).readBytes(buf, offset),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Flags) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).writeBytes(buf, offset, value.value)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset, value.value)
                 }
             }
 

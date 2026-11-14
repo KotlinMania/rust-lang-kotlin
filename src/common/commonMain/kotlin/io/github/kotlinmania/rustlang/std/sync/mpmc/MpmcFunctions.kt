@@ -26,6 +26,8 @@ import io.github.kotlinmania.rustlang.std.sync.mpmc.list.Channel
  * # Examples
  *
  * ```kotlin
+ * import std.thread
+ *
  * @feature(mpmcChannel)
  * public fun doctestEntry() {
  *     val (sender, receiver) = channel()
@@ -74,6 +76,8 @@ public fun <T> channel(): Pair<Sender<T>, Receiver<T>> {
  * # Examples
  *
  * ```kotlin
+ * import std.thread
+ *
  * val (sender, receiver) = syncChannel(1)
  * // this returns immediately
  * sender.send(1).unwrap()

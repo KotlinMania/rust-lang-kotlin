@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.core.range
 
 import io.github.kotlinmania.rustlang.core.cmp.compareNaturalOrder
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.ops.Bound.Excluded
 import io.github.kotlinmania.rustlang.core.ops.Bound.Included
 import io.github.kotlinmania.rustlang.core.ops.Bound.Unbounded
@@ -142,11 +143,11 @@ public open class Range<Idx>(
     public open fun isEmpty(): Boolean = !((compareNaturalOrder(this.start, this.end) < 0))
 
     public companion object {
-        public fun <Idx> typeLayout(typeLayoutIdx: io.github.kotlinmania.rustlang.core.mem.TypeLayout<Idx>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Range<Idx>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Range<Idx>> {
+        public fun <Idx> typeLayout(typeLayoutIdx: TypeLayout<Idx>): TypeLayout<Range<Idx>> =
+            object : TypeLayout<Range<Idx>> {
                 override val alignBytes: Long = listOf(1L, typeLayoutIdx.alignBytes).max()
-                private val off1: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(typeLayoutIdx.sizeBytes, typeLayoutIdx.alignBytes)
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes((off1 + typeLayoutIdx.sizeBytes), alignBytes)
+                private val off1: Long = alignUpBytes(typeLayoutIdx.sizeBytes, typeLayoutIdx.alignBytes)
+                override val sizeBytes: Long = alignUpBytes((off1 + typeLayoutIdx.sizeBytes), alignBytes)
                 override fun readNative(addr: Long): Range<Idx> =
                     Range(
                         (typeLayoutIdx).readNative(addr),
@@ -298,11 +299,11 @@ public open class RangeInclusive<Idx>(
     public open fun iter(): RangeInclusiveIter<Idx> = this.clone().intoIter()
 
     public companion object {
-        public fun <Idx> typeLayout(typeLayoutIdx: io.github.kotlinmania.rustlang.core.mem.TypeLayout<Idx>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<RangeInclusive<Idx>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<RangeInclusive<Idx>> {
+        public fun <Idx> typeLayout(typeLayoutIdx: TypeLayout<Idx>): TypeLayout<RangeInclusive<Idx>> =
+            object : TypeLayout<RangeInclusive<Idx>> {
                 override val alignBytes: Long = listOf(1L, typeLayoutIdx.alignBytes).max()
-                private val off1: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(typeLayoutIdx.sizeBytes, typeLayoutIdx.alignBytes)
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes((off1 + typeLayoutIdx.sizeBytes), alignBytes)
+                private val off1: Long = alignUpBytes(typeLayoutIdx.sizeBytes, typeLayoutIdx.alignBytes)
+                override val sizeBytes: Long = alignUpBytes((off1 + typeLayoutIdx.sizeBytes), alignBytes)
                 override fun readNative(addr: Long): RangeInclusive<Idx> =
                     RangeInclusive(
                         (typeLayoutIdx).readNative(addr),
@@ -465,10 +466,10 @@ public open class RangeFrom<Idx>(
     public open fun <U> contains(item: U): Boolean = RangeFrom.contains(this, item)
 
     public companion object {
-        public fun <Idx> typeLayout(typeLayoutIdx: io.github.kotlinmania.rustlang.core.mem.TypeLayout<Idx>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<RangeFrom<Idx>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<RangeFrom<Idx>> {
+        public fun <Idx> typeLayout(typeLayoutIdx: TypeLayout<Idx>): TypeLayout<RangeFrom<Idx>> =
+            object : TypeLayout<RangeFrom<Idx>> {
                 override val alignBytes: Long = listOf(1L, typeLayoutIdx.alignBytes).max()
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(typeLayoutIdx.sizeBytes, alignBytes)
+                override val sizeBytes: Long = alignUpBytes(typeLayoutIdx.sizeBytes, alignBytes)
                 override fun readNative(addr: Long): RangeFrom<Idx> =
                     RangeFrom(
                         (typeLayoutIdx).readNative(addr),
@@ -530,10 +531,10 @@ public fun <T> fromRangeFromT(value: io.github.kotlinmania.rustlang.core.range.l
  * It does not have an [IntoIterator] implementation, so you can't use it in a
  * `for` loop directly. This won't compile:
  *
- * ```kotlin
+ * ```compile_fail,E0277
  * // error[E0277]: the trait bound `std.range.RangeToInclusive<{integer}>:
  * // std.iter.Iterator` is not satisfied
- * for (i in 0..5) {
+ * for i in ..=5 {
  *     // ...
  * }
  * ```
@@ -588,10 +589,10 @@ public open class RangeToInclusive<Idx>(
     public open fun <U> contains(item: U): Boolean = RangeToInclusive.contains(this, item)
 
     public companion object {
-        public fun <Idx> typeLayout(typeLayoutIdx: io.github.kotlinmania.rustlang.core.mem.TypeLayout<Idx>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<RangeToInclusive<Idx>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<RangeToInclusive<Idx>> {
+        public fun <Idx> typeLayout(typeLayoutIdx: TypeLayout<Idx>): TypeLayout<RangeToInclusive<Idx>> =
+            object : TypeLayout<RangeToInclusive<Idx>> {
                 override val alignBytes: Long = listOf(1L, typeLayoutIdx.alignBytes).max()
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(typeLayoutIdx.sizeBytes, alignBytes)
+                override val sizeBytes: Long = alignUpBytes(typeLayoutIdx.sizeBytes, alignBytes)
                 override fun readNative(addr: Long): RangeToInclusive<Idx> =
                     RangeToInclusive(
                         (typeLayoutIdx).readNative(addr),

@@ -444,7 +444,7 @@ public fun Byte.reverseBits(): Byte = rustReverseBits((this.toUByte())).toByte()
  * if cfg(targetEndian = "big") {} else {}
  * ```
  */
-public fun Byte.Companion.fromBe(x: Byte): Byte = cfgSelect(targetEndian, "big", x, x, swapBytes)
+public fun Byte.Companion.fromBe(x: Byte): Byte = x
 
 /**
  * Converts an integer from little endian to the target's endianness.
@@ -459,7 +459,7 @@ public fun Byte.Companion.fromBe(x: Byte): Byte = cfgSelect(targetEndian, "big",
  * if cfg(targetEndian = "little") {} else {}
  * ```
  */
-public fun Byte.Companion.fromLe(x: Byte): Byte = cfgSelect(targetEndian, "little", x, x, swapBytes)
+public fun Byte.Companion.fromLe(x: Byte): Byte = x
 
 /**
  * Swaps bytes of `self` on little endian targets.
@@ -481,7 +481,7 @@ public fun Byte.Companion.fromLe(x: Byte): Byte = cfgSelect(targetEndian, "littl
  * }
  * ```
  */
-public fun Byte.toBe(): Byte = cfgSelect(targetEndian, "big", this, this, swapBytes)
+public fun Byte.toBe(): Byte = this
 
 /**
  * Swaps bytes of `self` on big endian targets.
@@ -503,7 +503,7 @@ public fun Byte.toBe(): Byte = cfgSelect(targetEndian, "big", this, this, swapBy
  * }
  * ```
  */
-public fun Byte.toLe(): Byte = cfgSelect(targetEndian, "little", this, this, swapBytes)
+public fun Byte.toLe(): Byte = this
 
 /**
  * Checked integer addition. Computes `self + rhs`, returning `None`
@@ -3606,7 +3606,7 @@ public fun Short.reverseBits(): Short = rustReverseBits((this.toUShort())).toSho
  * if cfg(targetEndian = "big") {} else {}
  * ```
  */
-public fun Short.Companion.fromBe(x: Short): Short = cfgSelect(targetEndian, "big", x, x, swapBytes)
+public fun Short.Companion.fromBe(x: Short): Short = (((((x).toInt() and 0xFF) shl 8) or (((x).toInt() ushr 8) and 0xFF)).toShort())
 
 /**
  * Converts an integer from little endian to the target's endianness.
@@ -3621,7 +3621,7 @@ public fun Short.Companion.fromBe(x: Short): Short = cfgSelect(targetEndian, "bi
  * if cfg(targetEndian = "little") {} else {}
  * ```
  */
-public fun Short.Companion.fromLe(x: Short): Short = cfgSelect(targetEndian, "little", x, x, swapBytes)
+public fun Short.Companion.fromLe(x: Short): Short = x
 
 /**
  * Swaps bytes of `self` on little endian targets.
@@ -3643,7 +3643,7 @@ public fun Short.Companion.fromLe(x: Short): Short = cfgSelect(targetEndian, "li
  * }
  * ```
  */
-public fun Short.toBe(): Short = cfgSelect(targetEndian, "big", this, this, swapBytes)
+public fun Short.toBe(): Short = (((((this).toInt() and 0xFF) shl 8) or (((this).toInt() ushr 8) and 0xFF)).toShort())
 
 /**
  * Swaps bytes of `self` on big endian targets.
@@ -3665,7 +3665,7 @@ public fun Short.toBe(): Short = cfgSelect(targetEndian, "big", this, this, swap
  * }
  * ```
  */
-public fun Short.toLe(): Short = cfgSelect(targetEndian, "little", this, this, swapBytes)
+public fun Short.toLe(): Short = this
 
 /**
  * Checked integer addition. Computes `self + rhs`, returning `None`
@@ -6738,7 +6738,7 @@ public fun Int.reverseBits(): Int = rustReverseBits((this.toUInt())).toInt()
  * if cfg(targetEndian = "big") {} else {}
  * ```
  */
-public fun Int.Companion.fromBe(x: Int): Int = cfgSelect(targetEndian, "big", x, x, swapBytes)
+public fun Int.Companion.fromBe(x: Int): Int = ((((x) shl 24)) or (((x) and 0x0000FF00) shl 8) or (((x) ushr 8) and 0x0000FF00) or ((x) ushr 24))
 
 /**
  * Converts an integer from little endian to the target's endianness.
@@ -6753,7 +6753,7 @@ public fun Int.Companion.fromBe(x: Int): Int = cfgSelect(targetEndian, "big", x,
  * if cfg(targetEndian = "little") {} else {}
  * ```
  */
-public fun Int.Companion.fromLe(x: Int): Int = cfgSelect(targetEndian, "little", x, x, swapBytes)
+public fun Int.Companion.fromLe(x: Int): Int = x
 
 /**
  * Swaps bytes of `self` on little endian targets.
@@ -6775,7 +6775,7 @@ public fun Int.Companion.fromLe(x: Int): Int = cfgSelect(targetEndian, "little",
  * }
  * ```
  */
-public fun Int.toBe(): Int = cfgSelect(targetEndian, "big", this, this, swapBytes)
+public fun Int.toBe(): Int = ((((this) shl 24)) or (((this) and 0x0000FF00) shl 8) or (((this) ushr 8) and 0x0000FF00) or ((this) ushr 24))
 
 /**
  * Swaps bytes of `self` on big endian targets.
@@ -6797,7 +6797,7 @@ public fun Int.toBe(): Int = cfgSelect(targetEndian, "big", this, this, swapByte
  * }
  * ```
  */
-public fun Int.toLe(): Int = cfgSelect(targetEndian, "little", this, this, swapBytes)
+public fun Int.toLe(): Int = this
 
 /**
  * Checked integer addition. Computes `self + rhs`, returning `None`
@@ -9870,7 +9870,7 @@ public fun Long.reverseBits(): Long = rustReverseBits((this.toULong())).toLong()
  * if cfg(targetEndian = "big") {} else {}
  * ```
  */
-public fun Long.Companion.fromBe(x: Long): Long = cfgSelect(targetEndian, "big", x, x, swapBytes)
+public fun Long.Companion.fromBe(x: Long): Long = (((((x).toULong() shl 56)) or (((x).toULong() and 0x000000000000FF00uL) shl 40) or (((x).toULong() and 0x0000000000FF0000uL) shl 24) or (((x).toULong() and 0x00000000FF000000uL) shl 8) or ((((x).toULong() shr 8) and 0x00000000FF000000uL)) or ((((x).toULong() shr 24) and 0x0000000000FF0000uL)) or ((((x).toULong() shr 40) and 0x000000000000FF00uL)) or ((x).toULong() shr 56)).toLong())
 
 /**
  * Converts an integer from little endian to the target's endianness.
@@ -9885,7 +9885,7 @@ public fun Long.Companion.fromBe(x: Long): Long = cfgSelect(targetEndian, "big",
  * if cfg(targetEndian = "little") {} else {}
  * ```
  */
-public fun Long.Companion.fromLe(x: Long): Long = cfgSelect(targetEndian, "little", x, x, swapBytes)
+public fun Long.Companion.fromLe(x: Long): Long = x
 
 /**
  * Swaps bytes of `self` on little endian targets.
@@ -9907,7 +9907,7 @@ public fun Long.Companion.fromLe(x: Long): Long = cfgSelect(targetEndian, "littl
  * }
  * ```
  */
-public fun Long.toBe(): Long = cfgSelect(targetEndian, "big", this, this, swapBytes)
+public fun Long.toBe(): Long = (((((this).toULong() shl 56)) or (((this).toULong() and 0x000000000000FF00uL) shl 40) or (((this).toULong() and 0x0000000000FF0000uL) shl 24) or (((this).toULong() and 0x00000000FF000000uL) shl 8) or ((((this).toULong() shr 8) and 0x00000000FF000000uL)) or ((((this).toULong() shr 24) and 0x0000000000FF0000uL)) or ((((this).toULong() shr 40) and 0x000000000000FF00uL)) or ((this).toULong() shr 56)).toLong())
 
 /**
  * Swaps bytes of `self` on big endian targets.
@@ -9929,7 +9929,7 @@ public fun Long.toBe(): Long = cfgSelect(targetEndian, "big", this, this, swapBy
  * }
  * ```
  */
-public fun Long.toLe(): Long = cfgSelect(targetEndian, "little", this, this, swapBytes)
+public fun Long.toLe(): Long = this
 
 /**
  * Checked integer addition. Computes `self + rhs`, returning `None`
@@ -13010,7 +13010,7 @@ public fun I128.reverseBits(): I128 = rustReverseBits((this.toU128())).toI128()
  * if cfg(targetEndian = "big") {} else {}
  * ```
  */
-public fun I128.Companion.fromBe(x: I128): I128 = cfgSelect(targetEndian, "big", x, x, swapBytes)
+public fun I128.Companion.fromBe(x: I128): I128 = rustSwapBytes(x)
 
 /**
  * Converts an integer from little endian to the target's endianness.
@@ -13025,7 +13025,7 @@ public fun I128.Companion.fromBe(x: I128): I128 = cfgSelect(targetEndian, "big",
  * if cfg(targetEndian = "little") {} else {}
  * ```
  */
-public fun I128.Companion.fromLe(x: I128): I128 = cfgSelect(targetEndian, "little", x, x, swapBytes)
+public fun I128.Companion.fromLe(x: I128): I128 = x
 
 /**
  * Swaps bytes of `self` on little endian targets.
@@ -13047,7 +13047,7 @@ public fun I128.Companion.fromLe(x: I128): I128 = cfgSelect(targetEndian, "littl
  * }
  * ```
  */
-public fun I128.toBe(): I128 = cfgSelect(targetEndian, "big", this, this, swapBytes)
+public fun I128.toBe(): I128 = rustSwapBytes(this)
 
 /**
  * Swaps bytes of `self` on big endian targets.
@@ -13069,7 +13069,7 @@ public fun I128.toBe(): I128 = cfgSelect(targetEndian, "big", this, this, swapBy
  * }
  * ```
  */
-public fun I128.toLe(): I128 = cfgSelect(targetEndian, "little", this, this, swapBytes)
+public fun I128.toLe(): I128 = this
 
 /**
  * Checked integer addition. Computes `self + rhs`, returning `None`
@@ -16614,7 +16614,7 @@ public fun UByte.reverseBits(): UByte = kmBitreverseU64((this).toULong()).toUByt
  * if cfg(targetEndian = "big") {} else {}
  * ```
  */
-public fun UByte.Companion.fromBe(x: UByte): UByte = cfgSelect(targetEndian, "big", x, x, swapBytes)
+public fun UByte.Companion.fromBe(x: UByte): UByte = x
 
 /**
  * Converts an integer from little endian to the target's endianness.
@@ -16628,7 +16628,7 @@ public fun UByte.Companion.fromBe(x: UByte): UByte = cfgSelect(targetEndian, "bi
  * if cfg(targetEndian = "little") {} else {}
  * ```
  */
-public fun UByte.Companion.fromLe(x: UByte): UByte = cfgSelect(targetEndian, "little", x, x, swapBytes)
+public fun UByte.Companion.fromLe(x: UByte): UByte = x
 
 /**
  * Converts `self` to big endian from the target's endianness.
@@ -16646,7 +16646,7 @@ public fun UByte.Companion.fromLe(x: UByte): UByte = cfgSelect(targetEndian, "li
  * }
  * ```
  */
-public fun UByte.toBe(): UByte = cfgSelect(targetEndian, "big", this, this, swapBytes)
+public fun UByte.toBe(): UByte = this
 
 /**
  * Converts `self` to little endian from the target's endianness.
@@ -16664,7 +16664,7 @@ public fun UByte.toBe(): UByte = cfgSelect(targetEndian, "big", this, this, swap
  * }
  * ```
  */
-public fun UByte.toLe(): UByte = cfgSelect(targetEndian, "little", this, this, swapBytes)
+public fun UByte.toLe(): UByte = this
 
 /**
  * Checked integer addition. Computes `self + rhs`, returning `None`
@@ -18439,7 +18439,7 @@ public fun UByte.carryingMul(rhs: UByte, carry: UByte): Pair<UByte, UByte> = UBy
  *         return out
  *     }
  *     // -1 * -1 == 1
- *     check(quadraticMul(List(3) { 0xFF }, List(3) { 0xFF }) == listOf(1, 0, 0))
+ *     check(quadraticMul(List(3) { 0xFF }, List(3) { 0xFF }) == ubyteArrayOf(1u, 0u, 0u))
  *     check(UInt.wrappingMul(0x9e3779b9, 0x7f4a7c15) == 0xcffc982d)
  *     check(quadraticMul(UInt.toLeBytes(0x9e3779b9), UInt.toLeBytes(0x7f4a7c15)) == UInt.toLeBytes(0xcffc982d))
  * }
@@ -20423,7 +20423,7 @@ public fun UShort.reverseBits(): UShort = kmBitreverseU64((this).toULong()).toUS
  * if cfg(targetEndian = "big") {} else {}
  * ```
  */
-public fun UShort.Companion.fromBe(x: UShort): UShort = cfgSelect(targetEndian, "big", x, x, swapBytes)
+public fun UShort.Companion.fromBe(x: UShort): UShort = (((((x).toUInt() and 0xFFu) shl 8) or (((x).toUInt() shr 8) and 0xFFu)).toUShort())
 
 /**
  * Converts an integer from little endian to the target's endianness.
@@ -20437,7 +20437,7 @@ public fun UShort.Companion.fromBe(x: UShort): UShort = cfgSelect(targetEndian, 
  * if cfg(targetEndian = "little") {} else {}
  * ```
  */
-public fun UShort.Companion.fromLe(x: UShort): UShort = cfgSelect(targetEndian, "little", x, x, swapBytes)
+public fun UShort.Companion.fromLe(x: UShort): UShort = x
 
 /**
  * Converts `self` to big endian from the target's endianness.
@@ -20455,7 +20455,7 @@ public fun UShort.Companion.fromLe(x: UShort): UShort = cfgSelect(targetEndian, 
  * }
  * ```
  */
-public fun UShort.toBe(): UShort = cfgSelect(targetEndian, "big", this, this, swapBytes)
+public fun UShort.toBe(): UShort = (((((this).toUInt() and 0xFFu) shl 8) or (((this).toUInt() shr 8) and 0xFFu)).toUShort())
 
 /**
  * Converts `self` to little endian from the target's endianness.
@@ -20473,7 +20473,7 @@ public fun UShort.toBe(): UShort = cfgSelect(targetEndian, "big", this, this, sw
  * }
  * ```
  */
-public fun UShort.toLe(): UShort = cfgSelect(targetEndian, "little", this, this, swapBytes)
+public fun UShort.toLe(): UShort = this
 
 /**
  * Checked integer addition. Computes `self + rhs`, returning `None`
@@ -22248,7 +22248,7 @@ public fun UShort.carryingMul(rhs: UShort, carry: UShort): Pair<UShort, UShort> 
  *         return out
  *     }
  *     // -1 * -1 == 1
- *     check(quadraticMul(List(3) { 0xFF }, List(3) { 0xFF }) == listOf(1, 0, 0))
+ *     check(quadraticMul(List(3) { 0xFF }, List(3) { 0xFF }) == ubyteArrayOf(1u, 0u, 0u))
  *     check(UInt.wrappingMul(0x9e3779b9, 0x7f4a7c15) == 0xcffc982d)
  *     check(quadraticMul(UInt.toLeBytes(0x9e3779b9), UInt.toLeBytes(0x7f4a7c15)) == UInt.toLeBytes(0xcffc982d))
  * }
@@ -23642,7 +23642,7 @@ public fun UInt.reverseBits(): UInt = kmBitreverseU64((this).toULong()).toUInt()
  * if cfg(targetEndian = "big") {} else {}
  * ```
  */
-public fun UInt.Companion.fromBe(x: UInt): UInt = cfgSelect(targetEndian, "big", x, x, swapBytes)
+public fun UInt.Companion.fromBe(x: UInt): UInt = ((((x) shl 24)) or (((x) and 0x0000FF00u) shl 8) or (((x) shr 8) and 0x0000FF00u) or ((x) shr 24))
 
 /**
  * Converts an integer from little endian to the target's endianness.
@@ -23656,7 +23656,7 @@ public fun UInt.Companion.fromBe(x: UInt): UInt = cfgSelect(targetEndian, "big",
  * if cfg(targetEndian = "little") {} else {}
  * ```
  */
-public fun UInt.Companion.fromLe(x: UInt): UInt = cfgSelect(targetEndian, "little", x, x, swapBytes)
+public fun UInt.Companion.fromLe(x: UInt): UInt = x
 
 /**
  * Converts `self` to big endian from the target's endianness.
@@ -23674,7 +23674,7 @@ public fun UInt.Companion.fromLe(x: UInt): UInt = cfgSelect(targetEndian, "littl
  * }
  * ```
  */
-public fun UInt.toBe(): UInt = cfgSelect(targetEndian, "big", this, this, swapBytes)
+public fun UInt.toBe(): UInt = ((((this) shl 24)) or (((this) and 0x0000FF00u) shl 8) or (((this) shr 8) and 0x0000FF00u) or ((this) shr 24))
 
 /**
  * Converts `self` to little endian from the target's endianness.
@@ -23692,7 +23692,7 @@ public fun UInt.toBe(): UInt = cfgSelect(targetEndian, "big", this, this, swapBy
  * }
  * ```
  */
-public fun UInt.toLe(): UInt = cfgSelect(targetEndian, "little", this, this, swapBytes)
+public fun UInt.toLe(): UInt = this
 
 /**
  * Checked integer addition. Computes `self + rhs`, returning `None`
@@ -25467,7 +25467,7 @@ public fun UInt.carryingMul(rhs: UInt, carry: UInt): Pair<UInt, UInt> = UInt.car
  *         return out
  *     }
  *     // -1 * -1 == 1
- *     check(quadraticMul(List(3) { 0xFF }, List(3) { 0xFF }) == listOf(1, 0, 0))
+ *     check(quadraticMul(List(3) { 0xFF }, List(3) { 0xFF }) == ubyteArrayOf(1u, 0u, 0u))
  *     check(UInt.wrappingMul(0x9e3779b9, 0x7f4a7c15) == 0xcffc982d)
  *     check(quadraticMul(UInt.toLeBytes(0x9e3779b9), UInt.toLeBytes(0x7f4a7c15)) == UInt.toLeBytes(0xcffc982d))
  * }
@@ -26836,7 +26836,7 @@ public fun ULong.reverseBits(): ULong = kmBitreverseU64((this).toULong()).toULon
  * if cfg(targetEndian = "big") {} else {}
  * ```
  */
-public fun ULong.Companion.fromBe(x: ULong): ULong = cfgSelect(targetEndian, "big", x, x, swapBytes)
+public fun ULong.Companion.fromBe(x: ULong): ULong = ((((x) shl 56)) or (((x) and 0x000000000000FF00uL) shl 40) or (((x) and 0x0000000000FF0000uL) shl 24) or (((x) and 0x00000000FF000000uL) shl 8) or ((((x) shr 8) and 0x00000000FF000000uL)) or ((((x) shr 24) and 0x0000000000FF0000uL)) or ((((x) shr 40) and 0x000000000000FF00uL)) or ((x) shr 56))
 
 /**
  * Converts an integer from little endian to the target's endianness.
@@ -26850,7 +26850,7 @@ public fun ULong.Companion.fromBe(x: ULong): ULong = cfgSelect(targetEndian, "bi
  * if cfg(targetEndian = "little") {} else {}
  * ```
  */
-public fun ULong.Companion.fromLe(x: ULong): ULong = cfgSelect(targetEndian, "little", x, x, swapBytes)
+public fun ULong.Companion.fromLe(x: ULong): ULong = x
 
 /**
  * Converts `self` to big endian from the target's endianness.
@@ -26868,7 +26868,7 @@ public fun ULong.Companion.fromLe(x: ULong): ULong = cfgSelect(targetEndian, "li
  * }
  * ```
  */
-public fun ULong.toBe(): ULong = cfgSelect(targetEndian, "big", this, this, swapBytes)
+public fun ULong.toBe(): ULong = ((((this) shl 56)) or (((this) and 0x000000000000FF00uL) shl 40) or (((this) and 0x0000000000FF0000uL) shl 24) or (((this) and 0x00000000FF000000uL) shl 8) or ((((this) shr 8) and 0x00000000FF000000uL)) or ((((this) shr 24) and 0x0000000000FF0000uL)) or ((((this) shr 40) and 0x000000000000FF00uL)) or ((this) shr 56))
 
 /**
  * Converts `self` to little endian from the target's endianness.
@@ -26886,7 +26886,7 @@ public fun ULong.toBe(): ULong = cfgSelect(targetEndian, "big", this, this, swap
  * }
  * ```
  */
-public fun ULong.toLe(): ULong = cfgSelect(targetEndian, "little", this, this, swapBytes)
+public fun ULong.toLe(): ULong = this
 
 /**
  * Checked integer addition. Computes `self + rhs`, returning `None`
@@ -28661,7 +28661,7 @@ public fun ULong.carryingMul(rhs: ULong, carry: ULong): Pair<ULong, ULong> = ULo
  *         return out
  *     }
  *     // -1 * -1 == 1
- *     check(quadraticMul(List(3) { 0xFF }, List(3) { 0xFF }) == listOf(1, 0, 0))
+ *     check(quadraticMul(List(3) { 0xFF }, List(3) { 0xFF }) == ubyteArrayOf(1u, 0u, 0u))
  *     check(UInt.wrappingMul(0x9e3779b9, 0x7f4a7c15) == 0xcffc982d)
  *     check(quadraticMul(UInt.toLeBytes(0x9e3779b9), UInt.toLeBytes(0x7f4a7c15)) == UInt.toLeBytes(0xcffc982d))
  * }
@@ -30030,7 +30030,7 @@ public fun U128.reverseBits(): U128 = U128.fromLong(kmBitreverseU64((this).toULo
  * if cfg(targetEndian = "big") {} else {}
  * ```
  */
-public fun U128.Companion.fromBe(x: U128): U128 = cfgSelect(targetEndian, "big", x, x, swapBytes)
+public fun U128.Companion.fromBe(x: U128): U128 = rustSwapBytes(x)
 
 /**
  * Converts an integer from little endian to the target's endianness.
@@ -30044,7 +30044,7 @@ public fun U128.Companion.fromBe(x: U128): U128 = cfgSelect(targetEndian, "big",
  * if cfg(targetEndian = "little") {} else {}
  * ```
  */
-public fun U128.Companion.fromLe(x: U128): U128 = cfgSelect(targetEndian, "little", x, x, swapBytes)
+public fun U128.Companion.fromLe(x: U128): U128 = x
 
 /**
  * Converts `self` to big endian from the target's endianness.
@@ -30062,7 +30062,7 @@ public fun U128.Companion.fromLe(x: U128): U128 = cfgSelect(targetEndian, "littl
  * }
  * ```
  */
-public fun U128.toBe(): U128 = cfgSelect(targetEndian, "big", this, this, swapBytes)
+public fun U128.toBe(): U128 = rustSwapBytes(this)
 
 /**
  * Converts `self` to little endian from the target's endianness.
@@ -30080,7 +30080,7 @@ public fun U128.toBe(): U128 = cfgSelect(targetEndian, "big", this, this, swapBy
  * }
  * ```
  */
-public fun U128.toLe(): U128 = cfgSelect(targetEndian, "little", this, this, swapBytes)
+public fun U128.toLe(): U128 = this
 
 /**
  * Checked integer addition. Computes `self + rhs`, returning `None`
@@ -31855,7 +31855,7 @@ public fun U128.carryingMul(rhs: U128, carry: U128): Pair<U128, U128> = U128.car
  *         return out
  *     }
  *     // -1 * -1 == 1
- *     check(quadraticMul(List(3) { 0xFF }, List(3) { 0xFF }) == listOf(1, 0, 0))
+ *     check(quadraticMul(List(3) { 0xFF }, List(3) { 0xFF }) == ubyteArrayOf(1u, 0u, 0u))
  *     check(UInt.wrappingMul(0x9e3779b9, 0x7f4a7c15) == 0xcffc982d)
  *     check(quadraticMul(UInt.toLeBytes(0x9e3779b9), UInt.toLeBytes(0x7f4a7c15)) == UInt.toLeBytes(0xcffc982d))
  * }

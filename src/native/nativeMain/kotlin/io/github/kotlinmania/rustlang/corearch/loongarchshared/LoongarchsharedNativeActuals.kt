@@ -1,4 +1,4 @@
-@file:OptIn(kotlinx.cinterop.ExperimentalForeignApi::class, kotlin.ExperimentalUnsignedTypes::class)
+@file:OptIn(ExperimentalForeignApi::class, ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.corearch.loongarchshared
 
@@ -19,6 +19,7 @@ import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.corearch
 import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.corearchLoongarchsharedMovfcsr2gr
 import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.corearchLoongarchsharedMovgr2fcsr
 import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.corearchLoongarchsharedSyscall
+import kotlinx.cinterop.ExperimentalForeignApi
 
 public actual fun dbar(a: Int) {
     corearchLoongarchsharedDbar(a)

@@ -10,12 +10,14 @@ import io.github.kotlinmania.rustlang.core.result.Result
  * allocator.
  */
 public open class AllocError {
+    public open fun clone(): AllocError = AllocError()
+
     // (we need this for downstream impl of trait Error)
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append("memory allocation failed"); Result.Ok(Unit) }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<AllocError> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<AllocError> {
+        public fun typeLayout(): TypeLayout<AllocError> =
+            object : TypeLayout<AllocError> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): AllocError =

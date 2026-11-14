@@ -51,7 +51,7 @@ public open class Drain<T, A : Allocator>(
     // Needed to make Drain covariant over T
     public var marker: Unit,
 ) : Iterable<T> {
-    override fun iterator(): kotlin.collections.Iterator<T> = object : AbstractIterator<T>() {
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@Drain.next()) {
                 null -> done()
@@ -94,7 +94,7 @@ public open class Drain<T, A : Allocator>(
 
             // Dropping `guard` handles moving the remaining elements into place.
             public open fun drop() {
-                if (mem.needsDrop<T>() && this.value.remaining != 0) {
+                if (needsDrop<T>() && this.value.remaining != 0) {
                     // SAFETY: We just checked that `self.remaining != 0`.
                     run {
                         val (front, back) = this.value.asSlices()
@@ -201,7 +201,7 @@ public open class Drain<T, A : Allocator>(
             }
         }
         val guard = DropGuard(this)
-        if (mem.needsDrop<T>() && guard.first.remaining != 0) {
+        if (needsDrop<T>() && guard.first.remaining != 0) {
             // SAFETY: We just checked that `self.remaining != 0`.
             val (front, back) = guard.first.asSlices()
             // since idx is a logical index, we don't need to worry about wrapping.
@@ -245,7 +245,7 @@ public open class Drain<T, A : Allocator>(
 
     public companion object {
         internal fun <T, A : Allocator> new(deque: VecDeque<T, A>, drainStart: Int, drainLen: Int): Drain<T, A> {
-            val origLen = mem.replace(deque.len, drainStart)
+            val origLen = replace(deque.len, drainStart)
             val tailLen = origLen - drainStart - drainLen
             return Drain(deque = NonNull.from(deque), drainLen = drainLen, idx = drainStart, tailLen = tailLen, remaining = drainLen, marker = Unit)
         }

@@ -72,6 +72,7 @@ public class DebugStruct(
  *
  * ```kotlin
  * import std.error.Error
+ * import std.fmt
  * import std.path.PathBuf
  *
  * open class ReadConfigError(public var path: PathBuf) {
@@ -90,6 +91,7 @@ public interface Error {
      *
      * ```kotlin
      * import std.error.Error
+     * import std.fmt
      *
      * open class SuperErrorSideKick {
      *     public open fun fmt(f: StringBuilder) {
@@ -154,6 +156,7 @@ public interface Error {
      * ```kotlin
      * import core.error.Request
      * import core.error.requestRef
+     * import core.fmt
      *
      * @feature(errorGenericMemberAccess)
      * public fun doctestEntry() {
@@ -222,8 +225,8 @@ public interface Error {
 // implementations, since that can enable unsound downcasting.
 public open class Internal {
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Internal> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Internal> {
+        public fun typeLayout(): TypeLayout<Internal> =
+            object : TypeLayout<Internal> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): Internal =
@@ -299,6 +302,7 @@ public inline fun <reified T : Error> Error.downcastMut(): T? = Error.downcastMu
  *
  * ```kotlin
  * import std.error.Error
+ * import std.fmt
  *
  * @feature(errorIter)
  * public fun doctestEntry() {
@@ -447,6 +451,7 @@ public fun <I> requestByTypeTag(err: Error): Reified? where I : Type<Any?> {
  * ```kotlin
  * import core.error.Request
  * import core.error.requestRef
+ * import core.fmt
  *
  * @feature(errorGenericMemberAccess)
  * public fun doctestEntry() {
@@ -952,7 +957,7 @@ public fun <I> Tagged<Erased>.downcastMut(): RustMutableReference<TaggedOption<I
 public open class Source(
     public var current: Error?,
 ) : Iterable<Error> {
-    override fun iterator(): kotlin.collections.Iterator<Error> = object : AbstractIterator<Error>() {
+    override fun iterator(): Iterator<Error> = object : AbstractIterator<Error>() {
         override fun computeNext() {
             when (val v = this@Source.next()) {
                 null -> done()
@@ -961,9 +966,11 @@ public open class Source(
         }
     }
 
+    public open fun clone(): Source = Source(current)
+
     public open fun next(): Error? {
         val current = this.current
-        this.current = this.current?.let(Error::source)
+        this.current = this.current?.let({ Error.source(it) })
         return current
     }
 

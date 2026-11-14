@@ -67,6 +67,8 @@ public open class ByteString internal constructor(
 
     public fun pointerLayout(): TypeLayout<ByteString> = TransparentTypeLayout(fieldLayout, { ptr, layout -> ByteString(ptr, layout) }, { it.value })
 
+    public open fun clone(): ByteString = ByteString(value, fieldLayout)
+
     internal open fun asBytes(): List<UByte> = this.value
 
     internal open fun asBytestr(): ByteStr = ByteStr.new(this.value)
@@ -227,7 +229,7 @@ public open class ByteString internal constructor(
         public fun <I : Iterable<String>> fromIterString(iter: I, fieldLayout: TypeLayout<List<UByte>>): ByteString = ByteString(iter.iterator().joinToString("").intoBytes(), fieldLayout = fieldLayout)
 
         public fun <I : Iterable<List<UByte>>> fromIterUByteSlice(iter: I, fieldLayout: TypeLayout<List<UByte>>): ByteString {
-            val buf = mutableListOf()
+            val buf = mutableListOf<UByte>()
             for (b in iter) {
                 buf.addAll(b)
             }
@@ -235,7 +237,7 @@ public open class ByteString internal constructor(
         }
 
         public fun <I : Iterable<ByteStr>> fromIterByteStr(iter: I, fieldLayout: TypeLayout<List<UByte>>): ByteString {
-            val buf = mutableListOf()
+            val buf = mutableListOf<UByte>()
             for (b in iter) {
                 buf.addAll(b.value)
             }
@@ -243,14 +245,14 @@ public open class ByteString internal constructor(
         }
 
         public fun <I : Iterable<ByteString>> fromIterByteString(iter: I, fieldLayout: TypeLayout<List<UByte>>): ByteString {
-            val buf = mutableListOf()
+            val buf = mutableListOf<UByte>()
             for (b in iter) {
                 buf.append(b.value)
             }
             return ByteString(buf, fieldLayout = fieldLayout)
         }
 
-        public fun fromStr(s: String, fieldLayout: TypeLayout<List<UByte>>): Result<ByteString, Nothing> = Result.Ok(ByteString(s.encodeToByteArray().map { it.toUByte() }.toVec(), fieldLayout = fieldLayout))
+        public fun fromStr(s: String, fieldLayout: TypeLayout<List<UByte>>): Result<ByteString, Nothing> = Result.Ok(ByteString((s.encodeToByteArray().map { it.toUByte() }).toMutableList(), fieldLayout = fieldLayout))
     }
 }
 

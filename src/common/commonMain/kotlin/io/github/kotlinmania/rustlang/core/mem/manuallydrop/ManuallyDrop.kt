@@ -84,10 +84,9 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
  * As one could use the `Debug` implementation to access an already dropped
  * field:
  *
- * ```kotlin
- * val foo = Foo.new()
- * println("$foo")
- * // Undefined behavior!
+ * ```rust,ignore (uses-type-from-separate-snippet)
+ * let foo = Foo.new();
+ * println("{foo:?}"); // Undefined behavior!
  * ```
  *
  * Note that similar unsoundness can arise without `derive`. The cause of the
@@ -213,7 +212,7 @@ public open class ManuallyDrop<T>(
         public fun <T> take(slot: RustMutableReference<ManuallyDrop<T>>): T {
             // SAFETY: we are reading from a reference, which is guaranteed
             // to be valid for reads.
-            return ptr.read((slot).read().value)
+            return read((slot).read().value)
         }
 
         /**
@@ -242,7 +241,7 @@ public open class ManuallyDrop<T>(
             // SAFETY: we are dropping the value pointed to by a mutable reference
             // which is guaranteed to be valid for writes.
             // It is up to the caller to make sure that `slot` isn't dropped again.
-            ptr.dropInPlace((slot).read().value)
+            dropInPlace((slot).read().value)
         }
     }
 }

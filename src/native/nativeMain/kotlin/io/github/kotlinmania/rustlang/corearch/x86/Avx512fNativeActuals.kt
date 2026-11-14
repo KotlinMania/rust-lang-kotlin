@@ -1,10 +1,9 @@
-@file:OptIn(kotlinx.cinterop.ExperimentalForeignApi::class, kotlin.ExperimentalUnsignedTypes::class)
+@file:OptIn(ExperimentalForeignApi::class, ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.corearch.mem
 import io.github.kotlinmania.rustlang.corearch.simd.F32x16
 import io.github.kotlinmania.rustlang.corearch.simd.F32x4
 import io.github.kotlinmania.rustlang.corearch.simd.F32x8
@@ -31,6 +30,7 @@ import io.github.kotlinmania.rustlang.corearch.simd.U64x8
 import io.github.kotlinmania.rustlang.corearch.simd.U8x16
 import io.github.kotlinmania.rustlang.corearch.x86.cinterop.corearchX86Avx512fVfmaddsdround
 import io.github.kotlinmania.rustlang.corearch.x86.cinterop.corearchX86Avx512fVfmaddssround
+import kotlinx.cinterop.ExperimentalForeignApi
 
 public actual fun vsqrtps(a: F32x16, rounding: Int): F32x16 =
     null as F32x16

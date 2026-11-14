@@ -1,6 +1,8 @@
-@file:OptIn(kotlinx.cinterop.ExperimentalForeignApi::class, kotlin.ExperimentalUnsignedTypes::class)
+@file:OptIn(ExperimentalForeignApi::class, ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.corearch.nvptx
+
+import kotlinx.cinterop.ExperimentalForeignApi
 
 public actual fun llvmF16x2Minimum(a: F16x2, b: F16x2): F16x2 =
     F16x2()

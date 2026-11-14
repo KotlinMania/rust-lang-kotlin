@@ -26,6 +26,8 @@ public sealed class Alignment {
  * # Examples
  *
  * ```kotlin
+ * import std.fmt
+ *
  * open class Triangle(
  *     public var a: Float,
  *     public var b: Float,
@@ -253,6 +255,8 @@ internal val ALIGN_UNKNOWN: UInt = 3u shl 29
  * Manually implementing:
  *
  * ```kotlin
+ * import std.fmt
+ *
  * open class Point(public var x: Int, public var y: Int) {
  *     public open fun fmt(f: StringBuilder): Result<Unit> {
  *         return DebugStruct(f, "Point").field("x", this.x).field("y", this.y).finish()
@@ -296,6 +300,7 @@ public interface Debug {
      *
      * ```kotlin
      * import String
+     * import std.fmt
      *
      * public class DebugTuple(
      *     private val out: StringBuilder,
@@ -387,6 +392,8 @@ public interface Debug {
  * Implementing `Display` on a type:
  *
  * ```kotlin
+ * import std.fmt
+ *
  * open class Point(public var x: Int, public var y: Int) {
  *     public open fun fmt(f: StringBuilder): Result<Unit> {
  *         return run { f.append("(${this.x}, ${this.y})"); Result.success(Unit) }
@@ -401,6 +408,8 @@ public interface Display {
      * # Examples
      *
      * ```kotlin
+     * import std.fmt
+     *
      * open class Position(public var longitude: Float, public var latitude: Float) {
      *     public open fun fmt(f: StringBuilder): Result<Unit> {
      *         return run { f.append("(${this.longitude}, ${this.latitude})"); Result.success(Unit) }
@@ -441,6 +450,8 @@ public interface Display {
  * Implementing `Octal` on a type:
  *
  * ```kotlin
+ * import std.fmt
+ *
  * open class Length(public var value: Int) {
  *     public var field0: Int
  *         get() = value
@@ -492,6 +503,8 @@ public interface Octal {
  * Implementing `Binary` on a type:
  *
  * ```kotlin
+ * import std.fmt
+ *
  * open class Length(public var value: Int) {
  *     public var field0: Int
  *         get() = value
@@ -544,6 +557,8 @@ public interface Binary {
  * Implementing `LowerHex` on a type:
  *
  * ```kotlin
+ * import std.fmt
+ *
  * open class Length(public var value: Int) {
  *     public var field0: Int
  *         get() = value
@@ -596,6 +611,8 @@ public interface LowerHex {
  * Implementing `UpperHex` on a type:
  *
  * ```kotlin
+ * import std.fmt
+ *
  * open class Length(public var value: Int) {
  *     public var field0: Int
  *         get() = value
@@ -650,6 +667,7 @@ public interface UpperHex {
  *
  * ```kotlin
  * import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
+ * import std.fmt
  *
  * open class Length(public var value: Int) : fmt.Pointer {
  *     public var field0: Int
@@ -697,6 +715,8 @@ public interface Pointer {
  * Implementing `LowerExp` on a type:
  *
  * ```kotlin
+ * import std.fmt
+ *
  * open class Length(public var value: Int) : fmt.LowerExp {
  *     public var field0: Int
  *         get() = value
@@ -741,6 +761,8 @@ public interface LowerExp {
  * Implementing `UpperExp` on a type:
  *
  * ```kotlin
+ * import std.fmt
+ *
  * open class Length(public var value: Int) : fmt.UpperExp {
  *     public var field0: Int
  *         get() = value

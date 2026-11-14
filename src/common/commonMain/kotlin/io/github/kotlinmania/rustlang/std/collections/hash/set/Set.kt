@@ -7,7 +7,6 @@ import io.github.kotlinmania.rustlang.core.hash.BuildHasher
 import io.github.kotlinmania.rustlang.core.iter.adapters.chain.Chain
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.collections.hash.map.mapTryReserveError
-import io.github.kotlinmania.rustlang.std.fmt
 import io.github.kotlinmania.rustlang.std.hash.random.RandomState
 import io.github.kotlinmania.hashbrown.hashSet as base
 
@@ -152,7 +151,7 @@ public open class HashSet<T, S, A : Allocator> internal constructor(
     public var base: base.HashSet<T, S, A> = baseCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<T> = this.intoIter().iterator()
+    override fun iterator(): Iterator<T> = this.intoIter().iterator()
 
     /**
      * Returns the number of elements the set can hold without reallocating.
@@ -580,7 +579,7 @@ public open class HashSet<T, S, A : Allocator> internal constructor(
      *     var set: MutableSet<String> = listOf("cat", "dog", "horse").iter().map({ pet -> pet.toOwned() }).toMutableSet()
      *     check(set.size == 3)
      *     for (pet in listOf("cat", "dog", "fish")) {
-     *         val value = set.getOrInsertWith(pet, String.toOwned)
+     *         val value = set.getOrInsertWith(pet, { it.toOwned() })
      *         check(value == pet)
      *     }
      *     check(set.size == 4)
@@ -1174,7 +1173,7 @@ public fun <T, S> HashSet<T, S>.sub(rhs: HashSet<T, S>): HashSet<T, S> where S :
 public open class Iter<K>(
     public var base: base.Iter<K>,
 ) : Iterable<K> {
-    override fun iterator(): kotlin.collections.Iterator<K> = object : AbstractIterator<K>() {
+    override fun iterator(): Iterator<K> = object : AbstractIterator<K>() {
         override fun computeNext() {
             when (val v = this@Iter.next()) {
                 null -> done()
@@ -1225,7 +1224,7 @@ public open class IntoIter<K, A : Allocator> internal constructor(
     public var base: base.IntoIter<K, A> = baseCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<K> = object : AbstractIterator<K>() {
+    override fun iterator(): Iterator<K> = object : AbstractIterator<K>() {
         override fun computeNext() {
             when (val v = this@IntoIter.next()) {
                 null -> done()
@@ -1280,7 +1279,7 @@ public open class Drain<K, A : Allocator> internal constructor(
     public var base: base.Drain<K, A> = baseCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<K> = object : AbstractIterator<K>() {
+    override fun iterator(): Iterator<K> = object : AbstractIterator<K>() {
         override fun computeNext() {
             when (val v = this@Drain.next()) {
                 null -> done()
@@ -1330,7 +1329,7 @@ public open class ExtractIf<K, F, A : Allocator> internal constructor(
     public var base: base.ExtractIf<K, F, A> = baseCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<K> = object : AbstractIterator<K>() {
+    override fun iterator(): Iterator<K> = object : AbstractIterator<K>() {
         override fun computeNext() {
             when (val v = this@ExtractIf.next()) {
                 null -> done()
@@ -1381,7 +1380,7 @@ public open class Intersection<T, S, A : Allocator> internal constructor(
     public var other: HashSet<T, S, A> = otherCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<T> = object : AbstractIterator<T>() {
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@Intersection.next()) {
                 null -> done()
@@ -1453,7 +1452,7 @@ public open class Difference<T, S, A : Allocator> internal constructor(
     public var other: HashSet<T, S, A> = otherCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<T> = object : AbstractIterator<T>() {
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@Difference.next()) {
                 null -> done()
@@ -1522,7 +1521,7 @@ public open class SymmetricDifference<T, S, A : Allocator> internal constructor(
     public var iter: Chain<Difference<T, S, A>, Difference<T, S, A>> = iterCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<T> = object : AbstractIterator<T>() {
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@SymmetricDifference.next()) {
                 null -> done()
@@ -1574,7 +1573,7 @@ public open class Union<T, S, A : Allocator> internal constructor(
     public var iter: Chain<Iter<T>, Difference<T, S, A>> = iterCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<T> = object : AbstractIterator<T>() {
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@Union.next()) {
                 null -> done()

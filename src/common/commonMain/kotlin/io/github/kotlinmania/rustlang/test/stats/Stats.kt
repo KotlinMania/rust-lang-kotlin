@@ -144,6 +144,8 @@ public open class Summary(
     public var quartiles: Triple<Double, Double, Double>,
     public var iqr: Double,
 ) {
+    public open fun clone(): Summary = Summary(sum, min, max, mean, median, variable, stdDev, stdDevPct, medianAbsDev, medianAbsDevPct, quartiles, iqr)
+
     public companion object {
         /**
          * Constructs a new summary of a sample set.
@@ -164,7 +166,7 @@ public fun List<Double>.sum(): Double {
             val localStorageL149C16 = AddressableLocal(partials[i], PrimitiveLayouts.F64)
             val y by localStorageL149C16
             if (x1.abs() < abs(y)) {
-                mem.swap(x1, RustMutableReference(localStorageL149C16.asMutPtr(), localStorageL149C16.layout))
+                swap(x1, RustMutableReference(localStorageL149C16.asMutPtr(), localStorageL149C16.layout))
             }
             // Rounded `x + y` is stored in `hi` with round-off stored in
             // `lo`. Together `hi + lo` are exactly equal to `x + y`.
@@ -243,13 +245,13 @@ public fun List<Double>.medianAbsDevPct(): Double {
 }
 
 public fun List<Double>.percentile(pct: Double): Double {
-    val tmp = this.toVec()
+    val tmp = this.toMutableList()
     localSort(tmp)
     return percentileOfSorted(tmp, pct)
 }
 
 public fun List<Double>.quartiles(): Triple<Double, Double, Double> {
-    val tmp = this.toVec()
+    val tmp = this.toMutableList()
     localSort(tmp)
     val first = 25.0
     val a = percentileOfSorted(tmp, first)
@@ -299,7 +301,7 @@ public fun percentileOfSorted(sortedSamples: List<Double>, pct: Double): Double 
  * See: <https://en.wikipedia.org/wiki/Winsorising>
  */
 public fun winsorize(samples: MutableList<Double>, pct: Double) {
-    val tmp = samples.toVec()
+    val tmp = samples.toMutableList()
     localSort(tmp)
     val lo = percentileOfSorted(tmp, pct)
     val hundred = 100.0

@@ -12,20 +12,19 @@ import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
-import io.github.kotlinmania.rustlang.std.os.xous.ffi.definitions.Error
+import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.path.PathBuf
 import io.github.kotlinmania.rustlang.std.sys.args.common.Args
 import io.github.kotlinmania.rustlang.std.sys.c
 import io.github.kotlinmania.rustlang.std.sys.helpers.wstr.WStrUnits
-import io.github.kotlinmania.rustlang.std.sys.pal.sgx.abi.usercalls.alloc.Iter
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.getCommandLineW
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.getFullPathNameW
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.ensureNoNuls
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.fillUtf16Buf
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.toU16s
 import io.github.kotlinmania.rustlang.std.sys.path.windows.getLongPath
-import io.github.kotlinmania.rustlang.std.sys.paths.motor.currentExe
+import io.github.kotlinmania.rustlang.std.sys.paths.unix.currentExe
 
 // The Windows command line is just a string
 // <https://docs.microsoft.com/en-us/archive/blogs/larryosterman/the-windows-command-line-is-just-a-string>
@@ -188,7 +187,7 @@ public sealed class Quote {
     public data object Never : Quote()
 }
 
-internal fun appendArg(cmd: List<UShort>, arg: Arg, forceQuotes: Boolean): Result<Unit> {
+internal fun appendArg(cmd: List<UShort>, arg: Arg, forceQuotes: Boolean): Result<Unit, Error> {
     val (arg3, quote) =
         when (arg) {
             is Arg.Regular -> {
@@ -243,7 +242,7 @@ internal fun appendArg(cmd: List<UShort>, arg: Arg, forceQuotes: Boolean): Resul
     return Result.Ok(Unit)
 }
 
-public fun appendBatArg(cmd: List<UShort>, arg: OsStr, quote: Boolean): Result<Unit> {
+public fun appendBatArg(cmd: List<UShort>, arg: OsStr, quote: Boolean): Result<Unit, Error> {
     var quote1 = quote
     when (val tryResult = ensureNoNuls(arg)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
     // If an argument has 0 characters then we need to quote it to ensure
@@ -316,8 +315,8 @@ public fun appendBatArg(cmd: List<UShort>, arg: OsStr, quote: Boolean): Result<U
     return Result.Ok(Unit)
 }
 
-internal fun makeBatCommandLine(script: List<UShort>, args: List<Arg>, forceQuotes: Boolean): Result<List<UShort>> {
-    val INVALID_ARGUMENT_ERROR: Error = io.constError(io.ErrorKind.InvalidInput, "batch file arguments are invalid")
+internal fun makeBatCommandLine(script: List<UShort>, args: List<Arg>, forceQuotes: Boolean): Result<List<UShort>, Error> {
+    val INVALID_ARGUMENT_ERROR: io.github.kotlinmania.rustlang.core.io.error.Error = io.constError(ErrorKind.InvalidInput, "batch file arguments are invalid")
     // Windows file names cannot contain a `"` character or end with `\\`.
     // If the script name does then return an error.
     // Also we disallow `^` and `%` to prevent escaping or environment variable substitution.
@@ -331,7 +330,7 @@ internal fun makeBatCommandLine(script: List<UShort>, args: List<Arg>, forceQuot
     // Push the script name surrounded by its quote pair.
     cmd.add(34u.toUShort())
     if (script.any({ c -> INVALID.contains(c) }) || script.last() == (92u.toUShort())) {
-        return Result.Err(io.constError(io.ErrorKind.InvalidInput, "`Command` rejects batch scripts that contain contain `\"`, `^` or `%` or end with `\\`"))
+        return Result.Err(io.constError(ErrorKind.InvalidInput, "`Command` rejects batch scripts that contain contain `\"`, `^` or `%` or end with `\\`"))
     }
     cmd.addAll((script.stripSuffix(listOf(0)) ?: script))
     cmd.add(34u.toUShort())
@@ -368,11 +367,11 @@ internal fun makeBatCommandLine(script: List<UShort>, args: List<Arg>, forceQuot
  *
  * This is necessary because cmd.exe does not support verbatim paths.
  */
-internal fun toUserPath(path: Path): Result<List<UShort>> {
+internal fun toUserPath(path: Path): Result<List<UShort>, Error> {
     return fromWideToUserPath(when (val tryResult = toU16s(path)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) })
 }
 
-internal fun fromWideToUserPath(path: List<UShort>): Result<List<UShort>> {
+internal fun fromWideToUserPath(path: List<UShort>): Result<List<UShort>, Error> {
     // UTF-16 encoded code points, used in parsing and building UTF-16 paths.
     // All of these are in the ASCII range so they can be cast directly to `UShort`.
     val SEP: UShort = 92u.toUShort()

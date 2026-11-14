@@ -12,7 +12,6 @@ import io.github.kotlinmania.rustlang.core.intrinsics.copysignf128
 import io.github.kotlinmania.rustlang.core.intrinsics.fabs
 import io.github.kotlinmania.rustlang.core.intrinsics.faddAlgebraic
 import io.github.kotlinmania.rustlang.core.intrinsics.fdivAlgebraic
-import io.github.kotlinmania.rustlang.core.intrinsics.fma
 import io.github.kotlinmania.rustlang.core.intrinsics.fmulAlgebraic
 import io.github.kotlinmania.rustlang.core.intrinsics.fmuladd
 import io.github.kotlinmania.rustlang.core.intrinsics.fremAlgebraic
@@ -24,6 +23,7 @@ import io.github.kotlinmania.rustlang.core.intrinsics.minimumf128
 import io.github.kotlinmania.rustlang.core.num.FpCategory
 import io.github.kotlinmania.rustlang.core.num.f32.INFINITY
 import io.github.kotlinmania.rustlang.core.num.f32.NEG_INFINITY
+import io.github.kotlinmania.rustlang.core.num.imp.libm.fma
 import io.github.kotlinmania.rustlang.core.panic.constAssert
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 
@@ -813,7 +813,7 @@ public inline fun <reified Int> F128.toIntStrict(): Int = (this.toIntChecked<Int
  */
 public fun F128.toBits(): U128 {
     // SAFETY: `ULong` is a plain old datatype so we can always reinterpret to it.
-    return mem.transmute(this)
+    return transmute(this)
 }
 
 /**
@@ -858,7 +858,7 @@ public fun F128.toBits(): U128 {
 public fun F128.Companion.fromBits(v: U128): F128 {
     // It turns out the safety issues with sNaN were overblown! Hooray!
     // SAFETY: `ULong` is a plain old datatype so we can always reinterpret from it.
-    return mem.transmute(v)
+    return transmute(v)
 }
 
 /**
@@ -1341,7 +1341,7 @@ public fun F128.nanTo(replacement: F128): F128 =
  * }
  * ```
  */
-public fun F128.floor(): F128 = io.github.kotlinmania.rustlang.core.intrinsics.floor(this)
+public fun F128.floor(): F128 = io.github.kotlinmania.rustlang.core.num.f32.math.floor(this)
 
 /**
  * Returns the smallest integer greater than or equal to `self`.
@@ -1360,7 +1360,7 @@ public fun F128.floor(): F128 = io.github.kotlinmania.rustlang.core.intrinsics.f
  * }
  * ```
  */
-public fun F128.ceil(): F128 = io.github.kotlinmania.rustlang.core.intrinsics.ceil(this)
+public fun F128.ceil(): F128 = io.github.kotlinmania.rustlang.core.num.f32.math.ceil(this)
 
 /**
  * Returns the nearest integer to `self`. If a value is half-way between two
@@ -1386,7 +1386,7 @@ public fun F128.ceil(): F128 = io.github.kotlinmania.rustlang.core.intrinsics.ce
  * }
  * ```
  */
-public fun F128.round(): F128 = io.github.kotlinmania.rustlang.core.intrinsics.round(this)
+public fun F128.round(): F128 = io.github.kotlinmania.rustlang.core.num.f32.math.round(this)
 
 /**
  * Returns the nearest integer to a number. Rounds half-way cases to the number
@@ -1410,7 +1410,7 @@ public fun F128.round(): F128 = io.github.kotlinmania.rustlang.core.intrinsics.r
  * }
  * ```
  */
-public fun F128.roundTiesEven(): F128 = io.github.kotlinmania.rustlang.core.intrinsics.roundTiesEven(this)
+public fun F128.roundTiesEven(): F128 = io.github.kotlinmania.rustlang.core.num.f32.math.roundTiesEven(this)
 
 /**
  * Returns the integer part of `self`.
@@ -1432,7 +1432,7 @@ public fun F128.roundTiesEven(): F128 = io.github.kotlinmania.rustlang.core.intr
  * }
  * ```
  */
-public fun F128.trunc(): F128 = io.github.kotlinmania.rustlang.core.intrinsics.trunc(this)
+public fun F128.trunc(): F128 = io.github.kotlinmania.rustlang.core.num.f32.math.trunc(this)
 
 /**
  * Returns the fractional part of `self`.
@@ -1642,7 +1642,7 @@ public fun F128.remEuclid(rhs: F128): F128 {
  * }
  * ```
  */
-public fun F128.powi(n: Int): F128 = io.github.kotlinmania.rustlang.core.intrinsics.powi(this, n)
+public fun F128.powi(n: Int): F128 = io.github.kotlinmania.rustlang.core.num.f32.math.powi(this, n)
 
 /**
  * Returns the square root of a number.
@@ -1669,4 +1669,4 @@ public fun F128.powi(n: Int): F128 = io.github.kotlinmania.rustlang.core.intrins
  * }
  * ```
  */
-public fun F128.sqrt(): F128 = io.github.kotlinmania.rustlang.core.intrinsics.sqrt(this)
+public fun F128.sqrt(): F128 = io.github.kotlinmania.rustlang.core.num.f32.math.sqrt(this)

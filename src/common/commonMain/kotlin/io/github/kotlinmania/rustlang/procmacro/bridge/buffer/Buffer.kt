@@ -36,7 +36,7 @@ public open class Buffer internal constructor(
         this.len = 0
     }
 
-    internal open fun take(): Buffer = mem.take(this)
+    internal open fun take(): Buffer = take(this)
 
     // We have the array method separate from extending from a slice. This is
     // because in the case of small arrays, codegen can be more efficient
@@ -116,10 +116,10 @@ public open class Buffer internal constructor(
                 return Buffer.from(v1)
             }
             fun drop(b: Buffer) {
-                mem.drop(toVec(b))
+                drop(toVec(b))
             }
             val (data, len, capacity) = v.intoRawParts()
-            return Buffer(data = data, len = len, capacity = capacity, reserve = reserve, drop = drop)
+            return Buffer(data = data, len = len, capacity = capacity, reserve = ::reserve, drop = ::drop)
         }
     }
 }

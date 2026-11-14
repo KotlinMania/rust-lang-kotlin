@@ -1,4 +1,4 @@
-@file:OptIn(kotlinx.cinterop.ExperimentalForeignApi::class, kotlin.ExperimentalUnsignedTypes::class)
+@file:OptIn(ExperimentalForeignApi::class, ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.corearch.x86
 
@@ -8,6 +8,7 @@ import io.github.kotlinmania.rustlang.corearch.simd.F32x8
 import io.github.kotlinmania.rustlang.corearch.simd.I16x16
 import io.github.kotlinmania.rustlang.corearch.simd.I16x32
 import io.github.kotlinmania.rustlang.corearch.simd.I16x8
+import kotlinx.cinterop.ExperimentalForeignApi
 
 public actual fun cvtne2ps2bf16(a: F32x4, b: F32x4): I16x8 =
     null as I16x8

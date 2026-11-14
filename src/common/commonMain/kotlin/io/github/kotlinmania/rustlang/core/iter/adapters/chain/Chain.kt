@@ -4,7 +4,6 @@ package io.github.kotlinmania.rustlang.core.iter.adapters.chain
 import io.github.kotlinmania.rustlang.core.iter.TrustedLen
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.result.or
 import io.github.kotlinmania.rustlang.core.result.orElse
 
 /**
@@ -36,7 +35,7 @@ public open class Chain<A, B>(
     public var a: A?,
     public var b: B?,
 ) : TrustedLen<Chain<A, B>>, Iterable<Item> {
-    override fun iterator(): kotlin.collections.Iterator<Item> = object : AbstractIterator<Item>() {
+    override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
         override fun computeNext() {
             when (val v = this@Chain.next()) {
                 null -> done()
@@ -175,7 +174,7 @@ public open class Chain<A, B>(
         // Must exhaust a before b.
         val aLast = this.a?.let(Iterator::last)
         val bLast = this.b?.let(Iterator::last)
-        return bLast.or(aLast)
+        return (bLast ?: aLast)
     }
 
     public override fun sizeHint(): Pair<Int, Int?> =

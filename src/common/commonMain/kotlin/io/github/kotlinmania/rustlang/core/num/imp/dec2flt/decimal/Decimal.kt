@@ -21,6 +21,8 @@ public open class Decimal(
     public var negative: Boolean,
     public var manyDigits: Boolean,
 ) {
+    public open fun clone(): Decimal = Decimal(exponent, mantissa, negative, manyDigits)
+
     /**
      * Detect if the float can be accurately reconstructed from native floats.
      */
@@ -74,35 +76,35 @@ public open class Decimal(
     }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Decimal> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Decimal> {
+        public fun typeLayout(): TypeLayout<Decimal> =
+            object : TypeLayout<Decimal> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 24L
                 override fun readNative(addr: Long): Decimal =
                     Decimal(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I64).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).readNative(addr + 8L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 16L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 17L),
+                        (PrimitiveLayouts.I64).readNative(addr),
+                        (PrimitiveLayouts.U64).readNative(addr + 8L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 16L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 17L),
                     )
                 override fun writeNative(addr: Long, value: Decimal) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I64).writeNative(addr, value.exponent)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).writeNative(addr + 8L, value.mantissa)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 16L, value.negative)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 17L, value.manyDigits)
+                    (PrimitiveLayouts.I64).writeNative(addr, value.exponent)
+                    (PrimitiveLayouts.U64).writeNative(addr + 8L, value.mantissa)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 16L, value.negative)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 17L, value.manyDigits)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Decimal =
                     Decimal(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I64).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).readBytes(buf, offset + 8),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 16),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 17),
+                        (PrimitiveLayouts.I64).readBytes(buf, offset),
+                        (PrimitiveLayouts.U64).readBytes(buf, offset + 8),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 16),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 17),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Decimal) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I64).writeBytes(buf, offset, value.exponent)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).writeBytes(buf, offset + 8, value.mantissa)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 16, value.negative)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 17, value.manyDigits)
+                    (PrimitiveLayouts.I64).writeBytes(buf, offset, value.exponent)
+                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 8, value.mantissa)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 16, value.negative)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 17, value.manyDigits)
                 }
             }
     }

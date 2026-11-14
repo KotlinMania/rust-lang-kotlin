@@ -1,4 +1,4 @@
-@file:OptIn(kotlin.ExperimentalUnsignedTypes::class)
+@file:OptIn(ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.std.sys.cmath
 
@@ -133,3 +133,33 @@ public actual fun erff128(n: F128): F128 =
 
 public actual fun erfcf128(n: F128): F128 =
     throw UnsupportedOperationException("Native FFI addon is not available")
+
+public actual fun acosf(n: Float): Float =
+    if (sysCmathNapiAddon != null) (sysCmathNapiAddon.stdSysCmathAcosf(n.toDouble()) as Double).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+public actual fun acoshf(n: Float): Float =
+    if (sysCmathNapiAddon != null) (sysCmathNapiAddon.stdSysCmathAcoshf(n.toDouble()) as Double).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+public actual fun asinf(n: Float): Float =
+    if (sysCmathNapiAddon != null) (sysCmathNapiAddon.stdSysCmathAsinf(n.toDouble()) as Double).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+public actual fun asinhf(n: Float): Float =
+    if (sysCmathNapiAddon != null) (sysCmathNapiAddon.stdSysCmathAsinhf(n.toDouble()) as Double).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+public actual fun atan2f(a: Float, b: Float): Float =
+    if (sysCmathNapiAddon != null) (sysCmathNapiAddon.stdSysCmathAtan2f(a.toDouble(), b.toDouble()) as Double).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+public actual fun atanf(n: Float): Float =
+    if (sysCmathNapiAddon != null) (sysCmathNapiAddon.stdSysCmathAtanf(n.toDouble()) as Double).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+public actual fun coshf(n: Float): Float =
+    if (sysCmathNapiAddon != null) (sysCmathNapiAddon.stdSysCmathCoshf(n.toDouble()) as Double).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+public actual fun sinhf(n: Float): Float =
+    if (sysCmathNapiAddon != null) (sysCmathNapiAddon.stdSysCmathSinhf(n.toDouble()) as Double).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+public actual fun tanf(n: Float): Float =
+    if (sysCmathNapiAddon != null) (sysCmathNapiAddon.stdSysCmathTanf(n.toDouble()) as Double).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+public actual fun tanhf(n: Float): Float =
+    if (sysCmathNapiAddon != null) (sysCmathNapiAddon.stdSysCmathTanhf(n.toDouble()) as Double).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")

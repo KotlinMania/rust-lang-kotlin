@@ -28,11 +28,11 @@ public open class PanicInfo(
      * The type returned by this method implements `Display`, so it can
      * be passed directly to [write] and similar macros.
      *
-     * ```kotlin
+     * ```ignore (no_std)
      * @panicHandler
-     * fun panicHandler(panicInfo: PanicInfo): Nothing {
-     *     DEBUG_OUTPUT.append("panicked: ${panicInfo.message()}")
-     *     while (true) {}
+     * fn panicHandler(panicInfo: &PanicInfo<_>) -> ! {
+     *     write(DEBUG_OUTPUT, "panicked: {}", panicInfo.message());
+     *     loop {}
      * }
      * ```
      */
@@ -47,19 +47,15 @@ public open class PanicInfo(
      *
      * # Example
      *
-     * ```kotlin
+     * ```ignore (no_std)
      * @panicHandler
-     * fun panicHandler(panicInfo: PanicInfo): Nothing {
-     *     when (val matchVal = panicInfo.location()) {
-     *         null -> {
-     *             DEBUG_OUTPUT.append("panicked at unknown location")
-     *         }
-     *         else -> {
-     *             val location = matchVal
-     *             DEBUG_OUTPUT.append("panicked at $location")
-     *         }
+     * fn panicHandler(panicInfo: &PanicInfo<_>) -> ! {
+     *     if let Some(location) = panicInfo.location() {
+     *         write(DEBUG_OUTPUT, "panicked at {}", location);
+     *     } else {
+     *         write(DEBUG_OUTPUT, "panicked at unknown location");
      *     }
-     *     while (true) {}
+     *     loop {}
      * }
      * ```
      */

@@ -11,7 +11,7 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.stddetect.detect.Feature
+import io.github.kotlinmania.rustlang.stddetect.detect.arch.Feature
 import io.github.kotlinmania.rustlang.stddetect.detect.bit.test
 import io.github.kotlinmania.rustlang.stddetect.detect.cache.Cache
 import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.auxvec.AuxVec
@@ -288,331 +288,331 @@ public open class AtHwcap(
     }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<AtHwcap> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<AtHwcap> {
+        public fun typeLayout(): TypeLayout<AtHwcap> =
+            object : TypeLayout<AtHwcap> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 78L
                 override fun readNative(addr: Long): AtHwcap =
                     AtHwcap(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 1L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 2L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 3L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 4L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 5L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 6L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 7L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 8L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 9L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 10L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 11L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 12L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 13L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 14L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 15L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 16L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 17L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 18L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 19L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 20L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 21L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 22L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 23L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 24L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 25L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 26L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 27L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 28L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 29L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 30L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 31L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 32L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 33L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 34L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 35L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 36L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 37L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 38L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 39L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 40L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 41L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 42L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 43L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 44L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 45L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 46L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 47L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 48L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 49L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 50L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 51L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 52L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 53L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 54L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 55L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 56L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 57L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 58L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 59L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 60L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 61L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 62L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 63L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 64L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 65L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 66L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 67L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 68L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 69L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 70L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 71L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 72L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 73L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 74L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 75L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 76L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 77L),
+                        (PrimitiveLayouts.BOOL).readNative(addr),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 1L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 2L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 3L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 4L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 5L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 6L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 7L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 8L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 9L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 10L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 11L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 12L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 13L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 14L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 15L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 16L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 17L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 18L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 19L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 20L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 21L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 22L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 23L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 24L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 25L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 26L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 27L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 28L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 29L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 30L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 31L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 32L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 33L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 34L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 35L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 36L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 37L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 38L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 39L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 40L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 41L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 42L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 43L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 44L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 45L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 46L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 47L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 48L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 49L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 50L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 51L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 52L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 53L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 54L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 55L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 56L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 57L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 58L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 59L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 60L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 61L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 62L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 63L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 64L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 65L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 66L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 67L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 68L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 69L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 70L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 71L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 72L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 73L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 74L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 75L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 76L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 77L),
                     )
                 override fun writeNative(addr: Long, value: AtHwcap) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr, value.fp)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 1L, value.asimd)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 2L, value.aes)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 3L, value.pmull)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 4L, value.sha1)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 5L, value.sha2)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 6L, value.crc32)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 7L, value.atomics)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 8L, value.fphp)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 9L, value.asimdhp)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 10L, value.asimdrdm)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 11L, value.jscvt)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 12L, value.fcma)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 13L, value.lrcpc)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 14L, value.dcpop)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 15L, value.sha3)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 16L, value.sm3)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 17L, value.sm4)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 18L, value.asimddp)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 19L, value.sha512)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 20L, value.sve)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 21L, value.fhm)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 22L, value.dit)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 23L, value.uscat)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 24L, value.ilrcpc)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 25L, value.flagm)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 26L, value.ssbs)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 27L, value.sb)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 28L, value.paca)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 29L, value.pacg)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 30L, value.dcpodp)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 31L, value.sve2)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 32L, value.sveaes)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 33L, value.svepmull)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 34L, value.svebitperm)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 35L, value.svesha3)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 36L, value.svesm4)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 37L, value.flagm2)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 38L, value.frint)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 39L, value.svef32mm)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 40L, value.svef64mm)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 41L, value.i8mm)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 42L, value.bf16)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 43L, value.rng)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 44L, value.bti)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 45L, value.mte)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 46L, value.ecv)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 47L, value.sme)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 48L, value.smei16i64)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 49L, value.smef64f64)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 50L, value.smefa64)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 51L, value.wfxt)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 52L, value.cssc)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 53L, value.sve2p1)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 54L, value.sme2)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 55L, value.sme2p1)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 56L, value.smeb16b16)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 57L, value.smef16f16)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 58L, value.mops)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 59L, value.hbc)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 60L, value.sveb16b16)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 61L, value.lrcpc3)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 62L, value.lse128)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 63L, value.fpmr)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 64L, value.lut)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 65L, value.faminmax)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 66L, value.f8cvt)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 67L, value.f8fma)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 68L, value.f8dp4)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 69L, value.f8dp2)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 70L, value.f8e4m3)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 71L, value.f8e5m2)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 72L, value.smelutv2)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 73L, value.smef8f16)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 74L, value.smef8f32)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 75L, value.smesf8fma)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 76L, value.smesf8dp4)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 77L, value.smesf8dp2)
+                    (PrimitiveLayouts.BOOL).writeNative(addr, value.fp)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 1L, value.asimd)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 2L, value.aes)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 3L, value.pmull)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 4L, value.sha1)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 5L, value.sha2)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 6L, value.crc32)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 7L, value.atomics)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 8L, value.fphp)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 9L, value.asimdhp)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 10L, value.asimdrdm)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 11L, value.jscvt)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 12L, value.fcma)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 13L, value.lrcpc)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 14L, value.dcpop)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 15L, value.sha3)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 16L, value.sm3)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 17L, value.sm4)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 18L, value.asimddp)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 19L, value.sha512)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 20L, value.sve)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 21L, value.fhm)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 22L, value.dit)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 23L, value.uscat)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 24L, value.ilrcpc)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 25L, value.flagm)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 26L, value.ssbs)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 27L, value.sb)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 28L, value.paca)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 29L, value.pacg)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 30L, value.dcpodp)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 31L, value.sve2)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 32L, value.sveaes)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 33L, value.svepmull)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 34L, value.svebitperm)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 35L, value.svesha3)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 36L, value.svesm4)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 37L, value.flagm2)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 38L, value.frint)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 39L, value.svef32mm)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 40L, value.svef64mm)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 41L, value.i8mm)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 42L, value.bf16)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 43L, value.rng)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 44L, value.bti)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 45L, value.mte)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 46L, value.ecv)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 47L, value.sme)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 48L, value.smei16i64)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 49L, value.smef64f64)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 50L, value.smefa64)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 51L, value.wfxt)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 52L, value.cssc)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 53L, value.sve2p1)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 54L, value.sme2)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 55L, value.sme2p1)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 56L, value.smeb16b16)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 57L, value.smef16f16)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 58L, value.mops)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 59L, value.hbc)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 60L, value.sveb16b16)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 61L, value.lrcpc3)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 62L, value.lse128)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 63L, value.fpmr)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 64L, value.lut)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 65L, value.faminmax)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 66L, value.f8cvt)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 67L, value.f8fma)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 68L, value.f8dp4)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 69L, value.f8dp2)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 70L, value.f8e4m3)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 71L, value.f8e5m2)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 72L, value.smelutv2)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 73L, value.smef8f16)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 74L, value.smef8f32)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 75L, value.smesf8fma)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 76L, value.smesf8dp4)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 77L, value.smesf8dp2)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): AtHwcap =
                     AtHwcap(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 1),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 2),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 3),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 4),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 5),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 6),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 7),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 8),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 9),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 10),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 11),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 12),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 13),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 14),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 15),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 16),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 17),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 18),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 19),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 20),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 21),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 22),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 23),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 24),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 25),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 26),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 27),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 28),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 29),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 30),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 31),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 32),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 33),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 34),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 35),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 36),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 37),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 38),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 39),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 40),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 41),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 42),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 43),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 44),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 45),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 46),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 47),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 48),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 49),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 50),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 51),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 52),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 53),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 54),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 55),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 56),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 57),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 58),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 59),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 60),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 61),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 62),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 63),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 64),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 65),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 66),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 67),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 68),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 69),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 70),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 71),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 72),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 73),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 74),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 75),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 76),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 77),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 1),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 2),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 3),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 4),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 5),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 6),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 7),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 8),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 9),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 10),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 11),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 12),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 13),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 14),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 15),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 16),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 17),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 18),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 19),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 20),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 21),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 22),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 23),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 24),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 25),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 26),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 27),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 28),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 29),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 30),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 31),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 32),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 33),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 34),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 35),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 36),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 37),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 38),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 39),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 40),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 41),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 42),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 43),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 44),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 45),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 46),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 47),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 48),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 49),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 50),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 51),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 52),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 53),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 54),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 55),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 56),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 57),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 58),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 59),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 60),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 61),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 62),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 63),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 64),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 65),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 66),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 67),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 68),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 69),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 70),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 71),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 72),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 73),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 74),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 75),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 76),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 77),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: AtHwcap) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset, value.fp)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 1, value.asimd)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 2, value.aes)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 3, value.pmull)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 4, value.sha1)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 5, value.sha2)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 6, value.crc32)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 7, value.atomics)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 8, value.fphp)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 9, value.asimdhp)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 10, value.asimdrdm)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 11, value.jscvt)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 12, value.fcma)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 13, value.lrcpc)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 14, value.dcpop)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 15, value.sha3)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 16, value.sm3)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 17, value.sm4)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 18, value.asimddp)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 19, value.sha512)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 20, value.sve)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 21, value.fhm)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 22, value.dit)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 23, value.uscat)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 24, value.ilrcpc)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 25, value.flagm)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 26, value.ssbs)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 27, value.sb)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 28, value.paca)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 29, value.pacg)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 30, value.dcpodp)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 31, value.sve2)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 32, value.sveaes)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 33, value.svepmull)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 34, value.svebitperm)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 35, value.svesha3)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 36, value.svesm4)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 37, value.flagm2)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 38, value.frint)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 39, value.svef32mm)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 40, value.svef64mm)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 41, value.i8mm)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 42, value.bf16)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 43, value.rng)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 44, value.bti)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 45, value.mte)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 46, value.ecv)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 47, value.sme)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 48, value.smei16i64)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 49, value.smef64f64)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 50, value.smefa64)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 51, value.wfxt)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 52, value.cssc)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 53, value.sve2p1)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 54, value.sme2)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 55, value.sme2p1)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 56, value.smeb16b16)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 57, value.smef16f16)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 58, value.mops)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 59, value.hbc)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 60, value.sveb16b16)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 61, value.lrcpc3)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 62, value.lse128)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 63, value.fpmr)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 64, value.lut)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 65, value.faminmax)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 66, value.f8cvt)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 67, value.f8fma)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 68, value.f8dp4)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 69, value.f8dp2)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 70, value.f8e4m3)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 71, value.f8e5m2)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 72, value.smelutv2)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 73, value.smef8f16)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 74, value.smef8f32)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 75, value.smesf8fma)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 76, value.smesf8dp4)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 77, value.smesf8dp2)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset, value.fp)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 1, value.asimd)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 2, value.aes)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 3, value.pmull)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 4, value.sha1)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 5, value.sha2)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 6, value.crc32)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 7, value.atomics)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 8, value.fphp)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 9, value.asimdhp)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 10, value.asimdrdm)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 11, value.jscvt)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 12, value.fcma)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 13, value.lrcpc)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 14, value.dcpop)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 15, value.sha3)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 16, value.sm3)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 17, value.sm4)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 18, value.asimddp)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 19, value.sha512)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 20, value.sve)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 21, value.fhm)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 22, value.dit)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 23, value.uscat)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 24, value.ilrcpc)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 25, value.flagm)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 26, value.ssbs)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 27, value.sb)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 28, value.paca)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 29, value.pacg)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 30, value.dcpodp)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 31, value.sve2)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 32, value.sveaes)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 33, value.svepmull)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 34, value.svebitperm)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 35, value.svesha3)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 36, value.svesm4)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 37, value.flagm2)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 38, value.frint)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 39, value.svef32mm)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 40, value.svef64mm)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 41, value.i8mm)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 42, value.bf16)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 43, value.rng)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 44, value.bti)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 45, value.mte)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 46, value.ecv)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 47, value.sme)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 48, value.smei16i64)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 49, value.smef64f64)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 50, value.smefa64)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 51, value.wfxt)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 52, value.cssc)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 53, value.sve2p1)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 54, value.sme2)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 55, value.sme2p1)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 56, value.smeb16b16)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 57, value.smef16f16)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 58, value.mops)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 59, value.hbc)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 60, value.sveb16b16)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 61, value.lrcpc3)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 62, value.lse128)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 63, value.fpmr)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 64, value.lut)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 65, value.faminmax)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 66, value.f8cvt)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 67, value.f8fma)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 68, value.f8dp4)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 69, value.f8dp2)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 70, value.f8e4m3)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 71, value.f8e5m2)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 72, value.smelutv2)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 73, value.smef8f16)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 74, value.smef8f32)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 75, value.smesf8fma)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 76, value.smesf8dp4)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 77, value.smesf8dp2)
                 }
             }
 

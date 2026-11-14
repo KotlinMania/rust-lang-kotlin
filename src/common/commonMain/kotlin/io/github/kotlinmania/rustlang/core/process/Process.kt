@@ -46,6 +46,8 @@ import io.github.kotlinmania.rustlang.core.intrinsics.abortImmediate
  * # Examples
  *
  * ```kotlin
+ * import core.process
+ *
  * @feature(abortImmediate)
  * public fun doctestEntry() {
  *     fun main() {
@@ -60,6 +62,8 @@ import io.github.kotlinmania.rustlang.core.intrinsics.abortImmediate
  * run on the example below:
  *
  * ```kotlin
+ * import core.process
+ *
  * @feature(abortImmediate)
  * public fun doctestEntry() {
  *     open class HasDrop {

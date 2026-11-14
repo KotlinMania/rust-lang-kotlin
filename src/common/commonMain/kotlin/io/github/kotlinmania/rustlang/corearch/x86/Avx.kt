@@ -11,8 +11,6 @@ import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
 import io.github.kotlinmania.rustlang.corearch.arch.asm
-import io.github.kotlinmania.rustlang.corearch.mem
-import io.github.kotlinmania.rustlang.corearch.ptr
 import io.github.kotlinmania.rustlang.corearch.simd.I32x4
 import io.github.kotlinmania.rustlang.corearch.simd.I32x8
 import io.github.kotlinmania.rustlang.corearch.simd.I64x2
@@ -1088,8 +1086,8 @@ public fun mm256Permute2f128Si256(a: M256i, b: M256i, imm8: Int): M256i {
         check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
     }
     return run {
-        val r = simdShuffle(a.asI64x4(), b.asI64x4(), SimdShuffleIdx(listOf(idx(imm8, 0u), idx(imm8, 1u), idx(imm8, 2u), idx(imm8, 3u))))
-        val r1: I64x4 = simdShuffle(r, i64x4.ZERO, SimdShuffleIdx(listOf(idx0(imm8, 0u), idx0(imm8, 1u), idx0(imm8, 2u), idx0(imm8, 3u))))
+        val r = simdShuffle(a.asI64x4(), b.asI64x4(), SimdShuffleIdx(uintArrayOf(idx(imm8, 0u), idx(imm8, 1u), idx(imm8, 2u), idx(imm8, 3u))))
+        val r1: I64x4 = simdShuffle(r, i64x4.ZERO, SimdShuffleIdx(uintArrayOf(idx0(imm8, 0u), idx0(imm8, 1u), idx0(imm8, 2u), idx0(imm8, 3u))))
         r1.asM256i()
     }
 }
@@ -1276,7 +1274,7 @@ public fun mm256StorePs(memAddr: MutPtr, a: M256) {
  */
 public fun mm256LoaduPd(memAddr: ConstPtr): M256d {
     val dst = mm256UndefinedPd()
-    ptr.copyNonoverlapping(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), mutPtrFromRustCast(addrOfMut(dst)), mem.sizeOf<M256d>(typeLayoutT = ObjectSlotLayout<M256d>()), typeLayoutT = PrimitiveLayouts.U8)
+    copyNonoverlapping(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), mutPtrFromRustCast(addrOfMut(dst)), sizeOf<M256d>(typeLayoutT = ObjectSlotLayout<M256d>()), typeLayoutT = PrimitiveLayouts.U8)
     return dst
 }
 
@@ -1300,7 +1298,7 @@ public fun mm256StoreuPd(memAddr: MutPtr, a: M256d) {
  */
 public fun mm256LoaduPs(memAddr: ConstPtr): M256 {
     val dst = mm256UndefinedPs()
-    ptr.copyNonoverlapping(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), mutPtrFromRustCast(addrOfMut(dst)), mem.sizeOf<M256>(typeLayoutT = ObjectSlotLayout<M256>()), typeLayoutT = PrimitiveLayouts.U8)
+    copyNonoverlapping(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), mutPtrFromRustCast(addrOfMut(dst)), sizeOf<M256>(typeLayoutT = ObjectSlotLayout<M256>()), typeLayoutT = PrimitiveLayouts.U8)
     return dst
 }
 
@@ -1350,7 +1348,7 @@ public fun mm256StoreSi256(memAddr: MutPtr, a: M256i) {
  */
 public fun mm256LoaduSi256(memAddr: ConstPtr): M256i {
     val dst = mm256UndefinedSi256()
-    ptr.copyNonoverlapping(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), mutPtrFromRustCast(addrOfMut(dst)), mem.sizeOf<M256i>(typeLayoutT = ObjectSlotLayout<M256i>()), typeLayoutT = PrimitiveLayouts.U8)
+    copyNonoverlapping(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), mutPtrFromRustCast(addrOfMut(dst)), sizeOf<M256i>(typeLayoutT = ObjectSlotLayout<M256i>()), typeLayoutT = PrimitiveLayouts.U8)
     return dst
 }
 

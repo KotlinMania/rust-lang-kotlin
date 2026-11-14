@@ -20,7 +20,7 @@ public open class WStrUnits internal constructor(
     public var lpwstr: NonNull = lpwstrCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<NonZero<UShort>> = object : AbstractIterator<NonZero<UShort>>() {
+    override fun iterator(): Iterator<NonZero<UShort>> = object : AbstractIterator<NonZero<UShort>>() {
         override fun computeNext() {
             when (val v = this@WStrUnits.next()) {
                 null -> done()

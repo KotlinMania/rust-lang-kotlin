@@ -6,7 +6,6 @@ import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.std.fmt
 import io.github.kotlinmania.rustlang.std.process.abort
 import io.github.kotlinmania.rustlang.std.sys.pal.itron.abi.ER
 import io.github.kotlinmania.rustlang.std.sys.pal.itron.abi.E_BOVR
@@ -33,7 +32,7 @@ import io.github.kotlinmania.rustlang.std.sys.pal.itron.abi.E_RSFN
 import io.github.kotlinmania.rustlang.std.sys.pal.itron.abi.E_SYS
 import io.github.kotlinmania.rustlang.std.sys.pal.itron.abi.E_TMOUT
 import io.github.kotlinmania.rustlang.std.sys.pal.itron.abi.E_WBLK
-import io.github.kotlinmania.rustlang.std.sys.stdio.motor.panicOutput
+import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
 import io.github.kotlinmania.rustlang.std.thread.functions.panicking
 
 /**
@@ -42,6 +41,8 @@ import io.github.kotlinmania.rustlang.std.thread.functions.panicking
 public open class ItronError(
     public var er: ER,
 ) {
+    public open fun clone(): ItronError = ItronError(er)
+
     /**
      * Gets the raw error code.
      */
@@ -61,23 +62,23 @@ public open class ItronError(
     }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<ItronError> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<ItronError> {
+        public fun typeLayout(): TypeLayout<ItronError> =
+            object : TypeLayout<ItronError> {
                 override val alignBytes: Long = 4L
                 override val sizeBytes: Long = 4L
                 override fun readNative(addr: Long): ItronError =
                     ItronError(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I32).readNative(addr),
+                        (PrimitiveLayouts.I32).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: ItronError) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I32).writeNative(addr, value.er)
+                    (PrimitiveLayouts.I32).writeNative(addr, value.er)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): ItronError =
                     ItronError(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I32).readBytes(buf, offset),
+                        (PrimitiveLayouts.I32).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: ItronError) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I32).writeBytes(buf, offset, value.er)
+                    (PrimitiveLayouts.I32).writeBytes(buf, offset, value.er)
                 }
             }
 
@@ -155,48 +156,48 @@ public fun decodeErrorKind(er: ER): ErrorKind =
         // Success
         er >= 0 -> {
             val er1 = er
-            io.ErrorKind.Uncategorized
+            ErrorKind.Uncategorized
         }
         // μITRON 4.0
         // abi.ESys
-        er == E_NOSPT -> io.ErrorKind.Unsupported
+        er == E_NOSPT -> ErrorKind.Unsupported
         // Some("unsupported function"),
-        er == E_RSFN -> io.ErrorKind.InvalidInput
+        er == E_RSFN -> ErrorKind.InvalidInput
         // Some("reserved function code"),
-        er == E_RSATR -> io.ErrorKind.InvalidInput
+        er == E_RSATR -> ErrorKind.InvalidInput
         // Some("reserved attribute"),
-        er == E_PAR -> io.ErrorKind.InvalidInput
+        er == E_PAR -> ErrorKind.InvalidInput
         // Some("parameter error"),
-        er == E_ID -> io.ErrorKind.NotFound
+        er == E_ID -> ErrorKind.NotFound
         // Some("invalid ID number"),
         // abi.ECtx
-        er == E_MACV -> io.ErrorKind.PermissionDenied
+        er == E_MACV -> ErrorKind.PermissionDenied
         // Some("memory access violation"),
-        er == E_OACV -> io.ErrorKind.PermissionDenied
+        er == E_OACV -> ErrorKind.PermissionDenied
         // Some("object access violation"),
         // abi.EIluse
-        er == E_NOMEM -> io.ErrorKind.OutOfMemory
+        er == E_NOMEM -> ErrorKind.OutOfMemory
         // Some("insufficient memory"),
-        er == E_NOID -> io.ErrorKind.OutOfMemory
+        er == E_NOID -> ErrorKind.OutOfMemory
         // Some("no ID number available"),
         // abi.EObj
-        er == E_NOEXS -> io.ErrorKind.NotFound
+        er == E_NOEXS -> ErrorKind.NotFound
         // Some("non-existent object"),
         // abi.EQovr
-        er == E_RLWAI -> io.ErrorKind.Interrupted
+        er == E_RLWAI -> ErrorKind.Interrupted
         // Some("forced release from waiting"),
-        er == E_TMOUT -> io.ErrorKind.TimedOut
+        er == E_TMOUT -> ErrorKind.TimedOut
         // Some("polling failure or timeout"),
         // abi.EDlt
         // abi.ECls
         // abi.EWblk
         // abi.EBovr
         // The TOPPERS third generation kernels
-        er == E_NORES -> io.ErrorKind.OutOfMemory
+        er == E_NORES -> ErrorKind.OutOfMemory
         // Some("insufficient system resources"),
         // abi.ERaster
         // abi.EComm
-        else -> io.ErrorKind.Uncategorized
+        else -> ErrorKind.Uncategorized
     }
 
 /**

@@ -486,6 +486,8 @@ public open class AddrParseError(
             value = v
         }
 
+    public open fun clone(): AddrParseError = AddrParseError(value)
+
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> =
         when (this.value) {
             AddrKind.Ip -> "invalid IP address syntax"

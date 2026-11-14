@@ -6,6 +6,8 @@ import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.std.os.raw.CUint
+import io.github.kotlinmania.rustlang.std.os.unix.ffi.OsStringExt
+import io.github.kotlinmania.rustlang.std.os.unix.ffi.fromVec
 import io.github.kotlinmania.rustlang.std.sync.oncelock.OnceLock
 import io.github.kotlinmania.rustlang.std.sys.args.common.Args
 import io.github.kotlinmania.rustlang.std.os.raw.CUint as WaliArgIdx

@@ -289,6 +289,7 @@ import io.github.kotlinmania.rustlang.core.slice.rawSliceList
  * ```kotlin
  * import core.mem.MaybeUninit
  * import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
+ * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
  * import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
  * import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
  *
@@ -300,7 +301,7 @@ import io.github.kotlinmania.rustlang.core.slice.rawSliceList
  *     val code by localStorageL10C4
  *     val code1 = RustMutableReference(localStorageL10C4.asMutPtr(), localStorageL10C4.layout)
  *     val code2 = unsoundTransmute(code1)
- *     code2 = MaybeUninit.uninit(PrimitiveLayouts.U8)
+ *     code2 = MaybeUninit.uninit(ObjectSlotLayout<T>())
  *     exit(code1)
  *     // UB! Accessing uninitialized memory.
  * }
@@ -769,7 +770,7 @@ public open class MaybeUninit<T>(
         // SAFETY: the caller must guarantee that `self` is initialized and
         // satisfies all invariants of `T`.
         // Dropping the value in place is safe if that is the case.
-        ptr.dropInPlace(this.asMutPtr())
+        dropInPlace(this.asMutPtr())
     }
 
     /**
@@ -904,6 +905,7 @@ public open class MaybeUninit<T>(
      * @file:OptIn(ExperimentalUnsignedTypes.cls)
      *
      * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+     * import std.io
      * import std.mem.MaybeUninit
      *
      * public fun doctestEntry(): Result<Unit> {
@@ -925,6 +927,7 @@ public open class MaybeUninit<T>(
      * import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
      * import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
      * import std.mem.MaybeUninit
+     * import std.ptr
      *
      * open class Foo(public var a: UInt, public var b: UByte)
      * val foo1: Foo = run {
@@ -1649,7 +1652,7 @@ public fun <T> List<MaybeUninit<T>>.assumeInitDrop() {
         // SAFETY: the caller must guarantee that every element of `self`
         // is initialized and satisfies all invariants of `T`.
         // Dropping the value in place is safe if that is the case.
-        ptr.dropInPlace((mutPtrFromRustCast(this)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })
+        dropInPlace((mutPtrFromRustCast(this)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })
     }
 }
 
@@ -1786,5 +1789,5 @@ public fun <T : TrivialClone<T>> List<MaybeUninit<T>>.specFill(value: T) {
     // `T.clone` for every element. Notably, `TrivialClone` also implies
     // that the `clone` implementation will not panic, so we can avoid
     // initialization guards and such.
-    this.fillWith({ MaybeUninit.new(ptr.read(value, typeLayoutT = ObjectSlotLayout<T>()), ObjectSlotLayout<T>()) })
+    this.fillWith({ MaybeUninit.new(read(value, typeLayoutT = ObjectSlotLayout<T>()), ObjectSlotLayout<T>()) })
 }

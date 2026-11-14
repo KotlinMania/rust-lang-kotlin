@@ -8,6 +8,7 @@ import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.num.rustCheckedAdd
 import io.github.kotlinmania.rustlang.core.num.rustCheckedMul
@@ -393,7 +394,7 @@ public open class Split<T, P>(
     // Used for `SplitAsciiWhitespace` `asStr` method
     internal var finished: Boolean,
 ) : SplitIter<Split<T, P>>, Iterable<List<T>> {
-    override fun iterator(): kotlin.collections.Iterator<List<T>> = object : AbstractIterator<List<T>>() {
+    override fun iterator(): Iterator<List<T>> = object : AbstractIterator<List<T>>() {
         override fun computeNext() {
             when (val v = this@Split.next()) {
                 null -> done()
@@ -507,7 +508,7 @@ public open class SplitInclusive<T, P>(
     public var pred: P,
     public var finished: Boolean,
 ) : Iterable<List<T>> {
-    override fun iterator(): kotlin.collections.Iterator<List<T>> = object : AbstractIterator<List<T>>() {
+    override fun iterator(): Iterator<List<T>> = object : AbstractIterator<List<T>>() {
         override fun computeNext() {
             when (val v = this@SplitInclusive.next()) {
                 null -> done()
@@ -541,7 +542,7 @@ public open class SplitInclusive<T, P>(
             // If the predicate doesn't match anything, we yield one slice.
             // If it matches every element, we yield `len()` one-element slices,
             // or a single empty slice.
-            Pair(1, cmp.max(1, this.v.size))
+            Pair(1, max(1, this.v.size))
         }
 
     public open fun nextBack(): List<T>? {
@@ -595,7 +596,7 @@ public open class SplitMut<T, P>(
     public var pred: P,
     public var finished: Boolean,
 ) : SplitIter<SplitMut<T, P>>, Iterable<MutableList<T>> {
-    override fun iterator(): kotlin.collections.Iterator<MutableList<T>> = object : AbstractIterator<MutableList<T>>() {
+    override fun iterator(): Iterator<MutableList<T>> = object : AbstractIterator<MutableList<T>>() {
         override fun computeNext() {
             when (val v = this@SplitMut.next()) {
                 null -> done()
@@ -611,7 +612,7 @@ public open class SplitMut<T, P>(
             null
         } else {
             this.finished = true
-            mem.take(this.v)
+            take(this.v)
         }
 
     public override fun next(): MutableList<T>? {
@@ -622,7 +623,7 @@ public open class SplitMut<T, P>(
             null -> this.finish()
             else -> {
                 val idx = matchVal
-                val tmp = mem.take(this.v)
+                val tmp = take(this.v)
                 // idx is the index of the element we are splitting on. We want to set self to the
                 // region after idx, and return the subslice before and not including idx.
                 // So first we split after idx
@@ -656,7 +657,7 @@ public open class SplitMut<T, P>(
             null -> this.finish()
             else -> {
                 val idx = idxOpt
-                val tmp = mem.take(this.v)
+                val tmp = take(this.v)
                 val (head, tail) = tmp.splitAtMut(idx)
                 this.v = head
                 tail[1 until tail.size]
@@ -691,7 +692,7 @@ public open class SplitInclusiveMut<T, P>(
     public var pred: P,
     public var finished: Boolean,
 ) : Iterable<MutableList<T>> {
-    override fun iterator(): kotlin.collections.Iterator<MutableList<T>> = object : AbstractIterator<MutableList<T>>() {
+    override fun iterator(): Iterator<MutableList<T>> = object : AbstractIterator<MutableList<T>>() {
         override fun computeNext() {
             when (val v = this@SplitInclusiveMut.next()) {
                 null -> done()
@@ -715,7 +716,7 @@ public open class SplitInclusiveMut<T, P>(
         if (idx == this.v.size) {
             this.finished = true
         }
-        val tmp = mem.take(this.v)
+        val tmp = take(this.v)
         val (head, tail) = tmp.splitAtMut(idx)
         this.v = tail
         return head
@@ -728,7 +729,7 @@ public open class SplitInclusiveMut<T, P>(
             // If the predicate doesn't match anything, we yield one slice.
             // If it matches every element, we yield `len()` one-element slices,
             // or a single empty slice.
-            Pair(1, cmp.max(1, this.v.size))
+            Pair(1, max(1, this.v.size))
         }
 
     public open fun nextBack(): MutableList<T>? {
@@ -751,7 +752,7 @@ public open class SplitInclusiveMut<T, P>(
         if (idx == 0) {
             this.finished = true
         }
-        val tmp = mem.take(this.v)
+        val tmp = take(this.v)
         val (head, tail) = tmp.splitAtMut(idx)
         this.v = head
         return tail
@@ -790,7 +791,7 @@ public open class RSplit<T, P> internal constructor(
     public var inner: Split<T, P> = innerCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<List<T>> = object : AbstractIterator<List<T>>() {
+    override fun iterator(): Iterator<List<T>> = object : AbstractIterator<List<T>>() {
         override fun computeNext() {
             when (val v = this@RSplit.next()) {
                 null -> done()
@@ -845,7 +846,7 @@ public open class RSplitMut<T, P> internal constructor(
     public var inner: SplitMut<T, P> = innerCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<MutableList<T>> = object : AbstractIterator<MutableList<T>>() {
+    override fun iterator(): Iterator<MutableList<T>> = object : AbstractIterator<MutableList<T>>() {
         override fun computeNext() {
             when (val v = this@RSplitMut.next()) {
                 null -> done()
@@ -884,7 +885,7 @@ public open class GenericSplitN<I>(
     public var iter: I,
     public var count: Int,
 ) : Iterable<T> {
-    override fun iterator(): kotlin.collections.Iterator<T> = object : AbstractIterator<T>() {
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@GenericSplitN.next()) {
                 null -> done()
@@ -912,28 +913,28 @@ public open class GenericSplitN<I>(
     }
 
     public companion object {
-        public fun <I> typeLayout(typeLayoutI: io.github.kotlinmania.rustlang.core.mem.TypeLayout<I>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<GenericSplitN<I>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<GenericSplitN<I>> {
+        public fun <I> typeLayout(typeLayoutI: TypeLayout<I>): TypeLayout<GenericSplitN<I>> =
+            object : TypeLayout<GenericSplitN<I>> {
                 override val alignBytes: Long = listOf(8L, typeLayoutI.alignBytes).max()
-                private val off1: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(typeLayoutI.sizeBytes, 8L)
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes((off1 + 8L), alignBytes)
+                private val off1: Long = alignUpBytes(typeLayoutI.sizeBytes, 8L)
+                override val sizeBytes: Long = alignUpBytes((off1 + 8L), alignBytes)
                 override fun readNative(addr: Long): GenericSplitN<I> =
                     GenericSplitN(
                         (typeLayoutI).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readNative(addr + off1),
+                        (PrimitiveLayouts.USIZE64).readNative(addr + off1),
                     )
                 override fun writeNative(addr: Long, value: GenericSplitN<I>) {
                     (typeLayoutI).writeNative(addr, value.iter)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeNative(addr + off1, value.count)
+                    (PrimitiveLayouts.USIZE64).writeNative(addr + off1, value.count)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): GenericSplitN<I> =
                     GenericSplitN(
                         (typeLayoutI).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readBytes(buf, offset + off1.toInt()),
+                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset + off1.toInt()),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: GenericSplitN<I>) {
                     (typeLayoutI).writeBytes(buf, offset, value.iter)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeBytes(buf, offset + off1.toInt(), value.count)
+                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset + off1.toInt(), value.count)
                 }
             }
     }
@@ -1113,7 +1114,7 @@ public open class Windows<T> internal constructor(
     public var size: NonZero<Int> = sizeCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<List<T>> = object : AbstractIterator<List<T>>() {
+    override fun iterator(): Iterator<List<T>> = object : AbstractIterator<List<T>>() {
         override fun computeNext() {
             when (val v = this@Windows.next()) {
                 null -> done()
@@ -1228,7 +1229,7 @@ public open class Chunks<T>(
     public var v: List<T>,
     public var chunkSize: Int,
 ) : TrustedLen<Chunks<T>>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<List<T>> {
-    override fun iterator(): kotlin.collections.Iterator<List<T>> = object : AbstractIterator<List<T>>() {
+    override fun iterator(): Iterator<List<T>> = object : AbstractIterator<List<T>>() {
         override fun computeNext() {
             when (val v = this@Chunks.next()) {
                 null -> done()
@@ -1383,7 +1384,7 @@ public open class ChunksMut<T> internal constructor(
     public var v: MutPtr = vCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<MutableList<T>> = object : AbstractIterator<MutableList<T>>() {
+    override fun iterator(): Iterator<MutableList<T>> = object : AbstractIterator<MutableList<T>>() {
         override fun computeNext() {
             when (val v = this@ChunksMut.next()) {
                 null -> done()
@@ -1541,7 +1542,7 @@ public open class ChunksExact<T>(
     public var rem: List<T>,
     public var chunkSize: Int,
 ) : TrustedLen<ChunksExact<T>>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<List<T>> {
-    override fun iterator(): kotlin.collections.Iterator<List<T>> = object : AbstractIterator<List<T>>() {
+    override fun iterator(): Iterator<List<T>> = object : AbstractIterator<List<T>>() {
         override fun computeNext() {
             when (val v = this@ChunksExact.next()) {
                 null -> done()
@@ -1683,7 +1684,7 @@ public open class ChunksExactMut<T> internal constructor(
     public var v: MutPtr = vCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<MutableList<T>> = object : AbstractIterator<MutableList<T>>() {
+    override fun iterator(): Iterator<MutableList<T>> = object : AbstractIterator<MutableList<T>>() {
         override fun computeNext() {
             when (val v = this@ChunksExactMut.next()) {
                 null -> done()
@@ -1749,7 +1750,7 @@ public open class ChunksExactMut<T> internal constructor(
             val start = (len - 1 - n) * this.chunkSize
             val end = start + this.chunkSize
             // SAFETY: The self.v contract ensures that any splitAtMut is valid.
-            val (temp, tail) = mem.replace(this.v, listOf()).splitAtMut(end)
+            val (temp, tail) = replace(this.v, listOf()).splitAtMut(end)
             // SAFETY: The self.v contract ensures that any splitAtMut is valid.
             val (head, nthBack) = temp.splitAtMut(start)
             this.v = head
@@ -1893,7 +1894,7 @@ public open class RChunks<T>(
     public var v: List<T>,
     public var chunkSize: Int,
 ) : TrustedLen<RChunks<T>>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<List<T>> {
-    override fun iterator(): kotlin.collections.Iterator<List<T>> = object : AbstractIterator<List<T>>() {
+    override fun iterator(): Iterator<List<T>> = object : AbstractIterator<List<T>>() {
         override fun computeNext() {
             when (val v = this@RChunks.next()) {
                 null -> done()
@@ -2036,7 +2037,7 @@ public open class RChunksMut<T> internal constructor(
     public var v: MutPtr = vCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<MutableList<T>> = object : AbstractIterator<MutableList<T>>() {
+    override fun iterator(): Iterator<MutableList<T>> = object : AbstractIterator<MutableList<T>>() {
         override fun computeNext() {
             when (val v = this@RChunksMut.next()) {
                 null -> done()
@@ -2190,7 +2191,7 @@ public open class RChunksExact<T>(
     public var rem: List<T>,
     public var chunkSize: Int,
 ) : TrustedLen<RChunksExact<T>>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<List<T>> {
-    override fun iterator(): kotlin.collections.Iterator<List<T>> = object : AbstractIterator<List<T>>() {
+    override fun iterator(): Iterator<List<T>> = object : AbstractIterator<List<T>>() {
         override fun computeNext() {
             when (val v = this@RChunksExact.next()) {
                 null -> done()
@@ -2336,7 +2337,7 @@ public open class RChunksExactMut<T> internal constructor(
     public var v: MutPtr = vCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<MutableList<T>> = object : AbstractIterator<MutableList<T>>() {
+    override fun iterator(): Iterator<MutableList<T>> = object : AbstractIterator<MutableList<T>>() {
         override fun computeNext() {
             when (val v = this@RChunksExactMut.next()) {
                 null -> done()
@@ -2460,7 +2461,7 @@ public open class ChunkBy<T, P>(
     public var slice: List<T>,
     public var predicate: P,
 ) : Iterable<List<T>> {
-    override fun iterator(): kotlin.collections.Iterator<List<T>> = object : AbstractIterator<List<T>>() {
+    override fun iterator(): Iterator<List<T>> = object : AbstractIterator<List<T>>() {
         override fun computeNext() {
             when (val v = this@ChunkBy.next()) {
                 null -> done()
@@ -2554,7 +2555,7 @@ public open class ChunkByMut<T, P>(
     public var slice: MutableList<T>,
     public var predicate: P,
 ) : Iterable<MutableList<T>> {
-    override fun iterator(): kotlin.collections.Iterator<MutableList<T>> = object : AbstractIterator<MutableList<T>>() {
+    override fun iterator(): Iterator<MutableList<T>> = object : AbstractIterator<MutableList<T>>() {
         override fun computeNext() {
             when (val v = this@ChunkByMut.next()) {
                 null -> done()
@@ -2580,7 +2581,7 @@ public open class ChunkByMut<T, P>(
                     break
                 }
             }
-            val slice = mem.take(this.slice)
+            val slice = take(this.slice)
             val (head, tail) = slice.splitAtMut(len)
             this.slice = tail
             head
@@ -2612,7 +2613,7 @@ public open class ChunkByMut<T, P>(
                     break
                 }
             }
-            val slice = mem.take(this.slice)
+            val slice = take(this.slice)
             val (head, tail) = slice.splitAtMut(slice.len() - len)
             this.slice = head
             tail

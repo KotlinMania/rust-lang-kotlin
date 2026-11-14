@@ -2,23 +2,29 @@
 package io.github.kotlinmania.rustlang.std.os.unix.process
 
 import io.github.kotlinmania.libc.fuchsia.SIGKILL
+import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
+import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.os.fd.BorrowedFd
 import io.github.kotlinmania.rustlang.std.os.fd.OwnedFd
 import io.github.kotlinmania.rustlang.std.os.fd.RawFd
-import io.github.kotlinmania.rustlang.std.os.xous.ffi.definitions.Error
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.process.ChildStderr
 import io.github.kotlinmania.rustlang.std.process.ChildStdin
 import io.github.kotlinmania.rustlang.std.process.ChildStdout
-import io.github.kotlinmania.rustlang.std.sys.fd.hermit.FileDesc
-import io.github.kotlinmania.rustlang.std.sys.process.motor.ChildPipe
-import io.github.kotlinmania.rustlang.std.sys.process.motor.Stdio
+import io.github.kotlinmania.rustlang.std.sys.fd.unix.FileDesc
 import io.github.kotlinmania.rustlang.std.sys.process.unix.common.getppid
-import io.github.kotlinmania.rustlang.std.sys.process.unix.unix.Process
-import io.github.kotlinmania.rustlang.std.thread.Result
+import io.github.kotlinmania.rustlang.std.sys.process.unsupported.ChildPipe
+import io.github.kotlinmania.rustlang.std.sys.process.unsupported.Stdio
 
 // Unix-specific extensions to primitives in the [std.process] module.
+
+// Both IDs are signed, see `sys / targetNto.h` of the QNX SDP.
+// Only positive values should be used, see e.g.
+// https://www.qnx.com/developers/docs/7.1/com.qnx.doc.neutrino.libRef/topic/s/setuid.html
+public typealias UserId = Int
+
+public typealias GroupId = Int
 
 /**
  * Unix-specific extensions to the [process.Command] builder.
@@ -101,7 +107,7 @@ public interface CommandExt {
      * [Error.new]: ../../../io/struct.Error.html#method.new
      * [Error.other]: ../../../io/struct.Error.html#method.other
      */
-    public fun preExec(f: () -> Result<Unit>): Command
+    public fun preExec(f: () -> Result<Unit, Error>): Command
 
     /**
      * Schedules a closure to be run just before the `exec` function is
@@ -115,7 +121,7 @@ public interface CommandExt {
      *
      * [preExec]: CommandExt.preExec
      */
-    public fun beforeExec(f: () -> Result<Unit>): Command = this.preExec(f)
+    public fun beforeExec(f: () -> Result<Unit, Error>): Command = this.preExec(f)
 
     /**
      * Performs all the required setup by this `Command`, followed by calling
@@ -146,7 +152,7 @@ public interface CommandExt {
      * required to gracefully handle errors it is recommended to use the
      * cross-platform `spawn` instead.
      */
-    public fun exec(): Error
+    public fun exec(): io.github.kotlinmania.rustlang.core.io.error.Error
 
     /**
      * Set executable argument
@@ -247,12 +253,12 @@ public fun Command.groups(groups: List<GroupId>): Command {
     return this
 }
 
-public fun Command.preExec(f: () -> Result<Unit>): Command {
+public fun Command.preExec(f: () -> Result<Unit, Error>): Command {
     this.asInnerMut().preExec(f)
     return this
 }
 
-public fun Command.exec(): Error {
+public fun Command.exec(): io.github.kotlinmania.rustlang.core.io.error.Error {
     // NOTE: This may *not* be safe to call after `libc.fork`, because it
     // may allocate. That may be worth fixing at some point in the future.
     return this.asInnerMut().exec(Stdio.Inherit)
@@ -415,7 +421,7 @@ public interface ExitStatusExt<T> {
     public fun intoRaw(): Int
 }
 
-public fun exitStatusExtFromRawExitStatus(raw: Int): ExitStatus = Process.ExitStatus.fromInner(From.from(raw))
+public fun exitStatusExtFromRawExitStatus(raw: Int): ExitStatus = process.ExitStatus.fromInner(From.from(raw))
 
 public fun ExitStatus.signal(): Int? = this.asInner().signal()
 
@@ -427,7 +433,7 @@ public fun ExitStatus.continued(): Boolean = this.asInner().continued()
 
 public fun ExitStatus.intoRaw(): Int = this.asInner().intoRaw().into()
 
-public fun exitStatusExtFromRawExitStatusError(raw: Int): ExitStatusError = Process.ExitStatus.fromRaw(raw).exitOk().expectErr("<ExitStatusError as ExitStatusExt>::from_raw(0) but zero is not an error")
+public fun exitStatusExtFromRawExitStatusError(raw: Int): ExitStatusError = process.ExitStatus.fromRaw(raw).exitOk().expectErr("<ExitStatusError as ExitStatusExt>::from_raw(0) but zero is not an error")
 
 public fun ExitStatusError.signal(): Int? = this.intoStatus().signal()
 
@@ -466,7 +472,7 @@ public interface ChildExt<T> {
      * }
      * ```kotlin
      */
-    public fun sendSignal(signal: Int): Result<Unit>
+    public fun sendSignal(signal: Int): Result<Unit, Error>
 
     /**
      * Sends a signal to a child process's process group.
@@ -498,7 +504,7 @@ public interface ChildExt<T> {
      * }
      * ```kotlin
      */
-    public fun sendProcessGroupSignal(signal: Int): Result<Unit>
+    public fun sendProcessGroupSignal(signal: Int): Result<Unit, Error>
 
     /**
      * Forces the child process's process group to exit.
@@ -529,19 +535,19 @@ public interface ChildExt<T> {
      * [Child.kill]: process.Child.kill
      * ```
      */
-    public fun killProcessGroup(): Result<Unit>
+    public fun killProcessGroup(): Result<Unit, Error>
 }
 
-public fun Child.sendSignal(signal: Int): Result<Unit> = this.handle.sendSignal(signal)
+public fun Child.sendSignal(signal: Int): Result<Unit, Error> = this.handle.sendSignal(signal)
 
-public fun Child.sendProcessGroupSignal(signal: Int): Result<Unit> = this.handle.sendProcessGroupSignal(signal)
+public fun Child.sendProcessGroupSignal(signal: Int): Result<Unit, Error> = this.handle.sendProcessGroupSignal(signal)
 
-public fun Child.killProcessGroup(): Result<Unit> = this.handle.sendProcessGroupSignal(SIGKILL)
+public fun Child.killProcessGroup(): Result<Unit, Error> = this.handle.sendProcessGroupSignal(SIGKILL)
 
 public fun fromRawFdStdio(fd: RawFd): Stdio {
     val fd1 = FileDesc.fromRawFd(fd)
     val io = Stdio.Fd(fd1)
-    return Process.Stdio.fromInner(io)
+    return process.Stdio.fromInner(io)
 }
 
 /**
@@ -551,7 +557,7 @@ public fun fromRawFdStdio(fd: RawFd): Stdio {
 public fun fromStdio(fd: OwnedFd): Stdio {
     val fd1 = FileDesc.fromInner(fd)
     val io = Stdio.Fd(fd1)
-    return Process.Stdio.fromInner(io)
+    return process.Stdio.fromInner(io)
 }
 
 public fun ChildStdin.asRawFd(): RawFd = this.asInner().asRawFd()
@@ -581,7 +587,7 @@ public fun fromOwnedFd(childStdin: ChildStdin): OwnedFd = childStdin.intoInner()
  */
 public fun fromChildStdin(fd: OwnedFd): ChildStdin {
     val pipe = ChildPipe.fromInner(fd)
-    return Process.ChildStdin.fromInner(pipe)
+    return process.ChildStdin.fromInner(pipe)
 }
 
 public fun ChildStdout.asFd(): BorrowedFd = this.asInner().asFd()
@@ -599,7 +605,7 @@ public fun fromOwnedFd(childStdout: ChildStdout): OwnedFd = childStdout.intoInne
  */
 public fun fromChildStdout(fd: OwnedFd): ChildStdout {
     val pipe = ChildPipe.fromInner(fd)
-    return Process.ChildStdout.fromInner(pipe)
+    return process.ChildStdout.fromInner(pipe)
 }
 
 public fun ChildStderr.asFd(): BorrowedFd = this.asInner().asFd()
@@ -617,7 +623,7 @@ public fun fromOwnedFd(childStderr: ChildStderr): OwnedFd = childStderr.intoInne
  */
 public fun fromChildStderr(fd: OwnedFd): ChildStderr {
     val pipe = ChildPipe.fromInner(fd)
-    return Process.ChildStderr.fromInner(pipe)
+    return process.ChildStderr.fromInner(pipe)
 }
 
 /**

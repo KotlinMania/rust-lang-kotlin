@@ -1,6 +1,8 @@
-@file:OptIn(kotlinx.cinterop.ExperimentalForeignApi::class, kotlin.ExperimentalUnsignedTypes::class)
+@file:OptIn(ExperimentalForeignApi::class, ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.corearch.x86
+
+import kotlinx.cinterop.ExperimentalForeignApi
 
 public actual fun pclmulqdq256(a: M256i, roundKey: M256i, imm8: UByte): M256i =
     M256i()

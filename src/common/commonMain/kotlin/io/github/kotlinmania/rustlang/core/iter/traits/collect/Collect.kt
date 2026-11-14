@@ -144,7 +144,7 @@ public interface FromIterator<T, SelfType> {
  *                 value = v
  *             }
  *
- *         override fun iterator(): kotlin.collections.Iterator<Int> = this.intoIter().iterator()
+ *         override fun iterator(): Iterator<Int> = this.intoIter().iterator()
  *
  *         // Let's give it some methods so we can create one and add things
  *         // to it.

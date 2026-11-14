@@ -7,8 +7,6 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
-import io.github.kotlinmania.rustlang.std.fmt
-import io.github.kotlinmania.rustlang.std.mem
 import io.github.kotlinmania.rustlang.std.sync.nonpoison.TryLockResult
 import io.github.kotlinmania.rustlang.std.sync.poison.Flag
 import io.github.kotlinmania.rustlang.std.sync.poison.Guard
@@ -93,6 +91,7 @@ public class DebugStruct(
  *
  * ```kotlin
  * import std.sync.RwLock
+ * import std.thread
  * import std.time.Duration
  *
  * val data = RwLock.new(5)
@@ -189,10 +188,10 @@ public open class RwLock<T>(
      * ```
      */
     public open fun set(value: T): Result<Unit, PoisonError<T>> =
-        if (mem.needsDrop<T>()) {
+        if (needsDrop<T>()) {
             // If the contained value has non-trivial destructor, we
             // call that destructor after the lock being released.
-            this.replace(value).map(drop)
+            this.replace(value).map({ Unit })
         } else {
             run {
                 val matchVal = this.write()
@@ -233,7 +232,7 @@ public open class RwLock<T>(
             val matchVal = this.write()
             when (matchVal) { is Result.Ok<*> -> {
                 val guard = matchVal.value
-                Result.Ok(mem.replace(guard, value))
+                Result.Ok(replace(guard, value))
             }; is Result.Err<*> -> {
                 Result.Err(PoisonError.new(value))
             } }
@@ -269,6 +268,7 @@ public open class RwLock<T>(
      *
      * ```kotlin
      * import std.sync.RwLock
+     * import std.thread
      *
      * val lock = RwLock.new(1)
      * val cLock = lock
@@ -432,6 +432,7 @@ public open class RwLock<T>(
      *
      * ```kotlin
      * import std.sync.RwLock
+     * import std.thread
      *
      * val lock = RwLock.new(0)
      * val cLock = lock
@@ -457,6 +458,7 @@ public open class RwLock<T>(
      *
      * ```kotlin
      * import std.sync.RwLock
+     * import std.thread
      *
      * val lock = RwLock.new(0)
      * val cLock = lock
@@ -830,7 +832,7 @@ public open class RwLockWriteGuard<T>(
             // mode, satisfying the `downgrade` contract.
             lock.inner.downgrade()
             // SAFETY: We have just successfully called `downgrade`, so we fulfill the safety contract.
-            return RwLockReadGuard.new(lock).unwrapOrElse(PoisonError::intoInner)
+            return RwLockReadGuard.new(lock).unwrapOrElse({ it.intoInner() })
         }
 
         /**

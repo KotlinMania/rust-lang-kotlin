@@ -169,6 +169,52 @@ internal expect fun rustDivhc3(a: F16, b: F16, c: F16, d: F16): Complex<F16>
 
 internal expect fun rustDivtc3(a: F128, b: F128, c: F128, d: F128): Complex<F128>
 
+internal expect fun acosf(n: kotlin.Float): kotlin.Float
+
+internal expect fun asinf(n: kotlin.Float): kotlin.Float
+
+internal expect fun atan2f(a: kotlin.Float, b: kotlin.Float): kotlin.Float
+
+internal expect fun atanf(n: kotlin.Float): kotlin.Float
+
+internal expect fun cosf(x: kotlin.Float): kotlin.Float
+
+internal expect fun coshf(n: kotlin.Float): kotlin.Float
+
+internal expect fun erfcf(x: kotlin.Float): kotlin.Float
+
+internal expect fun erff(x: kotlin.Float): kotlin.Float
+
+internal expect fun exp2f(x: kotlin.Float): kotlin.Float
+
+internal expect fun expf(x: kotlin.Float): kotlin.Float
+
+internal expect fun expm1f(n: kotlin.Float): kotlin.Float
+
+internal expect fun hypotf(x: kotlin.Float, y: kotlin.Float): kotlin.Float
+
+internal expect fun ldexpf(f: kotlin.Float, n: Int): kotlin.Float
+
+internal expect fun log10f(x: kotlin.Float): kotlin.Float
+
+internal expect fun log1pf(n: kotlin.Float): kotlin.Float
+
+internal expect fun log2f(x: kotlin.Float): kotlin.Float
+
+internal expect fun logf(x: kotlin.Float): kotlin.Float
+
+internal expect fun powf(x: kotlin.Float, y: kotlin.Float): kotlin.Float
+
+internal expect fun sinf(x: kotlin.Float): kotlin.Float
+
+internal expect fun sinhf(n: kotlin.Float): kotlin.Float
+
+internal expect fun tanf(n: kotlin.Float): kotlin.Float
+
+internal expect fun tanhf(n: kotlin.Float): kotlin.Float
+
+internal expect fun tgammaf(x: kotlin.Float): kotlin.Float
+
 internal expect fun acos(x: Double): Double
 
 internal expect fun asin(x: Double): Double

@@ -34,7 +34,7 @@ internal open class FxHasher(
     public var hash: Int,
 ) {
     public open fun addToHash(i: Int) {
-        val K: Int = cfgSelect(targetPointerWidth, "64", 0x517cc1b727220a95L.toInt(), targetPointerWidth, "32", 0x9e3779b9.toInt(), 0)
+        val K: Int = 0x517cc1b727220a95L.toInt()
         this.hash = rustRotateLeft(this.hash, 5u).bitxor(i).wrappingMul(K)
     }
 
@@ -83,23 +83,23 @@ internal open class FxHasher(
     public open fun finish(): ULong = this.hash.toULong()
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<FxHasher> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<FxHasher> {
+        public fun typeLayout(): TypeLayout<FxHasher> =
+            object : TypeLayout<FxHasher> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 8L
                 override fun readNative(addr: Long): FxHasher =
                     FxHasher(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readNative(addr),
+                        (PrimitiveLayouts.USIZE64).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: FxHasher) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeNative(addr, value.hash)
+                    (PrimitiveLayouts.USIZE64).writeNative(addr, value.hash)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): FxHasher =
                     FxHasher(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readBytes(buf, offset),
+                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: FxHasher) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeBytes(buf, offset, value.hash)
+                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset, value.hash)
                 }
             }
     }

@@ -1,11 +1,11 @@
 // port-lint: source bridge/handle.rs
 package io.github.kotlinmania.rustlang.procmacro.bridge.handle
 
-import io.github.kotlinmania.rustlang.alloc.collections.linkedlist.index
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU32
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 import io.github.kotlinmania.rustlang.procmacro.bridge.fxhash.FxHashMap
+import io.github.kotlinmania.rustlang.std.sys.path.windowsprefix.index
 
 // Server-side handles and storage for per-handle data.
 

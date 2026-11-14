@@ -130,26 +130,24 @@ import io.github.kotlinmania.rustlang.core.pin.Pin
  * recursively drop all the fields of `T`. For example, it is crucial that code like the following
  * is being rejected:
  *
- * ```kotlin
- * import std.cell.Cell
+ * ```compile_fail,E0597
+ * use std.cell.Cell;
  *
- * open class S(public var field0: Cell<S?>, public var field1: Int) {
- *     public open fun drop() {
- *         when (val matchVal = this.field0.get()) {
- *             null -> {}
- *             else -> {
- *                 val r = matchVal
- *                 // Print the contents of the `Holder` in `r`.
- *                 println("${r.second}")
- *             }
+ * struct S<a>(Cell<Option<&a S<a>>>, Holder<i32>);
+ * impl Drop for S<_> {
+ *     fn drop(self) {
+ *         if let Some(r) = self.0.get() {
+ *             // Print the contents of the `Holder` in `r`.
+ *             println("{}", r.1);
  *         }
  *     }
  * }
- * fun main() {
+ *
+ * fn main() {
  *     // Set up two `S` that point to each other.
- *     val s1 = S(Cell.new(null), 42)
- *     val s2 = S(Cell.new(s1), 42)
- *     s1.first.set(s2)
+ *     let s1 = S(Cell.new(None), Box.new(42));
+ *     let s2 = S(Cell.new(Some(&s1)), Box.new(42));
+ *     s1.0.set(Some(&s2));
  *     // Now they both get dropped. But whichever is the 2nd one
  *     // to be dropped will access the `Holder` in the first one,
  *     // which is a use-after-free!

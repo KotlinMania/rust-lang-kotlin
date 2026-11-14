@@ -367,6 +367,8 @@ public open class SocketAddrV4(
     public var ip: Ipv4Addr,
     public var port: UShort,
 ) {
+    public open fun clone(): SocketAddrV4 = SocketAddrV4(ip, port)
+
     /**
      * Returns the IP address associated with this socket address.
      *
@@ -534,6 +536,8 @@ public open class SocketAddrV6(
     public var flowinfo: UInt,
     public var scopeId: UInt,
 ) {
+    public open fun clone(): SocketAddrV6 = SocketAddrV6(ip, port, flowinfo, scopeId)
+
     /**
      * Returns the IP address associated with this socket address.
      *

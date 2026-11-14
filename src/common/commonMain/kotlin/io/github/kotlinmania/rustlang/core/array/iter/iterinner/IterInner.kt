@@ -7,7 +7,6 @@ import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.indexrange.IndexRange
 import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.slice.iter.Iter
 
 // Defines the `IntoIter` owned iterator for arrays.
 
@@ -111,7 +110,7 @@ public interface SpecPolymorphicIterClone<T> {
 public fun <T> specPolymorphicIterCloneSpecCloneT(thisRef: PolymorphicIter<List<MaybeUninit<T>>>, n: Int): PolymorphicIter<List<MaybeUninit<T>>> {
     fun <U> cloneIntoNew(source: PolymorphicIter<List<MaybeUninit<U>>>, target: PolymorphicIter<List<MaybeUninit<U>>>) {
         // Clone all alive elements.
-        for ((src, dst) in Iter.zip(source.asSlice(), target.data)) {
+        for ((src, dst) in iter.zip(source.asSlice(), target.data)) {
             // Write a clone into the new array, then update its alive range.
             // If cloning panics, we'll correctly drop the previous items.
             dst.write(src.clone())

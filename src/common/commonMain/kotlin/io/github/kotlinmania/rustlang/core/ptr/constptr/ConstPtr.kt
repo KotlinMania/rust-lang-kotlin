@@ -158,7 +158,7 @@ public fun ConstPtr.addr(): Int {
     // reinterpret semantics, it relies on sysroot crates having special status.
     // SAFETY: Pointer-to-integer transmutes are valid (if you are okay with losing the
     // provenance).
-    return mem.transmute(ConstPtr((this).rawAddress))
+    return transmute(ConstPtr((this).rawAddress))
 }
 
 /**
@@ -1271,6 +1271,7 @@ public fun ConstPtr.castUninit(): ConstPtr = ConstPtr(this.rawAddress, this.rawM
  *
  * ```kotlin
  * import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
+ * import std.ptr
  *
  * val danger: ConstPtr = ConstPtr(0L).castSlice(0)
  * run {
@@ -1300,6 +1301,7 @@ public fun ConstPtr.castInit(): ConstPtr = ConstPtr(this.rawAddress, this.rawMet
  *
  * ```kotlin
  * import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
+ * import std.ptr
  *
  * val slice: ConstPtr = ptr.sliceFromRawParts(ConstPtr(0L), 3)
  * check(slice.len() == 3)
@@ -1314,6 +1316,7 @@ public fun ConstPtr.len(): Int = metadata(this)
  *
  * ```kotlin
  * import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
+ * import std.ptr
  *
  * val slice: ConstPtr = ptr.sliceFromRawParts(ConstPtr(0L), 3)
  * check(!slice.isEmpty())
@@ -1330,6 +1333,7 @@ public fun ConstPtr.isEmpty(): Boolean = this.len() == 0
  *
  * ```kotlin
  * import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
+ * import std.ptr
  *
  * @feature(slicePtrGet)
  * public fun doctestEntry() {
@@ -1406,6 +1410,7 @@ public fun ConstPtr.castArray(n: Int): ConstPtr = ConstPtr((this).rawAddress)
  *
  * ```kotlin
  * import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
+ * import std.ptr
  *
  * @feature(arrayPtrGet)
  * public fun doctestEntry() {

@@ -17,8 +17,6 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.str.error.Utf8Error
 import io.github.kotlinmania.rustlang.core.wtf8.Wtf8
-import io.github.kotlinmania.rustlang.std.fmt
-import io.github.kotlinmania.rustlang.std.mem
 import io.github.kotlinmania.rustlang.std.rc.Rc
 import io.github.kotlinmania.rustlang.std.sync.Arc
 import io.github.kotlinmania.rustlang.std.sys.AsInner
@@ -100,7 +98,7 @@ internal open class Buf(
         // SAFETY: Slice is just a wrapper for Wtf8,
         // and self.inner.asSlice() returns &Wtf8.
         // Therefore, transmuting &Wtf8 to &Slice is safe.
-        return mem.transmute(this.inner.asSlice())
+        return transmute(this.inner.asSlice())
     }
 
     public open fun asMutSlice(): RustMutableReference<Slice> {
@@ -109,12 +107,12 @@ internal open class Buf(
         // Therefore, transmuting Wtf8 to Slice is safe.
         // Additionally, care should be taken to ensure the slice
         // is always valid Wtf8.
-        return mem.transmute(this.inner.asMutSlice())
+        return transmute(this.inner.asMutSlice())
     }
 
-    public open fun leak(): RustMutableReference<Slice> = mem.transmute(this.inner.leak())
+    public open fun leak(): RustMutableReference<Slice> = transmute(this.inner.leak())
 
-    public open fun intoBox(): Slice = mem.transmute(this.inner.intoBox())
+    public open fun intoBox(): Slice = transmute(this.inner.intoBox())
 
     public open fun intoArc(): Slice = this.asSlice().intoArc()
 
@@ -163,7 +161,7 @@ internal open class Buf(
         public fun withCapacity(capacity: Int, fieldLayout: TypeLayout<Wtf8Buf>): Buf = Buf(inner = Wtf8Buf.withCapacity(capacity), fieldLayout = fieldLayout)
 
         public fun fromBox(boxed: Slice, fieldLayout: TypeLayout<Wtf8Buf>): Buf {
-            val inner: Wtf8 = mem.transmute(boxed)
+            val inner: Wtf8 = transmute(boxed)
             return Buf(inner = Wtf8Buf.fromBox(inner), fieldLayout = fieldLayout)
         }
     }
@@ -239,10 +237,10 @@ internal open class Slice(
     }
 
     public companion object {
-        public fun fromEncodedBytesUnchecked(s: List<UByte>): Slice = mem.transmute(Wtf8.fromBytesUnchecked(s))
+        public fun fromEncodedBytesUnchecked(s: List<UByte>): Slice = transmute(Wtf8.fromBytesUnchecked(s))
 
-        public fun fromStr(s: String): Slice = mem.transmute(Wtf8.fromStr(s))
+        public fun fromStr(s: String): Slice = transmute(Wtf8.fromStr(s))
 
-        public fun emptyBox(): Slice = mem.transmute(Wtf8.emptyBox())
+        public fun emptyBox(): Slice = transmute(Wtf8.emptyBox())
     }
 }

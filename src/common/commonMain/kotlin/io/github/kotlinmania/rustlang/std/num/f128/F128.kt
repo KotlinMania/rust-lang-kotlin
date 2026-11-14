@@ -6,7 +6,6 @@ import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
-import io.github.kotlinmania.rustlang.std.intrinsics
 import io.github.kotlinmania.rustlang.std.sys.cmath.acosf128
 import io.github.kotlinmania.rustlang.std.sys.cmath.acoshf128
 import io.github.kotlinmania.rustlang.std.sys.cmath.asinf128

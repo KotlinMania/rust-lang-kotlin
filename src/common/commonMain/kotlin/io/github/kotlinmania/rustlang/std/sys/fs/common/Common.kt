@@ -1,20 +1,19 @@
 // port-lint: source sys/fs/common.rs
 package io.github.kotlinmania.rustlang.std.sys.fs.common
 
+import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.std.fmt
 import io.github.kotlinmania.rustlang.std.fs.createDir
 import io.github.kotlinmania.rustlang.std.fs.removeDir
 import io.github.kotlinmania.rustlang.std.fs.removeFile
 import io.github.kotlinmania.rustlang.std.fs.rename
-import io.github.kotlinmania.rustlang.std.os.xous.ffi.definitions.Error
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.path.PathBuf
-import io.github.kotlinmania.rustlang.std.sys.fs.hermit.File
-import io.github.kotlinmania.rustlang.std.sys.fs.hermit.FileAttr
-import io.github.kotlinmania.rustlang.std.sys.fs.hermit.OpenOptions
+import io.github.kotlinmania.rustlang.std.sys.fs.unix.File
+import io.github.kotlinmania.rustlang.std.sys.fs.unix.OpenOptions
+import io.github.kotlinmania.rustlang.std.sys.fs.unsupported.FileAttr
 import io.github.kotlinmania.rustlang.std.sys.helpers.ignoreNotfound
 
 public class DebugStruct(
@@ -44,53 +43,53 @@ public class DebugStruct(
 
 internal val NOT_FILE_ERROR: Error = io.constError(ErrorKind.InvalidInput, "the source path is neither a regular file nor a symlink to a regular file")
 
-public fun copy(from: Path, to: Path): Result<ULong> {
-    val reader = when (val tryResult = fs.File.open(from)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+public fun copy(from: Path, to: Path): Result<ULong, Error> {
+    val reader = when (val tryResult = File.open(from)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
     val metadata = when (val tryResult = reader.metadata()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
     if (!metadata.isFile()) {
         return Result.Err(NOT_FILE_ERROR)
     }
-    val writer = when (val tryResult = fs.File.create(to)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    val writer = when (val tryResult = File.create(to)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
     val perm = metadata.permissions()
-    val ret = when (val tryResult = io.copy(reader, writer)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    val ret = when (val tryResult = copy(reader, writer)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
     when (val tryResult = writer.setPermissions(perm)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
     return Result.Ok(ret)
 }
 
-public fun removeDirAll(path: Path): Result<Unit> {
-    val filetype = when (val tryResult = fs.symlinkMetadata(path)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }.fileType()
+public fun removeDirAll(path: Path): Result<Unit, Error> {
+    val filetype = when (val tryResult = symlinkMetadata(path)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }.fileType()
     return if (filetype.isSymlink()) {
-        fs.removeFile(path)
+        removeFile(path)
     } else {
         removeDirAllRecursive(path)
     }
 }
 
-public fun removeDirAllRecursive(path: Path): Result<Unit> {
-    for (child in when (val tryResult = fs.readDir(path)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }) {
-        val result: Result<Unit> =
+public fun removeDirAllRecursive(path: Path): Result<Unit, Error> {
+    for (child in when (val tryResult = readDir(path)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }) {
+        val result: Result<Unit, Error> =
             run {
                 val child1 = when (val tryResult = child) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
                 if (when (val tryResult = child1.fileType()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }.isDir()) {
                     when (val tryResult = removeDirAllRecursive(child1.path())) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
                 } else {
-                    when (val tryResult = fs.removeFile(child1.path())) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                    when (val tryResult = removeFile(child1.path())) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
                 }
             }
         // ignore internal NotFound errors to prevent race conditions
-        if (result is Result.Err<*> && err.kind() != io.ErrorKind.NotFound) {
+        if (result is Result.Err<*> && err.kind() != ErrorKind.NotFound) {
             return result
         }
     }
-    return ignoreNotfound(fs.removeDir(path))
+    return ignoreNotfound(removeDir(path))
 }
 
-public fun exists(path: Path): Result<Boolean> =
+public fun exists(path: Path): Result<Boolean, Error> =
     run {
-        val matchVal = fs.metadata(path)
+        val matchVal = metadata(path)
         when {
             matchVal is Result.Ok<*> -> Result.Ok(true)
-            matchVal is Result.Err<*> && (matchVal as Result.Err<*>).error.kind() == io.ErrorKind.NotFound -> {
+            matchVal is Result.Err<*> && (matchVal as Result.Err<*>).error.kind() == ErrorKind.NotFound -> {
                 val error = (matchVal as Result.Err<*>).error
                 Result.Ok(false)
             }
@@ -104,34 +103,34 @@ public fun exists(path: Path): Result<Boolean> =
 public open class Dir(
     public var path: PathBuf,
 ) {
-    public open fun duplicate(): Result<Dir> = Result.Ok(Dir(path = this.path.clone()))
+    public open fun duplicate(): Result<Dir, Error> = Result.Ok(Dir(path = this.path.clone()))
 
-    public open fun openFile(path: Path, opts: OpenOptions): Result<File> = File.open(this.path.join(path), opts)
+    public open fun openFile(path: Path, opts: OpenOptions): Result<File, Error> = File.open(this.path.join(path), opts)
 
-    public open fun selfMetadata(): Result<FileAttr> = this.path.metadata().map({ m -> m.intoInner() })
+    public open fun selfMetadata(): Result<FileAttr, Error> = this.path.metadata().map({ m -> m.intoInner() })
 
-    public open fun removeFile(path: Path): Result<Unit> = removeFile(this.path.join(path))
+    public open fun removeFile(path: Path): Result<Unit, Error> = removeFile(this.path.join(path))
 
-    public open fun rename(from: Path, toDir: Dir, to: Path): Result<Unit> = rename(this.path.join(from), toDir.path.join(to))
+    public open fun rename(from: Path, toDir: Dir, to: Path): Result<Unit, Error> = rename(this.path.join(from), toDir.path.join(to))
 
-    public open fun createDir(path: Path): Result<Unit> = createDir(this.path.join(path))
+    public open fun createDir(path: Path): Result<Unit, Error> = createDir(this.path.join(path))
 
-    public open fun openDir(path: Path, opts: OpenOptions): Result<Dir> = Dir.open(this.path.join(path), opts)
+    public open fun openDir(path: Path, opts: OpenOptions): Result<Dir, Error> = Dir.open(this.path.join(path), opts)
 
-    public open fun removeDir(path: Path): Result<Unit> = removeDir(this.path.join(path))
+    public open fun removeDir(path: Path): Result<Unit, Error> = removeDir(this.path.join(path))
 
-    public open fun metadata(path: Path): Result<FileAttr> = this.path.join(path).metadata().map({ m -> m.intoInner() })
+    public open fun metadata(path: Path): Result<FileAttr, Error> = this.path.join(path).metadata().map({ m -> m.intoInner() })
 
-    public open fun symlinkMetadata(path: Path): Result<FileAttr> = this.path.join(path).symlinkMetadata().map({ m -> m.intoInner() })
+    public open fun symlinkMetadata(path: Path): Result<FileAttr, Error> = this.path.join(path).symlinkMetadata().map({ m -> m.intoInner() })
 
     public open fun fmt(f: StringBuilder) {
         DebugStruct(f, "Dir").field("path", this.path).finish()
     }
 
     public companion object {
-        public fun open(path: Path, opts: OpenOptions): Result<Dir> = path.canonicalize().map({ path1 -> Dir(path = path1) })
+        public fun open(path: Path, opts: OpenOptions): Result<Dir, Error> = path.canonicalize().map({ path1 -> Dir(path = path1) })
 
-        public fun openForTraversal(path: Path): Result<Dir> {
+        public fun openForTraversal(path: Path): Result<Dir, Error> {
             val opts = OpenOptions.new()
             opts.read(true)
             return Dir.open(path, opts)
@@ -140,9 +139,11 @@ public open class Dir(
 }
 
 public open class ExtraHomeDirs {
+    public open fun clone(): ExtraHomeDirs = ExtraHomeDirs()
+
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<ExtraHomeDirs> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<ExtraHomeDirs> {
+        public fun typeLayout(): TypeLayout<ExtraHomeDirs> =
+            object : TypeLayout<ExtraHomeDirs> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): ExtraHomeDirs =
@@ -158,9 +159,11 @@ public open class ExtraHomeDirs {
 }
 
 public open class ExtraMediaDirs {
+    public open fun clone(): ExtraMediaDirs = ExtraMediaDirs()
+
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<ExtraMediaDirs> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<ExtraMediaDirs> {
+        public fun typeLayout(): TypeLayout<ExtraMediaDirs> =
+            object : TypeLayout<ExtraMediaDirs> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): ExtraMediaDirs =

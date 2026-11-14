@@ -6,8 +6,6 @@ import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.std.fmt
-import io.github.kotlinmania.rustlang.std.mem
 import io.github.kotlinmania.rustlang.std.sync.nonpoison.TryLockResult
 import io.github.kotlinmania.rustlang.std.sync.nonpoison.WouldBlock
 
@@ -122,7 +120,7 @@ public open class RwLock<T>(
      * ```
      */
     public open fun set(value: T) {
-        if (mem.needsDrop<T>()) {
+        if (needsDrop<T>()) {
             // If the contained value has a non-trivial destructor, we
             // call that destructor after the lock has been released.
             drop(this.replace(value))
@@ -152,7 +150,7 @@ public open class RwLock<T>(
      */
     public open fun replace(value: T): T {
         val guard = this.write()
-        return mem.replace(guard, value)
+        return replace(guard, value)
     }
 
     /**
@@ -176,6 +174,7 @@ public open class RwLock<T>(
      *
      * ```kotlin
      * import std.sync.nonpoison.RwLock
+     * import std.thread
      *
      * @feature(nonpoisonRwlock)
      * public fun doctestEntry() {

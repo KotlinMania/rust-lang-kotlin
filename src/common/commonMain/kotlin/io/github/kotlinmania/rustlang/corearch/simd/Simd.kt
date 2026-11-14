@@ -10,6 +10,7 @@ import io.github.kotlinmania.rustlang.core.fmt.Result
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
@@ -46,23 +47,23 @@ internal open class Simd<T : SimdElement<T>>(
         }
 
     public companion object {
-        public fun <T : SimdElement<T>> typeLayout(typeLayoutT: io.github.kotlinmania.rustlang.core.mem.TypeLayout<T>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Simd<T>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Simd<T>> {
+        public fun <T : SimdElement<T>> typeLayout(typeLayoutT: TypeLayout<T>): TypeLayout<Simd<T>> =
+            object : TypeLayout<Simd<T>> {
                 override val alignBytes: Long = listOf(1L, typeLayoutT.alignBytes).max()
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(((N).toLong() * (typeLayoutT).strideBytes), alignBytes)
+                override val sizeBytes: Long = alignUpBytes(((N).toLong() * (typeLayoutT).strideBytes), alignBytes)
                 override fun readNative(addr: Long): Simd<T> =
                     Simd(
-                        (io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout(typeLayoutT, (N).toInt())).readNative(addr),
+                        (fixedListTypeLayout(typeLayoutT, (N).toInt())).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: Simd<T>) {
-                    (io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout(typeLayoutT, (N).toInt())).writeNative(addr, value.value)
+                    (fixedListTypeLayout(typeLayoutT, (N).toInt())).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Simd<T> =
                     Simd(
-                        (io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout(typeLayoutT, (N).toInt())).readBytes(buf, offset),
+                        (fixedListTypeLayout(typeLayoutT, (N).toInt())).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Simd<T>) {
-                    (io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout(typeLayoutT, (N).toInt())).writeBytes(buf, offset, value.value)
+                    (fixedListTypeLayout(typeLayoutT, (N).toInt())).writeBytes(buf, offset, value.value)
                 }
             }
 
@@ -135,23 +136,23 @@ internal open class SimdM<T : SimdElement<T>>(
         }
 
     public companion object {
-        public fun <T : SimdElement<T>> typeLayout(typeLayoutT: io.github.kotlinmania.rustlang.core.mem.TypeLayout<T>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<SimdM<T>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<SimdM<T>> {
+        public fun <T : SimdElement<T>> typeLayout(typeLayoutT: TypeLayout<T>): TypeLayout<SimdM<T>> =
+            object : TypeLayout<SimdM<T>> {
                 override val alignBytes: Long = listOf(1L, typeLayoutT.alignBytes).max()
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(((N).toLong() * (typeLayoutT).strideBytes), alignBytes)
+                override val sizeBytes: Long = alignUpBytes(((N).toLong() * (typeLayoutT).strideBytes), alignBytes)
                 override fun readNative(addr: Long): SimdM<T> =
                     SimdM(
-                        (io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout(typeLayoutT, (N).toInt())).readNative(addr),
+                        (fixedListTypeLayout(typeLayoutT, (N).toInt())).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: SimdM<T>) {
-                    (io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout(typeLayoutT, (N).toInt())).writeNative(addr, value.value)
+                    (fixedListTypeLayout(typeLayoutT, (N).toInt())).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): SimdM<T> =
                     SimdM(
-                        (io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout(typeLayoutT, (N).toInt())).readBytes(buf, offset),
+                        (fixedListTypeLayout(typeLayoutT, (N).toInt())).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: SimdM<T>) {
-                    (io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout(typeLayoutT, (N).toInt())).writeBytes(buf, offset, value.value)
+                    (fixedListTypeLayout(typeLayoutT, (N).toInt())).writeBytes(buf, offset, value.value)
                 }
             }
     }

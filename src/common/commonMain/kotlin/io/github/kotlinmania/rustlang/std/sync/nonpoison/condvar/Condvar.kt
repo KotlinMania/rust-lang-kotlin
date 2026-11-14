@@ -2,7 +2,6 @@
 package io.github.kotlinmania.rustlang.std.sync.nonpoison.condvar
 
 import io.github.kotlinmania.rustlang.core.time.Duration
-import io.github.kotlinmania.rustlang.std.fmt
 import io.github.kotlinmania.rustlang.std.sync.WaitTimeoutResult
 import io.github.kotlinmania.rustlang.std.sync.nonpoison.mutex.Mutex
 import io.github.kotlinmania.rustlang.std.sync.nonpoison.mutex.MutexGuard
@@ -47,6 +46,7 @@ public class DebugStruct(
  * ```kotlin
  * import std.sync.nonpoison.Condvar
  * import std.sync.nonpoison.Mutex
+ * import std.thread
  *
  * @feature(nonpoisonMutex)
  * @feature(nonpoisonCondvar)
@@ -101,6 +101,7 @@ public open class Condvar(
      * ```kotlin
      * import std.sync.nonpoison.Condvar
      * import std.sync.nonpoison.Mutex
+     * import std.thread
      *
      * @feature(nonpoisonMutex)
      * @feature(nonpoisonCondvar)
@@ -153,6 +154,7 @@ public open class Condvar(
      * ```kotlin
      * import std.sync.nonpoison.Condvar
      * import std.sync.nonpoison.Mutex
+     * import std.thread
      *
      * @feature(nonpoisonMutex)
      * @feature(nonpoisonCondvar)
@@ -216,6 +218,7 @@ public open class Condvar(
      * ```kotlin
      * import std.sync.nonpoison.Condvar
      * import std.sync.nonpoison.Mutex
+     * import std.thread
      * import std.time.Duration
      *
      * @feature(nonpoisonMutex)
@@ -282,6 +285,7 @@ public open class Condvar(
      * ```kotlin
      * import std.sync.nonpoison.Condvar
      * import std.sync.nonpoison.Mutex
+     * import std.thread
      * import std.time.Duration
      *
      * @feature(nonpoisonMutex)
@@ -341,6 +345,7 @@ public open class Condvar(
      * ```kotlin
      * import std.sync.nonpoison.Condvar
      * import std.sync.nonpoison.Mutex
+     * import std.thread
      *
      * @feature(nonpoisonMutex)
      * @feature(nonpoisonCondvar)
@@ -384,6 +389,7 @@ public open class Condvar(
      * ```kotlin
      * import std.sync.nonpoison.Condvar
      * import std.sync.nonpoison.Mutex
+     * import std.thread
      *
      * @feature(nonpoisonMutex)
      * @feature(nonpoisonCondvar)

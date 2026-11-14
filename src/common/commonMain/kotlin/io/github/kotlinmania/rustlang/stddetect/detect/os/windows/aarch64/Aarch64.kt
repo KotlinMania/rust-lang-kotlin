@@ -1,7 +1,7 @@
 // port-lint: source detect/os/windows/aarch64.rs
 package io.github.kotlinmania.rustlang.stddetect.detect.os.windows.aarch64
 
-import io.github.kotlinmania.rustlang.stddetect.detect.Feature
+import io.github.kotlinmania.rustlang.stddetect.detect.arch.Feature
 import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.s390x.cache
 
 // Run-time feature detection for Aarch64 on Windows.

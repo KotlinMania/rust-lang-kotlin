@@ -14,11 +14,14 @@ import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.memchr.memchr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
+import io.github.kotlinmania.rustlang.std.io.error.Error
+import io.github.kotlinmania.rustlang.std.os.unix.ffi.OsStringExt
+import io.github.kotlinmania.rustlang.std.os.unix.ffi.asBytes
+import io.github.kotlinmania.rustlang.std.os.unix.ffi.fromVec
 import io.github.kotlinmania.rustlang.std.sync.nonpoison.rwlock.RwLock
-import io.github.kotlinmania.rustlang.std.sync.poison.PoisonError
 import io.github.kotlinmania.rustlang.std.sys.env.common.Env
 import io.github.kotlinmania.rustlang.std.sys.helpers.smallcstring.runWithCstr
-import io.github.kotlinmania.rustlang.std.sys.pal.hermit.cvt
+import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
 
 // Use `_NSGetEnviron` on Apple platforms.
 //
@@ -47,7 +50,7 @@ public fun environ(): MutPtr = mutPtrFromRustCast(nsgetEnviron())
 
 public var ENV_LOCK: RwLock<Unit> = RwLock.new()
 
-public fun envReadLock(): Any = ENV_LOCK.read().unwrapOrElse(PoisonError::intoInner)
+public fun envReadLock(): Any = ENV_LOCK.read().unwrapOrElse({ it.intoInner() })
 
 /**
  * Returns a vector of (variable, value) byte-vector pairs for all the
@@ -62,13 +65,13 @@ public fun env(): Env {
         if (input.isEmpty()) {
             return null
         }
-        val pos = memchr(61u, ((input).slice(1 until input.size))).map({ p -> p + 1 })
-        return pos.map({ p ->
-            Pair(OsStringExt.fromVec(((input).slice(0 until p)).toVec()), OsStringExt.fromVec(((input).slice(p + 1 until input.size)).toVec()))
+        val pos = memchr(61u, ((input).slice(1 until input.size)))?.let({ p -> p + 1 })
+        return pos?.let({ p ->
+            Pair(OsStringExt.fromVec(((input).slice(0 until p)).toMutableList()), OsStringExt.fromVec(((input).slice(p + 1 until input.size)).toMutableList()))
         })
     }
-    return run {
-        val result = mutableListOf()
+    run {
+        val result = mutableListOf<Pair<OsString, OsString>>()
         // A null return means the platform could not locate the symbol;
         // treat it like an empty environment.
         val environPtr = environ()
@@ -101,22 +104,22 @@ public fun getenv(k: OsStr): OsString? {
             Result.Ok(null)
         } else {
             // SAFETY: `v` cannot be mutated while executing this line since we've a read lock
-            val bytes = CStr.fromPtr(v).toBytes().toVec()
+            val bytes = CStr.fromPtr(v).toBytes().toMutableList()
             Result.Ok(OsStringExt.fromVec(bytes))
         }
-    }).ok().flatten()
+    }).ok()
 }
 
-public fun setenv(k: OsStr, v: OsStr): Result<Unit> =
+public fun setenv(k: OsStr, v: OsStr): Result<Unit, Error> =
     runWithCstr(k.asBytes(), { k1 ->
         runWithCstr(v.asBytes(), { v1 ->
             val guard = ENV_LOCK.write()
-            cvt(io.github.kotlinmania.libc.setenv(k1.asPtr(), v1.asPtr(), 1)).map(drop)
+            cvt(io.github.kotlinmania.libc.setenv(k1.asPtr(), v1.asPtr(), 1)).map({ Unit })
         })
     })
 
-public fun unsetenv(n: OsStr): Result<Unit> =
+public fun unsetenv(n: OsStr): Result<Unit, Error> =
     runWithCstr(n.asBytes(), { nbuf ->
         val guard = ENV_LOCK.write()
-        cvt(io.github.kotlinmania.libc.unsetenv(nbuf.asPtr())).map(drop)
+        cvt(io.github.kotlinmania.libc.unsetenv(nbuf.asPtr())).map({ Unit })
     })

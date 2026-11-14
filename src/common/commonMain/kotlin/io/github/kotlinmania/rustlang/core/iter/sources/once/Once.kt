@@ -19,6 +19,8 @@ import io.github.kotlinmania.rustlang.core.iter.TrustedLen
  * Basic usage:
  *
  * ```kotlin
+ * import std.iter
+ *
  * // one is the loneliest number
  * var one = listOf(1)
  * check(1 == one.next())
@@ -31,6 +33,8 @@ import io.github.kotlinmania.rustlang.core.iter.TrustedLen
  * `.foorc`:
  *
  * ```kotlin
+ * import std.fs
+ * import std.iter
  * import std.path.PathBuf
  *
  * val dirs = readDir(".foo").getOrElse { return Result.failure(it) }
@@ -57,7 +61,7 @@ public fun <T> once(value: T): Once<T> = Once(inner = value.intoIter())
 public open class Once<T>(
     public var inner: IntoIter<T>,
 ) : TrustedLen<Once<T>>, Iterable<T> {
-    override fun iterator(): kotlin.collections.Iterator<T> = object : AbstractIterator<T>() {
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@Once.next()) {
                 null -> done()
@@ -70,7 +74,7 @@ public open class Once<T>(
 
     public override fun next(): T? = this.inner.removeFirstOrNull()
 
-    public override fun sizeHint(): Pair<Int, Int?> = this.inner.sizeHint()
+    public override fun sizeHint(): Pair<Int, Int?> = run { val n = this.inner.size; Pair(n, n) }
 
     public open fun nextBack(): T? = this.inner.removeLastOrNull()
 

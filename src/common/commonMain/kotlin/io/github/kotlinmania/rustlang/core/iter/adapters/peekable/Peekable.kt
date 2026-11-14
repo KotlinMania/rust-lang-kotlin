@@ -25,7 +25,7 @@ public open class Peekable<I>(
      */
     public var peeked: Item?,
 ) : TrustedLen<Peekable<I>>, SourceIter<Any?, Source>, Iterable<Item> {
-    override fun iterator(): kotlin.collections.Iterator<Item> = object : AbstractIterator<Item>() {
+    override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
         override fun computeNext() {
             when (val v = this@Peekable.next()) {
                 null -> done()

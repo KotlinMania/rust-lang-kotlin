@@ -32,7 +32,7 @@ public fun <T> mergesort(v: MutableList<T>, scratch: MutableList<MaybeUninit<T>>
             val vA = vBase
             val vB = MutPtr((vBase).rawAddress + ((1).toLong() * (ObjectSlotLayout<T>()).strideBytes))
             if (isLess((ObjectSlotLayout<T>()).readNative((vB).rawAddress), (ObjectSlotLayout<T>()).readNative((vA).rawAddress))) {
-                ptr.swapNonoverlapping(vA, vB, 1)
+                swapNonoverlapping(vA, vB, 1)
             }
         }
     }

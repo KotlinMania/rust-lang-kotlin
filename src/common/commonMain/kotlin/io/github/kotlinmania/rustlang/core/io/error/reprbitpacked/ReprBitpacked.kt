@@ -28,12 +28,12 @@ import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 // the following enum (which is roughly equivalent to what's stored by
 // `reprUnpacked.Repr`, e.g. `ErrorData<Holder<Custom>>`):
 //
-// ```kotlin
-// sealed class ErrorData {
-//     public data class Os(public var value: Int) : ErrorData()
-//     public data class Simple(public var value: ErrorKind) : ErrorData()
-//     public data class SimpleMessage(public var value: SimpleMessage) : ErrorData()
-//     public data class Custom(public var value: Custom) : ErrorData()
+// ```ignore (exposition-only)
+// enum ErrorData {
+//    Os(i32),
+//    Simple(ErrorKind),
+//    SimpleMessage(&static SimpleMessage),
+//    Custom(Holder<Custom>),
 // }
 // ```
 //
@@ -87,16 +87,16 @@ import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 //
 // Conceptually you might think of this more like:
 //
-// ```kotlin
-// open class Repr(
+// ```ignore (exposition-only)
+// union Repr {
 //     // holds integer (Simple/Os) variants, and
 //     // provides access to the tag bits.
-//     public var bits: NonZero<ULong>? = null,
+//     bits: NonZero<u64>,
 //     // Tag is 0, so this is stored untagged.
-//     public var msg: SimpleMessage? = null,
+//     msg: &static SimpleMessage,
 //     // Tagged (offset) `Holder<Custom>` pointer.
-//     public var taggedCustom: NonNull? = null,
-// )
+//     taggedCustom: NonNull<()>,
+// }
 // ```
 //
 // But there are a few problems with this:
@@ -137,9 +137,9 @@ public val TAG_SIMPLE: Int = 0x3
  * See the module docs for more, this is just a way to Note in a check that we
  * indeed are not unwind-safe.
  *
- * ```kotlin
- * fun <T> isUnwindSafe() {}
- * isUnwindSafe<Error>()
+ * ```compile_fail,E0277
+ * fn isUnwindSafe<T: core.panic.UnwindSafe>() {}
+ * isUnwindSafe::<std.io.Error>();
  * ```
  */
 internal open class Repr(

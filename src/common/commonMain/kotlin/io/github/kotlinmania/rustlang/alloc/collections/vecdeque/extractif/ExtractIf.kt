@@ -74,7 +74,7 @@ public open class ExtractIf<T, F, A : Allocator> internal constructor(
     public var vec: VecDeque<T, A> = vecCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<T> = object : AbstractIterator<T>() {
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@ExtractIf.next()) {
                 null -> done()

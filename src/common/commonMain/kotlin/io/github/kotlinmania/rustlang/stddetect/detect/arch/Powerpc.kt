@@ -86,52 +86,52 @@ internal sealed class Feature {
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun altivec(): Boolean = checkFor(io.github.kotlinmania.rustlang.stddetect.detect.Feature::altivec)
+public fun altivec(): Boolean = checkFor(Feature::altivec)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun vsx(): Boolean = checkFor(io.github.kotlinmania.rustlang.stddetect.detect.Feature::vsx)
+public fun vsx(): Boolean = checkFor(Feature::vsx)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun power8(): Boolean = checkFor(io.github.kotlinmania.rustlang.stddetect.detect.Feature::power8)
+public fun power8(): Boolean = checkFor(Feature::power8)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun power8Altivec(): Boolean = checkFor(io.github.kotlinmania.rustlang.stddetect.detect.Feature::power8Altivec)
+public fun power8Altivec(): Boolean = checkFor(Feature::power8Altivec)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun power8Vector(): Boolean = checkFor(io.github.kotlinmania.rustlang.stddetect.detect.Feature::power8Vector)
+public fun power8Vector(): Boolean = checkFor(Feature::power8Vector)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun power8Crypto(): Boolean = checkFor(io.github.kotlinmania.rustlang.stddetect.detect.Feature::power8Crypto)
+public fun power8Crypto(): Boolean = checkFor(Feature::power8Crypto)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun power9(): Boolean = checkFor(io.github.kotlinmania.rustlang.stddetect.detect.Feature::power9)
+public fun power9(): Boolean = checkFor(Feature::power9)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun power9Altivec(): Boolean = checkFor(io.github.kotlinmania.rustlang.stddetect.detect.Feature::power9Altivec)
+public fun power9Altivec(): Boolean = checkFor(Feature::power9Altivec)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun power9Vector(): Boolean = checkFor(io.github.kotlinmania.rustlang.stddetect.detect.Feature::power9Vector)
+public fun power9Vector(): Boolean = checkFor(Feature::power9Vector)

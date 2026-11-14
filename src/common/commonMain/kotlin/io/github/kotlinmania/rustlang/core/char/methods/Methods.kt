@@ -2429,27 +2429,27 @@ internal open class EscapeDebugExtArgs(
     internal var escapeDoubleQuote: Boolean,
 ) {
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<EscapeDebugExtArgs> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<EscapeDebugExtArgs> {
+        public fun typeLayout(): TypeLayout<EscapeDebugExtArgs> =
+            object : TypeLayout<EscapeDebugExtArgs> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 2L
                 override fun readNative(addr: Long): EscapeDebugExtArgs =
                     EscapeDebugExtArgs(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 1L),
+                        (PrimitiveLayouts.BOOL).readNative(addr),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 1L),
                     )
                 override fun writeNative(addr: Long, value: EscapeDebugExtArgs) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr, value.escapeSingleQuote)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 1L, value.escapeDoubleQuote)
+                    (PrimitiveLayouts.BOOL).writeNative(addr, value.escapeSingleQuote)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 1L, value.escapeDoubleQuote)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): EscapeDebugExtArgs =
                     EscapeDebugExtArgs(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 1),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 1),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: EscapeDebugExtArgs) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset, value.escapeSingleQuote)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 1, value.escapeDoubleQuote)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset, value.escapeSingleQuote)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 1, value.escapeDoubleQuote)
                 }
             }
 

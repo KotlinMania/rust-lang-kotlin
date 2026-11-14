@@ -1,0 +1,5 @@
+package = io.github.kotlinmania.rustlang.std.sys.sync.futex.wasilibc.cinterop
+headers = sys_sync_futex_wasilibc_wrapper.h
+headerFilter = sys_sync_futex_wasilibc_wrapper.h
+compilerOpts = -Isrc/native/interop/cinterop
+staticLibraries = sys_sync_futex_wasilibc_wrapper.a

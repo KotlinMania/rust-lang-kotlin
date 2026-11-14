@@ -60,7 +60,7 @@ public fun <T> siftDown(v: MutableList<T>, node: Int, isLess: (T, T) -> Boolean)
             if (!isLess((ObjectSlotLayout<T>()).readNative((MutPtr((vBase).rawAddress + ((node1).toLong() * (ObjectSlotLayout<T>()).strideBytes))).rawAddress), (ObjectSlotLayout<T>()).readNative((MutPtr((vBase).rawAddress + ((child).toLong() * (ObjectSlotLayout<T>()).strideBytes))).rawAddress))) {
                 break
             }
-            ptr.swapNonoverlapping(MutPtr((vBase).rawAddress + ((node1).toLong() * (ObjectSlotLayout<T>()).strideBytes)), MutPtr((vBase).rawAddress + ((child).toLong() * (ObjectSlotLayout<T>()).strideBytes)), 1)
+            swapNonoverlapping(MutPtr((vBase).rawAddress + ((node1).toLong() * (ObjectSlotLayout<T>()).strideBytes)), MutPtr((vBase).rawAddress + ((child).toLong() * (ObjectSlotLayout<T>()).strideBytes)), 1)
         }
         node1 = child
     }

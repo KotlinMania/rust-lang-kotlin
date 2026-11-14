@@ -1437,8 +1437,8 @@ public fun <Searcher, P : Pattern<Any?>> String.rfind(pat: P): Int? = pat.intoSe
  *
  * It does _not_ give you:
  *
- * ```kotlin
- * check(d == listOf("a", "b", "c"))
+ * ```,ignore
+ * assertEq(d, &["a", "b", "c"]);
  * ```
  *
  * Use [splitWhitespace] for this behavior.
@@ -2588,13 +2588,11 @@ public fun String.makeAsciiLowercase() {
  * scope. Because of this, attempting to use `copyFromStr` on a
  * single string will result in a compile failure:
  *
- * ```kotlin
- * @feature(strCopyFromStr)
- * public fun doctestEntry() {
- *     var string = "Abcde"
- *     string.substring(0 until 2).copyFromStr(string.substring(3))
- *     // compile fail!
- * }
+ * ```compile_fail
+ * @file:feature(strCopyFromStr)
+ * let mut string = String.from("Abcde");
+ *
+ * string[..2].copyFromStr(&string[3..]); // compile fail!
  * ```
  *
  * To work around this, we can use [splitAtMut] to create two distinct

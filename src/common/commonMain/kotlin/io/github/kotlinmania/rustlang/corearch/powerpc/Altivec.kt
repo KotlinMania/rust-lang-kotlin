@@ -20,7 +20,6 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.corearch.Mem
-import io.github.kotlinmania.rustlang.corearch.mem
 import io.github.kotlinmania.rustlang.corearch.mem.transmute
 import io.github.kotlinmania.rustlang.corearch.simd.F32x4
 import io.github.kotlinmania.rustlang.corearch.simd.I16x8
@@ -61,6 +60,8 @@ public open class VectorSignedChar(
             value = v
         }
 
+    public open fun clone(): VectorSignedChar = VectorSignedChar(value)
+
     /**
      * Returns an array reference containing the entire SIMD vector.
      */
@@ -74,23 +75,23 @@ public open class VectorSignedChar(
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "vector_signed_char", this.asArray())
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<VectorSignedChar> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<VectorSignedChar> {
+        public fun typeLayout(): TypeLayout<VectorSignedChar> =
+            object : TypeLayout<VectorSignedChar> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): VectorSignedChar =
                     VectorSignedChar(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.byteArray(16)).readNative(addr),
+                        (PrimitiveArrayLayouts.byteArray(16)).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: VectorSignedChar) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.byteArray(16)).writeNative(addr, value.value)
+                    (PrimitiveArrayLayouts.byteArray(16)).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): VectorSignedChar =
                     VectorSignedChar(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.byteArray(16)).readBytes(buf, offset),
+                        (PrimitiveArrayLayouts.byteArray(16)).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: VectorSignedChar) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.byteArray(16)).writeBytes(buf, offset, value.value)
+                    (PrimitiveArrayLayouts.byteArray(16)).writeBytes(buf, offset, value.value)
                 }
             }
 
@@ -117,6 +118,8 @@ public open class VectorUnsignedChar(
             value = v
         }
 
+    public open fun clone(): VectorUnsignedChar = VectorUnsignedChar(value)
+
     /**
      * Returns an array reference containing the entire SIMD vector.
      */
@@ -130,23 +133,23 @@ public open class VectorUnsignedChar(
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "vector_unsigned_char", this.asArray())
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<VectorUnsignedChar> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<VectorUnsignedChar> {
+        public fun typeLayout(): TypeLayout<VectorUnsignedChar> =
+            object : TypeLayout<VectorUnsignedChar> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): VectorUnsignedChar =
                     VectorUnsignedChar(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uByteArray(16)).readNative(addr),
+                        (PrimitiveArrayLayouts.uByteArray(16)).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: VectorUnsignedChar) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uByteArray(16)).writeNative(addr, value.value)
+                    (PrimitiveArrayLayouts.uByteArray(16)).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): VectorUnsignedChar =
                     VectorUnsignedChar(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uByteArray(16)).readBytes(buf, offset),
+                        (PrimitiveArrayLayouts.uByteArray(16)).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: VectorUnsignedChar) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uByteArray(16)).writeBytes(buf, offset, value.value)
+                    (PrimitiveArrayLayouts.uByteArray(16)).writeBytes(buf, offset, value.value)
                 }
             }
 
@@ -173,6 +176,8 @@ public open class VectorBoolChar(
             value = v
         }
 
+    public open fun clone(): VectorBoolChar = VectorBoolChar(value)
+
     /**
      * Returns an array reference containing the entire SIMD vector.
      */
@@ -186,23 +191,23 @@ public open class VectorBoolChar(
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "vector_bool_char", this.asArray())
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<VectorBoolChar> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<VectorBoolChar> {
+        public fun typeLayout(): TypeLayout<VectorBoolChar> =
+            object : TypeLayout<VectorBoolChar> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): VectorBoolChar =
                     VectorBoolChar(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.byteArray(16)).readNative(addr),
+                        (PrimitiveArrayLayouts.byteArray(16)).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: VectorBoolChar) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.byteArray(16)).writeNative(addr, value.value)
+                    (PrimitiveArrayLayouts.byteArray(16)).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): VectorBoolChar =
                     VectorBoolChar(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.byteArray(16)).readBytes(buf, offset),
+                        (PrimitiveArrayLayouts.byteArray(16)).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: VectorBoolChar) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.byteArray(16)).writeBytes(buf, offset, value.value)
+                    (PrimitiveArrayLayouts.byteArray(16)).writeBytes(buf, offset, value.value)
                 }
             }
 
@@ -231,6 +236,8 @@ public open class VectorSignedShort(
             value = v
         }
 
+    public open fun clone(): VectorSignedShort = VectorSignedShort(value)
+
     /**
      * Returns an array reference containing the entire SIMD vector.
      */
@@ -244,23 +251,23 @@ public open class VectorSignedShort(
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "vector_signed_short", this.asArray())
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<VectorSignedShort> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<VectorSignedShort> {
+        public fun typeLayout(): TypeLayout<VectorSignedShort> =
+            object : TypeLayout<VectorSignedShort> {
                 override val alignBytes: Long = 2L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): VectorSignedShort =
                     VectorSignedShort(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.shortArray(8)).readNative(addr),
+                        (PrimitiveArrayLayouts.shortArray(8)).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: VectorSignedShort) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.shortArray(8)).writeNative(addr, value.value)
+                    (PrimitiveArrayLayouts.shortArray(8)).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): VectorSignedShort =
                     VectorSignedShort(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.shortArray(8)).readBytes(buf, offset),
+                        (PrimitiveArrayLayouts.shortArray(8)).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: VectorSignedShort) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.shortArray(8)).writeBytes(buf, offset, value.value)
+                    (PrimitiveArrayLayouts.shortArray(8)).writeBytes(buf, offset, value.value)
                 }
             }
 
@@ -287,6 +294,8 @@ public open class VectorUnsignedShort(
             value = v
         }
 
+    public open fun clone(): VectorUnsignedShort = VectorUnsignedShort(value)
+
     /**
      * Returns an array reference containing the entire SIMD vector.
      */
@@ -300,23 +309,23 @@ public open class VectorUnsignedShort(
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "vector_unsigned_short", this.asArray())
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<VectorUnsignedShort> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<VectorUnsignedShort> {
+        public fun typeLayout(): TypeLayout<VectorUnsignedShort> =
+            object : TypeLayout<VectorUnsignedShort> {
                 override val alignBytes: Long = 2L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): VectorUnsignedShort =
                     VectorUnsignedShort(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uShortArray(8)).readNative(addr),
+                        (PrimitiveArrayLayouts.uShortArray(8)).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: VectorUnsignedShort) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uShortArray(8)).writeNative(addr, value.value)
+                    (PrimitiveArrayLayouts.uShortArray(8)).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): VectorUnsignedShort =
                     VectorUnsignedShort(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uShortArray(8)).readBytes(buf, offset),
+                        (PrimitiveArrayLayouts.uShortArray(8)).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: VectorUnsignedShort) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uShortArray(8)).writeBytes(buf, offset, value.value)
+                    (PrimitiveArrayLayouts.uShortArray(8)).writeBytes(buf, offset, value.value)
                 }
             }
 
@@ -343,6 +352,8 @@ public open class VectorBoolShort(
             value = v
         }
 
+    public open fun clone(): VectorBoolShort = VectorBoolShort(value)
+
     /**
      * Returns an array reference containing the entire SIMD vector.
      */
@@ -356,23 +367,23 @@ public open class VectorBoolShort(
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "vector_bool_short", this.asArray())
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<VectorBoolShort> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<VectorBoolShort> {
+        public fun typeLayout(): TypeLayout<VectorBoolShort> =
+            object : TypeLayout<VectorBoolShort> {
                 override val alignBytes: Long = 2L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): VectorBoolShort =
                     VectorBoolShort(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.shortArray(8)).readNative(addr),
+                        (PrimitiveArrayLayouts.shortArray(8)).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: VectorBoolShort) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.shortArray(8)).writeNative(addr, value.value)
+                    (PrimitiveArrayLayouts.shortArray(8)).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): VectorBoolShort =
                     VectorBoolShort(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.shortArray(8)).readBytes(buf, offset),
+                        (PrimitiveArrayLayouts.shortArray(8)).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: VectorBoolShort) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.shortArray(8)).writeBytes(buf, offset, value.value)
+                    (PrimitiveArrayLayouts.shortArray(8)).writeBytes(buf, offset, value.value)
                 }
             }
 
@@ -401,6 +412,8 @@ public open class VectorSignedInt(
             value = v
         }
 
+    public open fun clone(): VectorSignedInt = VectorSignedInt(value)
+
     /**
      * Returns an array reference containing the entire SIMD vector.
      */
@@ -414,23 +427,23 @@ public open class VectorSignedInt(
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "vector_signed_int", this.asArray())
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<VectorSignedInt> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<VectorSignedInt> {
+        public fun typeLayout(): TypeLayout<VectorSignedInt> =
+            object : TypeLayout<VectorSignedInt> {
                 override val alignBytes: Long = 4L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): VectorSignedInt =
                     VectorSignedInt(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.intArray(4)).readNative(addr),
+                        (PrimitiveArrayLayouts.intArray(4)).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: VectorSignedInt) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.intArray(4)).writeNative(addr, value.value)
+                    (PrimitiveArrayLayouts.intArray(4)).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): VectorSignedInt =
                     VectorSignedInt(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.intArray(4)).readBytes(buf, offset),
+                        (PrimitiveArrayLayouts.intArray(4)).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: VectorSignedInt) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.intArray(4)).writeBytes(buf, offset, value.value)
+                    (PrimitiveArrayLayouts.intArray(4)).writeBytes(buf, offset, value.value)
                 }
             }
 
@@ -457,6 +470,8 @@ public open class VectorUnsignedInt(
             value = v
         }
 
+    public open fun clone(): VectorUnsignedInt = VectorUnsignedInt(value)
+
     /**
      * Returns an array reference containing the entire SIMD vector.
      */
@@ -470,23 +485,23 @@ public open class VectorUnsignedInt(
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "vector_unsigned_int", this.asArray())
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<VectorUnsignedInt> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<VectorUnsignedInt> {
+        public fun typeLayout(): TypeLayout<VectorUnsignedInt> =
+            object : TypeLayout<VectorUnsignedInt> {
                 override val alignBytes: Long = 4L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): VectorUnsignedInt =
                     VectorUnsignedInt(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uIntArray(4)).readNative(addr),
+                        (PrimitiveArrayLayouts.uIntArray(4)).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: VectorUnsignedInt) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uIntArray(4)).writeNative(addr, value.value)
+                    (PrimitiveArrayLayouts.uIntArray(4)).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): VectorUnsignedInt =
                     VectorUnsignedInt(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uIntArray(4)).readBytes(buf, offset),
+                        (PrimitiveArrayLayouts.uIntArray(4)).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: VectorUnsignedInt) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uIntArray(4)).writeBytes(buf, offset, value.value)
+                    (PrimitiveArrayLayouts.uIntArray(4)).writeBytes(buf, offset, value.value)
                 }
             }
 
@@ -513,6 +528,8 @@ public open class VectorBoolInt(
             value = v
         }
 
+    public open fun clone(): VectorBoolInt = VectorBoolInt(value)
+
     /**
      * Returns an array reference containing the entire SIMD vector.
      */
@@ -526,23 +543,23 @@ public open class VectorBoolInt(
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "vector_bool_int", this.asArray())
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<VectorBoolInt> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<VectorBoolInt> {
+        public fun typeLayout(): TypeLayout<VectorBoolInt> =
+            object : TypeLayout<VectorBoolInt> {
                 override val alignBytes: Long = 4L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): VectorBoolInt =
                     VectorBoolInt(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.intArray(4)).readNative(addr),
+                        (PrimitiveArrayLayouts.intArray(4)).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: VectorBoolInt) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.intArray(4)).writeNative(addr, value.value)
+                    (PrimitiveArrayLayouts.intArray(4)).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): VectorBoolInt =
                     VectorBoolInt(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.intArray(4)).readBytes(buf, offset),
+                        (PrimitiveArrayLayouts.intArray(4)).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: VectorBoolInt) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.intArray(4)).writeBytes(buf, offset, value.value)
+                    (PrimitiveArrayLayouts.intArray(4)).writeBytes(buf, offset, value.value)
                 }
             }
 
@@ -571,6 +588,8 @@ public open class VectorFloat(
             value = v
         }
 
+    public open fun clone(): VectorFloat = VectorFloat(value)
+
     /**
      * Returns an array reference containing the entire SIMD vector.
      */
@@ -584,23 +603,23 @@ public open class VectorFloat(
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "vector_float", this.asArray())
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<VectorFloat> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<VectorFloat> {
+        public fun typeLayout(): TypeLayout<VectorFloat> =
+            object : TypeLayout<VectorFloat> {
                 override val alignBytes: Long = 4L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): VectorFloat =
                     VectorFloat(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.floatArray(4)).readNative(addr),
+                        (PrimitiveArrayLayouts.floatArray(4)).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: VectorFloat) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.floatArray(4)).writeNative(addr, value.value)
+                    (PrimitiveArrayLayouts.floatArray(4)).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): VectorFloat =
                     VectorFloat(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.floatArray(4)).readBytes(buf, offset),
+                        (PrimitiveArrayLayouts.floatArray(4)).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: VectorFloat) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.floatArray(4)).writeBytes(buf, offset, value.value)
+                    (PrimitiveArrayLayouts.floatArray(4)).writeBytes(buf, offset, value.value)
                 }
             }
 
@@ -1160,7 +1179,7 @@ public interface VectorXl<out Result> {
 public fun vecXlI8(a: Int, b: ConstPtr): TTL {
     val addr = ConstPtr(((ConstPtr(b.rawAddress, b.rawMeta))).rawAddress + ((a).toLong() * (PrimitiveLayouts.U8).strideBytes))
     val r = MaybeUninit.uninit(ObjectSlotLayout<TTL>())
-    copyNonoverlapping(addr, mutPtrFromRustCast(r.asMutPtr()), mem.sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
+    copyNonoverlapping(addr, mutPtrFromRustCast(r.asMutPtr()), sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
     return r.assumeInit()
 }
 
@@ -1169,42 +1188,42 @@ public fun ConstPtr.vecXl(a: Int): TTL = vecXlI8(a, this)
 public fun vecXlU8(a: Int, b: ConstPtr): TTL {
     val addr = ConstPtr(((b)).rawAddress + ((a).toLong() * (PrimitiveLayouts.U8).strideBytes))
     val r = MaybeUninit.uninit(ObjectSlotLayout<TTL>())
-    copyNonoverlapping(addr, mutPtrFromRustCast(r.asMutPtr()), mem.sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
+    copyNonoverlapping(addr, mutPtrFromRustCast(r.asMutPtr()), sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
     return r.assumeInit()
 }
 
 public fun vecXlI16(a: Int, b: ConstPtr): TTL {
     val addr = ConstPtr(((ConstPtr(b.rawAddress, b.rawMeta))).rawAddress + ((a).toLong() * (PrimitiveLayouts.U8).strideBytes))
     val r = MaybeUninit.uninit(ObjectSlotLayout<TTL>())
-    copyNonoverlapping(addr, mutPtrFromRustCast(r.asMutPtr()), mem.sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
+    copyNonoverlapping(addr, mutPtrFromRustCast(r.asMutPtr()), sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
     return r.assumeInit()
 }
 
 public fun vecXlU16(a: Int, b: ConstPtr): TTL {
     val addr = ConstPtr(((ConstPtr(b.rawAddress, b.rawMeta))).rawAddress + ((a).toLong() * (PrimitiveLayouts.U8).strideBytes))
     val r = MaybeUninit.uninit(ObjectSlotLayout<TTL>())
-    copyNonoverlapping(addr, mutPtrFromRustCast(r.asMutPtr()), mem.sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
+    copyNonoverlapping(addr, mutPtrFromRustCast(r.asMutPtr()), sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
     return r.assumeInit()
 }
 
 public fun vecXlI32(a: Int, b: ConstPtr): TTL {
     val addr = ConstPtr(((ConstPtr(b.rawAddress, b.rawMeta))).rawAddress + ((a).toLong() * (PrimitiveLayouts.U8).strideBytes))
     val r = MaybeUninit.uninit(ObjectSlotLayout<TTL>())
-    copyNonoverlapping(addr, mutPtrFromRustCast(r.asMutPtr()), mem.sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
+    copyNonoverlapping(addr, mutPtrFromRustCast(r.asMutPtr()), sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
     return r.assumeInit()
 }
 
 public fun vecXlU32(a: Int, b: ConstPtr): TTL {
     val addr = ConstPtr(((ConstPtr(b.rawAddress, b.rawMeta))).rawAddress + ((a).toLong() * (PrimitiveLayouts.U8).strideBytes))
     val r = MaybeUninit.uninit(ObjectSlotLayout<TTL>())
-    copyNonoverlapping(addr, mutPtrFromRustCast(r.asMutPtr()), mem.sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
+    copyNonoverlapping(addr, mutPtrFromRustCast(r.asMutPtr()), sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
     return r.assumeInit()
 }
 
 public fun vecXlF32(a: Int, b: ConstPtr): TTL {
     val addr = ConstPtr(((ConstPtr(b.rawAddress, b.rawMeta))).rawAddress + ((a).toLong() * (PrimitiveLayouts.U8).strideBytes))
     val r = MaybeUninit.uninit(ObjectSlotLayout<TTL>())
-    copyNonoverlapping(addr, mutPtrFromRustCast(r.asMutPtr()), mem.sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
+    copyNonoverlapping(addr, mutPtrFromRustCast(r.asMutPtr()), sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
     return r.assumeInit()
 }
 
@@ -1214,7 +1233,7 @@ public interface VectorXst<Out> {
 
 public fun vecXstI8(s: TTL, a: Int, b: MutPtr) {
     val addr = MutPtr(((MutPtr(b.rawAddress, b.rawMeta))).rawAddress + ((a).toLong() * (PrimitiveLayouts.U8).strideBytes))
-    copyNonoverlapping((constPtrFromRustCast(s)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, addr, mem.sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
+    copyNonoverlapping((constPtrFromRustCast(s)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, addr, sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
 }
 
 public fun TTL.vecXst(a: Int, b: MutPtr) {
@@ -1223,32 +1242,32 @@ public fun TTL.vecXst(a: Int, b: MutPtr) {
 
 public fun vecXstU8(s: TTL, a: Int, b: MutPtr) {
     val addr = MutPtr(((b)).rawAddress + ((a).toLong() * (PrimitiveLayouts.U8).strideBytes))
-    copyNonoverlapping((constPtrFromRustCast(s)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, addr, mem.sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
+    copyNonoverlapping((constPtrFromRustCast(s)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, addr, sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
 }
 
 public fun vecXstI16(s: TTL, a: Int, b: MutPtr) {
     val addr = MutPtr(((MutPtr(b.rawAddress, b.rawMeta))).rawAddress + ((a).toLong() * (PrimitiveLayouts.U8).strideBytes))
-    copyNonoverlapping((constPtrFromRustCast(s)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, addr, mem.sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
+    copyNonoverlapping((constPtrFromRustCast(s)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, addr, sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
 }
 
 public fun vecXstU16(s: TTL, a: Int, b: MutPtr) {
     val addr = MutPtr(((MutPtr(b.rawAddress, b.rawMeta))).rawAddress + ((a).toLong() * (PrimitiveLayouts.U8).strideBytes))
-    copyNonoverlapping((constPtrFromRustCast(s)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, addr, mem.sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
+    copyNonoverlapping((constPtrFromRustCast(s)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, addr, sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
 }
 
 public fun vecXstI32(s: TTL, a: Int, b: MutPtr) {
     val addr = MutPtr(((MutPtr(b.rawAddress, b.rawMeta))).rawAddress + ((a).toLong() * (PrimitiveLayouts.U8).strideBytes))
-    copyNonoverlapping((constPtrFromRustCast(s)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, addr, mem.sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
+    copyNonoverlapping((constPtrFromRustCast(s)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, addr, sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
 }
 
 public fun vecXstU32(s: TTL, a: Int, b: MutPtr) {
     val addr = MutPtr(((MutPtr(b.rawAddress, b.rawMeta))).rawAddress + ((a).toLong() * (PrimitiveLayouts.U8).strideBytes))
-    copyNonoverlapping((constPtrFromRustCast(s)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, addr, mem.sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
+    copyNonoverlapping((constPtrFromRustCast(s)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, addr, sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
 }
 
 public fun vecXstF32(s: TTL, a: Int, b: MutPtr) {
     val addr = MutPtr(((MutPtr(b.rawAddress, b.rawMeta))).rawAddress + ((a).toLong() * (PrimitiveLayouts.U8).strideBytes))
-    copyNonoverlapping((constPtrFromRustCast(s)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, addr, mem.sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
+    copyNonoverlapping((constPtrFromRustCast(s)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, addr, sizeOf<TTL>(typeLayoutT = ObjectSlotLayout<TTL>()), typeLayoutT = PrimitiveLayouts.U8)
 }
 
 public interface VectorCmpGt<Other, out Result> {
@@ -2196,19 +2215,19 @@ public interface VectorSl<Other, out Result> {
 
 public fun vslb(a: TTL, b: TTL): TTL {
     val a1 = transmute(a)
-    val b1 = simdRem(transmute(b), TTS.splat(mem.sizeOf<UByte>(typeLayoutT = PrimitiveLayouts.U8).toUByte() * 8u.toUByte()))
+    val b1 = simdRem(transmute(b), TTS.splat(sizeOf<UByte>(typeLayoutT = PrimitiveLayouts.U8).toUByte() * 8u.toUByte()))
     return transmute(simdShl(a1, b1))
 }
 
 public fun vslh(a: TTL, b: TTL): TTL {
     val a1 = transmute(a)
-    val b1 = simdRem(transmute(b), TTS.splat(mem.sizeOf<UShort>(typeLayoutT = PrimitiveLayouts.U16).toUShort() * 16u.toUShort()))
+    val b1 = simdRem(transmute(b), TTS.splat(sizeOf<UShort>(typeLayoutT = PrimitiveLayouts.U16).toUShort() * 16u.toUShort()))
     return transmute(simdShl(a1, b1))
 }
 
 public fun vslw(a: TTL, b: TTL): TTL {
     val a1 = transmute(a)
-    val b1 = simdRem(transmute(b), TTS.splat(mem.sizeOf<UInt>(typeLayoutT = PrimitiveLayouts.U32).toUInt() * 32u))
+    val b1 = simdRem(transmute(b), TTS.splat(sizeOf<UInt>(typeLayoutT = PrimitiveLayouts.U32).toUInt() * 32u))
     return transmute(simdShl(a1, b1))
 }
 
@@ -2218,19 +2237,19 @@ public interface VectorSr<Other, out Result> {
 
 public fun vsrb(a: TTL, b: TTL): TTL {
     val a1 = transmute(a)
-    val b1 = simdRem(transmute(b), TTS.splat(mem.sizeOf<UByte>(typeLayoutT = PrimitiveLayouts.U8).toUByte() * 8u.toUByte()))
+    val b1 = simdRem(transmute(b), TTS.splat(sizeOf<UByte>(typeLayoutT = PrimitiveLayouts.U8).toUByte() * 8u.toUByte()))
     return transmute(simdShr(a1, b1))
 }
 
 public fun vsrh(a: TTL, b: TTL): TTL {
     val a1 = transmute(a)
-    val b1 = simdRem(transmute(b), TTS.splat(mem.sizeOf<UShort>(typeLayoutT = PrimitiveLayouts.U16).toUShort() * 16u.toUShort()))
+    val b1 = simdRem(transmute(b), TTS.splat(sizeOf<UShort>(typeLayoutT = PrimitiveLayouts.U16).toUShort() * 16u.toUShort()))
     return transmute(simdShr(a1, b1))
 }
 
 public fun vsrw(a: TTL, b: TTL): TTL {
     val a1 = transmute(a)
-    val b1 = simdRem(transmute(b), TTS.splat(mem.sizeOf<UInt>(typeLayoutT = PrimitiveLayouts.U32).toUInt() * 32u))
+    val b1 = simdRem(transmute(b), TTS.splat(sizeOf<UInt>(typeLayoutT = PrimitiveLayouts.U32).toUInt() * 32u))
     return transmute(simdShr(a1, b1))
 }
 

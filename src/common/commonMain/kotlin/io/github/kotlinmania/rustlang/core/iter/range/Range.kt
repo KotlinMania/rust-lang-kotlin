@@ -1622,7 +1622,7 @@ public interface RangeIteratorImpl<out Item> {
 public fun <A : Step<A>> Range<A>.specNext(): A? =
     if (this.start < this.end) {
         val n = (Step.forwardChecked(this.start.clone(), 1) ?: error("`Step` invariants not upheld"))
-        mem.replace(this.start, n)
+        replace(this.start, n)
     } else {
         null
     }
@@ -1788,7 +1788,7 @@ public fun <A : Step<A>> Range<A>.advanceBackBy(n: Int): Result<Unit, NonZero<In
 
 public fun <A : Step<A>> RangeFrom<A>.next(): A? {
     val n = Step.forward(this.start.clone(), 1)
-    return mem.replace(this.start, n)
+    return replace(this.start, n)
 }
 
 public fun <A : Step<A>> RangeFrom<A>.sizeHint(): Pair<Int, Int?> = Pair(Int.MAX_VALUE, null)
@@ -1814,7 +1814,7 @@ public fun <A : Step<A>, B, R> RangeInclusive<A>.specTryFold(init: B, f: (B, A) 
     var accum = init
     while (this.start < this.end) {
         val n = (Step.forwardChecked(this.start.clone(), 1) ?: error("`Step` invariants not upheld"))
-        val n1 = mem.replace(this.start, n)
+        val n1 = replace(this.start, n)
         accum = when (val tryResult = f(accum, n1)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
     }
     this.exhausted = true
@@ -1831,7 +1831,7 @@ public fun <A : Step<A>, B, R> RangeInclusive<A>.specTryRfold(init: B, f: (B, A)
     var accum = init
     while (this.start < this.end) {
         val n = (Step.backwardChecked(this.end.clone(), 1) ?: error("`Step` invariants not upheld"))
-        val n1 = mem.replace(this.end, n)
+        val n1 = replace(this.end, n)
         accum = when (val tryResult = f(accum, n1)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
     }
     this.exhausted = true
@@ -1849,7 +1849,7 @@ public fun <T : TrustedStep<T>, B, R> RangeInclusive<T>.specTryFold(init: B, f: 
     while (this.start < this.end) {
         // SAFETY: just checked precondition
         val n = Step.forwardUnchecked(this.start, 1)
-        val n1 = mem.replace(this.start, n)
+        val n1 = replace(this.start, n)
         accum = when (val tryResult = f(accum, n1)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
     }
     this.exhausted = true
@@ -1867,7 +1867,7 @@ public fun <T : TrustedStep<T>, B, R> RangeInclusive<T>.specTryRfold(init: B, f:
     while (this.start < this.end) {
         // SAFETY: just checked precondition
         val n = Step.backwardUnchecked(this.end, 1)
-        val n1 = mem.replace(this.end, n)
+        val n1 = replace(this.end, n)
         accum = when (val tryResult = f(accum, n1)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
     }
     this.exhausted = true
@@ -1883,7 +1883,7 @@ public fun <A : Step<A>> RangeInclusive<A>.next(): A? {
     }
     val (n, o) = Step.forwardOverflowing(this.start.clone(), 1)
     this.exhausted = o
-    return mem.replace(this.start, n)
+    return replace(this.start, n)
 }
 
 public fun <A : Step<A>> RangeInclusive<A>.sizeHint(): Pair<Int, Int?> {
@@ -1934,7 +1934,7 @@ public fun <A : Step<A>> RangeInclusive<A>.nextBack(): A? {
     }
     val (n, o) = Step.backwardOverflowing(this.end.clone(), 1)
     this.exhausted = o
-    return mem.replace(this.end, n)
+    return replace(this.end, n)
 }
 
 public fun <A : Step<A>> RangeInclusive<A>.nthBack(n: Int): A? {

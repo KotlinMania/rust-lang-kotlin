@@ -9,6 +9,7 @@ import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -956,23 +957,23 @@ public open class ReverseMask(
         }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<ReverseMask> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<ReverseMask> {
+        public fun typeLayout(): TypeLayout<ReverseMask> =
+            object : TypeLayout<ReverseMask> {
                 override val alignBytes: Long = 4L
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(((N).toLong() * (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).strideBytes), 4L)
+                override val sizeBytes: Long = alignUpBytes(((N).toLong() * (PrimitiveLayouts.U32).strideBytes), 4L)
                 override fun readNative(addr: Long): ReverseMask =
                     ReverseMask(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uIntArray((N).toInt())).readNative(addr),
+                        (PrimitiveArrayLayouts.uIntArray((N).toInt())).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: ReverseMask) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uIntArray((N).toInt())).writeNative(addr, value.value)
+                    (PrimitiveArrayLayouts.uIntArray((N).toInt())).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): ReverseMask =
                     ReverseMask(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uIntArray((N).toInt())).readBytes(buf, offset),
+                        (PrimitiveArrayLayouts.uIntArray((N).toInt())).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: ReverseMask) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uIntArray((N).toInt())).writeBytes(buf, offset, value.value)
+                    (PrimitiveArrayLayouts.uIntArray((N).toInt())).writeBytes(buf, offset, value.value)
                 }
             }
 

@@ -41,7 +41,7 @@ public open class Intersperse<I>(
     public var nextItem: Item?,
     public var iter: I,
 ) : Iterable<Item> {
-    override fun iterator(): kotlin.collections.Iterator<Item> = object : AbstractIterator<Item>() {
+    override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
         override fun computeNext() {
             when (val v = this@Intersperse.next()) {
                 null -> done()
@@ -99,7 +99,7 @@ public open class IntersperseWith<I, G>(
     public var nextItem: Item?,
     public var iter: I,
 ) : Iterable<Item> {
-    override fun iterator(): kotlin.collections.Iterator<Item> = object : AbstractIterator<Item>() {
+    override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
         override fun computeNext() {
             when (val v = this@IntersperseWith.next()) {
                 null -> done()

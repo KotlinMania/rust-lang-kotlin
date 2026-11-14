@@ -1,4 +1,4 @@
-@file:OptIn(kotlin.ExperimentalUnsignedTypes::class, kotlin.js.ExperimentalWasmJsInterop::class)
+@file:OptIn(ExperimentalUnsignedTypes::class, ExperimentalWasmJsInterop::class)
 
 package io.github.kotlinmania.rustlang.std.sys.cmath
 
@@ -75,6 +75,36 @@ private external fun wasmStdSysCmathErfc(p0: Double): Double
 
 @JsFun("(p0) => globalThis.__km_napi_std.stdSysCmathErfcf(p0)")
 private external fun wasmStdSysCmathErfcf(p0: Double): Double
+
+@JsFun("(p0) => globalThis.__km_napi_std.stdSysCmathAcosf(p0)")
+private external fun wasmStdSysCmathAcosf(p0: Double): Double
+
+@JsFun("(p0) => globalThis.__km_napi_std.stdSysCmathAcoshf(p0)")
+private external fun wasmStdSysCmathAcoshf(p0: Double): Double
+
+@JsFun("(p0) => globalThis.__km_napi_std.stdSysCmathAsinf(p0)")
+private external fun wasmStdSysCmathAsinf(p0: Double): Double
+
+@JsFun("(p0) => globalThis.__km_napi_std.stdSysCmathAsinhf(p0)")
+private external fun wasmStdSysCmathAsinhf(p0: Double): Double
+
+@JsFun("(p0, p1) => globalThis.__km_napi_std.stdSysCmathAtan2f(p0, p1)")
+private external fun wasmStdSysCmathAtan2f(p0: Double, p1: Double): Double
+
+@JsFun("(p0) => globalThis.__km_napi_std.stdSysCmathAtanf(p0)")
+private external fun wasmStdSysCmathAtanf(p0: Double): Double
+
+@JsFun("(p0) => globalThis.__km_napi_std.stdSysCmathCoshf(p0)")
+private external fun wasmStdSysCmathCoshf(p0: Double): Double
+
+@JsFun("(p0) => globalThis.__km_napi_std.stdSysCmathSinhf(p0)")
+private external fun wasmStdSysCmathSinhf(p0: Double): Double
+
+@JsFun("(p0) => globalThis.__km_napi_std.stdSysCmathTanf(p0)")
+private external fun wasmStdSysCmathTanf(p0: Double): Double
+
+@JsFun("(p0) => globalThis.__km_napi_std.stdSysCmathTanhf(p0)")
+private external fun wasmStdSysCmathTanhf(p0: Double): Double
 
 public actual fun acos(n: Double): Double =
     if (sysCmathNapiAvailable) wasmStdSysCmathAcos(n) else throw UnsupportedOperationException("Native FFI addon is not available")
@@ -201,3 +231,33 @@ public actual fun erff128(n: F128): F128 =
 
 public actual fun erfcf128(n: F128): F128 =
     throw UnsupportedOperationException("Native FFI addon is not available")
+
+public actual fun acosf(n: Float): Float =
+    if (sysCmathNapiAvailable) wasmStdSysCmathAcosf(n.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+public actual fun acoshf(n: Float): Float =
+    if (sysCmathNapiAvailable) wasmStdSysCmathAcoshf(n.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+public actual fun asinf(n: Float): Float =
+    if (sysCmathNapiAvailable) wasmStdSysCmathAsinf(n.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+public actual fun asinhf(n: Float): Float =
+    if (sysCmathNapiAvailable) wasmStdSysCmathAsinhf(n.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+public actual fun atan2f(a: Float, b: Float): Float =
+    if (sysCmathNapiAvailable) wasmStdSysCmathAtan2f(a.toDouble(), b.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+public actual fun atanf(n: Float): Float =
+    if (sysCmathNapiAvailable) wasmStdSysCmathAtanf(n.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+public actual fun coshf(n: Float): Float =
+    if (sysCmathNapiAvailable) wasmStdSysCmathCoshf(n.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+public actual fun sinhf(n: Float): Float =
+    if (sysCmathNapiAvailable) wasmStdSysCmathSinhf(n.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+public actual fun tanf(n: Float): Float =
+    if (sysCmathNapiAvailable) wasmStdSysCmathTanf(n.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")
+
+public actual fun tanhf(n: Float): Float =
+    if (sysCmathNapiAvailable) wasmStdSysCmathTanhf(n.toDouble()).toFloat() else throw UnsupportedOperationException("Native FFI addon is not available")

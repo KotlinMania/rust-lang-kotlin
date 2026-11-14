@@ -782,8 +782,15 @@ public fun mmMulloEpi32(a: M128i, b: M128i): M128i = transmute(simdMul(a.asI32x4
  *
  * The following algorithm is performed:
  *
- * ```kotlin
- * i = IMM8[2] * 4 j = IMM8[1: 0] * 4 for k: = 0 to 7 d0 = abs(a[i + k + 0] - b[j + 0]) d1 = abs(a[i + k + 1] - b[j + 1]) d2 = abs(a[i + k + 2] - b[j + 2]) d3 = abs(a[i + k + 3] - b[j + 3]) r[k] = d0 + d1 + d2 + d3
+ * ```ignore
+ * i = IMM8[2] * 4
+ * j = IMM8[1:0] * 4
+ * for k := 0 to 7
+ *     d0 = abs(a[i + k + 0] - b[j + 0])
+ *     d1 = abs(a[i + k + 1] - b[j + 1])
+ *     d2 = abs(a[i + k + 2] - b[j + 2])
+ *     d3 = abs(a[i + k + 3] - b[j + 3])
+ *     r[k] = d0 + d1 + d2 + d3
  * ```
  *
  * Arguments:

@@ -100,18 +100,18 @@ public fun <T> ptrRotateMemmove(left: Int, mid: MutPtr, right: Int, typeLayoutT:
         // - `dim + left = mid - left + right + left = mid + right` and we write `[dim, dim+left)`
         run {
             // 1)
-            ptr.copyNonoverlapping(MutPtr((mid).rawAddress - ((left).toLong() * (typeLayoutT).strideBytes)), buf, left, typeLayoutT = typeLayoutT)
+            copyNonoverlapping(MutPtr((mid).rawAddress - ((left).toLong() * (typeLayoutT).strideBytes)), buf, left, typeLayoutT = typeLayoutT)
             // 2)
-            ptr.copy(mid, MutPtr((mid).rawAddress - ((left).toLong() * (typeLayoutT).strideBytes)), right, typeLayoutT = typeLayoutT)
+            copy(mid, MutPtr((mid).rawAddress - ((left).toLong() * (typeLayoutT).strideBytes)), right, typeLayoutT = typeLayoutT)
             // 3)
-            ptr.copyNonoverlapping(buf, dim, left, typeLayoutT = typeLayoutT)
+            copyNonoverlapping(buf, dim, left, typeLayoutT = typeLayoutT)
         }
     } else {
         // SAFETY: same reasoning as above but with `left` and `right` reversed
         run {
-            ptr.copyNonoverlapping(mid, buf, right, typeLayoutT = typeLayoutT)
-            ptr.copy(MutPtr((mid).rawAddress - ((left).toLong() * (typeLayoutT).strideBytes)), dim, left, typeLayoutT = typeLayoutT)
-            ptr.copyNonoverlapping(buf, MutPtr((mid).rawAddress - ((left).toLong() * (typeLayoutT).strideBytes)), right, typeLayoutT = typeLayoutT)
+            copyNonoverlapping(mid, buf, right, typeLayoutT = typeLayoutT)
+            copy(MutPtr((mid).rawAddress - ((left).toLong() * (typeLayoutT).strideBytes)), dim, left, typeLayoutT = typeLayoutT)
+            copyNonoverlapping(buf, MutPtr((mid).rawAddress - ((left).toLong() * (typeLayoutT).strideBytes)), right, typeLayoutT = typeLayoutT)
         }
     }
 }
@@ -278,7 +278,7 @@ public fun <T> ptrRotateSwap(left: Int, mid: MutPtr, right: Int, typeLayoutT: Ty
                 // Subtracting `right` from `mid` each turn is counterbalanced by the addition and
                 // check after it.
                 run {
-                    ptr.swapNonoverlapping(MutPtr((mid1).rawAddress - ((right1).toLong() * (typeLayoutT).strideBytes)), mid1, right1)
+                    swapNonoverlapping(MutPtr((mid1).rawAddress - ((right1).toLong() * (typeLayoutT).strideBytes)), mid1, right1)
                     mid1 = MutPtr((mid1).rawAddress - ((right1).toLong() * (typeLayoutT).strideBytes))
                 }
                 left1 -= right1
@@ -294,7 +294,7 @@ public fun <T> ptrRotateSwap(left: Int, mid: MutPtr, right: Int, typeLayoutT: Ty
                 // Adding `left` to `mid` each turn is counterbalanced by the subtraction and check
                 // after it.
                 run {
-                    ptr.swapNonoverlapping(MutPtr((mid1).rawAddress - ((left1).toLong() * (typeLayoutT).strideBytes)), mid1, left1)
+                    swapNonoverlapping(MutPtr((mid1).rawAddress - ((left1).toLong() * (typeLayoutT).strideBytes)), mid1, left1)
                     mid1 = MutPtr((mid1).rawAddress + ((left1).toLong() * (typeLayoutT).strideBytes))
                 }
                 right1 -= left1

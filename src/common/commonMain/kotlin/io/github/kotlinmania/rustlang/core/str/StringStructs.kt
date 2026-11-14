@@ -13,6 +13,8 @@ import io.github.kotlinmania.rustlang.core.str.iter.EscapeUnicode
  * A nameable, cloneable fn type
  */
 public open class LinesMap : Fn<String>, FnMut<String>, FnOnce<String, Any?, String> {
+    public open fun clone(): LinesMap = LinesMap()
+
     public override fun call(tupleArg0: String): String {
         return run {
             val line = line.takeIf { it.endsWith('\n') }?.removeSuffix('\n') ?: return line
@@ -26,8 +28,8 @@ public open class LinesMap : Fn<String>, FnMut<String>, FnOnce<String, Any?, Str
     public override fun callOnce(tupleArg0: String): String = this.call(line)
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<LinesMap> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<LinesMap> {
+        public fun typeLayout(): TypeLayout<LinesMap> =
+            object : TypeLayout<LinesMap> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): LinesMap =
@@ -43,6 +45,8 @@ public open class LinesMap : Fn<String>, FnMut<String>, FnOnce<String, Any?, Str
 }
 
 public open class CharEscapeDebug : Fn<Char>, FnMut<Char>, FnOnce<Char, Any?, EscapeDebug> {
+    public open fun clone(): CharEscapeDebug = CharEscapeDebug()
+
     public override fun call(tupleArg0: Char): EscapeDebug = c.escapeDebugExt(EscapeDebugExtArgs.ESCAPE_ALL)
 
     public override fun callMut(tupleArg0: Char): EscapeDebug = this.call(c)
@@ -50,8 +54,8 @@ public open class CharEscapeDebug : Fn<Char>, FnMut<Char>, FnOnce<Char, Any?, Es
     public override fun callOnce(tupleArg0: Char): EscapeDebug = this.call(c)
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<CharEscapeDebug> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<CharEscapeDebug> {
+        public fun typeLayout(): TypeLayout<CharEscapeDebug> =
+            object : TypeLayout<CharEscapeDebug> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): CharEscapeDebug =
@@ -67,6 +71,8 @@ public open class CharEscapeDebug : Fn<Char>, FnMut<Char>, FnOnce<Char, Any?, Es
 }
 
 public open class CharEscapeUnicode : Fn<Char>, FnMut<Char>, FnOnce<Char, Any?, EscapeUnicode> {
+    public open fun clone(): CharEscapeUnicode = CharEscapeUnicode()
+
     public override fun call(tupleArg0: Char): EscapeUnicode = c.escapeUnicode()
 
     public override fun callMut(tupleArg0: Char): EscapeUnicode = this.call(c)
@@ -74,8 +80,8 @@ public open class CharEscapeUnicode : Fn<Char>, FnMut<Char>, FnOnce<Char, Any?, 
     public override fun callOnce(tupleArg0: Char): EscapeUnicode = this.call(c)
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<CharEscapeUnicode> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<CharEscapeUnicode> {
+        public fun typeLayout(): TypeLayout<CharEscapeUnicode> =
+            object : TypeLayout<CharEscapeUnicode> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): CharEscapeUnicode =
@@ -91,6 +97,8 @@ public open class CharEscapeUnicode : Fn<Char>, FnMut<Char>, FnOnce<Char, Any?, 
 }
 
 public open class CharEscapeDefault : Fn<Char>, FnMut<Char>, FnOnce<Char, Any?, EscapeDefault> {
+    public open fun clone(): CharEscapeDefault = CharEscapeDefault()
+
     public override fun call(tupleArg0: Char): EscapeDefault = c.escapeDefault()
 
     public override fun callMut(tupleArg0: Char): EscapeDefault = this.call(c)
@@ -98,8 +106,8 @@ public open class CharEscapeDefault : Fn<Char>, FnMut<Char>, FnOnce<Char, Any?, 
     public override fun callOnce(tupleArg0: Char): EscapeDefault = this.call(c)
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<CharEscapeDefault> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<CharEscapeDefault> {
+        public fun typeLayout(): TypeLayout<CharEscapeDefault> =
+            object : TypeLayout<CharEscapeDefault> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): CharEscapeDefault =
@@ -115,6 +123,8 @@ public open class CharEscapeDefault : Fn<Char>, FnMut<Char>, FnOnce<Char, Any?, 
 }
 
 public open class IsWhitespace : Fn<Char>, FnMut<Char>, FnOnce<Char, Any?, Boolean> {
+    public open fun clone(): IsWhitespace = IsWhitespace()
+
     public override fun call(tupleArg0: Char): Boolean = c.isWhitespace()
 
     public override fun callMut(tupleArg0: Char): Boolean = this.call(c)
@@ -122,8 +132,8 @@ public open class IsWhitespace : Fn<Char>, FnMut<Char>, FnOnce<Char, Any?, Boole
     public override fun callOnce(tupleArg0: Char): Boolean = this.call(c)
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<IsWhitespace> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<IsWhitespace> {
+        public fun typeLayout(): TypeLayout<IsWhitespace> =
+            object : TypeLayout<IsWhitespace> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): IsWhitespace =
@@ -139,6 +149,8 @@ public open class IsWhitespace : Fn<Char>, FnMut<Char>, FnOnce<Char, Any?, Boole
 }
 
 internal open class IsAsciiWhitespace : Fn<UByte>, FnMut<UByte>, FnOnce<UByte, Any?, Boolean> {
+    public open fun clone(): IsAsciiWhitespace = IsAsciiWhitespace()
+
     public override fun call(tupleArg0: UByte): Boolean = byte.isAsciiWhitespace()
 
     public override fun callMut(tupleArg0: UByte): Boolean = this.call(byte)
@@ -146,8 +158,8 @@ internal open class IsAsciiWhitespace : Fn<UByte>, FnMut<UByte>, FnOnce<UByte, A
     public override fun callOnce(tupleArg0: UByte): Boolean = this.call(byte)
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<IsAsciiWhitespace> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<IsAsciiWhitespace> {
+        public fun typeLayout(): TypeLayout<IsAsciiWhitespace> =
+            object : TypeLayout<IsAsciiWhitespace> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): IsAsciiWhitespace =
@@ -163,6 +175,8 @@ internal open class IsAsciiWhitespace : Fn<UByte>, FnMut<UByte>, FnOnce<UByte, A
 }
 
 public open class IsNotEmpty : Fn<String>, FnMut<String>, FnOnce<String, Any?, Boolean> {
+    public open fun clone(): IsNotEmpty = IsNotEmpty()
+
     public override fun call(tupleArg0: String): Boolean = !s.isEmpty()
 
     public override fun callMut(tupleArg0: String): Boolean = this.call(s)
@@ -170,8 +184,8 @@ public open class IsNotEmpty : Fn<String>, FnMut<String>, FnOnce<String, Any?, B
     public override fun callOnce(tupleArg0: String): Boolean = this.call(s)
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<IsNotEmpty> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<IsNotEmpty> {
+        public fun typeLayout(): TypeLayout<IsNotEmpty> =
+            object : TypeLayout<IsNotEmpty> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): IsNotEmpty =
@@ -187,6 +201,8 @@ public open class IsNotEmpty : Fn<String>, FnMut<String>, FnOnce<String, Any?, B
 }
 
 internal open class BytesIsNotEmpty : Fn<List<UByte>>, FnMut<List<UByte>>, FnOnce<List<UByte>, Any?, Boolean> {
+    public open fun clone(): BytesIsNotEmpty = BytesIsNotEmpty()
+
     public override fun call(tupleArg0: List<UByte>): Boolean = !s.isEmpty()
 
     public override fun callMut(tupleArg0: List<UByte>): Boolean = this.call(s)
@@ -194,8 +210,8 @@ internal open class BytesIsNotEmpty : Fn<List<UByte>>, FnMut<List<UByte>>, FnOnc
     public override fun callOnce(tupleArg0: List<UByte>): Boolean = this.call(s)
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<BytesIsNotEmpty> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<BytesIsNotEmpty> {
+        public fun typeLayout(): TypeLayout<BytesIsNotEmpty> =
+            object : TypeLayout<BytesIsNotEmpty> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): BytesIsNotEmpty =
@@ -211,6 +227,8 @@ internal open class BytesIsNotEmpty : Fn<List<UByte>>, FnMut<List<UByte>>, FnOnc
 }
 
 public open class UnsafeBytesToStr : Fn<List<UByte>>, FnMut<List<UByte>>, FnOnce<List<UByte>, Any?, String> {
+    public open fun clone(): UnsafeBytesToStr = UnsafeBytesToStr()
+
     public override fun call(tupleArg0: List<UByte>): String = fromUtf8Unchecked(bytes)
 
     public override fun callMut(tupleArg0: List<UByte>): String = this.call(bytes)
@@ -218,8 +236,8 @@ public open class UnsafeBytesToStr : Fn<List<UByte>>, FnMut<List<UByte>>, FnOnce
     public override fun callOnce(tupleArg0: List<UByte>): String = this.call(bytes)
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<UnsafeBytesToStr> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<UnsafeBytesToStr> {
+        public fun typeLayout(): TypeLayout<UnsafeBytesToStr> =
+            object : TypeLayout<UnsafeBytesToStr> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): UnsafeBytesToStr =

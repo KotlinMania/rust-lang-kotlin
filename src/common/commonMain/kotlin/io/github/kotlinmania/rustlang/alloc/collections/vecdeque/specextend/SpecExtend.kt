@@ -57,7 +57,7 @@ public fun <T, I, A : Allocator> VecDeque<T, A>.specExtendTI(iter: I) where I : 
 }
 
 public fun <T, A1 : Allocator, A2 : Allocator> VecDeque<T, A1>.specExtend(iterator: ArrayDeque<T>) {
-    val slice = iterator.asSlice()
+    val slice = iterator.toList()
     this.reserve(slice.len())
     // ignore-tidy-undocumented-unchecked
     run {
@@ -68,7 +68,7 @@ public fun <T, A1 : Allocator, A2 : Allocator> VecDeque<T, A1>.specExtend(iterat
 }
 
 public fun <T, A : Allocator> VecDeque<T, A>.specExtendTIterT(iterator: ArrayDeque<T>) {
-    val slice = iterator.asSlice()
+    val slice = iterator.toList()
     this.reserve(slice.len())
     // ignore-tidy-undocumented-unchecked
     run {
@@ -106,7 +106,7 @@ public fun <T, I, A : Allocator> VecDeque<T, A>.specExtendFront(iter: I) where I
 }
 
 public fun <T, A1 : Allocator, A2 : Allocator> VecDeque<T, A1>.specExtendFront(iterator: ArrayDeque<T>) {
-    val slice = iterator.asSlice()
+    val slice = iterator.toList()
     this.reserve(slice.len())
     // SAFETY: `slice.len()` space was just reserved and elements in the slice are forgotten after this call
     prependReversed(this, slice)

@@ -1,8 +1,9 @@
 // port-lint: source os/net/linux_ext/addr.rs
 package io.github.kotlinmania.rustlang.std.os.net.linuxext.addr
 
+import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.os.unix.net.SocketAddr
-import io.github.kotlinmania.rustlang.std.thread.Result
 
 // Linux and Android-specific extensions to socket addresses.
 
@@ -45,7 +46,7 @@ public interface SocketAddrExt {
      * }
      * ```kotlin
      */
-    public fun fromAbstractName(name: List<UByte>): Result<SocketAddr>
+    public fun fromAbstractName(name: List<UByte>): Result<SocketAddr, Error>
 
     /**
      * Returns the contents of this address if it is in the abstract namespace.

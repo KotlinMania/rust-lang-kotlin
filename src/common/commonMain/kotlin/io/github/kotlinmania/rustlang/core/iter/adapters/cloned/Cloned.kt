@@ -8,6 +8,7 @@ import io.github.kotlinmania.rustlang.core.iter.adapters.TrustedRandomAccess
 import io.github.kotlinmania.rustlang.core.iter.adapters.TrustedRandomAccessNoCoerce
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.tryGetUnchecked
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 
 public typealias Source<I> = I.Source
@@ -24,7 +25,7 @@ public typealias Source<I> = I.Source
 public open class Cloned<I>(
     public var it: I,
 ) : TrustedRandomAccess, TrustedRandomAccessNoCoerce, TrustedLen<Cloned<I>>, SourceIter<Any?, Source>, InPlaceIterable, Iterable<T> {
-    override fun iterator(): kotlin.collections.Iterator<T> = object : AbstractIterator<T>() {
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@Cloned.next()) {
                 null -> done()
@@ -65,10 +66,10 @@ public open class Cloned<I>(
     }
 
     public companion object {
-        public fun <I> typeLayout(typeLayoutI: io.github.kotlinmania.rustlang.core.mem.TypeLayout<I>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Cloned<I>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Cloned<I>> {
+        public fun <I> typeLayout(typeLayoutI: TypeLayout<I>): TypeLayout<Cloned<I>> =
+            object : TypeLayout<Cloned<I>> {
                 override val alignBytes: Long = listOf(1L, typeLayoutI.alignBytes).max()
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(typeLayoutI.sizeBytes, alignBytes)
+                override val sizeBytes: Long = alignUpBytes(typeLayoutI.sizeBytes, alignBytes)
                 override fun readNative(addr: Long): Cloned<I> =
                     Cloned(
                         (typeLayoutI).readNative(addr),

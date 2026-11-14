@@ -25,7 +25,7 @@ internal open class DisplayBuffer(
         val bytes = s.encodeToByteArray().map { it.toUByte() }
         return when (val matchVal = this.buf.getMut(this.len until (this.len + bytes.size))) {
             null -> {
-                Result.Err(fmt.Error)
+                Result.Err(Error)
             }
             else -> {
                 val buf = matchVal

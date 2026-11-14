@@ -8,7 +8,6 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
-import io.github.kotlinmania.rustlang.corearch.ptr
 import io.github.kotlinmania.rustlang.corearch.simd.I16x16
 import io.github.kotlinmania.rustlang.corearch.simd.I16x32
 import io.github.kotlinmania.rustlang.corearch.simd.I16x8
@@ -4038,7 +4037,7 @@ public fun mmMaskReduceOrEpi8(k: Mmask16, a: M128i): Byte = simdReduceOr(simdSel
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_loadu_epi16&expand=3368)
  */
-public fun mm512LoaduEpi16(memAddr: ConstPtr): M512i = ptr.readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = ObjectSlotLayout<M512i>())
+public fun mm512LoaduEpi16(memAddr: ConstPtr): M512i = readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = ObjectSlotLayout<M512i>())
 
 // should be vmovdqu16
 
@@ -4047,7 +4046,7 @@ public fun mm512LoaduEpi16(memAddr: ConstPtr): M512i = ptr.readUnaligned(ConstPt
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_loadu_epi16&expand=3365)
  */
-public fun mm256LoaduEpi16(memAddr: ConstPtr): M256i = ptr.readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = ObjectSlotLayout<M256i>())
+public fun mm256LoaduEpi16(memAddr: ConstPtr): M256i = readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = ObjectSlotLayout<M256i>())
 
 // should be vmovdqu16
 
@@ -4056,7 +4055,7 @@ public fun mm256LoaduEpi16(memAddr: ConstPtr): M256i = ptr.readUnaligned(ConstPt
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_loadu_epi16&expand=3362)
  */
-public fun mmLoaduEpi16(memAddr: ConstPtr): M128i = ptr.readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = ObjectSlotLayout<M128i>())
+public fun mmLoaduEpi16(memAddr: ConstPtr): M128i = readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = ObjectSlotLayout<M128i>())
 
 // should be vmovdqu8
 
@@ -4065,7 +4064,7 @@ public fun mmLoaduEpi16(memAddr: ConstPtr): M128i = ptr.readUnaligned(ConstPtr(m
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_loadu_epi8&expand=3395)
  */
-public fun mm512LoaduEpi8(memAddr: ConstPtr): M512i = ptr.readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = ObjectSlotLayout<M512i>())
+public fun mm512LoaduEpi8(memAddr: ConstPtr): M512i = readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = ObjectSlotLayout<M512i>())
 
 // should be vmovdqu8
 
@@ -4074,7 +4073,7 @@ public fun mm512LoaduEpi8(memAddr: ConstPtr): M512i = ptr.readUnaligned(ConstPtr
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_loadu_epi8&expand=3392)
  */
-public fun mm256LoaduEpi8(memAddr: ConstPtr): M256i = ptr.readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = ObjectSlotLayout<M256i>())
+public fun mm256LoaduEpi8(memAddr: ConstPtr): M256i = readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = ObjectSlotLayout<M256i>())
 
 // should be vmovdqu8
 
@@ -4083,7 +4082,7 @@ public fun mm256LoaduEpi8(memAddr: ConstPtr): M256i = ptr.readUnaligned(ConstPtr
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_loadu_epi8&expand=3389)
  */
-public fun mmLoaduEpi8(memAddr: ConstPtr): M128i = ptr.readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = ObjectSlotLayout<M128i>())
+public fun mmLoaduEpi8(memAddr: ConstPtr): M128i = readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = ObjectSlotLayout<M128i>())
 
 // should be vmovdqu16
 
@@ -4093,7 +4092,7 @@ public fun mmLoaduEpi8(memAddr: ConstPtr): M128i = ptr.readUnaligned(ConstPtr(me
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_storeu_epi16&expand=5622)
  */
 public fun mm512StoreuEpi16(memAddr: MutPtr, a: M512i) {
-    ptr.writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = ObjectSlotLayout<M512i>())
+    writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = ObjectSlotLayout<M512i>())
 }
 
 // should be vmovdqu16
@@ -4104,7 +4103,7 @@ public fun mm512StoreuEpi16(memAddr: MutPtr, a: M512i) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_storeu_epi16&expand=5620)
  */
 public fun mm256StoreuEpi16(memAddr: MutPtr, a: M256i) {
-    ptr.writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = ObjectSlotLayout<M256i>())
+    writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = ObjectSlotLayout<M256i>())
 }
 
 // should be vmovdqu16
@@ -4115,7 +4114,7 @@ public fun mm256StoreuEpi16(memAddr: MutPtr, a: M256i) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_storeu_epi16&expand=5618)
  */
 public fun mmStoreuEpi16(memAddr: MutPtr, a: M128i) {
-    ptr.writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = ObjectSlotLayout<M128i>())
+    writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = ObjectSlotLayout<M128i>())
 }
 
 // should be vmovdqu8
@@ -4126,7 +4125,7 @@ public fun mmStoreuEpi16(memAddr: MutPtr, a: M128i) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_storeu_epi8&expand=5640)
  */
 public fun mm512StoreuEpi8(memAddr: MutPtr, a: M512i) {
-    ptr.writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = ObjectSlotLayout<M512i>())
+    writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = ObjectSlotLayout<M512i>())
 }
 
 // should be vmovdqu8
@@ -4137,7 +4136,7 @@ public fun mm512StoreuEpi8(memAddr: MutPtr, a: M512i) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_storeu_epi8&expand=5638)
  */
 public fun mm256StoreuEpi8(memAddr: MutPtr, a: M256i) {
-    ptr.writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = ObjectSlotLayout<M256i>())
+    writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = ObjectSlotLayout<M256i>())
 }
 
 // should be vmovdqu8
@@ -4148,7 +4147,7 @@ public fun mm256StoreuEpi8(memAddr: MutPtr, a: M256i) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_storeu_epi8&expand=5636)
  */
 public fun mmStoreuEpi8(memAddr: MutPtr, a: M128i) {
-    ptr.writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = ObjectSlotLayout<M128i>())
+    writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = ObjectSlotLayout<M128i>())
 }
 
 /**
@@ -7309,7 +7308,7 @@ public fun mmMaskTestnEpi8Mask(k: Mmask16, a: M128i, b: M128i): Mmask16 {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_store_mask64&expand=5578)
  */
 public fun storeMask64(memAddr: MutPtr, a: Mmask64) {
-    ptr.write(memAddr, a, typeLayoutT = ObjectSlotLayout<Mmask64>())
+    write(memAddr, a, typeLayoutT = ObjectSlotLayout<Mmask64>())
 }
 
 // should be kmovd
@@ -7320,7 +7319,7 @@ public fun storeMask64(memAddr: MutPtr, a: Mmask64) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_store_mask32&expand=5577)
  */
 public fun storeMask32(memAddr: MutPtr, a: Mmask32) {
-    ptr.write(memAddr, a, typeLayoutT = ObjectSlotLayout<Mmask32>())
+    write(memAddr, a, typeLayoutT = ObjectSlotLayout<Mmask32>())
 }
 
 // should be kmovq
@@ -7330,7 +7329,7 @@ public fun storeMask32(memAddr: MutPtr, a: Mmask32) {
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_load_mask64&expand=3318)
  */
-public fun loadMask64(memAddr: ConstPtr): Mmask64 = ptr.read(memAddr, typeLayoutT = ObjectSlotLayout<Mmask64>())
+public fun loadMask64(memAddr: ConstPtr): Mmask64 = read(memAddr, typeLayoutT = ObjectSlotLayout<Mmask64>())
 
 // should be kmovd
 
@@ -7339,7 +7338,7 @@ public fun loadMask64(memAddr: ConstPtr): Mmask64 = ptr.read(memAddr, typeLayout
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_load_mask32&expand=3317)
  */
-public fun loadMask32(memAddr: ConstPtr): Mmask32 = ptr.read(memAddr, typeLayoutT = ObjectSlotLayout<Mmask32>())
+public fun loadMask32(memAddr: ConstPtr): Mmask32 = read(memAddr, typeLayoutT = ObjectSlotLayout<Mmask32>())
 
 /**
  * Compute the absolute differences of packed unsigned 8-bit integers in a and b, then horizontally sum each consecutive 8 differences to produce eight unsigned 16-bit integers, and pack these unsigned 16-bit integers in the low 16 bits of 64-bit elements in dst.
@@ -8301,7 +8300,7 @@ public fun mm512BslliEpi128(a: M512i, imm8: Int): M512i {
         }
         val a1 = a.asI8x64()
         val zero = i8x64.ZERO
-        val r: I8x64 = simdShuffle(zero, a1, SimdShuffleIdx(listOf(mask(imm8, 0u), mask(imm8, 1u), mask(imm8, 2u), mask(imm8, 3u), mask(imm8, 4u), mask(imm8, 5u), mask(imm8, 6u), mask(imm8, 7u), mask(imm8, 8u), mask(imm8, 9u), mask(imm8, 10u), mask(imm8, 11u), mask(imm8, 12u), mask(imm8, 13u), mask(imm8, 14u), mask(imm8, 15u), mask(imm8, 16u), mask(imm8, 17u), mask(imm8, 18u), mask(imm8, 19u), mask(imm8, 20u), mask(imm8, 21u), mask(imm8, 22u), mask(imm8, 23u), mask(imm8, 24u), mask(imm8, 25u), mask(imm8, 26u), mask(imm8, 27u), mask(imm8, 28u), mask(imm8, 29u), mask(imm8, 30u), mask(imm8, 31u), mask(imm8, 32u), mask(imm8, 33u), mask(imm8, 34u), mask(imm8, 35u), mask(imm8, 36u), mask(imm8, 37u), mask(imm8, 38u), mask(imm8, 39u), mask(imm8, 40u), mask(imm8, 41u), mask(imm8, 42u), mask(imm8, 43u), mask(imm8, 44u), mask(imm8, 45u), mask(imm8, 46u), mask(imm8, 47u), mask(imm8, 48u), mask(imm8, 49u), mask(imm8, 50u), mask(imm8, 51u), mask(imm8, 52u), mask(imm8, 53u), mask(imm8, 54u), mask(imm8, 55u), mask(imm8, 56u), mask(imm8, 57u), mask(imm8, 58u), mask(imm8, 59u), mask(imm8, 60u), mask(imm8, 61u), mask(imm8, 62u), mask(imm8, 63u))))
+        val r: I8x64 = simdShuffle(zero, a1, SimdShuffleIdx(uintArrayOf(mask(imm8, 0u), mask(imm8, 1u), mask(imm8, 2u), mask(imm8, 3u), mask(imm8, 4u), mask(imm8, 5u), mask(imm8, 6u), mask(imm8, 7u), mask(imm8, 8u), mask(imm8, 9u), mask(imm8, 10u), mask(imm8, 11u), mask(imm8, 12u), mask(imm8, 13u), mask(imm8, 14u), mask(imm8, 15u), mask(imm8, 16u), mask(imm8, 17u), mask(imm8, 18u), mask(imm8, 19u), mask(imm8, 20u), mask(imm8, 21u), mask(imm8, 22u), mask(imm8, 23u), mask(imm8, 24u), mask(imm8, 25u), mask(imm8, 26u), mask(imm8, 27u), mask(imm8, 28u), mask(imm8, 29u), mask(imm8, 30u), mask(imm8, 31u), mask(imm8, 32u), mask(imm8, 33u), mask(imm8, 34u), mask(imm8, 35u), mask(imm8, 36u), mask(imm8, 37u), mask(imm8, 38u), mask(imm8, 39u), mask(imm8, 40u), mask(imm8, 41u), mask(imm8, 42u), mask(imm8, 43u), mask(imm8, 44u), mask(imm8, 45u), mask(imm8, 46u), mask(imm8, 47u), mask(imm8, 48u), mask(imm8, 49u), mask(imm8, 50u), mask(imm8, 51u), mask(imm8, 52u), mask(imm8, 53u), mask(imm8, 54u), mask(imm8, 55u), mask(imm8, 56u), mask(imm8, 57u), mask(imm8, 58u), mask(imm8, 59u), mask(imm8, 60u), mask(imm8, 61u), mask(imm8, 62u), mask(imm8, 63u))))
         transmute(r)
     }
 }
@@ -8326,7 +8325,7 @@ public fun mm512BsrliEpi128(a: M512i, imm8: Int): M512i {
         }
         val a1 = a.asI8x64()
         val zero = i8x64.ZERO
-        val r: I8x64 = simdShuffle(zero, a1, SimdShuffleIdx(listOf(mask(imm8, 0u), mask(imm8, 1u), mask(imm8, 2u), mask(imm8, 3u), mask(imm8, 4u), mask(imm8, 5u), mask(imm8, 6u), mask(imm8, 7u), mask(imm8, 8u), mask(imm8, 9u), mask(imm8, 10u), mask(imm8, 11u), mask(imm8, 12u), mask(imm8, 13u), mask(imm8, 14u), mask(imm8, 15u), mask(imm8, 16u), mask(imm8, 17u), mask(imm8, 18u), mask(imm8, 19u), mask(imm8, 20u), mask(imm8, 21u), mask(imm8, 22u), mask(imm8, 23u), mask(imm8, 24u), mask(imm8, 25u), mask(imm8, 26u), mask(imm8, 27u), mask(imm8, 28u), mask(imm8, 29u), mask(imm8, 30u), mask(imm8, 31u), mask(imm8, 32u), mask(imm8, 33u), mask(imm8, 34u), mask(imm8, 35u), mask(imm8, 36u), mask(imm8, 37u), mask(imm8, 38u), mask(imm8, 39u), mask(imm8, 40u), mask(imm8, 41u), mask(imm8, 42u), mask(imm8, 43u), mask(imm8, 44u), mask(imm8, 45u), mask(imm8, 46u), mask(imm8, 47u), mask(imm8, 48u), mask(imm8, 49u), mask(imm8, 50u), mask(imm8, 51u), mask(imm8, 52u), mask(imm8, 53u), mask(imm8, 54u), mask(imm8, 55u), mask(imm8, 56u), mask(imm8, 57u), mask(imm8, 58u), mask(imm8, 59u), mask(imm8, 60u), mask(imm8, 61u), mask(imm8, 62u), mask(imm8, 63u))))
+        val r: I8x64 = simdShuffle(zero, a1, SimdShuffleIdx(uintArrayOf(mask(imm8, 0u), mask(imm8, 1u), mask(imm8, 2u), mask(imm8, 3u), mask(imm8, 4u), mask(imm8, 5u), mask(imm8, 6u), mask(imm8, 7u), mask(imm8, 8u), mask(imm8, 9u), mask(imm8, 10u), mask(imm8, 11u), mask(imm8, 12u), mask(imm8, 13u), mask(imm8, 14u), mask(imm8, 15u), mask(imm8, 16u), mask(imm8, 17u), mask(imm8, 18u), mask(imm8, 19u), mask(imm8, 20u), mask(imm8, 21u), mask(imm8, 22u), mask(imm8, 23u), mask(imm8, 24u), mask(imm8, 25u), mask(imm8, 26u), mask(imm8, 27u), mask(imm8, 28u), mask(imm8, 29u), mask(imm8, 30u), mask(imm8, 31u), mask(imm8, 32u), mask(imm8, 33u), mask(imm8, 34u), mask(imm8, 35u), mask(imm8, 36u), mask(imm8, 37u), mask(imm8, 38u), mask(imm8, 39u), mask(imm8, 40u), mask(imm8, 41u), mask(imm8, 42u), mask(imm8, 43u), mask(imm8, 44u), mask(imm8, 45u), mask(imm8, 46u), mask(imm8, 47u), mask(imm8, 48u), mask(imm8, 49u), mask(imm8, 50u), mask(imm8, 51u), mask(imm8, 52u), mask(imm8, 53u), mask(imm8, 54u), mask(imm8, 55u), mask(imm8, 56u), mask(imm8, 57u), mask(imm8, 58u), mask(imm8, 59u), mask(imm8, 60u), mask(imm8, 61u), mask(imm8, 62u), mask(imm8, 63u))))
         transmute(r)
     }
 }
@@ -8365,7 +8364,7 @@ public fun mm512AlignrEpi8(a: M512i, b: M512i, imm8: Int): M512i {
         if (imm8 == 16) {
             return transmute(a1)
         }
-        val r: I8x64 = simdShuffle(b1.asI8x64(), a1.asI8x64(), SimdShuffleIdx(listOf(mask(imm8.toUInt(), 0u), mask(imm8.toUInt(), 1u), mask(imm8.toUInt(), 2u), mask(imm8.toUInt(), 3u), mask(imm8.toUInt(), 4u), mask(imm8.toUInt(), 5u), mask(imm8.toUInt(), 6u), mask(imm8.toUInt(), 7u), mask(imm8.toUInt(), 8u), mask(imm8.toUInt(), 9u), mask(imm8.toUInt(), 10u), mask(imm8.toUInt(), 11u), mask(imm8.toUInt(), 12u), mask(imm8.toUInt(), 13u), mask(imm8.toUInt(), 14u), mask(imm8.toUInt(), 15u), mask(imm8.toUInt(), 16u), mask(imm8.toUInt(), 17u), mask(imm8.toUInt(), 18u), mask(imm8.toUInt(), 19u), mask(imm8.toUInt(), 20u), mask(imm8.toUInt(), 21u), mask(imm8.toUInt(), 22u), mask(imm8.toUInt(), 23u), mask(imm8.toUInt(), 24u), mask(imm8.toUInt(), 25u), mask(imm8.toUInt(), 26u), mask(imm8.toUInt(), 27u), mask(imm8.toUInt(), 28u), mask(imm8.toUInt(), 29u), mask(imm8.toUInt(), 30u), mask(imm8.toUInt(), 31u), mask(imm8.toUInt(), 32u), mask(imm8.toUInt(), 33u), mask(imm8.toUInt(), 34u), mask(imm8.toUInt(), 35u), mask(imm8.toUInt(), 36u), mask(imm8.toUInt(), 37u), mask(imm8.toUInt(), 38u), mask(imm8.toUInt(), 39u), mask(imm8.toUInt(), 40u), mask(imm8.toUInt(), 41u), mask(imm8.toUInt(), 42u), mask(imm8.toUInt(), 43u), mask(imm8.toUInt(), 44u), mask(imm8.toUInt(), 45u), mask(imm8.toUInt(), 46u), mask(imm8.toUInt(), 47u), mask(imm8.toUInt(), 48u), mask(imm8.toUInt(), 49u), mask(imm8.toUInt(), 50u), mask(imm8.toUInt(), 51u), mask(imm8.toUInt(), 52u), mask(imm8.toUInt(), 53u), mask(imm8.toUInt(), 54u), mask(imm8.toUInt(), 55u), mask(imm8.toUInt(), 56u), mask(imm8.toUInt(), 57u), mask(imm8.toUInt(), 58u), mask(imm8.toUInt(), 59u), mask(imm8.toUInt(), 60u), mask(imm8.toUInt(), 61u), mask(imm8.toUInt(), 62u), mask(imm8.toUInt(), 63u))))
+        val r: I8x64 = simdShuffle(b1.asI8x64(), a1.asI8x64(), SimdShuffleIdx(uintArrayOf(mask(imm8.toUInt(), 0u), mask(imm8.toUInt(), 1u), mask(imm8.toUInt(), 2u), mask(imm8.toUInt(), 3u), mask(imm8.toUInt(), 4u), mask(imm8.toUInt(), 5u), mask(imm8.toUInt(), 6u), mask(imm8.toUInt(), 7u), mask(imm8.toUInt(), 8u), mask(imm8.toUInt(), 9u), mask(imm8.toUInt(), 10u), mask(imm8.toUInt(), 11u), mask(imm8.toUInt(), 12u), mask(imm8.toUInt(), 13u), mask(imm8.toUInt(), 14u), mask(imm8.toUInt(), 15u), mask(imm8.toUInt(), 16u), mask(imm8.toUInt(), 17u), mask(imm8.toUInt(), 18u), mask(imm8.toUInt(), 19u), mask(imm8.toUInt(), 20u), mask(imm8.toUInt(), 21u), mask(imm8.toUInt(), 22u), mask(imm8.toUInt(), 23u), mask(imm8.toUInt(), 24u), mask(imm8.toUInt(), 25u), mask(imm8.toUInt(), 26u), mask(imm8.toUInt(), 27u), mask(imm8.toUInt(), 28u), mask(imm8.toUInt(), 29u), mask(imm8.toUInt(), 30u), mask(imm8.toUInt(), 31u), mask(imm8.toUInt(), 32u), mask(imm8.toUInt(), 33u), mask(imm8.toUInt(), 34u), mask(imm8.toUInt(), 35u), mask(imm8.toUInt(), 36u), mask(imm8.toUInt(), 37u), mask(imm8.toUInt(), 38u), mask(imm8.toUInt(), 39u), mask(imm8.toUInt(), 40u), mask(imm8.toUInt(), 41u), mask(imm8.toUInt(), 42u), mask(imm8.toUInt(), 43u), mask(imm8.toUInt(), 44u), mask(imm8.toUInt(), 45u), mask(imm8.toUInt(), 46u), mask(imm8.toUInt(), 47u), mask(imm8.toUInt(), 48u), mask(imm8.toUInt(), 49u), mask(imm8.toUInt(), 50u), mask(imm8.toUInt(), 51u), mask(imm8.toUInt(), 52u), mask(imm8.toUInt(), 53u), mask(imm8.toUInt(), 54u), mask(imm8.toUInt(), 55u), mask(imm8.toUInt(), 56u), mask(imm8.toUInt(), 57u), mask(imm8.toUInt(), 58u), mask(imm8.toUInt(), 59u), mask(imm8.toUInt(), 60u), mask(imm8.toUInt(), 61u), mask(imm8.toUInt(), 62u), mask(imm8.toUInt(), 63u))))
         transmute(r)
     }
 }

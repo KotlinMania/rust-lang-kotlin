@@ -25,7 +25,7 @@ public open class Fuse<I>(
     // See rust-lang/rust#85863
     public var iter: I?,
 ) : TrustedFused, TrustedLen<Fuse<I>>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, FuseImpl<I, Any?, Item>, SourceIter<Any?, Source>, Iterable<Item> {
-    override fun iterator(): kotlin.collections.Iterator<Item> = object : AbstractIterator<Item>() {
+    override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
         override fun computeNext() {
             when (val v = this@Fuse.next()) {
                 null -> done()
@@ -329,7 +329,7 @@ public open class Fuse<I>(
          *
          * ```kotlin
          * open class Fourever : Iterable<UInt> {
-         *     override fun iterator(): kotlin.collections.Iterator<UInt> = object : AbstractIterator<UInt>() {
+         *     override fun iterator(): Iterator<UInt> = object : AbstractIterator<UInt>() {
          *         override fun computeNext() {
          *             when (val v = this@Fourever.next()) {
          *                 null -> done()

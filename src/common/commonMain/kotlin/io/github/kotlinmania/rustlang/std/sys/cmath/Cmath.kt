@@ -90,6 +90,22 @@ public expect fun erff128(n: F128): F128
 
 public expect fun erfcf128(n: F128): F128
 
-// On AIX, we don't have lgammafR only the f64 version, so we can
-// use the f64 version lgammaR
-public fun lgammafR(n: Float, s: RustMutableReference<Int>): Float = lgammaR(n.into(), s).toFloat()
+public expect fun acosf(n: Float): Float
+
+public expect fun acoshf(n: Float): Float
+
+public expect fun asinf(n: Float): Float
+
+public expect fun asinhf(n: Float): Float
+
+public expect fun atan2f(a: Float, b: Float): Float
+
+public expect fun atanf(n: Float): Float
+
+public expect fun coshf(n: Float): Float
+
+public expect fun sinhf(n: Float): Float
+
+public expect fun tanf(n: Float): Float
+
+public expect fun tanhf(n: Float): Float

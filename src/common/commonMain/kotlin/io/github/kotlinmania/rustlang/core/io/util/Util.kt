@@ -12,6 +12,7 @@ import io.github.kotlinmania.rustlang.core.io.sizehint.SizeHint
 import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -48,6 +49,8 @@ public class DebugStruct(
  * see the documentation of [empty] for more details.
  */
 public open class Empty : SizeHint, Write<Empty>, Seek {
+    public open fun clone(): Empty = Empty()
+
     public override fun upperBound(): Int? = 0
 
     public override fun write(buf: List<UByte>): Result<Int> = Result.Ok(buf.size)
@@ -74,8 +77,8 @@ public open class Empty : SizeHint, Write<Empty>, Seek {
     public override fun streamPosition(): Result<ULong> = Result.Ok(0)
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Empty> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Empty> {
+        public fun typeLayout(): TypeLayout<Empty> =
+            object : TypeLayout<Empty> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): Empty =
@@ -139,23 +142,23 @@ public open class Repeat(
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "Repeat").finishNonExhaustive()
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Repeat> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Repeat> {
+        public fun typeLayout(): TypeLayout<Repeat> =
+            object : TypeLayout<Repeat> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 1L
                 override fun readNative(addr: Long): Repeat =
                     Repeat(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U8).readNative(addr),
+                        (PrimitiveLayouts.U8).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: Repeat) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U8).writeNative(addr, value.byte)
+                    (PrimitiveLayouts.U8).writeNative(addr, value.byte)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Repeat =
                     Repeat(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U8).readBytes(buf, offset),
+                        (PrimitiveLayouts.U8).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Repeat) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U8).writeBytes(buf, offset, value.byte)
+                    (PrimitiveLayouts.U8).writeBytes(buf, offset, value.byte)
                 }
             }
     }
@@ -186,6 +189,8 @@ public fun repeat(byte: UByte): Repeat = Repeat(byte = byte)
  * see the documentation of [sink] for more details.
  */
 public open class Sink : Write<Sink> {
+    public open fun clone(): Sink = Sink()
+
     public override fun write(buf: List<UByte>): Result<Int> = Result.Ok(buf.size)
 
     public override fun writeVectored(bufs: List<IoSlice>): Result<Int> {
@@ -204,8 +209,8 @@ public open class Sink : Write<Sink> {
     public override fun flush(): Result<Unit> = Result.Ok(Unit)
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Sink> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Sink> {
+        public fun typeLayout(): TypeLayout<Sink> =
+            object : TypeLayout<Sink> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): Sink =
@@ -275,6 +280,7 @@ public open class Chain<T, U>(
      *
      * ```kotlin
      * import std.fs.File
+     * import std.io
      * import std.io.prelude.*
      *
      * fun main(): io.Result<Unit> {
@@ -299,6 +305,7 @@ public open class Chain<T, U>(
      *
      * ```kotlin
      * import std.fs.File
+     * import std.io
      * import std.io.prelude.*
      *
      * fun main(): io.Result<Unit> {
@@ -323,6 +330,7 @@ public open class Chain<T, U>(
      *
      * ```kotlin
      * import std.fs.File
+     * import std.io
      * import std.io.prelude.*
      *
      * fun main(): io.Result<Unit> {
@@ -337,33 +345,33 @@ public open class Chain<T, U>(
     public open fun getMut(): Pair<T, U> = Pair(this.first, this.second)
 
     public companion object {
-        public fun <T, U> typeLayout(typeLayoutT: io.github.kotlinmania.rustlang.core.mem.TypeLayout<T>, typeLayoutU: io.github.kotlinmania.rustlang.core.mem.TypeLayout<U>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Chain<T, U>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Chain<T, U>> {
+        public fun <T, U> typeLayout(typeLayoutT: TypeLayout<T>, typeLayoutU: TypeLayout<U>): TypeLayout<Chain<T, U>> =
+            object : TypeLayout<Chain<T, U>> {
                 override val alignBytes: Long = listOf(1L, typeLayoutT.alignBytes, typeLayoutU.alignBytes).max()
-                private val off1: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(typeLayoutT.sizeBytes, typeLayoutU.alignBytes)
-                private val off2: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes((off1 + typeLayoutU.sizeBytes), 1L)
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes((off2 + 1L), alignBytes)
+                private val off1: Long = alignUpBytes(typeLayoutT.sizeBytes, typeLayoutU.alignBytes)
+                private val off2: Long = alignUpBytes((off1 + typeLayoutU.sizeBytes), 1L)
+                override val sizeBytes: Long = alignUpBytes((off2 + 1L), alignBytes)
                 override fun readNative(addr: Long): Chain<T, U> =
                     Chain(
                         (typeLayoutT).readNative(addr),
                         (typeLayoutU).readNative(addr + off1),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + off2),
+                        (PrimitiveLayouts.BOOL).readNative(addr + off2),
                     )
                 override fun writeNative(addr: Long, value: Chain<T, U>) {
                     (typeLayoutT).writeNative(addr, value.first)
                     (typeLayoutU).writeNative(addr + off1, value.second)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + off2, value.doneFirst)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + off2, value.doneFirst)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Chain<T, U> =
                     Chain(
                         (typeLayoutT).readBytes(buf, offset),
                         (typeLayoutU).readBytes(buf, offset + off1.toInt()),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + off2.toInt()),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + off2.toInt()),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Chain<T, U>) {
                     (typeLayoutT).writeBytes(buf, offset, value.first)
                     (typeLayoutU).writeBytes(buf, offset + off1.toInt(), value.second)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + off2.toInt(), value.doneFirst)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + off2.toInt(), value.doneFirst)
                 }
             }
     }
@@ -410,6 +418,7 @@ public open class Take<T>(
      *
      * ```kotlin
      * import std.fs.File
+     * import std.io
      * import std.io.prelude.*
      *
      * fun main(): io.Result<Unit> {
@@ -438,6 +447,7 @@ public open class Take<T>(
      *
      * ```kotlin
      * import std.fs.File
+     * import std.io
      * import std.io.prelude.*
      *
      * fun main(): io.Result<Unit> {
@@ -462,6 +472,7 @@ public open class Take<T>(
      *
      * ```kotlin
      * import std.fs.File
+     * import std.io
      * import std.io.prelude.*
      *
      * fun main(): io.Result<Unit> {
@@ -487,6 +498,7 @@ public open class Take<T>(
      *
      * ```kotlin
      * import std.fs.File
+     * import std.io
      * import std.io.prelude.*
      *
      * fun main(): io.Result<Unit> {
@@ -512,6 +524,7 @@ public open class Take<T>(
      *
      * ```kotlin
      * import std.fs.File
+     * import std.io
      * import std.io.prelude.*
      *
      * fun main(): io.Result<Unit> {
@@ -588,33 +601,33 @@ public open class Take<T>(
     }
 
     public companion object {
-        public fun <T> typeLayout(typeLayoutT: io.github.kotlinmania.rustlang.core.mem.TypeLayout<T>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Take<T>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Take<T>> {
+        public fun <T> typeLayout(typeLayoutT: TypeLayout<T>): TypeLayout<Take<T>> =
+            object : TypeLayout<Take<T>> {
                 override val alignBytes: Long = listOf(8L, typeLayoutT.alignBytes).max()
-                private val off1: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(typeLayoutT.sizeBytes, 8L)
-                private val off2: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes((off1 + 8L), 8L)
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes((off2 + 8L), alignBytes)
+                private val off1: Long = alignUpBytes(typeLayoutT.sizeBytes, 8L)
+                private val off2: Long = alignUpBytes((off1 + 8L), 8L)
+                override val sizeBytes: Long = alignUpBytes((off2 + 8L), alignBytes)
                 override fun readNative(addr: Long): Take<T> =
                     Take(
                         (typeLayoutT).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).readNative(addr + off1),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).readNative(addr + off2),
+                        (PrimitiveLayouts.U64).readNative(addr + off1),
+                        (PrimitiveLayouts.U64).readNative(addr + off2),
                     )
                 override fun writeNative(addr: Long, value: Take<T>) {
                     (typeLayoutT).writeNative(addr, value.inner)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).writeNative(addr + off1, value.len)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).writeNative(addr + off2, value.limit)
+                    (PrimitiveLayouts.U64).writeNative(addr + off1, value.len)
+                    (PrimitiveLayouts.U64).writeNative(addr + off2, value.limit)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Take<T> =
                     Take(
                         (typeLayoutT).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).readBytes(buf, offset + off1.toInt()),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).readBytes(buf, offset + off2.toInt()),
+                        (PrimitiveLayouts.U64).readBytes(buf, offset + off1.toInt()),
+                        (PrimitiveLayouts.U64).readBytes(buf, offset + off2.toInt()),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Take<T>) {
                     (typeLayoutT).writeBytes(buf, offset, value.inner)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).writeBytes(buf, offset + off1.toInt(), value.len)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).writeBytes(buf, offset + off2.toInt(), value.limit)
+                    (PrimitiveLayouts.U64).writeBytes(buf, offset + off1.toInt(), value.len)
+                    (PrimitiveLayouts.U64).writeBytes(buf, offset + off2.toInt(), value.limit)
                 }
             }
     }

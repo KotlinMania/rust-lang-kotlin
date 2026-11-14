@@ -20,7 +20,7 @@ public sealed class MaybeDone<F : Future<Any?>> : Future<Any?, Unit> {
 
     public open fun takeOutput(): Output? =
         when (this) {
-            is MaybeDone.Done -> when (val matchVal = mem.replace(this, MaybeDone.Taken)) {
+            is MaybeDone.Done -> when (val matchVal = replace(this, MaybeDone.Taken)) {
                 is MaybeDone.Done -> {
                     val (value) = matchVal
                     value

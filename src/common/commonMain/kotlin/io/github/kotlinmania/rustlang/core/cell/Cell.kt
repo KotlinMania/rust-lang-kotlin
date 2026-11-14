@@ -353,7 +353,7 @@ public open class Cell<T> internal constructor(
             val diff = srcUsize.absDiff(dstUsize)
             return diff >= sizeOf<T>(typeLayoutT = typeLayoutT)
         }
-        if (ptr.eq(this, other)) {
+        if (eq(this, other)) {
             // Swapping wouldn't change anything.
             return
         }
@@ -729,7 +729,7 @@ public open class RefCell<T> internal constructor(
      * check(cell == RefCell.new(6))
      * ```
      */
-    public open fun replace(t: T): T = mem.replace(this.borrowMut(), t)
+    public open fun replace(t: T): T = replace(this.borrowMut(), t)
 
     /**
      * Replaces the wrapped value with a new one computed from `f`, returning
@@ -753,7 +753,7 @@ public open class RefCell<T> internal constructor(
     public open fun replaceWith(f: (T) -> T): T {
         val mutBorrow = this.borrowMut()
         val replacement = f(mutBorrow)
-        return mem.replace(mutBorrow, replacement)
+        return replace(mutBorrow, replacement)
     }
 
     /**
@@ -780,7 +780,7 @@ public open class RefCell<T> internal constructor(
      * ```
      */
     public open fun swap(other: RefCell<T>) {
-        mem.swap(this.borrowMut(), other.borrowMut())
+        swap(this.borrowMut(), other.borrowMut())
     }
 
     /**
@@ -1497,7 +1497,7 @@ public open class Ref<T>(
             // UNUSED within the scope `b`. Resetting the reference tracking state would require a
             // unique reference to the borrowed RefCell. No further mutable references can be created
             // from the original cell.
-            mem.forget((orig).value.borrow)
+            forget((orig).value.borrow)
             // SAFETY: after forgetting, we can form a reference for the rest of scope `b`.
             return (orig).value.value.asRef()
         }
@@ -1783,7 +1783,7 @@ public open class RefMut<T>(
             // require a unique reference to the borrowed RefCell. No further references can be created
             // from the original cell within that scope, making the current borrow the only
             // reference for the remaining scope.
-            mem.forget((orig).value.borrow)
+            forget((orig).value.borrow)
             // SAFETY: after forgetting, we can form a reference for the rest of scope `b`.
             return (orig).value.value.asMut()
         }

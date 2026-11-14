@@ -50,5 +50,5 @@ public var RUST_LSE_INIT: FnCallback =
                 }
             }
         }
-        initLse
+        ::initLse
     }

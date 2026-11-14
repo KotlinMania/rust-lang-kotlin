@@ -24,6 +24,8 @@ public open class ResumeTy internal constructor(
             value = v
         }
 
+    public open fun clone(): ResumeTy = ResumeTy(value)
+
     public companion object {
         public operator fun invoke(
             value: NonNull,

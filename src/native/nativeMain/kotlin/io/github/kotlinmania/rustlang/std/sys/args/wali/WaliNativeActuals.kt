@@ -1,9 +1,10 @@
-@file:OptIn(kotlinx.cinterop.ExperimentalForeignApi::class, kotlin.ExperimentalUnsignedTypes::class)
+@file:OptIn(ExperimentalForeignApi::class, ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.std.sys.args.wali.imp
 
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.std.os.raw.CUint
+import kotlinx.cinterop.ExperimentalForeignApi
 import io.github.kotlinmania.rustlang.std.os.raw.CUint as WaliArgIdx
 
 public actual fun clGetArgc(): WaliArgIdx =

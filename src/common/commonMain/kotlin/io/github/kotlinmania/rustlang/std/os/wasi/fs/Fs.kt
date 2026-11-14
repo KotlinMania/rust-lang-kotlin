@@ -14,6 +14,7 @@ import io.github.kotlinmania.rustlang.std.fs.File
 import io.github.kotlinmania.rustlang.std.fs.FileType
 import io.github.kotlinmania.rustlang.std.fs.Metadata
 import io.github.kotlinmania.rustlang.std.fs.OpenOptions
+import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.sys.pal.wasi.err2io
 import io.github.kotlinmania.rustlang.std.wasip1.ADVICE_DONTNEED
@@ -53,7 +54,7 @@ public interface FileExt {
      * Note that similar to [File.read], it is not an error to return with a
      * short read.
      */
-    public fun readAt(buf: MutableList<UByte>, offset: ULong): Result<Int>
+    public fun readAt(buf: MutableList<UByte>, offset: ULong): Result<Int, Error>
 
     /**
      * Reads a number of bytes starting from a given offset.
@@ -68,7 +69,7 @@ public interface FileExt {
      * Note that similar to [File.readVectored], it is not an error to
      * return with a short read.
      */
-    public fun readVectoredAt(bufs: MutableList<IoSliceMut>, offset: ULong): Result<Int>
+    public fun readVectoredAt(bufs: MutableList<IoSliceMut>, offset: ULong): Result<Int, Error>
 
     /**
      * Reads some bytes starting from a given offset into the buffer.
@@ -77,7 +78,7 @@ public interface FileExt {
      * [BorrowedCursor] rather than `[UByte]` to allow use with uninitialized buffers. The new
      * data will be appended to any existing contents of `buf`.
      */
-    public fun readBufAt(buf: BorrowedCursor<UByte>, offset: ULong): Result<Unit>
+    public fun readBufAt(buf: BorrowedCursor<UByte>, offset: ULong): Result<Unit, Error>
 
     /**
      * Reads the exact number of byte required to fill `buf` from the given offset.
@@ -108,7 +109,7 @@ public interface FileExt {
      * has read, but it will never read more than would be necessary to
      * completely fill the buffer.
      */
-    public fun readExactAt(buf: MutableList<UByte>, offset: ULong): Result<Unit> {
+    public fun readExactAt(buf: MutableList<UByte>, offset: ULong): Result<Unit, Error> {
         var buf1 = buf
         var offset1 = offset
         while (!buf1.isEmpty()) {
@@ -133,7 +134,7 @@ public interface FileExt {
             }
         }
         return if (!buf1.isEmpty()) {
-            Result.Err(io.Error.READ_EXACT_EOF)
+            Result.Err(Error.READ_EXACT_EOF)
         } else {
             Result.Ok(Unit)
         }
@@ -155,7 +156,7 @@ public interface FileExt {
      * Note that similar to [File.write], it is not an error to return a
      * short write.
      */
-    public fun writeAt(buf: List<UByte>, offset: ULong): Result<Int>
+    public fun writeAt(buf: List<UByte>, offset: ULong): Result<Int, Error>
 
     /**
      * Writes a number of bytes starting from a given offset.
@@ -173,7 +174,7 @@ public interface FileExt {
      * Note that similar to [File.writeVectored], it is not an error to return a
      * short write.
      */
-    public fun writeVectoredAt(bufs: List<IoSlice>, offset: ULong): Result<Int>
+    public fun writeVectoredAt(bufs: List<IoSlice>, offset: ULong): Result<Int, Error>
 
     /**
      * Attempts to write an entire buffer starting from a given offset.
@@ -197,7 +198,7 @@ public interface FileExt {
      *
      * [writeAt]: FileExt.writeAt
      */
-    public fun writeAllAt(buf: List<UByte>, offset: ULong): Result<Unit> {
+    public fun writeAllAt(buf: List<UByte>, offset: ULong): Result<Unit, Error> {
         var buf1 = buf
         var offset1 = offset
         while (!buf1.isEmpty()) {
@@ -205,7 +206,7 @@ public interface FileExt {
                 val matchVal = this.writeAt(buf1, offset1)
                 when {
                     matchVal is Result.Ok<*> && matchVal.value == 0 -> {
-                        return Result.Err(io.Error.WRITE_ALL_EOF)
+                        return Result.Err(Error.WRITE_ALL_EOF)
                     }
                     matchVal is Result.Ok<*> -> {
                         val n = (matchVal as Result.Ok<*>).value
@@ -230,49 +231,49 @@ public interface FileExt {
      *
      * This corresponds to the `fdFdstatSetFlags` syscall.
      */
-    public fun fdstatSetFlags(flags: UShort): Result<Unit>
+    public fun fdstatSetFlags(flags: UShort): Result<Unit, Error>
 
     /**
      * Adjusts the rights associated with this file.
      *
      * This corresponds to the `fdFdstatSetRights` syscall.
      */
-    public fun fdstatSetRights(rights: ULong, inheriting: ULong): Result<Unit>
+    public fun fdstatSetRights(rights: ULong, inheriting: ULong): Result<Unit, Error>
 
     /**
      * Provides file advisory information on a file descriptor.
      *
      * This corresponds to the `fdAdvise` syscall.
      */
-    public fun advise(offset: ULong, len: ULong, advice: UByte): Result<Unit>
+    public fun advise(offset: ULong, len: ULong, advice: UByte): Result<Unit, Error>
 
     /**
      * Forces the allocation of space in a file.
      *
      * This corresponds to the `fdAllocate` syscall.
      */
-    public fun allocate(offset: ULong, len: ULong): Result<Unit>
+    public fun allocate(offset: ULong, len: ULong): Result<Unit, Error>
 
     /**
      * Creates a directory.
      *
      * This corresponds to the `pathCreateDirectory` syscall.
      */
-    public fun createDirectory(dir: Path): Result<Unit>
+    public fun createDirectory(dir: Path): Result<Unit, Error>
 
     /**
      * Unlinks a file.
      *
      * This corresponds to the `pathUnlinkFile` syscall.
      */
-    public fun removeFile(path: Path): Result<Unit>
+    public fun removeFile(path: Path): Result<Unit, Error>
 
     /**
      * Removes a directory.
      *
      * This corresponds to the `pathRemoveDirectory` syscall.
      */
-    public fun removeDirectory(path: Path): Result<Unit>
+    public fun removeDirectory(path: Path): Result<Unit, Error>
 }
 
 // Note: bind fdFdstatGet - need to define a custom return type
@@ -281,21 +282,21 @@ public interface FileExt {
 // Note: bind pathFilestatSetTimes maybe? - on crates.io for unix
 // Note: bind pollOneoff maybe? - probably should wait for I/O to settle
 // Note: bind randomGet maybe? - on crates.io for unix
-public fun File.readAt(buf: MutableList<UByte>, offset: ULong): Result<Int> = this.asInner().readAt(buf, offset)
+public fun File.readAt(buf: MutableList<UByte>, offset: ULong): Result<Int, Error> = this.asInner().readAt(buf, offset)
 
-public fun File.readBufAt(buf: BorrowedCursor<UByte>, offset: ULong): Result<Unit> = this.asInner().readBufAt(buf, offset)
+public fun File.readBufAt(buf: BorrowedCursor<UByte>, offset: ULong): Result<Unit, Error> = this.asInner().readBufAt(buf, offset)
 
-public fun File.readVectoredAt(bufs: MutableList<IoSliceMut>, offset: ULong): Result<Int> = this.asInner().readVectoredAt(bufs, offset)
+public fun File.readVectoredAt(bufs: MutableList<IoSliceMut>, offset: ULong): Result<Int, Error> = this.asInner().readVectoredAt(bufs, offset)
 
-public fun File.writeAt(buf: List<UByte>, offset: ULong): Result<Int> = this.asInner().writeAt(buf, offset)
+public fun File.writeAt(buf: List<UByte>, offset: ULong): Result<Int, Error> = this.asInner().writeAt(buf, offset)
 
-public fun File.writeVectoredAt(bufs: List<IoSlice>, offset: ULong): Result<Int> = this.asInner().writeVectoredAt(bufs, offset)
+public fun File.writeVectoredAt(bufs: List<IoSlice>, offset: ULong): Result<Int, Error> = this.asInner().writeVectoredAt(bufs, offset)
 
-public fun File.fdstatSetFlags(flags: UShort): Result<Unit> = fdFdstatSetFlags(((this.asRawFd() as Any?) as Fd), flags).mapErr(err2io)
+public fun File.fdstatSetFlags(flags: UShort): Result<Unit, Error> = fdFdstatSetFlags(((this.asRawFd() as Any?) as Fd), flags).mapErr(err2io)
 
-public fun File.fdstatSetRights(rights: ULong, inheriting: ULong): Result<Unit> = fdFdstatSetRights(((this.asRawFd() as Any?) as Fd), rights, inheriting).mapErr(err2io)
+public fun File.fdstatSetRights(rights: ULong, inheriting: ULong): Result<Unit, Error> = fdFdstatSetRights(((this.asRawFd() as Any?) as Fd), rights, inheriting).mapErr(err2io)
 
-public fun File.advise(offset: ULong, len: ULong, advice: UByte): Result<Unit> {
+public fun File.advise(offset: ULong, len: ULong, advice: UByte): Result<Unit, Error> {
     val advice1 =
         when {
             advice == ADVICE_NORMAL.raw() -> {
@@ -323,25 +324,25 @@ public fun File.advise(offset: ULong, len: ULong, advice: UByte): Result<Unit> {
                 ADVICE_NOREUSE
             }
             else -> {
-                return Result.Err(io.constError(io.ErrorKind.InvalidInput, "invalid parameter 'advice'"))
+                return Result.Err(io.constError(ErrorKind.InvalidInput, "invalid parameter 'advice'"))
             }
         }
     return fdAdvise(((this.asRawFd() as Any?) as Fd), offset, len, advice1).mapErr(err2io)
 }
 
-public fun File.allocate(offset: ULong, len: ULong): Result<Unit> = fdAllocate(((this.asRawFd() as Any?) as Fd), offset, len).mapErr(err2io)
+public fun File.allocate(offset: ULong, len: ULong): Result<Unit, Error> = fdAllocate(((this.asRawFd() as Any?) as Fd), offset, len).mapErr(err2io)
 
-public fun File.createDirectory(dir: Path): Result<Unit> {
+public fun File.createDirectory(dir: Path): Result<Unit, Error> {
     val path = when (val tryResult = osstr2str(dir)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
     return pathCreateDirectory(((this.asRawFd() as Any?) as Fd), path).mapErr(err2io)
 }
 
-public fun File.removeFile(path: Path): Result<Unit> {
+public fun File.removeFile(path: Path): Result<Unit, Error> {
     val path1 = when (val tryResult = osstr2str(path)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
     return pathUnlinkFile(((this.asRawFd() as Any?) as Fd), path1).mapErr(err2io)
 }
 
-public fun File.removeDirectory(path: Path): Result<Unit> {
+public fun File.removeDirectory(path: Path): Result<Unit, Error> {
     val path1 = when (val tryResult = osstr2str(path)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
     return pathRemoveDirectory(((this.asRawFd() as Any?) as Fd), path1).mapErr(err2io)
 }
@@ -433,7 +434,7 @@ public fun DirEntry.ino(): ULong = this.asInner().ino()
  *
  * This corresponds to the `pathLink` syscall.
  */
-public fun link(oldFd: File, oldFlags: UInt, oldPath: Path, newFd: File, newPath: Path): Result<Unit> {
+public fun link(oldFd: File, oldFlags: UInt, oldPath: Path, newFd: File, newPath: Path): Result<Unit, Error> {
     return pathLink(((oldFd.asRawFd() as Any?) as Fd), oldFlags, when (val tryResult = osstr2str(oldPath)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }, ((newFd.asRawFd() as Any?) as Fd), when (val tryResult = osstr2str(newPath)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }).mapErr(err2io)
 }
 
@@ -442,7 +443,7 @@ public fun link(oldFd: File, oldFlags: UInt, oldPath: Path, newFd: File, newPath
  *
  * This corresponds to the `pathRename` syscall.
  */
-public fun rename(oldFd: File, oldPath: Path, newFd: File, newPath: Path): Result<Unit> {
+public fun rename(oldFd: File, oldPath: Path, newFd: File, newPath: Path): Result<Unit, Error> {
     return pathRename(((oldFd.asRawFd() as Any?) as Fd), when (val tryResult = osstr2str(oldPath)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }, ((newFd.asRawFd() as Any?) as Fd), when (val tryResult = osstr2str(newPath)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }).mapErr(err2io)
 }
 
@@ -451,7 +452,7 @@ public fun rename(oldFd: File, oldPath: Path, newFd: File, newPath: Path): Resul
  *
  * This corresponds to the `pathSymlink` syscall.
  */
-public fun symlink(oldPath: Path, fd: File, newPath: Path): Result<Unit> {
+public fun symlink(oldPath: Path, fd: File, newPath: Path): Result<Unit, Error> {
     return pathSymlink(when (val tryResult = osstr2str(oldPath)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }, ((fd.asRawFd() as Any?) as Fd), when (val tryResult = osstr2str(newPath)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }).mapErr(err2io)
 }
 
@@ -461,6 +462,6 @@ public fun symlink(oldPath: Path, fd: File, newPath: Path): Result<Unit> {
  * This is a convenience API similar to `std.os.unix.fs.symlink` and
  * `std.os.windows.fs.symlinkFile` and `std.os.windows.fs.symlinkDir`.
  */
-public fun symlinkPath(oldPath: Path, newPath: Path): Result<Unit> = io.github.kotlinmania.rustlang.std.sys.fs.symlink(oldPath, newPath)
+public fun symlinkPath(oldPath: Path, newPath: Path): Result<Unit, Error> = io.github.kotlinmania.rustlang.std.sys.fs.symlink(oldPath, newPath)
 
-public fun osstr2str(f: OsStr): Result<String> = f.toStr().okOrElse({ io.constError(io.ErrorKind.Uncategorized, "input must be utf-8") })
+public fun osstr2str(f: OsStr): Result<String, Error> = f.toStr().okOrElse({ io.constError(ErrorKind.Uncategorized, "input must be utf-8") })

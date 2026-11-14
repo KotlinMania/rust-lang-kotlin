@@ -111,8 +111,8 @@ public open class MaybeDangling<P>(
     public open fun intoInner(): P {
         // Note: replace this with `self.0` when const checker can figure out that `self` isn't actually dropped
         // SAFETY: this is equivalent to `self.0`
-        val x = ptr.read(this.value)
-        mem.forget(this)
+        val x = read(this.value)
+        forget(this)
         return x
     }
 

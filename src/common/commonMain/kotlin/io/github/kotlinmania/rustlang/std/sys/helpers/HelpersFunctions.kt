@@ -2,6 +2,7 @@ package io.github.kotlinmania.rustlang.std.sys.helpers
 
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.std.io.error.Error
 
 // Not used on all platforms.
 
@@ -20,7 +21,7 @@ public fun mulDivU64(value: ULong, numerator: ULong, denom: ULong): ULong {
 }
 
 // Not used on all platforms.
-public fun <T> ignoreNotfound(result: Result<T>): Result<Unit> =
+public fun <T> ignoreNotfound(result: Result<T, Error>): Result<Unit, Error> =
     when {
         result is Result.Err<*> && (result as Result.Err<*>).error.kind() == ErrorKind.NotFound -> {
             val err = (result as Result.Err<*>).error

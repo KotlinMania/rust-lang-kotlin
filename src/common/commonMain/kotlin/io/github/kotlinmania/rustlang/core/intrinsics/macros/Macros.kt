@@ -18,8 +18,18 @@ private const val INTRINSIC_DISPATCH_ON_TYPE_TEMPLATE_4: String = "const unused:
  * written per-type. This is needed for the float intrinsics, which are generics but may
  * have different fallback bodies for each float width.
  *
- * ```kotlin
- * intrinsicDispatchOnType(doc, " Returns the exponential of a float.", rustcNounwind, rustcIntrinsic, expf, T, bounds, FloatPrimitive, x, T, T, f16, expf, x, f16, libm, likelyAvailable, expf, x, libm, likelyAvailable, exp, x, f128, libm, maybeAvailable, expf128, x)
+ * ```ignore (illustrative)
+ * intrinsicDispatchOnType {
+ *     /// Returns the exponential of a float.
+ *     @rustcNounwind
+ *     @rustcIntrinsic
+ *     pub fn expf<T: bounds.FloatPrimitive>(x: T) -> T;
+ *
+ *     f16 => { expf(x as f32) as f16 }
+ *     f32 => { libm.likelyAvailable.expf(x) }
+ *     f64 => { libm.likelyAvailable.exp(x) }
+ *     f128 => { libm.maybeAvailable.expf128(x) }
+ * }
  * ```
  */
 

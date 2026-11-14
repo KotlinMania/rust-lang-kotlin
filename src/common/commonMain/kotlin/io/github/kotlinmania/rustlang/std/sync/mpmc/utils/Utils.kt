@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.std.sync.mpmc.utils
 import io.github.kotlinmania.rustlang.core.cell.Cell
 import io.github.kotlinmania.rustlang.core.intrinsics.kmSpinLoopHint
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.std.thread.functions.yieldNow
 
 // Starting from Intel's Sandy Bridge, spatial prefetcher is now pulling pairs of 64-byte cache
@@ -55,10 +56,10 @@ internal open class CachePadded<T>(
     public open fun derefMut(): T = this.value
 
     public companion object {
-        public fun <T> typeLayout(typeLayoutT: io.github.kotlinmania.rustlang.core.mem.TypeLayout<T>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<CachePadded<T>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<CachePadded<T>> {
+        public fun <T> typeLayout(typeLayoutT: TypeLayout<T>): TypeLayout<CachePadded<T>> =
+            object : TypeLayout<CachePadded<T>> {
                 override val alignBytes: Long = listOf(1L, typeLayoutT.alignBytes).max()
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(typeLayoutT.sizeBytes, alignBytes)
+                override val sizeBytes: Long = alignUpBytes(typeLayoutT.sizeBytes, alignBytes)
                 override fun readNative(addr: Long): CachePadded<T> =
                     CachePadded(
                         (typeLayoutT).readNative(addr),

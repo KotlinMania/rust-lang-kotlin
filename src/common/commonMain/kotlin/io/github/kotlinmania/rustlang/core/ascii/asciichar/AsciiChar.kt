@@ -18,7 +18,6 @@ import io.github.kotlinmania.rustlang.core.char.isAsciiWhitespace
 import io.github.kotlinmania.rustlang.core.char.toAsciiLowercase
 import io.github.kotlinmania.rustlang.core.char.toAsciiUppercase
 import io.github.kotlinmania.rustlang.core.escape.HEX_DIGITS
-import io.github.kotlinmania.rustlang.core.escape.backslash
 import io.github.kotlinmania.rustlang.core.intrinsics.transmute
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
@@ -624,6 +623,8 @@ public sealed class AsciiChar(
      * # Examples
      *
      * ```kotlin
+     * import std.ascii
+     *
      * @feature(asciiChar, asciiCharVariants)
      * public fun doctestEntry() {
      *     val lowercaseA = ascii.Char.SmallA
@@ -649,6 +650,8 @@ public sealed class AsciiChar(
      * # Examples
      *
      * ```kotlin
+     * import std.ascii
+     *
      * @feature(asciiChar, asciiCharVariants)
      * public fun doctestEntry() {
      *     val uppercaseA = ascii.Char.CapitalA
@@ -672,6 +675,8 @@ public sealed class AsciiChar(
      * # Examples
      *
      * ```kotlin
+     * import std.ascii
+     *
      * @feature(asciiChar, asciiCharVariants)
      * public fun doctestEntry() {
      *     val lowercaseA = ascii.Char.SmallA
@@ -697,6 +702,8 @@ public sealed class AsciiChar(
      * # Examples
      *
      * ```kotlin
+     * import std.ascii
+     *
      * @feature(asciiChar, asciiCharVariants)
      * public fun doctestEntry() {
      *     var letterA = ascii.Char.SmallA
@@ -722,6 +729,8 @@ public sealed class AsciiChar(
      * # Examples
      *
      * ```kotlin
+     * import std.ascii
+     *
      * @feature(asciiChar, asciiCharVariants)
      * public fun doctestEntry() {
      *     var letterA = ascii.Char.CapitalA
@@ -745,6 +754,8 @@ public sealed class AsciiChar(
      * # Examples
      *
      * ```kotlin
+     * import std.ascii
+     *
      * @feature(asciiChar, asciiCharVariants)
      * public fun doctestEntry() {
      *     val uppercaseA = ascii.Char.CapitalA
@@ -777,6 +788,8 @@ public sealed class AsciiChar(
      * # Examples
      *
      * ```kotlin
+     * import std.ascii
+     *
      * @feature(asciiChar, asciiCharVariants)
      * public fun doctestEntry() {
      *     val uppercaseA = ascii.Char.CapitalA
@@ -809,6 +822,8 @@ public sealed class AsciiChar(
      * # Examples
      *
      * ```kotlin
+     * import std.ascii
+     *
      * @feature(asciiChar, asciiCharVariants)
      * public fun doctestEntry() {
      *     val uppercaseA = ascii.Char.CapitalA
@@ -844,6 +859,8 @@ public sealed class AsciiChar(
      * # Examples
      *
      * ```kotlin
+     * import std.ascii
+     *
      * @feature(asciiChar, asciiCharVariants)
      * public fun doctestEntry() {
      *     val uppercaseA = ascii.Char.CapitalA
@@ -876,6 +893,8 @@ public sealed class AsciiChar(
      * # Examples
      *
      * ```kotlin
+     * import std.ascii
+     *
      * @feature(asciiChar, asciiCharVariants)
      * public fun doctestEntry() {
      *     val uppercaseA = ascii.Char.CapitalA
@@ -912,6 +931,8 @@ public sealed class AsciiChar(
      * # Examples
      *
      * ```kotlin
+     * import std.ascii
+     *
      * @feature(asciiChar, asciiCharVariants)
      * public fun doctestEntry() {
      *     val uppercaseA = ascii.Char.CapitalA
@@ -945,6 +966,8 @@ public sealed class AsciiChar(
      * # Examples
      *
      * ```kotlin
+     * import std.ascii
+     *
      * @feature(asciiChar, asciiCharVariants)
      * public fun doctestEntry() {
      *     val uppercaseA = ascii.Char.CapitalA
@@ -982,6 +1005,8 @@ public sealed class AsciiChar(
      * # Examples
      *
      * ```kotlin
+     * import std.ascii
+     *
      * @feature(asciiChar, asciiCharVariants)
      * public fun doctestEntry() {
      *     val uppercaseA = ascii.Char.CapitalA
@@ -1015,6 +1040,8 @@ public sealed class AsciiChar(
      * # Examples
      *
      * ```kotlin
+     * import std.ascii
+     *
      * @feature(asciiChar, asciiCharVariants)
      * public fun doctestEntry() {
      *     val uppercaseA = ascii.Char.CapitalA
@@ -1064,6 +1091,8 @@ public sealed class AsciiChar(
      * # Examples
      *
      * ```kotlin
+     * import std.ascii
+     *
      * @feature(asciiChar, asciiCharVariants)
      * public fun doctestEntry() {
      *     val uppercaseA = ascii.Char.CapitalA
@@ -1098,6 +1127,8 @@ public sealed class AsciiChar(
      * # Examples
      *
      * ```kotlin
+     * import std.ascii
+     *
      * @feature(asciiChar, asciiCharVariants)
      * public fun doctestEntry() {
      *     val uppercaseA = ascii.Char.CapitalA
@@ -1133,6 +1164,8 @@ public sealed class AsciiChar(
      * # Examples
      *
      * ```kotlin
+     * import std.ascii
+     *
      * @feature(asciiChar, asciiCharVariants)
      * public fun doctestEntry() {
      *     val zero = ascii.Char.Digit0

@@ -96,5 +96,5 @@ public fun <T : TrivialClone, A : Allocator> List<T>.specExtendWith(n: Int, valu
     // by manually writing since it can be vectorized.
     // Then, `value` was never semantically moved into the vec, only copied from,
     // so we forget it here to prevent the Drop.
-    mem.forget(value)
+    forget(value)
 }

@@ -21,13 +21,6 @@ internal val TR_OK: Int = 50
 // exception code.
 public val STATUS_FAIL_FAST_EXCEPTION: Int = 0xC0000409u.toInt()
 
-// On Zircon (the Fuchsia kernel), an abort from userspace calls the
-// LLVM implementation of __builtin_trap(), e.g., ud2 on x86, which
-// raises a kernel exception. If a userspace process does not
-// otherwise arrange exception handling, the kernel kills the process
-// with this return code.
-public val ZX_TASK_RETCODE_EXCEPTION_KILL: Int = -1028
-
 public sealed class TestResult {
     public data object TrOk : TestResult()
     public data object TrFailed : TestResult()
@@ -122,8 +115,6 @@ internal fun getResultFromExitCode(desc: TestDesc, status: ExitStatus, timeOpts:
                     else -> error("status.code() returned None but status.signal() was None")
                 }
             }
-            // Upon an abort, Fuchsia returns the status code ZX_TASK_RETCODE_EXCEPTION_KILL.
-            ZX_TASK_RETCODE_EXCEPTION_KILL -> TestResult.TrFailed
             null -> TestResult.TrFailedMsg("unknown return code")
             else -> {
                 val code = matchVal

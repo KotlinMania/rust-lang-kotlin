@@ -79,6 +79,8 @@ public class DebugTuple(
  * Basic usage:
  *
  * ```kotlin
+ * import std.fmt
+ *
  * var output = ""
  * fmt.write(output, "Hello " + ("world").toString() + "!").expect("writing to a `String` should not fail")
  * check(output == "Hello world!")

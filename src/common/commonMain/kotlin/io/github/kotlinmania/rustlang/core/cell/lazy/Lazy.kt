@@ -282,7 +282,7 @@ unreachableUnchecked()
                 run {
                     write(guard.first, State.Init(data))
                 }
-                mem.forget(guard)
+                forget(guard)
                 val data1 = state ?: error("unreachable")
                 return data1
             }
@@ -310,7 +310,7 @@ unreachableUnchecked()
             val state = thisRef.state.get()
             // Temporarily mark the state as poisoned. This prevents reentrant
             // accesses and correctly poisons the cell if the closure panicked.
-            val f = mem.replace(state, State.Poisoned) ?: error("unreachable")
+            val f = replace(state, State.Poisoned) ?: error("unreachable")
             val data = f()
             // SAFETY:
             // If the closure accessed the cell through something like a reentrant

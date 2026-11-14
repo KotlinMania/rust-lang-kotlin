@@ -543,6 +543,8 @@ public sealed class IpAddr {
 public open class Ipv4Addr(
     public var octets: UByteArray,
 ) : Not<Any?, Ipv4Addr>, BitAndAssign<Ipv4Addr>, BitAnd<Ipv4Addr, Any?, Ipv4Addr>, BitOrAssign<Ipv4Addr>, BitOr<Ipv4Addr, Any?, Ipv4Addr> {
+    public open fun clone(): Ipv4Addr = Ipv4Addr(octets)
+
     public override fun hashCode(): Int {
         var state = 0
         // Hashers are often more efficient at hashing a fixed-width integer
@@ -1079,23 +1081,23 @@ public open class Ipv4Addr(
     }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Ipv4Addr> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Ipv4Addr> {
+        public fun typeLayout(): TypeLayout<Ipv4Addr> =
+            object : TypeLayout<Ipv4Addr> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 4L
                 override fun readNative(addr: Long): Ipv4Addr =
                     Ipv4Addr(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uByteArray(4)).readNative(addr),
+                        (PrimitiveArrayLayouts.uByteArray(4)).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: Ipv4Addr) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uByteArray(4)).writeNative(addr, value.octets)
+                    (PrimitiveArrayLayouts.uByteArray(4)).writeNative(addr, value.octets)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Ipv4Addr =
                     Ipv4Addr(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uByteArray(4)).readBytes(buf, offset),
+                        (PrimitiveArrayLayouts.uByteArray(4)).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Ipv4Addr) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uByteArray(4)).writeBytes(buf, offset, value.octets)
+                    (PrimitiveArrayLayouts.uByteArray(4)).writeBytes(buf, offset, value.octets)
                 }
             }
 
@@ -1310,6 +1312,8 @@ public open class Ipv4Addr(
 public open class Ipv6Addr(
     public var octets: UByteArray,
 ) : Not<Any?, Ipv6Addr>, BitAndAssign<Ipv6Addr>, BitAnd<Ipv6Addr, Any?, Ipv6Addr>, BitOrAssign<Ipv6Addr>, BitOr<Ipv6Addr, Any?, Ipv6Addr> {
+    public open fun clone(): Ipv6Addr = Ipv6Addr(octets)
+
     public override fun hashCode(): Int {
         var state = 0
         // Hashers are often more efficient at hashing a fixed-width integer
@@ -1947,7 +1951,9 @@ public open class Ipv6Addr(
                     open class Span(
                         public var start: Int,
                         public var len: Int,
-                    )
+                    ) {
+                        public open fun clone(): Span = Span(start, len)
+                    }
                     /**
                      * Writes a colon-separated part of the address.
                      */
@@ -1985,11 +1991,11 @@ public open class Ipv6Addr(
                         longest
                     }
                     if (zeroes.len > 1) {
-                        when (val tryResult = fmtSubslice(f, ((segments).sliceArray(0 until zeroes.start)))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                        fmtSubslice(f, ((segments).sliceArray(0 until zeroes.start)))
                         f.append("::")
-                        fmtSubslice(f, ((segments).sliceArray(zeroes.start + zeroes.len until segments.size)))
+                        run { fmtSubslice(f, ((segments).sliceArray(zeroes.start + zeroes.len until segments.size))); Result.Ok(Unit) }
                     } else {
-                        fmtSubslice(f, segments)
+                        run { fmtSubslice(f, segments); Result.Ok(Unit) }
                     }
                 }
                 else -> {
@@ -2084,23 +2090,23 @@ public open class Ipv6Addr(
     }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Ipv6Addr> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Ipv6Addr> {
+        public fun typeLayout(): TypeLayout<Ipv6Addr> =
+            object : TypeLayout<Ipv6Addr> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): Ipv6Addr =
                     Ipv6Addr(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uByteArray(16)).readNative(addr),
+                        (PrimitiveArrayLayouts.uByteArray(16)).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: Ipv6Addr) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uByteArray(16)).writeNative(addr, value.octets)
+                    (PrimitiveArrayLayouts.uByteArray(16)).writeNative(addr, value.octets)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Ipv6Addr =
                     Ipv6Addr(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uByteArray(16)).readBytes(buf, offset),
+                        (PrimitiveArrayLayouts.uByteArray(16)).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Ipv6Addr) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uByteArray(16)).writeBytes(buf, offset, value.octets)
+                    (PrimitiveArrayLayouts.uByteArray(16)).writeBytes(buf, offset, value.octets)
                 }
             }
 

@@ -17,6 +17,8 @@ public open class TryFromIntError(
             value = v
         }
 
+    public open fun clone(): TryFromIntError = TryFromIntError(value)
+
     /**
      * Outputs the detailed cause of converting an integer failing.
      */
@@ -64,6 +66,8 @@ public open class TryFromIntError(
 public open class ParseIntError(
     internal var kind: IntErrorKind,
 ) {
+    public open fun clone(): ParseIntError = ParseIntError(kind)
+
     /**
      * Outputs the detailed cause of parsing an integer failing.
      */

@@ -168,7 +168,7 @@ internal val MIN_LEN: Int = node.MIN_LEN_AFTER_SPLIT
  * playerStats.entry("health").orInsert(100)
  * // insert a key using a function that provides a new value only if it
  * // doesn't already exist
- * playerStats.entry("defence").orInsertWith(randomStatBuff)
+ * playerStats.entry("defence").orInsertWith(::randomStatBuff)
  * // update a key, guarding against the key possibly not being set
  * val stat = playerStats.entry("attack").orInsert(100)
  * stat += randomStatBuff()
@@ -224,7 +224,7 @@ public open class BTreeMap<K, V, A : AllocatorClone>(
     // For dropck; the `Holder` avoids making the `Unpin` impl more strict than before
     public var marker: Unit,
 ) : Iterable<Pair<K, V>> {
-    override fun iterator(): kotlin.collections.Iterator<Pair<K, V>> = this.intoIter().iterator()
+    override fun iterator(): Iterator<Pair<K, V>> = this.intoIter().iterator()
 
     public open fun drop() {
         when (val matchVal = this.root.also { this.root = null }) {
@@ -280,7 +280,7 @@ public open class BTreeMap<K, V, A : AllocatorClone>(
                     val (internal) = matchVal
                     var outTree1 = cloneSubtree(internal.firstEdge().descend(), alloc.clone())
                     run {
-                        val outRoot = outTree1.root.asMut().unwrap()
+                        val outRoot = outTree1.root!!
                         val outNode1 = outRoot.pushInternalLevel(alloc.clone())
                         var inEdge1 = internal.firstEdge()
                         while (true) {
@@ -330,7 +330,7 @@ public open class BTreeMap<K, V, A : AllocatorClone>(
      */
     public open fun clear() {
         // avoid moving the allocator
-        drop(BTreeMap(root = this.root.also { this.root = null }, length = mem.replace(this.length, 0), alloc = this.alloc.clone(), marker = Unit))
+        drop(BTreeMap(root = this.root.also { this.root = null }, length = replace(this.length, 0), alloc = this.alloc.clone(), marker = Unit))
     }
 
     /**
@@ -380,6 +380,8 @@ public open class BTreeMap<K, V, A : AllocatorClone>(
      * import std.cmp.Ordering
      *
      * open class S(public var id: UInt, public var name: String) {
+     *     public open fun clone(): S = S(id, name)
+     *
      *     public open fun eq(other: S): Boolean {
      *         return this.id == other.id
      *     }
@@ -793,7 +795,7 @@ public open class BTreeMap<K, V, A : AllocatorClone>(
      * ```
      */
     public open fun append(other: BTreeMap<K, V, A>) {
-        val other1 = mem.replace(other, BTreeMap.newIn(this.alloc.clone()))
+        val other1 = replace(other, BTreeMap.newIn(this.alloc.clone()))
         this.merge(other1, { key, selfVal, otherVal -> otherVal })
     }
 
@@ -851,7 +853,7 @@ public open class BTreeMap<K, V, A : AllocatorClone>(
         }
         // We can just swap `self` and `other` if `self` is empty.
         if (this.isEmpty()) {
-            mem.swap(this, other)
+            swap(this, other)
             return
         }
         val otherIter = other.intoIter()
@@ -1616,7 +1618,7 @@ internal fun <K, A : AllocatorClone> BTreeMap<K, SetValZST, A>.replace(key: K): 
     return when (val matchVal = rootNode.searchTree<K>(key)) {
         is Found -> {
             val (kv) = matchVal
-            mem.replace(kv.keyMut(), key)
+            replace(kv.keyMut(), key)
         }
         is GoDown -> {
             val (handle) = matchVal
@@ -1658,7 +1660,7 @@ public open class Iter<K, V> internal constructor(
     public var range: LazyLeafRange<Immut, K, V> = rangeCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<Pair<K, V>> = object : AbstractIterator<Pair<K, V>>() {
+    override fun iterator(): Iterator<Pair<K, V>> = object : AbstractIterator<Pair<K, V>>() {
         override fun computeNext() {
             when (val v = this@Iter.next()) {
                 null -> done()
@@ -1741,7 +1743,7 @@ public open class IterMut<K, V> internal constructor(
     public var range: LazyLeafRange<ValMut, K, V> = rangeCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<Pair<K, V>> = object : AbstractIterator<Pair<K, V>>() {
+    override fun iterator(): Iterator<Pair<K, V>> = object : AbstractIterator<Pair<K, V>>() {
         override fun computeNext() {
             when (val v = this@IterMut.next()) {
                 null -> done()
@@ -1832,7 +1834,7 @@ public open class IntoIter<K, V, A : AllocatorClone> internal constructor(
     public var range: LazyLeafRange<Dying, K, V> = rangeCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<Pair<K, V>> = object : AbstractIterator<Pair<K, V>>() {
+    override fun iterator(): Iterator<Pair<K, V>> = object : AbstractIterator<Pair<K, V>>() {
         override fun computeNext() {
             when (val v = this@IntoIter.next()) {
                 null -> done()
@@ -1879,7 +1881,7 @@ public open class IntoIter<K, V, A : AllocatorClone> internal constructor(
             val guard = DropGuard(this)
             // SAFETY: we don't touch the tree before consuming the dying handle.
             kv.dropKeyVal()
-            mem.forget(guard)
+            forget(guard)
         }
     }
 
@@ -1961,7 +1963,7 @@ public open class IntoIter<K, V, A : AllocatorClone> internal constructor(
 public open class Keys<K, V>(
     public var inner: Iter<K, V>,
 ) : TrustedLen, Iterable<K> {
-    override fun iterator(): kotlin.collections.Iterator<K> = object : AbstractIterator<K>() {
+    override fun iterator(): Iterator<K> = object : AbstractIterator<K>() {
         override fun computeNext() {
             when (val v = this@Keys.next()) {
                 null -> done()
@@ -2016,7 +2018,7 @@ public open class Keys<K, V>(
 public open class Values<K, V>(
     public var inner: Iter<K, V>,
 ) : TrustedLen, Iterable<V> {
-    override fun iterator(): kotlin.collections.Iterator<V> = object : AbstractIterator<V>() {
+    override fun iterator(): Iterator<V> = object : AbstractIterator<V>() {
         override fun computeNext() {
             when (val v = this@Values.next()) {
                 null -> done()
@@ -2067,7 +2069,7 @@ public open class Values<K, V>(
 public open class ValuesMut<K, V>(
     public var inner: IterMut<K, V>,
 ) : TrustedLen, Iterable<V> {
-    override fun iterator(): kotlin.collections.Iterator<V> = object : AbstractIterator<V>() {
+    override fun iterator(): Iterator<V> = object : AbstractIterator<V>() {
         override fun computeNext() {
             when (val v = this@ValuesMut.next()) {
                 null -> done()
@@ -2119,7 +2121,7 @@ public open class IntoKeys<K, V, A : AllocatorClone> internal constructor(
     public var inner: IntoIter<K, V, A> = innerCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<K> = object : AbstractIterator<K>() {
+    override fun iterator(): Iterator<K> = object : AbstractIterator<K>() {
         override fun computeNext() {
             when (val v = this@IntoKeys.next()) {
                 null -> done()
@@ -2181,7 +2183,7 @@ public open class IntoValues<K, V, A : AllocatorClone> internal constructor(
     public var inner: IntoIter<K, V, A> = innerCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<V> = object : AbstractIterator<V>() {
+    override fun iterator(): Iterator<V> = object : AbstractIterator<V>() {
         override fun computeNext() {
             when (val v = this@IntoValues.next()) {
                 null -> done()
@@ -2239,7 +2241,7 @@ public open class Range<K, V> internal constructor(
     public var inner: LeafRange<Immut, K, V> = innerCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<Pair<K, V>> = object : AbstractIterator<Pair<K, V>>() {
+    override fun iterator(): Iterator<Pair<K, V>> = object : AbstractIterator<Pair<K, V>>() {
         override fun computeNext() {
             when (val v = this@Range.next()) {
                 null -> done()
@@ -2301,7 +2303,7 @@ public open class RangeMut<K, V> internal constructor(
     public var inner: LeafRange<ValMut, K, V> = innerCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<Pair<K, V>> = object : AbstractIterator<Pair<K, V>>() {
+    override fun iterator(): Iterator<Pair<K, V>> = object : AbstractIterator<Pair<K, V>>() {
         override fun computeNext() {
             when (val v = this@RangeMut.next()) {
                 null -> done()
@@ -2376,7 +2378,7 @@ public open class ExtractIf<K, V, R, F, A : AllocatorClone>(
      */
     public var alloc: A,
 ) : Iterable<Pair<K, V>> {
-    override fun iterator(): kotlin.collections.Iterator<Pair<K, V>> = object : AbstractIterator<Pair<K, V>>() {
+    override fun iterator(): Iterator<Pair<K, V>> = object : AbstractIterator<Pair<K, V>>() {
         override fun computeNext() {
             when (val v = this@ExtractIf.next()) {
                 null -> done()
@@ -3195,13 +3197,15 @@ public open class CursorMutKey<K, V, A> internal constructor(
  * ordered with regards to adjacent keys.
  */
 public open class UnorderedKeyError {
+    public open fun clone(): UnorderedKeyError = UnorderedKeyError()
+
     public open fun fmt(f: StringBuilder) {
         f.append("key is not properly ordered relative to neighbors")
     }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<UnorderedKeyError> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<UnorderedKeyError> {
+        public fun typeLayout(): TypeLayout<UnorderedKeyError> =
+            object : TypeLayout<UnorderedKeyError> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): UnorderedKeyError =

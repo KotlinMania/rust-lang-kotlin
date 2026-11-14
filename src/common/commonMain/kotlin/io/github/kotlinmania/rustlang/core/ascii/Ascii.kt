@@ -58,7 +58,7 @@ public open class EscapeDefault internal constructor(
             value = v
         }
 
-    override fun iterator(): kotlin.collections.Iterator<UByte> = object : AbstractIterator<UByte>() {
+    override fun iterator(): Iterator<UByte> = object : AbstractIterator<UByte>() {
         override fun computeNext() {
             when (val v = this@EscapeDefault.next()) {
                 null -> done()
@@ -66,6 +66,8 @@ public open class EscapeDefault internal constructor(
             }
         }
     }
+
+    public open fun clone(): EscapeDefault = EscapeDefault(value)
 
     public open fun next(): UByte? = this.value.next()
 
@@ -124,6 +126,8 @@ public open class EscapeDefault internal constructor(
  * # Examples
  *
  * ```kotlin
+ * import std.ascii
+ *
  * val escaped = ascii.escapeDefault(48u).next()!!
  * check(48u == escaped)
  * var escaped1 = ascii.escapeDefault(9u)

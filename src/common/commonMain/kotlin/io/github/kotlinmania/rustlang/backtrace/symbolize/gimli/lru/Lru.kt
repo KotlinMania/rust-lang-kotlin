@@ -39,7 +39,7 @@ public fun <T> Lru<T, N>.pushFront(value: T, n: Int): T? {
     var last = MaybeUninit.new(value, ObjectSlotLayout<T>())
     for (elem in ((this.arr).slice(0 until lenToInit)).iterMut()) {
         // OPT(size): using `mem.swap` allows surprising size regressions
-        last = mem.replace(elem, last)
+        last = replace(elem, last)
     }
     this.len = lenToInit
     return this.arr.firstMut()?.let({ elem1 -> elem1.assumeInitMut() })
@@ -49,10 +49,10 @@ public fun <T> Lru<T, N>.moveToFront(idx: Int, n: Int): T? {
     val elem = (((this.arr).slice(0 until this.len)).getMut(idx) ?: return null)
     // SAFETY: we already bailed if the index is bad, so our slicing will be infallible,
     // so it is permissible to allow the len invariant to decay, as we always restore it
-    var last = mem.replace(elem, MaybeUninit.uninit(ObjectSlotLayout<T?>()))
+    var last = replace(elem, MaybeUninit.uninit(ObjectSlotLayout<T?>()))
     for (elem1 in ((this.arr).slice(0..idx)).iterMut()) {
         // OPT(size): using `mem.swap` allows surprising size regressions
-        last = mem.replace(elem1, last)
+        last = replace(elem1, last)
     }
     return this.arr.firstMut()?.let({ elem2 -> elem2.assumeInitMut() })
 }

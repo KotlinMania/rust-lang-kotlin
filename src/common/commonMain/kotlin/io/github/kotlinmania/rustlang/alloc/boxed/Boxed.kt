@@ -84,10 +84,10 @@ import io.github.kotlinmania.rustlang.core.task.wake.Context
 // Recursive structures must be boxed, because if the definition of `Cons`
 // looked like this:
 //
-// ```kotlin
-// sealed class List<T> {
-//     public data class Cons<T>(public var field0: T, public var field1: List<T>) : List<T>()
-// }
+// ```compile_fail,E0072
+// # enum List<T> {
+// Cons(T, List<T>),
+// # }
 // ```
 //
 // It wouldn't work. This is because the size of a `List` depends on how many
@@ -922,7 +922,30 @@ public open class Box<T, A : Allocator>(
                 public var field2: NonNull,
             ) {
                 public open fun drop() {
-                    var (layout, alloc1, ptr) = this
+                    var layout by run {
+                        fun <V> place(read: () -> V, write: (V) -> Unit): kotlin.properties.ReadWriteProperty<Any?, V> =
+                            object : kotlin.properties.ReadWriteProperty<Any?, V> {
+                                override fun getValue(thisRef: Any?, property: kotlin.reflect.KProperty<*>): V = read()
+                                override fun setValue(thisRef: Any?, property: kotlin.reflect.KProperty<*>, value: V) = write(value)
+                            }
+                        place({ this.field0 }, { this.field0 = it })
+                    }
+                    var alloc1 by run {
+                        fun <V> place(read: () -> V, write: (V) -> Unit): kotlin.properties.ReadWriteProperty<Any?, V> =
+                            object : kotlin.properties.ReadWriteProperty<Any?, V> {
+                                override fun getValue(thisRef: Any?, property: kotlin.reflect.KProperty<*>): V = read()
+                                override fun setValue(thisRef: Any?, property: kotlin.reflect.KProperty<*>, value: V) = write(value)
+                            }
+                        place({ this.field1 }, { this.field1 = it })
+                    }
+                    var ptr by run {
+                        fun <V> place(read: () -> V, write: (V) -> Unit): kotlin.properties.ReadWriteProperty<Any?, V> =
+                            object : kotlin.properties.ReadWriteProperty<Any?, V> {
+                                override fun getValue(thisRef: Any?, property: kotlin.reflect.KProperty<*>): V = read()
+                                override fun setValue(thisRef: Any?, property: kotlin.reflect.KProperty<*>, value: V) = write(value)
+                            }
+                        place({ this.field2 }, { this.field2 = it })
+                    }
                     // SAFETY: `ptr` was allocated by `* alloc` with layout `layout`
                     run {
                         alloc1.deallocate(ptr, layout)
@@ -946,7 +969,7 @@ public open class Box<T, A : Allocator>(
                 cloneToUninitTFn(src, ptr2)
             }
             // Defuse the deallocate guard
-            mem.forget(guard)
+            forget(guard)
             // SAFETY: We just initialized `* ptr` as a clone of `src`
             return Result.Ok(Box.fromRawIn(ptr2.withMetadataOf(src), alloc))
         }
@@ -1133,7 +1156,7 @@ public open class Box<T, A : Allocator>(
          * [deallocate]: Allocator.deallocate
          */
         public fun <T, A : Allocator> intoRawWithAllocator(b: Box<T, A>): Pair<MutPtr, A> {
-            val b1 = mem.ManuallyDrop.new(b)
+            val b1 = b
             // We carefully get the raw pointer out in a way that Miri's aliasing model understands what
             // is happening: using the primitive "deref" of `Holder`. In case `A` is *not* `Global`, we
             // want *no* aliasing requirements here!
@@ -1141,7 +1164,7 @@ public open class Box<T, A : Allocator>(
             // works around that.
             val ptr = b1
             // SAFETY: See above.
-            val alloc = ptr.read(b1.second)
+            val alloc = read(b1.second)
             return Pair(ptr, alloc)
         }
 
@@ -1382,7 +1405,7 @@ public open class Box<T, A : Allocator>(
          */
         public fun <T, A : Allocator> leak(b: Box<T, A>): T {
             val (ptr, alloc) = Box.intoRawWithAllocator(b)
-            mem.forget(alloc)
+            forget(alloc)
             // SAFETY: Pointer is valid and unique.
             return ptr
         }
@@ -1406,14 +1429,17 @@ public open class Box<T, A : Allocator>(
          * as it'll introduce an ambiguity when calling `Pin.from`.
          * A demonstration of such a poor impl is shown below.
          *
-         * ```kotlin
-         * open class Foo
-         * // A type defined in this crate.
-         * fun fromPinFoo(arg0: Unit): Pin<Foo> {
-         *     return Pin.new(Foo())
+         * ```compile_fail
+         * # use std.pin.Pin;
+         * struct Foo; // A type defined in this crate.
+         * impl From<Holder<()>> for Pin<Foo> {
+         *     fn from(_: Holder<()>) -> Pin<Foo> {
+         *         Pin.new(Foo)
+         *     }
          * }
-         * val foo = Holder.new()
-         * val bar = Pin.from(foo)
+         *
+         * let foo = Box.new(());
+         * let bar = Pin.from(foo);
          * ```
          */
         public fun <T, A : Allocator> intoPin(boxed: Box<T, A>): Pin<Box<T, A>> where A : StaticAllocator {
@@ -1482,7 +1508,7 @@ public fun <T> Box.Companion.new(x: T): Box<T> {
     // SAFETY: we just allocated the box to store `x`.
     (ObjectSlotLayout<T>()).writeNative(ptr.rawAddress, x)
     // SAFETY: we just initialized the memory `ptr` points to.
-    return mem.transmute(ptr)
+    return transmute(ptr)
 }
 
 // even without panics, this helps for Miri backtraces
@@ -1505,7 +1531,7 @@ public fun <T> Box.Companion.newUninit(): Box<MaybeUninit<T>> {
     // `Holder.new`).
     // SAFETY:
     // - If `allocate` succeeds, the returned pointer exactly matches what `Holder` needs.
-    return mem.transmute(boxNewUninit(T.LAYOUT))
+    return transmute(boxNewUninit(T.LAYOUT))
 }
 
 /**
@@ -2200,6 +2226,7 @@ public fun <T> Box.Companion.fromNonNull(ptr: NonNull): Box<T> {
  * import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
  * import std.alloc.Layout
  * import std.alloc.dealloc
+ * import std.ptr
  *
  * val x = "Hello"
  * val ptr = Holder.intoRaw(x)
@@ -2222,7 +2249,7 @@ public fun <T> Box.Companion.fromNonNull(ptr: NonNull): Box<T> {
  */
 public fun <T> Box.Companion.intoRaw(b: Box<T>): MutPtr {
     // Avoid `intoRawWithAllocator` as that interacts poorly with Miri's Stacked Borrows.
-    val b1 = mem.ManuallyDrop.new(b)
+    val b1 = b
     // We need to give Miri (specifically, Stacked Borrows) a chance to recognize this as a
     // safe-to-raw-pointer cast. To achieve this, we first create a mutable reference, and then
     // cast that to a raw pointer -- this cast is recognized by the aliasing model and leads to
@@ -2310,7 +2337,7 @@ public fun <T> defaultBoxT(typeLayoutT: TypeLayout<T>, defaultTFn: () -> T): Box
     // extra stack copies of `T` in debug mode.
     //
     // See https://github.com/rust-lang/rust/issues/136043 for more context.
-    ptr.write((x).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, defaultTFn(), typeLayoutT = typeLayoutT)
+    write((x).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, defaultTFn(), typeLayoutT = typeLayoutT)
     // SAFETY: `x` was just initialized above.
     return x.assumeInit()
 }
@@ -2398,7 +2425,7 @@ public fun <E, A : Allocator> Box<E, A>.cause(): Any? = Error.cause(this)
 
 public fun <E, A : Allocator> Box<E, A>.source(): Any? = Error.source(this)
 
-public fun <E, A : Allocator> Box<E, A>.provide(request: error.Request) {
+public fun <E, A : Allocator> Box<E, A>.provide(request: Request) {
     Error.provide(this, request)
 }
 

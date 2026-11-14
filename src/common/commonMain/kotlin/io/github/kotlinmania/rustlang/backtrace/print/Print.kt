@@ -4,8 +4,6 @@ package io.github.kotlinmania.rustlang.backtrace.print
 import io.github.kotlinmania.rustlang.backtrace.backtrace.Frame
 import io.github.kotlinmania.rustlang.backtrace.capture.BacktraceFrame
 import io.github.kotlinmania.rustlang.backtrace.capture.BacktraceSymbol
-import io.github.kotlinmania.rustlang.backtrace.print.fuchsia.finishContext
-import io.github.kotlinmania.rustlang.backtrace.print.fuchsia.printDsoContext
 import io.github.kotlinmania.rustlang.backtrace.symbolize.Symbol
 import io.github.kotlinmania.rustlang.backtrace.symbolize.SymbolName
 import io.github.kotlinmania.rustlang.backtrace.types.BytesOrWideString
@@ -37,9 +35,7 @@ public open class BacktraceFmt(
      * symbolicated later, and otherwise this should just be the first method
      * you call after creating a `BacktraceFmt`.
      */
-    public open fun addContext() {
-        printDsoContext(this.fmt)
-    }
+    public open fun addContext() {}
 
     /**
      * Adds a frame to the backtrace output.
@@ -56,9 +52,7 @@ public open class BacktraceFmt(
      * This is currently a no-op but is added for future compatibility with
      * backtrace formats.
      */
-    public open fun finish() {
-        finishContext(this.fmt)
-    }
+    public open fun finish() {}
 
     /**
      * Inserts a message in the backtrace output.

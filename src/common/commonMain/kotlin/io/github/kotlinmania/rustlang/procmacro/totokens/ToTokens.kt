@@ -32,6 +32,7 @@ public interface ToTokens {
      * import procmacro.ToTokens
      * import procmacro.TokenStream
      * import procmacro.TokenTree
+     * import std.iter
      *
      * @feature(procMacroTotokens)
      * public fun doctestEntry() {

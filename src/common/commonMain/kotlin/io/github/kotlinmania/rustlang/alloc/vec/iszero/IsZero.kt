@@ -69,7 +69,7 @@ public fun <T : IsZero> List<T>.isZeroFromTArraynFromTArrayn(n: Int): Boolean {
         // `T = [NonTrivialCloneZst; 5]` is a ZST that implements `IsZero`
         // due to the generic array impl, but `T.isZero` returns `false`
         // since the length is not 0.
-        this.get(0).isNoneOr(IsZero::isZero)
+        this.get(0).isNoneOr({ IsZero.isZero(it) })
     } else {
         // Because this is generated as a runtime check, it's not obvious that
         // it's worth doing if the array is really long. The threshold here
@@ -77,7 +77,7 @@ public fun <T : IsZero> List<T>.isZeroFromTArraynFromTArrayn(n: Int): Boolean {
         // fails to const-fold the check in `listOf([1; 32]; n)`
         // See https://github.com/rust-lang/rust/pull/97581#issuecomment-1166628022
         // Feel free to tweak if you have better evidence.
-        n <= 16 && this.all(IsZero::isZero)
+        n <= 16 && this.all({ IsZero.isZero(it) })
     }
 }
 

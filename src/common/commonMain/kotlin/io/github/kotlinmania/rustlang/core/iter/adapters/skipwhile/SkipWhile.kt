@@ -6,6 +6,7 @@ import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.result.Result
 
@@ -50,7 +51,7 @@ public open class SkipWhile<I, P>(
     public var flag: Boolean,
     public var predicate: P,
 ) : TrustedFused, SourceIter<Any?, Source>, Iterable<Item> {
-    override fun iterator(): kotlin.collections.Iterator<Item> = object : AbstractIterator<Item>() {
+    override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
         override fun computeNext() {
             when (val v = this@SkipWhile.next()) {
                 null -> done()
@@ -120,32 +121,32 @@ public open class SkipWhile<I, P>(
     }
 
     public companion object {
-        public fun <I, P> typeLayout(typeLayoutI: io.github.kotlinmania.rustlang.core.mem.TypeLayout<I>, typeLayoutP: io.github.kotlinmania.rustlang.core.mem.TypeLayout<P>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<SkipWhile<I, P>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<SkipWhile<I, P>> {
+        public fun <I, P> typeLayout(typeLayoutI: TypeLayout<I>, typeLayoutP: TypeLayout<P>): TypeLayout<SkipWhile<I, P>> =
+            object : TypeLayout<SkipWhile<I, P>> {
                 override val alignBytes: Long = listOf(1L, typeLayoutI.alignBytes, typeLayoutP.alignBytes).max()
-                private val off1: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(typeLayoutI.sizeBytes, 1L)
-                private val off2: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes((off1 + 1L), typeLayoutP.alignBytes)
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes((off2 + typeLayoutP.sizeBytes), alignBytes)
+                private val off1: Long = alignUpBytes(typeLayoutI.sizeBytes, 1L)
+                private val off2: Long = alignUpBytes((off1 + 1L), typeLayoutP.alignBytes)
+                override val sizeBytes: Long = alignUpBytes((off2 + typeLayoutP.sizeBytes), alignBytes)
                 override fun readNative(addr: Long): SkipWhile<I, P> =
                     SkipWhile(
                         (typeLayoutI).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + off1),
+                        (PrimitiveLayouts.BOOL).readNative(addr + off1),
                         (typeLayoutP).readNative(addr + off2),
                     )
                 override fun writeNative(addr: Long, value: SkipWhile<I, P>) {
                     (typeLayoutI).writeNative(addr, value.iter)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + off1, value.flag)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + off1, value.flag)
                     (typeLayoutP).writeNative(addr + off2, value.predicate)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): SkipWhile<I, P> =
                     SkipWhile(
                         (typeLayoutI).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + off1.toInt()),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + off1.toInt()),
                         (typeLayoutP).readBytes(buf, offset + off2.toInt()),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: SkipWhile<I, P>) {
                     (typeLayoutI).writeBytes(buf, offset, value.iter)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + off1.toInt(), value.flag)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + off1.toInt(), value.flag)
                     (typeLayoutP).writeBytes(buf, offset + off2.toInt(), value.predicate)
                 }
             }

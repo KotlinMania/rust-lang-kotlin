@@ -24,7 +24,7 @@ internal open class IndexRange(
     public var start: Int,
     public var end: Int,
 ) : TrustedLen<IndexRange>, Iterable<Int> {
-    override fun iterator(): kotlin.collections.Iterator<Int> = object : AbstractIterator<Int>() {
+    override fun iterator(): Iterator<Int> = object : AbstractIterator<Int>() {
         override fun computeNext() {
             when (val v = this@IndexRange.next()) {
                 null -> done()
@@ -32,6 +32,8 @@ internal open class IndexRange(
             }
         }
     }
+
+    public open fun clone(): IndexRange = IndexRange(start, end)
 
     internal open fun start(): Int = this.start
 
@@ -186,27 +188,27 @@ internal open class IndexRange(
     // SAFETY: Because we only deal in `Int`, our `len` is always perfect.
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<IndexRange> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<IndexRange> {
+        public fun typeLayout(): TypeLayout<IndexRange> =
+            object : TypeLayout<IndexRange> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): IndexRange =
                     IndexRange(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readNative(addr + 8L),
+                        (PrimitiveLayouts.USIZE64).readNative(addr),
+                        (PrimitiveLayouts.USIZE64).readNative(addr + 8L),
                     )
                 override fun writeNative(addr: Long, value: IndexRange) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeNative(addr, value.start)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeNative(addr + 8L, value.end)
+                    (PrimitiveLayouts.USIZE64).writeNative(addr, value.start)
+                    (PrimitiveLayouts.USIZE64).writeNative(addr + 8L, value.end)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): IndexRange =
                     IndexRange(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readBytes(buf, offset + 8),
+                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset),
+                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset + 8),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: IndexRange) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeBytes(buf, offset, value.start)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeBytes(buf, offset + 8, value.end)
+                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset, value.start)
+                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset + 8, value.end)
                 }
             }
 

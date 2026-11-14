@@ -8,8 +8,8 @@ import io.github.kotlinmania.obj.NativeEndian
 import io.github.kotlinmania.obj.endian.BigEndian
 import io.github.kotlinmania.obj.macho
 import io.github.kotlinmania.obj.read.macho.Nlist
-import io.github.kotlinmania.obj.read.macho.Segment
 import io.github.kotlinmania.obj.read.macho.section
+import io.github.kotlinmania.obj.read.macho.segment
 import io.github.kotlinmania.rustlang.backtrace.gimli.Dwarf
 import io.github.kotlinmania.rustlang.backtrace.gimli.DwarfPackage
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.Context
@@ -243,7 +243,7 @@ public open class Object(
         public fun parse(mach: Mach, endian: NativeEndian, data: List<UByte>): Object? {
             val isObject = mach.filetype(endian) == Object.macho.MH_OBJECT
             var dwarf = null
-            var syms = mutableListOf()
+            var syms = mutableListOf<Pair<List<UByte>, ULong>>()
             var symsSortByName = false
             val commands = (mach.loadCommands(endian, data, 0).ok() ?: return null)
             var objectMap = null

@@ -9,7 +9,6 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
-import io.github.kotlinmania.rustlang.std.sys.process.unix.unix.Process
 
 /**
  * Reference counter internals.
@@ -86,7 +85,7 @@ internal open class Sender<C>(
         // counter. It's very difficult to recover sensibly from such degenerate scenarios so we
         // just abort when the count becomes very large.
         if (count > Int.MAX_VALUE) {
-            Process.abort()
+            process.abort()
         }
         return Sender(counter = this.counter)
     }
@@ -110,23 +109,23 @@ internal open class Sender<C>(
     public open fun eq(other: Sender<C>): Boolean = (((this.counter).rawAddress.toULong() == (other.counter).rawAddress.toULong())).toUByte()
 
     public companion object {
-        public fun <C> typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Sender<C>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Sender<C>> {
+        public fun <C> typeLayout(): TypeLayout<Sender<C>> =
+            object : TypeLayout<Sender<C>> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 8L
                 override fun readNative(addr: Long): Sender<C> =
                     Sender(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).readNative(addr),
+                        (PrimitiveLayouts.mutPtrLayout(64)).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: Sender<C>) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).writeNative(addr, value.counter)
+                    (PrimitiveLayouts.mutPtrLayout(64)).writeNative(addr, value.counter)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Sender<C> =
                     Sender(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).readBytes(buf, offset),
+                        (PrimitiveLayouts.mutPtrLayout(64)).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Sender<C>) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).writeBytes(buf, offset, value.counter)
+                    (PrimitiveLayouts.mutPtrLayout(64)).writeBytes(buf, offset, value.counter)
                 }
             }
     }
@@ -152,7 +151,7 @@ internal open class Receiver<C>(
         // counter. It's very difficult to recover sensibly from such degenerate scenarios so we
         // just abort when the count becomes very large.
         if (count > Int.MAX_VALUE) {
-            Process.abort()
+            process.abort()
         }
         return Receiver(counter = this.counter)
     }
@@ -176,23 +175,23 @@ internal open class Receiver<C>(
     public open fun eq(other: Receiver<C>): Boolean = (((this.counter).rawAddress.toULong() == (other.counter).rawAddress.toULong())).toUByte()
 
     public companion object {
-        public fun <C> typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Receiver<C>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Receiver<C>> {
+        public fun <C> typeLayout(): TypeLayout<Receiver<C>> =
+            object : TypeLayout<Receiver<C>> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 8L
                 override fun readNative(addr: Long): Receiver<C> =
                     Receiver(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).readNative(addr),
+                        (PrimitiveLayouts.mutPtrLayout(64)).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: Receiver<C>) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).writeNative(addr, value.counter)
+                    (PrimitiveLayouts.mutPtrLayout(64)).writeNative(addr, value.counter)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Receiver<C> =
                     Receiver(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).readBytes(buf, offset),
+                        (PrimitiveLayouts.mutPtrLayout(64)).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Receiver<C>) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).writeBytes(buf, offset, value.counter)
+                    (PrimitiveLayouts.mutPtrLayout(64)).writeBytes(buf, offset, value.counter)
                 }
             }
     }

@@ -494,44 +494,46 @@ public open class Flags(
     public var sign: Boolean,
     public var space: Boolean,
 ) {
+    public open fun clone(): Flags = Flags(width, precision, alternate, left, sign, space)
+
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Flags> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Flags> {
+        public fun typeLayout(): TypeLayout<Flags> =
+            object : TypeLayout<Flags> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 24L
                 override fun readNative(addr: Long): Flags =
                     Flags(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readNative(addr + 8L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 16L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 17L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 18L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 19L),
+                        (PrimitiveLayouts.USIZE64).readNative(addr),
+                        (PrimitiveLayouts.USIZE64).readNative(addr + 8L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 16L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 17L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 18L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 19L),
                     )
                 override fun writeNative(addr: Long, value: Flags) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeNative(addr, value.width)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeNative(addr + 8L, value.precision)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 16L, value.alternate)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 17L, value.left)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 18L, value.sign)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 19L, value.space)
+                    (PrimitiveLayouts.USIZE64).writeNative(addr, value.width)
+                    (PrimitiveLayouts.USIZE64).writeNative(addr + 8L, value.precision)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 16L, value.alternate)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 17L, value.left)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 18L, value.sign)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 19L, value.space)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Flags =
                     Flags(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readBytes(buf, offset + 8),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 16),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 17),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 18),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 19),
+                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset),
+                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset + 8),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 16),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 17),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 18),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 19),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Flags) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeBytes(buf, offset, value.width)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeBytes(buf, offset + 8, value.precision)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 16, value.alternate)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 17, value.left)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 18, value.sign)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 19, value.space)
+                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset, value.width)
+                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset + 8, value.precision)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 16, value.alternate)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 17, value.left)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 18, value.sign)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 19, value.space)
                 }
             }
 

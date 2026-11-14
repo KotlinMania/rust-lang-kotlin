@@ -12,6 +12,8 @@ import io.github.kotlinmania.libc.unix.bsd.freebsdlike.freebsd.Splice
 import io.github.kotlinmania.rustlang.alloc.io.buffered.bufreader.BufReader
 import io.github.kotlinmania.rustlang.alloc.io.buffered.bufwriter.BufWriter
 import io.github.kotlinmania.rustlang.alloc.io.copy.CopyState
+import io.github.kotlinmania.rustlang.core.io.error.Error
+import io.github.kotlinmania.rustlang.core.io.error.Result
 import io.github.kotlinmania.rustlang.core.io.util.Take
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
@@ -29,18 +31,17 @@ import io.github.kotlinmania.rustlang.std.io.stdio.StderrLock
 import io.github.kotlinmania.rustlang.std.io.stdio.StdinLock
 import io.github.kotlinmania.rustlang.std.io.stdio.StdoutLock
 import io.github.kotlinmania.rustlang.std.net.tcp.TcpStream
-import io.github.kotlinmania.rustlang.std.os.fortanixsgx.io.AsRawFd
-import io.github.kotlinmania.rustlang.std.os.solid.io.RawFd
+import io.github.kotlinmania.rustlang.std.os.fd.AsRawFd
+import io.github.kotlinmania.rustlang.std.os.fd.RawFd
 import io.github.kotlinmania.rustlang.std.os.unix.net.UnixStream
-import io.github.kotlinmania.rustlang.std.os.xous.ffi.definitions.Error
 import io.github.kotlinmania.rustlang.std.process.ChildStderr
 import io.github.kotlinmania.rustlang.std.process.ChildStdin
 import io.github.kotlinmania.rustlang.std.process.ChildStdout
 import io.github.kotlinmania.rustlang.std.sys.fs.unix.cfm.CachedFileMetadata
 import io.github.kotlinmania.rustlang.std.sys.fs.unix.runtimesymbols.read
 import io.github.kotlinmania.rustlang.std.sys.fs.unix.runtimesymbols.write
-import io.github.kotlinmania.rustlang.std.sys.pal.hermit.cvt
-import io.github.kotlinmania.rustlang.std.thread.Result
+import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
+import io.github.kotlinmania.rustlang.std.sys.weak.syscall
 import io.github.kotlinmania.libc.sendfile as sendfile64
 
 // This module contains specializations that can offload `io.copy()` operations on file descriptor

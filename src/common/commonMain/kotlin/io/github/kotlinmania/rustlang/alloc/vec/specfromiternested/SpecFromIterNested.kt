@@ -25,7 +25,7 @@ public fun <T, I> specFromIterNestedFromIterVecT(iterator: I): List<T> where I :
             else -> {
                 val element = matchVal
                 val (lower, _) = iterator.sizeHint()
-                val initialCapacity = cmp.max(RawVec.MIN_NON_ZERO_CAP, lower.saturatingAdd(1))
+                val initialCapacity = max(RawVec.MIN_NON_ZERO_CAP, lower.saturatingAdd(1))
                 var vector = ArrayList<T>(initialCapacity)
                 // SAFETY: We requested capacity at least 1
                 run {

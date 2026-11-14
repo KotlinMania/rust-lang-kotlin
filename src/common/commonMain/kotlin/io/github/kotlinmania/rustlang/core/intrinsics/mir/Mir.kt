@@ -305,8 +305,8 @@ public sealed class UnwindTerminateReason {
 // Unwind actions
 public open class UnwindActionArg {
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<UnwindActionArg> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<UnwindActionArg> {
+        public fun typeLayout(): TypeLayout<UnwindActionArg> =
+            object : TypeLayout<UnwindActionArg> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): UnwindActionArg =
@@ -356,8 +356,8 @@ public fun unwindCleanup(goto: BasicBlock): UnwindActionArg {
 // Return destination for `Call`
 public open class ReturnToArg {
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<ReturnToArg> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<ReturnToArg> {
+        public fun typeLayout(): TypeLayout<ReturnToArg> =
+            object : TypeLayout<ReturnToArg> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): ReturnToArg =

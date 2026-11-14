@@ -240,7 +240,7 @@ public fun <T> IntoIter<T, N>.iteratorGetUnchecked(idx: Int, n: Int): T {
     val elemRef = this.asMutSlice().getUncheckedMut(idx)
     // SAFETY: We only implement `TrustedRandomAccessNoCoerce` for types
     // which are actually `Copy`, so cannot have multiple-drop issues.
-    return ptr.read(elemRef)
+    return read(elemRef)
 }
 
 public fun <T> IntoIter<T, N>.nextBack(n: Int): Item? = this.unsizeMut().nextBack()

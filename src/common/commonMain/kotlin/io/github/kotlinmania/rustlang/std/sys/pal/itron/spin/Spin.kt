@@ -14,7 +14,6 @@ import io.github.kotlinmania.rustlang.std.sys.pal.itron.abi.ID
 import io.github.kotlinmania.rustlang.std.sys.pal.itron.abi.disDsp
 import io.github.kotlinmania.rustlang.std.sys.pal.itron.abi.enaDsp
 import io.github.kotlinmania.rustlang.std.sys.pal.itron.abi.snsDsp
-import io.github.kotlinmania.rustlang.std.sys.pal.sgx.waitqueue.spinmutex.SpinMutexGuard
 
 /**
  * A mutex implemented by `disDsp` (for intra-core synchronization) and a

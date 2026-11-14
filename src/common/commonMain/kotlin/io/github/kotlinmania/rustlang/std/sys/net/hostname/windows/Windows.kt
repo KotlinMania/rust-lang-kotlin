@@ -1,16 +1,16 @@
 // port-lint: source sys/net/hostname/windows.rs
 package io.github.kotlinmania.rustlang.std.sys.net.hostname.windows
 
+import io.github.kotlinmania.rustlang.core.io.error.Result
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
-import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.solid.cvt
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.getHostNameW
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.lstrlenW
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.cvt
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.winsock.startup
-import io.github.kotlinmania.rustlang.std.thread.Result
 
 public fun hostname(): Result<OsString> {
     startup()

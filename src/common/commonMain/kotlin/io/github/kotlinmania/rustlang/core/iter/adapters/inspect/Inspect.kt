@@ -5,6 +5,7 @@ import io.github.kotlinmania.rustlang.core.iter.InPlaceIterable
 import io.github.kotlinmania.rustlang.core.iter.TrustedFused
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.result.Result
 
@@ -49,7 +50,7 @@ public open class Inspect<I, F>(
     public var iter: I,
     public var f: F,
 ) : TrustedFused, SourceIter<Any?, Source>, InPlaceIterable, Iterable<Item> {
-    override fun iterator(): kotlin.collections.Iterator<Item> = object : AbstractIterator<Item>() {
+    override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
         override fun computeNext() {
             when (val v = this@Inspect.next()) {
                 null -> done()
@@ -100,11 +101,11 @@ public open class Inspect<I, F>(
     }
 
     public companion object {
-        public fun <I, F> typeLayout(typeLayoutI: io.github.kotlinmania.rustlang.core.mem.TypeLayout<I>, typeLayoutF: io.github.kotlinmania.rustlang.core.mem.TypeLayout<F>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Inspect<I, F>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Inspect<I, F>> {
+        public fun <I, F> typeLayout(typeLayoutI: TypeLayout<I>, typeLayoutF: TypeLayout<F>): TypeLayout<Inspect<I, F>> =
+            object : TypeLayout<Inspect<I, F>> {
                 override val alignBytes: Long = listOf(1L, typeLayoutI.alignBytes, typeLayoutF.alignBytes).max()
-                private val off1: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(typeLayoutI.sizeBytes, typeLayoutF.alignBytes)
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes((off1 + typeLayoutF.sizeBytes), alignBytes)
+                private val off1: Long = alignUpBytes(typeLayoutI.sizeBytes, typeLayoutF.alignBytes)
+                override val sizeBytes: Long = alignUpBytes((off1 + typeLayoutF.sizeBytes), alignBytes)
                 override fun readNative(addr: Long): Inspect<I, F> =
                     Inspect(
                         (typeLayoutI).readNative(addr),

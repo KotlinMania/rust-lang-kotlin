@@ -28,7 +28,6 @@ import io.github.kotlinmania.rustlang.core.str.IsAsciiWhitespace
 import io.github.kotlinmania.rustlang.core.str.converts.fromUtf8Unchecked
 import io.github.kotlinmania.rustlang.core.str.count.USIZE_SIZE
 import io.github.kotlinmania.rustlang.core.str.validations.NONASCII_MASK
-import io.github.kotlinmania.rustlang.core.str.validations.containsNonascii
 import io.github.kotlinmania.rustlang.core.vld1qU8
 import io.github.kotlinmania.rustlang.core.vmaxvqU8
 import io.github.kotlinmania.rustlang.core.vorrqU8
@@ -406,7 +405,7 @@ public fun List<UByte>.splitAsciiWhitespace(): SplitAsciiWhitespace {
 public open class SplitAsciiWhitespace(
     internal var inner: Filter<Split<UByte, IsAsciiWhitespace>, BytesIsNotEmpty>,
 ) : Iterable<List<UByte>> {
-    override fun iterator(): kotlin.collections.Iterator<List<UByte>> = object : AbstractIterator<List<UByte>>() {
+    override fun iterator(): Iterator<List<UByte>> = object : AbstractIterator<List<UByte>>() {
         override fun computeNext() {
             when (val v = this@SplitAsciiWhitespace.next()) {
                 null -> done()
@@ -414,6 +413,8 @@ public open class SplitAsciiWhitespace(
             }
         }
     }
+
+    public open fun clone(): SplitAsciiWhitespace = SplitAsciiWhitespace(inner)
 
     public open fun next(): List<UByte>? = this.inner.next()
 
@@ -453,15 +454,17 @@ public open class SplitAsciiWhitespace(
 }
 
 public open class EscapeByte : Fn<UByte>, FnMut<UByte>, FnOnce<UByte, Any?, EscapeDefault> {
-    public override fun call(tupleArg0: UByte): EscapeDefault = ascii.escapeDefault(byte)
+    public open fun clone(): EscapeByte = EscapeByte()
+
+    public override fun call(tupleArg0: UByte): EscapeDefault = escapeDefault(byte)
 
     public override fun callMut(tupleArg0: UByte): EscapeDefault = this.call(byte)
 
     public override fun callOnce(tupleArg0: UByte): EscapeDefault = this.call(byte)
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<EscapeByte> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<EscapeByte> {
+        public fun typeLayout(): TypeLayout<EscapeByte> =
+            object : TypeLayout<EscapeByte> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): EscapeByte =
@@ -488,7 +491,7 @@ public open class EscapeAscii internal constructor(
     public var inner: FlatMap<Iter<UByte>, EscapeDefault, EscapeByte> = innerCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<UByte> = object : AbstractIterator<UByte>() {
+    override fun iterator(): Iterator<UByte> = object : AbstractIterator<UByte>() {
         override fun computeNext() {
             when (val v = this@EscapeAscii.next()) {
                 null -> done()
@@ -496,6 +499,8 @@ public open class EscapeAscii internal constructor(
             }
         }
     }
+
+    public open fun clone(): EscapeAscii = EscapeAscii(inner)
 
     public open fun next(): UByte? = this.inner.next()
 
@@ -535,7 +540,7 @@ public open class EscapeAscii internal constructor(
                 else -> {
                     val b = matchVal
                     // guaranteed to be non-empty, better to write it as a str
-                    f.append((ascii.escapeDefault(b)).toString())
+                    f.append((escapeDefault(b)).toString())
                     bytes = bytes[1 until bytes.size]
                 }
             }

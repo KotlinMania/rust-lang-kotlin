@@ -55,9 +55,11 @@ public open class Pending<T>(
  * # Examples
  *
  * ```kotlin
+ * import std.future
+ *
  * val future = future.pending()
  * val unused = future
  * error("unreachable")
  * ```
  */
-public fun <T> pending(): Pending<T> = Pending(data = marker.PhantomData)
+public fun <T> pending(): Pending<T> = Pending(data = Unit)

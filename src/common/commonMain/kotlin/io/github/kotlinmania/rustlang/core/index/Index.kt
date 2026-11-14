@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.core.index
 
 import io.github.kotlinmania.rustlang.core.intrinsics.sliceGetUnchecked
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.slice.SliceIndex
@@ -39,10 +40,10 @@ public open class Clamp<Idx>(
         }
 
     public companion object {
-        public fun <Idx> typeLayout(typeLayoutIdx: io.github.kotlinmania.rustlang.core.mem.TypeLayout<Idx>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Clamp<Idx>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Clamp<Idx>> {
+        public fun <Idx> typeLayout(typeLayoutIdx: TypeLayout<Idx>): TypeLayout<Clamp<Idx>> =
+            object : TypeLayout<Clamp<Idx>> {
                 override val alignBytes: Long = listOf(1L, typeLayoutIdx.alignBytes).max()
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(typeLayoutIdx.sizeBytes, alignBytes)
+                override val sizeBytes: Long = alignUpBytes(typeLayoutIdx.sizeBytes, alignBytes)
                 override fun readNative(addr: Long): Clamp<Idx> =
                     Clamp(
                         (typeLayoutIdx).readNative(addr),
@@ -105,8 +106,8 @@ public open class Last : SliceIndex<List<T>, Any?, T> {
     }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Last> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Last> {
+        public fun typeLayout(): TypeLayout<Last> =
+            object : TypeLayout<Last> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): Last =

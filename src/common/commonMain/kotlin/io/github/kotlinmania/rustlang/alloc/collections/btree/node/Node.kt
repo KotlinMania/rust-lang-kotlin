@@ -470,7 +470,7 @@ internal fun <K, V> NodeRef<Dying, K, V, LeafOrInternal>.dropKvs() {
                 // SAFETY: i < len and the kv has been initialized and
                 // it won't use the i-th kv more than once.
                 run {
-                    val kv = Handle.newKv(ptr.read(this.node, typeLayoutT = ObjectSlotLayout<NonNull>()), i)
+                    val kv = Handle.newKv(read(this.node, typeLayoutT = ObjectSlotLayout<NonNull>()), i)
                     kv.dropKeyVal()
                 }
             }
@@ -484,10 +484,10 @@ internal fun <K, V> NodeRef<Dying, K, V, LeafOrInternal>.dropKvs() {
         // SAFETY: idx < len and the kv has been initialized and
         // it won't touch the idx-th more than once
         run {
-            val kv = Handle.newKv(ptr.read(this), idx)
+            val kv = Handle.newKv(read(this), idx)
             kv.dropKeyVal()
         }
-        mem.forget(guard)
+        forget(guard)
     }
 }
 
@@ -1191,7 +1191,7 @@ internal fun <K, V, NodeType> Handle<NodeRef<Mut, K, V, NodeType>, KV>.kvMut(): 
  */
 internal fun <K, V, NodeType> Handle<NodeRef<Mut, K, V, NodeType>, KV>.replaceKv(k: K, v: V): Pair<K, V> {
     val (key, value) = this.kvMut()
-    return Pair(mem.replace(key, k), mem.replace(value, v))
+    return Pair(replace(key, k), replace(value, v))
 }
 
 /**
@@ -1546,9 +1546,9 @@ internal open class BalancingContext<K, V>(
 
 internal fun <K, V> Handle<NodeRef<Mut, K, V, Internal>, KV>.considerForBalancing(): BalancingContext<K, V> {
     // ignore-tidy-undocumented-unchecked
-    val self1 = ptr.read(this)
+    val self1 = read(this)
     // ignore-tidy-undocumented-unchecked
-    val self2 = ptr.read(this)
+    val self2 = read(this)
     return BalancingContext(parent = this, leftChild = self1.leftEdge().descend(), rightChild = self2.rightEdge().descend())
 }
 
@@ -1571,21 +1571,21 @@ internal fun <K, V> Handle<NodeRef<Mut, K, V, Internal>, KV>.considerForBalancin
 internal fun <K, V> NodeRef<Mut, K, V, LeafOrInternal>.chooseParentKv(): Result<LeftOrRight<BalancingContext<K, V>>, NodeRef<Mut, K, V, LeafOrInternal>> {
     // ignore-tidy-undocumented-unchecked
     return run {
-        val matchVal = ptr.read(this).ascend()
+        val matchVal = read(this).ascend()
         when (matchVal) { is Result.Ok<*> -> {
             val parentEdge = matchVal.value
             run {
                 val matchVal1 = parentEdge.leftKv()
                 when (matchVal1) { is Result.Ok<*> -> {
                     val leftParentKv = matchVal1.value
-                    Result.Ok(LeftOrRight.Left(BalancingContext(parent = ptr.read(leftParentKv), leftChild = leftParentKv.leftEdge().descend(), rightChild = this)))
+                    Result.Ok(LeftOrRight.Left(BalancingContext(parent = read(leftParentKv), leftChild = leftParentKv.leftEdge().descend(), rightChild = this)))
                 }; is Result.Err<*> -> {
                     val parentEdge1 = matchVal1.error
                     run {
                         val matchVal2 = parentEdge1.rightKv()
                         when (matchVal2) { is Result.Ok<*> -> {
                             val rightParentKv = matchVal2.value
-                            Result.Ok(LeftOrRight.Right(BalancingContext(parent = ptr.read(rightParentKv), leftChild = this, rightChild = rightParentKv.rightEdge().descend())))
+                            Result.Ok(LeftOrRight.Right(BalancingContext(parent = read(rightParentKv), leftChild = this, rightChild = rightParentKv.rightEdge().descend())))
                         }; is Result.Err<*> -> {
                             error("empty internal node")
                         } }
@@ -1780,7 +1780,7 @@ public fun <T> sliceInsert(slice: MutableList<MaybeUninit<T>>, idx: Int, value: 
     // ignore-tidy-undocumented-unchecked
     run {
         if (len > idx + 1) {
-            ptr.copy(MutPtr((slicePtr).rawAddress + ((idx).toLong() * (ObjectSlotLayout<MaybeUninit<T>>()).strideBytes)), MutPtr((slicePtr).rawAddress + ((idx + 1).toLong() * (ObjectSlotLayout<MaybeUninit<T>>()).strideBytes)), len - idx - 1)
+            copy(MutPtr((slicePtr).rawAddress + ((idx).toLong() * (ObjectSlotLayout<MaybeUninit<T>>()).strideBytes)), MutPtr((slicePtr).rawAddress + ((idx + 1).toLong() * (ObjectSlotLayout<MaybeUninit<T>>()).strideBytes)), len - idx - 1)
         }
         (ObjectSlotLayout<MaybeUninit<T>>()).readNative((MutPtr((slicePtr).rawAddress + ((idx).toLong() * (ObjectSlotLayout<MaybeUninit<T>>()).strideBytes))).rawAddress).write(value)
     }
@@ -1800,7 +1800,7 @@ public fun <T> sliceRemove(slice: MutableList<MaybeUninit<T>>, idx: Int): T {
     // ignore-tidy-undocumented-unchecked
     return run {
         val ret = (ObjectSlotLayout<MaybeUninit<T>>()).readNative((MutPtr((slicePtr).rawAddress + ((idx).toLong() * (ObjectSlotLayout<MaybeUninit<T>>()).strideBytes))).rawAddress).assumeInitRead()
-        ptr.copy(MutPtr((slicePtr).rawAddress + ((idx + 1).toLong() * (ObjectSlotLayout<MaybeUninit<T>>()).strideBytes)), MutPtr((slicePtr).rawAddress + ((idx).toLong() * (ObjectSlotLayout<MaybeUninit<T>>()).strideBytes)), len - idx - 1)
+        copy(MutPtr((slicePtr).rawAddress + ((idx + 1).toLong() * (ObjectSlotLayout<MaybeUninit<T>>()).strideBytes)), MutPtr((slicePtr).rawAddress + ((idx).toLong() * (ObjectSlotLayout<MaybeUninit<T>>()).strideBytes)), len - idx - 1)
         ret
     }
 }
@@ -1815,7 +1815,7 @@ public fun <T> sliceShl(slice: MutableList<MaybeUninit<T>>, distance: Int) {
     val slicePtr = slice.asMutPtr()
     // ignore-tidy-undocumented-unchecked
     run {
-        ptr.copy(MutPtr((slicePtr).rawAddress + ((distance).toLong() * (ObjectSlotLayout<MaybeUninit<T>>()).strideBytes)), slicePtr, slice.size - distance)
+        copy(MutPtr((slicePtr).rawAddress + ((distance).toLong() * (ObjectSlotLayout<MaybeUninit<T>>()).strideBytes)), slicePtr, slice.size - distance)
     }
 }
 
@@ -1829,7 +1829,7 @@ public fun <T> sliceShr(slice: MutableList<MaybeUninit<T>>, distance: Int) {
     val slicePtr = slice.asMutPtr()
     // ignore-tidy-undocumented-unchecked
     run {
-        ptr.copy(slicePtr, MutPtr((slicePtr).rawAddress + ((distance).toLong() * (ObjectSlotLayout<MaybeUninit<T>>()).strideBytes)), slice.size - distance)
+        copy(slicePtr, MutPtr((slicePtr).rawAddress + ((distance).toLong() * (ObjectSlotLayout<MaybeUninit<T>>()).strideBytes)), slice.size - distance)
     }
 }
 
@@ -1842,6 +1842,6 @@ public fun <T> moveToSlice(src: MutableList<MaybeUninit<T>>, dst: MutableList<Ma
     check(src.size == dst.size)
     // ignore-tidy-undocumented-unchecked
     run {
-        ptr.copyNonoverlapping(src.asPtr(), dst.asMutPtr(), src.size)
+        copyNonoverlapping(src.asPtr(), dst.asMutPtr(), src.size)
     }
 }

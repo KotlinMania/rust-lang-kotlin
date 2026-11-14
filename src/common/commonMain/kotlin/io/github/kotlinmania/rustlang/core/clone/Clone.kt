@@ -38,7 +38,9 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 //
 // ```kotlin
 // // we add the Clone trait to Morpheus struct
-// open class Morpheus(public var bluePill: Float, public var redPill: Long)
+// open class Morpheus(public var bluePill: Float, public var redPill: Long) {
+//     public open fun clone(): Morpheus = Morpheus(bluePill, redPill)
+// }
 // fun main() {
 //     val f = Morpheus(bluePill = 0.0f, redPill = 0L)
 //     val copy = f.clone()
@@ -146,29 +148,18 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
  * The bounds are unnecessary because clearly the function itself should be
  * copy- and cloneable even if its return type is not:
  *
- * ```kotlin
- * public fun interface FnCallback {
- *     public operator fun invoke(): T
+ * ```compile_fail,E0599
+ * @derive(Copy, Clone)
+ * struct Generate<T>(fn() -> T);
+ *
+ * struct NotCloneable;
+ *
+ * fn generateNotCloneable() -> NotCloneable {
+ *     NotCloneable
  * }
  *
- * public fun doctestEntry() {
- *     open class Generate<T>(public var value: () -> T) {
- *         public var field0: FnCallback
- *             get() = value
- *             set(v) {
- *                 value = v
- *             }
- *
- *         public open fun clone(): Generate<T> = Generate(value)
- *     }
- *     open class NotCloneable
- *     fun generateNotCloneable(): NotCloneable {
- *         return NotCloneable()
- *     }
- *     Generate(generateNotCloneable).clone()
- *     // error: trait bounds were not satisfied
- *     // Note: With the manual implementations the above line will compile.
- * }
+ * Generate(generateNotCloneable).clone(); // error: trait bounds were not satisfied
+ * // Note: With the manual implementations the above line will compile.
  * ```
  *
  * ## `Clone` and `PartialEq`/`Eq`
@@ -408,8 +399,14 @@ public interface Share<T> : Clone<T> {
  *
  * Values can be `.import`d by adding `.import` postfix to the value you want to use.
  *
- * ```kotlin
- * fun foo(f: Foo) { val x = f.import; }
+ * ```ignore (this won't work until we land use)
+ * fn foo(f: Foo) {
+ *     // if `Foo` implements `Copy` f would be copied into x.
+ *     // if `Foo` implements `UseCloned` f would be cloned into x.
+ *     // otherwise f would be moved into x.
+ *     let x = f.use;
+ *     // ...
+ * }
  * ```
  *
  * ## use closures

@@ -1,7 +1,6 @@
 // port-lint: source boxed/thin.rs
 package io.github.kotlinmania.rustlang.alloc.boxed.thin
 
-import io.github.kotlinmania.rustlang.alloc.alloc.alloc
 import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
 import io.github.kotlinmania.rustlang.core.alloc.layout.LayoutError
 import io.github.kotlinmania.rustlang.core.intrinsics.constAllocate
@@ -15,11 +14,14 @@ import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
+import io.github.kotlinmania.rustlang.core.num.rustCheckedSub
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.metadata.Pointee
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.slice.rawMutSliceList
+import io.github.kotlinmania.rustlang.core.slice.rawSliceList
 
 // Based on
 // <https://github.com/matthieu-m/rfc2580/blob/b58d1d3cba0d4b5e859d3617ea2d0943aaa31329/examples/thin.rs>
@@ -72,7 +74,7 @@ public open class ThinBox<T>(
     public open fun deref(): T {
         val value = this.data()
         val metadata = this.meta()
-        val pointer = ptr.fromRawParts(constPtrFromRustCast(value), metadata)
+        val pointer = rawSliceList(constPtrFromRustCast(value), metadata.toInt(), PrimitiveLayouts.UNIT)
         // SAFETY: &ThinBox<T> points to a valid pointer for T.
         return pointer
     }
@@ -80,7 +82,7 @@ public open class ThinBox<T>(
     public open fun derefMut(): T {
         val value = this.data()
         val metadata = this.meta()
-        val pointer = ptr.fromRawPartsMut<T>(mutPtrFromRustCast(value), metadata)
+        val pointer = rawMutSliceList(mutPtrFromRustCast(value), metadata.toInt(), PrimitiveLayouts.UNIT)
         // SAFETY: ThinBox<T> points to a valid and unique pointer for T.
         return pointer
     }
@@ -125,7 +127,7 @@ public open class ThinBox<T>(
          * ```
          */
         public fun <T> new(value: T): ThinBox<T> {
-            val meta = ptr.metadata(value)
+            val meta = metadata(value)
             val ptr = WithOpaqueHeader.new(meta, value, fieldLayout = ObjectSlotLayout<NonNull>())
             return ThinBox(ptr = ptr, marker = Unit)
         }
@@ -147,7 +149,7 @@ public open class ThinBox<T>(
          * ```
          */
         public fun <T> tryNew(value: T): Result<ThinBox<T>, AllocError> {
-            val meta = ptr.metadata(value)
+            val meta = metadata(value)
             return WithOpaqueHeader.tryNew(meta, value, fieldLayout = ObjectSlotLayout<NonNull>()).map({ ptr -> ThinBox(ptr = ptr, marker = Unit) })
         }
 
@@ -175,7 +177,7 @@ public fun <Dyn, T> ThinBox.Companion.newUnsize(value: T): ThinBox<Dyn> =
         val ptr = WithOpaqueHeader.newUnsizeZst<Dyn, T>(value, fieldLayout = ObjectSlotLayout<NonNull>())
         ThinBox(ptr = ptr, marker = Unit)
     } else {
-        val meta = ptr.metadata(((value as Any?) as Dyn))
+        val meta = metadata(((value as Any?) as Dyn))
         val ptr1 = WithOpaqueHeader.new(meta, value, fieldLayout = ObjectSlotLayout<NonNull>())
         ThinBox(ptr = ptr1, marker = Unit)
     }
@@ -215,14 +217,14 @@ public open class WithHeader<H> internal constructor(
                 // Since we only allocate for non-ZSTs, the layout size cannot be zero.
                 check(layout.size() != 0)
                 // SAFETY: We own the allocation with `layout` at `ptr - valueOffset`.
-                alloc.dealloc(this.ptr.asPtr().sub(valueOffset), layout)
+                dealloc(this.ptr.asPtr().sub(valueOffset), layout)
             }
         }
         // `_guard` will deallocate the memory when dropped, even if `dropInPlace` unwinds.
         // We only drop the value because the Pointee trait requires that the metadata is copy
         // aka trivially droppable.
         // SAFETY: We're the only droppers of `value` and it's not dropped again.
-        ptr.dropInPlace<T>(value)
+        dropInPlace<T>(value)
     }
 
     public open fun header(): MutPtr {
@@ -257,7 +259,7 @@ public open class WithHeader<H> internal constructor(
 // stable since 1.28 ._.
 //
 // On the other hand, look at this gorgeous turbofish!
-alloc.handleAllocError(Layout.new<Unit>(typeLayoutT = PrimitiveLayouts.UNIT))
+handleAllocError(Layout.new<Unit>(typeLayoutT = PrimitiveLayouts.UNIT))
             // Note: It's UB to pass a layout with a zero size to `alloc.alloc`, so
             // we use `layout.dangling()` for this case, which should have a valid
             // alignment for both `T` and `H`.
@@ -269,9 +271,9 @@ alloc.handleAllocError(Layout.new<Unit>(typeLayoutT = PrimitiveLayouts.UNIT))
                     layout.danglingPtr()
                 } else {
                     // SAFETY: We check above that the layout size is nonzero.
-                    val ptr = alloc.alloc(layout)
+                    val ptr = alloc(layout)
                     if (ptr.isNull()) {
-                        alloc.handleAllocError(layout)
+                        handleAllocError(layout)
                     }
                     // SAFETY:
                     // - The size is at least `alignedHeaderSize`.
@@ -284,8 +286,8 @@ alloc.handleAllocError(Layout.new<Unit>(typeLayoutT = PrimitiveLayouts.UNIT))
             // SAFETY: `result.header()` promises to give us a valid place for writing
             // the header, and `result.value()` promises the same for the value.
             run {
-                ptr.write(result.header(), header)
-                ptr.write(result.value().cast(), value)
+                write(result.header(), header)
+                write(result.value().cast(), value)
             }
             return result
         }
@@ -296,7 +298,7 @@ alloc.handleAllocError(Layout.new<Unit>(typeLayoutT = PrimitiveLayouts.UNIT))
          */
         public fun <H, T> tryNew(header: H, value: T, typeLayoutT: TypeLayout<T>): Result<WithHeader<H>, AllocError> {
             val valueLayout = Layout.new<T>(typeLayoutT = typeLayoutT)
-            val (layout, valueOffset) = WithHeader.allocLayout(valueLayout) ?: return Result.Err(alloc.AllocError)
+            val (layout, valueOffset) = WithHeader.allocLayout(valueLayout) ?: return Result.Err(AllocError)
             // Note: It's UB to pass a layout with a zero size to `alloc.alloc`, so
             // we use `layout.dangling()` for this case, which should have a valid
             // alignment for both `T` and `H`.
@@ -308,9 +310,9 @@ alloc.handleAllocError(Layout.new<Unit>(typeLayoutT = PrimitiveLayouts.UNIT))
                     layout.danglingPtr()
                 } else {
                     // SAFETY: We check above that the layout size is nonzero.
-                    val ptr = alloc.alloc(layout)
+                    val ptr = alloc(layout)
                     if (ptr.isNull()) {
-                        return Result.Err(alloc.AllocError)
+                        return Result.Err(AllocError)
                     }
                     // SAFETY:
                     // - The size is at least `alignedHeaderSize`.
@@ -323,8 +325,8 @@ alloc.handleAllocError(Layout.new<Unit>(typeLayoutT = PrimitiveLayouts.UNIT))
             // SAFETY: `result.header()` promises to give us a valid place for writing
             // the header, and `result.value()` promises the same for the value.
             run {
-                ptr.write(result.header(), header)
-                ptr.write(result.value().cast(), value)
+                write(result.header(), header)
+                write(result.value().cast(), value)
             }
             return Result.Ok(result)
         }
@@ -350,11 +352,11 @@ alloc.handleAllocError(Layout.new<Unit>(typeLayoutT = PrimitiveLayouts.UNIT))
                     val allocSize = max(alignOf<T>(typeLayoutT = typeLayoutT), sizeOf<Metadata>(typeLayoutT = ObjectSlotLayout<Metadata>()))
                     // SAFETY: align is power of two because it is the maximum of two alignments.
                     val alloc: MutPtr = constAllocate(allocSize, allocAlign)
-                    val metadataOffset = allocSize.checkedSub(sizeOf<Metadata>(typeLayoutT = ObjectSlotLayout<Metadata>()))!!
+                    val metadataOffset = rustCheckedSub(allocSize, sizeOf<Metadata>(typeLayoutT = ObjectSlotLayout<Metadata>()))!!
                     val metadataPtr: MutPtr = MutPtr((MutPtr((alloc).rawAddress + ((metadataOffset).toLong() * (PrimitiveLayouts.U8).strideBytes))).rawAddress)
                     // SAFETY: `* metadataPtr` is within the allocation.
                     run {
-                        (ObjectSlotLayout<Metadata>()).writeNative((metadataPtr).rawAddress, ptr.metadata<Dyn>(constPtrFromRustCast(ptr.dangling<T>(typeLayoutT = typeLayoutT))))
+                        (ObjectSlotLayout<Metadata>()).writeNative((metadataPtr).rawAddress, metadata<Dyn>(constPtrFromRustCast(dangling<T>(typeLayoutT = typeLayoutT))))
                     }
                     // SAFETY: valid heap allocation
                     constMakeGlobal(alloc)
@@ -363,7 +365,7 @@ alloc.handleAllocError(Layout.new<Unit>(typeLayoutT = PrimitiveLayouts.UNIT))
                 }
             val valuePtr = MutPtr((ConstPtr((ConstPtr(((constPtrFromRustCast(alloc1))).rawAddress + ((1).toLong() * (ObjectSlotLayout<Metadata>()).strideBytes))).rawAddress)).rawAddress)
             check(valuePtr.isAligned())
-            mem.forget(value)
+            forget(value)
             return WithHeader(NonNull.new(valuePtr).unwrap(), Unit)
         }
 

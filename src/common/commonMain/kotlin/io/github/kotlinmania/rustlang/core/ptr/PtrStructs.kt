@@ -1,6 +1,7 @@
 package io.github.kotlinmania.rustlang.core.ptr
 
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 
 /**
  * Used in [readUnaligned] and [writeUnaligned] to load and store `T`
@@ -16,10 +17,10 @@ public open class Unaligned<T>(
         }
 
     public companion object {
-        public fun <T> typeLayout(typeLayoutT: io.github.kotlinmania.rustlang.core.mem.TypeLayout<T>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Unaligned<T>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Unaligned<T>> {
+        public fun <T> typeLayout(typeLayoutT: TypeLayout<T>): TypeLayout<Unaligned<T>> =
+            object : TypeLayout<Unaligned<T>> {
                 override val alignBytes: Long = listOf(1L, minOf(typeLayoutT.alignBytes, 1L)).max()
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(typeLayoutT.sizeBytes, alignBytes)
+                override val sizeBytes: Long = alignUpBytes(typeLayoutT.sizeBytes, alignBytes)
                 override fun readNative(addr: Long): Unaligned<T> =
                     Unaligned(
                         (typeLayoutT).readNative(addr),

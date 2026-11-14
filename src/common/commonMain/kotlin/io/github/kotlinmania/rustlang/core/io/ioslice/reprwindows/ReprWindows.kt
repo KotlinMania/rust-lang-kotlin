@@ -16,28 +16,30 @@ public open class Wsabuf internal constructor(
     public var buf: MutPtr = bufCtorArg
         internal set
 
+    public open fun clone(): Wsabuf = Wsabuf(len, buf)
+
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Wsabuf> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Wsabuf> {
+        public fun typeLayout(): TypeLayout<Wsabuf> =
+            object : TypeLayout<Wsabuf> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): Wsabuf =
                     Wsabuf(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).readNative(addr + 8L),
+                        (PrimitiveLayouts.U32).readNative(addr),
+                        (PrimitiveLayouts.mutPtrLayout(64)).readNative(addr + 8L),
                     )
                 override fun writeNative(addr: Long, value: Wsabuf) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).writeNative(addr, value.len)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).writeNative(addr + 8L, value.buf)
+                    (PrimitiveLayouts.U32).writeNative(addr, value.len)
+                    (PrimitiveLayouts.mutPtrLayout(64)).writeNative(addr + 8L, value.buf)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Wsabuf =
                     Wsabuf(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).readBytes(buf, offset + 8),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset),
+                        (PrimitiveLayouts.mutPtrLayout(64)).readBytes(buf, offset + 8),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Wsabuf) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).writeBytes(buf, offset, value.len)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).writeBytes(buf, offset + 8, value.buf)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset, value.len)
+                    (PrimitiveLayouts.mutPtrLayout(64)).writeBytes(buf, offset + 8, value.buf)
                 }
             }
 
@@ -55,6 +57,8 @@ internal open class IoSlice(
     public var vec: Wsabuf,
     public var p: Unit,
 ) {
+    public open fun clone(): IoSlice = IoSlice(vec, p)
+
     internal open fun advance(n: Int) {
         check(n <= this.vec.len.toInt()) { "advancing IoSlice beyond its length" }
         // SAFETY:

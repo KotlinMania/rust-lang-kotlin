@@ -201,10 +201,11 @@ public class DebugTuple(
  * Due to these ambiguities/restrictions, indexing with a `Int` is simply
  * forbidden:
  *
- * ```kotlin
- * val s = "hello"
+ * ```compile_fail,E0277
+ * let s = "hello";
+ *
  * // The following will not compile
- * println("The first letter of s is ${s[0]}")
+ * println("The first letter of s is {}", s[0]);
  * ```
  *
  * It is more clear, however, how `s[i .. j]` should work (that is,
@@ -252,11 +253,15 @@ public class DebugTuple(
  * would need to make two implicit conversions, which Rust doesn't have the
  * means to do. For that reason, the following example will not compile.
  *
- * ```kotlin
- * interface TraitExample
- * fun <A : TraitExample> exampleFunc(exampleArg: A) {}
- * val exampleString = "exampleString"
- * exampleFunc(exampleString)
+ * ```compile_fail,E0277
+ * trait TraitExample {}
+ *
+ * impl<a> TraitExample for &a str {}
+ *
+ * fn exampleFunc<A: TraitExample>(exampleArg: A) {}
+ *
+ * let exampleString = String.from("exampleString");
+ * exampleFunc(&exampleString);
  * ```
  *
  * There are two options that would work instead. The first would be to
@@ -973,7 +978,7 @@ public open class String(
         var (read, write) =
             while (true) {
                 val (idx, ch) = chars.next() ?: return
-                if (hint.unlikely(!f(ch))) {
+                if (unlikely(!f(ch))) {
                     break
                 }
             }
@@ -1522,15 +1527,11 @@ public open class String(
         this += s
     }
 
-    public open fun <I : Iterable<ascii.Char>> extendCharChar(iter: I) {
+    public open fun <I : Iterable<Char>> extendCharChar(iter: I) {
         this.vec.extend(iter.iterator().map({ c -> c.toU8() }))
     }
 
-    public open fun extendOne(c: ascii.Char) {
-        this.vec.add(c.toU8())
-    }
-
-    public open fun extendOneChar(c: ascii.Char) {
+    public open fun extendOneCharChar(c: Char) {
         this.vec.add(c.toU8())
     }
 
@@ -1649,7 +1650,7 @@ public open class String(
         return String.from(s)
     }
 
-    public open fun extendFromEscapeDefault(escaper: str.EscapeDefault) {
+    public open fun extendFromEscapeDefault(escaper: EscapeDefault) {
         val (front, middle, tail) = escaper.intoParts()
         val lengths = front.asRef().mapOrDefault({ f -> f.sizeHint().first }) + middle.asRef().mapOrDefault({ m -> m.sizeHint().first }) + tail.asRef().mapOrDefault({ t -> t.sizeHint().first })
         this.reserve(lengths)
@@ -1705,7 +1706,7 @@ public open class String(
                         // SAFETY: We only let the function write ascii chars, so it remains valid utf8.
                         // and it returns the number of bytes written, so so withSpare ensures the rest for us.
                         run {
-                            withSpare<ascii.Char>(this.asMutVec(), { spare ->
+                            withSpare<Char>(this.asMutVec(), { spare ->
                                 escapeUnicodeInto(spare, c1)
                             }, 10)
                         }
@@ -2324,8 +2325,8 @@ public open class String(
             }
         }
 
-        public fun <I : Iterable<ascii.Char>> fromIterCharChar(iter: I): String {
-            val buf = iter.iterator().map(ascii.Char::toU8).joinToString("")
+        public fun <I : Iterable<Char>> fromIterCharChar(iter: I): String {
+            val buf = iter.iterator().map(Char::toU8).joinToString("")
             // SAFETY: `buf` is guaranteed to be valid UTF-8 because the `core.ascii.Char` type
             // only contains ASCII values (0x00-0x7F), which are valid UTF-8.
             return String.fromUtf8Unchecked(buf)
@@ -2511,7 +2512,7 @@ public open class FromUtf8Error(
     public open fun intoUtf8Lossy(): String {
         val REPLACEMENT: String = "�"
         var res = run {
-            val v = ArrayList(this.bytes.size)
+            val v = ArrayList<UByte>(this.bytes.size)
             // `Utf8Error.validUpTo` returns the maximum index of validated
             // UTF-8 bytes. Copy the valid bytes into the output buffer.
             v.addAll(((this.bytes).slice(0 until this.error.validUpTo())))
@@ -2614,7 +2615,7 @@ public interface FromCharIterSpec : Iterator<Char> {
     public fun next(): Char?
 }
 
-public fun str.EscapeDefault.toStringSpec(): String {
+public fun EscapeDefault.toStringSpec(): String {
     // go through the ToString specialization
     return this.toString()
 }
@@ -2630,7 +2631,7 @@ public fun <T : Iterable<Char>> T.specExtendInto(target: String) {
     iterator.forEach({ c -> target += c })
 }
 
-public fun str.EscapeDefault.specExtendInto(target: String) {
+public fun EscapeDefault.specExtendInto(target: String) {
     target.extendFromEscapeDefault(this)
 }
 
@@ -2716,9 +2717,7 @@ public fun <T> T.specToString(): String {
     return buf
 }
 
-public fun ascii.Char.specToStringChar(): String = this.asStr().toOwned()
-
-public fun Char.specToStringChar(): String = String.from(this.encodeUtf8(List((Char.MAX_LEN_UTF8).toInt()) { 0 }))
+public fun Char.specToStringChar(): String = this.asStr().toOwned()
 
 public fun Boolean.specToString(): String =
     String.from(if (this) {
@@ -2848,15 +2847,15 @@ public fun String.specToString(): String {
 
 public fun Arguments.specToString(): String = format(this)
 
-public fun str.EscapeDefault.specToString(): String {
+public fun EscapeDefault.specToString(): String {
     val s = String.new()
     s.extendFromEscapeDefault(this.clone())
     return s
 }
 
 // adapted from core.escape.escapeUnicode, but it's left-aligned instead of right-aligned.
-public fun escapeUnicodeInto(output: List<MaybeUninit<ascii.Char>>, c: Char): Int {
-    val HEX_DIGITS: List<ascii.Char> = "0123456789abcdef".encodeToByteArray().asAscii().unwrap()
+public fun escapeUnicodeInto(output: List<MaybeUninit<Char>>, c: Char): Int {
+    val HEX_DIGITS: List<Char> = "0123456789abcdef".encodeToByteArray().asAscii().unwrap()
     val c1 = c.toUInt()
     // OR-ing `1` ensures that for `c == 0` the code computes that
     // one digit should be printed.
@@ -2869,10 +2868,10 @@ public fun escapeUnicodeInto(output: List<MaybeUninit<ascii.Char>>, c: Char): In
     output[rustSaturatingSub(6, prefixSkip)].write(HEX_DIGITS[((c1 shr 8) and 15u).toInt()])
     output[rustSaturatingSub(7, prefixSkip)].write(HEX_DIGITS[((c1 shr 4) and 15u).toInt()])
     output[rustSaturatingSub(8, prefixSkip)].write(HEX_DIGITS[(c1 and 15u).toInt()])
-    output[0].write(ascii.Char.ReverseSolidus)
-    output[1].write(ascii.Char.SmallU)
-    output[2].write(ascii.Char.LeftCurlyBracket)
-    output[9 - prefixSkip].write(ascii.Char.RightCurlyBracket)
+    output[0].write(Char.ReverseSolidus)
+    output[1].write(Char.SmallU)
+    output[2].write(Char.LeftCurlyBracket)
+    output[9 - prefixSkip].write(Char.RightCurlyBracket)
     return 10 - prefixSkip
 }
 
@@ -2932,7 +2931,7 @@ public fun fromVecUByte(string: String): List<UByte> = string.intoBytes()
 public open class IntoChars(
     public var bytes: ArrayDeque<UByte>,
 ) : FromCharIterSpec, Iterable<Char> {
-    override fun iterator(): kotlin.collections.Iterator<Char> = object : AbstractIterator<Char>() {
+    override fun iterator(): Iterator<Char> = object : AbstractIterator<Char>() {
         override fun computeNext() {
             when (val v = this@IntoChars.next()) {
                 null -> done()
@@ -2962,7 +2961,7 @@ public open class IntoChars(
      */
     public open fun asStr(): String {
         // SAFETY: `bytes` is a valid UTF-8 string.
-        return String.fromUtf8Unchecked(this.bytes.asSlice())
+        return String.fromUtf8Unchecked(this.bytes.toList())
     }
 
     /**
@@ -3056,7 +3055,7 @@ public open class Drain internal constructor(
     public var string: MutPtr = stringCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<Char> = object : AbstractIterator<Char>() {
+    override fun iterator(): Iterator<Char> = object : AbstractIterator<Char>() {
         override fun computeNext() {
             when (val v = this@Drain.next()) {
                 null -> done()

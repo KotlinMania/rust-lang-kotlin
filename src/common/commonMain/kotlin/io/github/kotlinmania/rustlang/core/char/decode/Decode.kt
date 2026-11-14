@@ -20,7 +20,7 @@ public open class DecodeUtf16<I>(
     public var iter: I,
     public var buf: UShort?,
 ) : Iterable<Result<Char, DecodeUtf16Error>> where I : Iterator<UShort> {
-    override fun iterator(): kotlin.collections.Iterator<Result<Char, DecodeUtf16Error>> = object : AbstractIterator<Result<Char, DecodeUtf16Error>>() {
+    override fun iterator(): Iterator<Result<Char, DecodeUtf16Error>> = object : AbstractIterator<Result<Char, DecodeUtf16Error>>() {
         override fun computeNext() {
             when (val v = this@DecodeUtf16.next()) {
                 null -> done()
@@ -114,6 +114,8 @@ public open class DecodeUtf16<I>(
 public open class DecodeUtf16Error(
     public var code: UShort,
 ) {
+    public open fun clone(): DecodeUtf16Error = DecodeUtf16Error(code)
+
     /**
      * Returns the unpaired surrogate which caused this error.
      */
@@ -122,23 +124,23 @@ public open class DecodeUtf16Error(
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = f.writeFmt("unpaired surrogate found: ${this.code}")
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<DecodeUtf16Error> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<DecodeUtf16Error> {
+        public fun typeLayout(): TypeLayout<DecodeUtf16Error> =
+            object : TypeLayout<DecodeUtf16Error> {
                 override val alignBytes: Long = 2L
                 override val sizeBytes: Long = 2L
                 override fun readNative(addr: Long): DecodeUtf16Error =
                     DecodeUtf16Error(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U16).readNative(addr),
+                        (PrimitiveLayouts.U16).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: DecodeUtf16Error) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U16).writeNative(addr, value.code)
+                    (PrimitiveLayouts.U16).writeNative(addr, value.code)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): DecodeUtf16Error =
                     DecodeUtf16Error(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U16).readBytes(buf, offset),
+                        (PrimitiveLayouts.U16).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: DecodeUtf16Error) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U16).writeBytes(buf, offset, value.code)
+                    (PrimitiveLayouts.U16).writeBytes(buf, offset, value.code)
                 }
             }
     }

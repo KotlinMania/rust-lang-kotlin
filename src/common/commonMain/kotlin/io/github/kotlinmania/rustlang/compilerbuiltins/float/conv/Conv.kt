@@ -41,11 +41,7 @@ public fun floatundikf(i: ULong): F128 = fromBits(u64ToF128Bits(i))
 
 public fun floatuntisf(i: U128): Float = Float.fromBits(u128ToF32Bits(i).toInt())
 
-public fun floatuntisf(lo: ULong, hi: ULong): Float = Float.fromBits(u128ToF32Bits((U128.from(hi) shl 64) or U128.from(lo)).toInt())
-
 public fun floatuntidf(i: U128): Double = Double.fromBits(u128ToF64Bits(i).toLong())
-
-public fun floatuntidf(lo: ULong, hi: ULong): Double = Double.fromBits(u128ToF64Bits((U128.from(hi) shl 64) or U128.from(lo)).toLong())
 
 public fun floatuntitf(i: U128): F128 = fromBits(u128ToF128Bits(i))
 
@@ -69,11 +65,7 @@ public fun floatdikf(i: Long): F128 = signed(i, u64ToF128Bits)
 
 public fun floattisf(i: I128): Float = signed(i, u128ToF32Bits)
 
-public fun floattisf(lo: ULong, hi: ULong): Float = signed((I128.from(hi) shl 64) or I128.from(lo), u128ToF32Bits)
-
 public fun floattidf(i: I128): Double = signed(i, u128ToF64Bits)
-
-public fun floattidf(lo: ULong, hi: ULong): Double = signed((I128.from(hi) shl 64) or I128.from(lo), u128ToF64Bits)
 
 public fun floattitf(i: I128): F128 = signed(i, u128ToF128Bits)
 

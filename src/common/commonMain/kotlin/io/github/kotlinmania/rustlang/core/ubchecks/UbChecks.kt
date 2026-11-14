@@ -106,8 +106,8 @@ private const val ASSERT_UNSAFE_PRECONDITION_TEMPLATE: String = "{const fun prec
  * Since these checks cannot be optimized out in MIR, some care must be taken in both call and
  * implementation to mitigate their compile-time overhead. Calls to this macro always expand to
  * this structure:
- * ```kotlin
- * if (checkLanguageUb()) {
+ * ```ignore (pseudocode)
+ * if ::core.intrinsics.checkLanguageUb() {
  *     preconditionCheck(args)
  * }
  * ```

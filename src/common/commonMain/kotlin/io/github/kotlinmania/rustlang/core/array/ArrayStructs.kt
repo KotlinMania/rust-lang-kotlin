@@ -18,26 +18,28 @@ public open class TryFromSliceError(
             value = v
         }
 
+    public open fun clone(): TryFromSliceError = TryFromSliceError(value)
+
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = "could not convert slice to array".fmt(f)
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<TryFromSliceError> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<TryFromSliceError> {
+        public fun typeLayout(): TypeLayout<TryFromSliceError> =
+            object : TypeLayout<TryFromSliceError> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): TryFromSliceError =
                     TryFromSliceError(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.UNIT).readNative(addr),
+                        (PrimitiveLayouts.UNIT).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: TryFromSliceError) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.UNIT).writeNative(addr, value.value)
+                    (PrimitiveLayouts.UNIT).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): TryFromSliceError =
                     TryFromSliceError(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.UNIT).readBytes(buf, offset),
+                        (PrimitiveLayouts.UNIT).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: TryFromSliceError) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.UNIT).writeBytes(buf, offset, value.value)
+                    (PrimitiveLayouts.UNIT).writeBytes(buf, offset, value.value)
                 }
             }
 

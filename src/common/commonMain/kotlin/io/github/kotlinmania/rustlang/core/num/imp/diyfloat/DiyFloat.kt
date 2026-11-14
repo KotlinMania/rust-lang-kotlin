@@ -23,6 +23,8 @@ public open class Fp(
      */
     public var e: Short,
 ) {
+    public open fun clone(): Fp = Fp(f, e)
+
     /**
      * Returns a correctly rounded product of itself and `other`.
      */
@@ -68,27 +70,27 @@ public open class Fp(
     }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Fp> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Fp> {
+        public fun typeLayout(): TypeLayout<Fp> =
+            object : TypeLayout<Fp> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): Fp =
                     Fp(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I16).readNative(addr + 8L),
+                        (PrimitiveLayouts.U64).readNative(addr),
+                        (PrimitiveLayouts.I16).readNative(addr + 8L),
                     )
                 override fun writeNative(addr: Long, value: Fp) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).writeNative(addr, value.f)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I16).writeNative(addr + 8L, value.e)
+                    (PrimitiveLayouts.U64).writeNative(addr, value.f)
+                    (PrimitiveLayouts.I16).writeNative(addr + 8L, value.e)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Fp =
                     Fp(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I16).readBytes(buf, offset + 8),
+                        (PrimitiveLayouts.U64).readBytes(buf, offset),
+                        (PrimitiveLayouts.I16).readBytes(buf, offset + 8),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Fp) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).writeBytes(buf, offset, value.f)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I16).writeBytes(buf, offset + 8, value.e)
+                    (PrimitiveLayouts.U64).writeBytes(buf, offset, value.f)
+                    (PrimitiveLayouts.I16).writeBytes(buf, offset + 8, value.e)
                 }
             }
     }

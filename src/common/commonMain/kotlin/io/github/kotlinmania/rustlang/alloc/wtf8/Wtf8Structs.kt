@@ -25,6 +25,8 @@ public open class Wtf8Buf(
      */
     public var isKnownUtf8: Boolean,
 ) {
+    public open fun clone(): Wtf8Buf = Wtf8Buf(bytes, isKnownUtf8)
+
     public open fun deref(): Wtf8 = this.asSlice()
 
     public open fun derefMut(): Wtf8 = this.asMutSlice()
@@ -415,7 +417,7 @@ public open class Wtf8Buf(
          *
          * Since WTF-8 is a superset of UTF-8, this always succeeds.
          */
-        public fun fromStr(s: String): Wtf8Buf = Wtf8Buf(bytes = s.encodeToByteArray().map { it.toUByte() }.toVec(), isKnownUtf8 = true)
+        public fun fromStr(s: String): Wtf8Buf = Wtf8Buf(bytes = (s.encodeToByteArray().map { it.toUByte() }).toMutableList(), isKnownUtf8 = true)
 
         /**
          * Creates a WTF-8 string from a potentially ill-formed UTF-16 slice of 16-bit code units.

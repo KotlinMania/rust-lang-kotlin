@@ -8,6 +8,10 @@ import io.github.kotlinmania.rustlang.alloc.io.util.Split
 import io.github.kotlinmania.rustlang.alloc.string.String
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.io.error.Result
+import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.slice.asMutPtr
+import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.memchr.memchr
 
 /**
@@ -23,6 +27,7 @@ import io.github.kotlinmania.rustlang.core.slice.memchr.memchr
  * A locked standard input implements `BufRead`:
  *
  * ```kotlin
+ * import std.io
  * import std.io.prelude.*
  *
  * val stdin = io.stdin()
@@ -76,6 +81,7 @@ public interface BufRead<T> : Read<T> {
      * A locked standard input implements `BufRead`:
      *
      * ```kotlin
+     * import std.io
      * import std.io.prelude.*
      *
      * val stdin = io.stdin()
@@ -125,6 +131,7 @@ public interface BufRead<T> : Read<T> {
      * Examples
      *
      * ```kotlin
+     * import std.io
      * import std.io.prelude.*
      *
      * @feature(bufReadHasDataLeft)
@@ -410,7 +417,22 @@ public fun <R : BufRead<R>> defaultReadUntil(r: R, delim: UByte, buf: List<UByte
                         Pair(true, available[0..i])
                     }
                 }
-            cfgSelect(noGlobalOomHandling, count, available1, len, buf, tryReserve, count, len, buf, len, src, available1, asPtr, dst, buf, asMutPtr, add, len, core, ptr, copyNonoverlapping, src, dst, count, buf, setLen, len, count, buf, extendFromSlice, available1)(done, available1.len())
+            run {
+                val count = available1.len()
+                when (val tryResult = buf.tryReserve(count)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                // SAFETY:
+                // * self and buf are non-overlapping
+                // * buf[..len] is already initialized
+                // * buf[len..len + count] is initialized by copyNonoverlapping
+                // * len + count is within the capacity of buf based on the reservation completed above
+                run {
+                    val len = buf.size
+                    val src = available1.asPtr()
+                    val dst = MutPtr((buf.asMutPtr()).rawAddress + ((len).toLong() * (PrimitiveLayouts.U8).strideBytes))
+                    copyNonoverlapping(src, dst, count)
+                    buf.setLen(len + count)
+                }
+            }(done, available1.len())
         }
         r.consume(used)
         read += used

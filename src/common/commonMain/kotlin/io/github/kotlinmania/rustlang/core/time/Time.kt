@@ -99,6 +99,8 @@ public open class Duration(
     public var secs: ULong,
     public var nanos: Nanoseconds,
 ) : Add<Duration, Any?, Duration>, AddAssign<Duration>, Sub<Duration, Any?, Duration>, SubAssign<Duration>, Mul<UInt, Any?, Duration>, MulAssign<UInt>, Div<UInt, Any?, Duration>, DivAssign<UInt>, Sum<Duration, Duration> {
+    public open fun clone(): Duration = Duration(secs, nanos)
+
     /**
      * Returns true if this `Duration` spans no time.
      *
@@ -1788,7 +1790,7 @@ public fun fmtDecimal(f: StringBuilder, integerPart: ULong, fractionalPart: UInt
                 emitWithoutPadding(f)
             } else {
                 // We need to add padding. Use the `Formatter.padding` helper function.
-                val defaultAlign = fmt.Alignment.Left
+                val defaultAlign = Alignment.Left
                 val postPadding = f.padding((requestedW - actualW).toUShort(), defaultAlign)
                 emitWithoutPadding(f)
                 postPadding.write(f)
@@ -1860,6 +1862,8 @@ public open class DisplaySeconds(
 public open class TryFromFloatSecsError(
     public var kind: TryFromFloatSecsErrorKind,
 ) {
+    public open fun clone(): TryFromFloatSecsError = TryFromFloatSecsError(kind)
+
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> =
         when (this.kind) {
             TryFromFloatSecsErrorKind.Negative -> {

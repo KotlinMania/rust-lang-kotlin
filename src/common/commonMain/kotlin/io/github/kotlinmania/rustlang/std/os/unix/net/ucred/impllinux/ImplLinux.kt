@@ -11,10 +11,11 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.os.unix.net.UnixStream
 import io.github.kotlinmania.rustlang.std.os.unix.net.ucred.UCred
 
-public fun peerCred(socket: UnixStream): Result<UCred> {
+public fun peerCred(socket: UnixStream): Result<UCred, Error> {
     val ucredSize = sizeOf<Ucred>(typeLayoutT = ObjectSlotLayout<Ucred>())
     // Trivial sanity checks.
     check(sizeOf<UInt>(typeLayoutT = PrimitiveLayouts.U32) <= sizeOf<Int>(typeLayoutT = PrimitiveLayouts.USIZE64))
@@ -27,7 +28,7 @@ public fun peerCred(socket: UnixStream): Result<UCred> {
         if (ret == 0 && ucredSize1 == sizeOf(ucred, typeLayoutT = ObjectSlotLayout<Ucred>())) {
             Result.Ok(UCred(uid = ucred.uid, gid = ucred.gid, pid = ucred.pid))
         } else {
-            Result.Err(io.Error.lastOsError())
+            Result.Err(Error.lastOsError())
         }
     }
 }

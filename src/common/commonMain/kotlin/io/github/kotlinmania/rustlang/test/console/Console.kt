@@ -6,6 +6,8 @@ import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 import io.github.kotlinmania.rustlang.std.fs.File
 import io.github.kotlinmania.rustlang.std.fs.write
+import io.github.kotlinmania.rustlang.std.io.error.Error
+import io.github.kotlinmania.rustlang.std.time.Instant
 import io.github.kotlinmania.rustlang.test.TestFn.*
 import io.github.kotlinmania.rustlang.test.bench.fmtBenchSamples
 import io.github.kotlinmania.rustlang.test.cli.TestOpts
@@ -41,7 +43,7 @@ internal sealed class OutputLocation<T> : Write {
     public data class Pretty<T>(public var value: StdoutTerminal) : OutputLocation<T>()
     public data class Raw<T>(public var value: T) : OutputLocation<T>()
 
-    public open fun write(buf: List<UByte>): io.Result<Int> =
+    public open fun write(buf: List<UByte>): Result<Int, Error> =
         when (this) {
             is OutputLocation.Pretty -> {
                 val (term) = this
@@ -53,7 +55,7 @@ internal sealed class OutputLocation<T> : Write {
             }
         }
 
-    public open fun flush(): io.Result<Unit> =
+    public open fun flush(): Result<Unit, Error> =
         when (this) {
             is OutputLocation.Pretty -> {
                 val (term) = this
@@ -72,7 +74,7 @@ internal open class ConsoleTestDiscoveryState(
     public var benchmarks: Int,
     public var ignored: Int,
 ) {
-    internal open fun writeLog(msg: () -> S): io.Result<Unit> =
+    internal open fun writeLog(msg: () -> S): Result<Unit, Error> =
         when (val matchVal = this.logOut) {
             null -> Result.Ok(Unit)
             else -> {
@@ -84,7 +86,7 @@ internal open class ConsoleTestDiscoveryState(
         }
 
     public companion object {
-        internal fun new(opts: TestOpts): io.Result<ConsoleTestDiscoveryState> {
+        internal fun new(opts: TestOpts): Result<ConsoleTestDiscoveryState, Error> {
             val logOut =
                 when (val matchVal = opts.logfile) {
                     null -> null
@@ -114,7 +116,7 @@ internal open class ConsoleTestState(
     public var timeFailures: List<Pair<TestDesc, List<UByte>>>,
     public var options: Options,
 ) {
-    internal open fun writeLog(msg: () -> S): io.Result<Unit> =
+    internal open fun writeLog(msg: () -> S): Result<Unit, Error> =
         when (val matchVal = this.logOut) {
             null -> Result.Ok(Unit)
             else -> {
@@ -125,7 +127,7 @@ internal open class ConsoleTestState(
             }
         }
 
-    internal open fun writeLogResult(test: TestDesc, result: TestResult, execTime: TestExecTime?): io.Result<Unit> {
+    internal open fun writeLogResult(test: TestDesc, result: TestResult, execTime: TestExecTime?): Result<Unit, Error> {
         when (val tryResult = this.writeLog({
             val name = test.name
             val ignoreMessage = test.ignoreMessage
@@ -159,7 +161,7 @@ internal open class ConsoleTestState(
     public open fun currentTestCount(): Int = this.passed + this.failed + this.ignored + this.measured
 
     public companion object {
-        internal fun new(opts: TestOpts): io.Result<ConsoleTestState> {
+        internal fun new(opts: TestOpts): Result<ConsoleTestState, Error> {
             val logOut =
                 when (val matchVal = opts.logfile) {
                     null -> null
@@ -174,10 +176,10 @@ internal open class ConsoleTestState(
 }
 
 // List the tests to console, and optionally to logfile. Filters are honored.
-internal fun listTestsConsole(opts: TestOpts, tests: TestList): io.Result<Unit> {
+internal fun listTestsConsole(opts: TestOpts, tests: TestList): Result<Unit, Error> {
     val output =
         when (val matchVal = stdout()) {
-            null -> OutputLocation.Raw(io.stdout().lock())
+            null -> OutputLocation.Raw(stdout().lock())
             else -> {
                 val t = matchVal
                 OutputLocation.Pretty(t)
@@ -273,7 +275,7 @@ public fun handleTestResult(st: ConsoleTestState, completedTest: CompletedTest) 
 
 // Handler for events that occur during test execution.
 // It is provided as a callback to the `runTests` function.
-public fun onTestEvent(event: TestEvent, st: ConsoleTestState, out: OutputFormatter): io.Result<Unit> {
+public fun onTestEvent(event: TestEvent, st: ConsoleTestState, out: OutputFormatter): Result<Unit, Error> {
     when (val matchVal = event.clone()) {
         is TestEvent.TeFiltered -> {
             val (filteredTests, shuffleSeed) = matchVal
@@ -309,7 +311,7 @@ public fun onTestEvent(event: TestEvent, st: ConsoleTestState, out: OutputFormat
 internal fun getFormatter(opts: TestOpts, maxNameLen: Int): OutputFormatter {
     val output =
         when (val matchVal = stdout()) {
-            null -> OutputLocation.Raw(io.stdout())
+            null -> OutputLocation.Raw(stdout())
             else -> {
                 val t = matchVal
                 OutputLocation.Pretty(t)
@@ -330,7 +332,7 @@ internal fun getFormatter(opts: TestOpts, maxNameLen: Int): OutputFormatter {
  * A simple console test runner.
  * Runs provided tests reporting process and results to the stdout.
  */
-public fun runTestsConsole(opts: TestOpts, tests: TestList): io.Result<Boolean> {
+public fun runTestsConsole(opts: TestOpts, tests: TestList): Result<Boolean, Error> {
     val allTestLen = tests.tests.len()
     val filteredTests = filterTests(opts, tests)
     // Only iterate the filtered tests: only those are actually printed, and also the

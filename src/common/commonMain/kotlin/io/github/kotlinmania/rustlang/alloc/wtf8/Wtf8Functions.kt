@@ -11,7 +11,7 @@ import io.github.kotlinmania.rustlang.core.wtf8.Wtf8
 /**
  * Creates an owned `Wtf8Buf` from a borrowed `Wtf8`.
  */
-internal fun toOwned(slice: Wtf8): Wtf8Buf = Wtf8Buf(bytes = slice.asBytes().toVec(), isKnownUtf8 = false)
+internal fun toOwned(slice: Wtf8): Wtf8Buf = Wtf8Buf(bytes = slice.asBytes().toMutableList(), isKnownUtf8 = false)
 
 /**
  * Lossily converts the string to UTF-8.

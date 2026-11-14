@@ -5,6 +5,7 @@ import io.github.kotlinmania.rustlang.core.panic.unwindsafe.AssertUnwindSafe
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 import io.github.kotlinmania.rustlang.core.time.Duration
+import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.panic.PanicHookInfo
 import io.github.kotlinmania.rustlang.std.panic.catchUnwind
 import io.github.kotlinmania.rustlang.std.process.Command
@@ -13,6 +14,7 @@ import io.github.kotlinmania.rustlang.std.process.Termination
 import io.github.kotlinmania.rustlang.std.sync.mpsc.RecvTimeoutError
 import io.github.kotlinmania.rustlang.std.sync.mpsc.Sender
 import io.github.kotlinmania.rustlang.std.sync.mpsc.channel
+import io.github.kotlinmania.rustlang.std.time.Instant
 import io.github.kotlinmania.rustlang.test.bench.blackBox
 import io.github.kotlinmania.rustlang.test.cli.TestOpts
 import io.github.kotlinmania.rustlang.test.cli.parseOpts
@@ -244,7 +246,7 @@ public fun <T : Termination> assertTestResult(result: T): Result<Unit, String> {
     }
 }
 
-public fun runTests(opts: TestOpts, filteredTests: List<TestDescAndFn>, allTestsLen: Int, notifyAboutTestEvent: (TestEvent) -> Result<Unit>): Result<Unit> {
+public fun runTests(opts: TestOpts, filteredTests: List<TestDescAndFn>, allTestsLen: Int, notifyAboutTestEvent: (TestEvent) -> Result<Unit, Error>): Result<Unit, Error> {
     var filteredTests1 = filteredTests
     open class RunningTest(
         public var joinHandle: JoinHandle<Unit>?,

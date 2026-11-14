@@ -22,6 +22,8 @@ import io.github.kotlinmania.rustlang.core.result.Result
  * Basic usage:
  *
  * ```kotlin
+ * import std.iter
+ *
  * // one is the loneliest number
  * var one = iter.onceWith({ 1 })
  * check(1 == one.next())
@@ -34,6 +36,8 @@ import io.github.kotlinmania.rustlang.core.result.Result
  * `.foorc`:
  *
  * ```kotlin
+ * import std.fs
+ * import std.iter
  * import std.path.PathBuf
  *
  * val dirs = readDir(".foo").unwrap()
@@ -62,7 +66,7 @@ public fun <A> onceWith(make: () -> A): OnceWith<() -> A> = OnceWith(make = make
 public open class OnceWith<F>(
     public var make: F?,
 ) : TrustedLen<OnceWith<F>>, Iterable<A> {
-    override fun iterator(): kotlin.collections.Iterator<A> = object : AbstractIterator<A>() {
+    override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
         override fun computeNext() {
             when (val v = this@OnceWith.next()) {
                 null -> done()

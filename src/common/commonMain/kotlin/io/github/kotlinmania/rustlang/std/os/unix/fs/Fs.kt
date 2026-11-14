@@ -17,6 +17,7 @@ import io.github.kotlinmania.rustlang.std.fs.FileType
 import io.github.kotlinmania.rustlang.std.fs.Metadata
 import io.github.kotlinmania.rustlang.std.fs.OpenOptions
 import io.github.kotlinmania.rustlang.std.fs.Permissions
+import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.os.fd.AsFd
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.sys.FromInner
@@ -59,7 +60,7 @@ public interface FileExt {
      * }
      * ```kotlin
      */
-    public fun readAt(buf: MutableList<UByte>, offset: ULong): Result<Int>
+    public fun readAt(buf: MutableList<UByte>, offset: ULong): Result<Int, Error>
 
     /**
      * Like `readAt`, except that it reads into a slice of buffers.
@@ -68,7 +69,7 @@ public interface FileExt {
      * written to possibly being only partially filled. This method must behave
      * equivalently to a single call to read with concatenated buffers.
      */
-    public fun readVectoredAt(bufs: MutableList<IoSliceMut>, offset: ULong): Result<Int> = io.defaultReadVectored({ b -> this.readAt(b, offset) }, bufs)
+    public fun readVectoredAt(bufs: MutableList<IoSliceMut>, offset: ULong): Result<Int, Error> = defaultReadVectored({ b -> this.readAt(b, offset) }, bufs)
 
     /**
      * Reads the exact number of bytes required to fill `buf` from the given offset.
@@ -116,7 +117,7 @@ public interface FileExt {
      * }
      * ```kotlin
      */
-    public fun readExactAt(buf: MutableList<UByte>, offset: ULong): Result<Unit> {
+    public fun readExactAt(buf: MutableList<UByte>, offset: ULong): Result<Unit, Error> {
         var buf1 = buf
         var offset1 = offset
         while (!buf1.isEmpty()) {
@@ -141,7 +142,7 @@ public interface FileExt {
             }
         }
         return if (!buf1.isEmpty()) {
-            Result.Err(io.Error.READ_EXACT_EOF)
+            Result.Err(Error.READ_EXACT_EOF)
         } else {
             Result.Ok(Unit)
         }
@@ -179,7 +180,7 @@ public interface FileExt {
      * }
      * ```kotlin
      */
-    public fun readBufAt(buf: BorrowedCursor<UByte>, offset: ULong): Result<Unit> = io.defaultReadBuf({ b -> this.readAt(b, offset) }, buf)
+    public fun readBufAt(buf: BorrowedCursor<UByte>, offset: ULong): Result<Unit, Error> = defaultReadBuf({ b -> this.readAt(b, offset) }, buf)
 
     /**
      * Reads the exact number of bytes required to fill the buffer from a given offset.
@@ -213,7 +214,7 @@ public interface FileExt {
      * }
      * ```kotlin
      */
-    public fun readBufExactAt(buf: BorrowedCursor<UByte>, offset: ULong): Result<Unit> {
+    public fun readBufExactAt(buf: BorrowedCursor<UByte>, offset: ULong): Result<Unit, Error> {
         var offset1 = offset
         while (buf.capacity() > 0) {
             val prevWritten = buf.written()
@@ -234,7 +235,7 @@ public interface FileExt {
             val n = buf.written() - prevWritten
             offset1 += n.toULong()
             if (n == 0) {
-                return Result.Err(io.Error.READ_EXACT_EOF)
+                return Result.Err(Error.READ_EXACT_EOF)
             }
         }
         return Result.Ok(Unit)
@@ -298,7 +299,7 @@ public interface FileExt {
      * }
      * ```
      */
-    public fun writeAt(buf: List<UByte>, offset: ULong): Result<Int>
+    public fun writeAt(buf: List<UByte>, offset: ULong): Result<Int, Error>
 
     /**
      * Like `writeAt`, except that it writes from a slice of buffers.
@@ -307,7 +308,7 @@ public interface FileExt {
      * from possibly being only partially consumed. This method must behave as
      * a call to `writeAt` with the buffers concatenated would.
      */
-    public fun writeVectoredAt(bufs: List<IoSlice>, offset: ULong): Result<Int> = io.defaultWriteVectored({ b -> this.writeAt(b, offset) }, bufs)
+    public fun writeVectoredAt(bufs: List<IoSlice>, offset: ULong): Result<Int, Error> = defaultWriteVectored({ b -> this.writeAt(b, offset) }, bufs)
 
     /**
      * Attempts to write an entire buffer starting from a given offset.
@@ -346,7 +347,7 @@ public interface FileExt {
      * }
      * ```kotlin
      */
-    public fun writeAllAt(buf: List<UByte>, offset: ULong): Result<Unit> {
+    public fun writeAllAt(buf: List<UByte>, offset: ULong): Result<Unit, Error> {
         var buf1 = buf
         var offset1 = offset
         while (!buf1.isEmpty()) {
@@ -354,7 +355,7 @@ public interface FileExt {
                 val matchVal = this.writeAt(buf1, offset1)
                 when {
                     matchVal is Result.Ok<*> && matchVal.value == 0 -> {
-                        return Result.Err(io.Error.WRITE_ALL_EOF)
+                        return Result.Err(Error.WRITE_ALL_EOF)
                     }
                     matchVal is Result.Ok<*> -> {
                         val n = (matchVal as Result.Ok<*>).value
@@ -375,15 +376,15 @@ public interface FileExt {
     }
 }
 
-public fun File.readAt(buf: MutableList<UByte>, offset: ULong): Result<Int> = this.asInner().readAt(buf, offset)
+public fun File.readAt(buf: MutableList<UByte>, offset: ULong): Result<Int, Error> = this.asInner().readAt(buf, offset)
 
-public fun File.readBufAt(buf: BorrowedCursor<UByte>, offset: ULong): Result<Unit> = this.asInner().readBufAt(buf, offset)
+public fun File.readBufAt(buf: BorrowedCursor<UByte>, offset: ULong): Result<Unit, Error> = this.asInner().readBufAt(buf, offset)
 
-public fun File.readVectoredAt(bufs: MutableList<IoSliceMut>, offset: ULong): Result<Int> = this.asInner().readVectoredAt(bufs, offset)
+public fun File.readVectoredAt(bufs: MutableList<IoSliceMut>, offset: ULong): Result<Int, Error> = this.asInner().readVectoredAt(bufs, offset)
 
-public fun File.writeAt(buf: List<UByte>, offset: ULong): Result<Int> = this.asInner().writeAt(buf, offset)
+public fun File.writeAt(buf: List<UByte>, offset: ULong): Result<Int, Error> = this.asInner().writeAt(buf, offset)
 
-public fun File.writeVectoredAt(bufs: List<IoSlice>, offset: ULong): Result<Int> = this.asInner().writeVectoredAt(bufs, offset)
+public fun File.writeVectoredAt(bufs: List<IoSlice>, offset: ULong): Result<Int, Error> = this.asInner().writeVectoredAt(bufs, offset)
 
 /**
  * Unix-specific extensions to [fs.Permissions].
@@ -471,6 +472,13 @@ public interface PermissionsExt<T> {
      * Creates a new instance from the given mode permission bits.
      */
     public fun fromMode(mode: UInt): T
+
+    public companion object {
+        /**
+         * Creates a new instance from the given mode permission bits.
+         */
+        public fun fromMode(mode: UInt): Permissions = permissionsExtFromModePermissions(mode)
+    }
 }
 
 public fun Permissions.mode(): UInt = this.asInner().mode()
@@ -847,8 +855,6 @@ public interface MetadataExt {
      * ```kotlin
      */
     public fun blocks(): ULong
-
-    public fun attrib(): UByte
 }
 
 public fun Metadata.dev(): ULong = this.stDev()
@@ -882,8 +888,6 @@ public fun Metadata.ctimeNsec(): Long = this.stCtimeNsec()
 public fun Metadata.blksize(): ULong = this.stBlksize()
 
 public fun Metadata.blocks(): ULong = this.stBlocks()
-
-public fun Metadata.attrib(): UByte = this.stAttrib()
 
 /**
  * Unix-specific extensions for [fs.FileType].
@@ -1050,7 +1054,7 @@ public fun DirEntry.fileNameRef(): OsStr = this.asInner().fileNameOsStr()
  * }
  * ```kotlin
  */
-public fun symlink(original: Path, link: Path): Result<Unit> = io.github.kotlinmania.rustlang.std.sys.fs.symlink(original, link)
+public fun symlink(original: Path, link: Path): Result<Unit, Error> = io.github.kotlinmania.rustlang.std.sys.fs.symlink(original, link)
 
 /**
  * Unix-specific extensions to [fs.DirBuilder].
@@ -1104,7 +1108,7 @@ public fun DirBuilder.mode(mode: UInt): DirBuilder {
  * }
  * ```kotlin
  */
-public fun chown(dir: Path, uid: UInt?, gid: UInt?): Result<Unit> = io.github.kotlinmania.rustlang.std.sys.fs.unix.chown(dir, (uid ?: UInt.MAX_VALUE), (gid ?: UInt.MAX_VALUE))
+public fun chown(dir: Path, uid: UInt?, gid: UInt?): Result<Unit, Error> = io.github.kotlinmania.rustlang.std.sys.fs.unix.chown(dir, (uid ?: UInt.MAX_VALUE), (gid ?: UInt.MAX_VALUE))
 
 /**
  * Change the owner and group of the file referenced by the specified open file descriptor.
@@ -1122,7 +1126,7 @@ public fun chown(dir: Path, uid: UInt?, gid: UInt?): Result<Unit> = io.github.ko
  * }
  * ```kotlin
  */
-public fun <F : AsFd> fchown(fd: F, uid: UInt?, gid: UInt?): Result<Unit> = io.github.kotlinmania.rustlang.std.sys.fs.unix.fchown(fd.asFd().asRawFd(), (uid ?: UInt.MAX_VALUE), (gid ?: UInt.MAX_VALUE))
+public fun <F : AsFd> fchown(fd: F, uid: UInt?, gid: UInt?): Result<Unit, Error> = io.github.kotlinmania.rustlang.std.sys.fs.unix.fchown(fd.asFd().asRawFd(), (uid ?: UInt.MAX_VALUE), (gid ?: UInt.MAX_VALUE))
 
 /**
  * Change the owner and group of the specified path, without dereferencing symbolic links.
@@ -1140,7 +1144,7 @@ public fun <F : AsFd> fchown(fd: F, uid: UInt?, gid: UInt?): Result<Unit> = io.g
  * }
  * ```kotlin
  */
-public fun lchown(dir: Path, uid: UInt?, gid: UInt?): Result<Unit> = io.github.kotlinmania.rustlang.std.sys.fs.unix.lchown(dir, (uid ?: UInt.MAX_VALUE), (gid ?: UInt.MAX_VALUE))
+public fun lchown(dir: Path, uid: UInt?, gid: UInt?): Result<Unit, Error> = io.github.kotlinmania.rustlang.std.sys.fs.unix.lchown(dir, (uid ?: UInt.MAX_VALUE), (gid ?: UInt.MAX_VALUE))
 
 /**
  * Change the root directory of the current process to the specified path.
@@ -1162,7 +1166,7 @@ public fun lchown(dir: Path, uid: UInt?, gid: UInt?): Result<Unit> = io.github.k
  * }
  * ```kotlin
  */
-public fun chroot(dir: Path): Result<Unit> = io.github.kotlinmania.rustlang.std.sys.fs.unix.chroot(dir)
+public fun chroot(dir: Path): Result<Unit, Error> = io.github.kotlinmania.rustlang.std.sys.fs.unix.chroot(dir)
 
 /**
  * Create a FIFO special file at the specified path with the specified mode.
@@ -1196,4 +1200,4 @@ public fun chroot(dir: Path): Result<Unit> = io.github.kotlinmania.rustlang.std.
  * # }
  * ```kotlin
  */
-public fun mkfifo(path: Path, permissions: Permissions): Result<Unit> = io.github.kotlinmania.rustlang.std.sys.fs.unix.mkfifo(path, permissions.mode())
+public fun mkfifo(path: Path, permissions: Permissions): Result<Unit, Error> = io.github.kotlinmania.rustlang.std.sys.fs.unix.mkfifo(path, permissions.mode())

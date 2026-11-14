@@ -29,36 +29,38 @@ public open class Range(
     public var len: UByte,
     public var parity: Boolean,
 ) {
+    public open fun clone(): Range = Range(start, len, parity)
+
     public open fun start(): UShort = this.start
 
     public open fun end(): UShort = this.start + this.len.toUShort()
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Range> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Range> {
+        public fun typeLayout(): TypeLayout<Range> =
+            object : TypeLayout<Range> {
                 override val alignBytes: Long = 2L
                 override val sizeBytes: Long = 4L
                 override fun readNative(addr: Long): Range =
                     Range(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U16).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U8).readNative(addr + 2L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 3L),
+                        (PrimitiveLayouts.U16).readNative(addr),
+                        (PrimitiveLayouts.U8).readNative(addr + 2L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 3L),
                     )
                 override fun writeNative(addr: Long, value: Range) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U16).writeNative(addr, value.start)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U8).writeNative(addr + 2L, value.len)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 3L, value.parity)
+                    (PrimitiveLayouts.U16).writeNative(addr, value.start)
+                    (PrimitiveLayouts.U8).writeNative(addr + 2L, value.len)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 3L, value.parity)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Range =
                     Range(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U16).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U8).readBytes(buf, offset + 2),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 3),
+                        (PrimitiveLayouts.U16).readBytes(buf, offset),
+                        (PrimitiveLayouts.U8).readBytes(buf, offset + 2),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 3),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Range) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U16).writeBytes(buf, offset, value.start)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U8).writeBytes(buf, offset + 2, value.len)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 3, value.parity)
+                    (PrimitiveLayouts.U16).writeBytes(buf, offset, value.start)
+                    (PrimitiveLayouts.U8).writeBytes(buf, offset + 2, value.len)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 3, value.parity)
                 }
             }
 

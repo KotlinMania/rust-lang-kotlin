@@ -132,7 +132,7 @@ public class DebugTuple(
 public open class Chars(
     internal var iter: ArrayDeque<UByte>,
 ) : Iterable<Char> {
-    override fun iterator(): kotlin.collections.Iterator<Char> = object : AbstractIterator<Char>() {
+    override fun iterator(): Iterator<Char> = object : AbstractIterator<Char>() {
         override fun computeNext() {
             when (val v = this@Chars.next()) {
                 null -> done()
@@ -140,6 +140,8 @@ public open class Chars(
             }
         }
     }
+
+    public open fun clone(): Chars = Chars(iter)
 
     public open fun next(): Char? {
         // SAFETY: `String` invariant says `self.iter` is a valid UTF-8 string and
@@ -153,7 +155,7 @@ public open class Chars(
         var remainder1 = remainder
         val CHUNK_SIZE: Int = 32
         if (remainder1 >= CHUNK_SIZE) {
-            val chunks = this.iter.asSlice().asChunks<ChunkSize>().first.iter()
+            val chunks = this.iter.toList().asChunks<ChunkSize>().first.iter()
             var bytesSkipped: Int = 0
             while (remainder1 > CHUNK_SIZE && chunks.next() != null) {
                 bytesSkipped += CHUNK_SIZE
@@ -168,7 +170,7 @@ public open class Chars(
             this.iter.advanceBy(bytesSkipped).unwrapUnchecked()
             // skip trailing continuation bytes
             while (this.iter.size > 0) {
-                val b = this.iter.asSlice()[0]
+                val b = this.iter.toList()[0]
                 if (!utf8IsContByte(b)) {
                     break
                 }
@@ -178,7 +180,7 @@ public open class Chars(
         }
         while ((remainder1 > 0) && (this.iter.size > 0)) {
             remainder1 -= 1
-            val b1 = this.iter.asSlice()[0]
+            val b1 = this.iter.toList()[0]
             val slurp = utf8CharWidth(b1)
             // SAFETY: utf8 validity requires that the string must contain
             // the continuation bytes (if any)
@@ -230,7 +232,7 @@ public open class Chars(
      */
     public open fun asStr(): String {
         // SAFETY: `Chars` is only made from a str, which guarantees the iter is valid UTF-8.
-        return fromUtf8Unchecked(this.iter.asSlice())
+        return fromUtf8Unchecked(this.iter.toList())
     }
 }
 
@@ -247,7 +249,7 @@ public open class CharIndices(
     internal var frontOffset: Int,
     internal var iter: Chars,
 ) : Iterable<Pair<Int, Char>> {
-    override fun iterator(): kotlin.collections.Iterator<Pair<Int, Char>> = object : AbstractIterator<Pair<Int, Char>>() {
+    override fun iterator(): Iterator<Pair<Int, Char>> = object : AbstractIterator<Pair<Int, Char>>() {
         override fun computeNext() {
             when (val v = this@CharIndices.next()) {
                 null -> done()
@@ -255,6 +257,8 @@ public open class CharIndices(
             }
         }
     }
+
+    public open fun clone(): CharIndices = CharIndices(frontOffset, iter)
 
     public open fun next(): Pair<Int, Char>? {
         val preLen = this.iter.iter.size
@@ -341,7 +345,7 @@ public open class Bytes(
             value = v
         }
 
-    override fun iterator(): kotlin.collections.Iterator<UByte> = object : AbstractIterator<UByte>() {
+    override fun iterator(): Iterator<UByte> = object : AbstractIterator<UByte>() {
         override fun computeNext() {
             when (val v = this@Bytes.next()) {
                 null -> done()
@@ -349,6 +353,8 @@ public open class Bytes(
             }
         }
     }
+
+    public open fun clone(): Bytes = Bytes(value)
 
     public override fun next(): UByte? = this.value.next()
 
@@ -579,7 +585,7 @@ public open class Split<P : Pattern<Any?>>(
             value = v
         }
 
-    override fun iterator(): kotlin.collections.Iterator<String> = object : AbstractIterator<String>() {
+    override fun iterator(): Iterator<String> = object : AbstractIterator<String>() {
         override fun computeNext() {
             when (val v = this@Split.next()) {
                 null -> done()
@@ -632,7 +638,7 @@ public open class RSplit<P : Pattern<Any?>>(
             value = v
         }
 
-    override fun iterator(): kotlin.collections.Iterator<String> = object : AbstractIterator<String>() {
+    override fun iterator(): Iterator<String> = object : AbstractIterator<String>() {
         override fun computeNext() {
             when (val v = this@RSplit.next()) {
                 null -> done()
@@ -685,7 +691,7 @@ public open class SplitTerminator<P : Pattern<Any?>>(
             value = v
         }
 
-    override fun iterator(): kotlin.collections.Iterator<String> = object : AbstractIterator<String>() {
+    override fun iterator(): Iterator<String> = object : AbstractIterator<String>() {
         override fun computeNext() {
             when (val v = this@SplitTerminator.next()) {
                 null -> done()
@@ -738,7 +744,7 @@ public open class RSplitTerminator<P : Pattern<Any?>>(
             value = v
         }
 
-    override fun iterator(): kotlin.collections.Iterator<String> = object : AbstractIterator<String>() {
+    override fun iterator(): Iterator<String> = object : AbstractIterator<String>() {
         override fun computeNext() {
             when (val v = this@RSplitTerminator.next()) {
                 null -> done()
@@ -834,7 +840,7 @@ public open class SplitN<P : Pattern<Any?>>(
             value = v
         }
 
-    override fun iterator(): kotlin.collections.Iterator<String> = object : AbstractIterator<String>() {
+    override fun iterator(): Iterator<String> = object : AbstractIterator<String>() {
         override fun computeNext() {
             when (val v = this@SplitN.next()) {
                 null -> done()
@@ -885,7 +891,7 @@ public open class RSplitN<P : Pattern<Any?>>(
             value = v
         }
 
-    override fun iterator(): kotlin.collections.Iterator<String> = object : AbstractIterator<String>() {
+    override fun iterator(): Iterator<String> = object : AbstractIterator<String>() {
         override fun computeNext() {
             when (val v = this@RSplitN.next()) {
                 null -> done()
@@ -957,7 +963,7 @@ public open class MatchIndices<P : Pattern<Any?>>(
             value = v
         }
 
-    override fun iterator(): kotlin.collections.Iterator<Pair<Int, String>> = object : AbstractIterator<Pair<Int, String>>() {
+    override fun iterator(): Iterator<Pair<Int, String>> = object : AbstractIterator<Pair<Int, String>>() {
         override fun computeNext() {
             when (val v = this@MatchIndices.next()) {
                 null -> done()
@@ -989,7 +995,7 @@ public open class RMatchIndices<P : Pattern<Any?>>(
             value = v
         }
 
-    override fun iterator(): kotlin.collections.Iterator<Pair<Int, String>> = object : AbstractIterator<Pair<Int, String>>() {
+    override fun iterator(): Iterator<Pair<Int, String>> = object : AbstractIterator<Pair<Int, String>>() {
         override fun computeNext() {
             when (val v = this@RMatchIndices.next()) {
                 null -> done()
@@ -1048,7 +1054,7 @@ public open class Matches<P : Pattern<Any?>>(
             value = v
         }
 
-    override fun iterator(): kotlin.collections.Iterator<String> = object : AbstractIterator<String>() {
+    override fun iterator(): Iterator<String> = object : AbstractIterator<String>() {
         override fun computeNext() {
             when (val v = this@Matches.next()) {
                 null -> done()
@@ -1080,7 +1086,7 @@ public open class RMatches<P : Pattern<Any?>>(
             value = v
         }
 
-    override fun iterator(): kotlin.collections.Iterator<String> = object : AbstractIterator<String>() {
+    override fun iterator(): Iterator<String> = object : AbstractIterator<String>() {
         override fun computeNext() {
             when (val v = this@RMatches.next()) {
                 null -> done()
@@ -1115,7 +1121,7 @@ public open class Lines(
             value = v
         }
 
-    override fun iterator(): kotlin.collections.Iterator<String> = object : AbstractIterator<String>() {
+    override fun iterator(): Iterator<String> = object : AbstractIterator<String>() {
         override fun computeNext() {
             when (val v = this@Lines.next()) {
                 null -> done()
@@ -1123,6 +1129,8 @@ public open class Lines(
             }
         }
     }
+
+    public open fun clone(): Lines = Lines(value)
 
     public open fun next(): String? = this.value.next()
 
@@ -1166,7 +1174,7 @@ public open class LinesAny(
             value = v
         }
 
-    override fun iterator(): kotlin.collections.Iterator<String> = object : AbstractIterator<String>() {
+    override fun iterator(): Iterator<String> = object : AbstractIterator<String>() {
         override fun computeNext() {
             when (val v = this@LinesAny.next()) {
                 null -> done()
@@ -1174,6 +1182,8 @@ public open class LinesAny(
             }
         }
     }
+
+    public open fun clone(): LinesAny = LinesAny(value)
 
     public open fun next(): String? = this.value.next()
 
@@ -1194,7 +1204,7 @@ public open class LinesAny(
 public open class SplitWhitespace(
     internal var inner: Filter<Split<IsWhitespace>, IsNotEmpty>,
 ) : Iterable<String> {
-    override fun iterator(): kotlin.collections.Iterator<String> = object : AbstractIterator<String>() {
+    override fun iterator(): Iterator<String> = object : AbstractIterator<String>() {
         override fun computeNext() {
             when (val v = this@SplitWhitespace.next()) {
                 null -> done()
@@ -1202,6 +1212,8 @@ public open class SplitWhitespace(
             }
         }
     }
+
+    public open fun clone(): SplitWhitespace = SplitWhitespace(inner)
 
     public open fun next(): String? = this.inner.next()
 
@@ -1243,7 +1255,7 @@ public open class SplitWhitespace(
 public open class SplitAsciiWhitespace(
     internal var inner: Map<Filter<SliceSplit<UByte, IsAsciiWhitespace>, BytesIsNotEmpty>, UnsafeBytesToStr>,
 ) : Iterable<String> {
-    override fun iterator(): kotlin.collections.Iterator<String> = object : AbstractIterator<String>() {
+    override fun iterator(): Iterator<String> = object : AbstractIterator<String>() {
         override fun computeNext() {
             when (val v = this@SplitAsciiWhitespace.next()) {
                 null -> done()
@@ -1251,6 +1263,8 @@ public open class SplitAsciiWhitespace(
             }
         }
     }
+
+    public open fun clone(): SplitAsciiWhitespace = SplitAsciiWhitespace(inner)
 
     public open fun next(): String? = this.inner.next()
 
@@ -1308,7 +1322,7 @@ public open class SplitInclusive<P : Pattern<Any?>>(
             value = v
         }
 
-    override fun iterator(): kotlin.collections.Iterator<String> = object : AbstractIterator<String>() {
+    override fun iterator(): Iterator<String> = object : AbstractIterator<String>() {
         override fun computeNext() {
             when (val v = this@SplitInclusive.next()) {
                 null -> done()
@@ -1360,7 +1374,7 @@ public open class EncodeUtf16(
     internal var chars: Chars,
     internal var extra: UShort,
 ) : Iterable<UShort> {
-    override fun iterator(): kotlin.collections.Iterator<UShort> = object : AbstractIterator<UShort>() {
+    override fun iterator(): Iterator<UShort> = object : AbstractIterator<UShort>() {
         override fun computeNext() {
             when (val v = this@EncodeUtf16.next()) {
                 null -> done()
@@ -1368,6 +1382,8 @@ public open class EncodeUtf16(
             }
         }
     }
+
+    public open fun clone(): EncodeUtf16 = EncodeUtf16(chars, extra)
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "EncodeUtf16").finishNonExhaustive()
 
@@ -1449,7 +1465,7 @@ public open class EncodeUtf16(
 public open class EscapeDebug(
     internal var inner: FlatMap<Chars, io.github.kotlinmania.charmod.EscapeDebug, CharEscapeDebug>,
 ) : Iterable<Char> {
-    override fun iterator(): kotlin.collections.Iterator<Char> = object : AbstractIterator<Char>() {
+    override fun iterator(): Iterator<Char> = object : AbstractIterator<Char>() {
         override fun computeNext() {
             when (val v = this@EscapeDebug.next()) {
                 null -> done()
@@ -1457,6 +1473,8 @@ public open class EscapeDebug(
             }
         }
     }
+
+    public open fun clone(): EscapeDebug = EscapeDebug(inner)
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = this.clone().tryForEach({ c -> f.append(c) })
 
@@ -1475,7 +1493,7 @@ public open class EscapeDebug(
 public open class EscapeDefault(
     internal var inner: FlatMap<Chars, io.github.kotlinmania.charmod.EscapeDefault, CharEscapeDefault>,
 ) : Iterable<Char> {
-    override fun iterator(): kotlin.collections.Iterator<Char> = object : AbstractIterator<Char>() {
+    override fun iterator(): Iterator<Char> = object : AbstractIterator<Char>() {
         override fun computeNext() {
             when (val v = this@EscapeDefault.next()) {
                 null -> done()
@@ -1483,6 +1501,8 @@ public open class EscapeDefault(
             }
         }
     }
+
+    public open fun clone(): EscapeDefault = EscapeDefault(inner)
 
     /**
      * Disassembles the iterator into its internal state.
@@ -1507,7 +1527,7 @@ public open class EscapeDefault(
 public open class EscapeUnicode(
     internal var inner: FlatMap<Chars, io.github.kotlinmania.charmod.EscapeUnicode, CharEscapeUnicode>,
 ) : Iterable<Char> {
-    override fun iterator(): kotlin.collections.Iterator<Char> = object : AbstractIterator<Char>() {
+    override fun iterator(): Iterator<Char> = object : AbstractIterator<Char>() {
         override fun computeNext() {
             when (val v = this@EscapeUnicode.next()) {
                 null -> done()
@@ -1515,6 +1535,8 @@ public open class EscapeUnicode(
             }
         }
     }
+
+    public open fun clone(): EscapeUnicode = EscapeUnicode(inner)
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = this.clone().tryForEach({ c -> f.append(c) })
 

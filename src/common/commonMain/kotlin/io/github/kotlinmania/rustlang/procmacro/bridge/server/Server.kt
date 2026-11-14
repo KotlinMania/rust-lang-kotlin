@@ -159,7 +159,7 @@ public open class Dispatcher<S : Server<Any?, Any?, Any?>, TokenStream, Span, Sy
                     if (thread.panicking()) {
                         Result.Ok(callMethod())
                     } else {
-                        panic.catchUnwind(panic.AssertUnwindSafe(callMethod)).mapErr(PanicMessage::from)
+                        catchUnwind(AssertUnwindSafe(callMethod)).mapErr(PanicMessage::from)
                     }
                 buf.clear()
                 r.encode(buf, handleStore)
@@ -175,7 +175,7 @@ public open class Dispatcher<S : Server<Any?, Any?, Any?>, TokenStream, Span, Sy
                     if (thread.panicking()) {
                         Result.Ok(callMethod1())
                     } else {
-                        panic.catchUnwind(panic.AssertUnwindSafe(callMethod1)).mapErr(PanicMessage::from)
+                        catchUnwind(AssertUnwindSafe(callMethod1)).mapErr(PanicMessage::from)
                     }
                 buf.clear()
                 r1.encode(buf, handleStore)
@@ -192,7 +192,7 @@ public open class Dispatcher<S : Server<Any?, Any?, Any?>, TokenStream, Span, Sy
                     if (thread.panicking()) {
                         Result.Ok(callMethod2())
                     } else {
-                        panic.catchUnwind(panic.AssertUnwindSafe(callMethod2)).mapErr(PanicMessage::from)
+                        catchUnwind(AssertUnwindSafe(callMethod2)).mapErr(PanicMessage::from)
                     }
                 buf.clear()
                 r2.encode(buf, handleStore)
@@ -208,7 +208,7 @@ public open class Dispatcher<S : Server<Any?, Any?, Any?>, TokenStream, Span, Sy
                     if (thread.panicking()) {
                         Result.Ok(callMethod3())
                     } else {
-                        panic.catchUnwind(panic.AssertUnwindSafe(callMethod3)).mapErr(PanicMessage::from)
+                        catchUnwind(AssertUnwindSafe(callMethod3)).mapErr(PanicMessage::from)
                     }
                 buf.clear()
                 r3.encode(buf, handleStore)
@@ -224,7 +224,7 @@ public open class Dispatcher<S : Server<Any?, Any?, Any?>, TokenStream, Span, Sy
                     if (thread.panicking()) {
                         Result.Ok(callMethod4())
                     } else {
-                        panic.catchUnwind(panic.AssertUnwindSafe(callMethod4)).mapErr(PanicMessage::from)
+                        catchUnwind(AssertUnwindSafe(callMethod4)).mapErr(PanicMessage::from)
                     }
                 buf.clear()
                 r4.encode(buf, handleStore)
@@ -241,7 +241,7 @@ public open class Dispatcher<S : Server<Any?, Any?, Any?>, TokenStream, Span, Sy
                     if (thread.panicking()) {
                         Result.Ok(callMethod5())
                     } else {
-                        panic.catchUnwind(panic.AssertUnwindSafe(callMethod5)).mapErr(PanicMessage::from)
+                        catchUnwind(AssertUnwindSafe(callMethod5)).mapErr(PanicMessage::from)
                     }
                 buf.clear()
                 r5.encode(buf, handleStore)
@@ -258,7 +258,7 @@ public open class Dispatcher<S : Server<Any?, Any?, Any?>, TokenStream, Span, Sy
                     if (thread.panicking()) {
                         Result.Ok(callMethod6())
                     } else {
-                        panic.catchUnwind(panic.AssertUnwindSafe(callMethod6)).mapErr(PanicMessage::from)
+                        catchUnwind(AssertUnwindSafe(callMethod6)).mapErr(PanicMessage::from)
                     }
                 buf.clear()
                 r6.encode(buf, handleStore)
@@ -275,7 +275,7 @@ public open class Dispatcher<S : Server<Any?, Any?, Any?>, TokenStream, Span, Sy
                     if (thread.panicking()) {
                         Result.Ok(callMethod7())
                     } else {
-                        panic.catchUnwind(panic.AssertUnwindSafe(callMethod7)).mapErr(PanicMessage::from)
+                        catchUnwind(AssertUnwindSafe(callMethod7)).mapErr(PanicMessage::from)
                     }
                 buf.clear()
                 r7.encode(buf, handleStore)
@@ -292,7 +292,7 @@ public open class Dispatcher<S : Server<Any?, Any?, Any?>, TokenStream, Span, Sy
                     if (thread.panicking()) {
                         Result.Ok(callMethod8())
                     } else {
-                        panic.catchUnwind(panic.AssertUnwindSafe(callMethod8)).mapErr(PanicMessage::from)
+                        catchUnwind(AssertUnwindSafe(callMethod8)).mapErr(PanicMessage::from)
                     }
                 buf.clear()
                 r8.encode(buf, handleStore)
@@ -309,7 +309,7 @@ public open class Dispatcher<S : Server<Any?, Any?, Any?>, TokenStream, Span, Sy
                     if (thread.panicking()) {
                         Result.Ok(callMethod9())
                     } else {
-                        panic.catchUnwind(panic.AssertUnwindSafe(callMethod9)).mapErr(PanicMessage::from)
+                        catchUnwind(AssertUnwindSafe(callMethod9)).mapErr(PanicMessage::from)
                     }
                 buf.clear()
                 r9.encode(buf, handleStore)
@@ -326,7 +326,7 @@ public open class Dispatcher<S : Server<Any?, Any?, Any?>, TokenStream, Span, Sy
                     if (thread.panicking()) {
                         Result.Ok(callMethod10())
                     } else {
-                        panic.catchUnwind(panic.AssertUnwindSafe(callMethod10)).mapErr(PanicMessage::from)
+                        catchUnwind(AssertUnwindSafe(callMethod10)).mapErr(PanicMessage::from)
                     }
                 buf.clear()
                 r10.encode(buf, handleStore)
@@ -344,7 +344,7 @@ public open class Dispatcher<S : Server<Any?, Any?, Any?>, TokenStream, Span, Sy
                     if (thread.panicking()) {
                         Result.Ok(callMethod11())
                     } else {
-                        panic.catchUnwind(panic.AssertUnwindSafe(callMethod11)).mapErr(PanicMessage::from)
+                        catchUnwind(AssertUnwindSafe(callMethod11)).mapErr(PanicMessage::from)
                     }
                 buf.clear()
                 r11.encode(buf, handleStore)
@@ -362,7 +362,7 @@ public open class Dispatcher<S : Server<Any?, Any?, Any?>, TokenStream, Span, Sy
                     if (thread.panicking()) {
                         Result.Ok(callMethod12())
                     } else {
-                        panic.catchUnwind(panic.AssertUnwindSafe(callMethod12)).mapErr(PanicMessage::from)
+                        catchUnwind(AssertUnwindSafe(callMethod12)).mapErr(PanicMessage::from)
                     }
                 buf.clear()
                 r12.encode(buf, handleStore)
@@ -379,7 +379,7 @@ public open class Dispatcher<S : Server<Any?, Any?, Any?>, TokenStream, Span, Sy
                     if (thread.panicking()) {
                         Result.Ok(callMethod13())
                     } else {
-                        panic.catchUnwind(panic.AssertUnwindSafe(callMethod13)).mapErr(PanicMessage::from)
+                        catchUnwind(AssertUnwindSafe(callMethod13)).mapErr(PanicMessage::from)
                     }
                 buf.clear()
                 r13.encode(buf, handleStore)
@@ -396,7 +396,7 @@ public open class Dispatcher<S : Server<Any?, Any?, Any?>, TokenStream, Span, Sy
                     if (thread.panicking()) {
                         Result.Ok(callMethod14())
                     } else {
-                        panic.catchUnwind(panic.AssertUnwindSafe(callMethod14)).mapErr(PanicMessage::from)
+                        catchUnwind(AssertUnwindSafe(callMethod14)).mapErr(PanicMessage::from)
                     }
                 buf.clear()
                 r14.encode(buf, handleStore)
@@ -413,7 +413,7 @@ public open class Dispatcher<S : Server<Any?, Any?, Any?>, TokenStream, Span, Sy
                     if (thread.panicking()) {
                         Result.Ok(callMethod15())
                     } else {
-                        panic.catchUnwind(panic.AssertUnwindSafe(callMethod15)).mapErr(PanicMessage::from)
+                        catchUnwind(AssertUnwindSafe(callMethod15)).mapErr(PanicMessage::from)
                     }
                 buf.clear()
                 r15.encode(buf, handleStore)
@@ -430,7 +430,7 @@ public open class Dispatcher<S : Server<Any?, Any?, Any?>, TokenStream, Span, Sy
                     if (thread.panicking()) {
                         Result.Ok(callMethod16())
                     } else {
-                        panic.catchUnwind(panic.AssertUnwindSafe(callMethod16)).mapErr(PanicMessage::from)
+                        catchUnwind(AssertUnwindSafe(callMethod16)).mapErr(PanicMessage::from)
                     }
                 buf.clear()
                 r16.encode(buf, handleStore)
@@ -447,7 +447,7 @@ public open class Dispatcher<S : Server<Any?, Any?, Any?>, TokenStream, Span, Sy
                     if (thread.panicking()) {
                         Result.Ok(callMethod17())
                     } else {
-                        panic.catchUnwind(panic.AssertUnwindSafe(callMethod17)).mapErr(PanicMessage::from)
+                        catchUnwind(AssertUnwindSafe(callMethod17)).mapErr(PanicMessage::from)
                     }
                 buf.clear()
                 r17.encode(buf, handleStore)
@@ -464,7 +464,7 @@ public open class Dispatcher<S : Server<Any?, Any?, Any?>, TokenStream, Span, Sy
                     if (thread.panicking()) {
                         Result.Ok(callMethod18())
                     } else {
-                        panic.catchUnwind(panic.AssertUnwindSafe(callMethod18)).mapErr(PanicMessage::from)
+                        catchUnwind(AssertUnwindSafe(callMethod18)).mapErr(PanicMessage::from)
                     }
                 buf.clear()
                 r18.encode(buf, handleStore)
@@ -481,7 +481,7 @@ public open class Dispatcher<S : Server<Any?, Any?, Any?>, TokenStream, Span, Sy
                     if (thread.panicking()) {
                         Result.Ok(callMethod19())
                     } else {
-                        panic.catchUnwind(panic.AssertUnwindSafe(callMethod19)).mapErr(PanicMessage::from)
+                        catchUnwind(AssertUnwindSafe(callMethod19)).mapErr(PanicMessage::from)
                     }
                 buf.clear()
                 r19.encode(buf, handleStore)
@@ -498,7 +498,7 @@ public open class Dispatcher<S : Server<Any?, Any?, Any?>, TokenStream, Span, Sy
                     if (thread.panicking()) {
                         Result.Ok(callMethod20())
                     } else {
-                        panic.catchUnwind(panic.AssertUnwindSafe(callMethod20)).mapErr(PanicMessage::from)
+                        catchUnwind(AssertUnwindSafe(callMethod20)).mapErr(PanicMessage::from)
                     }
                 buf.clear()
                 r20.encode(buf, handleStore)
@@ -515,7 +515,7 @@ public open class Dispatcher<S : Server<Any?, Any?, Any?>, TokenStream, Span, Sy
                     if (thread.panicking()) {
                         Result.Ok(callMethod21())
                     } else {
-                        panic.catchUnwind(panic.AssertUnwindSafe(callMethod21)).mapErr(PanicMessage::from)
+                        catchUnwind(AssertUnwindSafe(callMethod21)).mapErr(PanicMessage::from)
                     }
                 buf.clear()
                 r21.encode(buf, handleStore)
@@ -532,7 +532,7 @@ public open class Dispatcher<S : Server<Any?, Any?, Any?>, TokenStream, Span, Sy
                     if (thread.panicking()) {
                         Result.Ok(callMethod22())
                     } else {
-                        panic.catchUnwind(panic.AssertUnwindSafe(callMethod22)).mapErr(PanicMessage::from)
+                        catchUnwind(AssertUnwindSafe(callMethod22)).mapErr(PanicMessage::from)
                     }
                 buf.clear()
                 r22.encode(buf, handleStore)
@@ -549,7 +549,7 @@ public open class Dispatcher<S : Server<Any?, Any?, Any?>, TokenStream, Span, Sy
                     if (thread.panicking()) {
                         Result.Ok(callMethod23())
                     } else {
-                        panic.catchUnwind(panic.AssertUnwindSafe(callMethod23)).mapErr(PanicMessage::from)
+                        catchUnwind(AssertUnwindSafe(callMethod23)).mapErr(PanicMessage::from)
                     }
                 buf.clear()
                 r23.encode(buf, handleStore)
@@ -567,7 +567,7 @@ public open class Dispatcher<S : Server<Any?, Any?, Any?>, TokenStream, Span, Sy
                     if (thread.panicking()) {
                         Result.Ok(callMethod24())
                     } else {
-                        panic.catchUnwind(panic.AssertUnwindSafe(callMethod24)).mapErr(PanicMessage::from)
+                        catchUnwind(AssertUnwindSafe(callMethod24)).mapErr(PanicMessage::from)
                     }
                 buf.clear()
                 r24.encode(buf, handleStore)
@@ -586,7 +586,7 @@ public open class Dispatcher<S : Server<Any?, Any?, Any?>, TokenStream, Span, Sy
                     if (thread.panicking()) {
                         Result.Ok(callMethod25())
                     } else {
-                        panic.catchUnwind(panic.AssertUnwindSafe(callMethod25)).mapErr(PanicMessage::from)
+                        catchUnwind(AssertUnwindSafe(callMethod25)).mapErr(PanicMessage::from)
                     }
                 buf.clear()
                 r25.encode(buf, handleStore)
@@ -604,7 +604,7 @@ public open class Dispatcher<S : Server<Any?, Any?, Any?>, TokenStream, Span, Sy
                     if (thread.panicking()) {
                         Result.Ok(callMethod26())
                     } else {
-                        panic.catchUnwind(panic.AssertUnwindSafe(callMethod26)).mapErr(PanicMessage::from)
+                        catchUnwind(AssertUnwindSafe(callMethod26)).mapErr(PanicMessage::from)
                     }
                 buf.clear()
                 r26.encode(buf, handleStore)
@@ -621,7 +621,7 @@ public open class Dispatcher<S : Server<Any?, Any?, Any?>, TokenStream, Span, Sy
                     if (thread.panicking()) {
                         Result.Ok(callMethod27())
                     } else {
-                        panic.catchUnwind(panic.AssertUnwindSafe(callMethod27)).mapErr(PanicMessage::from)
+                        catchUnwind(AssertUnwindSafe(callMethod27)).mapErr(PanicMessage::from)
                     }
                 buf.clear()
                 r27.encode(buf, handleStore)
@@ -638,7 +638,7 @@ public open class Dispatcher<S : Server<Any?, Any?, Any?>, TokenStream, Span, Sy
                     if (thread.panicking()) {
                         Result.Ok(callMethod28())
                     } else {
-                        panic.catchUnwind(panic.AssertUnwindSafe(callMethod28)).mapErr(PanicMessage::from)
+                        catchUnwind(AssertUnwindSafe(callMethod28)).mapErr(PanicMessage::from)
                     }
                 buf.clear()
                 r28.encode(buf, handleStore)
@@ -655,7 +655,7 @@ public open class Dispatcher<S : Server<Any?, Any?, Any?>, TokenStream, Span, Sy
                     if (thread.panicking()) {
                         Result.Ok(callMethod29())
                     } else {
-                        panic.catchUnwind(panic.AssertUnwindSafe(callMethod29)).mapErr(PanicMessage::from)
+                        catchUnwind(AssertUnwindSafe(callMethod29)).mapErr(PanicMessage::from)
                     }
                 buf.clear()
                 r29.encode(buf, handleStore)
@@ -672,7 +672,7 @@ public open class Dispatcher<S : Server<Any?, Any?, Any?>, TokenStream, Span, Sy
                     if (thread.panicking()) {
                         Result.Ok(callMethod30())
                     } else {
-                        panic.catchUnwind(panic.AssertUnwindSafe(callMethod30)).mapErr(PanicMessage::from)
+                        catchUnwind(AssertUnwindSafe(callMethod30)).mapErr(PanicMessage::from)
                     }
                 buf.clear()
                 r30.encode(buf, handleStore)
@@ -717,23 +717,23 @@ public open class RunningSameThreadGuard(
     }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<RunningSameThreadGuard> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<RunningSameThreadGuard> {
+        public fun typeLayout(): TypeLayout<RunningSameThreadGuard> =
+            object : TypeLayout<RunningSameThreadGuard> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): RunningSameThreadGuard =
                     RunningSameThreadGuard(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.UNIT).readNative(addr),
+                        (PrimitiveLayouts.UNIT).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: RunningSameThreadGuard) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.UNIT).writeNative(addr, value.value)
+                    (PrimitiveLayouts.UNIT).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): RunningSameThreadGuard =
                     RunningSameThreadGuard(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.UNIT).readBytes(buf, offset),
+                        (PrimitiveLayouts.UNIT).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: RunningSameThreadGuard) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.UNIT).writeBytes(buf, offset, value.value)
+                    (PrimitiveLayouts.UNIT).writeBytes(buf, offset, value.value)
                 }
             }
 
@@ -773,23 +773,23 @@ public open class MaybeCrossThread(
         }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<MaybeCrossThread> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<MaybeCrossThread> {
+        public fun typeLayout(): TypeLayout<MaybeCrossThread> =
+            object : TypeLayout<MaybeCrossThread> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 1L
                 override fun readNative(addr: Long): MaybeCrossThread =
                     MaybeCrossThread(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr),
+                        (PrimitiveLayouts.BOOL).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: MaybeCrossThread) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr, value.crossThread)
+                    (PrimitiveLayouts.BOOL).writeNative(addr, value.crossThread)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): MaybeCrossThread =
                     MaybeCrossThread(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: MaybeCrossThread) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset, value.crossThread)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset, value.crossThread)
                 }
             }
     }

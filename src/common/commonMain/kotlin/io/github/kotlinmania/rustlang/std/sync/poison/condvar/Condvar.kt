@@ -3,7 +3,6 @@ package io.github.kotlinmania.rustlang.std.sync.poison.condvar
 
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.time.Duration
-import io.github.kotlinmania.rustlang.std.fmt
 import io.github.kotlinmania.rustlang.std.sync.WaitTimeoutResult
 import io.github.kotlinmania.rustlang.std.sync.poison.LockResult
 import io.github.kotlinmania.rustlang.std.sync.poison.PoisonError
@@ -55,6 +54,7 @@ public class DebugStruct(
  * ```kotlin
  * import std.sync.Condvar
  * import std.sync.Mutex
+ * import std.thread
  *
  * val pair = Pair(Mutex.new(false), Condvar.new())
  * val pair2 = pair
@@ -111,6 +111,7 @@ public open class Condvar(
      * ```kotlin
      * import std.sync.Condvar
      * import std.sync.Mutex
+     * import std.thread
      *
      * val pair = Pair(Mutex.new(false), Condvar.new())
      * val pair2 = pair
@@ -172,6 +173,7 @@ public open class Condvar(
      * ```kotlin
      * import std.sync.Condvar
      * import std.sync.Mutex
+     * import std.thread
      *
      * val pair = Pair(Mutex.new(true), Condvar.new())
      * val pair2 = pair
@@ -226,6 +228,7 @@ public open class Condvar(
      * ```kotlin
      * import std.sync.Condvar
      * import std.sync.Mutex
+     * import std.thread
      *
      * val pair = Pair(Mutex.new(false), Condvar.new())
      * val pair2 = pair
@@ -290,6 +293,7 @@ public open class Condvar(
      * ```kotlin
      * import std.sync.Condvar
      * import std.sync.Mutex
+     * import std.thread
      * import std.time.Duration
      *
      * val pair = Pair(Mutex.new(false), Condvar.new())
@@ -358,6 +362,7 @@ public open class Condvar(
      * ```kotlin
      * import std.sync.Condvar
      * import std.sync.Mutex
+     * import std.thread
      * import std.time.Duration
      *
      * val pair = Pair(Mutex.new(true), Condvar.new())
@@ -415,6 +420,7 @@ public open class Condvar(
      * ```kotlin
      * import std.sync.Condvar
      * import std.sync.Mutex
+     * import std.thread
      *
      * val pair = Pair(Mutex.new(false), Condvar.new())
      * val pair2 = pair
@@ -454,6 +460,7 @@ public open class Condvar(
      * ```kotlin
      * import std.sync.Condvar
      * import std.sync.Mutex
+     * import std.thread
      *
      * val pair = Pair(Mutex.new(false), Condvar.new())
      * val pair2 = pair

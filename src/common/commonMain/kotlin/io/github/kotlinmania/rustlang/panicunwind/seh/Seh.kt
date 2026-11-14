@@ -12,6 +12,7 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.panicunwind.rustDropPanic
 import io.github.kotlinmania.rustlang.panicunwind.rustForeignException
 
 // Windows SEH
@@ -138,31 +139,31 @@ public open class TypeDescriptor internal constructor(
         internal set
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<TypeDescriptor> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<TypeDescriptor> {
+        public fun typeLayout(): TypeLayout<TypeDescriptor> =
+            object : TypeLayout<TypeDescriptor> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 32L
                 override fun readNative(addr: Long): TypeDescriptor =
                     TypeDescriptor(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.constPtrLayout(64)).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).readNative(addr + 8L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uByteArray(11)).readNative(addr + 16L),
+                        (PrimitiveLayouts.constPtrLayout(64)).readNative(addr),
+                        (PrimitiveLayouts.mutPtrLayout(64)).readNative(addr + 8L),
+                        (PrimitiveArrayLayouts.uByteArray(11)).readNative(addr + 16L),
                     )
                 override fun writeNative(addr: Long, value: TypeDescriptor) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.constPtrLayout(64)).writeNative(addr, value.pVFTable)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).writeNative(addr + 8L, value.spare)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uByteArray(11)).writeNative(addr + 16L, value.name)
+                    (PrimitiveLayouts.constPtrLayout(64)).writeNative(addr, value.pVFTable)
+                    (PrimitiveLayouts.mutPtrLayout(64)).writeNative(addr + 8L, value.spare)
+                    (PrimitiveArrayLayouts.uByteArray(11)).writeNative(addr + 16L, value.name)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): TypeDescriptor =
                     TypeDescriptor(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.constPtrLayout(64)).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).readBytes(buf, offset + 8),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uByteArray(11)).readBytes(buf, offset + 16),
+                        (PrimitiveLayouts.constPtrLayout(64)).readBytes(buf, offset),
+                        (PrimitiveLayouts.mutPtrLayout(64)).readBytes(buf, offset + 8),
+                        (PrimitiveArrayLayouts.uByteArray(11)).readBytes(buf, offset + 16),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: TypeDescriptor) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.constPtrLayout(64)).writeBytes(buf, offset, value.pVFTable)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).writeBytes(buf, offset + 8, value.spare)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.uByteArray(11)).writeBytes(buf, offset + 16, value.name)
+                    (PrimitiveLayouts.constPtrLayout(64)).writeBytes(buf, offset, value.pVFTable)
+                    (PrimitiveLayouts.mutPtrLayout(64)).writeBytes(buf, offset + 8, value.spare)
+                    (PrimitiveArrayLayouts.uByteArray(11)).writeBytes(buf, offset + 16, value.name)
                 }
             }
 
@@ -200,6 +201,22 @@ public expect val TYPE_INFO_VTABLE: UByte
 // This is fine since the MSVC runtime uses string comparison on the type name
 // to match TypeDescriptors rather than pointer equality.
 public var TYPE_DESCRIPTOR: TypeDescriptor = TypeDescriptor(pVFTable = addrOf(TYPE_INFO_VTABLE), spare = MutPtr(0L), name = TYPE_NAME)
+
+public fun exceptionCleanup(e: MutPtr) {
+    run {
+        val matchVal = (ObjectSlotLayout<Exception>()).readNative((e).rawAddress)
+        if (matchVal.data != null) {
+            val b = matchVal.data
+            drop(b)
+            rustDropPanic()
+        }
+    }
+}
+
+public fun exceptionCopy(dest: MutPtr, src: MutPtr): MutPtr =
+    run {
+        throwException(null)
+    }
 
 internal fun panic(data: PanicPayload): UInt = throwException(data.takeBox())
 

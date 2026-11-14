@@ -35,6 +35,8 @@ public open class Frame internal constructor(
     public var sp: MutPtr = spCtorArg
         internal set
 
+    public open fun clone(): Frame = Frame(baseAddress, ip, sp, inlineContext)
+
     // we're just sending around raw pointers and reading them, never interpreting
     // them so this should be safe to both send and share across threads.
 

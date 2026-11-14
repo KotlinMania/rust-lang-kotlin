@@ -1,8 +1,6 @@
 // port-lint: source sync/once.rs
 package io.github.kotlinmania.rustlang.std.sync.once
 
-import io.github.kotlinmania.rustlang.std.fmt
-
 // A "once initialization" primitive
 //
 // This primitive is meant to be used to run one-time initialization. An
@@ -143,6 +141,7 @@ public open class Once(
      *
      * ```kotlin
      * import std.sync.Once
+     * import std.thread
      *
      * var INIT: Once = Once.new()
      * // poison the once
@@ -202,6 +201,7 @@ public open class Once(
      *
      * ```kotlin
      * import std.sync.Once
+     * import std.thread
      *
      * var INIT: Once = Once.new()
      * check(INIT.isCompleted() == false)
@@ -221,6 +221,7 @@ public open class Once(
      *
      * ```kotlin
      * import std.sync.Once
+     * import std.thread
      *
      * var READY: Once = Once.new()
      * val thread = thread.spawn({
@@ -314,6 +315,7 @@ public open class OnceState(
      *
      * ```kotlin
      * import std.sync.Once
+     * import std.thread
      *
      * var INIT: Once = Once.new()
      * // poison the once

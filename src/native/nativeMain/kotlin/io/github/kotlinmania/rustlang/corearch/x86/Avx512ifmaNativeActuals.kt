@@ -1,6 +1,8 @@
-@file:OptIn(kotlinx.cinterop.ExperimentalForeignApi::class, kotlin.ExperimentalUnsignedTypes::class)
+@file:OptIn(ExperimentalForeignApi::class, ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.corearch.x86
+
+import kotlinx.cinterop.ExperimentalForeignApi
 
 public actual fun vpmadd52luq128(z: M128i, x: M128i, y: M128i): M128i =
     M128i()

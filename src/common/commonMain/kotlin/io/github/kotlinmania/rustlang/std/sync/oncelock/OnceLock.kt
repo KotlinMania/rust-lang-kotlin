@@ -6,7 +6,6 @@ import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.std.fmt
 import io.github.kotlinmania.rustlang.std.sync.once.Once
 import io.github.kotlinmania.rustlang.std.sync.once.OnceExclusiveState
 
@@ -71,6 +70,7 @@ public class DebugTuple(
  * import std.sync.OnceLock
  * import std.sync.atomic.AtomicU32
  * import std.sync.atomic.Ordering
+ * import std.thread
  *
  * open class OnceList<T>(public var data: OnceLock<T>, public var next: OnceLock<OnceList<T>>) {
  *     public open fun new(): OnceList<T> {
@@ -124,22 +124,19 @@ public open class OnceLock<T> internal constructor(
     /**
      * `PhantomData` to make sure dropck understands we're dropping T in our Drop impl.
      *
-     * ```kotlin
-     * import std.sync.OnceLock
+     * ```compile_fail,E0597
+     * use std.sync.OnceLock;
      *
-     * open class A(public var value: String) {
-     *     public var field0: String
-     *         get() = value
-     *         set(v) {
-     *             value = v
-     *         }
+     * struct A<a>(&a str);
      *
-     *     public open fun drop() {}
+     * impl<a> Drop for A<a> {
+     *     fn drop(self) {}
      * }
-     * val cell = OnceLock.new()
-     * run {
-     *     val s = ""
-     *     cell.set(A(s))
+     *
+     * let cell = OnceLock.new();
+     * {
+     *     let s = String.new();
+     *     let _ = cell.set(A(&s));
      * }
      * ```
      */
@@ -188,6 +185,7 @@ public open class OnceLock<T> internal constructor(
      * Waiting for a computation on another thread to finish:
      * ```kotlin
      * import std.sync.OnceLock
+     * import std.thread
      *
      * val value = OnceLock.new()
      * thread.scope({ s ->

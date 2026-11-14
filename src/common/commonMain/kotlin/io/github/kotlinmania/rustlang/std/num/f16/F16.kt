@@ -6,23 +6,22 @@ import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
-import io.github.kotlinmania.rustlang.std.cmath.acosf
-import io.github.kotlinmania.rustlang.std.cmath.acoshf
-import io.github.kotlinmania.rustlang.std.cmath.asinf
-import io.github.kotlinmania.rustlang.std.cmath.asinhf
-import io.github.kotlinmania.rustlang.std.cmath.atan2f
-import io.github.kotlinmania.rustlang.std.cmath.atanf
-import io.github.kotlinmania.rustlang.std.cmath.coshf
-import io.github.kotlinmania.rustlang.std.cmath.sinhf
-import io.github.kotlinmania.rustlang.std.cmath.tanf
-import io.github.kotlinmania.rustlang.std.cmath.tanhf
-import io.github.kotlinmania.rustlang.std.intrinsics
+import io.github.kotlinmania.rustlang.std.sys.cmath.acosf
+import io.github.kotlinmania.rustlang.std.sys.cmath.acoshf
+import io.github.kotlinmania.rustlang.std.sys.cmath.asinf
+import io.github.kotlinmania.rustlang.std.sys.cmath.asinhf
+import io.github.kotlinmania.rustlang.std.sys.cmath.atan2f
+import io.github.kotlinmania.rustlang.std.sys.cmath.atanf
+import io.github.kotlinmania.rustlang.std.sys.cmath.coshf
 import io.github.kotlinmania.rustlang.std.sys.cmath.erfcf
 import io.github.kotlinmania.rustlang.std.sys.cmath.erff
 import io.github.kotlinmania.rustlang.std.sys.cmath.expm1f
 import io.github.kotlinmania.rustlang.std.sys.cmath.hypotf
 import io.github.kotlinmania.rustlang.std.sys.cmath.lgammafR
 import io.github.kotlinmania.rustlang.std.sys.cmath.log1pf
+import io.github.kotlinmania.rustlang.std.sys.cmath.sinhf
+import io.github.kotlinmania.rustlang.std.sys.cmath.tanf
+import io.github.kotlinmania.rustlang.std.sys.cmath.tanhf
 import io.github.kotlinmania.rustlang.std.sys.cmath.tgammaf
 
 // Constants for the `f16` half-precision floating point type.

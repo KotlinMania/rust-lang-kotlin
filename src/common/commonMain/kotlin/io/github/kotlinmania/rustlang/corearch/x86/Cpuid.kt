@@ -30,36 +30,38 @@ public open class CpuidResult(
      */
     public var edx: UInt,
 ) {
+    public open fun clone(): CpuidResult = CpuidResult(eax, ebx, ecx, edx)
+
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<CpuidResult> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<CpuidResult> {
+        public fun typeLayout(): TypeLayout<CpuidResult> =
+            object : TypeLayout<CpuidResult> {
                 override val alignBytes: Long = 4L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): CpuidResult =
                     CpuidResult(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).readNative(addr + 4L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).readNative(addr + 8L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).readNative(addr + 12L),
+                        (PrimitiveLayouts.U32).readNative(addr),
+                        (PrimitiveLayouts.U32).readNative(addr + 4L),
+                        (PrimitiveLayouts.U32).readNative(addr + 8L),
+                        (PrimitiveLayouts.U32).readNative(addr + 12L),
                     )
                 override fun writeNative(addr: Long, value: CpuidResult) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).writeNative(addr, value.eax)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).writeNative(addr + 4L, value.ebx)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).writeNative(addr + 8L, value.ecx)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).writeNative(addr + 12L, value.edx)
+                    (PrimitiveLayouts.U32).writeNative(addr, value.eax)
+                    (PrimitiveLayouts.U32).writeNative(addr + 4L, value.ebx)
+                    (PrimitiveLayouts.U32).writeNative(addr + 8L, value.ecx)
+                    (PrimitiveLayouts.U32).writeNative(addr + 12L, value.edx)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): CpuidResult =
                     CpuidResult(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).readBytes(buf, offset + 4),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).readBytes(buf, offset + 8),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).readBytes(buf, offset + 12),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 4),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 8),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 12),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: CpuidResult) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).writeBytes(buf, offset, value.eax)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).writeBytes(buf, offset + 4, value.ebx)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).writeBytes(buf, offset + 8, value.ecx)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U32).writeBytes(buf, offset + 12, value.edx)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset, value.eax)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + 4, value.ebx)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + 8, value.ecx)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + 12, value.edx)
                 }
             }
     }

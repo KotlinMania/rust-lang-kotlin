@@ -11,15 +11,16 @@ import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.os.unix.net.UnixStream
 import io.github.kotlinmania.rustlang.std.os.unix.net.ucred.UCred
 
-public fun peerCred(socket: UnixStream): Result<UCred> {
-    val cred = UCred(uid = 1, gid = 1, pid = null)
+public fun peerCred(socket: UnixStream): Result<UCred, Error> {
+    val cred = UCred(uid = 1u, gid = 1u, pid = null)
     return run {
         val ret = getpeereid(socket.asRawFd(), cred.uid, cred.gid)
         if (ret != 0) {
-            return Result.Err(io.Error.lastOsError())
+            return Result.Err(Error.lastOsError())
         }
         val localStorageL119C12 = AddressableLocal(1, ObjectSlotLayout<PidT>())
         val pid by localStorageL119C12
@@ -29,7 +30,7 @@ public fun peerCred(socket: UnixStream): Result<UCred> {
             cred.pid = pid
             Result.Ok(cred)
         } else {
-            Result.Err(io.Error.lastOsError())
+            Result.Err(Error.lastOsError())
         }
     }
 }

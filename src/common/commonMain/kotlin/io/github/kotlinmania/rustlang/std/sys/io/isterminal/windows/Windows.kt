@@ -7,12 +7,17 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.std.c.FileNameInfo
 import io.github.kotlinmania.rustlang.std.os.windows.io.AsHandle
 import io.github.kotlinmania.rustlang.std.os.windows.io.BorrowedHandle
 import io.github.kotlinmania.rustlang.std.sys.api.utf16
-import io.github.kotlinmania.rustlang.std.sys.c
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.FILE_DEVICE_CONSOLE
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.FILE_DEVICE_NAMED_PIPE
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.FileFsDeviceInformation
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.IoStatusBlock
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.getFileInformationByHandleEx
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.ntQueryVolumeInformationFile
 
 public fun isTerminal(h: AsHandle): Boolean = handleIsConsole(h.asHandle())
 
@@ -21,7 +26,25 @@ public fun handleIsConsole(handle: BorrowedHandle): Boolean {
     if (handle.asRawHandle().isNull()) {
         return false
     }
-    cfgSelect(targetVendor, "win7", out, 0, c, GetConsoleMode, handle, asRawHandle, out, 0, true, c, GetFileType, handle, asRawHandle, 0x0003, false, mem, MaybeUninit, ioStatus, MaybeUninit, c, IO_STATUS_BLOCK, uninit, deviceInfo, MaybeUninit, c, FILE_FS_DEVICE_INFORMATION, uninit, status, c, NtQueryVolumeInformationFile, handle, asRawHandle, ioStatus, asMutPtr, deviceInfo, asMutPtr, cast, sizeOfVal, deviceInfo, c, FileFsDeviceInformation, status, 0, false, deviceInfo, assumeInitRef, DeviceType, c, FILE_DEVICE_CONSOLE, true, c, FILE_DEVICE_NAMED_PIPE, false)
+    run {
+        // `GetConsoleMode` incurs a remote RPC round-trip (= bad), so it's best avoided.
+        // `NtQueryVolumeInformationFile` lets us test the handle directly.
+        // The required `FILE_DEVICE_CONSOLE` type was introduced in Windows 8.
+        // Fun fact: `GetFileType` uses `NtQueryVolumeInformationFile` internally.
+        val ioStatus = MaybeUninit.uninit(ObjectSlotLayout<IoStatusBlock>())
+        val deviceInfo = MaybeUninit.uninit(ObjectSlotLayout<FileFsDeviceInformation>())
+        val status = ntQueryVolumeInformationFile(handle.asRawHandle(), ioStatus.asMutPtr(), deviceInfo.asMutPtr().cast(), sizeOfVal(deviceInfo).toUInt(), FileFsDeviceInformation)
+        if (status < 0) {
+            return false
+        }
+        when (deviceInfo.assumeInitRef().deviceType) {
+            FILE_DEVICE_CONSOLE -> { return true }
+            // If it's a named pipe, it may be an msys PTY.
+            FILE_DEVICE_NAMED_PIPE -> {}
+            // aka FILE_TYPE_PIPE
+            else -> { return false }
+        }
+    }
     // Otherwise, we fall back to an msys Note to see if we can detect the presence of a pty.
     return msysTtyOn(handle)
 }

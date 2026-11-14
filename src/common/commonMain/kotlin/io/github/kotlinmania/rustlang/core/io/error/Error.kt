@@ -108,6 +108,8 @@ public class DebugTuple(
  * A convenience function that bubbles an `io.Result` to its caller:
  *
  * ```kotlin
+ * import std.io
+ *
  * fun getString(): io.Result<String> {
  *     var buffer = ""
  *     io.stdin().readLine(buffer).getOrElse { return Result.failure(it) }
@@ -252,6 +254,8 @@ unreachableUnchecked()
      * # Examples
      *
      * ```kotlin
+     * import std.error
+     * import std.fmt
      * import std.io.Error
      * import std.io.ErrorKind
      *
@@ -382,7 +386,7 @@ unreachableUnchecked()
         when (val matchVal = this.repr.data()) {
             is ErrorData.Os -> {
                 val (code) = matchVal
-                val detail = fmt.fromFn({ fmt1 -> formatOsError(code, fmt1) })
+                val detail = fromFn({ fmt1 -> formatOsError(code, fmt1) })
                 fmt.writeFmt("$detail (os error $code)")
             }
             is ErrorData.Custom -> {
@@ -530,8 +534,8 @@ public fun Repr.fmt(fmt: StringBuilder): RustResult<Unit, Unit> =
     when (val matchVal = this.data()) {
         is ErrorData.Os -> {
             val (code) = matchVal
-            DebugStruct(fmt, "Os").field("code", code).field("kind", decodeErrorKind(code)).field("message", fmt.fromFn({ fmt1 ->
-                fmt1.writeFmt("\"${fmt.fromFn({ fmt2 -> formatOsError(code, fmt2) })}\"")
+            DebugStruct(fmt, "Os").field("code", code).field("kind", decodeErrorKind(code)).field("message", fromFn({ fmt1 ->
+                fmt1.writeFmt("\"${fromFn({ fmt2 -> formatOsError(code, fmt2) })}\"")
             })).finish()
         }
         is ErrorData.Custom -> {
@@ -601,7 +605,7 @@ public open class Custom(
     public open fun intoRaw(): NonNull {
         val ptr = this.error
         // Avoid `Custom.drop` which would free the error pointer.
-        mem.forget(this)
+        forget(this)
         return ptr
     }
 
@@ -672,7 +676,7 @@ public open class CustomOwner internal constructor(
     public open fun intoRaw(): NonNull {
         val ptr = this.value
         // Avoid `CustomOwner.drop`, which would free the pointer.
-        mem.forget(this)
+        forget(this)
         return ptr
     }
 

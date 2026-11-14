@@ -44,6 +44,8 @@ public open class Symbol internal constructor(
             value = v
         }
 
+    public open fun clone(): Symbol = Symbol(value)
+
     /**
      * Run a callback with the symbol's string value.
      */

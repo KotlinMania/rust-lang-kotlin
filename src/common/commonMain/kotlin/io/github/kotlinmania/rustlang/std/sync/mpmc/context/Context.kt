@@ -24,6 +24,8 @@ import io.github.kotlinmania.rustlang.std.time.Instant
 internal open class Context(
     public var inner: Inner,
 ) {
+    public open fun clone(): Context = Context(inner)
+
     /**
      * Resets `select` and `packet`.
      */

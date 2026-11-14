@@ -382,6 +382,9 @@ public interface Into<T> {
  * custom error type with `From.from`.
  *
  * ```kotlin
+ * import std.io
+ * import std.num
+ *
  * sealed class CliError : From<io.Error, CliError> {
  *     public data class IoError(public var value: io.Error) : CliError()
  *     public data class ParseError(public var value: num.ParseIntError) : CliError()
@@ -527,10 +530,13 @@ public interface TryFrom<T, SelfType, out Error> {
  * For example, the [TryFrom] trait (conversion that returns a [Result])
  * has a blanket implementation for all types where a reverse [Into] implementation exists.
  *
- * ```kotlin
- * fun <T, U> tryFromT(value: U, intoUFn: (U) -> T): Result<T> where U : Into<T> {
- *     return Result.success(intoUFn(value))
- *     // Never returns `Err`
+ * ```ignore (illustrates std code, duplicating the impl in a doctest would be an error)
+ * impl<T, U> TryFrom<U> for T where U: Into<T> {
+ *     type Error = Infallible;
+ *
+ *     fn tryFrom(value: U) -> Result<Self, Infallible> {
+ *         Ok(U.into(value))  // Never returns `Err`
+ *     }
  * }
  * ```
  *

@@ -7,7 +7,7 @@ import io.github.kotlinmania.rustlang.std.net.udp.UdpSocket
 import io.github.kotlinmania.rustlang.std.os.fd.OwnedFd
 import io.github.kotlinmania.rustlang.std.os.fd.RawFd
 import io.github.kotlinmania.rustlang.std.sys.FromInner
-import io.github.kotlinmania.rustlang.std.sys.net.connection.motor.Socket
+import io.github.kotlinmania.rustlang.std.sys.net.connection.wasip1.Socket
 
 public fun TcpStream.asRawFd(): RawFd = this.asInner().socket().asRawFd()
 
@@ -18,19 +18,19 @@ public fun UdpSocket.asRawFd(): RawFd = this.asInner().socket().asRawFd()
 public fun fromRawFdTcpStream(fd: RawFd): TcpStream =
     run {
         val socket = Socket.fromInner(FromInner.fromInner(OwnedFd.fromRawFd(fd)))
-        net.TcpStream.fromInner(io.github.kotlinmania.rustlang.std.sys.net.connection.motor.TcpStream.fromInner(socket))
+        TcpStream.fromInner(io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpStream.fromInner(socket))
     }
 
 public fun fromRawFdTcpListener(fd: RawFd): TcpListener =
     run {
         val socket = Socket.fromInner(FromInner.fromInner(OwnedFd.fromRawFd(fd)))
-        net.TcpListener.fromInner(io.github.kotlinmania.rustlang.std.sys.net.connection.motor.TcpListener.fromInner(socket))
+        TcpListener.fromInner(io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpListener.fromInner(socket))
     }
 
 public fun fromRawFdUdpSocket(fd: RawFd): UdpSocket =
     run {
         val socket = Socket.fromInner(FromInner.fromInner(OwnedFd.fromRawFd(fd)))
-        net.UdpSocket.fromInner(io.github.kotlinmania.rustlang.std.sys.net.connection.motor.UdpSocket.fromInner(socket))
+        UdpSocket.fromInner(io.github.kotlinmania.rustlang.std.sys.net.connection.socket.UdpSocket.fromInner(socket))
     }
 
 public fun TcpStream.intoRawFd(): RawFd = this.intoInner().intoSocket().intoInner().intoInner().intoRawFd()

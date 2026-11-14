@@ -1,6 +1,8 @@
 // port-lint: source term.rs
 package io.github.kotlinmania.rustlang.test.term
 
+import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.test.term.terminfo.TerminfoTerminal
 
 // Terminal formatting module.
@@ -24,7 +26,7 @@ internal typealias StdoutTerminal = Terminal
  * Returns a Terminal wrapping stdout, or None if a terminal couldn't be
  * opened.
  */
-internal fun stdout(): StdoutTerminal? = TerminfoTerminal.new(io.stdout()).map({ t -> ((t as Any?) as StdoutTerminal) })
+internal fun stdout(): StdoutTerminal? = TerminfoTerminal.new(stdout()).map({ t -> ((t as Any?) as StdoutTerminal) })
 
 /**
  * Number for a terminal color
@@ -61,7 +63,7 @@ internal interface Terminal : Write {
      * Returns `Ok(true)` if the color was set, `Ok(false)` otherwise, and `Err(e)`
      * if there was an I/O error.
      */
-    public fun fg(color: Color): io.Result<Boolean>
+    public fun fg(color: Color): Result<Boolean, Error>
 
     /**
      * Resets all terminal attributes and colors to their defaults.
@@ -75,5 +77,5 @@ internal interface Terminal : Write {
      * else that might flush stdout's buffer (e.g., writing a line of text), you should flush after
      * calling reset.
      */
-    public fun reset(): io.Result<Boolean>
+    public fun reset(): Result<Boolean, Error>
 }

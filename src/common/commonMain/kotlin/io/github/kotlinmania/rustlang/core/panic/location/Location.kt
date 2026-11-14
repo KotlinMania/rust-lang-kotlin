@@ -45,6 +45,8 @@ public class DebugStruct(
  * # Examples
  *
  * ```kotlin
+ * import std.panic
+ *
  * panic.setHook({ panicInfo ->
  *     when (val matchVal = panicInfo.location()) {
  *         null -> {
@@ -75,6 +77,8 @@ public open class Location internal constructor(
     // `Location.fileAsCStr`.
     public var filename: NonNull = filenameCtorArg
         internal set
+
+    public open fun clone(): Location = Location(filename, line, col)
 
     public open fun eq(other: Location): Boolean {
         // Compare col / line first as they're cheaper to compare and more likely to differ,
@@ -118,6 +122,8 @@ public open class Location internal constructor(
      * # Examples
      *
      * ```kotlin
+     * import std.panic
+     *
      * panic.setHook({ panicInfo ->
      *     when (val matchVal = panicInfo.location()) {
      *         null -> {
@@ -160,6 +166,8 @@ public open class Location internal constructor(
      * # Examples
      *
      * ```kotlin
+     * import std.panic
+     *
      * panic.setHook({ panicInfo ->
      *     when (val matchVal = panicInfo.location()) {
      *         null -> {
@@ -182,6 +190,8 @@ public open class Location internal constructor(
      * # Examples
      *
      * ```kotlin
+     * import std.panic
+     *
      * panic.setHook({ panicInfo ->
      *     when (val matchVal = panicInfo.location()) {
      *         null -> {

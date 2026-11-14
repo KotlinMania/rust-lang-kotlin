@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.test.formatters.terse
 
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.test.NamePadding
 import io.github.kotlinmania.rustlang.test.TestDesc
 import io.github.kotlinmania.rustlang.test.bench.fmtBenchSamples
@@ -33,9 +34,9 @@ internal open class TerseFormatter<T>(
     public var testColumn: Int,
     public var totalTestCount: Int,
 ) : OutputFormatter {
-    internal open fun writeOk(): io.Result<Unit> = this.writeShortResult(".", green)
+    internal open fun writeOk(): Result<Unit, Error> = this.writeShortResult(".", green)
 
-    internal open fun writeFailed(name: String): io.Result<Unit> {
+    internal open fun writeFailed(name: String): Result<Unit, Error> {
         // Put failed tests on their own line and include the test name, so that it's faster
         // to see which test failed without having to wait for them all to run.
         // normally, we write the progress unconditionally, even if the previous line was cut short.
@@ -50,11 +51,11 @@ internal open class TerseFormatter<T>(
         return this.writePlain("\n")
     }
 
-    internal open fun writeIgnored(): io.Result<Unit> = this.writeShortResult("i", yellow)
+    internal open fun writeIgnored(): Result<Unit, Error> = this.writeShortResult("i", yellow)
 
-    internal open fun writeBench(): io.Result<Unit> = this.writePretty("bench", cyan)
+    internal open fun writeBench(): Result<Unit, Error> = this.writePretty("bench", cyan)
 
-    internal open fun writeShortResult(result: String, color: Color): io.Result<Unit> {
+    internal open fun writeShortResult(result: String, color: Color): Result<Unit, Error> {
         when (val tryResult = this.writePretty(result, color)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         this.testCount += 1
         this.testColumn += 1
@@ -67,14 +68,14 @@ internal open class TerseFormatter<T>(
         return Result.Ok(Unit)
     }
 
-    public open fun writeProgress(): io.Result<Unit> {
+    public open fun writeProgress(): Result<Unit, Error> {
         val out = " ${this.testCount}/${this.totalTestCount}\n"
         when (val tryResult = this.writePlain(out)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         this.testColumn = 0
         return Result.Ok(Unit)
     }
 
-    internal open fun writePretty(word: String, color: Color): io.Result<Unit> {
+    internal open fun writePretty(word: String, color: Color): Result<Unit, Error> {
         return when (val matchVal = this.out) {
             is OutputLocation.Pretty -> {
                 val (term) = matchVal
@@ -95,13 +96,13 @@ internal open class TerseFormatter<T>(
         }
     }
 
-    internal open fun writePlain(s: String): io.Result<Unit> {
+    internal open fun writePlain(s: String): Result<Unit, Error> {
         val s1 = s
         when (val tryResult = this.out.writeAll(s1.encodeToByteArray().map { it.toUByte() })) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         return this.out.flush()
     }
 
-    internal open fun writeOutputs(state: ConsoleTestState): io.Result<Unit> {
+    internal open fun writeOutputs(state: ConsoleTestState): Result<Unit, Error> {
         when (val tryResult = this.writePlain("\nsuccesses:\n")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         val successes = mutableListOf()
         var stdouts = ""
@@ -126,7 +127,7 @@ internal open class TerseFormatter<T>(
         return Result.Ok(Unit)
     }
 
-    internal open fun writeFailures(state: ConsoleTestState): io.Result<Unit> {
+    internal open fun writeFailures(state: ConsoleTestState): Result<Unit, Error> {
         when (val tryResult = this.writePlain("\nfailures:\n")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         val failures = mutableListOf()
         var failOut = ""
@@ -151,7 +152,7 @@ internal open class TerseFormatter<T>(
         return Result.Ok(Unit)
     }
 
-    public open fun writeTestName(desc: TestDesc): io.Result<Unit> {
+    public open fun writeTestName(desc: TestDesc): Result<Unit, Error> {
         val name = desc.paddedName(this.maxNameLen, desc.name.padding())
         when (val matchVal = desc.testMode()) {
             null -> {
@@ -165,13 +166,13 @@ internal open class TerseFormatter<T>(
         return Result.Ok(Unit)
     }
 
-    public override fun writeDiscoveryStart(): io.Result<Unit> = Result.Ok(Unit)
+    public override fun writeDiscoveryStart(): Result<Unit, Error> = Result.Ok(Unit)
 
-    public override fun writeTestDiscovered(desc: TestDesc, testType: String): io.Result<Unit> = this.writePlain("${desc.name}: $testType\n")
+    public override fun writeTestDiscovered(desc: TestDesc, testType: String): Result<Unit, Error> = this.writePlain("${desc.name}: $testType\n")
 
-    public override fun writeDiscoveryFinish(state: ConsoleTestDiscoveryState): io.Result<Unit> = Result.Ok(Unit)
+    public override fun writeDiscoveryFinish(state: ConsoleTestDiscoveryState): Result<Unit, Error> = Result.Ok(Unit)
 
-    public override fun writeRunStart(testCount: Int, shuffleSeed: ULong?): io.Result<Unit> {
+    public override fun writeRunStart(testCount: Int, shuffleSeed: ULong?): Result<Unit, Error> {
         this.totalTestCount = testCount
         val noun =
             if (testCount != 1) {
@@ -188,7 +189,7 @@ internal open class TerseFormatter<T>(
         return this.writePlain("\nrunning $testCount $noun$shuffleSeedMsg\n")
     }
 
-    public override fun writeTestStart(desc: TestDesc): io.Result<Unit> {
+    public override fun writeTestStart(desc: TestDesc): Result<Unit, Error> {
         // Remnants from old libtest code that used the padding value
         // in order to indicate benchmarks.
         // When running benchmarks, terse-mode should still print their name as if
@@ -199,7 +200,7 @@ internal open class TerseFormatter<T>(
         return Result.Ok(Unit)
     }
 
-    public override fun writeResult(desc: TestDesc, result: TestResult, arg2: TestExecTime?, arg3: List<UByte>, arg4: ConsoleTestState): io.Result<Unit> {
+    public override fun writeResult(desc: TestDesc, result: TestResult, arg2: TestExecTime?, arg3: List<UByte>, arg4: ConsoleTestState): Result<Unit, Error> {
         return when (result) {
             TestResult.TrOk -> this.writeOk()
             TestResult.TrFailed -> {
@@ -223,9 +224,9 @@ internal open class TerseFormatter<T>(
         }
     }
 
-    public override fun writeTimeout(desc: TestDesc): io.Result<Unit> = this.writePlain("test ${desc.name} has been running for over ${time.TEST_WARN_TIMEOUT_S} seconds\n")
+    public override fun writeTimeout(desc: TestDesc): Result<Unit, Error> = this.writePlain("test ${desc.name} has been running for over $TEST_WARN_TIMEOUT_S seconds\n")
 
-    public override fun writeRunFinish(state: ConsoleTestState): io.Result<Boolean> {
+    public override fun writeRunFinish(state: ConsoleTestState): Result<Boolean, Error> {
         if (state.options.displayOutput) {
             when (val tryResult = this.writeOutputs(state)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         }
@@ -266,7 +267,7 @@ internal open class TerseFormatter<T>(
         return Result.Ok(success)
     }
 
-    public override fun writeMergedDoctestsTimes(totalTime: Double, compilationTime: Double): io.Result<Unit> = this.writePlain("all doctests ran in ${totalTime}s; merged doctests compilation took ${compilationTime}s\n")
+    public override fun writeMergedDoctestsTimes(totalTime: Double, compilationTime: Double): Result<Unit, Error> = this.writePlain("all doctests ran in ${totalTime}s; merged doctests compilation took ${compilationTime}s\n")
 
     public companion object {
         internal fun <T> new(out: OutputLocation<T>, useColor: Boolean, maxNameLen: Int, isMultithreaded: Boolean): TerseFormatter<T> = TerseFormatter(out = out, useColor = useColor, maxNameLen = maxNameLen, isMultithreaded = isMultithreaded, testCount = 0, testColumn = 0, totalTestCount = 0)

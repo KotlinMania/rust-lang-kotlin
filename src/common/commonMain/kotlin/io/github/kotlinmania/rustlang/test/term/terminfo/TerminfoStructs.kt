@@ -87,7 +87,7 @@ internal open class TerminfoTerminal<T>(
     public var out: T,
     public var ti: TermInfo,
 ) : Terminal, Write {
-    public override fun fg(color: Color): Result<Boolean> {
+    public override fun fg(color: Color): Result<Boolean, io.github.kotlinmania.rustlang.std.io.error.Error> {
         val color1 = this.dimIfNecessary(color)
         if (false && color1 < 8) {
             // The Miri logic for this only works for the most basic 8 colors, which we just assume
@@ -101,7 +101,7 @@ internal open class TerminfoTerminal<T>(
         return Result.Ok(false)
     }
 
-    public override fun reset(): Result<Boolean> {
+    public override fun reset(): Result<Boolean, io.github.kotlinmania.rustlang.std.io.error.Error> {
         if (false) {
             return this.out.append("\u001b[0m").and(Result.Ok(true))
         }
@@ -134,7 +134,7 @@ internal open class TerminfoTerminal<T>(
             color
         }
 
-    public open fun applyCap(cmd: String, params: List<Param>): Result<Boolean> =
+    public open fun applyCap(cmd: String, params: List<Param>): Result<Boolean, io.github.kotlinmania.rustlang.std.io.error.Error> =
         when (val matchVal = this.ti.strings.get(cmd)) {
             null -> Result.Ok(false)
             else -> {
@@ -152,9 +152,9 @@ internal open class TerminfoTerminal<T>(
             }
         }
 
-    public open fun write(buf: List<UByte>): Result<Int> = this.out.write(buf)
+    public open fun write(buf: List<UByte>): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> = this.out.write(buf)
 
-    public open fun flush(): Result<Unit> = this.out.flush()
+    public open fun flush(): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = this.out.flush()
 
     public companion object {
         /**

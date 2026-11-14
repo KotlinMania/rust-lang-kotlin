@@ -420,7 +420,7 @@ public fun <NonZeroInner, T> tryFromNonZeroTArrayn(zeroable: List<T>, n: Int): R
 /**
  * Implementation of `From<[NonZero<T>; N]> for [T; N]`.
  */
-public fun <NonZeroInner, T> List<NonZero<T, NonZeroInner>>.intoZeroable(n: Int): List<T> = this.map(NonZero::get)
+public fun <NonZeroInner, T> List<NonZero<T, NonZeroInner>>.intoZeroable(n: Int): List<T> = this.map({ it.get() })
 
 /**
  * This enables some memory layout optimization.
@@ -643,7 +643,7 @@ public fun NonZero<UByte, NonZeroU8Inner>.reverseBits(): NonZero<UByte, NonZeroU
  *         return Unit
  *     }
  *     fun main() {
- *         test().unwrap()
+ *         test()!!
  *     }
  * }
  * ```
@@ -671,7 +671,7 @@ public fun NonZero.Companion.fromBe(x: NonZero<UByte, NonZeroU8Inner>): NonZero<
  *         return Unit
  *     }
  *     fun main() {
- *         test().unwrap()
+ *         test()!!
  *     }
  * }
  * ```

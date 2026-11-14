@@ -1,4 +1,4 @@
-@file:OptIn(kotlin.ExperimentalUnsignedTypes::class)
+@file:OptIn(ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.core.num.imp.libm
 
@@ -166,6 +166,75 @@ private object NumImpLibmJniBridge {
 
     @JvmStatic
     external fun coreNumImpLibmTruncf(x: Float): Float
+
+    @JvmStatic
+    external fun coreNumImpLibmAcosf(n: Float): Float
+
+    @JvmStatic
+    external fun coreNumImpLibmAsinf(n: Float): Float
+
+    @JvmStatic
+    external fun coreNumImpLibmAtan2f(a: Float, b: Float): Float
+
+    @JvmStatic
+    external fun coreNumImpLibmAtanf(n: Float): Float
+
+    @JvmStatic
+    external fun coreNumImpLibmCosf(x: Float): Float
+
+    @JvmStatic
+    external fun coreNumImpLibmCoshf(n: Float): Float
+
+    @JvmStatic
+    external fun coreNumImpLibmErfcf(x: Float): Float
+
+    @JvmStatic
+    external fun coreNumImpLibmErff(x: Float): Float
+
+    @JvmStatic
+    external fun coreNumImpLibmExp2f(x: Float): Float
+
+    @JvmStatic
+    external fun coreNumImpLibmExpf(x: Float): Float
+
+    @JvmStatic
+    external fun coreNumImpLibmExpm1f(n: Float): Float
+
+    @JvmStatic
+    external fun coreNumImpLibmHypotf(x: Float, y: Float): Float
+
+    @JvmStatic
+    external fun coreNumImpLibmLdexpf(f: Float, n: Int): Float
+
+    @JvmStatic
+    external fun coreNumImpLibmLog10f(x: Float): Float
+
+    @JvmStatic
+    external fun coreNumImpLibmLog1pf(n: Float): Float
+
+    @JvmStatic
+    external fun coreNumImpLibmLog2f(x: Float): Float
+
+    @JvmStatic
+    external fun coreNumImpLibmLogf(x: Float): Float
+
+    @JvmStatic
+    external fun coreNumImpLibmPowf(x: Float, y: Float): Float
+
+    @JvmStatic
+    external fun coreNumImpLibmSinf(x: Float): Float
+
+    @JvmStatic
+    external fun coreNumImpLibmSinhf(n: Float): Float
+
+    @JvmStatic
+    external fun coreNumImpLibmTanf(n: Float): Float
+
+    @JvmStatic
+    external fun coreNumImpLibmTanhf(n: Float): Float
+
+    @JvmStatic
+    external fun coreNumImpLibmTgammaf(x: Float): Float
 
     @JvmStatic
     external fun coreNumImpLibmAcos(x: Double): Double
@@ -467,6 +536,75 @@ internal actual fun rustDivhc3(a: F16, b: F16, c: F16, d: F16): Complex<F16> =
 
 internal actual fun rustDivtc3(a: F128, b: F128, c: F128, d: F128): Complex<F128> =
     null as Complex<F128>
+
+internal actual fun acosf(n: kotlin.Float): kotlin.Float =
+    NumImpLibmJniBridge.coreNumImpLibmAcosf(n)
+
+internal actual fun asinf(n: kotlin.Float): kotlin.Float =
+    NumImpLibmJniBridge.coreNumImpLibmAsinf(n)
+
+internal actual fun atan2f(a: kotlin.Float, b: kotlin.Float): kotlin.Float =
+    NumImpLibmJniBridge.coreNumImpLibmAtan2f(a, b)
+
+internal actual fun atanf(n: kotlin.Float): kotlin.Float =
+    NumImpLibmJniBridge.coreNumImpLibmAtanf(n)
+
+internal actual fun cosf(x: kotlin.Float): kotlin.Float =
+    NumImpLibmJniBridge.coreNumImpLibmCosf(x)
+
+internal actual fun coshf(n: kotlin.Float): kotlin.Float =
+    NumImpLibmJniBridge.coreNumImpLibmCoshf(n)
+
+internal actual fun erfcf(x: kotlin.Float): kotlin.Float =
+    NumImpLibmJniBridge.coreNumImpLibmErfcf(x)
+
+internal actual fun erff(x: kotlin.Float): kotlin.Float =
+    NumImpLibmJniBridge.coreNumImpLibmErff(x)
+
+internal actual fun exp2f(x: kotlin.Float): kotlin.Float =
+    NumImpLibmJniBridge.coreNumImpLibmExp2f(x)
+
+internal actual fun expf(x: kotlin.Float): kotlin.Float =
+    NumImpLibmJniBridge.coreNumImpLibmExpf(x)
+
+internal actual fun expm1f(n: kotlin.Float): kotlin.Float =
+    NumImpLibmJniBridge.coreNumImpLibmExpm1f(n)
+
+internal actual fun hypotf(x: kotlin.Float, y: kotlin.Float): kotlin.Float =
+    NumImpLibmJniBridge.coreNumImpLibmHypotf(x, y)
+
+internal actual fun ldexpf(f: kotlin.Float, n: Int): kotlin.Float =
+    NumImpLibmJniBridge.coreNumImpLibmLdexpf(f, n)
+
+internal actual fun log10f(x: kotlin.Float): kotlin.Float =
+    NumImpLibmJniBridge.coreNumImpLibmLog10f(x)
+
+internal actual fun log1pf(n: kotlin.Float): kotlin.Float =
+    NumImpLibmJniBridge.coreNumImpLibmLog1pf(n)
+
+internal actual fun log2f(x: kotlin.Float): kotlin.Float =
+    NumImpLibmJniBridge.coreNumImpLibmLog2f(x)
+
+internal actual fun logf(x: kotlin.Float): kotlin.Float =
+    NumImpLibmJniBridge.coreNumImpLibmLogf(x)
+
+internal actual fun powf(x: kotlin.Float, y: kotlin.Float): kotlin.Float =
+    NumImpLibmJniBridge.coreNumImpLibmPowf(x, y)
+
+internal actual fun sinf(x: kotlin.Float): kotlin.Float =
+    NumImpLibmJniBridge.coreNumImpLibmSinf(x)
+
+internal actual fun sinhf(n: kotlin.Float): kotlin.Float =
+    NumImpLibmJniBridge.coreNumImpLibmSinhf(n)
+
+internal actual fun tanf(n: kotlin.Float): kotlin.Float =
+    NumImpLibmJniBridge.coreNumImpLibmTanf(n)
+
+internal actual fun tanhf(n: kotlin.Float): kotlin.Float =
+    NumImpLibmJniBridge.coreNumImpLibmTanhf(n)
+
+internal actual fun tgammaf(x: kotlin.Float): kotlin.Float =
+    NumImpLibmJniBridge.coreNumImpLibmTgammaf(x)
 
 internal actual fun acos(x: Double): Double =
     NumImpLibmJniBridge.coreNumImpLibmAcos(x)

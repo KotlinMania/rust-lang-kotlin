@@ -1,12 +1,11 @@
 // port-lint: source os/android/fs.rs
 package io.github.kotlinmania.rustlang.std.os.android.fs
 
-import io.github.kotlinmania.libc.hermit.Stat
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.std.fs.Metadata
-import io.github.kotlinmania.rustlang.std.sys.sync.mutex.windows7.raw
+import io.github.kotlinmania.rustlang.std.os.android.raw.arch.Stat
 
 /**
  * OS-specific extensions to [fs.Metadata].
@@ -20,7 +19,7 @@ public interface MetadataExt {
      * Unix platforms. The `os.unix.fs.MetadataExt` trait contains the
      * cross-Unix abstractions contained within the raw stat.
      */
-    public fun asRawStat(): raw.Stat
+    public fun asRawStat(): Stat
 
     public fun stDev(): ULong
 
@@ -55,7 +54,7 @@ public interface MetadataExt {
     public fun stBlocks(): ULong
 }
 
-public fun Metadata.asRawStat(): raw.Stat = (ObjectSlotLayout<raw.Stat>()).readNative((((constPtrFromRustCast(this.asInner().asInner())).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
+public fun Metadata.asRawStat(): Stat = (ObjectSlotLayout<Stat>()).readNative((((constPtrFromRustCast(this.asInner().asInner())).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
 
 public fun Metadata.stDev(): ULong = (this.asInner().asInner().stDev).toULong()
 

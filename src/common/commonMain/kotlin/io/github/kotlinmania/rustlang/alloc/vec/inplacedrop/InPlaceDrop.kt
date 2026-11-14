@@ -23,27 +23,27 @@ internal open class InPlaceDrop<T>(
     }
 
     public companion object {
-        public fun <T> typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<InPlaceDrop<T>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<InPlaceDrop<T>> {
+        public fun <T> typeLayout(): TypeLayout<InPlaceDrop<T>> =
+            object : TypeLayout<InPlaceDrop<T>> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): InPlaceDrop<T> =
                     InPlaceDrop(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).readNative(addr + 8L),
+                        (PrimitiveLayouts.mutPtrLayout(64)).readNative(addr),
+                        (PrimitiveLayouts.mutPtrLayout(64)).readNative(addr + 8L),
                     )
                 override fun writeNative(addr: Long, value: InPlaceDrop<T>) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).writeNative(addr, value.inner)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).writeNative(addr + 8L, value.dst)
+                    (PrimitiveLayouts.mutPtrLayout(64)).writeNative(addr, value.inner)
+                    (PrimitiveLayouts.mutPtrLayout(64)).writeNative(addr + 8L, value.dst)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): InPlaceDrop<T> =
                     InPlaceDrop(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).readBytes(buf, offset + 8),
+                        (PrimitiveLayouts.mutPtrLayout(64)).readBytes(buf, offset),
+                        (PrimitiveLayouts.mutPtrLayout(64)).readBytes(buf, offset + 8),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: InPlaceDrop<T>) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).writeBytes(buf, offset, value.inner)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).writeBytes(buf, offset + 8, value.dst)
+                    (PrimitiveLayouts.mutPtrLayout(64)).writeBytes(buf, offset, value.inner)
+                    (PrimitiveLayouts.mutPtrLayout(64)).writeBytes(buf, offset + 8, value.dst)
                 }
             }
     }

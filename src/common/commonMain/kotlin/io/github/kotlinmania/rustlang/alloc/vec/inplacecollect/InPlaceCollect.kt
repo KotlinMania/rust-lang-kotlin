@@ -296,7 +296,7 @@ public fun <Src, Item, I, T> fromIterInPlace(iterator: I, typeLayoutT: TypeLayou
     } else {
         check(srcCap * sizeOf<Src>(typeLayoutT = ObjectSlotLayout<Src>()) == dstCap * sizeOf<T>(typeLayoutT = typeLayoutT))
     }
-    mem.forget(dstGuard)
+    forget(dstGuard)
     // ignore-tidy-undocumented-unchecked
     return Vec.fromParts(dstBuf, len, dstCap)
 }
@@ -363,7 +363,7 @@ public fun <T, I> I.collectInPlace(dstBuf: MutPtr, end: ConstPtr, typeLayoutT: T
             dropGuard.dst = MutPtr((dst).rawAddress + ((1).toLong() * (typeLayoutT).strideBytes))
         }
     }
-    mem.forget(dropGuard)
+    forget(dropGuard)
     return len
 }
 

@@ -36,6 +36,8 @@ public open class F16x2(
             value = v
         }
 
+    public open fun clone(): F16x2 = F16x2(value)
+
     /**
      * Returns an array reference containing the entire SIMD vector.
      */
@@ -49,23 +51,23 @@ public open class F16x2(
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "f16x2", this.asArray())
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<F16x2> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<F16x2> {
+        public fun typeLayout(): TypeLayout<F16x2> =
+            object : TypeLayout<F16x2> {
                 override val alignBytes: Long = 2L
                 override val sizeBytes: Long = 4L
                 override fun readNative(addr: Long): F16x2 =
                     F16x2(
-                        (io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout(io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.F16_LAYOUT, 2)).readNative(addr),
+                        (fixedListTypeLayout(PrimitiveLayouts.F16_LAYOUT, 2)).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: F16x2) {
-                    (io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout(io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.F16_LAYOUT, 2)).writeNative(addr, value.value)
+                    (fixedListTypeLayout(PrimitiveLayouts.F16_LAYOUT, 2)).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): F16x2 =
                     F16x2(
-                        (io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout(io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.F16_LAYOUT, 2)).readBytes(buf, offset),
+                        (fixedListTypeLayout(PrimitiveLayouts.F16_LAYOUT, 2)).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: F16x2) {
-                    (io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout(io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.F16_LAYOUT, 2)).writeBytes(buf, offset, value.value)
+                    (fixedListTypeLayout(PrimitiveLayouts.F16_LAYOUT, 2)).writeBytes(buf, offset, value.value)
                 }
             }
 

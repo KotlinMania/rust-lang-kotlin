@@ -11,6 +11,7 @@ import io.github.kotlinmania.rustlang.core.iter.adapters.TrustedRandomAccessNoCo
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.tryGetUnchecked
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
@@ -33,7 +34,7 @@ public typealias Source<I> = I.Source
 public open class Copied<I>(
     public var it: I,
 ) : TrustedRandomAccess, TrustedRandomAccessNoCoerce, TrustedLen<Copied<I>>, SourceIter<Any?, Source>, InPlaceIterable, Iterable<T> {
-    override fun iterator(): kotlin.collections.Iterator<T> = object : AbstractIterator<T>() {
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@Copied.next()) {
                 null -> done()
@@ -88,10 +89,10 @@ public open class Copied<I>(
     }
 
     public companion object {
-        public fun <I> typeLayout(typeLayoutI: io.github.kotlinmania.rustlang.core.mem.TypeLayout<I>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Copied<I>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Copied<I>> {
+        public fun <I> typeLayout(typeLayoutI: TypeLayout<I>): TypeLayout<Copied<I>> =
+            object : TypeLayout<Copied<I>> {
                 override val alignBytes: Long = listOf(1L, typeLayoutI.alignBytes).max()
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(typeLayoutI.sizeBytes, alignBytes)
+                override val sizeBytes: Long = alignUpBytes(typeLayoutI.sizeBytes, alignBytes)
                 override fun readNative(addr: Long): Copied<I> =
                     Copied(
                         (typeLayoutI).readNative(addr),
@@ -156,7 +157,7 @@ public fun <T> Iter<T>.specNextChunk(n: Int): Result<List<T>, IntoIter<T>> {
         // SAFETY: `len` indicates that this many elements are available and we just checked that
         // it fits into the array.
         run {
-            ptr.copyNonoverlapping(this.asRef().asPtr(), mutPtrFromRustCast(rawArray.asMutPtr()), len)
+            copyNonoverlapping(this.asRef().asPtr(), mutPtrFromRustCast(rawArray.asMutPtr()), len)
             this.advanceBy(len)
             return Result.Err(IntoIter.newUnchecked(rawArray, 0 until len))
         }
@@ -164,7 +165,7 @@ public fun <T> Iter<T>.specNextChunk(n: Int): Result<List<T>, IntoIter<T>> {
     // SAFETY: `len` is larger than the array size. Copy a fixed amount here to fully initialize
     // the array.
     return run {
-        ptr.copyNonoverlapping(this.asRef().asPtr(), mutPtrFromRustCast(rawArray.asMutPtr()), n)
+        copyNonoverlapping(this.asRef().asPtr(), mutPtrFromRustCast(rawArray.asMutPtr()), n)
         this.advanceBy(n)
         Result.Ok(MaybeUninit.arrayAssumeInit(rawArray))
     }

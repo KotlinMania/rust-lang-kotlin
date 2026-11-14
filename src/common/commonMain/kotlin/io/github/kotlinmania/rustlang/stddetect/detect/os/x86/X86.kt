@@ -3,7 +3,7 @@
 
 package io.github.kotlinmania.rustlang.stddetect.detect.os.x86
 
-import io.github.kotlinmania.rustlang.stddetect.detect.Feature
+import io.github.kotlinmania.rustlang.stddetect.detect.arch.Feature
 import io.github.kotlinmania.rustlang.stddetect.detect.bit.test
 import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.s390x.cache
 
@@ -46,7 +46,7 @@ internal fun detectFeatures(): cache.Initializer {
         val ecx = structVal.ecx
         val edx = structVal.edx
         val vendorId: List<UByteArray> = listOf(ebx.toNeBytes(), edx.toNeBytes(), ecx.toNeBytes())
-        val vendorId1: UByteArray = mem.transmute(vendorId)
+        val vendorId1: UByteArray = transmute(vendorId)
         Pair(maxBasicLeaf, vendorId1)
     }
     if (maxBasicLeaf1 < 1) {

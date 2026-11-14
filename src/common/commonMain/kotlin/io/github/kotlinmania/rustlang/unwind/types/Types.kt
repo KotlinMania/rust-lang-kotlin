@@ -29,7 +29,7 @@ public typealias UnwindExceptionClass = ULong
 
 public typealias UnwindWord = ConstPtr
 
-public val UNWINDER_PRIVATE_DATA_SIZE: Int = cfgSelect(targetArch, "x86", 5, all, targetArch, "x86_64", not, any, targetOs, "windows", targetOs, "cygwin", 2, all, targetArch, "x86_64", any, targetOs, "windows", targetOs, "cygwin", 6, all, targetArch, "arm", not, targetVendor, "apple", 20, all, targetArch, "arm", targetVendor, "apple", 5, all, targetArch, "aarch64", targetPointerWidth, "64", not, targetOs, "windows", 2, all, targetArch, "aarch64", targetPointerWidth, "64", targetOs, "windows", 6, all, targetArch, "aarch64", targetPointerWidth, "32", 5, targetArch, "m68k", 2, any, targetArch, "mips", targetArch, "mips32r6", 2, targetArch, "csky", 2, any, targetArch, "mips64", targetArch, "mips64r6", 2, any, targetArch, "powerpc", targetArch, "powerpc64", 2, targetArch, "s390x", 2, any, targetArch, "sparc", targetArch, "sparc64", 2, any, targetArch, "riscv64", targetArch, "riscv32", 2, targetFamily, "wasm", 2, targetArch, "hexagon", 5, any, targetArch, "loongarch32", targetArch, "loongarch64", 2)
+public val UNWINDER_PRIVATE_DATA_SIZE: Int = 2
 
 // The Itanium C++ ABI requires this type to have "double-word" alignment,
 // which libunwind and libgcc interpret as the maximum alignment of any

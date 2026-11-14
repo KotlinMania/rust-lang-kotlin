@@ -1,6 +1,8 @@
 // port-lint: source sys/fs/windows/dir.rs
 package io.github.kotlinmania.rustlang.std.sys.fs.windows.dir
 
+import io.github.kotlinmania.rustlang.alloc.alloc.alloc
+import io.github.kotlinmania.rustlang.alloc.alloc.dealloc
 import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
 import io.github.kotlinmania.rustlang.core.intrinsics.kmCopyNonoverlapping
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
@@ -13,19 +15,16 @@ import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.std.fmt
+import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.os.windows.io.BorrowedHandle
 import io.github.kotlinmania.rustlang.std.os.windows.io.FromRawHandle
 import io.github.kotlinmania.rustlang.std.os.windows.io.HandleOrInvalid
 import io.github.kotlinmania.rustlang.std.os.windows.io.OwnedHandle
 import io.github.kotlinmania.rustlang.std.os.windows.io.RawHandle
-import io.github.kotlinmania.rustlang.std.os.xous.ffi.definitions.Error
 import io.github.kotlinmania.rustlang.std.path.Path
-import io.github.kotlinmania.rustlang.std.sys.alloc.windows.alloc
-import io.github.kotlinmania.rustlang.std.sys.alloc.windows.dealloc
-import io.github.kotlinmania.rustlang.std.sys.fs.hermit.File
-import io.github.kotlinmania.rustlang.std.sys.fs.hermit.FileAttr
-import io.github.kotlinmania.rustlang.std.sys.fs.hermit.OpenOptions
+import io.github.kotlinmania.rustlang.std.sys.fs.unix.File
+import io.github.kotlinmania.rustlang.std.sys.fs.unix.OpenOptions
+import io.github.kotlinmania.rustlang.std.sys.fs.unsupported.FileAttr
 import io.github.kotlinmania.rustlang.std.sys.fs.windows.ReparsePoint
 import io.github.kotlinmania.rustlang.std.sys.fs.windows.debugPathHandle
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.api.UnicodeStrRef
@@ -63,11 +62,11 @@ public open class Dir internal constructor(
     public var handle: Handle = handleCtorArg
         internal set
 
-    public open fun duplicate(): Result<Dir> {
+    public open fun duplicate(): Result<Dir, Error> {
         return Result.Ok(Dir(handle = when (val tryResult = this.handle.tryClone()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }))
     }
 
-    public open fun openFile(path: Path, opts: OpenOptions): Result<File> {
+    public open fun openFile(path: Path, opts: OpenOptions): Result<File, Error> {
         // NtCreateFile will fail if given an absolute path and a non-null RootDirectory
         if (path.isAbsolute()) {
             return File.open(path, opts)
@@ -76,18 +75,18 @@ public open class Dir internal constructor(
         return this.openFileNative(path1, opts, FILE_NON_DIRECTORY_FILE).map({ handle -> File(handle = handle) })
     }
 
-    public open fun removeFile(path: Path): Result<Unit> {
+    public open fun removeFile(path: Path): Result<Unit, Error> {
         val path1 = when (val tryResult = toU16sWithoutNul(path)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         return this.removeNative(path1, false)
     }
 
-    public open fun rename(from: Path, toDir: Dir, to: Path): Result<Unit> {
+    public open fun rename(from: Path, toDir: Dir, to: Path): Result<Unit, Error> {
         val from1 = when (val tryResult = toU16sWithoutNul(from)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         val to1 = when (val tryResult = toU16sWithoutNul(to)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         return this.renameNative(from1, toDir, to1)
     }
 
-    public open fun createDir(path: Path): Result<Unit> {
+    public open fun createDir(path: Path): Result<Unit, Error> {
         val opts = OpenOptions.new()
         opts.read(true)
         opts.write(true)
@@ -95,23 +94,23 @@ public open class Dir internal constructor(
         return this.openDir(path, opts).map({ Unit })
     }
 
-    public open fun openDir(path: Path, opts: OpenOptions): Result<Dir> {
+    public open fun openDir(path: Path, opts: OpenOptions): Result<Dir, Error> {
         val path1 = when (val tryResult = toU16sWithoutNul(path)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         return this.openFileNative(path1, opts, FILE_DIRECTORY_FILE).map({ handle -> Dir(handle = handle) })
     }
 
-    public open fun removeDir(path: Path): Result<Unit> {
+    public open fun removeDir(path: Path): Result<Unit, Error> {
         val path1 = when (val tryResult = toU16sWithoutNul(path)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         return this.removeNative(path1, true)
     }
 
-    public open fun openFileNative(path: List<UShort>, opts: OpenOptions, createOpt: UInt): Result<Handle> {
+    public open fun openFileNative(path: List<UShort>, opts: OpenOptions, createOpt: UInt): Result<Handle, Error> {
         val name = UnicodeStrRef.fromSlice(path)
         val objectAttributes = ObjectAttributes.withLength().copy(rootDirectory = this.handle.asRawHandle(), objectName = name.asPtr().castMut())
         return ntCreateFile(opts, objectAttributes, createOpt)
     }
 
-    public open fun removeNative(path: List<UShort>, dir: Boolean): Result<Unit> {
+    public open fun removeNative(path: List<UShort>, dir: Boolean): Result<Unit, Error> {
         val opts = OpenOptions.new()
         opts.accessMode(DELETE)
         var createOpt =
@@ -125,7 +124,7 @@ public open class Dir internal constructor(
         return File.fromInner(handle).delete().ioResult()
     }
 
-    public open fun renameNative(from: List<UShort>, toDir: Dir, to: List<UShort>): Result<Unit> {
+    public open fun renameNative(from: List<UShort>, toDir: Dir, to: List<UShort>): Result<Unit, Error> {
         // Calculate the layout of the `FILE_RENAME_INFORMATION` we pass to `NtSetInformationFile`
         // This is a dynamically sized struct so we need to get the position of the last field to calculate the actual size.
         val opts = OpenOptions.new()
@@ -140,7 +139,7 @@ public open class Dir internal constructor(
         run {
             fileRenameInfo = alloc(layout).cast()
             if (fileRenameInfo.isNull()) {
-                return Result.Err(io.ErrorKind.OutOfMemory.into())
+                return Result.Err(ErrorKind.OutOfMemory.into())
             }
             (addrOfMut(fileRenameInfo.anonymous)).write(FileRenameInformation0(flags = FILE_RENAME_FLAG_REPLACE_IF_EXISTS or FILE_RENAME_FLAG_POSIX_SEMANTICS))
             (addrOfMut(fileRenameInfo.rootDirectory)).write(toDir.handle.asRawHandle())
@@ -158,14 +157,14 @@ public open class Dir internal constructor(
         }.ioResult()
     }
 
-    public open fun selfMetadata(): Result<FileAttr> {
+    public open fun selfMetadata(): Result<FileAttr, Error> {
         // Reuse the implementation for files, which should work for all handles.
         val handle = this.handle.asRawHandle()
         val f = File(handle = Handle.fromRawHandle(handle))
         return f.fileAttr()
     }
 
-    public open fun metadata(path: Path): Result<FileAttr> {
+    public open fun metadata(path: Path): Result<FileAttr, Error> {
         val path1 = when (val tryResult = toU16sWithoutNul(path)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         // Same as the `stat` logic used for `fs.metadata`
         return run {
@@ -194,12 +193,12 @@ public open class Dir internal constructor(
         }
     }
 
-    public open fun symlinkMetadata(path: Path): Result<FileAttr> {
+    public open fun symlinkMetadata(path: Path): Result<FileAttr, Error> {
         val path1 = when (val tryResult = toU16sWithoutNul(path)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         return this.metadataNative(path1, ReparsePoint.Open)
     }
 
-    public open fun metadataNative(path: List<UShort>, reparse: ReparsePoint): Result<FileAttr> {
+    public open fun metadataNative(path: List<UShort>, reparse: ReparsePoint): Result<FileAttr, Error> {
         val opts = OpenOptions.new()
         // the NT functions need at least c.FileReadAttributes
         opts.accessMode(FILE_READ_ATTRIBUTES)
@@ -227,15 +226,15 @@ public open class Dir internal constructor(
             handleCtorArg = handle,
         )
 
-        public fun open(path: Path, opts: OpenOptions): Result<Dir> = withNativePath(path, { path1 -> Dir.openWithNative(path1, opts) })
+        public fun open(path: Path, opts: OpenOptions): Result<Dir, Error> = withNativePath(path, { path1 -> Dir.openWithNative(path1, opts) })
 
-        public fun openForTraversal(path: Path): Result<Dir> {
+        public fun openForTraversal(path: Path): Result<Dir, Error> {
             val opts = OpenOptions.new()
             opts.accessMode(FILE_TRAVERSE)
             return withNativePath(path, { path1 -> Dir.openWithNative(path1, opts) })
         }
 
-        public fun openWithNative(path: WCStr, opts: OpenOptions): Result<Dir> {
+        public fun openWithNative(path: WCStr, opts: OpenOptions): Result<Dir, Error> {
             val creation = when (val tryResult = opts.getCreationMode()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
             val localStorageL119C8 = AddressableLocal(SecurityAttributes(nLength = sizeOf<SecurityAttributes>(typeLayoutT = ObjectSlotLayout<SecurityAttributes>()).toUInt(), lpSecurityDescriptor = MutPtr(0L), bInheritHandle = opts.inheritHandle.toInt()), ObjectSlotLayout<SecurityAttributes>())
             val handle = createFileW(path.asPtr(), when (val tryResult = opts.getAccessMode()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }, opts.shareMode, localStorageL119C8.asConstPtr(), creation, opts.getFlagsAndAttributes() or FILE_FLAG_BACKUP_SEMANTICS, MutPtr(0L))
@@ -245,14 +244,14 @@ public open class Dir internal constructor(
                     val handle1 = matchVal.value
                     Result.Ok(Dir(handle = Handle.fromInner(handle1)))
                 }; is Result.Err<*> -> {
-                    Result.Err(io.Error.lastOsError())
+                    Result.Err(Error.lastOsError())
                 } }
             }
         }
     }
 }
 
-public fun toU16sWithoutNul(path: Path): Result<List<UShort>> {
+public fun toU16sWithoutNul(path: Path): Result<List<UShort>, Error> {
     val path1 = when (val tryResult = toU16s(path)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
     path1.pop()
     return Result.Ok(path1)
@@ -263,7 +262,7 @@ public fun toU16sWithoutNul(path: Path): Result<List<UShort>> {
  *
  * This isn't completely safe because `OBJECT_ATTRIBUTES` contains raw pointers.
  */
-public fun ntCreateFile(opts: OpenOptions, objectAttributes: ObjectAttributes, createOptions: UInt): Result<Handle> {
+public fun ntCreateFile(opts: OpenOptions, objectAttributes: ObjectAttributes, createOptions: UInt): Result<Handle, Error> {
     val handle = MutPtr(0L)
     val ioStatus = IoStatusBlock.PENDING
     // SYNCHRONIZE is included in FILE_GENERIC_READ, but not GENERIC_READ, so we add it manually

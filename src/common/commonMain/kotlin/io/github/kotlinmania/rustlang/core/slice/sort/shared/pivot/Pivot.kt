@@ -47,7 +47,7 @@ public fun <T> choosePivot(v: List<T>, isLess: (T, T) -> Boolean): Int {
         }
     // SAFETY: preconditions must have been met for offsetFromUnsigned()
     return run {
-        hint.assertUnchecked(index < v.size)
+        assertUnchecked(index < v.size)
         index
     }
 }

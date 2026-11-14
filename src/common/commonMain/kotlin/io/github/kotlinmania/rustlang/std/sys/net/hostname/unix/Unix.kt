@@ -11,9 +11,10 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
+import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.sys.io.error.generic.errno
 
-public fun hostname(): Result<OsString> {
+public fun hostname(): Result<OsString, Error> {
     // Query the system for the maximum host name length.
     val hostNameMax =
         when (val matchVal = sysconf(SC_HOST_NAME_MAX)) {
@@ -68,7 +69,7 @@ public fun hostname(): Result<OsString> {
             // size and should be returned to the user.
             else -> {
                 val err = matchVal1
-                return Result.Err(io.Error.fromRawOsError(err))
+                return Result.Err(Error.fromRawOsError(err))
             }
         }
         // Resize the buffer (according to `List`s resizing rules) and try again.

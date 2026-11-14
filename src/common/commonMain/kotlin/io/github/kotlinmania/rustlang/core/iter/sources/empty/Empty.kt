@@ -37,12 +37,14 @@ public class DebugStruct(
  * Basic usage:
  *
  * ```kotlin
+ * import std.iter
+ *
  * // this could have been an iterator over i32, but alas, it's just not.
  * var nope = iter.empty<Int>()
  * check(null == nope.next())
  * ```
  */
-public fun <T> empty(): Empty<T> = Empty(marker.PhantomData)
+public fun <T> empty(): Empty<T> = Empty(Unit)
 
 /**
  * An iterator that yields nothing.
@@ -58,7 +60,7 @@ public open class Empty<T>(
             value = v
         }
 
-    override fun iterator(): kotlin.collections.Iterator<T> = object : AbstractIterator<T>() {
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@Empty.next()) {
                 null -> done()
@@ -79,11 +81,11 @@ public open class Empty<T>(
 
     // not @derive because that adds a Clone bound on T,
     // which isn't necessary.
-    public open fun clone(): Empty<T> = Empty(marker.PhantomData)
+    public open fun clone(): Empty<T> = Empty(Unit)
 
     public companion object {
         // not @derive because that adds a Default bound on T,
         // which isn't necessary.
-        public fun <T> default(): Empty<T> = Empty(marker.PhantomData)
+        public fun <T> default(): Empty<T> = Empty(Unit)
     }
 }

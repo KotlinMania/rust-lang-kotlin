@@ -6,6 +6,7 @@ import io.github.kotlinmania.rustlang.core.iter.TrustedLen
 import io.github.kotlinmania.rustlang.core.iter.sources.fromfn.fromFn
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.num.rustCheckedMul
 import io.github.kotlinmania.rustlang.core.num.rustSaturatingAdd
@@ -43,7 +44,7 @@ public open class StepBy<I>(
     public var stepMinusOne: Int,
     public var firstTake: Boolean,
 ) : TrustedLen<StepBy<I>>, StepByImpl<I, Any?, Item>, StepByBackImpl<I, Any?, Item>, Iterable<Item> {
-    override fun iterator(): kotlin.collections.Iterator<Item> = object : AbstractIterator<Item>() {
+    override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
         override fun computeNext() {
             when (val v = this@StepBy.next()) {
                 null -> done()
@@ -247,33 +248,33 @@ public open class StepBy<I>(
     }
 
     public companion object {
-        public fun <I> typeLayout(typeLayoutI: io.github.kotlinmania.rustlang.core.mem.TypeLayout<I>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<StepBy<I>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<StepBy<I>> {
+        public fun <I> typeLayout(typeLayoutI: TypeLayout<I>): TypeLayout<StepBy<I>> =
+            object : TypeLayout<StepBy<I>> {
                 override val alignBytes: Long = listOf(8L, typeLayoutI.alignBytes).max()
-                private val off1: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(typeLayoutI.sizeBytes, 8L)
-                private val off2: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes((off1 + 8L), 1L)
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes((off2 + 1L), alignBytes)
+                private val off1: Long = alignUpBytes(typeLayoutI.sizeBytes, 8L)
+                private val off2: Long = alignUpBytes((off1 + 8L), 1L)
+                override val sizeBytes: Long = alignUpBytes((off2 + 1L), alignBytes)
                 override fun readNative(addr: Long): StepBy<I> =
                     StepBy(
                         (typeLayoutI).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readNative(addr + off1),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + off2),
+                        (PrimitiveLayouts.USIZE64).readNative(addr + off1),
+                        (PrimitiveLayouts.BOOL).readNative(addr + off2),
                     )
                 override fun writeNative(addr: Long, value: StepBy<I>) {
                     (typeLayoutI).writeNative(addr, value.iter)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeNative(addr + off1, value.stepMinusOne)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + off2, value.firstTake)
+                    (PrimitiveLayouts.USIZE64).writeNative(addr + off1, value.stepMinusOne)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + off2, value.firstTake)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): StepBy<I> =
                     StepBy(
                         (typeLayoutI).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readBytes(buf, offset + off1.toInt()),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + off2.toInt()),
+                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset + off1.toInt()),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + off2.toInt()),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: StepBy<I>) {
                     (typeLayoutI).writeBytes(buf, offset, value.iter)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeBytes(buf, offset + off1.toInt(), value.stepMinusOne)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + off2.toInt(), value.firstTake)
+                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset + off1.toInt(), value.stepMinusOne)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + off2.toInt(), value.firstTake)
                 }
             }
 

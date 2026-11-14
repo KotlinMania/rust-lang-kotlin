@@ -32,24 +32,26 @@ internal open class Operation(
             value = v
         }
 
+    public open fun clone(): Operation = Operation(value)
+
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Operation> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Operation> {
+        public fun typeLayout(): TypeLayout<Operation> =
+            object : TypeLayout<Operation> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 8L
                 override fun readNative(addr: Long): Operation =
                     Operation(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readNative(addr),
+                        (PrimitiveLayouts.USIZE64).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: Operation) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeNative(addr, value.value)
+                    (PrimitiveLayouts.USIZE64).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Operation =
                     Operation(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).readBytes(buf, offset),
+                        (PrimitiveLayouts.USIZE64).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Operation) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.USIZE64).writeBytes(buf, offset, value.value)
+                    (PrimitiveLayouts.USIZE64).writeBytes(buf, offset, value.value)
                 }
             }
 

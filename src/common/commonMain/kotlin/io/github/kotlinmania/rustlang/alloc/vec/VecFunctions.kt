@@ -20,7 +20,7 @@ public fun <T> dedupSimdChunkSize(typeLayoutT: TypeLayout<T>): Int? {
     }) {
         return null
     }
-    val simdWidth: Int? = cfgSelect(all, targetArch, "arm", targetFeature, "neon", size, 8, None, Some, SIMD_WIDTH, all, targetArch, "aarch64", targetFeature, "neon", Some, SIMD_WIDTH, all, any, targetArch, "x86", targetArch, "x86_64", targetFeature, "sse4.1", Some, SIMD_WIDTH, all, any, targetArch, "x86", targetArch, "x86_64", targetFeature, "sse2", size, 8, None, Some, SIMD_WIDTH, all, any, targetArch, "riscv32", targetArch, "riscv64", targetFeature, "v", Some, SIMD_WIDTH, all, any, targetArch, "loongarch32", targetArch, "loongarch64", targetFeature, "lsx", Some, SIMD_WIDTH, None)
+    val simdWidth: Int? = SIMD_WIDTH
     return if (simdWidth != null) {
         val simdWidth1 = simdWidth
         simdWidth1 * 2 / size

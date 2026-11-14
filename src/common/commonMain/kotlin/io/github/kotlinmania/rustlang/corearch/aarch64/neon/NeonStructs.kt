@@ -26,6 +26,8 @@ public open class Float64x1T(
             value = v
         }
 
+    public open fun clone(): Float64x1T = Float64x1T(value)
+
     /**
      * Returns an array reference containing the entire SIMD vector.
      */
@@ -39,23 +41,23 @@ public open class Float64x1T(
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "float64x1_t", this.asArray())
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Float64x1T> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Float64x1T> {
+        public fun typeLayout(): TypeLayout<Float64x1T> =
+            object : TypeLayout<Float64x1T> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 8L
                 override fun readNative(addr: Long): Float64x1T =
                     Float64x1T(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.doubleArray(1)).readNative(addr),
+                        (PrimitiveArrayLayouts.doubleArray(1)).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: Float64x1T) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.doubleArray(1)).writeNative(addr, value.value)
+                    (PrimitiveArrayLayouts.doubleArray(1)).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Float64x1T =
                     Float64x1T(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.doubleArray(1)).readBytes(buf, offset),
+                        (PrimitiveArrayLayouts.doubleArray(1)).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Float64x1T) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.doubleArray(1)).writeBytes(buf, offset, value.value)
+                    (PrimitiveArrayLayouts.doubleArray(1)).writeBytes(buf, offset, value.value)
                 }
             }
 
@@ -80,6 +82,8 @@ public open class Float64x2T(
             value = v
         }
 
+    public open fun clone(): Float64x2T = Float64x2T(value)
+
     /**
      * Returns an array reference containing the entire SIMD vector.
      */
@@ -93,23 +97,23 @@ public open class Float64x2T(
     public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "float64x2_t", this.asArray())
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Float64x2T> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Float64x2T> {
+        public fun typeLayout(): TypeLayout<Float64x2T> =
+            object : TypeLayout<Float64x2T> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): Float64x2T =
                     Float64x2T(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.doubleArray(2)).readNative(addr),
+                        (PrimitiveArrayLayouts.doubleArray(2)).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: Float64x2T) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.doubleArray(2)).writeNative(addr, value.value)
+                    (PrimitiveArrayLayouts.doubleArray(2)).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Float64x2T =
                     Float64x2T(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.doubleArray(2)).readBytes(buf, offset),
+                        (PrimitiveArrayLayouts.doubleArray(2)).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Float64x2T) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts.doubleArray(2)).writeBytes(buf, offset, value.value)
+                    (PrimitiveArrayLayouts.doubleArray(2)).writeBytes(buf, offset, value.value)
                 }
             }
 
@@ -129,9 +133,11 @@ public open class Float64x1x2T(
     public var field0: Float64x1T,
     public var field1: Float64x1T,
 ) {
+    public open fun clone(): Float64x1x2T = Float64x1x2T(field0, field1)
+
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Float64x1x2T> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Float64x1x2T> {
+        public fun typeLayout(): TypeLayout<Float64x1x2T> =
+            object : TypeLayout<Float64x1x2T> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): Float64x1x2T =
@@ -164,9 +170,11 @@ public open class Float64x1x3T(
     public var field1: Float64x1T,
     public var field2: Float64x1T,
 ) {
+    public open fun clone(): Float64x1x3T = Float64x1x3T(field0, field1, field2)
+
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Float64x1x3T> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Float64x1x3T> {
+        public fun typeLayout(): TypeLayout<Float64x1x3T> =
+            object : TypeLayout<Float64x1x3T> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 24L
                 override fun readNative(addr: Long): Float64x1x3T =
@@ -204,9 +212,11 @@ public open class Float64x1x4T(
     public var field2: Float64x1T,
     public var field3: Float64x1T,
 ) {
+    public open fun clone(): Float64x1x4T = Float64x1x4T(field0, field1, field2, field3)
+
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Float64x1x4T> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Float64x1x4T> {
+        public fun typeLayout(): TypeLayout<Float64x1x4T> =
+            object : TypeLayout<Float64x1x4T> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 32L
                 override fun readNative(addr: Long): Float64x1x4T =
@@ -246,9 +256,11 @@ public open class Float64x2x2T(
     public var field0: Float64x2T,
     public var field1: Float64x2T,
 ) {
+    public open fun clone(): Float64x2x2T = Float64x2x2T(field0, field1)
+
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Float64x2x2T> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Float64x2x2T> {
+        public fun typeLayout(): TypeLayout<Float64x2x2T> =
+            object : TypeLayout<Float64x2x2T> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 32L
                 override fun readNative(addr: Long): Float64x2x2T =
@@ -281,9 +293,11 @@ public open class Float64x2x3T(
     public var field1: Float64x2T,
     public var field2: Float64x2T,
 ) {
+    public open fun clone(): Float64x2x3T = Float64x2x3T(field0, field1, field2)
+
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Float64x2x3T> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Float64x2x3T> {
+        public fun typeLayout(): TypeLayout<Float64x2x3T> =
+            object : TypeLayout<Float64x2x3T> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 48L
                 override fun readNative(addr: Long): Float64x2x3T =
@@ -321,9 +335,11 @@ public open class Float64x2x4T(
     public var field2: Float64x2T,
     public var field3: Float64x2T,
 ) {
+    public open fun clone(): Float64x2x4T = Float64x2x4T(field0, field1, field2, field3)
+
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Float64x2x4T> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Float64x2x4T> {
+        public fun typeLayout(): TypeLayout<Float64x2x4T> =
+            object : TypeLayout<Float64x2x4T> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 64L
                 override fun readNative(addr: Long): Float64x2x4T =

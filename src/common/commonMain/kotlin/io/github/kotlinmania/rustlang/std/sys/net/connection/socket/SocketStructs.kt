@@ -1,5 +1,6 @@
 package io.github.kotlinmania.rustlang.std.sys.net.connection.socket
 
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUchar
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
@@ -13,27 +14,24 @@ import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.net.ipaddr.Ipv4Addr
 import io.github.kotlinmania.rustlang.core.net.ipaddr.Ipv6Addr
+import io.github.kotlinmania.rustlang.core.net.socketaddr.SocketAddr
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.time.Duration
+import io.github.kotlinmania.rustlang.std.c.EINPROGRESS
 import io.github.kotlinmania.rustlang.std.c.EMSGSIZE
+import io.github.kotlinmania.rustlang.std.c.SO_REUSEADDR
 import io.github.kotlinmania.rustlang.std.c.Send
 import io.github.kotlinmania.rustlang.std.ffi.CInt
-import io.github.kotlinmania.rustlang.std.fmt
-import io.github.kotlinmania.rustlang.std.mem
+import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.net.Shutdown
 import io.github.kotlinmania.rustlang.std.net.socketaddr.ToSocketAddrs
-import io.github.kotlinmania.rustlang.std.os.unix.net.MSG_NOSIGNAL
-import io.github.kotlinmania.rustlang.std.os.unix.net.SocketAddr
-import io.github.kotlinmania.rustlang.std.os.xous.ffi.definitions.Error
 import io.github.kotlinmania.rustlang.std.sys.AsInner
 import io.github.kotlinmania.rustlang.std.sys.FromInner
 import io.github.kotlinmania.rustlang.std.sys.net.connection.eachAddr
-import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.solid.cvt
-import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.solid.cvtR
 import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.unix.Socket
 import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.unix.init
 import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.windows.netc.IpMreq
@@ -41,33 +39,35 @@ import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.windows.netc
 import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.windows.netc.SockaddrIn
 import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.windows.netc.SockaddrIn6
 import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.windows.netc.sendto
-import io.github.kotlinmania.rustlang.std.sys.pal.solid.abi.sockets.EINPROGRESS
-import io.github.kotlinmania.rustlang.std.sys.pal.solid.abi.sockets.IPPROTO_IP
-import io.github.kotlinmania.rustlang.std.sys.pal.solid.abi.sockets.IPPROTO_IPV6
-import io.github.kotlinmania.rustlang.std.sys.pal.solid.abi.sockets.IPV6_ADD_MEMBERSHIP
-import io.github.kotlinmania.rustlang.std.sys.pal.solid.abi.sockets.IPV6_DROP_MEMBERSHIP
-import io.github.kotlinmania.rustlang.std.sys.pal.solid.abi.sockets.IPV6_MULTICAST_LOOP
-import io.github.kotlinmania.rustlang.std.sys.pal.solid.abi.sockets.IPV6_V6ONLY
-import io.github.kotlinmania.rustlang.std.sys.pal.solid.abi.sockets.IP_ADD_MEMBERSHIP
-import io.github.kotlinmania.rustlang.std.sys.pal.solid.abi.sockets.IP_DROP_MEMBERSHIP
-import io.github.kotlinmania.rustlang.std.sys.pal.solid.abi.sockets.IP_MULTICAST_LOOP
-import io.github.kotlinmania.rustlang.std.sys.pal.solid.abi.sockets.IP_MULTICAST_TTL
-import io.github.kotlinmania.rustlang.std.sys.pal.solid.abi.sockets.IP_TTL
-import io.github.kotlinmania.rustlang.std.sys.pal.solid.abi.sockets.SOCK_DGRAM
-import io.github.kotlinmania.rustlang.std.sys.pal.solid.abi.sockets.SOCK_STREAM
-import io.github.kotlinmania.rustlang.std.sys.pal.solid.abi.sockets.SOL_SOCKET
-import io.github.kotlinmania.rustlang.std.sys.pal.solid.abi.sockets.SO_BROADCAST
-import io.github.kotlinmania.rustlang.std.sys.pal.solid.abi.sockets.SO_RCVTIMEO
-import io.github.kotlinmania.rustlang.std.sys.pal.solid.abi.sockets.SO_REUSEADDR
-import io.github.kotlinmania.rustlang.std.sys.pal.solid.abi.sockets.SO_SNDTIMEO
-import io.github.kotlinmania.rustlang.std.sys.pal.solid.abi.sockets.SockaddrStorage
-import io.github.kotlinmania.rustlang.std.sys.pal.solid.abi.sockets.bind
-import io.github.kotlinmania.rustlang.std.sys.pal.solid.abi.sockets.connect
-import io.github.kotlinmania.rustlang.std.sys.pal.solid.abi.sockets.freeaddrinfo
-import io.github.kotlinmania.rustlang.std.sys.pal.solid.abi.sockets.getpeername
-import io.github.kotlinmania.rustlang.std.sys.pal.solid.abi.sockets.getsockname
-import io.github.kotlinmania.rustlang.std.sys.pal.solid.abi.sockets.listen
+import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
+import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvtR
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.IPPROTO_IP
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.IPPROTO_IPV6
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.IPV6_MULTICAST_HOPS
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.IPV6_MULTICAST_LOOP
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.IPV6_UNICAST_HOPS
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.IPV6_V6ONLY
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.IP_ADD_MEMBERSHIP
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.IP_DROP_MEMBERSHIP
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.IP_MULTICAST_LOOP
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.IP_MULTICAST_TTL
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.IP_TTL
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.SOCK_DGRAM
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.SOCK_STREAM
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.SOL_SOCKET
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.SO_BROADCAST
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.SO_RCVTIMEO
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.SO_SNDTIMEO
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.SockaddrStorage
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.WSAEWOULDBLOCK
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.bind
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.connect
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.freeaddrinfo
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.getpeername
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.getsockname
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.listen
+import io.github.kotlinmania.rustlang.std.c.IPV6_JOIN_GROUP as IPV6_ADD_MEMBERSHIP
+import io.github.kotlinmania.rustlang.std.c.IPV6_LEAVE_GROUP as IPV6_DROP_MEMBERSHIP
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -121,7 +121,7 @@ public open class LookupHost internal constructor(
     public var cur: MutPtr = curCtorArg
         internal set
 
-    override fun iterator(): kotlin.collections.Iterator<SocketAddr> = object : AbstractIterator<SocketAddr>() {
+    override fun iterator(): Iterator<SocketAddr> = object : AbstractIterator<SocketAddr>() {
         override fun computeNext() {
             when (val v = this@LookupHost.next()) {
                 null -> done()
@@ -154,31 +154,31 @@ public open class LookupHost internal constructor(
     }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<LookupHost> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<LookupHost> {
+        public fun typeLayout(): TypeLayout<LookupHost> =
+            object : TypeLayout<LookupHost> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 24L
                 override fun readNative(addr: Long): LookupHost =
                     LookupHost(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).readNative(addr + 8L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U16).readNative(addr + 16L),
+                        (PrimitiveLayouts.mutPtrLayout(64)).readNative(addr),
+                        (PrimitiveLayouts.mutPtrLayout(64)).readNative(addr + 8L),
+                        (PrimitiveLayouts.U16).readNative(addr + 16L),
                     )
                 override fun writeNative(addr: Long, value: LookupHost) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).writeNative(addr, value.original)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).writeNative(addr + 8L, value.cur)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U16).writeNative(addr + 16L, value.port)
+                    (PrimitiveLayouts.mutPtrLayout(64)).writeNative(addr, value.original)
+                    (PrimitiveLayouts.mutPtrLayout(64)).writeNative(addr + 8L, value.cur)
+                    (PrimitiveLayouts.U16).writeNative(addr + 16L, value.port)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): LookupHost =
                     LookupHost(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).readBytes(buf, offset + 8),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U16).readBytes(buf, offset + 16),
+                        (PrimitiveLayouts.mutPtrLayout(64)).readBytes(buf, offset),
+                        (PrimitiveLayouts.mutPtrLayout(64)).readBytes(buf, offset + 8),
+                        (PrimitiveLayouts.U16).readBytes(buf, offset + 16),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: LookupHost) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).writeBytes(buf, offset, value.original)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.mutPtrLayout(64)).writeBytes(buf, offset + 8, value.cur)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U16).writeBytes(buf, offset + 16, value.port)
+                    (PrimitiveLayouts.mutPtrLayout(64)).writeBytes(buf, offset, value.original)
+                    (PrimitiveLayouts.mutPtrLayout(64)).writeBytes(buf, offset + 8, value.cur)
+                    (PrimitiveLayouts.U16).writeBytes(buf, offset + 16, value.port)
                 }
             }
 
@@ -204,68 +204,71 @@ public open class TcpStream(
 
     public open fun intoSocket(): Socket = this.inner
 
-    public open fun setReadTimeout(dur: Duration?): Result<Unit> = this.inner.setTimeout(dur, SO_RCVTIMEO)
+    public open fun setReadTimeout(dur: Duration?): Result<Unit, Error> = this.inner.setTimeout(dur, SO_RCVTIMEO)
 
-    public open fun setWriteTimeout(dur: Duration?): Result<Unit> = this.inner.setTimeout(dur, SO_SNDTIMEO)
+    public open fun setWriteTimeout(dur: Duration?): Result<Unit, Error> = this.inner.setTimeout(dur, SO_SNDTIMEO)
 
-    public open fun readTimeout(): Result<Duration?> = this.inner.timeout(SO_RCVTIMEO)
+    public open fun readTimeout(): Result<Duration?, Error> = this.inner.timeout(SO_RCVTIMEO)
 
-    public open fun writeTimeout(): Result<Duration?> = this.inner.timeout(SO_SNDTIMEO)
+    public open fun writeTimeout(): Result<Duration?, Error> = this.inner.timeout(SO_SNDTIMEO)
 
-    public open fun peek(buf: MutableList<UByte>): Result<Int> = this.inner.peek(buf)
+    public open fun peek(buf: MutableList<UByte>): Result<Int, Error> = this.inner.peek(buf)
 
-    public open fun read(buf: MutableList<UByte>): Result<Int> = this.inner.read(buf)
+    public open fun read(buf: MutableList<UByte>): Result<Int, Error> = this.inner.read(buf)
 
-    public open fun readBuf(buf: BorrowedCursor<UByte>): Result<Unit> = this.inner.readBuf(buf)
+    public open fun readBuf(buf: BorrowedCursor<UByte>): Result<Unit, Error> = this.inner.readBuf(buf)
 
-    public open fun readVectored(bufs: MutableList<IoSliceMut>): Result<Int> = this.inner.readVectored(bufs)
+    public open fun readVectored(bufs: MutableList<IoSliceMut>): Result<Int, Error> = this.inner.readVectored(bufs)
 
     public open fun isReadVectored(): Boolean = this.inner.isReadVectored()
 
-    public open fun write(buf: List<UByte>): Result<Int> {
+    public open fun write(buf: List<UByte>): Result<Int, Error> {
         val len = minOf(buf.size, MAX_SEND_LEN).toInt()
         val ret = when (val tryResult = cvt(Send(this.inner.asRaw(), (buf.asPtr()).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, len, MSG_NOSIGNAL))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         return Result.Ok(ret.toInt())
     }
 
-    public open fun writeVectored(bufs: List<IoSlice>): Result<Int> = this.inner.writeVectored(bufs)
+    public open fun writeVectored(bufs: List<IoSlice>): Result<Int, Error> = this.inner.writeVectored(bufs)
 
     public open fun isWriteVectored(): Boolean = this.inner.isWriteVectored()
 
-    public open fun peerAddr(): Result<SocketAddr> = sockname({ buf, len -> getpeername(this.inner.asRaw(), buf, len) })
+    public open fun peerAddr(): Result<SocketAddr, Error> = sockname({ buf, len -> getpeername(this.inner.asRaw().toULong(), buf, len) })
 
-    public open fun socketAddr(): Result<SocketAddr> = sockname({ buf, len -> getsockname(this.inner.asRaw(), buf, len) })
+    public open fun socketAddr(): Result<SocketAddr, Error> = sockname({ buf, len -> getsockname(this.inner.asRaw().toULong(), buf, len) })
 
-    public open fun shutdown(how: Shutdown): Result<Unit> = this.inner.shutdown(how)
+    public open fun shutdown(how: Shutdown): Result<Unit, Error> = this.inner.shutdown(how)
 
-    public open fun duplicate(): Result<TcpStream> = this.inner.duplicate().map({ s -> TcpStream(inner = s) })
+    public open fun duplicate(): Result<TcpStream, Error> = this.inner.duplicate().map({ s -> TcpStream(inner = s) })
 
-    public open fun setLinger(linger: Duration?): Result<Unit> = this.inner.setLinger(linger)
+    public open fun setLinger(linger: Duration?): Result<Unit, Error> = this.inner.setLinger(linger)
 
-    public open fun linger(): Result<Duration?> = this.inner.linger()
+    public open fun linger(): Result<Duration?, Error> = this.inner.linger()
 
-    public open fun setKeepalive(keepalive: Boolean): Result<Unit> = this.inner.setKeepalive(keepalive)
+    public open fun setKeepalive(keepalive: Boolean): Result<Unit, Error> = this.inner.setKeepalive(keepalive)
 
-    public open fun keepalive(): Result<Boolean> = this.inner.keepalive()
+    public open fun keepalive(): Result<Boolean, Error> = this.inner.keepalive()
 
-    public open fun setNodelay(nodelay: Boolean): Result<Unit> = this.inner.setNodelay(nodelay)
+    public open fun setNodelay(nodelay: Boolean): Result<Unit, Error> = this.inner.setNodelay(nodelay)
 
-    public open fun nodelay(): Result<Boolean> = this.inner.nodelay()
+    public open fun nodelay(): Result<Boolean, Error> = this.inner.nodelay()
 
-    public open fun setTtl(ttl: UInt): Result<Unit> = setsockopt(this.inner, IPPROTO_IP, IP_TTL, ttl.toInt(), typeLayoutT = ObjectSlotLayout<CInt>())
+    public open fun setTtl(ttl: UInt): Result<Unit, Error> = setsockopt(this.inner, IPPROTO_IP, IP_TTL, ttl.toInt(), typeLayoutT = ObjectSlotLayout<CInt>())
 
-    public open fun ttl(): Result<UInt> {
+    public open fun ttl(): Result<UInt, Error> {
         val raw: CInt = when (val tryResult = getsockopt(this.inner, IPPROTO_IP, IP_TTL)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         return Result.Ok(raw.toUInt())
     }
 
-    public open fun setHopLimitV6(limit: UByte): Result<Unit> = cfgSelect(any, targetFamily, "unix", targetOs, "windows", setsockopt, this, inner, c, IPPROTO_IPV6, c, IPV6_UNICAST_HOPS, limit, cInt, limit, Err, io, Error, new, ErrorKind, Unsupported, "not supported on this platform")
+    public open fun setHopLimitV6(limit: UByte): Result<Unit, Error> = setsockopt(this.inner, IPPROTO_IPV6, IPV6_UNICAST_HOPS, limit.toInt(), typeLayoutT = ObjectSlotLayout<CInt>())
 
-    public open fun hopLimitV6(): Result<UByte> = cfgSelect(any, targetFamily, "unix", targetOs, "windows", raw, cInt, getsockopt, this, inner, c, IPPROTO_IPV6, c, IPV6_UNICAST_HOPS, Ok, raw, Err, io, Error, new, ErrorKind, Unsupported, "not supported on this platform")
+    public open fun hopLimitV6(): Result<UByte, Error> {
+        val raw: CInt = when (val tryResult = getsockopt(this.inner, IPPROTO_IPV6, IPV6_UNICAST_HOPS)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        return Result.Ok(raw.toUByte())
+    }
 
-    public open fun takeError(): Result<Error?> = this.inner.takeError()
+    public open fun takeError(): Result<io.github.kotlinmania.rustlang.core.io.error.Error?, Error> = this.inner.takeError()
 
-    public open fun setNonblocking(nonblocking: Boolean): Result<Unit> = this.inner.setNonblocking(nonblocking)
+    public open fun setNonblocking(nonblocking: Boolean): Result<Unit, Error> = this.inner.setNonblocking(nonblocking)
 
     public override fun asInner(): Socket = this.inner
 
@@ -295,17 +298,17 @@ public open class TcpStream(
     }
 
     public companion object {
-        public fun <Iter, A : ToSocketAddrs<Any?>> connect(addr: A): Result<TcpStream> {
-            fun inner(addr1: SocketAddr): Result<TcpStream> {
+        public fun <Iter, A : ToSocketAddrs<Any?>> connect(addr: A): Result<TcpStream, Error> {
+            fun inner(addr1: SocketAddr): Result<TcpStream, Error> {
                 val sock = when (val tryResult = Socket.new(addrFamily(addr1), SOCK_STREAM)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
                 when (val tryResult = sock.connect(addr1)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
                 return Result.Ok(TcpStream(inner = sock))
             }
             init()
-            return eachAddr(addr, inner)
+            return eachAddr(addr, ::inner)
         }
 
-        public fun connectTimeout(addr: SocketAddr, timeout: Duration): Result<TcpStream> {
+        public fun connectTimeout(addr: SocketAddr, timeout: Duration): Result<TcpStream, Error> {
             init()
             val sock = when (val tryResult = Socket.new(addrFamily(addr), SOCK_STREAM or SOCK_NONBLOCK)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
             if (SOCK_NONBLOCK == 0) {
@@ -350,9 +353,9 @@ public open class TcpListener(
 
     public open fun intoSocket(): Socket = this.inner
 
-    public open fun socketAddr(): Result<SocketAddr> = sockname({ buf, len -> getsockname(this.inner.asRaw(), buf, len) })
+    public open fun socketAddr(): Result<SocketAddr, Error> = sockname({ buf, len -> getsockname(this.inner.asRaw().toULong(), buf, len) })
 
-    public open fun accept(): Result<Pair<TcpStream, SocketAddr>> {
+    public open fun accept(): Result<Pair<TcpStream, SocketAddr>, Error> {
         // The `accept` function will fill in the storage with the address,
         // so we don't need to zero it here.
         // reference: https://linux.die.net/man/2/accept4
@@ -363,29 +366,32 @@ public open class TcpListener(
         return Result.Ok(Pair(TcpStream(inner = sock), addr))
     }
 
-    public open fun duplicate(): Result<TcpListener> = this.inner.duplicate().map({ s -> TcpListener(inner = s) })
+    public open fun duplicate(): Result<TcpListener, Error> = this.inner.duplicate().map({ s -> TcpListener(inner = s) })
 
-    public open fun setTtl(ttl: UInt): Result<Unit> = setsockopt(this.inner, IPPROTO_IP, IP_TTL, ttl.toInt(), typeLayoutT = ObjectSlotLayout<CInt>())
+    public open fun setTtl(ttl: UInt): Result<Unit, Error> = setsockopt(this.inner, IPPROTO_IP, IP_TTL, ttl.toInt(), typeLayoutT = ObjectSlotLayout<CInt>())
 
-    public open fun ttl(): Result<UInt> {
+    public open fun ttl(): Result<UInt, Error> {
         val raw: CInt = when (val tryResult = getsockopt(this.inner, IPPROTO_IP, IP_TTL)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         return Result.Ok(raw.toUInt())
     }
 
-    public open fun setHopLimitV6(limit: UByte): Result<Unit> = cfgSelect(any, targetFamily, "unix", targetOs, "windows", setsockopt, this, inner, c, IPPROTO_IPV6, c, IPV6_UNICAST_HOPS, limit, cInt, limit, Err, io, Error, new, ErrorKind, Unsupported, "not supported on this platform")
+    public open fun setHopLimitV6(limit: UByte): Result<Unit, Error> = setsockopt(this.inner, IPPROTO_IPV6, IPV6_UNICAST_HOPS, limit.toInt(), typeLayoutT = ObjectSlotLayout<CInt>())
 
-    public open fun hopLimitV6(): Result<UByte> = cfgSelect(any, targetFamily, "unix", targetOs, "windows", raw, cInt, getsockopt, this, inner, c, IPPROTO_IPV6, c, IPV6_UNICAST_HOPS, Ok, raw, Err, io, Error, new, ErrorKind, Unsupported, "not supported on this platform")
-
-    public open fun setOnlyV6(onlyV6: Boolean): Result<Unit> = setsockopt(this.inner, IPPROTO_IPV6, IPV6_V6ONLY, onlyV6.toInt(), typeLayoutT = ObjectSlotLayout<CInt>())
-
-    public open fun onlyV6(): Result<Boolean> {
-        val raw: CInt = when (val tryResult = getsockopt(this.inner, IPPROTO_IPV6, IPV6_V6ONLY)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-        return Result.Ok(raw != 0)
+    public open fun hopLimitV6(): Result<UByte, Error> {
+        val raw: CInt = when (val tryResult = getsockopt(this.inner, IPPROTO_IPV6, IPV6_UNICAST_HOPS)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        return Result.Ok(raw.toUByte())
     }
 
-    public open fun takeError(): Result<Error?> = this.inner.takeError()
+    public open fun setOnlyV6(onlyV6: Boolean): Result<Unit, Error> = setsockopt(this.inner, IPPROTO_IPV6, IPV6_V6ONLY, onlyV6.toInt(), typeLayoutT = ObjectSlotLayout<CInt>())
 
-    public open fun setNonblocking(nonblocking: Boolean): Result<Unit> = this.inner.setNonblocking(nonblocking)
+    public open fun onlyV6(): Result<Boolean, Error> {
+        val raw: CInt = when (val tryResult = getsockopt(this.inner, IPPROTO_IPV6, IPV6_V6ONLY)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        return Result.Ok((raw != 0).toUByte())
+    }
+
+    public open fun takeError(): Result<io.github.kotlinmania.rustlang.core.io.error.Error?, Error> = this.inner.takeError()
+
+    public open fun setNonblocking(nonblocking: Boolean): Result<Unit, Error> = this.inner.setNonblocking(nonblocking)
 
     public open fun fmt(f: StringBuilder) {
         val res = DebugStruct(f, "TcpListener")
@@ -406,8 +412,8 @@ public open class TcpListener(
     }
 
     public companion object {
-        public fun <Iter, A : ToSocketAddrs<Any?>> bind(addr: A): Result<TcpListener> {
-            fun inner(addr1: SocketAddr): Result<TcpListener> {
+        public fun <Iter, A : ToSocketAddrs<Any?>> bind(addr: A): Result<TcpListener, Error> {
+            fun inner(addr1: SocketAddr): Result<TcpListener, Error> {
                 val sock = when (val tryResult = Socket.new(addrFamily(addr1), SOCK_STREAM)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
                 // On platforms with Berkeley-derived sockets, this allows to quickly
                 // rebind a socket, without needing to wait for the OS to clean up the
@@ -419,7 +425,7 @@ public open class TcpListener(
                 when (val tryResult = setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, 1, typeLayoutT = ObjectSlotLayout<CInt>())) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
                 // Bind our new socket
                 val (addr2, len) = socketAddrToC(addr1)
-                when (val tryResult = cvt(bind(sock.asRaw(), addr2.asPtr(), len.toUInt()))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                when (val tryResult = cvt(bind(sock.asRaw(), addr2.asPtr(), len.toInt()))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
                 val backlog =
                     if (false) {
                         // The 3DS doesn't support a big connection backlog. Sometimes
@@ -439,7 +445,7 @@ public open class TcpListener(
                 return Result.Ok(TcpListener(inner = sock))
             }
             init()
-            return eachAddr(addr, inner)
+            return eachAddr(addr, ::inner)
         }
 
         public fun fromInner(socket: Socket): TcpListener = TcpListener(inner = socket)
@@ -456,15 +462,15 @@ public open class UdpSocket(
 
     public open fun intoSocket(): Socket = this.inner
 
-    public open fun peerAddr(): Result<SocketAddr> = sockname({ buf, len -> getpeername(this.inner.asRaw(), buf, len) })
+    public open fun peerAddr(): Result<SocketAddr, Error> = sockname({ buf, len -> getpeername(this.inner.asRaw().toULong(), buf, len) })
 
-    public open fun socketAddr(): Result<SocketAddr> = sockname({ buf, len -> getsockname(this.inner.asRaw(), buf, len) })
+    public open fun socketAddr(): Result<SocketAddr, Error> = sockname({ buf, len -> getsockname(this.inner.asRaw().toULong(), buf, len) })
 
-    public open fun recvFrom(buf: MutableList<UByte>): Result<Pair<Int, SocketAddr>> = this.inner.recvFrom(buf)
+    public open fun recvFrom(buf: MutableList<UByte>): Result<Pair<Int, SocketAddr>, Error> = this.inner.recvFrom(buf)
 
-    public open fun peekFrom(buf: MutableList<UByte>): Result<Pair<Int, SocketAddr>> = this.inner.peekFrom(buf)
+    public open fun peekFrom(buf: MutableList<UByte>): Result<Pair<Int, SocketAddr>, Error> = this.inner.peekFrom(buf)
 
-    public open fun sendTo(buf: List<UByte>, dst: SocketAddr): Result<Int> {
+    public open fun sendTo(buf: List<UByte>, dst: SocketAddr): Result<Int, Error> {
         if (buf.size > MAX_SEND_LEN) {
             return Result.Err(Error.fromRawOsError(EMSGSIZE))
         }
@@ -473,91 +479,97 @@ public open class UdpSocket(
         return Result.Ok(ret.toInt())
     }
 
-    public open fun duplicate(): Result<UdpSocket> = this.inner.duplicate().map({ s -> UdpSocket(inner = s) })
+    public open fun duplicate(): Result<UdpSocket, Error> = this.inner.duplicate().map({ s -> UdpSocket(inner = s) })
 
-    public open fun setReadTimeout(dur: Duration?): Result<Unit> = this.inner.setTimeout(dur, SO_RCVTIMEO)
+    public open fun setReadTimeout(dur: Duration?): Result<Unit, Error> = this.inner.setTimeout(dur, SO_RCVTIMEO)
 
-    public open fun setWriteTimeout(dur: Duration?): Result<Unit> = this.inner.setTimeout(dur, SO_SNDTIMEO)
+    public open fun setWriteTimeout(dur: Duration?): Result<Unit, Error> = this.inner.setTimeout(dur, SO_SNDTIMEO)
 
-    public open fun readTimeout(): Result<Duration?> = this.inner.timeout(SO_RCVTIMEO)
+    public open fun readTimeout(): Result<Duration?, Error> = this.inner.timeout(SO_RCVTIMEO)
 
-    public open fun writeTimeout(): Result<Duration?> = this.inner.timeout(SO_SNDTIMEO)
+    public open fun writeTimeout(): Result<Duration?, Error> = this.inner.timeout(SO_SNDTIMEO)
 
-    public open fun setBroadcast(broadcast: Boolean): Result<Unit> = setsockopt(this.inner, SOL_SOCKET, SO_BROADCAST, broadcast.toInt(), typeLayoutT = ObjectSlotLayout<CInt>())
+    public open fun setBroadcast(broadcast: Boolean): Result<Unit, Error> = setsockopt(this.inner, SOL_SOCKET, SO_BROADCAST, broadcast.toInt(), typeLayoutT = ObjectSlotLayout<CInt>())
 
-    public open fun broadcast(): Result<Boolean> {
+    public open fun broadcast(): Result<Boolean, Error> {
         val raw: CInt = when (val tryResult = getsockopt(this.inner, SOL_SOCKET, SO_BROADCAST)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-        return Result.Ok(raw != 0)
+        return Result.Ok((raw != 0).toUByte())
     }
 
-    public open fun setMulticastLoopV4(multicastLoopV4: Boolean): Result<Unit> = setsockopt(this.inner, IPPROTO_IP, IP_MULTICAST_LOOP, ((multicastLoopV4 as Any?) as IpV4MultiCastType), typeLayoutT = ObjectSlotLayout<IpV4MultiCastType>())
+    public open fun setMulticastLoopV4(multicastLoopV4: Boolean): Result<Unit, Error> = setsockopt(this.inner, IPPROTO_IP, IP_MULTICAST_LOOP, multicastLoopV4, typeLayoutT = ObjectSlotLayout<CUchar>())
 
-    public open fun multicastLoopV4(): Result<Boolean> {
+    public open fun multicastLoopV4(): Result<Boolean, Error> {
         val raw: IpV4MultiCastType = when (val tryResult = getsockopt(this.inner, IPPROTO_IP, IP_MULTICAST_LOOP)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-        return Result.Ok(raw != 0)
+        return Result.Ok(raw != 0u.toUByte())
     }
 
-    public open fun setMulticastTtlV4(multicastTtlV4: UInt): Result<Unit> {
+    public open fun setMulticastTtlV4(multicastTtlV4: UInt): Result<Unit, Error> {
         val ttl: UByte = when (val tryResult = multicastTtlV4.tryInto().mapErr({ Error.from(ErrorKind.InvalidInput) })) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-        return setsockopt(this.inner, IPPROTO_IP, IP_MULTICAST_TTL, ((ttl as Any?) as IpV4MultiCastType), typeLayoutT = ObjectSlotLayout<IpV4MultiCastType>())
+        return setsockopt(this.inner, IPPROTO_IP, IP_MULTICAST_TTL, ttl, typeLayoutT = ObjectSlotLayout<CUchar>())
     }
 
-    public open fun multicastTtlV4(): Result<UInt> {
+    public open fun multicastTtlV4(): Result<UInt, Error> {
         val raw: IpV4MultiCastType = when (val tryResult = getsockopt(this.inner, IPPROTO_IP, IP_MULTICAST_TTL)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         return Result.Ok(raw.toUInt())
     }
 
-    public open fun setMulticastLoopV6(multicastLoopV6: Boolean): Result<Unit> = setsockopt(this.inner, IPPROTO_IPV6, IPV6_MULTICAST_LOOP, multicastLoopV6.toInt(), typeLayoutT = ObjectSlotLayout<CInt>())
+    public open fun setMulticastLoopV6(multicastLoopV6: Boolean): Result<Unit, Error> = setsockopt(this.inner, IPPROTO_IPV6, IPV6_MULTICAST_LOOP, multicastLoopV6.toInt(), typeLayoutT = ObjectSlotLayout<CInt>())
 
-    public open fun multicastLoopV6(): Result<Boolean> {
+    public open fun multicastLoopV6(): Result<Boolean, Error> {
         val raw: CInt = when (val tryResult = getsockopt(this.inner, IPPROTO_IPV6, IPV6_MULTICAST_LOOP)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-        return Result.Ok(raw != 0)
+        return Result.Ok((raw != 0).toUByte())
     }
 
-    public open fun joinMulticastV4(multiaddr: Ipv4Addr, iface: Ipv4Addr): Result<Unit> {
+    public open fun joinMulticastV4(multiaddr: Ipv4Addr, iface: Ipv4Addr): Result<Unit, Error> {
         val mreq = IpMreq(imrMultiaddr = ipV4AddrToC(multiaddr), imrInterface = ipV4AddrToC(iface))
         return setsockopt(this.inner, IPPROTO_IP, IP_ADD_MEMBERSHIP, mreq)
     }
 
-    public open fun joinMulticastV6(multiaddr: Ipv6Addr, iface: UInt): Result<Unit> {
+    public open fun joinMulticastV6(multiaddr: Ipv6Addr, iface: UInt): Result<Unit, Error> {
         val mreq = Ipv6Mreq(ipv6mrMultiaddr = ipV6AddrToC(multiaddr), ipv6mrInterface = toIpv6mrInterface(iface).toUInt())
         return setsockopt(this.inner, IPPROTO_IPV6, IPV6_ADD_MEMBERSHIP, mreq)
     }
 
-    public open fun leaveMulticastV4(multiaddr: Ipv4Addr, iface: Ipv4Addr): Result<Unit> {
+    public open fun leaveMulticastV4(multiaddr: Ipv4Addr, iface: Ipv4Addr): Result<Unit, Error> {
         val mreq = IpMreq(imrMultiaddr = ipV4AddrToC(multiaddr), imrInterface = ipV4AddrToC(iface))
         return setsockopt(this.inner, IPPROTO_IP, IP_DROP_MEMBERSHIP, mreq)
     }
 
-    public open fun leaveMulticastV6(multiaddr: Ipv6Addr, iface: UInt): Result<Unit> {
+    public open fun leaveMulticastV6(multiaddr: Ipv6Addr, iface: UInt): Result<Unit, Error> {
         val mreq = Ipv6Mreq(ipv6mrMultiaddr = ipV6AddrToC(multiaddr), ipv6mrInterface = toIpv6mrInterface(iface).toUInt())
         return setsockopt(this.inner, IPPROTO_IPV6, IPV6_DROP_MEMBERSHIP, mreq)
     }
 
-    public open fun setTtl(ttl: UInt): Result<Unit> = setsockopt(this.inner, IPPROTO_IP, IP_TTL, ttl.toInt(), typeLayoutT = ObjectSlotLayout<CInt>())
+    public open fun setTtl(ttl: UInt): Result<Unit, Error> = setsockopt(this.inner, IPPROTO_IP, IP_TTL, ttl.toInt(), typeLayoutT = ObjectSlotLayout<CInt>())
 
-    public open fun ttl(): Result<UInt> {
+    public open fun ttl(): Result<UInt, Error> {
         val raw: CInt = when (val tryResult = getsockopt(this.inner, IPPROTO_IP, IP_TTL)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         return Result.Ok(raw.toUInt())
     }
 
-    public open fun setHopLimitV6(limit: UByte): Result<Unit> = cfgSelect(any, targetFamily, "unix", targetOs, "windows", setsockopt, this, inner, c, IPPROTO_IPV6, c, IPV6_UNICAST_HOPS, limit, cInt, limit, Err, io, Error, new, ErrorKind, Unsupported, "not supported on this platform")
+    public open fun setHopLimitV6(limit: UByte): Result<Unit, Error> = setsockopt(this.inner, IPPROTO_IPV6, IPV6_UNICAST_HOPS, limit.toInt(), typeLayoutT = ObjectSlotLayout<CInt>())
 
-    public open fun hopLimitV6(): Result<UByte> = cfgSelect(any, targetFamily, "unix", targetOs, "windows", raw, cInt, getsockopt, this, inner, c, IPPROTO_IPV6, c, IPV6_UNICAST_HOPS, Ok, raw, Err, io, Error, new, ErrorKind, Unsupported, "not supported on this platform")
+    public open fun hopLimitV6(): Result<UByte, Error> {
+        val raw: CInt = when (val tryResult = getsockopt(this.inner, IPPROTO_IPV6, IPV6_UNICAST_HOPS)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        return Result.Ok(raw.toUByte())
+    }
 
-    public open fun setMulticastHopLimitV6(limit: UByte): Result<Unit> = cfgSelect(any, targetFamily, "unix", targetOs, "windows", setsockopt, this, inner, c, IPPROTO_IPV6, c, IPV6_MULTICAST_HOPS, limit, cInt, limit, Err, io, Error, new, ErrorKind, Unsupported, "not supported on this platform")
+    public open fun setMulticastHopLimitV6(limit: UByte): Result<Unit, Error> = setsockopt(this.inner, IPPROTO_IPV6, IPV6_MULTICAST_HOPS, limit.toInt(), typeLayoutT = ObjectSlotLayout<CInt>())
 
-    public open fun multicastHopLimitV6(): Result<UByte> = cfgSelect(any, targetFamily, "unix", targetOs, "windows", raw, cInt, getsockopt, this, inner, c, IPPROTO_IPV6, c, IPV6_MULTICAST_HOPS, Ok, raw, Err, io, Error, new, ErrorKind, Unsupported, "not supported on this platform")
+    public open fun multicastHopLimitV6(): Result<UByte, Error> {
+        val raw: CInt = when (val tryResult = getsockopt(this.inner, IPPROTO_IPV6, IPV6_MULTICAST_HOPS)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        return Result.Ok(raw.toUByte())
+    }
 
-    public open fun takeError(): Result<Error?> = this.inner.takeError()
+    public open fun takeError(): Result<io.github.kotlinmania.rustlang.core.io.error.Error?, Error> = this.inner.takeError()
 
-    public open fun setNonblocking(nonblocking: Boolean): Result<Unit> = this.inner.setNonblocking(nonblocking)
+    public open fun setNonblocking(nonblocking: Boolean): Result<Unit, Error> = this.inner.setNonblocking(nonblocking)
 
-    public open fun recv(buf: MutableList<UByte>): Result<Int> = this.inner.read(buf)
+    public open fun recv(buf: MutableList<UByte>): Result<Int, Error> = this.inner.read(buf)
 
-    public open fun peek(buf: MutableList<UByte>): Result<Int> = this.inner.peek(buf)
+    public open fun peek(buf: MutableList<UByte>): Result<Int, Error> = this.inner.peek(buf)
 
-    public open fun send(buf: List<UByte>): Result<Int> {
+    public open fun send(buf: List<UByte>): Result<Int, Error> {
         if (buf.size > MAX_SEND_LEN) {
             return Result.Err(Error.fromRawOsError(EMSGSIZE))
         }
@@ -565,10 +577,10 @@ public open class UdpSocket(
         return Result.Ok(ret.toInt())
     }
 
-    public open fun <Iter, A : ToSocketAddrs<Any?>> connect(addr: A): Result<Unit> {
-        fun inner(thisRef: UdpSocket, addr1: SocketAddr): Result<Unit> {
+    public open fun <Iter, A : ToSocketAddrs<Any?>> connect(addr: A): Result<Unit, Error> {
+        fun inner(thisRef: UdpSocket, addr1: SocketAddr): Result<Unit, Error> {
             val (addr2, len) = socketAddrToC(addr1)
-            return cvtR({ connect(thisRef.inner.asRaw(), addr2.asPtr(), len) }).map(drop)
+            return cvtR({ connect(thisRef.inner.asRaw().toULong(), addr2.asPtr(), len) }).map({ Unit })
         }
         return eachAddr(addr, { addr1 -> inner(this, addr1) })
     }
@@ -592,15 +604,15 @@ public open class UdpSocket(
     }
 
     public companion object {
-        public fun <Iter, A : ToSocketAddrs<Any?>> bind(addr: A): Result<UdpSocket> {
-            fun inner(addr1: SocketAddr): Result<UdpSocket> {
+        public fun <Iter, A : ToSocketAddrs<Any?>> bind(addr: A): Result<UdpSocket, Error> {
+            fun inner(addr1: SocketAddr): Result<UdpSocket, Error> {
                 val sock = when (val tryResult = Socket.new(addrFamily(addr1), SOCK_DGRAM)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
                 val (addr2, len) = socketAddrToC(addr1)
-                when (val tryResult = cvt(bind(sock.asRaw(), addr2.asPtr(), len.toUInt()))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                when (val tryResult = cvt(bind(sock.asRaw(), addr2.asPtr(), len.toInt()))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
                 return Result.Ok(UdpSocket(inner = sock))
             }
             init()
-            return eachAddr(addr, inner)
+            return eachAddr(addr, ::inner)
         }
 
         public fun fromInner(socket: Socket): UdpSocket = UdpSocket(inner = socket)

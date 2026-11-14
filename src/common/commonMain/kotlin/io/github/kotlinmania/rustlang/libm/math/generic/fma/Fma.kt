@@ -219,31 +219,31 @@ public open class Norm<F : Float<F, Any?, Any?>>(
     }
 
     public companion object {
-        public fun <F : Float<F, Any?, Any?>> typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Norm<F>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Norm<F>> {
+        public fun <F : Float<F, Any?, Any?>> typeLayout(): TypeLayout<Norm<F>> =
+            object : TypeLayout<Norm<F>> {
                 override val alignBytes: Long = 4L
                 override val sizeBytes: Long = 12L
                 override fun readNative(addr: Long): Norm<F> =
                     Norm(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I32).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I32).readNative(addr + 4L),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr + 8L),
+                        (PrimitiveLayouts.I32).readNative(addr),
+                        (PrimitiveLayouts.I32).readNative(addr + 4L),
+                        (PrimitiveLayouts.BOOL).readNative(addr + 8L),
                     )
                 override fun writeNative(addr: Long, value: Norm<F>) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I32).writeNative(addr, value.m)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I32).writeNative(addr + 4L, value.e)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr + 8L, value.neg)
+                    (PrimitiveLayouts.I32).writeNative(addr, value.m)
+                    (PrimitiveLayouts.I32).writeNative(addr + 4L, value.e)
+                    (PrimitiveLayouts.BOOL).writeNative(addr + 8L, value.neg)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Norm<F> =
                     Norm(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I32).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I32).readBytes(buf, offset + 4),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset + 8),
+                        (PrimitiveLayouts.I32).readBytes(buf, offset),
+                        (PrimitiveLayouts.I32).readBytes(buf, offset + 4),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset + 8),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Norm<F>) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I32).writeBytes(buf, offset, value.m)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I32).writeBytes(buf, offset + 4, value.e)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset + 8, value.neg)
+                    (PrimitiveLayouts.I32).writeBytes(buf, offset, value.m)
+                    (PrimitiveLayouts.I32).writeBytes(buf, offset + 4, value.e)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset + 8, value.neg)
                 }
             }
 

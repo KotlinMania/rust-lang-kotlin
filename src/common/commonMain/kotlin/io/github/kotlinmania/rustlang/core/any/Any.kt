@@ -12,6 +12,7 @@ import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
@@ -24,6 +25,8 @@ import io.github.kotlinmania.rustlang.core.ptr.metadata.Pointee
 import io.github.kotlinmania.rustlang.core.ptr.readUnaligned
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
+import io.github.kotlinmania.rustlang.core.slice.rawMutSliceList
+import io.github.kotlinmania.rustlang.core.slice.rawSliceList
 
 // Utilities for dynamic typing or type reflection.
 //
@@ -522,6 +525,8 @@ public open class TypeId(
      */
     internal var data: List<ConstPtr>,
 ) {
+    public open fun clone(): TypeId = TypeId(data)
+
     // SAFETY: the raw pointer is always an integer
 
     // SAFETY: the raw pointer is always an integer
@@ -611,23 +616,23 @@ public open class TypeId(
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = f.writeFmt("TypeId(${this.asU128()})")
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<TypeId> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<TypeId> {
+        public fun typeLayout(): TypeLayout<TypeId> =
+            object : TypeLayout<TypeId> {
                 override val alignBytes: Long = 8L
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(((16 / sizeOf<ConstPtr>(typeLayoutT = PrimitiveLayouts.constPtrLayout(64L))).toLong() * (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.constPtrLayout(64)).strideBytes), 8L)
+                override val sizeBytes: Long = alignUpBytes(((16 / sizeOf<ConstPtr>(typeLayoutT = PrimitiveLayouts.constPtrLayout(64L))).toLong() * (PrimitiveLayouts.constPtrLayout(64)).strideBytes), 8L)
                 override fun readNative(addr: Long): TypeId =
                     TypeId(
-                        (io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout(io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.constPtrLayout(64), (16 / sizeOf<ConstPtr>(typeLayoutT = PrimitiveLayouts.constPtrLayout(64L))).toInt())).readNative(addr),
+                        (fixedListTypeLayout(PrimitiveLayouts.constPtrLayout(64), (16 / sizeOf<ConstPtr>(typeLayoutT = PrimitiveLayouts.constPtrLayout(64L))).toInt())).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: TypeId) {
-                    (io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout(io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.constPtrLayout(64), (16 / sizeOf<ConstPtr>(typeLayoutT = PrimitiveLayouts.constPtrLayout(64L))).toInt())).writeNative(addr, value.data)
+                    (fixedListTypeLayout(PrimitiveLayouts.constPtrLayout(64), (16 / sizeOf<ConstPtr>(typeLayoutT = PrimitiveLayouts.constPtrLayout(64L))).toInt())).writeNative(addr, value.data)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): TypeId =
                     TypeId(
-                        (io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout(io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.constPtrLayout(64), (16 / sizeOf<ConstPtr>(typeLayoutT = PrimitiveLayouts.constPtrLayout(64L))).toInt())).readBytes(buf, offset),
+                        (fixedListTypeLayout(PrimitiveLayouts.constPtrLayout(64), (16 / sizeOf<ConstPtr>(typeLayoutT = PrimitiveLayouts.constPtrLayout(64L))).toInt())).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: TypeId) {
-                    (io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout(io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.constPtrLayout(64), (16 / sizeOf<ConstPtr>(typeLayoutT = PrimitiveLayouts.constPtrLayout(64L))).toInt())).writeBytes(buf, offset, value.data)
+                    (fixedListTypeLayout(PrimitiveLayouts.constPtrLayout(64), (16 / sizeOf<ConstPtr>(typeLayoutT = PrimitiveLayouts.constPtrLayout(64L))).toInt())).writeBytes(buf, offset, value.data)
                 }
             }
 
@@ -907,7 +912,7 @@ public fun <T, U : TryAsDynCompatible> tryAsDyn(t: T): U? {
         null -> null
         else -> {
             val dynMetadata = vtable
-            val pointer = ptr.fromRawParts((constPtrFromRustCast(t)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, dynMetadata)
+            val pointer = rawSliceList((constPtrFromRustCast(t)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, dynMetadata.toInt(), PrimitiveLayouts.UNIT)
             // SAFETY: `t` is a reference to a type, so we know it is valid.
             // `dynMetadata` is a vtable for T, implementing the trait of `U`.
             // `T` is sized here because `traitInfoOf` only returns `Some` for sized types,
@@ -931,7 +936,7 @@ public fun <T, U : TryAsDynCompatible> tryAsDynMut(t: T): U? {
         null -> null
         else -> {
             val dynMetadata = vtable
-            val pointer = ptr.fromRawPartsMut((mutPtrFromRustCast(t)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, dynMetadata)
+            val pointer = rawMutSliceList((mutPtrFromRustCast(t)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, dynMetadata.toInt(), PrimitiveLayouts.UNIT)
             // SAFETY: `t` is a reference to a type, so we know it is valid.
             // `dynMetadata` is a vtable for T, implementing the trait of `U`.
             // `T` is sized here because `traitInfoOf` only returns `Some` for sized types,

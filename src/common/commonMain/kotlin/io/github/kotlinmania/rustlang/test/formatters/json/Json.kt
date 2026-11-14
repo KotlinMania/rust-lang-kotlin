@@ -2,8 +2,10 @@
 package io.github.kotlinmania.rustlang.test.formatters.json
 
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.str.rustStrChars
+import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.test.TestDesc
 import io.github.kotlinmania.rustlang.test.console.ConsoleTestDiscoveryState
 import io.github.kotlinmania.rustlang.test.console.ConsoleTestState
@@ -15,7 +17,7 @@ import io.github.kotlinmania.rustlang.test.time.TestExecTime
 internal open class JsonFormatter<T>(
     public var out: OutputLocation<T>,
 ) : OutputFormatter {
-    public open fun writelnMessage(s: String): io.Result<Unit> {
+    public open fun writelnMessage(s: String): Result<Unit, Error> {
         // self.out will take a lock, but that lock is released when writeAll returns. This
         // results in a race condition and json output may not end with a new line. We avoid this
         // by issuing `writeAll` calls line-by-line.
@@ -23,7 +25,7 @@ internal open class JsonFormatter<T>(
         return this.out.writeAll(s)
     }
 
-    public open fun writeEvent(ty: String, name: String, event: String, execTime: TestExecTime?, stdout: String?, extra: String?): io.Result<Unit> {
+    public open fun writeEvent(ty: String, name: String, event: String, execTime: TestExecTime?, stdout: String?, extra: String?): Result<Unit, Error> {
         // A doc test's name includes a filename which must be escaped for correct json.
         val execTimeJson =
             if (execTime != null) {
@@ -49,9 +51,9 @@ internal open class JsonFormatter<T>(
         return this.writelnMessage("{ \"type\": \"$ty\", \"name\": \"$name\", \"event\": \"$event\"$execTimeJson$stdoutJson$extraJson }$newline")
     }
 
-    public override fun writeDiscoveryStart(): io.Result<Unit> = this.writelnMessage("{ \"type\": \"suite\", \"event\": \"discovery\" }\n")
+    public override fun writeDiscoveryStart(): Result<Unit, Error> = this.writelnMessage("{ \"type\": \"suite\", \"event\": \"discovery\" }\n")
 
-    public override fun writeTestDiscovered(desc: TestDesc, testType: String): io.Result<Unit> {
+    public override fun writeTestDiscovered(desc: TestDesc, testType: String): Result<Unit, Error> {
         val name = desc.name
         val ignore = desc.ignore
         val ignoreMessage = desc.ignoreMessage
@@ -65,7 +67,7 @@ internal open class JsonFormatter<T>(
         return this.writelnMessage("{ \"type\": \"$testType\", \"event\": \"discovered\", \"name\": \"$name\", \"ignore\": $ignore, \"ignore_message\": \"$ignoreMessage\", \"source_path\": \"$sourcePath\", \"start_line\": $startLine, \"start_col\": $startCol, \"end_line\": $endLine, \"end_col\": $endCol }$newline")
     }
 
-    public override fun writeDiscoveryFinish(state: ConsoleTestDiscoveryState): io.Result<Unit> {
+    public override fun writeDiscoveryFinish(state: ConsoleTestDiscoveryState): Result<Unit, Error> {
         val tests = state.tests
         val benchmarks = state.benchmarks
         val ignored = state.ignored
@@ -74,7 +76,7 @@ internal open class JsonFormatter<T>(
         return this.writelnMessage("{ \"type\": \"suite\", \"event\": \"completed\", \"tests\": $tests, \"benchmarks\": $benchmarks, \"total\": $total, \"ignored\": $ignored }$newline")
     }
 
-    public override fun writeRunStart(testCount: Int, shuffleSeed: ULong?): io.Result<Unit> {
+    public override fun writeRunStart(testCount: Int, shuffleSeed: ULong?): Result<Unit, Error> {
         val shuffleSeedJson =
             if (shuffleSeed != null) {
                 ", \"shuffle_seed\": $shuffleSeed"
@@ -85,13 +87,13 @@ internal open class JsonFormatter<T>(
         return this.writelnMessage("{ \"type\": \"suite\", \"event\": \"started\", \"test_count\": $testCount$shuffleSeedJson }$newline")
     }
 
-    public override fun writeTestStart(desc: TestDesc): io.Result<Unit> {
+    public override fun writeTestStart(desc: TestDesc): Result<Unit, Error> {
         val name = EscapedString(desc.name.asSlice())
         val newline = "\n"
         return this.writelnMessage("{ \"type\": \"test\", \"event\": \"started\", \"name\": \"$name\" }$newline")
     }
 
-    public override fun writeResult(desc: TestDesc, result: TestResult, execTime: TestExecTime?, stdout: List<UByte>, state: ConsoleTestState): io.Result<Unit> {
+    public override fun writeResult(desc: TestDesc, result: TestResult, execTime: TestExecTime?, stdout: List<UByte>, state: ConsoleTestState): Result<Unit, Error> {
         val displayStdout = state.options.displayOutput || result != TestResult.TrOk
         val stdout1 =
             if (displayStdout && !stdout.isEmpty()) {
@@ -128,13 +130,13 @@ internal open class JsonFormatter<T>(
         }
     }
 
-    public override fun writeTimeout(desc: TestDesc): io.Result<Unit> {
+    public override fun writeTimeout(desc: TestDesc): Result<Unit, Error> {
         val name = EscapedString(desc.name.asSlice())
         val newline = "\n"
         return this.writelnMessage("{ \"type\": \"test\", \"event\": \"timeout\", \"name\": \"$name\" }$newline")
     }
 
-    public override fun writeRunFinish(state: ConsoleTestState): io.Result<Boolean> {
+    public override fun writeRunFinish(state: ConsoleTestState): Result<Boolean, Error> {
         val event =
             if (state.failed == 0) {
                 "ok"
@@ -161,7 +163,7 @@ internal open class JsonFormatter<T>(
         return Result.Ok(state.failed == 0)
     }
 
-    public override fun writeMergedDoctestsTimes(totalTime: Double, compilationTime: Double): io.Result<Unit> {
+    public override fun writeMergedDoctestsTimes(totalTime: Double, compilationTime: Double): Result<Unit, Error> {
         val newline = "\n"
         return this.writelnMessage("{ \"type\": \"report\", \"total_time\": $totalTime, \"compilation_time\": $compilationTime }$newline")
     }
@@ -240,10 +242,10 @@ public open class EscapedString<S : AsRef<String>>(
     }
 
     public companion object {
-        public fun <S : AsRef<String>> typeLayout(typeLayoutS: io.github.kotlinmania.rustlang.core.mem.TypeLayout<S>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<EscapedString<S>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<EscapedString<S>> {
+        public fun <S : AsRef<String>> typeLayout(typeLayoutS: TypeLayout<S>): TypeLayout<EscapedString<S>> =
+            object : TypeLayout<EscapedString<S>> {
                 override val alignBytes: Long = listOf(1L, typeLayoutS.alignBytes).max()
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(typeLayoutS.sizeBytes, alignBytes)
+                override val sizeBytes: Long = alignUpBytes(typeLayoutS.sizeBytes, alignBytes)
                 override fun readNative(addr: Long): EscapedString<S> =
                     EscapedString(
                         (typeLayoutS).readNative(addr),

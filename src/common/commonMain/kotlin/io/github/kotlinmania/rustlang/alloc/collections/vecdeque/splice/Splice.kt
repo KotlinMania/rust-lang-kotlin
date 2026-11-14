@@ -22,7 +22,7 @@ public open class Splice<I, A : Allocator>(
     internal var drain: Drain<Item, A>,
     internal var replaceWith: I,
 ) : Iterable<Item> {
-    override fun iterator(): kotlin.collections.Iterator<Item> = object : AbstractIterator<Item>() {
+    override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
         override fun computeNext() {
             when (val v = this@Splice.next()) {
                 null -> done()

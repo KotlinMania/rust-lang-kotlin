@@ -33,7 +33,7 @@ internal open class Arena(
      * Add a new chunk with at least `additional` free bytes.
      */
     public open fun grow(additional: Int) {
-        val HUGE_PAGE: Int = cfgSelect(any, targetPointerWidth, "64", targetPointerWidth, "32", 2, 1024, 1024, 8192)
+        val HUGE_PAGE: Int = 2 * 1024 * 1024
         // The arenas start with PAGE-sized chunks, and then each new chunk is twice as
         // big as its predecessor, up until we reach HUGE_PAGE-sized chunks, whereupon
         // we stop growing. This scales well, from arenas that are barely used up to
@@ -56,7 +56,7 @@ internal open class Arena(
                 }
             }
             // Also ensure that this chunk can fit `additional`.
-            newCap = cmp.max(additional, newCap)
+            newCap = max(additional, newCap)
             val chunk = chunks.pushMut(Box.newUninitSlice(newCap))
             val structVal = chunk.asMutPtrRange()
             val start = structVal.start

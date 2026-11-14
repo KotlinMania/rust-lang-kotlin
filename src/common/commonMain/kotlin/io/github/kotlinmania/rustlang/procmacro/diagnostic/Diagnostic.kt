@@ -50,6 +50,8 @@ public open class Diagnostic(
     public var spans: List<Span>,
     public var children: MutableList<Diagnostic>,
 ) {
+    public open fun clone(): Diagnostic = Diagnostic(level, message, spans, children)
+
     public open fun <S> spanError(spans: S, message: String): Diagnostic where S : MultiSpan {
         this.children.add(Diagnostic.spanned(spans, Level.Error, message))
         return this
@@ -135,7 +137,7 @@ public open class Diagnostic(
      * Emit the diagnostic.
      */
     public open fun emit() {
-        fun toInternal(diag: Diagnostic): io.github.kotlinmania.rustlang.procmacro.bridge.Diagnostic<io.github.kotlinmania.rustlang.procmacro.bridge.client.Span> = io.github.kotlinmania.rustlang.procmacro.bridge.Diagnostic(level = diag.level, message = diag.message, spans = diag.spans.map({ s -> s.first }).toMutableList(), children = diag.children.map(toInternal).toMutableList())
+        fun toInternal(diag: Diagnostic): io.github.kotlinmania.rustlang.procmacro.bridge.Diagnostic<io.github.kotlinmania.rustlang.procmacro.bridge.client.Span> = io.github.kotlinmania.rustlang.procmacro.bridge.Diagnostic(level = diag.level, message = diag.message, spans = diag.spans.map({ s -> s.first }).toMutableList(), children = diag.children.map(::toInternal).toMutableList())
         Methods.emitDiagnostic(toInternal(this))
     }
 
@@ -165,7 +167,7 @@ public open class Children(
             value = v
         }
 
-    override fun iterator(): kotlin.collections.Iterator<Diagnostic> = object : AbstractIterator<Diagnostic>() {
+    override fun iterator(): Iterator<Diagnostic> = object : AbstractIterator<Diagnostic>() {
         override fun computeNext() {
             when (val v = this@Children.next()) {
                 null -> done()
@@ -173,6 +175,8 @@ public open class Children(
             }
         }
     }
+
+    public open fun clone(): Children = Children(value)
 
     public open fun next(): Diagnostic? = this.value.next()
 }

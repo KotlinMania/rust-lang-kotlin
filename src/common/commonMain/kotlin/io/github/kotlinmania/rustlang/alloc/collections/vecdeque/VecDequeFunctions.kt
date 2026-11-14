@@ -12,6 +12,8 @@ import io.github.kotlinmania.rustlang.core.alloc.Allocator
  * # Examples
  *
  * ```kotlin
+ * import core.ptr
+ *
  * // This one is *O*(1).
  * val deque: VecDeque = (1 until 5).collect()
  * val ptr = deque.asSlices().first.asPtr()

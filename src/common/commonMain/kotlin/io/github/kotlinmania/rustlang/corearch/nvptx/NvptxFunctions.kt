@@ -112,17 +112,17 @@ public fun trap(): Nothing = Intrinsics.abortImmediate()
  * * `format`: A pointer to the format specifier input (uses common `printf` format).
  * * `valist`: A pointer to the valist input.
  *
- * ```kotlin
+ * ```ignore (available only for nvptx)
+ * # use std.mem.transmute;
  * @repr(C)
- * open class PrintArgs(
- *     public var field0: Float,
- *     public var field1: Float,
- *     public var field2: Float,
- *     public var field3: Int,
- * )
- * val a = 0.1f
- * val b = 0.2f
- * vprintf("int(%f + %f) = int(%f) = %d\n".asPtr(), reinterpret(PrintArgs(a, b, a + b, (a + b).toInt())))
+ * struct PrintArgs(f32, f32, f32, i32);
+ *
+ * let a = 0.1f32;
+ * let b = 0.2f32;
+ * vprintf(
+ *     "int(%f + %f) = int(%f) = %d\n".asPtr(),
+ *     reinterpret(&PrintArgs(a, b, a + b, (a + b) as i32)),
+ * );
  * ```
  *
  * Sources:

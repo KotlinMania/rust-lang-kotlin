@@ -125,6 +125,8 @@ public open class TokenStream(
             value = v
         }
 
+    public open fun clone(): TokenStream = TokenStream(value)
+
     /**
      * Checks if this `TokenStream` is empty.
      */
@@ -294,8 +296,8 @@ public open class ExpandError {
     }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<ExpandError> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<ExpandError> {
+        public fun typeLayout(): TypeLayout<ExpandError> =
+            object : TypeLayout<ExpandError> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): ExpandError =
@@ -401,6 +403,8 @@ public open class Span(
         set(v) {
             value = v
         }
+
+    public open fun clone(): Span = Span(value)
 
     /**
      * The `Span` for the tokens in the previous macro expansion from which
@@ -574,6 +578,8 @@ public open class Group internal constructor(
             value = v
         }
 
+    public open fun clone(): Group = Group(value)
+
     /**
      * Returns the delimiter of this `Group`
      */
@@ -679,6 +685,8 @@ public open class Punct internal constructor(
             value = v
         }
 
+    public open fun clone(): Punct = Punct(value)
+
     /**
      * Returns the value of this punctuation character as `char`.
      */
@@ -761,6 +769,8 @@ public open class Ident internal constructor(
         set(v) {
             value = v
         }
+
+    public open fun clone(): Ident = Ident(value)
 
     /**
      * Returns the span of this `Ident`, encompassing the entire string returned
@@ -855,6 +865,8 @@ public open class Literal internal constructor(
         set(v) {
             value = v
         }
+
+    public open fun clone(): Literal = Literal(value)
 
     /**
      * Returns the span encompassing this literal.

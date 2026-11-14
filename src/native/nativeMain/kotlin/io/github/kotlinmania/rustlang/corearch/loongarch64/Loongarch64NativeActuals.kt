@@ -1,4 +1,4 @@
-@file:OptIn(kotlinx.cinterop.ExperimentalForeignApi::class, kotlin.ExperimentalUnsignedTypes::class)
+@file:OptIn(ExperimentalForeignApi::class, ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.corearch.loongarch64
 
@@ -20,6 +20,7 @@ import io.github.kotlinmania.rustlang.corearch.loongarch64.cinterop.corearchLoon
 import io.github.kotlinmania.rustlang.corearch.loongarch64.cinterop.corearchLoongarch64IocsrwrD
 import io.github.kotlinmania.rustlang.corearch.loongarch64.cinterop.corearchLoongarch64Lddir
 import io.github.kotlinmania.rustlang.corearch.loongarch64.cinterop.corearchLoongarch64Ldpte
+import kotlinx.cinterop.ExperimentalForeignApi
 
 public actual fun crcWBW(a: Int, b: Int): Int =
     corearchLoongarch64CrcWBW(a, b)

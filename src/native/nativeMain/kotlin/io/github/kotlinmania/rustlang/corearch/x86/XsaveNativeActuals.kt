@@ -1,4 +1,4 @@
-@file:OptIn(kotlinx.cinterop.ExperimentalForeignApi::class, kotlin.ExperimentalUnsignedTypes::class)
+@file:OptIn(ExperimentalForeignApi::class, ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.corearch.x86
 
@@ -13,6 +13,7 @@ import io.github.kotlinmania.rustlang.corearch.x86.cinterop.corearchX86XsaveXsav
 import io.github.kotlinmania.rustlang.corearch.x86.cinterop.corearchX86XsaveXsaves
 import io.github.kotlinmania.rustlang.corearch.x86.cinterop.corearchX86XsaveXsetbv
 import kotlinx.cinterop.ByteVar
+import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.toCPointer
 
 public actual fun xsave(p: MutPtr, hi: UInt, lo: UInt) {

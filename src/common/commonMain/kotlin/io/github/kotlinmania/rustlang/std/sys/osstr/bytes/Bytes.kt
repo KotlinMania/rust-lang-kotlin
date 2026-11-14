@@ -15,9 +15,6 @@ import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.str.error.Utf8Error
-import io.github.kotlinmania.rustlang.std.String
-import io.github.kotlinmania.rustlang.std.fmt
-import io.github.kotlinmania.rustlang.std.mem
 import io.github.kotlinmania.rustlang.std.rc.Rc
 import io.github.kotlinmania.rustlang.std.sync.Arc
 import io.github.kotlinmania.rustlang.std.sys.AsInner
@@ -99,19 +96,19 @@ internal open class Buf(
         // SAFETY: Slice is just a wrapper for [u8],
         // and self.inner.asSlice() returns &[u8].
         // Therefore, transmuting &[u8] to &Slice is safe.
-        return mem.transmute(this.inner.asSlice())
+        return transmute(this.inner.asSlice())
     }
 
     public open fun asMutSlice(): RustMutableReference<Slice> {
         // SAFETY: Slice is just a wrapper for [u8],
         // and self.inner.asMutSlice() returns [u8].
         // Therefore, transmuting [u8] to Slice is safe.
-        return mem.transmute(this.inner.asMutSlice())
+        return transmute(this.inner.asMutSlice())
     }
 
-    public open fun leak(): RustMutableReference<Slice> = mem.transmute(this.inner.leak())
+    public open fun leak(): RustMutableReference<Slice> = transmute(this.inner.leak())
 
-    public open fun intoBox(): Slice = mem.transmute(this.inner.intoBoxedSlice())
+    public open fun intoBox(): Slice = transmute(this.inner.intoBoxedSlice())
 
     public open fun intoArc(): Slice = this.asSlice().intoArc()
 
@@ -154,7 +151,7 @@ internal open class Buf(
         public fun withCapacity(capacity: Int, fieldLayout: TypeLayout<List<UByte>>): Buf = Buf(inner = ArrayList(capacity), fieldLayout = fieldLayout)
 
         public fun fromBox(boxed: Slice, fieldLayout: TypeLayout<List<UByte>>): Buf {
-            val inner: List<UByte> = mem.transmute(boxed)
+            val inner: List<UByte> = transmute(boxed)
             return Buf(inner = inner.intoVec(), fieldLayout = fieldLayout)
         }
     }
@@ -232,7 +229,7 @@ internal open class Slice(
 
     public open fun toStringLossy(): String = String.fromUtf8Lossy(this.inner)
 
-    public open fun toOwned(): Buf = Buf(inner = this.inner.toVec(), fieldLayout = this.fieldLayout)
+    public open fun toOwned(): Buf = Buf(inner = this.inner.toMutableList(), fieldLayout = this.fieldLayout)
 
     public open fun cloneInto(buf: RustMutableReference<Buf>) {
         this.inner.cloneInto((buf).read().inner)
@@ -270,13 +267,13 @@ internal open class Slice(
     }
 
     public companion object {
-        public fun fromEncodedBytesUnchecked(s: List<UByte>): Slice = mem.transmute(s)
+        public fun fromEncodedBytesUnchecked(s: List<UByte>): Slice = transmute(s)
 
         public fun fromStr(s: String): Slice = Slice.fromEncodedBytesUnchecked(s.encodeToByteArray().map { it.toUByte() })
 
         public fun emptyBox(): Slice {
             val boxed: List<UByte> = Default.default()
-            return mem.transmute(boxed)
+            return transmute(boxed)
         }
     }
 }

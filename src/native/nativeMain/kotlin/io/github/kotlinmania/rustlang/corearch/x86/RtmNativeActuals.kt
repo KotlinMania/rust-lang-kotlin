@@ -1,4 +1,4 @@
-@file:OptIn(kotlinx.cinterop.ExperimentalForeignApi::class, kotlin.ExperimentalUnsignedTypes::class)
+@file:OptIn(ExperimentalForeignApi::class, ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.corearch.x86
 
@@ -6,6 +6,7 @@ import io.github.kotlinmania.rustlang.corearch.x86.cinterop.corearchX86RtmX86Xab
 import io.github.kotlinmania.rustlang.corearch.x86.cinterop.corearchX86RtmX86Xbegin
 import io.github.kotlinmania.rustlang.corearch.x86.cinterop.corearchX86RtmX86Xend
 import io.github.kotlinmania.rustlang.corearch.x86.cinterop.corearchX86RtmX86Xtest
+import kotlinx.cinterop.ExperimentalForeignApi
 
 public actual fun x86Xbegin(): Int =
     corearchX86RtmX86Xbegin()

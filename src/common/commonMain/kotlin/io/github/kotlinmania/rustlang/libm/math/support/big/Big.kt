@@ -8,6 +8,12 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.num.rustOverflowingAdd
 import io.github.kotlinmania.rustlang.core.num.rustOverflowingMul
 import io.github.kotlinmania.rustlang.core.num.rustOverflowingSub
+import io.github.kotlinmania.rustlang.core.ops.Add
+import io.github.kotlinmania.rustlang.core.ops.BitOr
+import io.github.kotlinmania.rustlang.core.ops.Not
+import io.github.kotlinmania.rustlang.core.ops.Shl
+import io.github.kotlinmania.rustlang.core.ops.Shr
+import io.github.kotlinmania.rustlang.core.ops.Sub
 import io.github.kotlinmania.rustlang.libm.math.support.inttraits.DInt
 import io.github.kotlinmania.rustlang.libm.math.support.inttraits.Int
 import io.github.kotlinmania.rustlang.libm.math.support.inttraits.MinInt
@@ -23,7 +29,9 @@ public val U128_LO_MASK: U128 = U128.fromULong(ULong.MAX_VALUE)
 public open class U256(
     public var hi: U128,
     public var lo: U128,
-) : MinInt<U256, Any?, Any?, I256, U256>, ops.BitOr<Any?>, ops.Not<Any?>, ops.Add<U256>, ops.Sub<U256>, ops.Shl<UInt>, ops.Shr<UInt>, DInt<U256, Any?, U128> {
+) : MinInt<U256, Any?, Any?, I256, U256>, BitOr<U256, Any?, U256>, Not<Any?, U256>, Add<U256, Any?, U256>, Sub<U256, Any?, U256>, Shl<UInt, Any?, U256>, Shr<UInt, Any?, U256>, DInt<U256, Any?, U128> {
+    public open fun clone(): U256 = U256(hi, lo)
+
     /**
      * Reinterpret as a signed integer
      */
@@ -108,27 +116,27 @@ public open class U256(
     }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<U256> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<U256> {
+        public fun typeLayout(): TypeLayout<U256> =
+            object : TypeLayout<U256> {
                 override val alignBytes: Long = 16L
                 override val sizeBytes: Long = 32L
                 override fun readNative(addr: Long): U256 =
                     U256(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low })).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low })).readNative(addr + 16L),
+                        (PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low })).readNative(addr),
+                        (PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low })).readNative(addr + 16L),
                     )
                 override fun writeNative(addr: Long, value: U256) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low })).writeNative(addr, value.hi)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low })).writeNative(addr + 16L, value.lo)
+                    (PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low })).writeNative(addr, value.hi)
+                    (PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low })).writeNative(addr + 16L, value.lo)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): U256 =
                     U256(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low })).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low })).readBytes(buf, offset + 16),
+                        (PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low })).readBytes(buf, offset),
+                        (PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low })).readBytes(buf, offset + 16),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: U256) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low })).writeBytes(buf, offset, value.hi)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low })).writeBytes(buf, offset + 16, value.lo)
+                    (PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low })).writeBytes(buf, offset, value.hi)
+                    (PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low })).writeBytes(buf, offset + 16, value.lo)
                 }
             }
 
@@ -156,7 +164,9 @@ public open class U256(
 public open class I256(
     public var hi: I128,
     public var lo: U128,
-) : MinInt<I256, Any?, Any?, U256, U256>, ops.BitOr<Any?>, ops.Not<Any?>, ops.Add<I256>, ops.Sub<I256>, ops.Shl<UInt>, ops.Shr<UInt>, DInt<I256, Any?, I128> {
+) : MinInt<I256, Any?, Any?, U256, U256>, BitOr<I256, Any?, I256>, Not<Any?, I256>, Add<I256, Any?, I256>, Sub<I256, Any?, I256>, Shl<UInt, Any?, I256>, Shr<UInt, Any?, I256>, DInt<I256, Any?, I128> {
+    public open fun clone(): I256 = I256(hi, lo)
+
     /**
      * Reinterpret as an unsigned integer
      */
@@ -241,27 +251,27 @@ public open class I256(
     }
 
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<I256> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<I256> {
+        public fun typeLayout(): TypeLayout<I256> =
+            object : TypeLayout<I256> {
                 override val alignBytes: Long = 16L
                 override val sizeBytes: Long = 32L
                 override fun readNative(addr: Long): I256 =
                     I256(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low })).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low })).readNative(addr + 16L),
+                        (PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low })).readNative(addr),
+                        (PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low })).readNative(addr + 16L),
                     )
                 override fun writeNative(addr: Long, value: I256) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low })).writeNative(addr, value.hi)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low })).writeNative(addr + 16L, value.lo)
+                    (PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low })).writeNative(addr, value.hi)
+                    (PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low })).writeNative(addr + 16L, value.lo)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): I256 =
                     I256(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low })).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low })).readBytes(buf, offset + 16),
+                        (PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low })).readBytes(buf, offset),
+                        (PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low })).readBytes(buf, offset + 16),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: I256) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low })).writeBytes(buf, offset, value.hi)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low })).writeBytes(buf, offset + 16, value.lo)
+                    (PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low })).writeBytes(buf, offset, value.hi)
+                    (PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low })).writeBytes(buf, offset + 16, value.lo)
                 }
             }
 

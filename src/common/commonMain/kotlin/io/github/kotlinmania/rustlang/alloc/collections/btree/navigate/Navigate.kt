@@ -171,7 +171,7 @@ internal open class LazyLeafRange<BorrowType, K, V>(
                 edge
             }
             // SAFETY: the code above would have replaced it.
-            is LazyLeafHandle.Root -> hint.unreachableUnchecked()
+            is LazyLeafHandle.Root -> unreachableUnchecked()
         }
     }
 
@@ -191,7 +191,7 @@ internal open class LazyLeafRange<BorrowType, K, V>(
                 edge
             }
             // SAFETY: the code above would have replaced it.
-            is LazyLeafHandle.Root -> hint.unreachableUnchecked()
+            is LazyLeafHandle.Root -> unreachableUnchecked()
         }
     }
 

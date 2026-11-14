@@ -33,8 +33,8 @@ internal open class Closure(
 
 public open class Env {
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Env> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Env> {
+        public fun typeLayout(): TypeLayout<Env> =
+            object : TypeLayout<Env> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
                 override fun readNative(addr: Long): Env =

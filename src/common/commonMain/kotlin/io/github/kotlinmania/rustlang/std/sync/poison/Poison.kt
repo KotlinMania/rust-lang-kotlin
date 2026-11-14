@@ -7,8 +7,6 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
-import io.github.kotlinmania.rustlang.std.fmt
-import io.github.kotlinmania.rustlang.std.sys.thread.unix.Thread
 
 // Synchronization objects that employ poisoning.
 //
@@ -118,7 +116,7 @@ internal open class Flag(
      * Checks the flag for a guarded borrow, where we may also set poison when `done`.
      */
     internal open fun guard(): LockResult<Guard> {
-        val ret = Guard(panicking = Thread.panicking())
+        val ret = Guard(panicking = thread.panicking())
         return if (this.get()) {
             Result.Err(PoisonError.new(ret))
         } else {
@@ -127,7 +125,7 @@ internal open class Flag(
     }
 
     internal open fun done(guard: Guard) {
-        if (!guard.panicking && Thread.panicking()) {
+        if (!guard.panicking && thread.panicking()) {
             this.failed.store(true, Ordering.Relaxed)
         }
     }
@@ -146,24 +144,26 @@ internal open class Flag(
 internal open class Guard(
     public var panicking: Boolean,
 ) {
+    public open fun clone(): Guard = Guard(panicking)
+
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Guard> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Guard> {
+        public fun typeLayout(): TypeLayout<Guard> =
+            object : TypeLayout<Guard> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 1L
                 override fun readNative(addr: Long): Guard =
                     Guard(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readNative(addr),
+                        (PrimitiveLayouts.BOOL).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: Guard) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeNative(addr, value.panicking)
+                    (PrimitiveLayouts.BOOL).writeNative(addr, value.panicking)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Guard =
                     Guard(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).readBytes(buf, offset),
+                        (PrimitiveLayouts.BOOL).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Guard) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.BOOL).writeBytes(buf, offset, value.panicking)
+                    (PrimitiveLayouts.BOOL).writeBytes(buf, offset, value.panicking)
                 }
             }
     }
@@ -181,6 +181,7 @@ internal open class Guard(
  *
  * ```kotlin
  * import std.sync.Mutex
+ * import std.thread
  *
  * val mutex = Mutex.new(1)
  * // poison the mutex
@@ -222,6 +223,7 @@ public open class PoisonError<T>(
      *
      * ```kotlin
      * import std.sync.Mutex
+     * import std.thread
      *
      * val mutex = Mutex.new(mutableSetOf())
      * // poison the mutex

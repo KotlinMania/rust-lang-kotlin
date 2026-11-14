@@ -12,7 +12,7 @@ import io.github.kotlinmania.rustlang.core.iter.adapters.peekable.Peekable
 internal open class DedupSortedIter<K, V, I>(
     public var iter: Peekable<I>,
 ) : Iterable<Pair<K, V>> where I : Iterator<Pair<K, V>> {
-    override fun iterator(): kotlin.collections.Iterator<Pair<K, V>> = object : AbstractIterator<Pair<K, V>>() {
+    override fun iterator(): Iterator<Pair<K, V>> = object : AbstractIterator<Pair<K, V>>() {
         override fun computeNext() {
             when (val v = this@DedupSortedIter.next()) {
                 null -> done()

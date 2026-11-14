@@ -8,6 +8,7 @@ import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.num.rustSaturatingMul
 import io.github.kotlinmania.rustlang.core.num.rustTrailingZeros
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -93,6 +94,8 @@ public open class HexFloatParseError(
         set(v) {
             value = v
         }
+
+    public open fun clone(): HexFloatParseError = HexFloatParseError(value)
 }
 
 /**
@@ -287,27 +290,27 @@ public open class Parsed(
     public var exp: Int,
 ) {
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Parsed> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Parsed> {
+        public fun typeLayout(): TypeLayout<Parsed> =
+            object : TypeLayout<Parsed> {
                 override val alignBytes: Long = 16L
                 override val sizeBytes: Long = 32L
                 override fun readNative(addr: Long): Parsed =
                     Parsed(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low })).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I32).readNative(addr + 16L),
+                        (PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low })).readNative(addr),
+                        (PrimitiveLayouts.I32).readNative(addr + 16L),
                     )
                 override fun writeNative(addr: Long, value: Parsed) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low })).writeNative(addr, value.sig)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I32).writeNative(addr + 16L, value.exp)
+                    (PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low })).writeNative(addr, value.sig)
+                    (PrimitiveLayouts.I32).writeNative(addr + 16L, value.exp)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Parsed =
                     Parsed(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low })).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I32).readBytes(buf, offset + 16),
+                        (PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low })).readBytes(buf, offset),
+                        (PrimitiveLayouts.I32).readBytes(buf, offset + 16),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Parsed) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low })).writeBytes(buf, offset, value.sig)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I32).writeBytes(buf, offset + 16, value.exp)
+                    (PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low })).writeBytes(buf, offset, value.sig)
+                    (PrimitiveLayouts.I32).writeBytes(buf, offset + 16, value.exp)
                 }
             }
     }
@@ -498,10 +501,10 @@ public open class Hex<T>(
     }
 
     public companion object {
-        public fun <T> typeLayout(typeLayoutT: io.github.kotlinmania.rustlang.core.mem.TypeLayout<T>): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Hex<T>> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Hex<T>> {
+        public fun <T> typeLayout(typeLayoutT: TypeLayout<T>): TypeLayout<Hex<T>> =
+            object : TypeLayout<Hex<T>> {
                 override val alignBytes: Long = listOf(1L, typeLayoutT.alignBytes).max()
-                override val sizeBytes: Long = io.github.kotlinmania.rustlang.core.mem.alignUpBytes(typeLayoutT.sizeBytes, alignBytes)
+                override val sizeBytes: Long = alignUpBytes(typeLayoutT.sizeBytes, alignBytes)
                 override fun readNative(addr: Long): Hex<T> =
                     Hex(
                         (typeLayoutT).readNative(addr),

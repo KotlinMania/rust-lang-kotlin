@@ -6,7 +6,6 @@ import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.std.cmath.Erf
-import io.github.kotlinmania.rustlang.std.intrinsics
 import io.github.kotlinmania.rustlang.std.sys.cmath.expm1
 import io.github.kotlinmania.rustlang.std.sys.cmath.lgammaR
 import io.github.kotlinmania.rustlang.std.sys.cmath.log1p

@@ -66,7 +66,7 @@ internal open class LineWriterShim<W : Write>(
      */
     public open fun writeVectoredScanned(bufs: List<IoSlice>): Result<Int> {
         // Find the buffer containing the last newline.
-        val lastNewlineBufIdx = bufs.mapIndexed { index, item -> Pair(index, item) }.rev().findMap({ (i, buf) -> memchr(10u, buf).map({ i }) })
+        val lastNewlineBufIdx = bufs.mapIndexed { index, item -> Pair(index, item) }.rev().findMap({ (i, buf) -> memchr(10u, buf)?.let({ i }) })
         // If there are no new newlines (that is, if this write is less than
         // one line), just do a regular buffered write.
         val lastNewlineBufIdx1 =

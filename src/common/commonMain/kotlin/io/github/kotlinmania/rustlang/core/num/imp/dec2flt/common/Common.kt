@@ -93,28 +93,30 @@ public open class BiasedFp(
      */
     public var pBiased: Int,
 ) {
+    public open fun clone(): BiasedFp = BiasedFp(m, pBiased)
+
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<BiasedFp> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<BiasedFp> {
+        public fun typeLayout(): TypeLayout<BiasedFp> =
+            object : TypeLayout<BiasedFp> {
                 override val alignBytes: Long = 8L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): BiasedFp =
                     BiasedFp(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).readNative(addr),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I32).readNative(addr + 8L),
+                        (PrimitiveLayouts.U64).readNative(addr),
+                        (PrimitiveLayouts.I32).readNative(addr + 8L),
                     )
                 override fun writeNative(addr: Long, value: BiasedFp) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).writeNative(addr, value.m)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I32).writeNative(addr + 8L, value.pBiased)
+                    (PrimitiveLayouts.U64).writeNative(addr, value.m)
+                    (PrimitiveLayouts.I32).writeNative(addr + 8L, value.pBiased)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): BiasedFp =
                     BiasedFp(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).readBytes(buf, offset),
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I32).readBytes(buf, offset + 8),
+                        (PrimitiveLayouts.U64).readBytes(buf, offset),
+                        (PrimitiveLayouts.I32).readBytes(buf, offset + 8),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: BiasedFp) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.U64).writeBytes(buf, offset, value.m)
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.I32).writeBytes(buf, offset + 8, value.pBiased)
+                    (PrimitiveLayouts.U64).writeBytes(buf, offset, value.m)
+                    (PrimitiveLayouts.I32).writeBytes(buf, offset + 8, value.pBiased)
                 }
             }
 

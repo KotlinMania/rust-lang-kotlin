@@ -39,6 +39,8 @@ public class DebugStruct(
 public open class Frame(
     internal var inner: FrameImp,
 ) {
+    public open fun clone(): Frame = Frame(inner)
+
     /**
      * Returns the current instruction pointer of this frame.
      *

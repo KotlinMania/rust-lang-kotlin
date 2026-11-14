@@ -1,4 +1,4 @@
-@file:OptIn(kotlinx.cinterop.ExperimentalForeignApi::class, kotlin.ExperimentalUnsignedTypes::class)
+@file:OptIn(ExperimentalForeignApi::class, ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.core.num.imp.libm
 
@@ -6,9 +6,13 @@ import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.num.complex.Complex
 import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmAcos
+import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmAcosf
 import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmAsin
+import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmAsinf
 import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmAtan
 import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmAtan2
+import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmAtan2f
+import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmAtanf
 import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmCbrt
 import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmCbrtf
 import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmCeil
@@ -16,12 +20,19 @@ import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmC
 import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmCopysign
 import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmCopysignf
 import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmCos
+import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmCosf
 import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmCosh
+import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmCoshf
 import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmErf
 import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmErfc
+import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmErfcf
+import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmErff
 import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmExp
 import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmExp2
+import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmExp2f
+import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmExpf
 import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmExpm1
+import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmExpm1f
 import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmFabs
 import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmFabsf
 import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmFdim
@@ -41,12 +52,19 @@ import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmF
 import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmFmod
 import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmFmodf
 import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmHypot
+import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmHypotf
 import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmLdexp
+import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmLdexpf
 import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmLog
 import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmLog10
+import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmLog10f
 import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmLog1p
+import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmLog1pf
 import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmLog2
+import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmLog2f
+import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmLogf
 import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmPow
+import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmPowf
 import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmPowidf2
 import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmPowisf2
 import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmRint
@@ -56,14 +74,20 @@ import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmR
 import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmRoundevenf
 import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmRoundf
 import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmSin
+import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmSinf
 import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmSinh
+import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmSinhf
 import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmSqrt
 import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmSqrtf
 import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmTan
+import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmTanf
 import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmTanh
+import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmTanhf
 import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmTgamma
+import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmTgammaf
 import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmTrunc
 import io.github.kotlinmania.rustlang.core.num.imp.libm.cinterop.coreNumImpLibmTruncf
+import kotlinx.cinterop.ExperimentalForeignApi
 
 internal actual fun powidf2(a: Double, b: Int): Double =
     coreNumImpLibmPowidf2(a, b)
@@ -295,6 +319,75 @@ internal actual fun rustDivhc3(a: F16, b: F16, c: F16, d: F16): Complex<F16> =
 
 internal actual fun rustDivtc3(a: F128, b: F128, c: F128, d: F128): Complex<F128> =
     null as Complex<F128>
+
+internal actual fun acosf(n: kotlin.Float): kotlin.Float =
+    coreNumImpLibmAcosf(n)
+
+internal actual fun asinf(n: kotlin.Float): kotlin.Float =
+    coreNumImpLibmAsinf(n)
+
+internal actual fun atan2f(a: kotlin.Float, b: kotlin.Float): kotlin.Float =
+    coreNumImpLibmAtan2f(a, b)
+
+internal actual fun atanf(n: kotlin.Float): kotlin.Float =
+    coreNumImpLibmAtanf(n)
+
+internal actual fun cosf(x: kotlin.Float): kotlin.Float =
+    coreNumImpLibmCosf(x)
+
+internal actual fun coshf(n: kotlin.Float): kotlin.Float =
+    coreNumImpLibmCoshf(n)
+
+internal actual fun erfcf(x: kotlin.Float): kotlin.Float =
+    coreNumImpLibmErfcf(x)
+
+internal actual fun erff(x: kotlin.Float): kotlin.Float =
+    coreNumImpLibmErff(x)
+
+internal actual fun exp2f(x: kotlin.Float): kotlin.Float =
+    coreNumImpLibmExp2f(x)
+
+internal actual fun expf(x: kotlin.Float): kotlin.Float =
+    coreNumImpLibmExpf(x)
+
+internal actual fun expm1f(n: kotlin.Float): kotlin.Float =
+    coreNumImpLibmExpm1f(n)
+
+internal actual fun hypotf(x: kotlin.Float, y: kotlin.Float): kotlin.Float =
+    coreNumImpLibmHypotf(x, y)
+
+internal actual fun ldexpf(f: kotlin.Float, n: Int): kotlin.Float =
+    coreNumImpLibmLdexpf(f, n)
+
+internal actual fun log10f(x: kotlin.Float): kotlin.Float =
+    coreNumImpLibmLog10f(x)
+
+internal actual fun log1pf(n: kotlin.Float): kotlin.Float =
+    coreNumImpLibmLog1pf(n)
+
+internal actual fun log2f(x: kotlin.Float): kotlin.Float =
+    coreNumImpLibmLog2f(x)
+
+internal actual fun logf(x: kotlin.Float): kotlin.Float =
+    coreNumImpLibmLogf(x)
+
+internal actual fun powf(x: kotlin.Float, y: kotlin.Float): kotlin.Float =
+    coreNumImpLibmPowf(x, y)
+
+internal actual fun sinf(x: kotlin.Float): kotlin.Float =
+    coreNumImpLibmSinf(x)
+
+internal actual fun sinhf(n: kotlin.Float): kotlin.Float =
+    coreNumImpLibmSinhf(n)
+
+internal actual fun tanf(n: kotlin.Float): kotlin.Float =
+    coreNumImpLibmTanf(n)
+
+internal actual fun tanhf(n: kotlin.Float): kotlin.Float =
+    coreNumImpLibmTanhf(n)
+
+internal actual fun tgammaf(x: kotlin.Float): kotlin.Float =
+    coreNumImpLibmTgammaf(x)
 
 internal actual fun acos(x: Double): Double =
     coreNumImpLibmAcos(x)

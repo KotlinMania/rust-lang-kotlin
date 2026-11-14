@@ -25,7 +25,6 @@ import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.IoStatusB
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.ObjectAttributes
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.STATUS_DELETE_PENDING
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.rtlNtStatusToDosError
-import io.github.kotlinmania.rustlang.std.sys.thread.windows.Thread
 
 // The Windows implementation of std.fs.removeDirAll.
 //
@@ -173,7 +172,7 @@ public fun <T> retry(f: () -> Result<T, WinError>, ignore: WinError): Result<T, 
                 return result
             }
         }
-        Thread.yieldNow()
+        thread.yieldNow()
     }
 }
 

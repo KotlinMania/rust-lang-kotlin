@@ -8,7 +8,6 @@ import io.github.kotlinmania.rustlang.core.intrinsics.copysignf64
 import io.github.kotlinmania.rustlang.core.intrinsics.fabs
 import io.github.kotlinmania.rustlang.core.intrinsics.faddAlgebraic
 import io.github.kotlinmania.rustlang.core.intrinsics.fdivAlgebraic
-import io.github.kotlinmania.rustlang.core.intrinsics.fma
 import io.github.kotlinmania.rustlang.core.intrinsics.fmulAlgebraic
 import io.github.kotlinmania.rustlang.core.intrinsics.fmuladd
 import io.github.kotlinmania.rustlang.core.intrinsics.fremAlgebraic
@@ -20,6 +19,7 @@ import io.github.kotlinmania.rustlang.core.intrinsics.minimumf64
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.FpCategory
+import io.github.kotlinmania.rustlang.core.num.imp.libm.fma
 import io.github.kotlinmania.rustlang.core.num.rustClassifyDouble
 import io.github.kotlinmania.rustlang.core.num.rustIsSignNegative
 import io.github.kotlinmania.rustlang.core.panic.constAssert
@@ -967,7 +967,7 @@ public inline fun <reified Int> Double.toIntStrict(): Int = (this.toIntChecked<I
  */
 public fun Double.toBits(): ULong {
     // SAFETY: `ULong` is a plain old datatype so we can always reinterpret to it.
-    return mem.transmute(this)
+    return transmute(this)
 }
 
 /**
@@ -1515,7 +1515,7 @@ public fun Double.nanTo(replacement: Double): Double =
  *
  * [f64.floor]: ../../../std/primitive.f64.html#method.floor
  */
-public fun floor(x: Double): Double = io.github.kotlinmania.rustlang.core.intrinsics.floor(x)
+public fun floor(x: Double): Double = io.github.kotlinmania.rustlang.core.num.f64.math.floor(x)
 
 /**
  * Experimental version of `ceil` in `core`. See [f64.ceil] for details.
@@ -1537,7 +1537,7 @@ public fun floor(x: Double): Double = io.github.kotlinmania.rustlang.core.intrin
  *
  * [f64.ceil]: ../../../std/primitive.f64.html#method.ceil
  */
-public fun ceil(x: Double): Double = io.github.kotlinmania.rustlang.core.intrinsics.ceil(x)
+public fun ceil(x: Double): Double = io.github.kotlinmania.rustlang.core.num.f64.math.ceil(x)
 
 /**
  * Experimental version of `round` in `core`. See [f64.round] for details.
@@ -1565,7 +1565,7 @@ public fun ceil(x: Double): Double = io.github.kotlinmania.rustlang.core.intrins
  *
  * [f64.round]: ../../../std/primitive.f64.html#method.round
  */
-public fun round(x: Double): Double = io.github.kotlinmania.rustlang.core.intrinsics.round(x)
+public fun round(x: Double): Double = io.github.kotlinmania.rustlang.core.num.f64.math.round(x)
 
 /**
  * Experimental version of `roundTiesEven` in `core`. See [f64.roundTiesEven] for
@@ -1592,7 +1592,7 @@ public fun round(x: Double): Double = io.github.kotlinmania.rustlang.core.intrin
  *
  * [f64.roundTiesEven]: ../../../std/primitive.f64.html#method.roundTiesEven
  */
-public fun roundTiesEven(x: Double): Double = io.github.kotlinmania.rustlang.core.intrinsics.roundTiesEven(x)
+public fun roundTiesEven(x: Double): Double = io.github.kotlinmania.rustlang.core.num.f64.math.roundTiesEven(x)
 
 /**
  * Experimental version of `trunc` in `core`. See [f64.trunc] for details.
@@ -1616,7 +1616,7 @@ public fun roundTiesEven(x: Double): Double = io.github.kotlinmania.rustlang.cor
  *
  * [f64.trunc]: ../../../std/primitive.f64.html#method.trunc
  */
-public fun trunc(x: Double): Double = io.github.kotlinmania.rustlang.core.intrinsics.trunc(x)
+public fun trunc(x: Double): Double = io.github.kotlinmania.rustlang.core.num.f64.math.trunc(x)
 
 /**
  * Experimental version of `fract` in `core`. See [f64.fract] for details.
@@ -1763,7 +1763,7 @@ public fun remEuclid(x: Double, rhs: Double): Double {
  *
  * [f64.powi]: ../../../std/primitive.f64.html#method.powi
  */
-public fun powi(x: Double, n: Int): Double = io.github.kotlinmania.rustlang.core.intrinsics.powi(x, n)
+public fun powi(x: Double, n: Int): Double = io.github.kotlinmania.rustlang.core.num.f64.math.powi(x, n)
 
 /**
  * Experimental version of `sqrt` in `core`. See [f64.sqrt] for details.
@@ -1787,7 +1787,7 @@ public fun powi(x: Double, n: Int): Double = io.github.kotlinmania.rustlang.core
  *
  * [f64.sqrt]: ../../../std/primitive.f64.html#method.sqrt
  */
-public fun sqrt(x: Double): Double = io.github.kotlinmania.rustlang.core.intrinsics.sqrt(x)
+public fun sqrt(x: Double): Double = io.github.kotlinmania.rustlang.core.num.f64.math.sqrt(x)
 
 /**
  * Experimental version of `absSub` in `core`. See [f64.absSub] for details.

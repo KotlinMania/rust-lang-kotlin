@@ -61,6 +61,8 @@ internal open class WrappedIndex(
 
     public fun pointerLayout(): TypeLayout<WrappedIndex> = TransparentTypeLayout(fieldLayout, { ptr, layout -> WrappedIndex(ptr, layout) }, { it.value })
 
+    public open fun clone(): WrappedIndex = WrappedIndex(value, fieldLayout)
+
     /**
      * Safety invariant: the newly constructed index must still be in-bounds for the VecDeque
      */

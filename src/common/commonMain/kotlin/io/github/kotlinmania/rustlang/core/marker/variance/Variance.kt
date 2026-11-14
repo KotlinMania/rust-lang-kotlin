@@ -44,6 +44,8 @@ public open class PhantomCovariantLifetime internal constructor(
 
     public fun pointerLayout(): TypeLayout<PhantomCovariantLifetime> = TransparentTypeLayout(fieldLayout, { ptr, layout -> PhantomCovariantLifetime(ptr, layout) }, { it.value })
 
+    public open fun clone(): PhantomCovariantLifetime = PhantomCovariantLifetime(value, fieldLayout)
+
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = f.writeFmt(("PhantomCovariantLifetime").toString())
 
     public companion object {
@@ -94,6 +96,8 @@ public open class PhantomContravariantLifetime internal constructor(
 
     public fun pointerLayout(): TypeLayout<PhantomContravariantLifetime> = TransparentTypeLayout(fieldLayout, { ptr, layout -> PhantomContravariantLifetime(ptr, layout) }, { it.value })
 
+    public open fun clone(): PhantomContravariantLifetime = PhantomContravariantLifetime(value, fieldLayout)
+
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = f.writeFmt(("PhantomContravariantLifetime").toString())
 
     public companion object {
@@ -141,6 +145,8 @@ public open class PhantomInvariantLifetime internal constructor(
     internal constructor(value: PhantomInvariant<Unit>, fieldLayout: TypeLayout<PhantomInvariant<Unit>>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<PhantomInvariantLifetime> = TransparentTypeLayout(fieldLayout, { ptr, layout -> PhantomInvariantLifetime(ptr, layout) }, { it.value })
+
+    public open fun clone(): PhantomInvariantLifetime = PhantomInvariantLifetime(value, fieldLayout)
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = f.writeFmt(("PhantomInvariantLifetime").toString())
 

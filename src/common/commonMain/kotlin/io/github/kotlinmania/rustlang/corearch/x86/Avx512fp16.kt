@@ -8,7 +8,6 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
 import io.github.kotlinmania.rustlang.corearch.arch.asm
 import io.github.kotlinmania.rustlang.corearch.intrinsics.fma
-import io.github.kotlinmania.rustlang.corearch.ptr
 import io.github.kotlinmania.rustlang.corearch.simd.I16x16
 import io.github.kotlinmania.rustlang.corearch.simd.I16x32
 import io.github.kotlinmania.rustlang.corearch.simd.I16x8
@@ -718,7 +717,7 @@ public fun mmMaskzLoadSh(k: Mmask8, memAddr: ConstPtr): M128h {
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_loadu_ph)
  */
-public fun mmLoaduPh(memAddr: ConstPtr): M128h = ptr.readUnaligned(memAddr)
+public fun mmLoaduPh(memAddr: ConstPtr): M128h = readUnaligned(memAddr)
 
 /**
  * Load 256-bits (composed of 16 packed half-precision (16-bit) floating-point elements) from memory into
@@ -726,7 +725,7 @@ public fun mmLoaduPh(memAddr: ConstPtr): M128h = ptr.readUnaligned(memAddr)
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_loadu_ph)
  */
-public fun mm256LoaduPh(memAddr: ConstPtr): M256h = ptr.readUnaligned(memAddr)
+public fun mm256LoaduPh(memAddr: ConstPtr): M256h = readUnaligned(memAddr)
 
 /**
  * Load 512-bits (composed of 32 packed half-precision (16-bit) floating-point elements) from memory into
@@ -734,7 +733,7 @@ public fun mm256LoaduPh(memAddr: ConstPtr): M256h = ptr.readUnaligned(memAddr)
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_loadu_ph)
  */
-public fun mm512LoaduPh(memAddr: ConstPtr): M512h = ptr.readUnaligned(memAddr)
+public fun mm512LoaduPh(memAddr: ConstPtr): M512h = readUnaligned(memAddr)
 
 /**
  * Move the lower half-precision (16-bit) floating-point element from b to the lower element of dst
@@ -836,7 +835,7 @@ public fun mmMaskStoreSh(memAddr: MutPtr, k: Mmask8, a: M128h) {
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_storeu_ph)
  */
 public fun mmStoreuPh(memAddr: MutPtr, a: M128h) {
-    ptr.writeUnaligned(memAddr, a)
+    writeUnaligned(memAddr, a)
 }
 
 /**
@@ -846,7 +845,7 @@ public fun mmStoreuPh(memAddr: MutPtr, a: M128h) {
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_storeu_ph)
  */
 public fun mm256StoreuPh(memAddr: MutPtr, a: M256h) {
-    ptr.writeUnaligned(memAddr, a)
+    writeUnaligned(memAddr, a)
 }
 
 /**
@@ -856,7 +855,7 @@ public fun mm256StoreuPh(memAddr: MutPtr, a: M256h) {
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_storeu_ph)
  */
 public fun mm512StoreuPh(memAddr: MutPtr, a: M512h) {
-    ptr.writeUnaligned(memAddr, a)
+    writeUnaligned(memAddr, a)
 }
 
 /**

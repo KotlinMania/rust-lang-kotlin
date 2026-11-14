@@ -35,3 +35,8 @@ public fun readFile(origPath: CStr): Result<List<UByte>, String> {
         Result.Ok(data)
     }
 }
+
+/**
+ * Performs run-time feature detection.
+ */
+internal fun detectFeatures(): Initializer = cache.Initializer.default()

@@ -3,7 +3,7 @@ package io.github.kotlinmania.rustlang.std.os.fd
 
 import io.github.kotlinmania.libc.close
 import io.github.kotlinmania.libc.fcntl
-import io.github.kotlinmania.libc.fuchsia.F_DUPFD
+import io.github.kotlinmania.libc.fuchsia.F_DUPFD_CLOEXEC
 import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -12,9 +12,9 @@ import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.Rc
-import io.github.kotlinmania.rustlang.std.fmt
 import io.github.kotlinmania.rustlang.std.fs.File
 import io.github.kotlinmania.rustlang.std.io.IsTerminal
+import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.io.pipe.PipeReader
 import io.github.kotlinmania.rustlang.std.io.pipe.PipeWriter
 import io.github.kotlinmania.rustlang.std.io.stdio.Stderr
@@ -33,7 +33,7 @@ import io.github.kotlinmania.rustlang.std.os.raw.RawFd
 import io.github.kotlinmania.rustlang.std.sync.Arc
 import io.github.kotlinmania.rustlang.std.sys.FromInner
 import io.github.kotlinmania.rustlang.std.sys.fs.unix.debugAssertFdIsOpen
-import io.github.kotlinmania.rustlang.std.sys.pal.hermit.cvt
+import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
 
 // Owned and borrowed Unix-like file descriptors.
 
@@ -92,6 +92,8 @@ public open class BorrowedFd internal constructor(
     public var fd: ValidRawFd = fdCtorArg
         internal set
 
+    public open fun clone(): BorrowedFd = BorrowedFd(fd, phantom)
+
     /**
      * Converts a `BorrowedFd` into a reference to a file-like type.
      *
@@ -111,12 +113,11 @@ public open class BorrowedFd internal constructor(
      * Creates a new `OwnedFd` instance that shares the same underlying file
      * description as the existing `BorrowedFd` instance.
      */
-    public open fun tryCloneToOwned(): Result<OwnedFd> {
-        // For ESP-IDF, F_DUPFD is used instead, because the CLOEXEC semantics
-        // will never be supported, as this is a bare metal framework with
-        // no capabilities for multi-process execution. While F_DUPFD is also
-        // not supported yet, it might be (currently it returns ENOSYS).
-        val cmd = F_DUPFD
+    public open fun tryCloneToOwned(): Result<OwnedFd, Error> {
+        // We want to atomically duplicate this file descriptor and set the
+        // CLOEXEC flag, and currently that's done via F_DUPFD_CLOEXEC. This
+        // is a POSIX flag that was added to Linux in 2.6.24.
+        val cmd = F_DUPFD_CLOEXEC
         // Avoid using file descriptors below 3 as they are used for stdio
         val fd = when (val tryResult = cvt(fcntl(this.asRawFd(), cmd, 3))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
         return Result.Ok(OwnedFd.fromRawFd(fd, fieldLayout = ObjectSlotLayout<NotAllOnes<RawFd>>()))
@@ -135,61 +136,61 @@ public open class BorrowedFd internal constructor(
     public open fun asRef(): File {
         fun <T : AsFd> typeCheck() {}
         run {
-            check(mem.sizeOf<RawFd>(typeLayoutT = ObjectSlotLayout<RawFd>()) == mem.sizeOf<File>(typeLayoutT = ObjectSlotLayout<File>()))
-            check(mem.sizeOf<RawFd>(typeLayoutT = ObjectSlotLayout<RawFd>()) == mem.sizeOf<BorrowedFd>(typeLayoutT = ObjectSlotLayout<BorrowedFd>()))
+            check(sizeOf<RawFd>(typeLayoutT = ObjectSlotLayout<RawFd>()) == sizeOf<File>(typeLayoutT = ObjectSlotLayout<File>()))
+            check(sizeOf<RawFd>(typeLayoutT = ObjectSlotLayout<RawFd>()) == sizeOf<BorrowedFd>(typeLayoutT = ObjectSlotLayout<BorrowedFd>()))
         }
         typeCheck<File>()
-        return mem.transmute<BorrowedFd, File>(this)
+        return transmute<BorrowedFd, File>(this)
     }
 
     public open fun asRefTcpStream(): TcpStream {
         fun <T : AsFd> typeCheck() {}
         run {
-            check(mem.sizeOf<RawFd>(typeLayoutT = ObjectSlotLayout<RawFd>()) == mem.sizeOf<TcpStream>(typeLayoutT = ObjectSlotLayout<TcpStream>()))
-            check(mem.sizeOf<RawFd>(typeLayoutT = ObjectSlotLayout<RawFd>()) == mem.sizeOf<BorrowedFd>(typeLayoutT = ObjectSlotLayout<BorrowedFd>()))
+            check(sizeOf<RawFd>(typeLayoutT = ObjectSlotLayout<RawFd>()) == sizeOf<TcpStream>(typeLayoutT = ObjectSlotLayout<TcpStream>()))
+            check(sizeOf<RawFd>(typeLayoutT = ObjectSlotLayout<RawFd>()) == sizeOf<BorrowedFd>(typeLayoutT = ObjectSlotLayout<BorrowedFd>()))
         }
         typeCheck<TcpStream>()
-        return mem.transmute<BorrowedFd, TcpStream>(this)
+        return transmute<BorrowedFd, TcpStream>(this)
     }
 
     public open fun asRefTcpListener(): TcpListener {
         fun <T : AsFd> typeCheck() {}
         run {
-            check(mem.sizeOf<RawFd>(typeLayoutT = ObjectSlotLayout<RawFd>()) == mem.sizeOf<TcpListener>(typeLayoutT = ObjectSlotLayout<TcpListener>()))
-            check(mem.sizeOf<RawFd>(typeLayoutT = ObjectSlotLayout<RawFd>()) == mem.sizeOf<BorrowedFd>(typeLayoutT = ObjectSlotLayout<BorrowedFd>()))
+            check(sizeOf<RawFd>(typeLayoutT = ObjectSlotLayout<RawFd>()) == sizeOf<TcpListener>(typeLayoutT = ObjectSlotLayout<TcpListener>()))
+            check(sizeOf<RawFd>(typeLayoutT = ObjectSlotLayout<RawFd>()) == sizeOf<BorrowedFd>(typeLayoutT = ObjectSlotLayout<BorrowedFd>()))
         }
         typeCheck<TcpListener>()
-        return mem.transmute<BorrowedFd, TcpListener>(this)
+        return transmute<BorrowedFd, TcpListener>(this)
     }
 
     public open fun asRefUdpSocket(): UdpSocket {
         fun <T : AsFd> typeCheck() {}
         run {
-            check(mem.sizeOf<RawFd>(typeLayoutT = ObjectSlotLayout<RawFd>()) == mem.sizeOf<UdpSocket>(typeLayoutT = ObjectSlotLayout<UdpSocket>()))
-            check(mem.sizeOf<RawFd>(typeLayoutT = ObjectSlotLayout<RawFd>()) == mem.sizeOf<BorrowedFd>(typeLayoutT = ObjectSlotLayout<BorrowedFd>()))
+            check(sizeOf<RawFd>(typeLayoutT = ObjectSlotLayout<RawFd>()) == sizeOf<UdpSocket>(typeLayoutT = ObjectSlotLayout<UdpSocket>()))
+            check(sizeOf<RawFd>(typeLayoutT = ObjectSlotLayout<RawFd>()) == sizeOf<BorrowedFd>(typeLayoutT = ObjectSlotLayout<BorrowedFd>()))
         }
         typeCheck<UdpSocket>()
-        return mem.transmute<BorrowedFd, UdpSocket>(this)
+        return transmute<BorrowedFd, UdpSocket>(this)
     }
 
     public open fun asRefPipeWriter(): PipeWriter {
         fun <T : AsFd> typeCheck() {}
         run {
-            check(mem.sizeOf<RawFd>(typeLayoutT = ObjectSlotLayout<RawFd>()) == mem.sizeOf<PipeWriter>(typeLayoutT = ObjectSlotLayout<PipeWriter>()))
-            check(mem.sizeOf<RawFd>(typeLayoutT = ObjectSlotLayout<RawFd>()) == mem.sizeOf<BorrowedFd>(typeLayoutT = ObjectSlotLayout<BorrowedFd>()))
+            check(sizeOf<RawFd>(typeLayoutT = ObjectSlotLayout<RawFd>()) == sizeOf<PipeWriter>(typeLayoutT = ObjectSlotLayout<PipeWriter>()))
+            check(sizeOf<RawFd>(typeLayoutT = ObjectSlotLayout<RawFd>()) == sizeOf<BorrowedFd>(typeLayoutT = ObjectSlotLayout<BorrowedFd>()))
         }
         typeCheck<PipeWriter>()
-        return mem.transmute<BorrowedFd, PipeWriter>(this)
+        return transmute<BorrowedFd, PipeWriter>(this)
     }
 
     public open fun asRefPipeReader(): PipeReader {
         fun <T : AsFd> typeCheck() {}
         run {
-            check(mem.sizeOf<RawFd>(typeLayoutT = ObjectSlotLayout<RawFd>()) == mem.sizeOf<PipeReader>(typeLayoutT = ObjectSlotLayout<PipeReader>()))
-            check(mem.sizeOf<RawFd>(typeLayoutT = ObjectSlotLayout<RawFd>()) == mem.sizeOf<BorrowedFd>(typeLayoutT = ObjectSlotLayout<BorrowedFd>()))
+            check(sizeOf<RawFd>(typeLayoutT = ObjectSlotLayout<RawFd>()) == sizeOf<PipeReader>(typeLayoutT = ObjectSlotLayout<PipeReader>()))
+            check(sizeOf<RawFd>(typeLayoutT = ObjectSlotLayout<RawFd>()) == sizeOf<BorrowedFd>(typeLayoutT = ObjectSlotLayout<BorrowedFd>()))
         }
         typeCheck<PipeReader>()
-        return mem.transmute<BorrowedFd, PipeReader>(this)
+        return transmute<BorrowedFd, PipeReader>(this)
     }
 
     public companion object {
@@ -233,7 +234,7 @@ public open class BorrowedFd internal constructor(
 public open class OwnedFd internal constructor(
     public val fieldStorage: MutPtr,
     public val fieldLayout: TypeLayout<ValidRawFd>,
-) : AsRawFd, IntoRawFd, FromRawFd<OwnedFd, Any?, Any>, IsTerminal, AsFd {
+) : AsRawFd, IntoRawFd, FromRawFd<OwnedFd>, IsTerminal, AsFd {
     public var fd: ValidRawFd
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         internal set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
@@ -246,7 +247,7 @@ public open class OwnedFd internal constructor(
      * Creates a new `OwnedFd` instance that shares the same underlying file
      * description as the existing `OwnedFd` instance.
      */
-    public open fun tryClone(): Result<OwnedFd> = this.asFd().tryCloneToOwned()
+    public open fun tryClone(): Result<OwnedFd, Error> = this.asFd().tryCloneToOwned()
 
     public override fun asRawFd(): RawFd = this.fd.asInner()
 
@@ -269,7 +270,6 @@ public open class OwnedFd internal constructor(
                 debugAssertFdIsOpen(this.fd.asInner())
                 close(this.fd.asInner())
             }
-            io.github.kotlinmania.hermitabi.close(this.fd.asInner())
         }
     }
 

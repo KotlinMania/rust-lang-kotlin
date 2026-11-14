@@ -23,24 +23,26 @@ public open class Ppcf128(
             value = v
         }
 
+    public open fun clone(): Ppcf128 = Ppcf128(value)
+
     public companion object {
-        public fun typeLayout(): io.github.kotlinmania.rustlang.core.mem.TypeLayout<Ppcf128> =
-            object : io.github.kotlinmania.rustlang.core.mem.TypeLayout<Ppcf128> {
+        public fun typeLayout(): TypeLayout<Ppcf128> =
+            object : TypeLayout<Ppcf128> {
                 override val alignBytes: Long = 16L
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): Ppcf128 =
                     Ppcf128(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low })).readNative(addr),
+                        (PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low })).readNative(addr),
                     )
                 override fun writeNative(addr: Long, value: Ppcf128) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low })).writeNative(addr, value.value)
+                    (PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low })).writeNative(addr, value.value)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Ppcf128 =
                     Ppcf128(
-                        (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low })).readBytes(buf, offset),
+                        (PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low })).readBytes(buf, offset),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Ppcf128) {
-                    (io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low })).writeBytes(buf, offset, value.value)
+                    (PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low })).writeBytes(buf, offset, value.value)
                 }
             }
     }

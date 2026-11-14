@@ -24,7 +24,7 @@ internal fun <T> takeMut(v: T, change: (T) -> T) {
 internal fun <T, R> replace(v: T, change: (T) -> Pair<T, R>): R {
     open class PanicGuard {
         public open fun drop() {
-            intrinsics.abortImmediate()
+            abortImmediate()
         }
     }
     val guard = PanicGuard()
@@ -35,6 +35,6 @@ internal fun <T, R> replace(v: T, change: (T) -> Pair<T, R>): R {
     run {
         ptr.write(v, newValue, typeLayoutT = ObjectSlotLayout<T>())
     }
-    mem.forget(guard)
+    forget(guard)
     return ret
 }

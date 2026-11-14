@@ -1,4 +1,4 @@
-@file:OptIn(kotlin.ExperimentalUnsignedTypes::class, kotlin.wasm.ExperimentalWasmInterop::class)
+@file:OptIn(ExperimentalUnsignedTypes::class, ExperimentalWasmInterop::class)
 
 package io.github.kotlinmania.rustlang.std.sys.cmath
 
@@ -197,3 +197,63 @@ public actual fun erff128(n: F128): F128 =
 
 public actual fun erfcf128(n: F128): F128 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for stdSysCmathErfcf128")
+
+@kotlin.wasm.WasmImport("std", "stdSysCmathAcosf")
+private external fun wasiStdSysCmathAcosf(n: Float): Float
+
+public actual fun acosf(n: Float): Float =
+    wasiStdSysCmathAcosf(n).toFloat()
+
+@kotlin.wasm.WasmImport("std", "stdSysCmathAcoshf")
+private external fun wasiStdSysCmathAcoshf(n: Float): Float
+
+public actual fun acoshf(n: Float): Float =
+    wasiStdSysCmathAcoshf(n).toFloat()
+
+@kotlin.wasm.WasmImport("std", "stdSysCmathAsinf")
+private external fun wasiStdSysCmathAsinf(n: Float): Float
+
+public actual fun asinf(n: Float): Float =
+    wasiStdSysCmathAsinf(n).toFloat()
+
+@kotlin.wasm.WasmImport("std", "stdSysCmathAsinhf")
+private external fun wasiStdSysCmathAsinhf(n: Float): Float
+
+public actual fun asinhf(n: Float): Float =
+    wasiStdSysCmathAsinhf(n).toFloat()
+
+@kotlin.wasm.WasmImport("std", "stdSysCmathAtan2f")
+private external fun wasiStdSysCmathAtan2f(a: Float, b: Float): Float
+
+public actual fun atan2f(a: Float, b: Float): Float =
+    wasiStdSysCmathAtan2f(a, b).toFloat()
+
+@kotlin.wasm.WasmImport("std", "stdSysCmathAtanf")
+private external fun wasiStdSysCmathAtanf(n: Float): Float
+
+public actual fun atanf(n: Float): Float =
+    wasiStdSysCmathAtanf(n).toFloat()
+
+@kotlin.wasm.WasmImport("std", "stdSysCmathCoshf")
+private external fun wasiStdSysCmathCoshf(n: Float): Float
+
+public actual fun coshf(n: Float): Float =
+    wasiStdSysCmathCoshf(n).toFloat()
+
+@kotlin.wasm.WasmImport("std", "stdSysCmathSinhf")
+private external fun wasiStdSysCmathSinhf(n: Float): Float
+
+public actual fun sinhf(n: Float): Float =
+    wasiStdSysCmathSinhf(n).toFloat()
+
+@kotlin.wasm.WasmImport("std", "stdSysCmathTanf")
+private external fun wasiStdSysCmathTanf(n: Float): Float
+
+public actual fun tanf(n: Float): Float =
+    wasiStdSysCmathTanf(n).toFloat()
+
+@kotlin.wasm.WasmImport("std", "stdSysCmathTanhf")
+private external fun wasiStdSysCmathTanhf(n: Float): Float
+
+public actual fun tanhf(n: Float): Float =
+    wasiStdSysCmathTanhf(n).toFloat()
